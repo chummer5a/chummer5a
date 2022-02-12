@@ -395,6 +395,7 @@ namespace Chummer
             AstralReputation,
             CyberadeptDaemon,
             BurnedEdge,
+            Encumbrance,
             NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 

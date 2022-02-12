@@ -1032,6 +1032,8 @@ namespace Chummer
             this.lblSurpriseLabel = new Chummer.LabelWithToolTip();
             this.lblDodgeLabel = new Chummer.LabelWithToolTip();
             this.lblDodge = new Chummer.LabelWithToolTip();
+            this.lblLiftCarryLimitsLabel = new System.Windows.Forms.Label();
+            this.lblLiftCarryLimits = new Chummer.LabelWithToolTip();
             this.tabDefenses = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblSpellDefenseManipPhysical = new Chummer.LabelWithToolTip();
@@ -1064,8 +1066,8 @@ namespace Chummer
             this.tsGearAllowRenameName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameExtra = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.lblLiftCarryLimitsLabel = new System.Windows.Forms.Label();
-            this.lblLiftCarryLimits = new Chummer.LabelWithToolTip();
+            this.tslCarriedWeightLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslCarriedWeight = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1310,6 +1312,8 @@ namespace Chummer
             this.tslEssence,
             this.tslNuyenRemainingLabel,
             this.tslNuyenRemaining,
+            this.tslCarriedWeightLabel,
+            this.tslCarriedWeight,
             this.pgbProgress});
             this.StatusStrip.Location = new System.Drawing.Point(0, 657);
             this.StatusStrip.Name = "StatusStrip";
@@ -14896,6 +14900,29 @@ namespace Chummer
             this.lblDodge.Text = "0";
             this.lblDodge.ToolTipText = "";
             // 
+            // lblLiftCarryLimitsLabel
+            // 
+            this.lblLiftCarryLimitsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLiftCarryLimitsLabel.AutoSize = true;
+            this.lblLiftCarryLimitsLabel.Location = new System.Drawing.Point(84, 431);
+            this.lblLiftCarryLimitsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftCarryLimitsLabel.Name = "lblLiftCarryLimitsLabel";
+            this.lblLiftCarryLimitsLabel.Size = new System.Drawing.Size(82, 13);
+            this.lblLiftCarryLimitsLabel.TabIndex = 81;
+            this.lblLiftCarryLimitsLabel.Tag = "Label_OtherLiftAndCarryLimits";
+            this.lblLiftCarryLimitsLabel.Text = "Lift/Carry Limits:";
+            // 
+            // lblLiftCarryLimits
+            // 
+            this.lblLiftCarryLimits.AutoSize = true;
+            this.lblLiftCarryLimits.Location = new System.Drawing.Point(172, 431);
+            this.lblLiftCarryLimits.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftCarryLimits.Name = "lblLiftCarryLimits";
+            this.lblLiftCarryLimits.Size = new System.Drawing.Size(39, 13);
+            this.lblLiftCarryLimits.TabIndex = 82;
+            this.lblLiftCarryLimits.Text = "0/0 kg";
+            this.lblLiftCarryLimits.ToolTipText = "";
+            // 
             // tabDefenses
             // 
             this.tabDefenses.BackColor = System.Drawing.SystemColors.Control;
@@ -15353,28 +15380,19 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
             // 
-            // lblLiftCarryLimitsLabel
+            // tslCarriedWeightLabel
             // 
-            this.lblLiftCarryLimitsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblLiftCarryLimitsLabel.AutoSize = true;
-            this.lblLiftCarryLimitsLabel.Location = new System.Drawing.Point(84, 431);
-            this.lblLiftCarryLimitsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLiftCarryLimitsLabel.Name = "lblLiftCarryLimitsLabel";
-            this.lblLiftCarryLimitsLabel.Size = new System.Drawing.Size(82, 13);
-            this.lblLiftCarryLimitsLabel.TabIndex = 81;
-            this.lblLiftCarryLimitsLabel.Tag = "Label_OtherLiftAndCarryLimits";
-            this.lblLiftCarryLimitsLabel.Text = "Lift/Carry Limits:";
+            this.tslCarriedWeightLabel.Name = "tslCarriedWeightLabel";
+            this.tslCarriedWeightLabel.Size = new System.Drawing.Size(89, 19);
+            this.tslCarriedWeightLabel.Tag = "Label_CarriedWeight";
+            this.tslCarriedWeightLabel.Text = "Carried Weight:";
             // 
-            // lblLiftCarryLimits
+            // tslCarriedWeight
             // 
-            this.lblLiftCarryLimits.AutoSize = true;
-            this.lblLiftCarryLimits.Location = new System.Drawing.Point(172, 431);
-            this.lblLiftCarryLimits.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLiftCarryLimits.Name = "lblLiftCarryLimits";
-            this.lblLiftCarryLimits.Size = new System.Drawing.Size(39, 13);
-            this.lblLiftCarryLimits.TabIndex = 82;
-            this.lblLiftCarryLimits.Text = "0/0 kg";
-            this.lblLiftCarryLimits.ToolTipText = "";
+            this.tslCarriedWeight.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+            this.tslCarriedWeight.Name = "tslCarriedWeight";
+            this.tslCarriedWeight.Size = new System.Drawing.Size(66, 19);
+            this.tslCarriedWeight.Text = "0 kg / 0 kg";
             // 
             // CharacterCreate
             // 
@@ -16795,5 +16813,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem mnuFileExport;
         private System.Windows.Forms.Label lblLiftCarryLimitsLabel;
         private LabelWithToolTip lblLiftCarryLimits;
+        private System.Windows.Forms.ToolStripStatusLabel tslCarriedWeightLabel;
+        private System.Windows.Forms.ToolStripStatusLabel tslCarriedWeight;
     }
 }

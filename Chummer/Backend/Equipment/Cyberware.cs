@@ -58,6 +58,7 @@ namespace Chummer.Backend.Equipment
         private string _strCapacity = string.Empty;
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
+        private string _strWeight = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private int _intMatrixCMFilled;
@@ -224,6 +225,8 @@ namespace Chummer.Backend.Equipment
 
         private void CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
             // If we are loading (or we are not attached to a character), only manage parent setting, don't do property updating
             if (!_blnDoPropertyChangedInCollectionChanged || _objCharacter == null)
             {
@@ -264,6 +267,7 @@ namespace Chummer.Backend.Equipment
             {
                 bool blnDoEssenceImprovementsRefresh = false;
                 bool blnDoRedlinerRefresh = false;
+                bool blnDoEncumbranceRefresh = false;
                 List<Cyberware> lstImprovementSourcesToProcess = new List<Cyberware>(e.NewItems?.Count ?? 0);
                 switch (e.Action)
                 {
@@ -273,7 +277,10 @@ namespace Chummer.Backend.Equipment
                         {
                             objNewItem.Parent = this;
                             if (objNewItem.IsModularCurrentlyEquipped)
+                            {
+                                blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
                                 lstImprovementSourcesToProcess.Add(objNewItem);
+                            }
 
                             if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
                                 Category == "Cyberlimb" && Parent?.InheritAttributes != false
@@ -310,6 +317,8 @@ namespace Chummer.Backend.Equipment
                     case NotifyCollectionChangedAction.Remove:
                         foreach (Cyberware objOldItem in e.OldItems)
                         {
+                            if (objOldItem.IsModularCurrentlyEquipped)
+                                blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
                             if (objOldItem.Parent == this)
                                 objOldItem.Parent = null;
 
@@ -352,6 +361,8 @@ namespace Chummer.Backend.Equipment
                         {
                             if (setNewItems.Contains(objOldItem))
                                 continue;
+                            if (objOldItem.IsModularCurrentlyEquipped)
+                                blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
                             if (objOldItem.Parent == this)
                                 objOldItem.Parent = null;
 
@@ -387,7 +398,11 @@ namespace Chummer.Backend.Equipment
                         {
                             objNewItem.Parent = this;
                             if (objNewItem.IsModularCurrentlyEquipped)
+                            {
+                                blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
                                 lstImprovementSourcesToProcess.Add(objNewItem);
+                            }
+
                             if (setAttributesToRefresh.Count < CyberlimbAttributeAbbrevs.Count &&
                                 Category == "Cyberlimb" && Parent?.InheritAttributes != false
                                 && ParentVehicle == null
@@ -422,6 +437,7 @@ namespace Chummer.Backend.Equipment
 
                     case NotifyCollectionChangedAction.Reset:
                         blnDoEssenceImprovementsRefresh = true;
+                        blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
                         if (Category == "Cyberlimb" && Parent?.InheritAttributes != false
                                                     && ParentVehicle == null
                                                     &&
@@ -488,6 +504,18 @@ namespace Chummer.Backend.Equipment
                                 setChangedProperties.Add(EssencePropertyName);
                             }
 
+                            if (blnDoEncumbranceRefresh)
+                            {
+                                if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                                      out HashSet<string> setChangedProperties))
+                                {
+                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                                }
+
+                                setChangedProperties.Add(nameof(Character.TotalCarriedWeight));
+                            }
+
                             if (lstImprovementSourcesToProcess.Count > 0)
                             {
                                 foreach (Cyberware objItem in lstImprovementSourcesToProcess)
@@ -549,6 +577,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                     {
+                        objOldItem.ChangeEquippedStatus(false, !IsModularCurrentlyEquipped);
                         objOldItem.Parent = null;
                     }
                     foreach (Gear objNewItem in e.NewItems)
@@ -563,6 +592,7 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                     {
+                        objOldItem.ChangeEquippedStatus(false, !IsModularCurrentlyEquipped);
                         objOldItem.Parent = null;
                     }
 
@@ -749,7 +779,10 @@ namespace Chummer.Backend.Equipment
                 else
                     _lstIncludeInWirelessPairBonus.Add(Name);
 
-                _strCost = objXmlCyberware["cost"]?.InnerText ?? "0";
+                if (!objXmlCyberware.TryGetStringFieldQuickly("cost", ref _strCost))
+                    _strCost = "0";
+                objXmlCyberware.TryGetStringFieldQuickly("weight", ref _strWeight);
+
                 // Check for a Variable Cost.
                 if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
                 {
@@ -1390,6 +1423,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("capacity", _strCapacity);
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteElementString("weight", _strWeight);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("parentid", _strParentID);
@@ -1569,6 +1603,8 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("capacity", ref _strCapacity);
                 objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
                 objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+                if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
+                    objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
                 objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
@@ -1901,6 +1937,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+            objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
@@ -2383,6 +2421,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Weight.
+        /// </summary>
+        public string Weight
+        {
+            get => _strWeight;
+            set => _strWeight = value;
+        }
+
+        /// <summary>
         /// Sourcebook.
         /// </summary>
         public string Source
@@ -2674,7 +2721,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Equips a piece of modular cyberware, activating the improvements of it and its children. Call after attaching onto objCharacter.Cyberware or a parent
         /// </summary>
-        public void ChangeModularEquip(bool blnEquip)
+        public void ChangeModularEquip(bool blnEquip, bool blnSkipEncumbranceOnPropertyChanged = false)
         {
             if (blnEquip)
             {
@@ -2784,12 +2831,15 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Gear objChildGear in GearChildren)
-                objChildGear.ChangeEquippedStatus(blnEquip);
+                objChildGear.ChangeEquippedStatus(blnEquip, true);
 
             foreach (Cyberware objChild in Children)
-                objChild.ChangeModularEquip(blnEquip);
+                objChild.ChangeModularEquip(blnEquip, true);
 
             RefreshWirelessBonuses();
+
+            if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null)
+                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
         public bool CanRemoveThroughImprovements
@@ -4242,6 +4292,117 @@ namespace Chummer.Backend.Equipment
         public decimal TotalCost => CalculatedTotalCost(Rating, Grade);
 
         public decimal OwnCost => CalculatedOwnCost(Rating, Grade);
+
+        /// <summary>
+        /// Total weight of the just the Cyberware itself before we factor in any multipliers.
+        /// </summary>
+        public decimal CalculatedOwnWeight(int intRating, Grade objGrade)
+        {
+            if (!string.IsNullOrEmpty(ParentID))
+                return 0;
+            string strWeightExpression = Weight;
+            if (string.IsNullOrEmpty(strWeightExpression))
+                return 0;
+
+            if (strWeightExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string strSuffix = string.Empty;
+                if (!strWeightExpression.EndsWith(')'))
+                {
+                    strSuffix = strWeightExpression.Substring(strWeightExpression.LastIndexOf(')') + 1);
+                    strWeightExpression = strWeightExpression.TrimEndOnce(strSuffix);
+                }
+
+                string[] strValues = strWeightExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strWeightExpression = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)].Trim('[', ']');
+                strWeightExpression += strSuffix;
+            }
+
+            string strParentWeight = "0";
+            decimal decTotalParentGearWeight = 0;
+            if (_objParent != null)
+            {
+                if (strWeightExpression.Contains("Parent Weight"))
+                    strParentWeight = _objParent.Weight;
+                if (strWeightExpression.Contains("Parent Gear Weight"))
+                    decTotalParentGearWeight += _objParent.GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
+            }
+
+            decimal decTotalGearWeight = 0;
+            if (GearChildren.Count > 0 && strWeightExpression.Contains("Gear Weight"))
+            {
+                decTotalGearWeight += GearChildren.Sum(loopGear => loopGear.OwnWeight * loopGear.Quantity);
+            }
+
+            decimal decTotalChildrenWeight = 0;
+            if (Children.Count > 0 && strWeightExpression.Contains("Children Weight"))
+            {
+                decTotalChildrenWeight += Children.Sum(loopWare => loopWare.CalculatedTotalWeight(loopWare.Rating, objGrade));
+            }
+
+            decimal decReturn = 0;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+            {
+                sbdWeight.Append(strWeightExpression.TrimStart('+'));
+                sbdWeight.Replace("Parent Weight", strParentWeight);
+                sbdWeight.Replace("Parent Gear Weight",
+                                  decTotalParentGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdWeight.Replace("Gear Weight", decTotalGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdWeight.Replace("Children Weight", decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdWeight.CheapReplace(strWeightExpression, "MinRating", () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdWeight.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
+                    _objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
+                                           () => objLoopAttribute.TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev + "Base",
+                                           () => objLoopAttribute.TotalBase.ToString(GlobalSettings.InvariantCultureInfo));
+                }
+
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+
+            return decReturn;
+        }
+
+        /// <summary>
+        /// Total weight of the Cyberware and its plugins.
+        /// </summary>
+        public decimal CalculatedTotalWeight(int intRating, Grade objGrade)
+        {
+            decimal decWeight = CalculatedOwnWeight(intRating, objGrade);
+            decimal decReturn = decWeight;
+
+            // Add in the weight of all child components.
+            foreach (Cyberware objChild in Children.Where(x => x.IsModularCurrentlyEquipped))
+            {
+                if (objChild.Capacity == "[*]")
+                    continue;
+                // If the child cost starts with "*", multiply the item's base cost.
+                if (objChild.Weight.StartsWith('*'))
+                {
+                    decimal decPluginWeight =
+                        decWeight * (Convert.ToDecimal(objChild.Cost.TrimStart('*'),
+                                                       GlobalSettings.InvariantCultureInfo) - 1);
+                    decReturn += decPluginWeight;
+                }
+                else
+                    decReturn += objChild.CalculatedTotalWeight(objChild.Rating, objGrade);
+            }
+
+            // Add in the weight of all Gear plugins.
+            decReturn += GearChildren.Where(x => x.Equipped).Sum(objGear => objGear.TotalWeight);
+
+            return decReturn;
+        }
+
+        public decimal TotalWeight => CalculatedTotalWeight(Rating, Grade);
+
+        public decimal OwnWeight => CalculatedOwnWeight(Rating, Grade);
 
         /// <summary>
         /// The amount of Capacity remaining in the Cyberware.

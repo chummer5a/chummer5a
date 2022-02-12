@@ -92,6 +92,7 @@ namespace Chummer
         private int _intRegisteredSpriteLimit = int.MinValue;
         private decimal _decCachedCarryLimit = decimal.MinValue;
         private decimal _decCachedLiftLimit = decimal.MinValue;
+        private decimal _decCachedTotalCarriedWeight = decimal.MinValue;
 
         // General character info.
         private string _strName = string.Empty;
@@ -285,6 +286,8 @@ namespace Chummer
 
             _lstCyberware.CollectionChanged += CyberwareOnCollectionChanged;
             _lstArmor.CollectionChanged += ArmorOnCollectionChanged;
+            _lstWeapons.CollectionChanged += WeaponsOnCollectionChanged;
+            _lstGear.CollectionChanged += GearOnCollectionChanged;
             _lstContacts.CollectionChanged += ContactsOnCollectionChanged;
             _lstExpenseLog.CollectionChanged += ExpenseLogOnCollectionChanged;
             _lstMentorSpirits.CollectionChanged += MentorSpiritsOnCollectionChanged;
@@ -655,10 +658,10 @@ namespace Chummer
                     OnPropertyChanged(nameof(DisplayMetatypeBP));
                     break;
                 case nameof(CharacterSettings.RedlinerExcludes):
-                    RefreshRedlinerImprovements();
+                    OnPropertyChanged(nameof(RedlinerBonus));
                     break;
                 case nameof(CharacterSettings.NoArmorEncumbrance):
-                    RefreshEncumbrance();
+                    OnPropertyChanged(nameof(ArmorEncumbrance));
                     break;
                 case nameof(CharacterSettings.KarmaQuality):
                 case nameof(CharacterSettings.QualityKarmaLimit):
@@ -676,7 +679,7 @@ namespace Chummer
                     OnPropertyChanged(nameof(EnemyKarma));
                     break;
                 case nameof(CharacterSettings.DicePenaltySustaining):
-                    RefreshSustainingPenalties();
+                    OnPropertyChanged(nameof(SustainingPenalty));
                     break;
                 case nameof(CharacterSettings.KarmaSpell):
                     if (FreeSpells > 0)
@@ -1213,8 +1216,10 @@ namespace Chummer
             }
         }
 
-        private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
             bool blnDoEncumbranceRefresh = false;
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
@@ -1225,9 +1230,9 @@ namespace Chummer
                     switch (e.Action)
                     {
                         case NotifyCollectionChangedAction.Add:
-                            foreach (Armor objNewItem in e.NewItems)
+                            foreach (Gear objNewItem in e.NewItems)
                             {
-                                if (objNewItem.Equipped && objNewItem.Encumbrance)
+                                if (objNewItem.Equipped)
                                 {
                                     blnDoEncumbranceRefresh = true;
                                 }
@@ -1246,15 +1251,13 @@ namespace Chummer
                                                       string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
-                                                    setChangedProperties.Add(strPropertyToUpdate);
-                                                else
                                                 {
-                                                    HashSet<string> strInnerTemp = Utils.StringHashSetPool.Get();
-                                                    strInnerTemp.Add(strPropertyToUpdate);
-                                                    dicChangedProperties.Add(objItemToUpdate, strInnerTemp);
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
                                                 }
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             }
                                         }
                                     }
@@ -1263,9 +1266,9 @@ namespace Chummer
 
                             break;
                         case NotifyCollectionChangedAction.Remove:
-                            foreach (Armor objOldItem in e.OldItems)
+                            foreach (Gear objOldItem in e.OldItems)
                             {
-                                if (objOldItem.Equipped && objOldItem.Encumbrance)
+                                if (objOldItem.Equipped)
                                 {
                                     blnDoEncumbranceRefresh = true;
                                     break;
@@ -1274,9 +1277,9 @@ namespace Chummer
 
                             break;
                         case NotifyCollectionChangedAction.Replace:
-                            foreach (Armor objOldItem in e.OldItems)
+                            foreach (Gear objOldItem in e.OldItems)
                             {
-                                if (objOldItem.Equipped && objOldItem.Encumbrance)
+                                if (objOldItem.Equipped)
                                 {
                                     blnDoEncumbranceRefresh = true;
                                     break;
@@ -1285,9 +1288,9 @@ namespace Chummer
 
                             if (!blnDoEncumbranceRefresh)
                             {
-                                foreach (Armor objNewItem in e.NewItems)
+                                foreach (Gear objNewItem in e.NewItems)
                                 {
-                                    if (objNewItem.Equipped && objNewItem.Encumbrance)
+                                    if (objNewItem.Equipped)
                                     {
                                         blnDoEncumbranceRefresh = true;
                                         break;
@@ -1303,14 +1306,12 @@ namespace Chummer
 
                     if (blnDoEncumbranceRefresh)
                     {
-                        if (dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
-                            setChangedProperties.Add(nameof(GetArmorRating));
-                        else
+                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
                         {
-                            HashSet<string> strTemp = Utils.StringHashSetPool.Get();
-                            strTemp.Add(nameof(GetArmorRating));
-                            dicChangedProperties.Add(this, strTemp);
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(this, setChangedProperties);
                         }
+                        setChangedProperties.Add(nameof(TotalCarriedWeight));
                     }
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
@@ -1324,13 +1325,261 @@ namespace Chummer
                         Utils.StringHashSetPool.Return(setToReturn);
                 }
             }
+        }
 
-            if (blnDoEncumbranceRefresh)
-                RefreshEncumbrance();
+        private void WeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            bool blnDoEncumbranceRefresh = false;
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+            {
+                try
+                {
+                    switch (e.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            foreach (Weapon objNewItem in e.NewItems)
+                            {
+                                if (objNewItem.Equipped)
+                                {
+                                    blnDoEncumbranceRefresh = true;
+                                }
+
+                                if (!IsLoading)
+                                {
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
+                                    {
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
+                                        {
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                      string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        case NotifyCollectionChangedAction.Remove:
+                            foreach (Weapon objOldItem in e.OldItems)
+                            {
+                                if (objOldItem.Equipped)
+                                {
+                                    blnDoEncumbranceRefresh = true;
+                                    break;
+                                }
+                            }
+
+                            break;
+                        case NotifyCollectionChangedAction.Replace:
+                            foreach (Weapon objOldItem in e.OldItems)
+                            {
+                                if (objOldItem.Equipped)
+                                {
+                                    blnDoEncumbranceRefresh = true;
+                                    break;
+                                }
+                            }
+
+                            if (!blnDoEncumbranceRefresh)
+                            {
+                                foreach (Weapon objNewItem in e.NewItems)
+                                {
+                                    if (objNewItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            break;
+                        case NotifyCollectionChangedAction.Reset:
+                            blnDoEncumbranceRefresh = true;
+                            break;
+                    }
+
+                    if (blnDoEncumbranceRefresh)
+                    {
+                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(this, setChangedProperties);
+                        }
+                        setChangedProperties.Add(nameof(TotalCarriedWeight));
+                    }
+
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    {
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                    }
+                }
+                finally
+                {
+                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
+                }
+            }
+        }
+
+        private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            bool blnDoEncumbranceRefresh = false;
+            bool blnDoArmorEncumbranceRefresh = false;
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+            {
+                try
+                {
+                    switch (e.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
+                            foreach (Armor objNewItem in e.NewItems)
+                            {
+                                if (objNewItem.Equipped)
+                                {
+                                    blnDoEncumbranceRefresh = true;
+                                    if (objNewItem.Encumbrance)
+                                        blnDoArmorEncumbranceRefresh = true;
+                                }
+
+                                if (!IsLoading)
+                                {
+                                    // Needed in order to properly process named sources where
+                                    // the tooltip was built before the object was added to the character
+                                    foreach (Improvement objImprovement in Improvements)
+                                    {
+                                        if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId
+                                            &&
+                                            objImprovement.Enabled)
+                                        {
+                                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate,
+                                                      string strPropertyToUpdate) in
+                                                     objImprovement.GetRelevantPropertyChangers())
+                                            {
+                                                if (!dicChangedProperties.TryGetValue(objItemToUpdate,
+                                                        out HashSet<string> setChangedProperties))
+                                                {
+                                                    setChangedProperties = Utils.StringHashSetPool.Get();
+                                                    dicChangedProperties.Add(objItemToUpdate, setChangedProperties);
+                                                }
+                                                setChangedProperties.Add(strPropertyToUpdate);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        case NotifyCollectionChangedAction.Remove:
+                            foreach (Armor objOldItem in e.OldItems)
+                            {
+                                if (objOldItem.Equipped)
+                                {
+                                    blnDoEncumbranceRefresh = true;
+                                    if (objOldItem.Encumbrance)
+                                    {
+                                        blnDoArmorEncumbranceRefresh = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            break;
+                        case NotifyCollectionChangedAction.Replace:
+                            foreach (Armor objOldItem in e.OldItems)
+                            {
+                                if (objOldItem.Equipped)
+                                {
+                                    blnDoEncumbranceRefresh = true;
+                                    if (objOldItem.Encumbrance)
+                                    {
+                                        blnDoArmorEncumbranceRefresh = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!blnDoArmorEncumbranceRefresh)
+                            {
+                                foreach (Armor objNewItem in e.NewItems)
+                                {
+                                    if (objNewItem.Equipped)
+                                    {
+                                        blnDoEncumbranceRefresh = true;
+                                        if (objNewItem.Encumbrance)
+                                        {
+                                            blnDoArmorEncumbranceRefresh = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+
+                            break;
+                        case NotifyCollectionChangedAction.Reset:
+                            blnDoEncumbranceRefresh = true;
+                            blnDoArmorEncumbranceRefresh = true;
+                            break;
+                    }
+
+                    if (blnDoEncumbranceRefresh)
+                    {
+                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(this, setChangedProperties);
+                        }
+                        setChangedProperties.Add(nameof(TotalCarriedWeight));
+                    }
+
+                    if (blnDoArmorEncumbranceRefresh)
+                    {
+                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(this, setChangedProperties);
+                        }
+                        setChangedProperties.Add(nameof(ArmorEncumbrance));
+                    }
+
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    {
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                    }
+                }
+                finally
+                {
+                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
+                }
+            }
         }
 
         private void CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            bool blnDoEncumbranceRefresh = false;
             bool blnDoCyberlimbAttributesRefresh = false;
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
@@ -1347,6 +1596,8 @@ namespace Chummer
                             dicChangedProperties.Add(this, strTemp);
                             foreach (Cyberware objNewItem in e.NewItems)
                             {
+                                if (objNewItem.IsModularCurrentlyEquipped)
+                                    blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
                                 if (!IsLoading)
                                 {
@@ -1392,6 +1643,8 @@ namespace Chummer
                             dicChangedProperties.Add(this, strTemp);
                             foreach (Cyberware objOldItem in e.OldItems)
                             {
+                                if (objOldItem.IsModularCurrentlyEquipped)
+                                    blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                                 if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
                                     objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
@@ -1414,6 +1667,8 @@ namespace Chummer
                             {
                                 foreach (Cyberware objOldItem in e.OldItems)
                                 {
+                                    if (objOldItem.IsModularCurrentlyEquipped)
+                                        blnDoEncumbranceRefresh = true;
                                     dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
                                     if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
                                         objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
@@ -1427,6 +1682,8 @@ namespace Chummer
 
                                 foreach (Cyberware objNewItem in e.NewItems)
                                 {
+                                    if (objNewItem.IsModularCurrentlyEquipped)
+                                        blnDoEncumbranceRefresh = true;
                                     dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
                                     if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
                                         objNewItem.Category == "Cyberlimb" && objNewItem.Parent == null &&
@@ -1443,6 +1700,7 @@ namespace Chummer
                         }
                         case NotifyCollectionChangedAction.Reset:
                         {
+                            blnDoEncumbranceRefresh = true;
                             blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
                             if (!dicChangedProperties.TryGetValue(this,
                                                                   out HashSet<string> setChangedProperties))
@@ -1457,6 +1715,16 @@ namespace Chummer
                             setChangedProperties.Add(nameof(EssenceHole));
                             break;
                         }
+                    }
+
+                    if (blnDoEncumbranceRefresh)
+                    {
+                        if (!dicChangedProperties.TryGetValue(this, out HashSet<string> setChangedProperties))
+                        {
+                            setChangedProperties = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(this, setChangedProperties);
+                        }
+                        setChangedProperties.Add(nameof(TotalCarriedWeight));
                     }
 
                     if (blnDoCyberlimbAttributesRefresh)
@@ -2240,6 +2508,9 @@ namespace Chummer
                     // <liftlimit />
                     objWriter.WriteElementString("liftlimit",
                                                  _decCachedLiftLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <totalcarriedweight />
+                    objWriter.WriteElementString("totalcarriedweight",
+                                                 _decCachedTotalCarriedWeight.ToString(GlobalSettings.InvariantCultureInfo));
                     // <streetcred />
                     objWriter.WriteElementString("streetcred",
                         _intStreetCred.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3588,6 +3859,7 @@ namespace Chummer
                                     ref _intContactPointsUsed);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("carrylimit", ref _decCachedCarryLimit);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("liftlimit", ref _decCachedLiftLimit);
+                                xmlCharacterNavigator.TryGetDecFieldQuickly("totalcarriedweight", ref _decCachedTotalCarriedWeight);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("ainormalprogramlimit",
                                     ref _intAINormalProgramLimit);
@@ -5371,6 +5643,7 @@ namespace Chummer
                             RefreshSustainingPenalties();
                             // Refresh encumbrance penalties
                             RefreshEncumbrance();
+                            RefreshArmorEncumbrance();
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
                             if (MysticAdeptPowerPoints > 0)
                             {
@@ -5799,9 +6072,11 @@ namespace Chummer
             // <memory />
             objWriter.WriteElementString("memory", Memory.ToString(objCulture));
             // <liftweight />
-            objWriter.WriteElementString("liftweight", LiftLimit.ToString(objCulture));
+            objWriter.WriteElementString("liftweight", LiftLimit.ToString(Settings.WeightFormat, objCulture));
             // <carryweight />
-            objWriter.WriteElementString("carryweight", CarryLimit.ToString(objCulture));
+            objWriter.WriteElementString("carryweight", CarryLimit.ToString(Settings.WeightFormat, objCulture));
+            // <totalcarriedweight />
+            objWriter.WriteElementString("totalcarriedweight", TotalCarriedWeight.ToString(Settings.WeightFormat, objCulture));
             // <fatigueresist />
             objWriter.WriteElementString("fatigueresist", FatigueResist.ToString(objCulture));
             // <radiationresist />
@@ -6341,6 +6616,7 @@ namespace Chummer
             _intCachedContactPoints = int.MinValue;
             _decCachedCarryLimit = decimal.MinValue;
             _decCachedLiftLimit = decimal.MinValue;
+            _decCachedTotalCarriedWeight = decimal.MinValue;
             _intCachedDealerConnectionDiscount = int.MinValue;
             _intCachedEnemyKarma = int.MinValue;
             _intCachedErased = int.MinValue;
@@ -6993,6 +7269,8 @@ namespace Chummer
                     return LanguageManager.GetString("Tab_Initiation", strLanguage);
                 case Improvement.ImprovementSource.Submersion:
                     return LanguageManager.GetString("Tab_Submersion", strLanguage);
+                case Improvement.ImprovementSource.Encumbrance:
+                    return LanguageManager.GetString("String_Encumbrance", strLanguage);
                 case Improvement.ImprovementSource.ArmorEncumbrance:
                     return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage);
                 case Improvement.ImprovementSource.Tradition:
@@ -13778,12 +14056,65 @@ namespace Chummer
         public int TotalBonusDodgeRating => ImprovementManager.ValueOf(this, Improvement.ImprovementType.Dodge).StandardRound();
 
         /// <summary>
+        /// Encumbrance modifier for carrying more stuff than carry limit
+        /// </summary>
+        public int Encumbrance
+        {
+            get
+            {
+                decimal decCarryLimit = CarryLimit;
+
+                decimal decCarriedWeight = TotalCarriedWeight;
+
+                return decCarriedWeight > decCarryLimit
+                    ? -((decCarriedWeight - decCarryLimit) / 15.0m).StandardRound()
+                    : 0;
+            }
+        }
+
+        /// <summary>
+        /// Total amount of stuff the character is currently carrying on their person (via Equipped)
+        /// </summary>
+        public decimal TotalCarriedWeight
+        {
+            get
+            {
+                if (_decCachedTotalCarriedWeight == decimal.MinValue)
+                {
+                    _decCachedTotalCarriedWeight = Armor.Where(x => x.Equipped).Sum(x => x.TotalWeight)
+                                                   + Weapons.Where(x => x.Equipped).Sum(x => x.TotalWeight)
+                                                   + Gear.Where(x => x.Equipped).Sum(x => x.TotalWeight)
+                                                   + Cyberware.Where(x => x.IsModularCurrentlyEquipped)
+                                                              .Sum(x => x.TotalWeight);
+                }
+
+                return _decCachedTotalCarriedWeight;
+            }
+        }
+
+        /// <summary>
+        /// String used to show the current carried weight status in the toolstrip of character forms
+        /// </summary>
+        public string DisplayTotalCarriedWeight
+        {
+            get
+            {
+                string strSpace = LanguageManager.GetString("String_Space");
+                return TotalCarriedWeight.ToString(Settings.WeightFormat, GlobalSettings.CultureInfo) + strSpace + "kg"
+                       + strSpace + '/' + strSpace
+                       + CarryLimit.ToString(Settings.WeightFormat, GlobalSettings.CultureInfo) + strSpace + "kg";
+            }
+        }
+
+        /// <summary>
         /// Armor Encumbrance modifier from Armor.
         /// </summary>
         public int ArmorEncumbrance
         {
             get
             {
+                if (Settings.NoArmorEncumbrance)
+                    return 0;
                 List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
                 if (lstArmorsToConsider.Count == 0 || lstArmorsToConsider.All(objArmor => !objArmor.Encumbrance))
                     return 0;
@@ -17803,15 +18134,14 @@ namespace Chummer
             {
                 case nameof(CharacterAttrib.TotalValue):
                 {
-                    // Encumbrance is only affected by STR.TotalValue when it comes to attributes
-                    RefreshEncumbrance();
                     List<string> lstProperties = new List<string>(5)
                     {
                         nameof(LimitPhysical),
                         nameof(LiftAndCarry),
                         nameof(SpellDefenseDecreaseSTR),
                         nameof(SpellDefenseManipulationPhysical),
-                        nameof(CalculatedMovement)
+                        nameof(CalculatedMovement),
+                        nameof(ArmorEncumbrance)
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}");
                     OnMultiplePropertyChanged(lstProperties);
@@ -18176,24 +18506,38 @@ namespace Chummer
         public void RefreshEncumbrance()
         {
             // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+            if (IsLoading)
+                return;
+            // Remove any Improvements from Armor Encumbrance.
+            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Encumbrance);
+            // Create the Encumbrance Improvements.
+            int intEncumbrance = Encumbrance;
+            if (intEncumbrance != 0)
+            {
+                ImprovementManager.CreateImprovement(this, "Physical", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.PhysicalLimit, "precedence-1", intEncumbrance);
+                ImprovementManager.Commit(this);
+            }
+        }
+
+        public void RefreshArmorEncumbrance()
+        {
+            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
             if(IsLoading)
                 return;
             // Remove any Improvements from Armor Encumbrance.
             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ArmorEncumbrance);
-            if(!Settings.NoArmorEncumbrance)
+            // Create the Armor Encumbrance Improvements.
+            int intEncumbrance = ArmorEncumbrance;
+            if (intEncumbrance != 0)
             {
-                // Create the Armor Encumbrance Improvements.
-                int intEncumbrance = ArmorEncumbrance;
-                if(intEncumbrance != 0)
-                {
-                    ImprovementManager.CreateImprovement(this, "AGI", Improvement.ImprovementSource.ArmorEncumbrance,
-                        string.Empty, Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0,
-                        intEncumbrance);
-                    ImprovementManager.CreateImprovement(this, "REA", Improvement.ImprovementSource.ArmorEncumbrance,
-                        string.Empty, Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0,
-                        intEncumbrance);
-                    ImprovementManager.Commit(this);
-                }
+                ImprovementManager.CreateImprovement(this, "AGI", Improvement.ImprovementSource.ArmorEncumbrance,
+                                                     string.Empty, Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0,
+                                                     intEncumbrance);
+                ImprovementManager.CreateImprovement(this, "REA", Improvement.ImprovementSource.ArmorEncumbrance,
+                                                     string.Empty, Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0,
+                                                     intEncumbrance);
+                ImprovementManager.Commit(this);
             }
         }
 
@@ -18879,6 +19223,14 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(LiftLimit)),
                         new DependencyGraphNode<string, Character>(nameof(CarryLimit))
                     ),
+                    new DependencyGraphNode<string, Character>(nameof(Encumbrance),
+                        new DependencyGraphNode<string, Character>(nameof(CarryLimit)),
+                        new DependencyGraphNode<string, Character>(nameof(TotalCarriedWeight))
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(DisplayTotalCarriedWeight),
+                        new DependencyGraphNode<string, Character>(nameof(CarryLimit)),
+                        new DependencyGraphNode<string, Character>(nameof(TotalCarriedWeight))
+                    ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayCyberwareEssence),
                         new DependencyGraphNode<string, Character>(nameof(CyberwareEssence))
                     ),
@@ -19230,6 +19582,11 @@ namespace Chummer
                     _intCachedAmbidextrous = int.MinValue;
                 }
 
+                if (setNamesOfChangedProperties.Contains(nameof(TotalCarriedWeight)))
+                {
+                    _decCachedTotalCarriedWeight = decimal.MinValue;
+                }
+
                 if (setNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
                 {
                     _intCachedDealerConnectionDiscount = int.MinValue;
@@ -19304,6 +19661,11 @@ namespace Chummer
                 {
                     ResetCachedEssence();
                     RefreshEssenceLossImprovements();
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(ArmorEncumbrance)))
+                {
+                    RefreshArmorEncumbrance();
                 }
 
                 if (setNamesOfChangedProperties.Contains(nameof(WoundModifier)))
@@ -21613,6 +21975,7 @@ namespace Chummer
                             RefreshWoundPenalties();
                             // Refresh encumbrance penalties
                             RefreshEncumbrance();
+                            RefreshArmorEncumbrance();
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
                             if (MysticAdeptPowerPoints > 0)
                             {

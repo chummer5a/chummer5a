@@ -283,6 +283,8 @@ namespace Chummer
             this.lblSurprise = new Chummer.LabelWithToolTip();
             this.lblDodgeLabel = new Chummer.LabelWithToolTip();
             this.lblDodge = new Chummer.LabelWithToolTip();
+            this.lblLiftCarryLimitsLabel = new System.Windows.Forms.Label();
+            this.lblLiftCarryLimits = new Chummer.LabelWithToolTip();
             this.tabDefenses = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
             this.nudCounterspellingDice = new Chummer.NumericUpDownEx();
@@ -1367,8 +1369,8 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.lblLiftCarryLimitsLabel = new System.Windows.Forms.Label();
-            this.lblLiftCarryLimits = new Chummer.LabelWithToolTip();
+            this.tslCarriedWeightLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslCarriedWeight = new System.Windows.Forms.ToolStripStatusLabel();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1708,6 +1710,8 @@ namespace Chummer
             this.tslEssence,
             this.tslNuyenLabel,
             this.tslNuyen,
+            this.tslCarriedWeightLabel,
+            this.tslCarriedWeight,
             this.pgbProgress});
             this.StatusStrip.Location = new System.Drawing.Point(0, 657);
             this.StatusStrip.Name = "StatusStrip";
@@ -5199,6 +5203,30 @@ namespace Chummer
             this.lblDodge.TabIndex = 92;
             this.lblDodge.Text = "0";
             this.lblDodge.ToolTipText = "";
+            // 
+            // lblLiftCarryLimitsLabel
+            // 
+            this.lblLiftCarryLimitsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblLiftCarryLimitsLabel.AutoSize = true;
+            this.lblLiftCarryLimitsLabel.Location = new System.Drawing.Point(84, 481);
+            this.lblLiftCarryLimitsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftCarryLimitsLabel.Name = "lblLiftCarryLimitsLabel";
+            this.lblLiftCarryLimitsLabel.Size = new System.Drawing.Size(82, 13);
+            this.lblLiftCarryLimitsLabel.TabIndex = 93;
+            this.lblLiftCarryLimitsLabel.Tag = "Label_OtherLiftAndCarryLimits";
+            this.lblLiftCarryLimitsLabel.Text = "Lift/Carry Limits:";
+            // 
+            // lblLiftCarryLimits
+            // 
+            this.lblLiftCarryLimits.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblLiftCarryLimits.AutoSize = true;
+            this.lblLiftCarryLimits.Location = new System.Drawing.Point(172, 481);
+            this.lblLiftCarryLimits.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftCarryLimits.Name = "lblLiftCarryLimits";
+            this.lblLiftCarryLimits.Size = new System.Drawing.Size(39, 13);
+            this.lblLiftCarryLimits.TabIndex = 94;
+            this.lblLiftCarryLimits.Text = "0/0 kg";
+            this.lblLiftCarryLimits.ToolTipText = "";
             // 
             // tabDefenses
             // 
@@ -22009,29 +22037,19 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
-            // lblLiftCarryLimitsLabel
+            // tslCarriedWeightLabel
             // 
-            this.lblLiftCarryLimitsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblLiftCarryLimitsLabel.AutoSize = true;
-            this.lblLiftCarryLimitsLabel.Location = new System.Drawing.Point(84, 481);
-            this.lblLiftCarryLimitsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLiftCarryLimitsLabel.Name = "lblLiftCarryLimitsLabel";
-            this.lblLiftCarryLimitsLabel.Size = new System.Drawing.Size(82, 13);
-            this.lblLiftCarryLimitsLabel.TabIndex = 93;
-            this.lblLiftCarryLimitsLabel.Tag = "Label_OtherLiftAndCarryLimits";
-            this.lblLiftCarryLimitsLabel.Text = "Lift/Carry Limits:";
+            this.tslCarriedWeightLabel.Name = "tslCarriedWeightLabel";
+            this.tslCarriedWeightLabel.Size = new System.Drawing.Size(89, 19);
+            this.tslCarriedWeightLabel.Tag = "Label_CarriedWeight";
+            this.tslCarriedWeightLabel.Text = "Carried Weight:";
             // 
-            // lblLiftCarryLimits
+            // tslCarriedWeight
             // 
-            this.lblLiftCarryLimits.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblLiftCarryLimits.AutoSize = true;
-            this.lblLiftCarryLimits.Location = new System.Drawing.Point(172, 481);
-            this.lblLiftCarryLimits.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLiftCarryLimits.Name = "lblLiftCarryLimits";
-            this.lblLiftCarryLimits.Size = new System.Drawing.Size(39, 13);
-            this.lblLiftCarryLimits.TabIndex = 94;
-            this.lblLiftCarryLimits.Text = "0/0 kg";
-            this.lblLiftCarryLimits.ToolTipText = "";
+            this.tslCarriedWeight.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+            this.tslCarriedWeight.Name = "tslCarriedWeight";
+            this.tslCarriedWeight.Size = new System.Drawing.Size(66, 19);
+            this.tslCarriedWeight.Text = "0 kg / 0 kg";
             // 
             // CharacterCareer
             // 
@@ -23859,5 +23877,7 @@ namespace Chummer
         private FlowLayoutPanel flpMysticAdeptMAGAdept;
         private Label lblLiftCarryLimitsLabel;
         private LabelWithToolTip lblLiftCarryLimits;
+        private ToolStripStatusLabel tslCarriedWeightLabel;
+        private ToolStripStatusLabel tslCarriedWeight;
     }
 }

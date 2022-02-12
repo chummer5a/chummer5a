@@ -74,6 +74,7 @@ namespace Chummer.Backend.Equipment
 
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
+        private string _strWeight = string.Empty;
         private string _strRange = string.Empty;
         private string _strAlternateRange = string.Empty;
         private decimal _decRangeMultiplier = 1;
@@ -162,15 +163,21 @@ namespace Chummer.Backend.Equipment
 
         private void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            bool blnDoEncumbranceRefresh = false;
+            bool blnRecreateInternalClip = false;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (WeaponAccessory objNewItem in e.NewItems)
                     {
-                        if (!string.IsNullOrWhiteSpace(objNewItem.AmmoReplace) || !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus))
+                        if (objNewItem.Equipped)
+                            blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                        if (!blnRecreateInternalClip && (!string.IsNullOrWhiteSpace(objNewItem.AmmoReplace) ||
+                                                         !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus)))
                         {
-                            RecreateInternalClip();
-                            break;
+                            blnRecreateInternalClip = true;
                         }
                     }
                     break;
@@ -178,74 +185,99 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Remove:
                     foreach (WeaponAccessory objOldItem in e.OldItems)
                     {
-                        if (!string.IsNullOrWhiteSpace(objOldItem.AmmoReplace) || !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus))
+                        if (objOldItem.Equipped)
+                            blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                        if (!blnRecreateInternalClip && (!string.IsNullOrWhiteSpace(objOldItem.AmmoReplace) ||
+                                                         !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus)))
                         {
-                            RecreateInternalClip();
-                            break;
+                            blnRecreateInternalClip = true;
                         }
                     }
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
-                    bool blnCheckNewItems = true;
                     foreach (WeaponAccessory objOldItem in e.OldItems)
                     {
-                        if (!string.IsNullOrWhiteSpace(objOldItem.AmmoReplace) || !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus))
+                        if (objOldItem.Equipped)
+                            blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                        if (!blnRecreateInternalClip && (!string.IsNullOrWhiteSpace(objOldItem.AmmoReplace) ||
+                                                         !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus)))
                         {
-                            RecreateInternalClip();
-                            blnCheckNewItems = false;
-                            break;
+                            blnRecreateInternalClip = true;
                         }
                     }
-
-                    if (blnCheckNewItems)
+                    foreach (WeaponAccessory objNewItem in e.NewItems)
                     {
-                        foreach (WeaponAccessory objNewItem in e.NewItems)
+                        if (objNewItem.Equipped)
+                            blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                        if (!blnRecreateInternalClip && (!string.IsNullOrWhiteSpace(objNewItem.AmmoReplace) ||
+                                                         !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus)))
                         {
-                            if (!string.IsNullOrWhiteSpace(objNewItem.AmmoReplace) ||
-                                !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus))
-                            {
-                                RecreateInternalClip();
-                                break;
-                            }
+                            blnRecreateInternalClip = true;
                         }
                     }
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    RecreateInternalClip();
+                    blnRecreateInternalClip = true;
+                    blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
                     break;
             }
+
+            if (blnRecreateInternalClip)
+                RecreateInternalClip();
+            if (blnDoEncumbranceRefresh)
+                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            bool blnDoEncumbranceRefresh = false;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Weapon objNewItem in e.NewItems)
+                    {
                         objNewItem.Parent = this;
-                    this.RefreshMatrixAttributeArray();
+                        if (objNewItem.Equipped)
+                            blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                    }
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Weapon objOldItem in e.OldItems)
+                    {
                         objOldItem.Parent = null;
-                    this.RefreshMatrixAttributeArray();
+                        if (objOldItem.Equipped)
+                            blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                    }
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Weapon objOldItem in e.OldItems)
+                    {
                         objOldItem.Parent = null;
+                        if (objOldItem.Equipped)
+                            blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                    }
                     foreach (Weapon objNewItem in e.NewItems)
+                    {
                         objNewItem.Parent = this;
-                    this.RefreshMatrixAttributeArray();
+                        if (objNewItem.Equipped)
+                            blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                    }
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    this.RefreshMatrixAttributeArray();
+                    blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
                     break;
             }
+
+            this.RefreshMatrixAttributeArray();
+            if (blnDoEncumbranceRefresh)
+                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
         /// Create a Weapon from an XmlNode and return the TreeNodes for it.
@@ -342,6 +374,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objXmlWeapon.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlWeapon.TryGetStringFieldQuickly("cost", ref _strCost);
+            objXmlWeapon.TryGetStringFieldQuickly("weight", ref _strWeight);
             objXmlWeapon.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
 
             // Check for a Variable Cost.
@@ -700,6 +733,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("conceal", _intConceal.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteElementString("weight", _strWeight);
             objWriter.WriteElementString("useskill", _strUseSkill);
             objWriter.WriteElementString("useskillspec", _strUseSkillSpec);
             objWriter.WriteElementString("range", _strRange);
@@ -934,6 +968,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("conceal", ref _intConceal);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
+                objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objNode.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
@@ -1286,12 +1322,16 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("avail", objGear.TotalAvail(objCulture, strLanguageToPrint));
                 objWriter.WriteElementString("cost", objGear.TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", objGear.OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                objWriter.WriteElementString("weight", objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                objWriter.WriteElementString("ownweight", objGear.OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             }
             else
             {
                 objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
                 objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             }
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
@@ -1872,6 +1912,15 @@ namespace Chummer.Backend.Equipment
             set => _strCost = value;
         }
 
+        /// <summary>
+        /// Weight.
+        /// </summary>
+        public string Weight
+        {
+            get => _strWeight;
+            set => _strWeight = value;
+        }
+
         public string DisplayCost(out decimal decItemCost, decimal decMarkup = 0.0m)
         {
             string strReturn = Cost;
@@ -2099,7 +2148,14 @@ namespace Chummer.Backend.Equipment
         public bool Equipped
         {
             get => _blnEquipped;
-            set => _blnEquipped = value;
+            set
+            {
+                if (_blnEquipped == value)
+                    return;
+                _blnEquipped = value;
+                if (ParentVehicle == null)
+                    _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+            }
         }
 
         /// <summary>
@@ -3144,6 +3200,25 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        /// <summary>
+        /// Weapon Weight to use when working with Total Weight price modifiers for Weapon Mods.
+        /// </summary>
+        public decimal MultipliableWeight(WeaponAccessory objExcludeAccessory)
+        {
+            decimal decReturn = OwnWeight;
+
+            // Run through the list of Weapon Mods.
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (objExcludeAccessory != objAccessory && objAccessory.Equipped)
+                {
+                    decReturn += objAccessory.TotalWeight;
+                }
+            }
+
+            return decReturn;
+        }
+
         public string AccessoryMounts
         {
             get
@@ -3242,6 +3317,55 @@ namespace Chummer.Backend.Equipment
                     {
                         decReturn *= 2;
                     }
+                }
+
+                return decReturn;
+            }
+        }
+
+        /// <summary>
+        /// The Weapon's total weight including Accessories and Modifications.
+        /// </summary>
+        public decimal TotalWeight => OwnWeight + WeaponAccessories.Where(x => x.Equipped).Sum(x => x.TotalWeight)
+                                                + Children.Where(x => x.Equipped).Sum(x => x.TotalWeight);
+
+        /// <summary>
+        /// The weight of just the Weapon itself.
+        /// </summary>
+        public decimal OwnWeight
+        {
+            get
+            {
+                // If this is a Cyberware or Gear Weapon, remove the Weapon Weight from this since it has already been paid for through the parent item (but is needed to calculate Mod weight).
+                if (Cyberware || Category == "Gear" || IncludedInWeapon)
+                    return 0;
+                string strWeightExpression = Weight;
+                if (string.IsNullOrEmpty(strWeightExpression))
+                    return 0;
+
+                decimal decReturn = 0;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                {
+                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
+
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
+                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
+                                               () => objLoopAttribute.TotalValue.ToString(
+                                                   GlobalSettings.InvariantCultureInfo));
+                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev + "Base",
+                                               () => objLoopAttribute.TotalBase.ToString(
+                                                   GlobalSettings.InvariantCultureInfo));
+                    }
+
+                    sbdWeight.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                    // Replace the division sign with "div" since we're using XPath.
+                    sbdWeight.Replace("/", " div ");
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
 
                 return decReturn;

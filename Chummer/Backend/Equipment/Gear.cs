@@ -62,6 +62,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decCostFor = 1.0m;
         private string _strDeviceRating = string.Empty;
         private string _strCost = string.Empty;
+        private string _strWeight = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strExtra = string.Empty;
@@ -191,6 +192,8 @@ namespace Chummer.Backend.Equipment
             _decQty = _decCostFor;
             if (!objXmlGear.TryGetStringFieldQuickly("cost", ref _strCost))
                 _strCost = string.Empty;
+            if (!objXmlGear.TryGetStringFieldQuickly("weight", ref _strWeight))
+                _strWeight = string.Empty;
             _nodBonus = objXmlGear["bonus"];
             _nodWirelessBonus = objXmlGear["wirelessbonus"];
             _blnWirelessOn = false;
@@ -812,6 +815,7 @@ namespace Chummer.Backend.Equipment
             _decCostFor = objGear.CostFor;
             _strDeviceRating = objGear.DeviceRating;
             _strCost = objGear.Cost;
+            _strWeight = objGear.Weight;
             _strSource = objGear.Source;
             _strPage = objGear.Page;
             _strCanFormPersona = objGear.CanFormPersona;
@@ -878,6 +882,7 @@ namespace Chummer.Backend.Equipment
             if (_decCostFor > 1)
                 objWriter.WriteElementString("costfor", _decCostFor.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteElementString("weight", _strWeight);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("bonded", _blnBonded.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", _blnEquipped.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1013,6 +1018,8 @@ namespace Chummer.Backend.Equipment
             {
                 objMyNode.Value?.TryGetStringFieldQuickly("cost", ref _strCost);
             }
+            if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
+                objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             if (_strExtra == "Hold-Outs")
@@ -1411,6 +1418,8 @@ namespace Chummer.Backend.Equipment
                 TotalAvail(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+            objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("bonded", Bonded.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1802,6 +1811,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strCost;
             set => _strCost = value;
+        }
+
+        /// <summary>
+        /// Weight.
+        /// </summary>
+        public string Weight
+        {
+            get => _strWeight;
+            set => _strWeight = value;
         }
 
         /// <summary>
@@ -2808,6 +2826,88 @@ namespace Chummer.Backend.Equipment
             (OwnCostPreMultipliers * (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1) / CostFor;
 
         /// <summary>
+        /// Total weight of the just the Gear itself
+        /// </summary>
+        public decimal OwnWeight
+        {
+            get
+            {
+                if (IncludedInParent)
+                    return 0;
+                string strWeightExpression = Weight;
+                if (string.IsNullOrEmpty(strWeightExpression))
+                    return 0;
+
+                if (strWeightExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strWeightExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                            .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strWeightExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+                }
+
+                decimal decGearWeight = 0;
+                decimal decParentWeight = 0;
+                if (Parent != null && (strWeightExpression.Contains("Parent Weight") || strWeightExpression.Contains("Gear Weight")))
+                {
+                    decParentWeight = ((Gear) Parent).OwnWeight;
+                    decGearWeight = decParentWeight * ((Gear) Parent).Quantity;
+                }
+
+                decimal decTotalChildrenWeight = 0;
+                if (Children.Count > 0 && strWeightExpression.Contains("Children Weight"))
+                {
+                    decTotalChildrenWeight += Children.Sum(x => x.OwnWeight * x.Quantity);
+                }
+
+                decimal decReturn = 0;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                {
+                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
+                    sbdWeight.Replace("Gear Weight", decGearWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Children Weight",
+                                      decTotalChildrenWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Parent Rating",
+                                      (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo)
+                                      ?? "0");
+                    sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.Replace("Parent Weight", decParentWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    // Keeping enumerations separate reduces heap allocations
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                    {
+                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
+                                               () => objLoopAttribute.TotalValue.ToString(
+                                                   GlobalSettings.InvariantCultureInfo));
+                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev + "Base",
+                                               () => objLoopAttribute.TotalBase.ToString(
+                                                   GlobalSettings.InvariantCultureInfo));
+                    }
+
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    {
+                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
+                                               () => objLoopAttribute.TotalValue.ToString(
+                                                   GlobalSettings.InvariantCultureInfo));
+                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev + "Base",
+                                               () => objLoopAttribute.TotalBase.ToString(
+                                                   GlobalSettings.InvariantCultureInfo));
+                    }
+                    
+                    object objProcess
+                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                }
+
+                return decReturn;
+            }
+        }
+
+        /// <summary>
+        /// Total weight of the Gear and its accessories.
+        /// </summary>
+        public decimal TotalWeight => (OwnWeight + Children.Where(x => x.Equipped).Sum(x => x.TotalWeight)) * Quantity;
+
+        /// <summary>
         /// The Gear's Capacity cost if used as a plugin.
         /// </summary>
         public decimal PluginCapacity
@@ -3193,7 +3293,8 @@ namespace Chummer.Backend.Equipment
         /// Change the Equipped status of a piece of Gear and all of its children.
         /// </summary>
         /// <param name="blnEquipped">Whether or not the Gear should be marked as Equipped.</param>
-        public void ChangeEquippedStatus(bool blnEquipped)
+        /// <param name="blnSkipEncumbranceOnPropertyChanged">Whether we should skip notifying our character that they should re-check their encumbrance. Set to `true` if this is a batch operation and there is going to be a refresh later anyway.</param>
+        public void ChangeEquippedStatus(bool blnEquipped, bool blnSkipEncumbranceOnPropertyChanged = false)
         {
             if (blnEquipped)
             {
@@ -3254,7 +3355,10 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Gear objGear in Children)
-                objGear.ChangeEquippedStatus(blnEquipped);
+                objGear.ChangeEquippedStatus(blnEquipped, true);
+
+            if (!blnSkipEncumbranceOnPropertyChanged)
+                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
         /// <summary>

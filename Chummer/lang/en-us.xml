@@ -999,6 +999,10 @@
       <text>hours</text>
     </string>
     <string>
+      <key>String_Encumbrance</key>
+      <text>Encumbrance</text>
+    </string>
+    <string>
       <key>String_ArmorEncumbrance</key>
       <text>Armor Encumbrance</text>
     </string>
@@ -4272,6 +4276,10 @@
     <string>
       <key>Label_StolenGearNuyen</key>
       <text>Nuyen (Stolen):</text>
+    </string>
+    <string>
+      <key>Label_CarriedWeight</key>
+      <text>Carried Weight:</text>
     </string>
     <string>
       <key>Node_SelectedQualities</key>

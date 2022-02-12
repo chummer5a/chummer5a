@@ -52,6 +52,7 @@ namespace Chummer.Backend.Equipment
         private string _strArmorCapacity = "0";
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
+        private string _strWeight = string.Empty;
         private int _intRating;
         private int _intMaxRating;
         private string _strSource = string.Empty;
@@ -107,7 +108,10 @@ namespace Chummer.Backend.Equipment
 
         private void ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
             bool blnDoEncumbranceRefresh = false;
+            bool blnDoArmorEncumbranceRefresh = false;
             List<ArmorMod> lstImprovementSourcesToProcess = new List<ArmorMod>(e.NewItems?.Count ?? 0);
             switch (e.Action)
             {
@@ -118,7 +122,8 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                         if (objNewItem.Equipped)
                         {
-                            blnDoEncumbranceRefresh = true;
+                            blnDoEncumbranceRefresh = Equipped;
+                            blnDoArmorEncumbranceRefresh = Equipped && objNewItem.Encumbrance;
                             lstImprovementSourcesToProcess.Add(objNewItem);
                         }
                     }
@@ -130,7 +135,10 @@ namespace Chummer.Backend.Equipment
                     {
                         objOldItem.Parent = null;
                         if (objOldItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
+                        {
+                            blnDoEncumbranceRefresh = Equipped;
+                            blnDoArmorEncumbranceRefresh = Equipped && objOldItem.Encumbrance;
+                        }
                     }
 
                     break;
@@ -144,7 +152,10 @@ namespace Chummer.Backend.Equipment
                             continue;
                         objOldItem.Parent = null;
                         if (objOldItem.Equipped)
-                            blnDoEncumbranceRefresh = true;
+                        {
+                            blnDoEncumbranceRefresh = Equipped;
+                            blnDoArmorEncumbranceRefresh = Equipped && objOldItem.Encumbrance;
+                        }
                     }
                     
                     foreach (ArmorMod objNewItem in setNewItems)
@@ -152,7 +163,8 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                         if (objNewItem.Equipped)
                         {
-                            blnDoEncumbranceRefresh = true;
+                            blnDoEncumbranceRefresh = Equipped;
+                            blnDoArmorEncumbranceRefresh = Equipped && objNewItem.Encumbrance;
                             lstImprovementSourcesToProcess.Add(objNewItem);
                         }
                     }
@@ -160,7 +172,7 @@ namespace Chummer.Backend.Equipment
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    blnDoEncumbranceRefresh = true;
+                    blnDoArmorEncumbranceRefresh = Equipped;
                     break;
             }
 
@@ -170,15 +182,29 @@ namespace Chummer.Backend.Equipment
             {
                 try
                 {
-                    if (_objCharacter != null && blnDoEncumbranceRefresh && Equipped)
+                    if (_objCharacter != null)
                     {
-                        if (dicChangedProperties.TryGetValue(_objCharacter, out HashSet<string> setChangedProperties))
-                            setChangedProperties.Add(nameof(Character.GetArmorRating));
-                        else
+                        if (blnDoEncumbranceRefresh)
                         {
-                            HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                            setTemp.Add(nameof(Character.GetArmorRating));
-                            dicChangedProperties.Add(_objCharacter, setTemp);
+                            if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                                  out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                            }
+
+                            setChangedProperties.Add(nameof(Character.TotalCarriedWeight));
+                        }
+                        if (blnDoArmorEncumbranceRefresh)
+                        {
+                            if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                                  out HashSet<string> setChangedProperties))
+                            {
+                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                            }
+
+                            setChangedProperties.Add(nameof(Character.ArmorEncumbrance));
                         }
                     }
 
@@ -223,11 +249,6 @@ namespace Chummer.Backend.Equipment
                     foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
                         Utils.StringHashSetPool.Return(setToReturn);
                 }
-            }
-
-            if (blnDoEncumbranceRefresh && _objCharacter != null && Equipped)
-            {
-                _objCharacter.RefreshEncumbrance();
             }
         }
 
@@ -317,6 +338,7 @@ namespace Chummer.Backend.Equipment
             _blnWirelessOn = false;
 
             objXmlArmorNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            objXmlArmorNode.TryGetStringFieldQuickly("weight", ref _strWeight);
 
             // Check for a Variable Cost.
             if (!blnSkipCost && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
@@ -648,6 +670,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("armorcapacity", _strArmorCapacity);
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
+            objWriter.WriteElementString("weight", _strWeight);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("armorname", _strArmorName);
@@ -737,10 +760,6 @@ namespace Chummer.Backend.Equipment
                 {
                     _guiID = Guid.NewGuid();
                 }
-                if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
-                {
-                    objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-                }
                 string strLocation = objNode["location"]?.InnerText;
                 if (!string.IsNullOrEmpty(strLocation))
                 {
@@ -763,6 +782,11 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            {
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
+
             if (!objNode.TryGetBoolFieldQuickly("encumbrance", ref _blnEncumbrance))
                 _blnEncumbrance = true;
 
@@ -770,6 +794,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("armor", ref _strArmorValue);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
+            if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
+                objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             if (objNode.TryGetStringFieldQuickly("armoroverride", ref _strArmorOverrideValue) && _strArmorOverrideValue == "0")
                 _strArmorOverrideValue = string.Empty;
@@ -932,6 +958,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+            objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("armorname", CustomName);
@@ -1098,7 +1126,7 @@ namespace Chummer.Backend.Equipment
                 if (_intDamage != intOldValue && Equipped && _objCharacter != null)
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
-                    _objCharacter.RefreshEncumbrance();
+                    _objCharacter.RefreshArmorEncumbrance();
                 }
             }
         }
@@ -1118,7 +1146,7 @@ namespace Chummer.Backend.Equipment
                 if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
-                    _objCharacter.RefreshEncumbrance();
+                    _objCharacter.RefreshArmorEncumbrance();
                 }
                 if (GearChildren.Count > 0)
                 {
@@ -1206,6 +1234,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strCost;
             set => _strCost = value;
+        }
+
+        /// <summary>
+        /// Armor's Weight.
+        /// </summary>
+        public string Weight
+        {
+            get => _strWeight;
+            set => _strWeight = value;
         }
 
         public string DisplayCost(out decimal decItemCost, bool blnUseRating = true, decimal decMarkup = 0.0m)
@@ -1341,70 +1378,68 @@ namespace Chummer.Backend.Equipment
             get => _blnEquipped;
             set
             {
-                if (_blnEquipped != value)
+                if (_blnEquipped == value)
+                    return;
+                _blnEquipped = value;
+                if (value)
                 {
-                    _blnEquipped = value;
-                    if (value)
+                    // Add the Armor's Improvements to the character.
+                    ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId));
+                    // Add the Improvements from any Armor Mods in the Armor.
+                    foreach (ArmorMod objMod in ArmorMods)
                     {
-                        // Add the Armor's Improvements to the character.
-                        ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Armor && x.SourceName == InternalId));
-                        // Add the Improvements from any Armor Mods in the Armor.
-                        foreach (ArmorMod objMod in ArmorMods)
+                        if (objMod.Equipped)
                         {
-                            if (objMod.Equipped)
-                            {
-                                ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId));
-                                // Add the Improvements from any Gear in the Armor.
-                                foreach (Gear objGear in objMod.GearChildren)
-                                {
-                                    if (objGear.Equipped)
-                                    {
-                                        objGear.ChangeEquippedStatus(true);
-                                    }
-                                }
-                            }
-                        }
-                        // Add the Improvements from any Gear in the Armor.
-                        foreach (Gear objGear in GearChildren)
-                        {
-                            if (objGear.Equipped)
-                            {
-                                objGear.ChangeEquippedStatus(true);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Add the Armor's Improvements to the character.
-                        ImprovementManager.DisableImprovements(_objCharacter,
-                                                               _objCharacter.Improvements.Where(
-                                                                   x => x.ImproveSource
-                                                                        == Improvement.ImprovementSource.Armor
-                                                                        && x.SourceName == InternalId));
-                        // Add the Improvements from any Armor Mods in the Armor.
-                        foreach (ArmorMod objMod in ArmorMods)
-                        {
-                            ImprovementManager.DisableImprovements(_objCharacter,
-                                                                   _objCharacter.Improvements.Where(
-                                                                       x => x.ImproveSource
-                                                                            == Improvement.ImprovementSource.ArmorMod
-                                                                            && x.SourceName == InternalId));
+                            ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId));
                             // Add the Improvements from any Gear in the Armor.
                             foreach (Gear objGear in objMod.GearChildren)
                             {
-                                objGear.ChangeEquippedStatus(false);
+                                if (objGear.Equipped)
+                                {
+                                    objGear.ChangeEquippedStatus(true, true);
+                                }
                             }
                         }
-                        // Add the Improvements from any Gear in the Armor.
-                        foreach (Gear objGear in GearChildren)
+                    }
+                    // Add the Improvements from any Gear in the Armor.
+                    foreach (Gear objGear in GearChildren)
+                    {
+                        if (objGear.Equipped)
                         {
-                            objGear.ChangeEquippedStatus(false);
+                            objGear.ChangeEquippedStatus(true, true);
                         }
                     }
-
-                    _objCharacter?.OnPropertyChanged(nameof(Character.GetArmorRating));
-                    _objCharacter?.RefreshEncumbrance();
                 }
+                else
+                {
+                    // Add the Armor's Improvements to the character.
+                    ImprovementManager.DisableImprovements(_objCharacter,
+                                                           _objCharacter.Improvements.Where(
+                                                               x => x.ImproveSource
+                                                                    == Improvement.ImprovementSource.Armor
+                                                                    && x.SourceName == InternalId));
+                    // Add the Improvements from any Armor Mods in the Armor.
+                    foreach (ArmorMod objMod in ArmorMods)
+                    {
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                                                               _objCharacter.Improvements.Where(
+                                                                   x => x.ImproveSource
+                                                                        == Improvement.ImprovementSource.ArmorMod
+                                                                        && x.SourceName == InternalId));
+                        // Add the Improvements from any Gear in the Armor.
+                        foreach (Gear objGear in objMod.GearChildren)
+                        {
+                            objGear.ChangeEquippedStatus(false, true);
+                        }
+                    }
+                    // Add the Improvements from any Gear in the Armor.
+                    foreach (Gear objGear in GearChildren)
+                    {
+                        objGear.ChangeEquippedStatus(false, true);
+                    }
+                }
+
+                _objCharacter?.OnMultiplePropertyChanged(nameof(Character.ArmorEncumbrance), nameof(Character.TotalCarriedWeight), nameof(Character.TotalArmorRating));
             }
         }
 
@@ -1556,6 +1591,49 @@ namespace Chummer.Backend.Equipment
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
+
+                return decReturn;
+            }
+        }
+
+        /// <summary>
+        /// The Armor's total Weight including Modifications.
+        /// </summary>
+        public decimal TotalWeight => OwnWeight + ArmorMods.Where(x => x.Equipped).Sum(x => x.TotalWeight)
+                                                + GearChildren.Where(x => x.Equipped).Sum(x => x.TotalWeight);
+
+        /// <summary>
+        /// Weight for just the Armor.
+        /// </summary>
+        public decimal OwnWeight
+        {
+            get
+            {
+                string strWeightExpression = Weight;
+                if (string.IsNullOrEmpty(strWeightExpression))
+                    return 0;
+                decimal decReturn = 0;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+                {
+                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
+                    sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
+                                 _objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
+                                               () => objLoopAttribute.TotalValue.ToString(
+                                                   GlobalSettings.InvariantCultureInfo));
+                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev + "Base",
+                                               () => objLoopAttribute.TotalBase.ToString(
+                                                   GlobalSettings.InvariantCultureInfo));
+                    }
+
+                    object objProcess
+                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString(), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+                }
 
                 return decReturn;
             }

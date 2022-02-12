@@ -1088,6 +1088,16 @@ namespace Chummer
                     tslEssence.Text = CharacterObject.DisplayEssence;
                     break;
 
+                case nameof(Character.DisplayTotalCarriedWeight):
+                    tslCarriedWeight.Text = CharacterObject.DisplayTotalCarriedWeight;
+                    break;
+
+                case nameof(Character.Encumbrance):
+                    tslCarriedWeight.ForeColor = CharacterObject.Encumbrance > 0
+                        ? ColorManager.ErrorColor
+                        : ColorManager.ControlText;
+                    break;
+
                 case nameof(Character.NuyenBP):
                 case nameof(Character.MetatypeBP):
                 case nameof(Character.ContactPoints):
