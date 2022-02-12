@@ -6058,6 +6058,14 @@
       <text>Memory:</text>
     </string>
     <string>
+      <key>Label_OtherLiftAndCarryLimits</key>
+      <text>Lift/Carry Limits:</text>
+    </string>
+    <string>
+      <key>Label_OtherLiftAndCarryLimitsFormat</key>
+      <text>{0}/{1} kg</text>
+    </string>
+    <string>
       <key>Tip_OtherCMPhysical</key>
       <text>Physical CM is calculated as 8 + (BOD / 2).</text>
     </string>
@@ -6112,6 +6120,10 @@
     <string>
       <key>Tip_OtherFly</key>
       <text>Character's flying speed in meters.</text>
+    </string>
+    <string>
+      <key>Tip_OtherLiftAndCarryLimits</key>
+      <text>Character's baseline lift/carry weight limit in kilograms.</text>
     </string>
     <string>
       <key>Tip_OtherComposure</key>
@@ -6322,10 +6334,6 @@
     <string>
       <key>Tip_Armor</key>
       <text>Armor</text>
-    </string>
-    <string>
-      <key>Tip_LiftAndCarry</key>
-      <text>Lift: {0} kg, Carry: {1} kg</text>
     </string>
     <string>
       <key>Tip_DiceRoller</key>

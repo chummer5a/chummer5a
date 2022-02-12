@@ -1064,6 +1064,8 @@ namespace Chummer
             this.tsGearAllowRenameName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameExtra = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.lblLiftCarryLimitsLabel = new System.Windows.Forms.Label();
+            this.lblLiftCarryLimits = new Chummer.LabelWithToolTip();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -14546,17 +14548,17 @@ namespace Chummer
             this.tlpOtherInfo.ColumnCount = 2;
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 19);
+            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 20);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINI, 1, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 19);
+            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 20);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysicalLabel, 0, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 18);
+            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 19);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINILabel, 0, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 18);
+            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 19);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysical, 1, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 18);
             this.tlpOtherInfo.Controls.Add(this.lblMemory, 1, 16);
-            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 18);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIHot, 1, 6);
             this.tlpOtherInfo.Controls.Add(this.lblMemoryLabel, 0, 16);
             this.tlpOtherInfo.Controls.Add(this.lblCMStunLabel, 0, 1);
@@ -14586,11 +14588,14 @@ namespace Chummer
             this.tlpOtherInfo.Controls.Add(this.lblSurpriseLabel, 0, 14);
             this.tlpOtherInfo.Controls.Add(this.lblDodgeLabel, 0, 9);
             this.tlpOtherInfo.Controls.Add(this.lblDodge, 1, 9);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLimitsLabel, 0, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLimits, 1, 17);
             this.tlpOtherInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOtherInfo.Location = new System.Drawing.Point(3, 3);
             this.tlpOtherInfo.Margin = new System.Windows.Forms.Padding(0);
             this.tlpOtherInfo.Name = "tlpOtherInfo";
-            this.tlpOtherInfo.RowCount = 21;
+            this.tlpOtherInfo.RowCount = 22;
+            this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -14618,7 +14623,7 @@ namespace Chummer
             // lblFly
             // 
             this.lblFly.AutoSize = true;
-            this.lblFly.Location = new System.Drawing.Point(172, 481);
+            this.lblFly.Location = new System.Drawing.Point(172, 506);
             this.lblFly.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFly.Name = "lblFly";
             this.lblFly.Size = new System.Drawing.Size(13, 13);
@@ -14640,7 +14645,7 @@ namespace Chummer
             // 
             this.lblFlyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFlyLabel.AutoSize = true;
-            this.lblFlyLabel.Location = new System.Drawing.Point(143, 481);
+            this.lblFlyLabel.Location = new System.Drawing.Point(143, 506);
             this.lblFlyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFlyLabel.Name = "lblFlyLabel";
             this.lblFlyLabel.Size = new System.Drawing.Size(23, 13);
@@ -14651,7 +14656,7 @@ namespace Chummer
             // lblSwim
             // 
             this.lblSwim.AutoSize = true;
-            this.lblSwim.Location = new System.Drawing.Point(172, 456);
+            this.lblSwim.Location = new System.Drawing.Point(172, 481);
             this.lblSwim.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwim.Name = "lblSwim";
             this.lblSwim.Size = new System.Drawing.Size(13, 13);
@@ -14662,7 +14667,7 @@ namespace Chummer
             // 
             this.lblSwimLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSwimLabel.AutoSize = true;
-            this.lblSwimLabel.Location = new System.Drawing.Point(131, 456);
+            this.lblSwimLabel.Location = new System.Drawing.Point(131, 481);
             this.lblSwimLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwimLabel.Name = "lblSwimLabel";
             this.lblSwimLabel.Size = new System.Drawing.Size(35, 13);
@@ -14684,7 +14689,7 @@ namespace Chummer
             // lblMovement
             // 
             this.lblMovement.AutoSize = true;
-            this.lblMovement.Location = new System.Drawing.Point(172, 431);
+            this.lblMovement.Location = new System.Drawing.Point(172, 456);
             this.lblMovement.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovement.Name = "lblMovement";
             this.lblMovement.Size = new System.Drawing.Size(13, 13);
@@ -14706,7 +14711,7 @@ namespace Chummer
             // 
             this.lblMovementLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMovementLabel.AutoSize = true;
-            this.lblMovementLabel.Location = new System.Drawing.Point(106, 431);
+            this.lblMovementLabel.Location = new System.Drawing.Point(106, 456);
             this.lblMovementLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovementLabel.Name = "lblMovementLabel";
             this.lblMovementLabel.Size = new System.Drawing.Size(60, 13);
@@ -15347,6 +15352,29 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
+            // 
+            // lblLiftCarryLimitsLabel
+            // 
+            this.lblLiftCarryLimitsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLiftCarryLimitsLabel.AutoSize = true;
+            this.lblLiftCarryLimitsLabel.Location = new System.Drawing.Point(84, 431);
+            this.lblLiftCarryLimitsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftCarryLimitsLabel.Name = "lblLiftCarryLimitsLabel";
+            this.lblLiftCarryLimitsLabel.Size = new System.Drawing.Size(82, 13);
+            this.lblLiftCarryLimitsLabel.TabIndex = 81;
+            this.lblLiftCarryLimitsLabel.Tag = "Label_OtherLiftAndCarryLimits";
+            this.lblLiftCarryLimitsLabel.Text = "Lift/Carry Limits:";
+            // 
+            // lblLiftCarryLimits
+            // 
+            this.lblLiftCarryLimits.AutoSize = true;
+            this.lblLiftCarryLimits.Location = new System.Drawing.Point(172, 431);
+            this.lblLiftCarryLimits.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftCarryLimits.Name = "lblLiftCarryLimits";
+            this.lblLiftCarryLimits.Size = new System.Drawing.Size(39, 13);
+            this.lblLiftCarryLimits.TabIndex = 82;
+            this.lblLiftCarryLimits.Text = "0/0 kg";
+            this.lblLiftCarryLimits.ToolTipText = "";
             // 
             // CharacterCreate
             // 
@@ -16765,5 +16793,7 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabConcept;
         private System.Windows.Forms.TabPage tabCharacterNotes;
         private DpiFriendlyToolStripMenuItem mnuFileExport;
+        private System.Windows.Forms.Label lblLiftCarryLimitsLabel;
+        private LabelWithToolTip lblLiftCarryLimits;
     }
 }

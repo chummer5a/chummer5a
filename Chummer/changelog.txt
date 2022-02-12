@@ -26,6 +26,12 @@ Changed/New Strings:
 - Tip_ComplexFormFadingBase
 - Message_UndoBrokenSkillGroup
 - MessageTitle_UndoBrokenSkillGroup
+- Label_OtherLiftAndCarryLimits
+- Label_OtherLiftAndCarryLimitsFormat
+- Tip_OtherLiftAndCarryLimits
+
+Removed Strings:
+- Tip_LiftAndCarry
 
 Build 221
 Application Changes:

@@ -11971,6 +11971,13 @@ namespace Chummer
             }
         }
 
+        public string LiftAndCarryLimits => string.Format(GlobalSettings.CultureInfo,
+                                                         LanguageManager.GetString("Label_OtherLiftAndCarryLimitsFormat"),
+                                                         LiftLimit.ToString(
+                                                             Settings.WeightFormat, GlobalSettings.CultureInfo),
+                                                         CarryLimit.ToString(
+                                                             Settings.WeightFormat, GlobalSettings.CultureInfo));
+
         /// <summary>
         /// Memory (LOG + WIL).
         /// </summary>
@@ -18867,6 +18874,10 @@ namespace Chummer
                             new DependencyGraphNode<string, Character>(nameof(WoundModifier)),
                             new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
                         )
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(LiftAndCarryLimits),
+                        new DependencyGraphNode<string, Character>(nameof(LiftLimit)),
+                        new DependencyGraphNode<string, Character>(nameof(CarryLimit))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayCyberwareEssence),
                         new DependencyGraphNode<string, Character>(nameof(CyberwareEssence))

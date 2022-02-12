@@ -854,6 +854,8 @@ namespace Chummer
                         lblMemory.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.MemoryToolTip));
                         lblMemory.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Memory));
 
+                        lblLiftCarryLimits.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.LiftAndCarryLimits));
+
                         lblINI.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.InitiativeToolTip));
                         lblINI.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.Initiative));
                         lblAstralINI.DoOneWayDataBinding("ToolTipText", CharacterObject,
@@ -16683,6 +16685,7 @@ namespace Chummer
             lblMovementLabel.SetToolTip(LanguageManager.GetString("Tip_OtherMovement"));
             lblSwimLabel.SetToolTip(LanguageManager.GetString("Tip_OtherSwim"));
             lblFlyLabel.SetToolTip(LanguageManager.GetString("Tip_OtherFly"));
+            lblLiftCarryLimitsLabel.SetToolTip(LanguageManager.GetString("Tip_OtherLiftAndCarryLimits"));
             lblComposureLabel.SetToolTip(LanguageManager.GetString("Tip_OtherComposure"));
             lblSurpriseLabel.SetToolTip(LanguageManager.GetString("Tip_OtherSurprise"));
             lblJudgeIntentionsLabel.SetToolTip(LanguageManager.GetString("Tip_OtherJudgeIntentions"));
