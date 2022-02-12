@@ -701,7 +701,7 @@ namespace Chummer
                 List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
                 foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
                 {
-                    if (!kvpTaskPair.Value.Result)
+                    if (!await kvpTaskPair.Value)
                         lstBlocked.Add(kvpTaskPair.Key);
                 }
 

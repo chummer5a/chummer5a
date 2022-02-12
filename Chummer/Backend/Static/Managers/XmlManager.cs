@@ -562,7 +562,7 @@ namespace Chummer
                                                             out HashSet<string> setDuplicateIDs))
             {
                 // Key is ID, Value is a list of the names of all items with that ID.
-                Dictionary<string, IList<string>> dicItemsWithIDs = new Dictionary<string, IList<string>>();
+                Dictionary<string, IList<string>> dicItemsWithIDs = new Dictionary<string, IList<string>>(1);
                 CheckIdNode(xmlParentNode, setDuplicateIDs, lstItemsWithMalformedIDs, dicItemsWithIDs);
 
                 if (setDuplicateIDs.Count > 0)

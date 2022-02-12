@@ -550,7 +550,7 @@ namespace Chummer
             if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count == 0 || _objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
-            Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>();
+            Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>(dicWatch.Count);
             List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(dicWatch.Count);
             foreach (string strKey in dicWatch.Keys)
                 lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey),
