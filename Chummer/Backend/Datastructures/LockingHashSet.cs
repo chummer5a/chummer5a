@@ -26,11 +26,10 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IDisposable, IProducerConsumerCollection<T>, IHasLockingEnumerators<T>
+    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IDisposable, IProducerConsumerCollection<T>, IHasLockObject
     {
         private readonly HashSet<T> _setData;
-        private readonly ReaderWriterLockSlim
-            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public LockingHashSet()
         {
@@ -57,118 +56,96 @@ namespace Chummer
             _setData = new HashSet<T>(comparer);
         }
 
-        private readonly object _objActiveEnumeratorsLock = new object();
-        private readonly List<LockingEnumerator<T>> _lstActiveEnumerators = new List<LockingEnumerator<T>>();
-
-        public LockingEnumerator<T> CreateLockingEnumerator()
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                bool blnDoLock = _lstActiveEnumerators.Count == 0;
-                LockingEnumerator<T> objReturn = new LockingEnumerator<T>(_setData.GetEnumerator(), this);
-                _lstActiveEnumerators.Add(objReturn);
-                if (blnDoLock)
-                    _rwlThis.EnterReadLock();
-                return objReturn;
-            }
-        }
-
-        public void FreeLockingEnumerator(LockingEnumerator<T> objToFree)
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                _lstActiveEnumerators.Remove(objToFree);
-                if (_lstActiveEnumerators.Count == 0)
-                    _rwlThis.ExitReadLock();
-            }
-        }
-
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            return CreateLockingEnumerator();
+            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            objReturn.SetEnumerator(_setData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return CreateLockingEnumerator();
+            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            objReturn.SetEnumerator(_setData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         public bool Add(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 return _setData.Add(item);
         }
 
         /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _setData.UnionWith(other);
         }
 
         /// <inheritdoc />
         public void IntersectWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _setData.IntersectWith(other);
         }
 
         /// <inheritdoc />
         public void ExceptWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _setData.ExceptWith(other);
         }
 
         /// <inheritdoc />
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _setData.SymmetricExceptWith(other);
         }
 
         /// <inheritdoc />
         public bool IsSubsetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.IsSubsetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsSupersetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.IsSupersetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.IsProperSupersetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.IsProperSubsetOf(other);
         }
 
         /// <inheritdoc />
         public bool Overlaps(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.Overlaps(other);
         }
 
         /// <inheritdoc />
         public bool SetEquals(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.SetEquals(other);
         }
 
@@ -182,21 +159,21 @@ namespace Chummer
         /// <inheritdoc />
         public void Clear()
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _setData.Clear();
         }
 
         /// <inheritdoc />
         public bool Contains(T item)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.Contains(item);
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(T[] array, int arrayIndex)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (T objItem in _setData)
                 {
@@ -209,7 +186,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryAdd(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 return _setData.Add(item);
         }
 
@@ -217,7 +194,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (_setData.Count > 0)
                 {
@@ -234,7 +211,7 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
             {
                 T[] aobjReturn = new T[_setData.Count];
                 int i = 0;
@@ -250,14 +227,14 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 return _setData.Remove(item);
         }
 
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (T objItem in _setData)
                 {
@@ -272,13 +249,13 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _setData.Count;
             }
         }
 
         /// <inheritdoc />
-        public object SyncRoot => _rwlThis;
+        public object SyncRoot => LockObject;
 
         /// <inheritdoc />
         public bool IsSynchronized => true;
@@ -290,9 +267,9 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (_rwlThis.IsReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld)
+                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
                     Utils.SafeSleep();
-                _rwlThis.Dispose();
+                LockObject.Dispose();
             }
         }
 

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -28,21 +29,28 @@ namespace Chummer
     /// <typeparam name="T"></typeparam>
     public sealed class LockingEnumerator<T> : IEnumerator<T>
     {
-        private readonly IHasLockingEnumerators<T> _objMyParent;
+        private readonly IHasLockObject _objMyParent;
 
-        private readonly IEnumerator<T> _objInternalEnumerator;
+        private IEnumerator<T> _objInternalEnumerator;
 
-        public LockingEnumerator(IEnumerator<T> objInternalEnumerator, IHasLockingEnumerators<T> objMyParent)
+        public LockingEnumerator(IHasLockObject objMyParent)
         {
-            _objInternalEnumerator = objInternalEnumerator;
             _objMyParent = objMyParent;
+            _objMyParent.LockObject.EnterReadLock();
+        }
+
+        public void SetEnumerator(IEnumerator<T> objInternalEnumerator)
+        {
+            if (_objInternalEnumerator != null)
+                throw new ArgumentException(null, nameof(objInternalEnumerator));
+            _objInternalEnumerator = objInternalEnumerator;
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
             _objInternalEnumerator.Dispose();
-            _objMyParent.FreeLockingEnumerator(this);
+            _objMyParent.LockObject.ExitReadLock();
         }
 
         /// <inheritdoc />

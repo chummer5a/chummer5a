@@ -27,12 +27,11 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IDisposable, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockingEnumerators<T>
+    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IDisposable, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
-        private readonly ReaderWriterLockSlim
-            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public LockingOrderedSet()
         {
@@ -64,48 +63,26 @@ namespace Chummer
             _lstOrderedData = new List<T>();
         }
 
-        private readonly object _objActiveEnumeratorsLock = new object();
-        private readonly List<LockingEnumerator<T>> _lstActiveEnumerators = new List<LockingEnumerator<T>>();
-
-        public LockingEnumerator<T> CreateLockingEnumerator()
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                bool blnDoLock = _lstActiveEnumerators.Count == 0;
-                LockingEnumerator<T> objReturn = new LockingEnumerator<T>(_lstOrderedData.GetEnumerator(), this);
-                _lstActiveEnumerators.Add(objReturn);
-                if (blnDoLock)
-                    _rwlThis.EnterReadLock();
-                return objReturn;
-            }
-        }
-
-        public void FreeLockingEnumerator(LockingEnumerator<T> objToFree)
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                _lstActiveEnumerators.Remove(objToFree);
-                if (_lstActiveEnumerators.Count == 0)
-                    _rwlThis.ExitReadLock();
-            }
-        }
-
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            return CreateLockingEnumerator();
+            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            objReturn.SetEnumerator(_lstOrderedData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return CreateLockingEnumerator();
+            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            objReturn.SetEnumerator(_lstOrderedData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         public bool Add(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (!_setData.Add(item))
                     return false;
@@ -117,7 +94,7 @@ namespace Chummer
         /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 List<T> lstOther = other.ToList();
                 _lstOrderedData.AddRange(lstOther.Where(objItem => !_setData.Contains(objItem)));
@@ -128,7 +105,7 @@ namespace Chummer
         /// <inheritdoc />
         public void IntersectWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => !setOther.Contains(objItem));
@@ -139,7 +116,7 @@ namespace Chummer
         /// <inheritdoc />
         public void ExceptWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
@@ -150,7 +127,7 @@ namespace Chummer
         /// <inheritdoc />
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
@@ -162,42 +139,42 @@ namespace Chummer
         /// <inheritdoc />
         public bool IsSubsetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.IsSubsetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsSupersetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.IsSupersetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.IsProperSupersetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.IsProperSubsetOf(other);
         }
 
         /// <inheritdoc />
         public bool Overlaps(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.Overlaps(other);
         }
 
         /// <inheritdoc />
         public bool SetEquals(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.SetEquals(other);
         }
 
@@ -211,7 +188,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Clear()
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 _setData.Clear();
                 _lstOrderedData.Clear();
@@ -221,14 +198,14 @@ namespace Chummer
         /// <inheritdoc />
         public bool Contains(T item)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _setData.Contains(item);
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(T[] array, int arrayIndex)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 _lstOrderedData.CopyTo(array, arrayIndex);
         }
 
@@ -242,7 +219,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (_setData.Count > 0)
                 {
@@ -262,14 +239,14 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _lstOrderedData.ToArray();
         }
 
         /// <inheritdoc />
         public bool Remove(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (!_setData.Remove(item))
                     return false;
@@ -281,7 +258,7 @@ namespace Chummer
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (T objItem in _lstOrderedData)
                 {
@@ -296,13 +273,13 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _lstOrderedData.Count;
             }
         }
 
         /// <inheritdoc />
-        public object SyncRoot => _rwlThis;
+        public object SyncRoot => LockObject;
 
         /// <inheritdoc />
         public bool IsSynchronized => true;
@@ -314,9 +291,9 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (_rwlThis.IsReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld)
+                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
                     Utils.SafeSleep();
-                _rwlThis.Dispose();
+                LockObject.Dispose();
             }
         }
 
@@ -330,14 +307,14 @@ namespace Chummer
         /// <inheritdoc />
         public int IndexOf(T item)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _lstOrderedData.IndexOf(item);
         }
 
         /// <inheritdoc />
         public void Insert(int index, T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (!_setData.Add(item))
                     return;
@@ -348,7 +325,7 @@ namespace Chummer
         /// <inheritdoc />
         public void RemoveAt(int index)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 T objToRemove = _lstOrderedData[index];
                 if (_setData.Remove(objToRemove))
@@ -362,17 +339,17 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _lstOrderedData[index];
             }
             set
             {
-                using (new EnterUpgradeableReadLock(_rwlThis))
+                using (new EnterUpgradeableReadLock(LockObject))
                 {
                     T objOldItem = _lstOrderedData[index];
                     if (objOldItem.Equals(value))
                         return;
-                    using (new EnterWriteLock(_rwlThis))
+                    using (new EnterWriteLock(LockObject))
                     {
                         _setData.Remove(objOldItem);
                         _setData.Add(value);
@@ -385,21 +362,21 @@ namespace Chummer
         /// <inheritdoc />
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 _setData.GetObjectData(info, context);
         }
 
         /// <inheritdoc />
         public void OnDeserialization(object sender)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _setData.OnDeserialization(sender);
         }
 
         /// <inheritdoc cref="List{T}.Sort()" />
         public void Sort()
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                     _lstOrderedData.Sort(comparer);
@@ -411,35 +388,35 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
         public void Sort(Comparison<T> comparison)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _lstOrderedData.Sort(comparison);
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
         public void Sort(IComparer<T> comparer)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _lstOrderedData.Sort(comparer);
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
         public void Sort(int index, int count, IComparer<T> comparer)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _lstOrderedData.Sort(index, count, comparer);
         }
 
         /// <inheritdoc cref="List{T}.Reverse(int, int)" />
         public void Reverse(int index, int count)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _lstOrderedData.Reverse(index, count);
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />
         public List<T> FindAll(Predicate<T> predicate)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _lstOrderedData.FindAll(predicate);
         }
     }

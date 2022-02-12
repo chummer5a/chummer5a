@@ -38,10 +38,9 @@ namespace Chummer
     /// Caches a subset of a full character's properties for loading purposes.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class CharacterCache : IDisposable
+    public sealed class CharacterCache : IDisposable, IHasLockObject
     {
-        private readonly ReaderWriterLockSlim
-            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public string FilePath { get; set; }
         public string FileName { get; set; }
@@ -66,12 +65,12 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _blnIsLoadMethodRunning;
             }
             set
             {
-                using (new EnterWriteLock(_rwlThis))
+                using (new EnterWriteLock(LockObject))
                     _blnIsLoadMethodRunning = value;
             }
         }
@@ -417,7 +416,7 @@ namespace Chummer
             Mugshot?.Dispose();
             DownLoadRunning?.Dispose();
             MyPluginDataDic.Dispose();
-            _rwlThis?.Dispose();
+            LockObject?.Dispose();
         }
 
         public override string ToString()

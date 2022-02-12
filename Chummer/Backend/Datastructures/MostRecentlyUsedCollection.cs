@@ -42,14 +42,14 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(LockerObject))
+            using (new EnterUpgradeableReadLock(LockObject))
             {
                 if (_blnSkipCollectionChanged)
                     return;
                 if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     _blnSkipCollectionChanged = true;
-                    using (new EnterWriteLock(LockerObject))
+                    using (new EnterWriteLock(LockObject))
                     {
                         // Remove all duplicate entries
                         for (int intLastIndex = Count - 1; intLastIndex >= 0; --intLastIndex)
@@ -72,7 +72,7 @@ namespace Chummer
         protected override void InsertItem(int index, T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
-            using (new EnterWriteLock(LockerObject))
+            using (new EnterWriteLock(LockObject))
             {
                 int intExistingIndex = IndexOf(item);
                 if (intExistingIndex == -1)

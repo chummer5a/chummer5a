@@ -26,9 +26,9 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>, IHasLockingEnumerators<T>
+    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>, IHasLockObject
     {
-        protected ReaderWriterLockSlim LockerObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public ThreadSafeObservableCollection()
         {
@@ -47,7 +47,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockerObject))
+                using (new EnterReadLock(LockObject))
                     return base.Count;
             }
         }
@@ -57,16 +57,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockerObject))
+                using (new EnterReadLock(LockObject))
                     return base[index];
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockerObject))
+                using (new EnterUpgradeableReadLock(LockObject))
                 {
                     if (base[index].Equals(value))
                         return;
-                    using (new EnterWriteLock(LockerObject))
+                    using (new EnterWriteLock(LockObject))
                         base[index] = value;
                 }
             }
@@ -75,14 +75,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Contains" />
         public new bool Contains(T item)
         {
-            using (new EnterReadLock(LockerObject))
+            using (new EnterReadLock(LockObject))
                 return base.Contains(item);
         }
 
         /// <inheritdoc />
         public new void CopyTo(T[] array, int index)
         {
-            using (new EnterReadLock(LockerObject))
+            using (new EnterReadLock(LockObject))
                 base.CopyTo(array, index);
         }
 
@@ -97,7 +97,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(LockerObject))
+            using (new EnterWriteLock(LockObject))
             {
                 if (base.Count > 0)
                 {
@@ -115,7 +115,7 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            using (new EnterReadLock(LockerObject))
+            using (new EnterReadLock(LockObject))
             {
                 T[] aobjReturn = new T[Count];
                 for (int i = 0; i < Count; ++i)
@@ -126,42 +126,18 @@ namespace Chummer
             }
         }
 
-        private readonly object _objActiveEnumeratorsLock = new object();
-        private readonly List<LockingEnumerator<T>> _lstActiveEnumerators = new List<LockingEnumerator<T>>();
-
-        public LockingEnumerator<T> CreateLockingEnumerator()
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                bool blnDoLock = _lstActiveEnumerators.Count == 0;
-                LockingEnumerator<T> objReturn = new LockingEnumerator<T>(base.GetEnumerator(), this);
-                _lstActiveEnumerators.Add(objReturn);
-                if (blnDoLock)
-                    LockerObject.EnterReadLock();
-                return objReturn;
-            }
-        }
-
-        public void FreeLockingEnumerator(LockingEnumerator<T> objToFree)
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                _lstActiveEnumerators.Remove(objToFree);
-                if (_lstActiveEnumerators.Count == 0)
-                    LockerObject.ExitReadLock();
-            }
-        }
-
         /// <inheritdoc />
         public new IEnumerator<T> GetEnumerator()
         {
-            return CreateLockingEnumerator();
+            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            objReturn.SetEnumerator(base.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T)" />
         public new int IndexOf(T item)
         {
-            using (new EnterReadLock(LockerObject))
+            using (new EnterReadLock(LockObject))
                 return base.IndexOf(item);
         }
 
@@ -170,12 +146,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockerObject))
+                using (new EnterWriteLock(LockObject))
                     base.CollectionChanged += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockerObject))
+                using (new EnterWriteLock(LockObject))
                     base.CollectionChanged -= value;
             }
         }
@@ -185,12 +161,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockerObject))
+                using (new EnterWriteLock(LockObject))
                     base.BeforeClearCollectionChanged += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockerObject))
+                using (new EnterWriteLock(LockObject))
                     base.BeforeClearCollectionChanged -= value;
             }
         }
@@ -200,12 +176,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockerObject))
+                using (new EnterWriteLock(LockObject))
                     base.PropertyChanged += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockerObject))
+                using (new EnterWriteLock(LockObject))
                     base.PropertyChanged -= value;
             }
         }
@@ -213,49 +189,49 @@ namespace Chummer
         /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            using (new EnterWriteLock(LockerObject))
+            using (new EnterWriteLock(LockObject))
                 base.InsertItem(index, item);
         }
 
         /// <inheritdoc />
         protected override void MoveItem(int oldIndex, int newIndex)
         {
-            using (new EnterWriteLock(LockerObject))
+            using (new EnterWriteLock(LockObject))
                 base.MoveItem(oldIndex, newIndex);
         }
 
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            using (new EnterWriteLock(LockerObject))
+            using (new EnterWriteLock(LockObject))
                 base.ClearItems();
         }
 
         /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
-            using (new EnterWriteLock(LockerObject))
+            using (new EnterWriteLock(LockObject))
                 base.RemoveItem(index);
         }
 
         /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
-            using (new EnterWriteLock(LockerObject))
+            using (new EnterWriteLock(LockObject))
                 base.SetItem(index, item);
         }
 
         /// <inheritdoc />
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(LockerObject))
+            using (new EnterReadLock(LockObject))
                 base.OnPropertyChanged(e);
         }
 
         /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(LockerObject))
+            using (new EnterReadLock(LockObject))
                 base.OnCollectionChanged(e);
         }
 
@@ -263,9 +239,9 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockerObject.IsReadLockHeld || LockerObject.IsUpgradeableReadLockHeld || LockerObject.IsUpgradeableReadLockHeld)
+                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
                     Utils.SafeSleep();
-                LockerObject.Dispose();
+                LockObject.Dispose();
             }
         }
 

@@ -24,20 +24,27 @@ namespace Chummer
 {
     public sealed class LockingDictionaryEnumerator : IDictionaryEnumerator, IDisposable
     {
-        private readonly IHasLockingDictionaryEnumerators _objMyParent;
+        private readonly IHasLockObject _objMyParent;
 
-        private readonly IDictionaryEnumerator _objInternalEnumerator;
+        private IDictionaryEnumerator _objInternalEnumerator;
 
-        public LockingDictionaryEnumerator(IDictionaryEnumerator objInternalEnumerator, IHasLockingDictionaryEnumerators objMyParent)
+        public LockingDictionaryEnumerator(IHasLockObject objMyParent)
         {
-            _objInternalEnumerator = objInternalEnumerator;
             _objMyParent = objMyParent;
+            _objMyParent.LockObject.EnterReadLock();
+        }
+
+        public void SetEnumerator(IDictionaryEnumerator objInternalEnumerator)
+        {
+            if (_objInternalEnumerator != null)
+                throw new ArgumentException(null, nameof(objInternalEnumerator));
+            _objInternalEnumerator = objInternalEnumerator;
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            _objMyParent.FreeLockingDictionaryEnumerator(this);
+            _objMyParent.LockObject.ExitReadLock();
         }
 
         /// <inheritdoc />

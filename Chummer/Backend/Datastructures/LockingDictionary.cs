@@ -34,11 +34,10 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockingEnumerators<KeyValuePair<TKey, TValue>>, IHasLockingDictionaryEnumerators
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject
     {
         private readonly Dictionary<TKey, TValue> _dicData;
-        private readonly ReaderWriterLockSlim
-            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public LockingDictionary()
         {
@@ -64,79 +63,35 @@ namespace Chummer
         {
             _dicData = new Dictionary<TKey, TValue>(comparer);
         }
-
-        private readonly object _objActiveEnumeratorsLock = new object();
-        private readonly List<LockingEnumerator<KeyValuePair<TKey, TValue>>> _lstActiveEnumerators = new List<LockingEnumerator<KeyValuePair<TKey, TValue>>>();
-        private readonly List<LockingDictionaryEnumerator> _lstActiveDictionaryEnumerators = new List<LockingDictionaryEnumerator>();
-
-        public LockingEnumerator<KeyValuePair<TKey, TValue>> CreateLockingEnumerator()
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                bool blnDoLock = _lstActiveEnumerators.Count == 0 && _lstActiveDictionaryEnumerators.Count == 0;
-                LockingEnumerator<KeyValuePair<TKey, TValue>>  objReturn = new LockingEnumerator<KeyValuePair<TKey, TValue>>(_dicData.GetEnumerator(), this);
-                _lstActiveEnumerators.Add(objReturn);
-                if (blnDoLock)
-                    _rwlThis.EnterReadLock();
-                return objReturn;
-            }
-        }
-
-        public void FreeLockingEnumerator(LockingEnumerator<KeyValuePair<TKey, TValue>> objToFree)
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                _lstActiveEnumerators.Remove(objToFree);
-                if (_lstActiveEnumerators.Count == 0 && _lstActiveDictionaryEnumerators.Count == 0)
-                    _rwlThis.ExitReadLock();
-            }
-        }
-
+        
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            return CreateLockingEnumerator();
-        }
-
-        public LockingDictionaryEnumerator CreateLockingDictionaryEnumerator()
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                bool blnDoLock = _lstActiveEnumerators.Count == 0 && _lstActiveDictionaryEnumerators.Count == 0;
-                LockingDictionaryEnumerator objReturn = new LockingDictionaryEnumerator(((IDictionary)_dicData).GetEnumerator(), this);
-                _lstActiveDictionaryEnumerators.Add(objReturn);
-                if (blnDoLock)
-                    _rwlThis.EnterReadLock();
-                return objReturn;
-            }
-        }
-
-        public void FreeLockingDictionaryEnumerator(LockingDictionaryEnumerator objToFree)
-        {
-            lock (_objActiveEnumeratorsLock)
-            {
-                _lstActiveDictionaryEnumerators.Remove(objToFree);
-                if (_lstActiveEnumerators.Count == 0 && _lstActiveDictionaryEnumerators.Count == 0)
-                    _rwlThis.ExitReadLock();
-            }
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = new LockingEnumerator<KeyValuePair<TKey, TValue>>(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return CreateLockingDictionaryEnumerator();
+            LockingDictionaryEnumerator objReturn = new LockingDictionaryEnumerator(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            return CreateLockingDictionaryEnumerator();
+            LockingDictionaryEnumerator objReturn = new LockingDictionaryEnumerator(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _dicData.Add(item.Key, item.Value);
         }
 
@@ -155,21 +110,21 @@ namespace Chummer
         /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
         public void Clear()
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _dicData.Clear();
         }
 
         /// <inheritdoc />
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _dicData.Contains(item);
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
@@ -182,7 +137,7 @@ namespace Chummer
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
@@ -195,7 +150,7 @@ namespace Chummer
         /// <inheritdoc />
         public KeyValuePair<TKey, TValue>[] ToArray()
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
             {
                 KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[_dicData.Count];
                 int i = 0;
@@ -212,7 +167,7 @@ namespace Chummer
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
                                                                            && _dicData.Remove(item.Key);
@@ -222,7 +177,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(TKey key)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 return _dicData.Remove(key);
         }
 
@@ -235,7 +190,7 @@ namespace Chummer
         public bool TryRemove(TKey key, out TValue value)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
             }
@@ -248,7 +203,7 @@ namespace Chummer
             TKey objKeyToTake = default;
             TValue objValue = default;
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (_dicData.Count > 0)
                 {
@@ -275,13 +230,13 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _dicData.Count;
             }
         }
 
         /// <inheritdoc />
-        public object SyncRoot => _rwlThis;
+        public object SyncRoot => LockObject;
 
         /// <inheritdoc />
         public bool IsSynchronized => true;
@@ -295,21 +250,21 @@ namespace Chummer
         /// <inheritdoc cref="IDictionary{TKey, TValue}.ContainsKey" />
         public bool ContainsKey(TKey key)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _dicData.ContainsKey(key);
         }
 
         /// <inheritdoc />
         public void Add(TKey key, TValue value)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
                 _dicData.Add(key, value);
         }
 
         public bool TryAdd(TKey key, TValue value)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (_dicData.ContainsKey(key))
                     return false;
@@ -335,7 +290,7 @@ namespace Chummer
                                   Func<TKey, TValue, TValue> updateValueFactory)
         {
             TValue objReturn;
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
@@ -360,7 +315,7 @@ namespace Chummer
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
         public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (new EnterWriteLock(LockObject))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
@@ -377,7 +332,7 @@ namespace Chummer
         /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
         public bool TryGetValue(TKey key, out TValue value)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (new EnterReadLock(LockObject))
                 return _dicData.TryGetValue(key, out value);
         }
 
@@ -387,16 +342,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _dicData[key];
             }
             set
             {
-                using (new EnterUpgradeableReadLock(_rwlThis))
+                using (new EnterUpgradeableReadLock(LockObject))
                 {
                     if (_dicData.TryGetValue(key, out TValue objValue) && objValue.Equals(value))
                         return;
-                    using (new EnterWriteLock(_rwlThis))
+                    using (new EnterWriteLock(LockObject))
                         _dicData[key] = value;
                 }
             }
@@ -414,7 +369,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                 {
                     // This construction makes sure we hold onto the lock until enumeration is done
                     foreach (TKey objKey in _dicData.Keys)
@@ -428,7 +383,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _dicData.Keys;
             }
         }
@@ -438,7 +393,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _dicData.Keys;
             }
         }
@@ -448,7 +403,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                 {
                     // This construction makes sure we hold onto the lock until enumeration is done
                     foreach (TValue objValue in _dicData.Values)
@@ -462,7 +417,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _dicData.Values;
             }
         }
@@ -472,7 +427,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (new EnterReadLock(LockObject))
                     return _dicData.Values;
             }
         }
@@ -481,9 +436,9 @@ namespace Chummer
         public void Dispose()
         {
             IsDisposed = true;
-            while (_rwlThis.IsReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld || _rwlThis.IsUpgradeableReadLockHeld)
+            while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
                 Utils.SafeSleep();
-            _rwlThis.Dispose();
+            LockObject.Dispose();
         }
 
         public bool IsDisposed { get; private set; }
