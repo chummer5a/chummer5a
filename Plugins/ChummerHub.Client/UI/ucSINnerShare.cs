@@ -161,7 +161,7 @@ namespace ChummerHub.Client.UI
                                 if (c == null)
                                 {
                                     c = new Character { FileName = MyCharacterCache.FilePath };
-                                    using (frmLoading frmLoadingForm = new frmLoading { CharacterFile = MyCharacterCache.FilePath })
+                                    using (LoadingBar frmLoadingForm = new LoadingBar { CharacterFile = MyCharacterCache.FilePath })
                                     {
                                         frmLoadingForm.Reset(36);
                                         frmLoadingForm.Show();

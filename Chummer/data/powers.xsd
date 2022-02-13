@@ -41,6 +41,7 @@
                     <xs:element minOccurs="0" name="extrapointcost" type="xs:decimal" />
                     <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element minOccurs="0" name="maxlevels" type="xs:unsignedByte" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
@@ -57,6 +58,7 @@
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="power" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />

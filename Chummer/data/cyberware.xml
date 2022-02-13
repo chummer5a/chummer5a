@@ -1038,6 +1038,7 @@
       <source>SR5</source>
       <page>455</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
           <name precedence="0">REA</name>
@@ -1045,6 +1046,7 @@
         </specificattribute>
       </bonus>
       <wirelesspairbonus mode="replace">
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="1">Rating</initiativepass>
         <specificattribute>
           <name precedence="1">REA</name>
@@ -1070,6 +1072,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1108,6 +1111,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1148,6 +1152,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1184,6 +1189,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1216,6 +1222,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1262,6 +1269,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1311,6 +1319,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1347,6 +1356,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1384,6 +1394,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1422,6 +1433,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1462,6 +1474,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <bonus>
@@ -1498,6 +1511,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1530,6 +1544,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1576,6 +1591,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1626,6 +1642,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1662,6 +1679,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -2950,6 +2968,7 @@
       <page>84</page>
       <!-- TODO: Allow user to deactivate the bonus/penalties -->
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire precedence="0">Rating * 2</skillwire>
@@ -3205,6 +3224,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3227,6 +3247,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3248,6 +3269,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3269,6 +3291,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3303,6 +3326,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3336,6 +3360,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3807,6 +3832,7 @@
       <page>88</page>
       <mountsto>ankle</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3834,6 +3860,7 @@
       <page>88</page>
       <mountsto>wrist</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3861,6 +3888,7 @@
       <page>88</page>
       <mountsto>ankle</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3888,6 +3916,7 @@
       <page>88</page>
       <mountsto>wrist</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3915,6 +3944,7 @@
       <page>88</page>
       <mountsto>elbow</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3957,6 +3987,7 @@
       <page>88</page>
       <mountsto>knee</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3999,6 +4030,7 @@
       <page>88</page>
       <mountsto>elbow</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4041,6 +4073,7 @@
       <page>88</page>
       <mountsto>knee</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4083,6 +4116,7 @@
       <page>88</page>
       <mountsto>shoulder</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4115,6 +4149,7 @@
       <page>88</page>
       <mountsto>hip</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4147,6 +4182,7 @@
       <page>88</page>
       <mountsto>shoulder</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4179,6 +4215,7 @@
       <page>88</page>
       <mountsto>hip</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4537,6 +4574,7 @@
       <source>CF</source>
       <page>88</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4648,6 +4686,7 @@
       <source>CF</source>
       <page>87</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4679,6 +4718,7 @@
       <source>CF</source>
       <page>87</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4711,6 +4751,7 @@
       <page>87</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4749,6 +4790,7 @@
       <page>87</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7114,6 +7156,7 @@
       <source>HS</source>
       <page>182</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire>Rating * 2</skillwire>
@@ -7443,6 +7486,7 @@
       <source>2050</source>
       <page>203</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7475,6 +7519,7 @@
       <source>2050</source>
       <page>203</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7507,6 +7552,7 @@
       <source>2050</source>
       <page>203</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7539,6 +7585,7 @@
       <source>2050</source>
       <page>203</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7823,6 +7870,7 @@
       <source>2050</source>
       <page>203</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
           <name precedence="0">REA</name>

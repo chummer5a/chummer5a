@@ -735,6 +735,9 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Off-Road Suspension</name>
+      </mods>
       <seats>6</seats>
     </vehicle>
     <vehicle>
@@ -2324,13 +2327,13 @@
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
+          <flexibility>Flexible</flexibility>
           <size>Standard</size>
           <visibility>Internal</visibility>
         </weaponmount>
@@ -3419,6 +3422,10 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
+      <mods>
+        <mod name="Speakers" />
+        <mod name="Strobes" />
+      </mods>
     </vehicle>
     <vehicle>
       <id>8b1aff5b-a9a3-4fdc-a10c-de56d88e4b91</id>
@@ -4213,8 +4220,8 @@
           <rating>4</rating>
           <maxrating>4</maxrating>
           <gears>
-            <gear rating="6">Geiger Counter</gear>
-            <gear rating="8">Olfactory Sensor</gear>
+            <gear rating="6" consumecapacity="True">Geiger Counter</gear>
+            <gear rating="8" consumecapacity="True">Olfactory Scanner</gear>
           </gears>
         </gear>
       </gears>
@@ -4241,7 +4248,7 @@
           <rating>2</rating>
           <maxrating>3</maxrating>
         </gear>
-        <gear rating="6">Radio Signal Scanner</gear>
+        <gear rating="6" consumecapacity="True">Radio Signal Scanner</gear>
       </gears>
       <modslots>1</modslots>
     </vehicle>
@@ -4345,14 +4352,14 @@
           <rating>8</rating>
           <maxrating>8</maxrating>
           <gears>
-            <gear rating="8">Atmosphere Sensor</gear>
-            <gear rating="8">Camera</gear>
-            <gear rating="8">Geiger Counter</gear>
-            <gear rating="8">MAD Scanner</gear>
-            <gear rating="8">Olfactory Sensor</gear>
-            <gear rating="8">Radio Signal Scanner</gear>
-            <gear rating="8">Ultrasound</gear>
-            <gear rating="8">X-Ray</gear>
+            <gear rating="8" consumecapacity="True">Atmosphere Sensor</gear>
+            <gear rating="8" consumecapacity="True">Camera</gear>
+            <gear rating="8" consumecapacity="True">Geiger Counter</gear>
+            <gear rating="8" consumecapacity="True">MAD Scanner</gear>
+            <gear rating="8" consumecapacity="True">Olfactory Scanner</gear>
+            <gear rating="8" consumecapacity="True">Radio Signal Scanner</gear>
+            <gear rating="8" consumecapacity="True">Ultrasound</gear>
+            <gear rating="8" consumecapacity="True">X-Ray</gear>
           </gears>
         </gear>
       </gears>
@@ -10081,7 +10088,7 @@
       <source>KK</source>
       <accel>2</accel>
       <armor>5</armor>
-      <avail>-</avail>
+      <avail>0</avail>
       <body>4</body>
       <category>Cars</category>
       <cost>10000</cost>
@@ -10692,6 +10699,30 @@
         </vehicledetails>
       </required>
     </mod>
+    <mod>
+      <id>62C611C4-F081-43AD-8EFD-02FFDFE3014C</id>
+      <name>Speakers</name>
+      <page>128</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
+    <mod>
+      <id>C8B47C0A-A13C-448E-B360-EB73C6BC8DCB</id>
+      <name>Strobes</name>
+      <page>128</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
     <!-- End Region -->
     <!-- Region Powertrain-->
     <mod>
@@ -11203,11 +11234,11 @@
       <name>Ram Plate</name>
       <page>161</page>
       <source>R5</source>
-      <avail>0</avail>
+      <avail>6R</avail>
       <category>Weapons</category>
-      <cost>0</cost>
+      <cost>Body * 250</cost>
       <rating>0</rating>
-      <slots>0</slots>
+      <slots>1</slots>
     </mod>
     <mod>
       <id>d7191615-cc21-40b2-94f2-b562f00f2c30</id>

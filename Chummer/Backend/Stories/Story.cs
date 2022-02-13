@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Globalization;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace Chummer
     {
         private readonly LockingDictionary<string, StoryModule> _dicPersistentModules = new LockingDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
-        private readonly ObservableCollection<StoryModule> _lstStoryModules = new ObservableCollection<StoryModule>();
+        private readonly EnhancedObservableCollection<StoryModule> _lstStoryModules = new EnhancedObservableCollection<StoryModule>();
         private bool _blnNeedToRegeneratePersistents = true;
 
         // Note: as long as this is only used to generate language-agnostic information, it can be cached once when the object is created and left that way.
@@ -80,13 +79,13 @@ namespace Chummer
             }
         }
 
-        public ObservableCollection<StoryModule> Modules => _lstStoryModules;
+        public EnhancedObservableCollection<StoryModule> Modules => _lstStoryModules;
 
         public LockingDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
 
         public StoryModule GeneratePersistentModule(string strFunction)
         {
-            XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + "]");
+            XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + ']');
             if (xmlStoryPool != null)
             {
                 XPathNodeIterator xmlPossibleStoryList = xmlStoryPool.SelectAndCacheExpression("story");
@@ -100,8 +99,8 @@ namespace Chummer
                         if (!int.TryParse(xmlStory.SelectSingleNodeAndCacheExpression("weight")?.Value ?? "1", out int intWeight))
                             intWeight = 1;
                         intTotalWeight += intWeight;
-                        if (dicStoriesListWithWeights.ContainsKey(strStoryId))
-                            dicStoriesListWithWeights[strStoryId] += intWeight;
+                        if (dicStoriesListWithWeights.TryGetValue(strStoryId, out int intExistingWeight))
+                            dicStoriesListWithWeights[strStoryId] = intExistingWeight + intWeight;
                         else
                             dicStoriesListWithWeights.Add(strStoryId, intWeight);
                     }
@@ -121,7 +120,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.SelectSingleNode("stories/story[id = " + strSelectedId.CleanXPath() + "]");
+                    XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.SelectSingleNode("stories/story[id = " + strSelectedId.CleanXPath() + ']');
                     if (xmlNewPersistentNode != null)
                     {
                         StoryModule objPersistentStoryModule = new StoryModule(_objCharacter)

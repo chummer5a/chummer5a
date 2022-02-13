@@ -125,7 +125,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <actiondicepool category='Matrix' />
       </bonus>
       <source>SR5</source>
       <page>72</page>
@@ -1535,7 +1535,7 @@
       <karma>-25</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/* | /chummer/storybuilder/macros/megadoublea/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -1571,7 +1571,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/* | /chummer/storybuilder/macros/megadoublea/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -2483,12 +2483,10 @@
       <name>Conjuring Geas</name>
       <karma>-5</karma>
       <category>Negative</category>
+      <careeronly />
       <bonus>
         <astralreputation>-1</astralreputation>
       </bonus>
-      <required>
-        <careeronly />
-      </required>
       <source>SG</source>
       <page>199</page>
     </quality>
@@ -3689,7 +3687,6 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
-
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3701,7 +3698,6 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
-
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -7103,7 +7099,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7113,7 +7109,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7237,7 +7233,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7385,7 +7381,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7395,7 +7391,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7541,7 +7537,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7551,7 +7547,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7680,7 +7676,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7690,7 +7686,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7824,7 +7820,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7834,7 +7830,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7968,7 +7964,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7978,7 +7974,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8112,7 +8108,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8122,7 +8118,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8256,7 +8252,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8266,7 +8262,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8400,7 +8396,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8410,7 +8406,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8544,7 +8540,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8672,7 +8668,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8682,7 +8678,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8839,7 +8835,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8849,7 +8845,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8994,7 +8990,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9004,7 +9000,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9153,7 +9149,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9163,7 +9159,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9325,7 +9321,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9335,7 +9331,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9503,7 +9499,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9659,7 +9655,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9809,7 +9805,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9957,7 +9953,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -10108,7 +10104,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -10267,7 +10263,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -10277,7 +10273,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -12456,7 +12452,7 @@
         <naturalweapon>
           <name>Dracoform Claws</name>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -12522,7 +12518,7 @@
         <naturalweapon>
           <name>Dracoform Horns</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -12584,7 +12580,7 @@
         <naturalweapon>
           <name>Dracoform Tail</name>
           <reach>1</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -12654,7 +12650,7 @@
         <naturalweapon>
           <name>Dracoform Fangs</name>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -16900,7 +16896,7 @@
         <naturalweapon>
           <name>Crystal Jaw</name>
           <reach>-1</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-4</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -17024,7 +17020,7 @@
         <naturalweapon>
           <name>Crystalline Blade</name>
           <reach>1</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -17056,7 +17052,7 @@
         <naturalweapon>
           <name>Crystal Claw</name>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -17149,7 +17145,7 @@
         <naturalweapon>
           <name>Crystalline Shards</name>
           <reach>0</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>4</ap>
           <useskill>Throwing Weapons</useskill>
           <accuracy>Physical</accuracy>
@@ -18004,7 +18000,7 @@
       <karma>-3</karma>
       <category>Negative</category>
       <bonus>
-        <selectskill limittoskill="Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software"></selectskill>
+        <selectskill limittoskill="Compiling, Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software"></selectskill>
       </bonus>
       <source>KC</source>
       <page>78</page>
@@ -18646,6 +18642,26 @@
       <doublecareer>False</doublecareer>
       <bonus>
         <cyberadeptdaemon />
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Fault Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Companion Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Fault Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Companion Sprite</condition>
+        </specificskill>
       </bonus>
       <forbidden>
         <oneof>
@@ -18671,7 +18687,42 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <!-- These are the CFs that affect devices -->
+        <fadingvalue specific="Diffusion of [Matrix Attribute]">-2</fadingvalue>
+        <fadingvalue specific="Infusion of [Matrix Attribute]">-2</fadingvalue>
+        <fadingvalue specific="Puppeteer">-2</fadingvalue>
+        <fadingvalue specific="Resonance Channel">-2</fadingvalue>
+        <fadingvalue specific="Resonance Spike">-2</fadingvalue>
+        <fadingvalue specific="Resonance Veil">-2</fadingvalue>
+        <fadingvalue specific="FAQ">-2</fadingvalue>
+        <fadingvalue specific="Redundancy">-2</fadingvalue>
+        <fadingvalue specific="LOTO">-2</fadingvalue>
+        <fadingvalue specific="Causal Nexus">-2</fadingvalue>
+        <fadingvalue specific="Dissonance Spike">-2</fadingvalue>
+        <fadingvalue specific="Bootleg Program">-2</fadingvalue>
+        <fadingvalue specific="Search History">-2</fadingvalue>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Machine Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Generalist Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Machine Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Generalist Sprite</condition>
+        </specificskill>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Cyberadept</quality>
@@ -18697,6 +18748,7 @@
       <category>Positive</category>
       <doublecareer>False</doublecareer>
       <bonus>
+        <fadingvalue>-2</fadingvalue>
         <addecho>Sourcerer Daemon</addecho>
       </bonus>
       <forbidden>
@@ -18834,6 +18886,11 @@
           <category>ID/Credsticks</category>
           <rating>3</rating>
           <children>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
             <child>
               <name>Fake License</name>
               <category>ID/Credsticks</category>

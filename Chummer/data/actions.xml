@@ -1369,6 +1369,7 @@
 	<action>
       <id>850f7d77-2d0f-4cd4-9aa5-2e53d0e33688</id>
       <name>WIL Attack Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{WIL} + {Icon: Attack}</dice>
@@ -1379,6 +1380,7 @@
 	<action>
       <id>e6c4c7ab-4b2c-42d5-ab15-01ac36cc8924</id>
       <name>WIL Sleaze Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{WIL} + {Icon: Sleaze}</dice>
@@ -1389,6 +1391,7 @@
 	<action>
       <id>5589bd26-3208-444e-89ca-8e43fd3c7e8b</id>
       <name>WIL Data Processing Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{WIL} + {Icon: Data Processing}</dice>
@@ -1399,6 +1402,7 @@
 	<action>
       <id>6c0a4170-5b32-4fa3-9062-dc7be4766222</id>
       <name>WIL Firewall Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{WIL} + {Icon: Firewall}</dice>
@@ -1409,6 +1413,7 @@
 	<action>
       <id>78da4b96-821a-41fe-ab55-cd2366c0be18</id>
       <name>INT Firewall Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{INT} + {Icon: Firewall}</dice>
@@ -1419,6 +1424,7 @@
 	<action>
       <id>dbc4bb5a-9060-4f59-8d20-7fc72df953cb</id>
       <name>INT Data Processing Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{INT} + {Icon: Data Processing}</dice>
@@ -1429,6 +1435,7 @@
 	<action>
       <id>32d32458-7363-406e-810d-5bf9fb9c3d5a</id>
       <name>LOG Firewall Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{LOG} + {Icon: Firewall}</dice>
@@ -1439,6 +1446,7 @@
 	<action>
       <id>80b3feea-389a-4562-8a52-9bbb1fade997</id>
       <name>LOG Sleaze Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{LOG} + {Icon: Sleaze}</dice>
@@ -1449,6 +1457,7 @@
 	<action>
       <id>b35a4b5c-23e5-4abe-80ee-afeb2743c20a</id>
       <name>LOG Attack Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{LOG} + {Icon: Attack}</dice>
@@ -1459,6 +1468,7 @@
 	<action>
       <id>64e2aed3-d36f-4ff6-85a5-5d5208e6f7e5</id>
       <name>LOG Data Processing Defense</name>
+      <category>Matrix</category>
       <type>No</type>
 	  <test>
 		<dice>{LOG} + {Icon: Sleaze}</dice>
@@ -1469,6 +1479,7 @@
 	<action>
       <id>73cd3043-94ac-4406-85ce-59b951d0d945</id>
       <name>Brute Force (1 Mark)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Cybercombat} v. {Action: WIL Firewall Defense}</dice>
@@ -1481,6 +1492,7 @@
 	<action>
       <id>8d023ffc-1683-4885-81ef-ca22253a3d87</id>
       <name>Brute Force (2 Marks)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Cybercombat} - 4 v. {Action: WIL Firewall Defense}</dice>
@@ -1493,6 +1505,7 @@
 	<action>
       <id>61e231da-0ae3-42b1-ba2f-18c3fba41fab</id>
       <name>Brute Force (3 Marks)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Cybercombat} - 10 v. {Action: WIL Firewall Defense}</dice>
@@ -1505,6 +1518,7 @@
 	<action>
       <id>c33b205b-1249-45b8-8ee5-da74e4311362</id>
       <name>Change Icon</name>
+      <category>Matrix</category>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
@@ -1517,6 +1531,7 @@
 	<action>
       <id>d6defa46-1c97-4bfd-b9f1-b1c1b2753a90</id>
       <name>Check Overwatch Score</name>
+      <category>Matrix</category>
       <type>Simple</type>
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. 6</dice>
@@ -1529,6 +1544,7 @@
 	<action>
       <id>21eda7c5-3ca5-4aba-b5e5-b05be4afe6c9</id>
       <name>Control Device (Free)</name>
+      <category>Matrix</category>
       <type>Free</type>
 	  <test>
 		<dice>Variable</dice>
@@ -1541,6 +1557,7 @@
 	<action>
       <id>f3ddb8ab-01ca-4048-9570-42e00670eef8</id>
       <name>Control Device (Simple)</name>
+      <category>Matrix</category>
       <type>Simple</type>
 	  <test>
 		<dice>Variable</dice>
@@ -1553,6 +1570,7 @@
 	<action>
       <id>fa59f7ea-347c-4a25-8932-f801fa79d601</id>
       <name>Control Device (Complex)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>Variable</dice>
@@ -1565,6 +1583,7 @@
 	<action>
       <id>87600eea-0c78-4474-9e6c-c36e625133ba</id>
       <name>Crack File</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Hacking} v. 2 * {Icon: Rating}</dice>
@@ -1577,6 +1596,7 @@
 	<action>
       <id>7d865af9-1073-49e6-98b2-f67f6a9cb9d3</id>
       <name>Crash Program</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Cybercombat} v. {Action: INT Firewall Defense}</dice>
@@ -1589,6 +1609,7 @@
 	<action>
       <id>dc5156e3-b289-438e-b4d1-c24047357637</id>
       <name>Data Spike</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Cybercombat} v. {Action: INT Firewall Defense}</dice>
@@ -1601,6 +1622,7 @@
 	<action>
       <id>570a3ce1-a8ea-4623-985e-b4bdcc79d2eb</id>
       <name>Disarm Data Bomb</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <specname>Data Bombs</specname>
 	  <test>
@@ -1614,6 +1636,7 @@
 	<action>
       <id>8b879c36-e355-4cf4-99cb-6afcd132d573</id>
       <name>Edit File</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} v. {Action: INT Firewall Defense}</dice>
@@ -1626,6 +1649,7 @@
 	<action>
       <id>ed359afd-db47-47d1-9e4b-8d13e0396005</id>
       <name>Enter/Exit Host</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>None</dice>
@@ -1638,6 +1662,7 @@
 	<action>
       <id>1dae5310-0d39-4464-b3a4-1b3483d0c4eb</id>
       <name>Erase Mark (1 Mark)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} v. {Action: WIL Firewall Defense}</dice>
@@ -1650,6 +1675,7 @@
 	<action>
       <id>ea4bcda5-b8ea-4659-92f0-b369beab4bf1</id>
       <name>Erase Mark (2 Marks)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} - 4 v. {Action: WIL Firewall Defense}</dice>
@@ -1662,6 +1688,7 @@
 	<action>
       <id>c544e946-3dd9-44bb-9546-cc44e24b9616</id>
       <name>Erase Mark (3 Marks)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} - 10 v. {Action: WIL Firewall Defense}</dice>
@@ -1674,6 +1701,7 @@
 	<action>
       <id>27c29e97-7708-42c7-a98c-be52e41fa5ed</id>
       <name>Erase Matrix Signature</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{RES} + {Computer} v. 2 * {Icon: Rating}</dice>
@@ -1686,6 +1714,7 @@
 	<action>
       <id>d8bfadcb-ea9b-4ae2-a1ae-2c84f33f9e3a</id>
       <name>Format Device</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} v. {Action: WIL Firewall Defense}</dice>
@@ -1698,6 +1727,7 @@
 	<action>
       <id>6657bd85-e651-448f-8936-2d9dc17883a3</id>
       <name>Full Matrix Defense</name>
+      <category>Matrix</category>
       <type>Interrupt</type>
 	  <initiativecost>10</initiativecost>
 	  <boosts>
@@ -1758,6 +1788,7 @@
 	<action>
       <id>24c3dfb5-ce2b-4a48-8563-be0b26005795</id>
       <name>Grid Hop</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>None</dice>
@@ -1770,6 +1801,7 @@
 	<action>
       <id>119aa0ed-314c-45cb-917e-17cf0644c7df</id>
       <name>Hack on the Fly (1 Mark)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Hacking} v. {Action: INT Firewall Defense}</dice>
@@ -1782,6 +1814,7 @@
 	<action>
       <id>4c3a4635-c1a6-43e0-99f1-0caa6f3a11fa</id>
       <name>Hack on the Fly (2 Marks)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Hacking} - 4 v. {Action: INT Firewall Defense}</dice>
@@ -1794,6 +1827,7 @@
 	<action>
       <id>0c174aa0-7413-4984-b829-a28b06c6fab4</id>
       <name>Hack on the Fly (3 Mark)</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Hacking} - 10 v. {Action: INT Firewall Defense}</dice>
@@ -1806,6 +1840,7 @@
 	<action>
       <id>90a409d1-00d9-4285-8827-c8bea66d6f87</id>
       <name>Hide</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Electronic Warfare} v. {Action: INT Data Processing Defense}</dice>
@@ -1818,6 +1853,7 @@
 	<action>
       <id>4cd14397-ae0f-48db-8339-f2abb90e9ded</id>
       <name>Invite Mark</name>
+      <category>Matrix</category>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
@@ -1830,6 +1866,7 @@
 	<action>
       <id>1aa9df40-ade8-4e07-8877-e4147ea33fea</id>
       <name>Jack Out</name>
+      <category>Matrix</category>
       <type>Simple</type>
 	  <test>
 		<dice>{WIL} + {Hardware} v. {Action: LOG Attack Defense}</dice>
@@ -1842,6 +1879,7 @@
 	<action>
       <id>0af091d7-006d-4532-9980-a8a4b4fd9087</id>
       <name>Jam Signals</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Electronic Warfare}</dice>
@@ -1854,6 +1892,7 @@
 	<action>
       <id>a9a4a59a-babf-4dc3-b570-d52582091a8f</id>
       <name>Jump into Rigged Device</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. {Action: WIL Firewall Defense}</dice>
@@ -1866,6 +1905,7 @@
 	<action>
       <id>ff5a636f-041d-4b9c-ba1c-4d9902cb21e5</id>
       <name>Matrix Perception</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Computer} v. {Action: LOG Sleaze Defense}</dice>
@@ -1878,6 +1918,7 @@
 	<action>
       <id>3015d73c-e98c-480b-a561-0bed57a3da7e</id>
       <name>Matrix Search</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Computer}</dice>
@@ -1890,6 +1931,7 @@
 	<action>
       <id>1989269b-df4c-446f-9087-9145a06e9ef6</id>
       <name>Reboot Device</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Computer} v. {Action: WIL Firewall Defense}</dice>
@@ -1902,6 +1944,7 @@
 	<action>
       <id>db185ca6-7e1b-49f5-bb76-1c57c3c91572</id>
       <name>Send Message</name>
+      <category>Matrix</category>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
@@ -1914,6 +1957,7 @@
 	<action>
       <id>c930626c-cb53-43d4-af60-0992c5744caa</id>
       <name>Set Data Bomb</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{LOG} + {Software} v. 2 * {Icon: Rating}</dice>
@@ -1926,6 +1970,7 @@
 	<action>
       <id>d50f95c8-c6b3-4312-991c-5f9b52818f77</id>
       <name>Snoop</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Electronic Warfare} v. {Action: LOG Firewall Defense}</dice>
@@ -1938,6 +1983,7 @@
 	<action>
       <id>e11c1e7b-a6a4-4d8d-a11c-4ca9720a701d</id>
       <name>Spoof Command</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Hacking} v. {Action: LOG Firewall Defense}</dice>
@@ -1950,6 +1996,7 @@
 	<action>
       <id>f3915443-a98d-4ca0-8e94-1063fc2ba4ca</id>
       <name>Switch Interface Mode</name>
+      <category>Matrix</category>
       <type>Simple</type>
 	  <test>
 		<dice>None</dice>
@@ -1962,6 +2009,7 @@
 	<action>
       <id>6b4fb263-b355-46dc-a106-088f0c7e5f3c</id>
       <name>Trace Icon</name>
+      <category>Matrix</category>
       <type>Complex</type>
 	  <test>
 		<dice>{INT} + {Computer} v. {Action: WIL Sleaze Defense}</dice>

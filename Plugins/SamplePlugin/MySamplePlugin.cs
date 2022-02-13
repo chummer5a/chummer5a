@@ -20,7 +20,7 @@ namespace SamplePlugin
             return "Sample Plugin";
         }
 
-        public void CustomInitialize(frmChummerMain mainControl)
+        public void CustomInitialize(ChummerMainForm mainControl)
         {
             try
             {
@@ -36,9 +36,19 @@ namespace SamplePlugin
             }
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                // Dispose of any members in need of disposal here
+            }
+        }
+
+        /// <inheritdoc />
         public void Dispose()
         {
-            return;
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         public async Task<bool> DoCharacterList_DragDrop(object sender, System.Windows.Forms.DragEventArgs dragEventArgs, System.Windows.Forms.TreeView treCharacterList)
@@ -47,7 +57,7 @@ namespace SamplePlugin
             return true;
         }
 
-        public async Task<ICollection<System.Windows.Forms.TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
+        public async Task<ICollection<System.Windows.Forms.TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate)
         {
             //here you can add nodes to the character roster.
             return null;
@@ -56,7 +66,7 @@ namespace SamplePlugin
         public IEnumerable<System.Windows.Forms.ToolStripMenuItem> GetMenuItems(System.Windows.Forms.ToolStripMenuItem menu)
         {
             //here you could add menu items to the chummer menu
-            return null;
+            yield break;
         }
 
         public System.Windows.Forms.UserControl GetOptionsControl()
@@ -105,17 +115,17 @@ namespace SamplePlugin
             return null;
         }
 
-        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCareer input)
+        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(CharacterCareer input)
         {
             //here you can add (or remove!) tabs from frmCareer
             //as well as manipulate every single tab
-            return null;
+            yield break;
         }
 
-        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCreate input)
+        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(CharacterCreate input)
         {
             //the same goes for the frmCreate
-            return null;
+            yield break;
         }
 
         public void LoadFileElement(Character input, string fileElement)
@@ -144,7 +154,6 @@ namespace SamplePlugin
             //In case you want to make some special initialization if you are called in a unit test, this is the place
             if (isUnitTest)
                 Console.WriteLine("MySamplePlugin is in a Unit Test!");
-            return;
         }
 
         public Microsoft.ApplicationInsights.Channel.ITelemetry SetTelemetryInitialize(Microsoft.ApplicationInsights.Channel.ITelemetry telemetry)

@@ -53,11 +53,11 @@ namespace ChummerHub
                 if (!e.Exception.Message.Contains("Non-static method requires a target."))
                 {
                     Console.WriteLine(msg);
-                    //System.Diagnostics.Trace.TraceError(msg, e.Exception);
+                    System.Diagnostics.Trace.TraceError(msg, e.Exception);
                     System.Diagnostics.Debug.WriteLine(msg);
-                    var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                    ExceptionTelemetry et = new ExceptionTelemetry(e.Exception);
-                    tc.TrackException(et);
+                    //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
+                    //ExceptionTelemetry et = new ExceptionTelemetry(e.Exception);
+                    //tc.TrackException(et);
                 }
                 else
                 {

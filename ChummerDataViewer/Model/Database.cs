@@ -130,7 +130,7 @@ namespace ChummerDataViewer.Model
 
                 using (SQLiteDataReader reader = _getKey.ExecuteReader())
                 {
-                    while (reader.Read())
+                    if (reader.Read())
                     {
                         return reader["value"].ToString();
                     }
@@ -343,6 +343,7 @@ namespace ChummerDataViewer.Model
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         #endregion IDisposable Support

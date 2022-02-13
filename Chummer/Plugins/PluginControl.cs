@@ -38,19 +38,22 @@ namespace Chummer.Plugins
     public interface IPlugin : IDisposable
     {
         //only very rudimentary initialization should take place here. Make it QUICK.
-        void CustomInitialize(frmChummerMain mainControl);
+        void CustomInitialize(ChummerMainForm mainControl);
 
-        IEnumerable<TabPage> GetTabPages(frmCareer input);
+        IEnumerable<TabPage> GetTabPages(CharacterCareer input);
 
-        IEnumerable<TabPage> GetTabPages(frmCreate input);
+        IEnumerable<TabPage> GetTabPages(CharacterCreate input);
 
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
+        [CLSCompliant(false)]
+#pragma warning disable CS3010 // CLS-compliant interfaces must have only CLS-compliant members
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
+#pragma warning restore CS3010 // CLS-compliant interfaces must have only CLS-compliant members
 
         bool ProcessCommandLine(string parameter);
 
-        Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
+        Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate);
 
         UserControl GetOptionsControl();
 
@@ -232,13 +235,13 @@ namespace Chummer.Plugins
                 string neon = Path.Combine(path, "NeonJungleLC");
                 if (Directory.Exists(neon))
                     Directory.Delete(neon, true);
-                var plugindirectories = Directory.GetDirectories(path);
+                string[] plugindirectories = Directory.GetDirectories(path);
                 if (plugindirectories.Length == 0)
                 {
                     throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
                 }
 
-                foreach (var plugindir in plugindirectories)
+                foreach (string plugindir in plugindirectories)
                 {
                     Log.Trace("Searching in " + plugindir + " for plugin.txt or dlls containing the interface.");
                     //search for a text file that tells me what dll to parse
@@ -283,15 +286,26 @@ namespace Chummer.Plugins
 
                 //Fill the imports of this object
                 StartWatch();
-                _container.ComposeParts(this);
+                try
+                {
+                    _container.ComposeParts(this);
+                }
+                catch(ReflectionTypeLoadException e)
+                {
+                    Log.Error(e, "Plugins (at least not all of them) could not be loaded. Detailed exception follow as warnings.");
+                    foreach(var except in e.LoaderExceptions)
+                    {
+                        Log.Warn(except, except.Message);
+                    }
+                }
 
                 Log.Info("Plugins found: " + MyPlugins.Count);
                 if (MyPlugins.Count == 0)
                 {
-                    throw new ArgumentException("No plugins found in " + path + ".");
+                    throw new ArgumentException("No plugins found in " + path + '.');
                 }
                 Log.Info("Plugins active: " + MyActivePlugins.Count);
-                foreach (var plugin in MyActivePlugins)
+                foreach (IPlugin plugin in MyActivePlugins)
                 {
                     try
                     {
@@ -333,7 +347,7 @@ namespace Chummer.Plugins
         {
             get
             {
-                List<IPlugin> result = new List<IPlugin>();
+                List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
                 if (!GlobalSettings.PluginsEnabled)
                     return result;
                 foreach (IPlugin plugin in MyPlugins)
@@ -387,26 +401,33 @@ namespace Chummer.Plugins
             }
             catch (ReflectionTypeLoadException e)
             {
-                StringBuilder msg = new StringBuilder("Exception loading plugins: " + Environment.NewLine);
-                foreach (var exp in e.LoaderExceptions)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdMessage))
                 {
-                    msg.AppendLine(exp.Message);
+                    sbdMessage.AppendLine("Exception loading plugins: ");
+                    foreach (Exception exp in e.LoaderExceptions)
+                    {
+                        sbdMessage.AppendLine(exp.Message);
+                    }
+                    sbdMessage.AppendLine();
+                    sbdMessage.Append(e);
+                    Log.Warn(e, sbdMessage.ToString());
                 }
-                msg.AppendLine();
-                msg.Append(e);
-                Log.Warn(e, msg.ToString());
             }
             catch (CompositionException e)
             {
-                StringBuilder msg = new StringBuilder("Exception loading plugins: " + Environment.NewLine);
-                foreach (var exp in e.Errors)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdMessage))
                 {
-                    msg.AppendLine(exp.Exception.ToString());
+                    sbdMessage.AppendLine("Exception loading plugins: ");
+                    foreach (CompositionError exp in e.Errors)
+                    {
+                        sbdMessage.AppendLine(exp.Exception.ToString());
+                    }
+                    sbdMessage.AppendLine();
+                    sbdMessage.Append(e);
+                    Log.Error(e, sbdMessage.ToString());
                 }
-                msg.AppendLine();
-                msg.Append(e);
-
-                Log.Error(e, msg.ToString());
             }
             catch (ApplicationException)
             {
@@ -421,14 +442,14 @@ namespace Chummer.Plugins
             }
         }
 
-        internal void CallPlugins(frmCareer frmCareer, CustomActivity parentActivity)
+        internal void CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
                     parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    var pages = plugin.GetTabPages(frmCareer);
+                    IEnumerable<TabPage> pages = plugin.GetTabPages(frmCareer);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -442,13 +463,13 @@ namespace Chummer.Plugins
             }
         }
 
-        internal void CallPlugins(frmCreate frmCreate, CustomActivity parentActivity)
+        internal void CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity)
         {
-            foreach (var plugin in MyActivePlugins)
+            foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    var pages = plugin.GetTabPages(frmCreate);
+                    IEnumerable<TabPage> pages = plugin.GetTabPages(frmCreate);
                     if (pages == null)
                         continue;
                     foreach (TabPage page in pages)
@@ -464,12 +485,12 @@ namespace Chummer.Plugins
 
         internal void CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity)
         {
-            foreach (var plugin in MyActivePlugins)
+            foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
                     parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
                 {
-                    var menuitems = plugin.GetMenuItems(menu);
+                    IEnumerable<ToolStripMenuItem> menuitems = plugin.GetMenuItems(menu);
                     if (menuitems == null)
                         continue;
                     foreach (ToolStripMenuItem plugInMenu in menuitems)

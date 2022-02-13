@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Chummer</RootNamespace>
     <AssemblyName>Chummer5</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -123,35 +123,35 @@
     <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.barcodes, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.barcodes.dll</HintPath>
+    <Reference Include="itext.barcodes, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.barcodes.dll</HintPath>
     </Reference>
-    <Reference Include="itext.commons, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.commons.7.2.0\lib\net461\itext.commons.dll</HintPath>
+    <Reference Include="itext.commons, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.commons.7.2.1\lib\net461\itext.commons.dll</HintPath>
     </Reference>
-    <Reference Include="itext.forms, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.forms.dll</HintPath>
+    <Reference Include="itext.forms, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.forms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.io, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.io.dll</HintPath>
+    <Reference Include="itext.io, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.io.dll</HintPath>
     </Reference>
-    <Reference Include="itext.kernel, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.kernel.dll</HintPath>
+    <Reference Include="itext.kernel, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.kernel.dll</HintPath>
     </Reference>
-    <Reference Include="itext.layout, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.layout.dll</HintPath>
+    <Reference Include="itext.layout, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.layout.dll</HintPath>
     </Reference>
-    <Reference Include="itext.pdfa, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.pdfa.dll</HintPath>
+    <Reference Include="itext.pdfa, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.pdfa.dll</HintPath>
     </Reference>
-    <Reference Include="itext.sign, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.sign.dll</HintPath>
+    <Reference Include="itext.sign, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.sign.dll</HintPath>
     </Reference>
-    <Reference Include="itext.styledxmlparser, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.styledxmlparser.dll</HintPath>
+    <Reference Include="itext.styledxmlparser, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.styledxmlparser.dll</HintPath>
     </Reference>
-    <Reference Include="itext.svg, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.svg.dll</HintPath>
+    <Reference Include="itext.svg, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.svg.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -162,14 +162,14 @@
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.19.0.227, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.19.0\lib\net452\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.20.0.103, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\lib\net452\Microsoft.AI.PerfCounterCollector.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.19.0.227, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.2.19.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.20.0.103, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.20.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights.NLogTarget, Version=2.19.0.227, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.19.0\lib\net452\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights.NLogTarget, Version=2.20.0.103, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.20.0\lib\net452\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -187,6 +187,9 @@
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Extensions.ObjectPool, Version=6.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.ObjectPool.6.0.1\lib\net461\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Extensions.Options, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Options.6.0.0\lib\net461\Microsoft.Extensions.Options.dll</HintPath>
     </Reference>
@@ -197,7 +200,7 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.12\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.13\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -296,11 +299,17 @@
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
+    <Compile Include="Backend\Datastructures\EnhancedObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
+    <Compile Include="Backend\Datastructures\ConcurrentStringHashSet.cs" />
     <Compile Include="Backend\Datastructures\KeyArray.cs" />
     <Compile Include="Backend\Datastructures\ListViewItemWithValue.cs" />
+    <Compile Include="Backend\Datastructures\LockingDictionaryEnumerator.cs" />
+    <Compile Include="Backend\Datastructures\LockingEnumerator.cs" />
     <Compile Include="Backend\Datastructures\LockingHashSet.cs" />
+    <Compile Include="Backend\Datastructures\LockingOrderedSet.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
+    <Compile Include="Backend\Datastructures\PropertyDependencyGraph.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
@@ -316,31 +325,38 @@
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
-    <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
-    <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
-    <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Backend\Extensions\FloatExtensions.cs" />
-    <Compile Include="Backend\Extensions\IntegerExtensions.cs" />
-    <Compile Include="Backend\Extensions\ListExtensions.cs" />
-    <Compile Include="Backend\Extensions\ImageExtensions.cs" />
-    <Compile Include="Backend\Extensions\LinqExtensions.cs" />
-    <Compile Include="Backend\Extensions\MathExtensions.cs" />
-    <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
-    <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
-    <Compile Include="Backend\Extensions\RandomExtensions.cs" />
-    <Compile Include="Backend\Extensions\ReadOnlyDictionaryExtensions.cs" />
-    <Compile Include="Backend\Extensions\ReadOnlyListExtensions.cs" />
-    <Compile Include="Backend\Extensions\StringExtensions.cs" />
-    <Compile Include="Backend\Extensions\VersionExtensions.cs" />
-    <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
-    <Compile Include="Backend\Extensions\XmlDocumentExtensions.cs" />
-    <Compile Include="Backend\Extensions\XPathNavigatorExtensions.cs" />
+    <Compile Include="Backend\Interfaces\IHasCost.cs" />
+    <Compile Include="Backend\Interfaces\IHasXmlDataNode.cs" />
+    <Compile Include="Backend\Static\Extensions\BoolArrayExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\CollectionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\DecimalExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\DoubleExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\EnumeratorExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\FloatExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\IntegerExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ImageExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\LinqExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\MathExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ProcessExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\RandomExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ReadOnlyDictionaryExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\StringBuilderExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\StringExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\VersionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\WinFormsExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XmlDocumentExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
-    <Compile Include="Backend\Shared Methods\CharacterShared.cs" />
+    <Compile Include="Backend\Static\Managers\ImprovementManager.cs" />
+    <Compile Include="Forms\Character Forms\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
     <Compile Include="Backend\Debugging\CrashHandler.cs" />
@@ -358,11 +374,11 @@
     <Compile Include="Backend\Equipment\VehicleMod.cs" />
     <Compile Include="Backend\Equipment\Weapon.cs" />
     <Compile Include="Backend\Equipment\WeaponAccessory.cs" />
-    <Compile Include="Backend\Extensions\BindingListExtensions.cs" />
-    <Compile Include="Backend\Extensions\BitArrayExtensions.cs" />
-    <Compile Include="Backend\Extensions\EnumerableExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\BindingListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\BitArrayExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\EnumerableExtensions.cs" />
     <Compile Include="Backend\Debugging\PerformanceDebugUtils.cs" />
-    <Compile Include="Backend\Shared Methods\SelectionShared.cs" />
+    <Compile Include="Backend\Static\SelectionShared.cs" />
     <Compile Include="Backend\Powers\PowerSorters.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
@@ -377,7 +393,7 @@
     <Compile Include="Backend\Uniques\Art.cs" />
     <Compile Include="Backend\Uniques\CalendarWeek.cs" />
     <Compile Include="Backend\Uniques\ComplexForm.cs" />
-    <Compile Include="Backend\Uniques\Contact.cs" />
+    <Compile Include="Backend\Characters\Contact.cs" />
     <Compile Include="Backend\Uniques\CritterPower.cs" />
     <Compile Include="Backend\Uniques\Enhancement.cs" />
     <Compile Include="Backend\Uniques\Focus.cs" />
@@ -390,166 +406,165 @@
     <Compile Include="Backend\Uniques\Metamagic.cs" />
     <Compile Include="Backend\Uniques\Quality.cs" />
     <Compile Include="Backend\Uniques\Spell.cs" />
-    <Compile Include="Backend\Uniques\Spirit.cs" />
+    <Compile Include="Backend\Characters\Spirit.cs" />
     <Compile Include="Backend\Uniques\StackedFocus.cs" />
     <Compile Include="Backend\Uniques\SustainedObject.cs" />
     <Compile Include="Backend\Uniques\Tradition.cs" />
-    <Compile Include="Character Creation\frmSelectLifeModule.cs">
+    <Compile Include="Forms\Character Creation Forms\SelectLifeModule.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Character Creation\frmSelectLifeModule.Designer.cs">
-      <DependentUpon>frmSelectLifeModule.cs</DependentUpon>
+    <Compile Include="Forms\Character Creation Forms\SelectLifeModule.Designer.cs">
+      <DependentUpon>SelectLifeModule.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\AddImprovementCollection.cs">
-      <DependentUpon>clsImprovement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Classes\CharacterSettings.cs" />
-    <Compile Include="Classes\clsCustomDataDirectoryInfo.cs" />
-    <Compile Include="Classes\clsCommon.cs" />
-    <Compile Include="Classes\clsCrashReportData.cs" />
+    <Compile Include="Backend\Improvements\AddImprovementCollection.cs" />
+    <Compile Include="Backend\Characters\CharacterCache.cs" />
+    <Compile Include="Backend\Character Settings\CharacterSettings.cs" />
+    <Compile Include="Backend\Character Settings\CustomDataDirectoryInfo.cs" />
+    <Compile Include="Backend\Static\CommonFunctions.cs" />
+    <Compile Include="Backend\Helpers\CrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
-    <Compile Include="Classes\clsCharacter.cs" />
-    <Compile Include="Classes\clsHoverDisplayCoordinator.cs" />
-    <Compile Include="Classes\clsImprovement.cs" />
-    <Compile Include="Classes\clsExpenses.cs" />
-    <Compile Include="Classes\clsLanguageManager.cs" />
-    <Compile Include="Classes\clsListItems.cs" />
-    <Compile Include="Classes\clsLog.cs" />
-    <Compile Include="Classes\GlobalSettings.cs" />
-    <Compile Include="Classes\clsParameterAttribute.cs" />
-    <Compile Include="Classes\clsStoryBuilder.cs" />
-    <Compile Include="Classes\clsTimekeeper.cs" />
-    <Compile Include="Classes\clsUtils.cs" />
-    <Compile Include="Backend\Extensions\XmlNodeExtensions.cs" />
-    <Compile Include="Classes\clsXmlManager.cs" />
+    <Compile Include="Backend\Characters\Character.cs" />
+    <Compile Include="Backend\Helpers\HoverDisplayCoordinator.cs" />
+    <Compile Include="Backend\Improvements\Improvement.cs" />
+    <Compile Include="Backend\Uniques\Expenses.cs" />
+    <Compile Include="Backend\Static\Managers\LanguageManager.cs" />
+    <Compile Include="Backend\Datastructures\ListItem.cs" />
+    <Compile Include="Backend\Static\Log.cs" />
+    <Compile Include="Backend\Static\GlobalSettings.cs" />
+    <Compile Include="Backend\Helpers\ParameterAttribute.cs" />
+    <Compile Include="Backend\Stories\StoryBuilder.cs" />
+    <Compile Include="Backend\Helpers\Timekeeper.cs" />
+    <Compile Include="Backend\Static\Utils.cs" />
+    <Compile Include="Backend\Static\Extensions\XmlNodeExtensions.cs" />
+    <Compile Include="Backend\Static\Managers\XmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
-    <Compile Include="Classes\ColorManager.cs" />
-    <Compile Include="Classes\XslManager.cs" />
-    <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.cs">
+    <Compile Include="Backend\Static\Managers\ColorManager.cs" />
+    <Compile Include="Backend\Static\Managers\XslManager.cs" />
+    <Compile Include="Backend\Helpers\CollectionPooledObjectPolicy.cs" />
+    <Compile Include="Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.Designer.cs">
       <DependentUpon>DpiFriendlyCheckBoxDisguisedAsButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\DpiFriendlyImagedButton.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyImagedButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\DpiFriendlyImagedButton.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyImagedButton.Designer.cs">
       <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\EnterReadLock.cs" />
-    <Compile Include="helpers\EnterUpgradeableReadLock.cs" />
-    <Compile Include="helpers\EnterWriteLock.cs" />
-    <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
+    <Compile Include="Backend\Helpers\EnterReadLock.cs" />
+    <Compile Include="Backend\Helpers\EnterUpgradeableReadLock.cs" />
+    <Compile Include="Backend\Helpers\EnterWriteLock.cs" />
+    <Compile Include="Backend\Helpers\FetchSafelyFromPool.cs" />
+    <Compile Include="Backend\Interfaces\ICanBlackMarketDiscount.cs" />
+    <Compile Include="Backend\Interfaces\ITranslatable.cs" />
+    <Compile Include="Backend\Static\NativeMethods.cs" />
+    <Compile Include="Backend\Static\Managers\SettingsManager.cs" />
+    <Compile Include="Backend\Improvements\RemoveImprovementCollection.cs" />
+    <Compile Include="Backend\Helpers\TooltipFactory.cs" />
     <Compile Include="Interfaces\IHasAvailability.cs" />
-    <Compile Include="Interfaces\ITranslatable.cs" />
-    <Compile Include="Classes\NativeMethods.cs" />
-    <Compile Include="Classes\SettingsManager.cs" />
-    <Compile Include="Classes\RemoveImprovementCollection.cs">
-      <DependentUpon>clsImprovement.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Classes\TooltipFactory.cs" />
-    <Compile Include="Controls\SustainedObjectControl.cs">
+    <Compile Include="Controls\Shared\SustainedObjectControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SustainedObjectControl.Designer.cs">
+    <Compile Include="Controls\Shared\SustainedObjectControl.Designer.cs">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCharacterRoster.cs">
+    <Compile Include="Forms\Utility Forms\CharacterRoster.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCharacterRoster.Designer.cs">
-      <DependentUpon>frmCharacterRoster.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\CharacterRoster.Designer.cs">
+      <DependentUpon>CharacterRoster.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCreateWeaponMount.cs">
+    <Compile Include="Forms\Creation Forms\CreateWeaponMount.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreateWeaponMount.Designer.cs">
-      <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
+    <Compile Include="Forms\Creation Forms\CreateWeaponMount.Designer.cs">
+      <DependentUpon>CreateWeaponMount.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmLoading.cs">
+    <Compile Include="Forms\Utility Forms\LoadingBar.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmLoading.Designer.cs">
-      <DependentUpon>frmLoading.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\LoadingBar.Designer.cs">
+      <DependentUpon>LoadingBar.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCharacterSettings.cs">
+    <Compile Include="Forms\EditCharacterSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCharacterSettings.Designer.cs">
-      <DependentUpon>frmCharacterSettings.cs</DependentUpon>
+    <Compile Include="Forms\EditCharacterSettings.Designer.cs">
+      <DependentUpon>EditCharacterSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\Application Insights\CustomActivity.cs" />
-    <Compile Include="helpers\Application Insights\CustomTelemetryInitializer.cs" />
-    <Compile Include="helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
-    <Compile Include="helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
-    <Compile Include="helpers\Application Insights\UploadObjectAsMetric.cs" />
-    <Compile Include="helpers\BufferedTableLayoutPanel.cs">
+    <Compile Include="Backend\Helpers\Application Insights\CustomActivity.cs" />
+    <Compile Include="Backend\Helpers\Application Insights\CustomTelemetryInitializer.cs" />
+    <Compile Include="Backend\Helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
+    <Compile Include="Backend\Helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
+    <Compile Include="Backend\Helpers\Application Insights\UploadObjectAsMetric.cs" />
+    <Compile Include="Controls\Shared\Components\BufferedTableLayoutPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\BufferedTableLayoutPanel.Designer.cs">
+    <Compile Include="Controls\Shared\Components\BufferedTableLayoutPanel.Designer.cs">
       <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\CenterableMessageBox.cs" />
-    <Compile Include="helpers\ColorableCheckBox.cs">
+    <Compile Include="Backend\Helpers\CenterableMessageBox.cs" />
+    <Compile Include="Controls\Shared\Components\ColorableCheckBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\ColorableCheckBox.Designer.cs">
+    <Compile Include="Controls\Shared\Components\ColorableCheckBox.Designer.cs">
       <DependentUpon>ColorableCheckBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\CursorWait.cs" />
-    <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
-    <Compile Include="helpers\DiceRollerListViewItem.cs" />
-    <Compile Include="helpers\DpiFriendlyToolStripButton.cs">
+    <Compile Include="Backend\Helpers\CursorWait.cs" />
+    <Compile Include="Backend\Helpers\DataGridViewTextBoxColumnTranslated.cs" />
+    <Compile Include="Backend\Helpers\DiceRollerListViewItem.cs" />
+    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\DpiFriendlyToolStripButton.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripButton.Designer.cs">
       <DependentUpon>DpiFriendlyToolStripButton.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\DpiFriendlyToolStripMenuItem.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\DpiFriendlyToolStripMenuItem.Designer.cs">
+    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripMenuItem.Designer.cs">
       <DependentUpon>DpiFriendlyToolStripMenuItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="helpers\ElasticComboBox.cs">
+    <Compile Include="Controls\Shared\Components\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\ButtonWithToolTip.cs">
+    <Compile Include="Controls\Shared\Components\ButtonWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\FlagImageGetter.cs" />
-    <Compile Include="helpers\HubTagAttribute.cs" />
-    <Compile Include="helpers\LabelWithToolTip.cs">
+    <Compile Include="Backend\Helpers\FlagImageGetter.cs" />
+    <Compile Include="Backend\Helpers\HubTagAttribute.cs" />
+    <Compile Include="Controls\Shared\Components\LabelWithToolTip.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="helpers\Application Insights\LiveStreamProvider.cs" />
-    <Compile Include="helpers\NegateBinding.cs" />
-    <Compile Include="helpers\NumericUpDownEx.cs">
+    <Compile Include="Backend\Helpers\Application Insights\LiveStreamProvider.cs" />
+    <Compile Include="Backend\Helpers\NegateBinding.cs" />
+    <Compile Include="Controls\Shared\Components\NumericUpDownEx.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Interfaces\ICanPaste.cs" />
-    <Compile Include="Interfaces\ICanEquip.cs" />
-    <Compile Include="Interfaces\ICanRemove.cs" />
-    <Compile Include="Interfaces\ICanSort.cs" />
-    <Compile Include="Interfaces\IHasConditionMonitor.cs" />
-    <Compile Include="Interfaces\IHasCustomName.cs" />
-    <Compile Include="Interfaces\ICanSell.cs" />
-    <Compile Include="Interfaces\IHasChildren.cs" />
-    <Compile Include="Interfaces\IHasChildrenAndCost.cs" />
-    <Compile Include="Interfaces\IHasGear.cs" />
-    <Compile Include="Interfaces\IHasLocation.cs" />
-    <Compile Include="Interfaces\IHasMatrixAttributes.cs" />
-    <Compile Include="Interfaces\IHasMugshots.cs" />
-    <Compile Include="Interfaces\IHasInternalId.cs" />
-    <Compile Include="Interfaces\IHasName.cs" />
-    <Compile Include="Interfaces\IHasNotes.cs" />
-    <Compile Include="Interfaces\IHasStolenProperty.cs" />
-    <Compile Include="Interfaces\IHasRating.cs" />
-    <Compile Include="Interfaces\IHasSource.cs" />
-    <Compile Include="Interfaces\IHasWirelessBonus.cs" />
-    <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
+    <Compile Include="Backend\Interfaces\ICanPaste.cs" />
+    <Compile Include="Backend\Interfaces\ICanEquip.cs" />
+    <Compile Include="Backend\Interfaces\ICanRemove.cs" />
+    <Compile Include="Backend\Interfaces\ICanSort.cs" />
+    <Compile Include="Backend\Interfaces\IHasConditionMonitor.cs" />
+    <Compile Include="Backend\Interfaces\IHasCustomName.cs" />
+    <Compile Include="Backend\Interfaces\ICanSell.cs" />
+    <Compile Include="Backend\Interfaces\IHasChildren.cs" />
+    <Compile Include="Backend\Interfaces\IHasChildrenAndCost.cs" />
+    <Compile Include="Backend\Interfaces\IHasGear.cs" />
+    <Compile Include="Backend\Interfaces\IHasLocation.cs" />
+    <Compile Include="Backend\Interfaces\IHasMatrixAttributes.cs" />
+    <Compile Include="Backend\Interfaces\IHasMugshots.cs" />
+    <Compile Include="Backend\Interfaces\IHasInternalId.cs" />
+    <Compile Include="Backend\Interfaces\IHasName.cs" />
+    <Compile Include="Backend\Interfaces\IHasNotes.cs" />
+    <Compile Include="Backend\Interfaces\IHasStolenProperty.cs" />
+    <Compile Include="Backend\Interfaces\IHasRating.cs" />
+    <Compile Include="Backend\Interfaces\IHasSource.cs" />
+    <Compile Include="Backend\Interfaces\IHasWirelessBonus.cs" />
+    <Compile Include="Backend\Interfaces\INotifyMultiplePropertyChanged.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -560,66 +575,66 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Contributors.tt</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ConditionMonitorUserControl.cs">
+    <Compile Include="Controls\Dashboards\ConditionMonitorUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ConditionMonitorUserControl.Designer.cs">
+    <Compile Include="Controls\Dashboards\ConditionMonitorUserControl.Designer.cs">
       <DependentUpon>ConditionMonitorUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ContactControl.cs">
+    <Compile Include="Controls\Characters\ContactControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ContactControl.Designer.cs">
+    <Compile Include="Controls\Characters\ContactControl.Designer.cs">
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Content Include=".gitignore" />
-    <Compile Include="frmAddToken.cs">
+    <Compile Include="Forms\Dashboard Forms\AddToken.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmAddToken.Designer.cs">
-      <DependentUpon>frmAddToken.cs</DependentUpon>
+    <Compile Include="Forms\Dashboard Forms\AddToken.Designer.cs">
+      <DependentUpon>AddToken.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCareer.cs">
+    <Compile Include="Forms\Character Forms\CharacterCareer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCareer.Designer.cs">
-      <DependentUpon>frmCareer.cs</DependentUpon>
+    <Compile Include="Forms\Character Forms\CharacterCareer.Designer.cs">
+      <DependentUpon>CharacterCareer.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmAbout.cs">
+    <Compile Include="Forms\Utility Forms\About.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmAbout.Designer.cs">
-      <DependentUpon>frmAbout.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\About.Designer.cs">
+      <DependentUpon>About.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCreateCustomDrug.cs">
+    <Compile Include="Forms\Creation Forms\CreateCustomDrug.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreateCustomDrug.Designer.cs">
-      <DependentUpon>frmCreateCustomDrug.cs</DependentUpon>
+    <Compile Include="Forms\Creation Forms\CreateCustomDrug.Designer.cs">
+      <DependentUpon>CreateCustomDrug.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCreateCyberwareSuite.cs">
+    <Compile Include="Forms\Creation Forms\CreateCyberwareSuite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreateCyberwareSuite.Designer.cs">
-      <DependentUpon>frmCreateCyberwareSuite.cs</DependentUpon>
+    <Compile Include="Forms\Creation Forms\CreateCyberwareSuite.Designer.cs">
+      <DependentUpon>CreateCyberwareSuite.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCreateImprovement.cs">
+    <Compile Include="Forms\Creation Forms\CreateImprovement.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreateImprovement.Designer.cs">
-      <DependentUpon>frmCreateImprovement.cs</DependentUpon>
+    <Compile Include="Forms\Creation Forms\CreateImprovement.Designer.cs">
+      <DependentUpon>CreateImprovement.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCreatePACKSKit.cs">
+    <Compile Include="Forms\Creation Forms\CreatePACKSKit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreatePACKSKit.Designer.cs">
-      <DependentUpon>frmCreatePACKSKit.cs</DependentUpon>
+    <Compile Include="Forms\Creation Forms\CreatePACKSKit.Designer.cs">
+      <DependentUpon>CreatePACKSKit.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmCreateSpell.cs">
+    <Compile Include="Forms\Creation Forms\CreateSpell.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCreateSpell.Designer.cs">
-      <DependentUpon>frmCreateSpell.cs</DependentUpon>
+    <Compile Include="Forms\Creation Forms\CreateSpell.Designer.cs">
+      <DependentUpon>CreateSpell.cs</DependentUpon>
     </Compile>
     <None Include="customdata\manifest.xsd">
       <SubType>Designer</SubType>
@@ -635,40 +650,40 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="frmGMDashboard.cs">
+    <None Include="Forms\Dashboard Forms\GameMasterDashboard.cs">
       <SubType>Form</SubType>
     </None>
-    <None Include="frmGMDashboard.Designer.cs">
-      <DependentUpon>frmGMDashboard.cs</DependentUpon>
+    <None Include="Forms\Dashboard Forms\GameMasterDashboard.Designer.cs">
+      <DependentUpon>GameMasterDashboard.cs</DependentUpon>
     </None>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectDrug.cs">
+    <Compile Include="Forms\Selection Forms\SelectDrug.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectDrug.Designer.cs">
-      <DependentUpon>frmSelectDrug.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectDrug.Designer.cs">
+      <DependentUpon>SelectDrug.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectOptionalPower.cs">
+    <Compile Include="Forms\Selection Forms\SelectOptionalPower.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectOptionalPower.Designer.cs">
-      <DependentUpon>frmSelectOptionalPower.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectOptionalPower.Designer.cs">
+      <DependentUpon>SelectOptionalPower.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLifestyleAdvanced.cs">
+    <Compile Include="Forms\Selection Forms\SelectLifestyleAdvanced.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLifestyleAdvanced.Designer.cs">
-      <DependentUpon>frmSelectLifestyleAdvanced.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectLifestyleAdvanced.Designer.cs">
+      <DependentUpon>SelectLifestyleAdvanced.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLifestyleQuality.cs">
+    <Compile Include="Forms\Selection Forms\SelectLifestyleQuality.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLifestyleQuality.Designer.cs">
-      <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectLifestyleQuality.Designer.cs">
+      <DependentUpon>SelectLifestyleQuality.cs</DependentUpon>
     </Compile>
     <Compile Include="lang\language.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -677,52 +692,52 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="Selection Forms\frmSelectAIProgram.cs">
+    <Compile Include="Forms\Selection Forms\SelectAIProgram.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectAIProgram.Designer.cs">
-      <DependentUpon>frmSelectAIProgram.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectAIProgram.Designer.cs">
+      <DependentUpon>SelectAIProgram.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSkillSpec.cs">
+    <Compile Include="Forms\Selection Forms\SelectSkillSpec.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSkillSpec.Designer.cs">
-      <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectSkillSpec.Designer.cs">
+      <DependentUpon>SelectSkillSpec.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Attributes\AttributeControl.cs">
+    <Compile Include="Controls\Attributes\AttributeControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Attributes\AttributeControl.Designer.cs">
+    <Compile Include="Controls\Attributes\AttributeControl.Designer.cs">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Charts\ExpenseChart.cs">
+    <Compile Include="Controls\Charts\ExpenseChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Charts\ExpenseChart.Designer.cs">
+    <Compile Include="Controls\Charts\ExpenseChart.Designer.cs">
       <DependentUpon>ExpenseChart.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Editors\RtfEditor.cs">
+    <Compile Include="Controls\Editors\RtfEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Editors\RtfEditor.Designer.cs">
+    <Compile Include="Controls\Editors\RtfEditor.Designer.cs">
       <DependentUpon>RtfEditor.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Shared\Components\DicePoolControl.cs">
+    <Compile Include="Controls\Shared\DicePoolControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Shared\Components\DicePoolControl.Designer.cs">
+    <Compile Include="Controls\Shared\DicePoolControl.Designer.cs">
       <DependentUpon>DicePoolControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Chummy.cs">
+    <Compile Include="Forms\Chummy.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UI\Chummy.Designer.cs">
+    <Compile Include="Forms\Chummy.Designer.cs">
       <DependentUpon>Chummy.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Shared\LimitTabUserControl.cs">
+    <Compile Include="Controls\Shared\LimitTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Shared\LimitTabUserControl.Designer.cs">
+    <Compile Include="Controls\Shared\LimitTabUserControl.Designer.cs">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
     </Compile>
     <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\manifest.xml">
@@ -771,6 +786,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Delnar Skills Remake\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar%27s One Karma Qualities\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar%27s One Karma Qualities\custom_books.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar%27s One Karma Qualities\custom_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar%27s One Karma Qualities\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\manifest.xml">
@@ -852,6 +879,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\In Debt Does Not Contribute to BP\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Jack of All Trades Applies Karma Modifiers in Create Mode\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Jack of All Trades Applies Karma Modifiers in Create Mode\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Kill Code Sprite Optional Powers\amend_sprite_critters.xml">
@@ -1028,6 +1061,15 @@
     <Content Include="customdata\Remove Automatics as a Skill\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Only Allow Basic Metatypes at Character Creation\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Only Allow Basic Metatypes at Character Creation\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Only Allow Basic Metatypes at Character Creation\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Rigger 5 Weapon Mounts - Allow Sporting Rifles\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1040,10 +1082,8 @@
     <Content Include="customdata\Shadowrun Missions Rules\custom_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Shadowrun Missions Rules\custom_weapons.xml" />
     <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Shapeshifter Initiative Bonus\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Shadowrun Missions Neotokyo Rules\amend_gear.xml">
@@ -1074,6 +1114,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Stolen Gear Contributes to BP\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Sum-to-Ten Improved\amend_priorities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Sum-to-Ten Improved\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\amend_mentors.xml">
@@ -1121,819 +1167,819 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
+    <Compile Include="Controls\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Skills\KnowledgeSkillControl.Designer.cs">
+    <Compile Include="Controls\Skills\KnowledgeSkillControl.Designer.cs">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Skills\SkillControl2.cs">
+    <Compile Include="Controls\Skills\SkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Skills\SkillControl2.Designer.cs">
-      <DependentUpon>SkillControl2.cs</DependentUpon>
+    <Compile Include="Controls\Skills\SkillControl.Designer.cs">
+      <DependentUpon>SkillControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Skills\SkillGroupControl.cs">
+    <Compile Include="Controls\Skills\SkillGroupControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Skills\SkillGroupControl.Designer.cs">
+    <Compile Include="Controls\Skills\SkillGroupControl.Designer.cs">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Shared\BindingListDisplay.cs">
+    <Compile Include="Controls\Shared\BindingListDisplay.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Shared\BindingListDisplay.Designer.cs">
+    <Compile Include="Controls\Shared\BindingListDisplay.Designer.cs">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Powers\PowersTabUserControl.cs">
+    <Compile Include="Controls\Powers\PowersTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Powers\PowersTabUserControl.Designer.cs">
+    <Compile Include="Controls\Powers\PowersTabUserControl.Designer.cs">
       <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Skills\SkillsTabUserControl.cs">
+    <Compile Include="Controls\Skills\SkillsTabUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Skills\SkillsTabUserControl.Designer.cs">
+    <Compile Include="Controls\Skills\SkillsTabUserControl.Designer.cs">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Table\Alignment.cs" />
-    <Compile Include="UI\Table\ButtonTableCell.cs">
+    <Compile Include="Controls\Table\Alignment.cs" />
+    <Compile Include="Controls\Table\ButtonTableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Table\ButtonTableCell.Designer.cs">
+    <Compile Include="Controls\Table\ButtonTableCell.Designer.cs">
       <DependentUpon>ButtonTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Table\CheckBoxTableCell.cs">
+    <Compile Include="Controls\Table\CheckBoxTableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Table\CheckBoxTableCell.Designer.cs">
+    <Compile Include="Controls\Table\CheckBoxTableCell.Designer.cs">
       <DependentUpon>CheckBoxTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Table\HeaderCell.cs">
+    <Compile Include="Controls\Table\HeaderCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Table\HeaderCell.Designer.cs">
+    <Compile Include="Controls\Table\HeaderCell.Designer.cs">
       <DependentUpon>HeaderCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Table\SpinnerTableCell.cs">
+    <Compile Include="Controls\Table\SpinnerTableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Table\SpinnerTableCell.Designer.cs">
+    <Compile Include="Controls\Table\SpinnerTableCell.Designer.cs">
       <DependentUpon>SpinnerTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Table\TableCell.cs">
+    <Compile Include="Controls\Table\TableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Table\TableCell.Designer.cs">
+    <Compile Include="Controls\Table\TableCell.Designer.cs">
       <DependentUpon>TableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Table\TableColumn.cs" />
-    <Compile Include="UI\Table\TableColumnCollection.cs" />
-    <Compile Include="UI\Table\TableRow.cs">
+    <Compile Include="Controls\Table\TableColumn.cs" />
+    <Compile Include="Controls\Table\TableColumnCollection.cs" />
+    <Compile Include="Controls\Table\TableRow.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Table\TableRow.Designer.cs">
+    <Compile Include="Controls\Table\TableRow.Designer.cs">
       <DependentUpon>TableRow.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Table\TableView.cs">
+    <Compile Include="Controls\Table\TableView.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Table\TableView.Designer.cs">
+    <Compile Include="Controls\Table\TableView.Designer.cs">
       <DependentUpon>TableView.cs</DependentUpon>
     </Compile>
-    <Compile Include="UI\Table\TextTableCell.cs">
+    <Compile Include="Controls\Table\TextTableCell.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Table\TextTableCell.Designer.cs">
+    <Compile Include="Controls\Table\TextTableCell.Designer.cs">
       <DependentUpon>TextTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\frmDiceHits.cs">
+    <Compile Include="Forms\Selection Forms\SelectDiceHits.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Utilities\frmDiceHits.Designer.cs">
-      <DependentUpon>frmDiceHits.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectDiceHits.Designer.cs">
+      <DependentUpon>SelectDiceHits.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\frmDiceRoller.cs">
+    <Compile Include="Forms\Utility Forms\DiceRoller.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Utilities\frmDiceRoller.Designer.cs">
-      <DependentUpon>frmDiceRoller.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\DiceRoller.Designer.cs">
+      <DependentUpon>DiceRoller.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmExpense.cs">
+    <Compile Include="Forms\Creation Forms\CreateExpense.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmExpense.Designer.cs">
-      <DependentUpon>frmExpense.cs</DependentUpon>
+    <Compile Include="Forms\Creation Forms\CreateExpense.Designer.cs">
+      <DependentUpon>CreateExpense.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmExport.cs">
+    <Compile Include="Forms\Utility Forms\ExportCharacter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmExport.Designer.cs">
-      <DependentUpon>frmExport.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\ExportCharacter.Designer.cs">
+      <DependentUpon>ExportCharacter.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmHistory.cs">
+    <Compile Include="Forms\Utility Forms\VersionHistory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmHistory.Designer.cs">
-      <DependentUpon>frmHistory.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\VersionHistory.Designer.cs">
+      <DependentUpon>VersionHistory.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\frmHeroLabImporter.cs">
+    <Compile Include="Forms\Utility Forms\HeroLabImporter.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Utilities\frmHeroLabImporter.Designer.cs">
-      <DependentUpon>frmHeroLabImporter.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\HeroLabImporter.Designer.cs">
+      <DependentUpon>HeroLabImporter.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\frmInitiative.cs">
+    <Compile Include="Forms\Utility Forms\InitiativeTracker.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Utilities\frmInitiative.Designer.cs">
-      <DependentUpon>frmInitiative.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\InitiativeTracker.Designer.cs">
+      <DependentUpon>InitiativeTracker.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\frmInitRoller.cs">
+    <Compile Include="Forms\Utility Forms\InitiativeRoller.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Utilities\frmInitRoller.Designer.cs">
-      <DependentUpon>frmInitRoller.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\InitiativeRoller.Designer.cs">
+      <DependentUpon>InitiativeRoller.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmLifestyleNuyen.cs">
+    <Compile Include="Forms\Selection Forms\SelectLifestyleStartingNuyen.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmLifestyleNuyen.Designer.cs">
-      <DependentUpon>frmLifestyleNuyen.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectLifestyleStartingNuyen.Designer.cs">
+      <DependentUpon>SelectLifestyleStartingNuyen.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmNaturalWeapon.cs">
+    <Compile Include="Forms\Creation Forms\CreateNaturalWeapon.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmNaturalWeapon.Designer.cs">
-      <DependentUpon>frmNaturalWeapon.cs</DependentUpon>
+    <Compile Include="Forms\Creation Forms\CreateNaturalWeapon.Designer.cs">
+      <DependentUpon>CreateNaturalWeapon.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmNotes.cs">
+    <Compile Include="Forms\EditNotes.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmNotes.Designer.cs">
-      <DependentUpon>frmNotes.cs</DependentUpon>
+    <Compile Include="Forms\EditNotes.Designer.cs">
+      <DependentUpon>EditNotes.cs</DependentUpon>
     </Compile>
-    <None Include="frmPlayerDashboard.cs">
+    <None Include="Forms\Dashboard Forms\PlayerDashboard.cs">
       <SubType>Form</SubType>
     </None>
-    <None Include="frmPlayerDashboard.Designer.cs">
-      <DependentUpon>frmPlayerDashboard.cs</DependentUpon>
+    <None Include="Forms\Dashboard Forms\PlayerDashboard.Designer.cs">
+      <DependentUpon>PlayerDashboard.cs</DependentUpon>
     </None>
-    <Compile Include="frmPrintMultiple.cs">
+    <Compile Include="Forms\Utility Forms\PrintMultipleCharacters.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmPrintMultiple.Designer.cs">
-      <DependentUpon>frmPrintMultiple.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\PrintMultipleCharacters.Designer.cs">
+      <DependentUpon>PrintMultipleCharacters.cs</DependentUpon>
     </Compile>
-    <Compile Include="Character Creation\frmPriorityMetatype.cs">
+    <Compile Include="Forms\Character Creation Forms\SelectMetatypePriority.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Character Creation\frmPriorityMetatype.Designer.cs">
-      <DependentUpon>frmPriorityMetatype.cs</DependentUpon>
+    <Compile Include="Forms\Character Creation Forms\SelectMetatypePriority.Designer.cs">
+      <DependentUpon>SelectMetatypePriority.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmReload.cs">
+    <Compile Include="Forms\ReloadWeapon.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmReload.Designer.cs">
-      <DependentUpon>frmReload.cs</DependentUpon>
+    <Compile Include="Forms\ReloadWeapon.Designer.cs">
+      <DependentUpon>ReloadWeapon.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLifestyle.cs">
+    <Compile Include="Forms\Selection Forms\SelectLifestyle.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLifestyle.Designer.cs">
-      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectLifestyle.Designer.cs">
+      <DependentUpon>SelectLifestyle.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectArmorMod.cs">
+    <Compile Include="Forms\Selection Forms\SelectArmorMod.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectArmorMod.Designer.cs">
-      <DependentUpon>frmSelectArmorMod.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectArmorMod.Designer.cs">
+      <DependentUpon>SelectArmorMod.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectArt.cs">
+    <Compile Include="Forms\Selection Forms\SelectArt.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectArt.Designer.cs">
-      <DependentUpon>frmSelectArt.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectArt.Designer.cs">
+      <DependentUpon>SelectArt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectCalendarStart.cs">
+    <Compile Include="Forms\Selection Forms\SelectCalendarStart.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectCalendarStart.Designer.cs">
-      <DependentUpon>frmSelectCalendarStart.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectCalendarStart.Designer.cs">
+      <DependentUpon>SelectCalendarStart.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectContactConnection.cs">
+    <Compile Include="Forms\Selection Forms\SelectContactConnection.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectContactConnection.Designer.cs">
-      <DependentUpon>frmSelectContactConnection.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectContactConnection.Designer.cs">
+      <DependentUpon>SelectContactConnection.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectCritterPower.cs">
+    <Compile Include="Forms\Selection Forms\SelectCritterPower.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectCritterPower.Designer.cs">
-      <DependentUpon>frmSelectCritterPower.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectCritterPower.Designer.cs">
+      <DependentUpon>SelectCritterPower.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectCyberwareSuite.cs">
+    <Compile Include="Forms\Selection Forms\SelectCyberwareSuite.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectCyberwareSuite.Designer.cs">
-      <DependentUpon>frmSelectCyberwareSuite.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectCyberwareSuite.Designer.cs">
+      <DependentUpon>SelectCyberwareSuite.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectExoticSkill.cs">
+    <Compile Include="Forms\Selection Forms\SelectExoticSkill.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectExoticSkill.Designer.cs">
-      <DependentUpon>frmSelectExoticSkill.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectExoticSkill.Designer.cs">
+      <DependentUpon>SelectExoticSkill.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectGear.cs">
+    <Compile Include="Forms\Selection Forms\SelectGear.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectGear.Designer.cs">
-      <DependentUpon>frmSelectGear.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectGear.Designer.cs">
+      <DependentUpon>SelectGear.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectItem.cs">
+    <Compile Include="Forms\Selection Forms\SelectItem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectItem.Designer.cs">
-      <DependentUpon>frmSelectItem.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectItem.Designer.cs">
+      <DependentUpon>SelectItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLimit.cs">
+    <Compile Include="Forms\Selection Forms\SelectLimit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLimit.Designer.cs">
-      <DependentUpon>frmSelectLimit.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectLimit.Designer.cs">
+      <DependentUpon>SelectLimit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLimitModifier.cs">
+    <Compile Include="Forms\Selection Forms\SelectLimitModifier.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectLimitModifier.Designer.cs">
-      <DependentUpon>frmSelectLimitModifier.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectLimitModifier.Designer.cs">
+      <DependentUpon>SelectLimitModifier.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArt.cs">
+    <Compile Include="Forms\Selection Forms\SelectMartialArt.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArt.Designer.cs">
-      <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectMartialArt.Designer.cs">
+      <DependentUpon>SelectMartialArt.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.cs">
+    <Compile Include="Forms\Selection Forms\SelectMartialArtTechnique.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
-      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectMartialArtTechnique.Designer.cs">
+      <DependentUpon>SelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
-    <Compile Include="Selection Forms\frmSelectMentorSpirit.cs">
+    <Compile Include="Forms\Selection Forms\SelectMentorSpirit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMentorSpirit.Designer.cs">
-      <DependentUpon>frmSelectMentorSpirit.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectMentorSpirit.Designer.cs">
+      <DependentUpon>SelectMentorSpirit.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMetamagic.cs">
+    <Compile Include="Forms\Selection Forms\SelectMetamagic.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectMetamagic.Designer.cs">
-      <DependentUpon>frmSelectMetamagic.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectMetamagic.Designer.cs">
+      <DependentUpon>SelectMetamagic.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectNumber.cs">
+    <Compile Include="Forms\Selection Forms\SelectNumber.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectNumber.Designer.cs">
-      <DependentUpon>frmSelectNumber.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectNumber.Designer.cs">
+      <DependentUpon>SelectNumber.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectPACKSKit.cs">
+    <Compile Include="Forms\Selection Forms\SelectPACKSKit.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectPACKSKit.Designer.cs">
-      <DependentUpon>frmSelectPACKSKit.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectPACKSKit.Designer.cs">
+      <DependentUpon>SelectPACKSKit.cs</DependentUpon>
     </Compile>
-    <None Include="Selection Forms\frmSelectProgramOption.cs">
+    <None Include="Forms\Selection Forms\SelectProgramOption.cs">
       <SubType>Form</SubType>
     </None>
-    <None Include="Selection Forms\frmSelectProgramOption.Designer.cs">
-      <DependentUpon>frmSelectProgramOption.cs</DependentUpon>
+    <None Include="Forms\Selection Forms\SelectProgramOption.Designer.cs">
+      <DependentUpon>SelectProgramOption.cs</DependentUpon>
     </None>
-    <Compile Include="Selection Forms\frmSelectQuality.cs">
+    <Compile Include="Forms\Selection Forms\SelectQuality.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectQuality.Designer.cs">
-      <DependentUpon>frmSelectQuality.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectQuality.Designer.cs">
+      <DependentUpon>SelectQuality.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSetting.cs">
+    <Compile Include="Forms\Selection Forms\SelectSetting.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSetting.Designer.cs">
-      <DependentUpon>frmSelectSetting.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectSetting.Designer.cs">
+      <DependentUpon>SelectSetting.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSide.cs">
+    <Compile Include="Forms\Selection Forms\SelectSide.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSide.Designer.cs">
-      <DependentUpon>frmSelectSide.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectSide.Designer.cs">
+      <DependentUpon>SelectSide.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSkillCategory.cs">
+    <Compile Include="Forms\Selection Forms\SelectSkillCategory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSkillCategory.Designer.cs">
-      <DependentUpon>frmSelectSkillCategory.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectSkillCategory.Designer.cs">
+      <DependentUpon>SelectSkillCategory.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSpellCategory.cs">
+    <Compile Include="Forms\Selection Forms\SelectSpellCategory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSpellCategory.Designer.cs">
-      <DependentUpon>frmSelectSpellCategory.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectSpellCategory.Designer.cs">
+      <DependentUpon>SelectSpellCategory.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectVehicle.cs">
+    <Compile Include="Forms\Selection Forms\SelectVehicle.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectVehicle.Designer.cs">
-      <DependentUpon>frmSelectVehicle.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectVehicle.Designer.cs">
+      <DependentUpon>SelectVehicle.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectVehicleMod.cs">
+    <Compile Include="Forms\Selection Forms\SelectVehicleMod.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectVehicleMod.Designer.cs">
-      <DependentUpon>frmSelectVehicleMod.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectVehicleMod.Designer.cs">
+      <DependentUpon>SelectVehicleMod.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectWeapon.cs">
+    <Compile Include="Forms\Selection Forms\SelectWeapon.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectWeapon.Designer.cs">
-      <DependentUpon>frmSelectWeapon.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectWeapon.Designer.cs">
+      <DependentUpon>SelectWeapon.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSkillGroup.cs">
+    <Compile Include="Forms\Selection Forms\SelectSkillGroup.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSkillGroup.Designer.cs">
-      <DependentUpon>frmSelectSkillGroup.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectSkillGroup.Designer.cs">
+      <DependentUpon>SelectSkillGroup.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmGlobalSettings.cs">
+    <Compile Include="Forms\EditGlobalSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmGlobalSettings.Designer.cs">
-      <DependentUpon>frmGlobalSettings.cs</DependentUpon>
+    <Compile Include="Forms\EditGlobalSettings.Designer.cs">
+      <DependentUpon>EditGlobalSettings.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectArmor.cs">
+    <Compile Include="Forms\Selection Forms\SelectArmor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectArmor.Designer.cs">
-      <DependentUpon>frmSelectArmor.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectArmor.Designer.cs">
+      <DependentUpon>SelectArmor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Character Creation\frmSelectBuildMethod.cs">
+    <Compile Include="Forms\Character Creation Forms\SelectBuildMethod.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Character Creation\frmSelectBuildMethod.Designer.cs">
-      <DependentUpon>frmSelectBuildMethod.cs</DependentUpon>
+    <Compile Include="Forms\Character Creation Forms\SelectBuildMethod.Designer.cs">
+      <DependentUpon>SelectBuildMethod.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectCyberware.cs">
+    <Compile Include="Forms\Selection Forms\SelectCyberware.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectCyberware.Designer.cs">
-      <DependentUpon>frmSelectCyberware.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectCyberware.Designer.cs">
+      <DependentUpon>SelectCyberware.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectPower.cs">
+    <Compile Include="Forms\Selection Forms\SelectPower.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectPower.Designer.cs">
-      <DependentUpon>frmSelectPower.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectPower.Designer.cs">
+      <DependentUpon>SelectPower.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectComplexForm.cs">
+    <Compile Include="Forms\Selection Forms\SelectComplexForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectComplexForm.Designer.cs">
-      <DependentUpon>frmSelectComplexForm.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectComplexForm.Designer.cs">
+      <DependentUpon>SelectComplexForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSpell.cs">
+    <Compile Include="Forms\Selection Forms\SelectSpell.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSpell.Designer.cs">
-      <DependentUpon>frmSelectSpell.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectSpell.Designer.cs">
+      <DependentUpon>SelectSpell.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectText.cs">
+    <Compile Include="Forms\Selection Forms\SelectText.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectText.Designer.cs">
-      <DependentUpon>frmSelectText.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectText.Designer.cs">
+      <DependentUpon>SelectText.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmChummerMain.cs">
+    <Compile Include="Forms\ChummerMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmChummerMain.Designer.cs">
-      <DependentUpon>frmChummerMain.cs</DependentUpon>
+    <Compile Include="Forms\ChummerMainForm.Designer.cs">
+      <DependentUpon>ChummerMainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectWeaponAccessory.cs">
+    <Compile Include="Forms\Selection Forms\SelectWeaponAccessory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectWeaponAccessory.Designer.cs">
-      <DependentUpon>frmSelectWeaponAccessory.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectWeaponAccessory.Designer.cs">
+      <DependentUpon>SelectWeaponAccessory.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectWeaponCategory.cs">
+    <Compile Include="Forms\Selection Forms\SelectWeaponCategory.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectWeaponCategory.Designer.cs">
-      <DependentUpon>frmSelectWeaponCategory.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectWeaponCategory.Designer.cs">
+      <DependentUpon>SelectWeaponCategory.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmSellItem.cs">
+    <Compile Include="Forms\SellItem.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmSellItem.Designer.cs">
-      <DependentUpon>frmSellItem.cs</DependentUpon>
+    <Compile Include="Forms\SellItem.Designer.cs">
+      <DependentUpon>SellItem.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmTest.cs">
+    <Compile Include="Forms\Utility Forms\TestDataEntries.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmTest.Designer.cs">
-      <DependentUpon>frmTest.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\TestDataEntries.Designer.cs">
+      <DependentUpon>TestDataEntries.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\frmMasterIndex.cs">
+    <Compile Include="Forms\Utility Forms\MasterIndex.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Utilities\frmMasterIndex.Designer.cs">
-      <DependentUpon>frmMasterIndex.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\MasterIndex.Designer.cs">
+      <DependentUpon>MasterIndex.cs</DependentUpon>
     </Compile>
-    <Compile Include="Utilities\frmUpdate.cs">
+    <Compile Include="Forms\Utility Forms\ChummerUpdater.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Utilities\frmUpdate.Designer.cs">
-      <DependentUpon>frmUpdate.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\ChummerUpdater.Designer.cs">
+      <DependentUpon>ChummerUpdater.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmViewer.cs">
+    <Compile Include="Forms\Utility Forms\CharacterSheetViewer.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmViewer.Designer.cs">
-      <DependentUpon>frmViewer.cs</DependentUpon>
+    <Compile Include="Forms\Utility Forms\CharacterSheetViewer.Designer.cs">
+      <DependentUpon>CharacterSheetViewer.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\InitiativeUserControl.cs">
+    <Compile Include="Controls\Dashboards\InitiativeUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\InitiativeUserControl.Designer.cs">
+    <Compile Include="Controls\Dashboards\InitiativeUserControl.Designer.cs">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\PetControl.cs">
+    <Compile Include="Controls\Characters\PetControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\PetControl.Designer.cs">
+    <Compile Include="Controls\Characters\PetControl.Designer.cs">
       <DependentUpon>PetControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Character Creation\frmCreate.cs">
+    <Compile Include="Forms\Character Forms\CharacterCreate.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Character Creation\frmCreate.Designer.cs">
-      <DependentUpon>frmCreate.cs</DependentUpon>
+    <Compile Include="Forms\Character Forms\CharacterCreate.Designer.cs">
+      <DependentUpon>CharacterCreate.cs</DependentUpon>
     </Compile>
-    <Compile Include="Character Creation\frmKarmaMetatype.cs">
+    <Compile Include="Forms\Character Creation Forms\SelectMetatypeKarma.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Character Creation\frmKarmaMetatype.Designer.cs">
-      <DependentUpon>frmKarmaMetatype.cs</DependentUpon>
+    <Compile Include="Forms\Character Creation Forms\SelectMetatypeKarma.Designer.cs">
+      <DependentUpon>SelectMetatypeKarma.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectAttribute.cs">
+    <Compile Include="Forms\Selection Forms\SelectAttribute.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectAttribute.Designer.cs">
-      <DependentUpon>frmSelectAttribute.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectAttribute.Designer.cs">
+      <DependentUpon>SelectAttribute.cs</DependentUpon>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSkill.cs">
+    <Compile Include="Forms\Selection Forms\SelectSkill.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Selection Forms\frmSelectSkill.Designer.cs">
-      <DependentUpon>frmSelectSkill.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectSkill.Designer.cs">
+      <DependentUpon>SelectSkill.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controls\SpiritControl.cs">
+    <Compile Include="Controls\Characters\SpiritControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SpiritControl.Designer.cs">
+    <Compile Include="Controls\Characters\SpiritControl.Designer.cs">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="SplitButton.cs">
+    <Compile Include="Controls\Shared\Components\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <EmbeddedResource Include="Character Creation\frmSelectLifeModule.resx">
-      <DependentUpon>frmSelectLifeModule.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Character Creation Forms\SelectLifeModule.resx">
+      <DependentUpon>SelectLifeModule.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ConditionMonitorUserControl.resx">
+    <EmbeddedResource Include="Controls\Dashboards\ConditionMonitorUserControl.resx">
       <DependentUpon>ConditionMonitorUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ContactControl.resx">
+    <EmbeddedResource Include="Controls\Characters\ContactControl.resx">
       <DependentUpon>ContactControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SustainedObjectControl.resx">
+    <EmbeddedResource Include="Controls\Shared\SustainedObjectControl.resx">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCharacterRoster.resx">
-      <DependentUpon>frmCharacterRoster.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\CharacterRoster.resx">
+      <DependentUpon>CharacterRoster.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmAddToken.resx">
-      <DependentUpon>frmAddToken.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Dashboard Forms\AddToken.resx">
+      <DependentUpon>AddToken.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCareer.resx">
-      <DependentUpon>frmCareer.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Character Forms\CharacterCareer.resx">
+      <DependentUpon>CharacterCareer.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmAbout.resx">
-      <DependentUpon>frmAbout.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\About.resx">
+      <DependentUpon>About.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCreateCustomDrug.resx">
-      <DependentUpon>frmCreateCustomDrug.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Creation Forms\CreateCustomDrug.resx">
+      <DependentUpon>CreateCustomDrug.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCreateCyberwareSuite.resx">
-      <DependentUpon>frmCreateCyberwareSuite.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Creation Forms\CreateCyberwareSuite.resx">
+      <DependentUpon>CreateCyberwareSuite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCreateImprovement.resx">
-      <DependentUpon>frmCreateImprovement.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Creation Forms\CreateImprovement.resx">
+      <DependentUpon>CreateImprovement.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCreatePACKSKit.resx">
-      <DependentUpon>frmCreatePACKSKit.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Creation Forms\CreatePACKSKit.resx">
+      <DependentUpon>CreatePACKSKit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCreateSpell.resx">
-      <DependentUpon>frmCreateSpell.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Creation Forms\CreateSpell.resx">
+      <DependentUpon>CreateSpell.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCreateWeaponMount.resx">
-      <DependentUpon>frmCreateWeaponMount.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Creation Forms\CreateWeaponMount.resx">
+      <DependentUpon>CreateWeaponMount.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmGMDashboard.resx">
-      <DependentUpon>frmGMDashboard.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Dashboard Forms\GameMasterDashboard.resx">
+      <DependentUpon>GameMasterDashboard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmLoading.resx">
-      <DependentUpon>frmLoading.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\LoadingBar.resx">
+      <DependentUpon>LoadingBar.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmCharacterSettings.resx">
-      <DependentUpon>frmCharacterSettings.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\EditCharacterSettings.resx">
+      <DependentUpon>EditCharacterSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectDrug.resx">
-      <DependentUpon>frmSelectDrug.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectDrug.resx">
+      <DependentUpon>SelectDrug.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectOptionalPower.resx">
-      <DependentUpon>frmSelectOptionalPower.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectOptionalPower.resx">
+      <DependentUpon>SelectOptionalPower.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectLifestyleAdvanced.resx">
-      <DependentUpon>frmSelectLifestyleAdvanced.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectLifestyleAdvanced.resx">
+      <DependentUpon>SelectLifestyleAdvanced.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectLifestyleQuality.resx">
-      <DependentUpon>frmSelectLifestyleQuality.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectLifestyleQuality.resx">
+      <DependentUpon>SelectLifestyleQuality.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectAIProgram.resx">
-      <DependentUpon>frmSelectAIProgram.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectAIProgram.resx">
+      <DependentUpon>SelectAIProgram.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectSkillSpec.resx">
-      <DependentUpon>frmSelectSkillSpec.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectSkillSpec.resx">
+      <DependentUpon>SelectSkillSpec.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Attributes\AttributeControl.resx">
+    <EmbeddedResource Include="Controls\Attributes\AttributeControl.resx">
       <DependentUpon>AttributeControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Charts\ExpenseChart.resx">
+    <EmbeddedResource Include="Controls\Charts\ExpenseChart.resx">
       <DependentUpon>ExpenseChart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Chummy.resx">
+    <EmbeddedResource Include="Forms\Chummy.resx">
       <DependentUpon>Chummy.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Editors\RtfEditor.resx">
+    <EmbeddedResource Include="Controls\Editors\RtfEditor.resx">
       <DependentUpon>RtfEditor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Shared\Components\DicePoolControl.resx">
+    <EmbeddedResource Include="Controls\Shared\DicePoolControl.resx">
       <DependentUpon>DicePoolControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Shared\LimitTabUserControl.resx">
+    <EmbeddedResource Include="Controls\Shared\LimitTabUserControl.resx">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Skills\KnowledgeSkillControl.resx">
+    <EmbeddedResource Include="Controls\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Skills\SkillControl2.resx">
-      <DependentUpon>SkillControl2.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Skills\SkillControl.resx">
+      <DependentUpon>SkillControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Skills\SkillGroupControl.resx">
+    <EmbeddedResource Include="Controls\Skills\SkillGroupControl.resx">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Shared\BindingListDisplay.resx">
+    <EmbeddedResource Include="Controls\Shared\BindingListDisplay.resx">
       <DependentUpon>BindingListDisplay.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Powers\PowersTabUserControl.resx">
+    <EmbeddedResource Include="Controls\Powers\PowersTabUserControl.resx">
       <DependentUpon>PowersTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Skills\SkillsTabUserControl.resx">
+    <EmbeddedResource Include="Controls\Skills\SkillsTabUserControl.resx">
       <DependentUpon>SkillsTabUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Table\HeaderCell.resx">
+    <EmbeddedResource Include="Controls\Table\HeaderCell.resx">
       <DependentUpon>HeaderCell.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Table\TableRow.resx">
+    <EmbeddedResource Include="Controls\Table\TableRow.resx">
       <DependentUpon>TableRow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\frmDiceHits.resx">
-      <DependentUpon>frmDiceHits.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectDiceHits.resx">
+      <DependentUpon>SelectDiceHits.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\frmDiceRoller.resx">
-      <DependentUpon>frmDiceRoller.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\DiceRoller.resx">
+      <DependentUpon>DiceRoller.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmExpense.resx">
-      <DependentUpon>frmExpense.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Creation Forms\CreateExpense.resx">
+      <DependentUpon>CreateExpense.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmExport.resx">
-      <DependentUpon>frmExport.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\ExportCharacter.resx">
+      <DependentUpon>ExportCharacter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmHistory.resx">
-      <DependentUpon>frmHistory.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\VersionHistory.resx">
+      <DependentUpon>VersionHistory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\frmHeroLabImporter.resx">
-      <DependentUpon>frmHeroLabImporter.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\HeroLabImporter.resx">
+      <DependentUpon>HeroLabImporter.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\frmInitiative.resx">
-      <DependentUpon>frmInitiative.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\InitiativeTracker.resx">
+      <DependentUpon>InitiativeTracker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\frmInitRoller.resx">
-      <DependentUpon>frmInitRoller.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\InitiativeRoller.resx">
+      <DependentUpon>InitiativeRoller.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmLifestyleNuyen.resx">
-      <DependentUpon>frmLifestyleNuyen.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectLifestyleStartingNuyen.resx">
+      <DependentUpon>SelectLifestyleStartingNuyen.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmNaturalWeapon.resx">
-      <DependentUpon>frmNaturalWeapon.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Creation Forms\CreateNaturalWeapon.resx">
+      <DependentUpon>CreateNaturalWeapon.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmNotes.resx">
-      <DependentUpon>frmNotes.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\EditNotes.resx">
+      <DependentUpon>EditNotes.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmPlayerDashboard.resx">
-      <DependentUpon>frmPlayerDashboard.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Dashboard Forms\PlayerDashboard.resx">
+      <DependentUpon>PlayerDashboard.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmPrintMultiple.resx">
-      <DependentUpon>frmPrintMultiple.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\PrintMultipleCharacters.resx">
+      <DependentUpon>PrintMultipleCharacters.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Character Creation\frmPriorityMetatype.resx">
-      <DependentUpon>frmPriorityMetatype.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Character Creation Forms\SelectMetatypePriority.resx">
+      <DependentUpon>SelectMetatypePriority.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmReload.resx">
-      <DependentUpon>frmReload.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ReloadWeapon.resx">
+      <DependentUpon>ReloadWeapon.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectLifestyle.resx">
-      <DependentUpon>frmSelectLifestyle.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectLifestyle.resx">
+      <DependentUpon>SelectLifestyle.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectArmorMod.resx">
-      <DependentUpon>frmSelectArmorMod.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectArmorMod.resx">
+      <DependentUpon>SelectArmorMod.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectArt.resx">
-      <DependentUpon>frmSelectArt.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectArt.resx">
+      <DependentUpon>SelectArt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectCalendarStart.resx">
-      <DependentUpon>frmSelectCalendarStart.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectCalendarStart.resx">
+      <DependentUpon>SelectCalendarStart.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectContactConnection.resx">
-      <DependentUpon>frmSelectContactConnection.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectContactConnection.resx">
+      <DependentUpon>SelectContactConnection.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectCritterPower.resx">
-      <DependentUpon>frmSelectCritterPower.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectCritterPower.resx">
+      <DependentUpon>SelectCritterPower.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectCyberwareSuite.resx">
-      <DependentUpon>frmSelectCyberwareSuite.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectCyberwareSuite.resx">
+      <DependentUpon>SelectCyberwareSuite.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectExoticSkill.resx">
-      <DependentUpon>frmSelectExoticSkill.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectExoticSkill.resx">
+      <DependentUpon>SelectExoticSkill.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectGear.resx">
-      <DependentUpon>frmSelectGear.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectGear.resx">
+      <DependentUpon>SelectGear.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectItem.resx">
-      <DependentUpon>frmSelectItem.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectItem.resx">
+      <DependentUpon>SelectItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectLimit.resx">
-      <DependentUpon>frmSelectLimit.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectLimit.resx">
+      <DependentUpon>SelectLimit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectLimitModifier.resx">
-      <DependentUpon>frmSelectLimitModifier.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectLimitModifier.resx">
+      <DependentUpon>SelectLimitModifier.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMartialArt.resx">
-      <DependentUpon>frmSelectMartialArt.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectMartialArt.resx">
+      <DependentUpon>SelectMartialArt.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMartialArtTechnique.resx">
-      <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectMartialArtTechnique.resx">
+      <DependentUpon>SelectMartialArtTechnique.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMentorSpirit.resx">
-      <DependentUpon>frmSelectMentorSpirit.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectMentorSpirit.resx">
+      <DependentUpon>SelectMentorSpirit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectMetamagic.resx">
-      <DependentUpon>frmSelectMetamagic.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectMetamagic.resx">
+      <DependentUpon>SelectMetamagic.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectNumber.resx">
-      <DependentUpon>frmSelectNumber.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectNumber.resx">
+      <DependentUpon>SelectNumber.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectPACKSKit.resx">
-      <DependentUpon>frmSelectPACKSKit.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectPACKSKit.resx">
+      <DependentUpon>SelectPACKSKit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectProgramOption.resx">
-      <DependentUpon>frmSelectProgramOption.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectProgramOption.resx">
+      <DependentUpon>SelectProgramOption.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectQuality.resx">
-      <DependentUpon>frmSelectQuality.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectQuality.resx">
+      <DependentUpon>SelectQuality.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectSetting.resx">
-      <DependentUpon>frmSelectSetting.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectSetting.resx">
+      <DependentUpon>SelectSetting.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectSide.resx">
-      <DependentUpon>frmSelectSide.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectSide.resx">
+      <DependentUpon>SelectSide.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectSkillCategory.resx">
-      <DependentUpon>frmSelectSkillCategory.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectSkillCategory.resx">
+      <DependentUpon>SelectSkillCategory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectSpellCategory.resx">
-      <DependentUpon>frmSelectSpellCategory.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectSpellCategory.resx">
+      <DependentUpon>SelectSpellCategory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectVehicle.resx">
-      <DependentUpon>frmSelectVehicle.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectVehicle.resx">
+      <DependentUpon>SelectVehicle.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectVehicleMod.resx">
-      <DependentUpon>frmSelectVehicleMod.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectVehicleMod.resx">
+      <DependentUpon>SelectVehicleMod.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectWeapon.resx">
-      <DependentUpon>frmSelectWeapon.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectWeapon.resx">
+      <DependentUpon>SelectWeapon.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectSkillGroup.resx">
-      <DependentUpon>frmSelectSkillGroup.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectSkillGroup.resx">
+      <DependentUpon>SelectSkillGroup.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmGlobalSettings.resx">
-      <DependentUpon>frmGlobalSettings.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\EditGlobalSettings.resx">
+      <DependentUpon>EditGlobalSettings.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectArmor.resx">
-      <DependentUpon>frmSelectArmor.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectArmor.resx">
+      <DependentUpon>SelectArmor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Character Creation\frmSelectBuildMethod.resx">
-      <DependentUpon>frmSelectBuildMethod.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Character Creation Forms\SelectBuildMethod.resx">
+      <DependentUpon>SelectBuildMethod.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectCyberware.resx">
-      <DependentUpon>frmSelectCyberware.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectCyberware.resx">
+      <DependentUpon>SelectCyberware.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectPower.resx">
-      <DependentUpon>frmSelectPower.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectPower.resx">
+      <DependentUpon>SelectPower.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectComplexForm.resx">
-      <DependentUpon>frmSelectComplexForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectComplexForm.resx">
+      <DependentUpon>SelectComplexForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectSpell.resx">
-      <DependentUpon>frmSelectSpell.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectSpell.resx">
+      <DependentUpon>SelectSpell.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectText.resx">
-      <DependentUpon>frmSelectText.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectText.resx">
+      <DependentUpon>SelectText.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmChummerMain.resx">
-      <DependentUpon>frmChummerMain.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\ChummerMainForm.resx">
+      <DependentUpon>ChummerMainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectWeaponAccessory.resx">
-      <DependentUpon>frmSelectWeaponAccessory.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectWeaponAccessory.resx">
+      <DependentUpon>SelectWeaponAccessory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectWeaponCategory.resx">
-      <DependentUpon>frmSelectWeaponCategory.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectWeaponCategory.resx">
+      <DependentUpon>SelectWeaponCategory.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmSellItem.resx">
-      <DependentUpon>frmSellItem.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\SellItem.resx">
+      <DependentUpon>SellItem.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmTest.resx">
-      <DependentUpon>frmTest.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\TestDataEntries.resx">
+      <DependentUpon>TestDataEntries.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\frmMasterIndex.resx">
-      <DependentUpon>frmMasterIndex.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\MasterIndex.resx">
+      <DependentUpon>MasterIndex.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Utilities\frmUpdate.resx">
-      <DependentUpon>frmUpdate.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\ChummerUpdater.resx">
+      <DependentUpon>ChummerUpdater.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmViewer.resx">
-      <DependentUpon>frmViewer.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Utility Forms\CharacterSheetViewer.resx">
+      <DependentUpon>CharacterSheetViewer.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\InitiativeUserControl.resx">
+    <EmbeddedResource Include="Controls\Dashboards\InitiativeUserControl.resx">
       <DependentUpon>InitiativeUserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\PetControl.resx">
+    <EmbeddedResource Include="Controls\Characters\PetControl.resx">
       <DependentUpon>PetControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Character Creation\frmCreate.resx">
-      <DependentUpon>frmCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Character Forms\CharacterCreate.resx">
+      <DependentUpon>CharacterCreate.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Character Creation\frmKarmaMetatype.resx">
-      <DependentUpon>frmKarmaMetatype.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Character Creation Forms\SelectMetatypeKarma.resx">
+      <DependentUpon>SelectMetatypeKarma.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectAttribute.resx">
-      <DependentUpon>frmSelectAttribute.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectAttribute.resx">
+      <DependentUpon>SelectAttribute.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Selection Forms\frmSelectSkill.resx">
-      <DependentUpon>frmSelectSkill.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectSkill.resx">
+      <DependentUpon>SelectSkill.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SpiritControl.resx">
+    <EmbeddedResource Include="Controls\Characters\SpiritControl.resx">
       <DependentUpon>SpiritControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="app.config">
@@ -2241,9 +2287,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Point Priority Chargen\amend_echoes.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Point Priority Chargen\amend_gameplayoptions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Point Priority Chargen\amend_mentors.xml">
@@ -18827,14 +18870,14 @@ echo "No .git directory found, skipping copying of hooks."
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.19.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.19.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.19.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.19.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
   <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
   <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

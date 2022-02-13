@@ -10,12 +10,14 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Parameters;
 
 namespace CrashHandler
 {
@@ -41,8 +43,9 @@ namespace CrashHandler
         private readonly BackgroundWorker _worker = new BackgroundWorker();
         private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
         private string _strLatestDumpName = string.Empty;
+        private readonly Random _objRandom = new Random();
 
-        private readonly TextWriter CrashLogWriter;
+        private readonly StreamWriter CrashLogWriter;
 
         /// <summary>
         ///
@@ -73,7 +76,7 @@ namespace CrashHandler
                 CrashLogWriter.Flush();
             }
 
-            CrashLogWriter.WriteLine("Crash id is {0}", _attributes["visible-crash-id"]);
+            CrashLogWriter.WriteLine("Crash id is " + _attributes["visible-crash-id"]);
             CrashLogWriter.Flush();
 
             //		    _filesList = new List<string>();
@@ -88,7 +91,7 @@ namespace CrashHandler
             Directory.CreateDirectory(WorkingDirectory);
             Attributes["visible-crashhandler-major-minor"] = "v3_0";
 
-            CrashLogWriter.WriteLine("Crash working directory is {0}", WorkingDirectory);
+            CrashLogWriter.WriteLine("Crash working directory is " + WorkingDirectory);
             CrashLogWriter.Flush();
 
             _worker.WorkerReportsProgress = false;
@@ -98,10 +101,9 @@ namespace CrashHandler
 
         private void AttemptDebug(Process process)
         {
-            bool sucess = NativeMethods.DebugActiveProcess(new IntPtr(process.Id));
-
+            bool blnSuccess = NativeMethods.DebugActiveProcess(new IntPtr(process.Id));
             int intLastError = Marshal.GetLastWin32Error();
-            if (sucess)
+            if (blnSuccess)
             {
                 Attributes["debugger-attached-success"] = bool.TrueString;
             }
@@ -282,10 +284,10 @@ namespace CrashHandler
 
         private void GetValue()
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(byte.MaxValue);
             foreach (KeyValuePair<string, string> keyValuePair in Attributes)
             {
-                sb.AppendLine('\"' + keyValuePair.Key + "\"-\"" + keyValuePair.Value + "\"");
+                sb.Append('\"').Append(keyValuePair.Key).Append("\"-\"").Append(keyValuePair.Value).Append('\"').AppendLine();
             }
 
             _lstPretendFilePaths.Add("attributes.txt", sb.ToString());
@@ -332,48 +334,36 @@ namespace CrashHandler
             return objReturn;
         }
 
-        private static byte[] Encrypt(byte[] unencrypted, out byte[] Iv, out byte[] Key)
+        private byte[] Encrypt(byte[] unencrypted, out byte[] Iv, out byte[] Key)
         {
-            byte[] encrypted;
-            // Create the streams used for encryption.
-            using (AesManaged managed = new AesManaged())
-            {
-                Iv = managed.IV;
-                Key = managed.Key;
+            // Generate a 256-bit key for AES-256
+            Key = new byte[32];
+            _objRandom.NextBytes(Key);
+            // Using random nonce large enough not to repeat
+            Iv = new byte[12];
+            _objRandom.NextBytes(Iv);
+            GcmBlockCipher objCipher = new GcmBlockCipher(new AesEngine());
+            objCipher.Init(true, new AeadParameters(new KeyParameter(Key), 128, Iv, null));
 
-                // Create a decryptor to perform the stream transform.
-                ICryptoTransform encryptor = managed.CreateEncryptor(managed.Key, managed.IV);
-
-                using (MemoryStream msEncrypt = new MemoryStream())
-                {
-                    // csEncrypt.Dispose() should call msEncrypt.Dispose()
-                    using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
-                    {
-                        csEncrypt.Write(unencrypted, 0, unencrypted.Length);
-                        encrypted = msEncrypt.ToArray();
-                    }
-                }
-            }
-
+            byte[] encrypted = new byte[objCipher.GetOutputSize(unencrypted.Length)];
+            int len = objCipher.ProcessBytes(unencrypted, 0, unencrypted.Length, encrypted, 0);
+            objCipher.DoFinal(encrypted, len);
             return encrypted;
         }
 
-        private async Task<string> Upload(byte[] payload)
+        private static async Task<string> Upload(byte[] payload)
         {
-            using (HttpClient client = new HttpClient())
+            using (MemoryStream stream = new MemoryStream(payload))
             {
-                using (MemoryStream stream = new MemoryStream(payload))
+                using (StreamContent content = new StreamContent(stream))
                 {
-                    using (StreamContent content = new StreamContent(stream))
+                    content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
+                    using (HttpResponseMessage response =
+                           await Program.UploadClient.PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content))
                     {
-                        content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-                        using (HttpResponseMessage response =
-                            await client.PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content))
-                        {
-                            string resp = await response.Content.ReadAsStringAsync();
+                        string resp = await response.Content.ReadAsStringAsync();
 
-                            return ExtractUrl(resp);
-                        }
+                        return ExtractUrl(resp);
                     }
                 }
             }
@@ -407,17 +397,14 @@ namespace CrashHandler
                 .ToDictionary(x => x.Key.Replace("visible-", string.Empty).Replace('-', '_'), x => x.Value);
             string payload = new JavaScriptSerializer().Serialize(upload);
 
-            using (HttpClient client = new HttpClient())
+            using (StringContent payloadString = new StringContent(payload))
             {
-                using (StringContent payloadString = new StringContent(payload))
-                {
-                    await client.PostAsync(
-                        "https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService",
-                        payloadString);
-                    //HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload)).Result;
+                await Program.UploadClient.PostAsync(
+                    "https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService",
+                    payloadString);
+                //HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload)).Result;
 
-                    //string result = msg.Content.ReadAsStringAsync().Result;
-                }
+                //string result = msg.Content.ReadAsStringAsync().Result;
             }
         }
 
@@ -482,9 +469,9 @@ namespace CrashHandler
 
                 processId = (short) pid;
                 string s = "0";
-                if (parts.ContainsKey("exceptionPrt"))
+                if (parts.TryGetValue("exceptionPrt", out object objPart))
                 {
-                    s = parts["exceptionPrt"]?.ToString() ?? "0";
+                    s = objPart?.ToString() ?? "0";
                 }
 
                 exceptionPrt = new IntPtr(int.Parse(s));
@@ -505,7 +492,7 @@ namespace CrashHandler
 
         private static string MakeStringKey(IEnumerable<byte> iv, IEnumerable<byte> key)
         {
-            return string.Join(string.Empty, iv.Select(x => x.ToString("X2"))) + ":" +
+            return string.Join(string.Empty, iv.Select(x => x.ToString("X2"))) + ':' +
                    string.Join(string.Empty, key.Select(x => x.ToString("X2")));
         }
 

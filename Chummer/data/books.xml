@@ -28,6 +28,11 @@
           <text>Whether we want to admit it or not,</text>
           <page>2</page>
         </match>
+        <match>
+          <language>de-de</language>
+          <text>Soweit die Historiker das sagen können,</text>
+          <page>2</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -40,6 +45,11 @@
           <text>The weapon is designed to be hand loaded</text>
           <page>3</page>
         </match>
+        <match>
+          <language>de-de</language>
+          <text>Mit dem New Model Revolver kehrt</text>
+          <page>4</page>
+        </match>
       </matches>
     </book>
     <book>
@@ -50,6 +60,11 @@
         <match>
           <language>en-us</language>
           <text>The whole run was a setup. It had to be</text>
+          <page>6</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>In seinem Kommandozentrum sah Sicherheitschef</text>
           <page>6</page>
         </match>
       </matches>
@@ -67,7 +82,7 @@
         </match>
         <match>
           <language>de-de</language>
-          <text>Wie auch immer der deutsche Text lautet</text>
+          <text>Die Luft war voller Rauch, durchschnitten</text>
           <page>8</page>
         </match>
       </matches>
@@ -84,8 +99,20 @@
         </match>
         <match>
           <language>de-de</language>
-          <text>Wie auch immer der deutsche Text lautet</text>
-          <page>6</page>
+          <text>In der Sechsten Welt sind Erwachte Personen</text>
+          <page>5</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>ee63bbc5-2abd-4543-8371-457044bc7c63</id>
+      <name>Street Grimoire Errata</name>
+      <code>SGE</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>PROTECT VEHICLE SUB-HEADER</text>
+          <page>2</page>
         </match>
       </matches>
     </book>
@@ -97,6 +124,11 @@
         <match>
           <language>en-us</language>
           <text>an average troll to stand in. He was lying among a pile of</text>
+          <page>3</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Kanai erwachte von dem Sirenengeheul in seinen</text>
           <page>3</page>
         </match>
       </matches>
@@ -146,6 +178,11 @@
           <language>en-us</language>
           <text>The subject of magic is broad enough</text>
           <page>3</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Die nordischen Legenden sind bei den Einwohnern</text>
+          <page>4</page>
         </match>
       </matches>
     </book>
@@ -503,6 +540,11 @@
           <language>en-us</language>
           <text>Once Big D offered all that nuyen for the study of danger</text>
           <page>3</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Die Ebene der Feen ist ein endloses Tal, das sich</text>
+          <page>5</page>
         </match>
       </matches>
     </book>

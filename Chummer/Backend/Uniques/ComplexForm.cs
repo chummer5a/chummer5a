@@ -21,10 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
 using NLog;
@@ -36,7 +36,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class ComplexForm : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
+    public class ComplexForm : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -134,9 +134,6 @@ namespace Chummer
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
-
-            if (Grade >= 0)
-                _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -150,10 +147,11 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             objNode.TryGetStringFieldQuickly("target", ref _strTarget);
@@ -208,9 +206,11 @@ namespace Chummer
             get => _guiSourceID;
             set
             {
-                if (_guiSourceID == value) return;
+                if (_guiSourceID == value)
+                    return;
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
         }
 
@@ -232,8 +232,10 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName != value)
-                    _objCachedMyXmlNode = null;
+                if (_strName == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
                 _strName = value;
             }
         }
@@ -276,7 +278,7 @@ namespace Chummer
             string strReturn = _strName;
             // Get the translated name if applicable.
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? _strName;
+                strReturn = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? _strName;
 
             return strReturn;
         }
@@ -359,47 +361,57 @@ namespace Chummer
         {
             get
             {
-                StringBuilder sbdTip = new StringBuilder(LanguageManager.GetString("Tip_ComplexFormFadingBase"));
                 int intRES = _objCharacter.RES.TotalValue;
                 string strFv = Fv;
                 string strSpace = LanguageManager.GetString("String_Space");
-                for (int i = 1; i <= intRES * 2; i++)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdTip))
                 {
-                    // Calculate the Complex Form's Fading for the current Level.
-                    object xprResult = CommonFunctions.EvaluateInvariantXPath(strFv.Replace("L", i.ToString(GlobalSettings.InvariantCultureInfo)).Replace("/", " div "), out bool blnIsSuccess);
-
-                    if (blnIsSuccess && strFv != "Special")
+                    sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingBase"));
+                    for (int i = 1; i <= intRES * 2; i++)
                     {
-                        int intFv = ((double)xprResult).StandardRound();
+                        // Calculate the Complex Form's Fading for the current Level.
+                        object xprResult = CommonFunctions.EvaluateInvariantXPath(
+                            strFv.Replace("L", i.ToString(GlobalSettings.InvariantCultureInfo)).Replace("/", " div "),
+                            out bool blnIsSuccess);
 
-                        // Fading cannot be lower than 2.
-                        if (intFv < 2)
-                            intFv = 2;
-                        sbdTip.AppendLine().Append(LanguageManager.GetString("String_Level")).Append(strSpace).Append(
-                                  i.ToString(GlobalSettings.CultureInfo))
-                              .Append(LanguageManager.GetString("String_Colon"))
-                              .Append(strSpace).Append(intFv.ToString(GlobalSettings.CultureInfo));
+                        if (blnIsSuccess && strFv != "Special")
+                        {
+                            int intFv = ((double) xprResult).StandardRound();
+
+                            // Fading cannot be lower than 2.
+                            if (intFv < 2)
+                                intFv = 2;
+                            sbdTip.AppendLine().Append(LanguageManager.GetString("String_Level")).Append(strSpace)
+                                  .Append(
+                                      i.ToString(GlobalSettings.CultureInfo))
+                                  .Append(LanguageManager.GetString("String_Colon"))
+                                  .Append(strSpace).Append(intFv.ToString(GlobalSettings.CultureInfo));
+                        }
+                        else
+                        {
+                            sbdTip.Clear();
+                            sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingSeeDescription"));
+                            break;
+                        }
                     }
-                    else
+
+                    decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter,
+                        Improvement.ImprovementType.FadingValue,
+                        out List<Improvement> lstFadingImprovements, strImprovedName: Name,
+                        blnIncludeNonImproved: true);
+                    if (decFVBonus != 0)
                     {
-                        sbdTip.Clear();
-                        sbdTip.Append(LanguageManager.GetString("Tip_ComplexFormFadingSeeDescription"));
-                        break;
+                        sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
+                        foreach (Improvement objLoopImprovement in lstFadingImprovements)
+                        {
+                            sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
+                                  .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
+                        }
                     }
+
+                    return sbdTip.ToString();
                 }
-
-                List<Improvement> lstFadingImprovements = _objCharacter.Improvements.Where(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled).ToList();
-                if (lstFadingImprovements.Count > 0)
-                {
-                    sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
-                    foreach (Improvement objLoopImprovement in lstFadingImprovements)
-                    {
-                        sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
-                              .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
-                    }
-                }
-
-                return sbdTip.ToString();
             }
         }
 
@@ -411,10 +423,14 @@ namespace Chummer
             get
             {
                 string strReturn = _strFv;
-                bool force = strReturn.StartsWith('L');
-                if (_objCharacter.Improvements.Any(o => o.ImproveType == Improvement.ImprovementType.FadingValue && o.Enabled))
+                decimal decFVBonus = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingValue,
+                                                                out List<Improvement> lstUsedImprovements, strImprovedName: Name, blnIncludeNonImproved: true);
+                if (decFVBonus != 0)
                 {
-                    string strFv = strReturn.TrimStartOnce('L');
+                    bool force = strReturn.StartsWith('L');
+                    string strFv = strReturn;
+                    if (force)
+                        strFv = strFv.TrimStartOnce("L", true);
                     //Navigator can't do math on a single value, so inject a mathable value.
                     if (string.IsNullOrEmpty(strFv))
                     {
@@ -437,21 +453,29 @@ namespace Chummer
                         }
                     }
 
-                    StringBuilder sbdFv = new StringBuilder(strFv);
-                    foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.ImproveType == Improvement.ImprovementType.FadingValue && i.Enabled))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdFv))
                     {
-                        sbdFv.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}", objImprovement.Value);
-                    }
-                    object xprResult = CommonFunctions.EvaluateInvariantXPath(sbdFv.ToString(), out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                    {
-                        if (force)
+                        sbdFv.Append(strFv);
+                        foreach (Improvement objImprovement in lstUsedImprovements)
                         {
-                            strReturn = string.Format(GlobalSettings.CultureInfo, "L{0:+0;-0;}", xprResult);
+                            sbdFv.AppendFormat(GlobalSettings.InvariantCultureInfo, "{0:+0;-0;+0}",
+                                               objImprovement.Value);
                         }
-                        else if (xprResult.ToString() != "0")
+
+                        object xprResult
+                            = CommonFunctions.EvaluateInvariantXPath(sbdFv.ToString(), out bool blnIsSuccess);
+
+                        if (blnIsSuccess)
                         {
-                            strReturn += xprResult;
+                            if (force)
+                            {
+                                strReturn = string.Format(GlobalSettings.CultureInfo, "L{0:+0;-0;}", xprResult);
+                            }
+                            else if (xprResult.ToString() != "0")
+                            {
+                                strReturn += xprResult;
+                            }
                         }
                     }
                 }
@@ -533,7 +557,7 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -587,57 +611,82 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdReturn = new StringBuilder();
-                string strFormat = strSpace + "{0}" + strSpace + "({1})";
-                CharacterAttrib objResonanceAttrib = _objCharacter.GetAttribute("RES");
-                if (objResonanceAttrib != null)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdReturn))
                 {
-                    sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
-                        objResonanceAttrib.DisplayNameFormatted, objResonanceAttrib.DisplayValue);
-                }
-                if (Skill != null)
-                {
-                    if (sbdReturn.Length > 0)
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace);
-                    sbdReturn.Append(Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
-                                                            (objResonanceAttrib?.TotalValue ?? 0), CurrentDisplayName));
-                }
+                    string strFormat = strSpace + "{0}" + strSpace + "({1})";
+                    CharacterAttrib objResonanceAttrib = _objCharacter.GetAttribute("RES");
+                    if (objResonanceAttrib != null)
+                    {
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                                               objResonanceAttrib.DisplayNameFormatted,
+                                               objResonanceAttrib.DisplayValue);
+                    }
 
-                // Include any Improvements to the Spell Category.
-                foreach (Improvement objImprovement in _objCharacter.Improvements
-                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ActionDicePool && objImprovement.Enabled
-                    && objImprovement.ImprovedName == "Threading"))
-                {
-                    if (sbdReturn.Length > 0)
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace);
-                    sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
-                }
+                    if (Skill != null)
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.Append(Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
+                                                                 (objResonanceAttrib?.TotalValue ?? 0),
+                                                                 CurrentDisplayName));
+                    }
 
-                return sbdReturn.ToString();
+                    // Include any Improvements to the Spell Category.
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 _objCharacter, Improvement.ImprovementType.ActionDicePool, "Threading"))
+                    {
+                        if (sbdReturn.Length > 0)
+                            sbdReturn.Append(strSpace).Append('+').Append(strSpace);
+                        sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
+                                               _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                    }
+
+                    return sbdReturn.ToString();
+                }
             }
         }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("complexforms.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/complexforms/complexform[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/complexforms/complexform[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData("complexforms.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/complexforms/complexform[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/complexforms/complexform[id = "
+                                                                       + SourceIDString.CleanXPath()
+                                                                       + " or id = " + SourceIDString
+                                                                           .ToUpperInvariant().CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("complexforms.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/complexforms/complexform[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/complexforms/complexform[id = "
+                                                                         + SourceIDString.CleanXPath()
+                                                                         + " or id = " + SourceIDString
+                                                                             .ToUpperInvariant().CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties

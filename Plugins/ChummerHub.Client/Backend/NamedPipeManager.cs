@@ -37,7 +37,10 @@ namespace ChummerHub.Client.Backend
                 if (_objRunningTask?.IsCompleted == false) // Wait for existing thread to shut down
                     await _objRunningTask;
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                // Swallow and continue
+            }
             _objCancellationTokenSource = new CancellationTokenSource();
             _objRunningTask = Task.Run(RunChummerFilePipeThread, _objCancellationTokenSource.Token);
         }

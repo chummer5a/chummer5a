@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>2d4f861b-02e4-4689-938b-6db6a77b765f</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>Delnar_Ersike</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset fixes Sum-to-Ten character creation by increasing the value of A priorities from 4 to 7 and increasing the value of B priorities from 3 to 4. This ensures that builds that need Sum-to-Ten to work, usually ork-, dwarf-, and troll-based builds, do not get punished for straying the standard ABCDE arrangement.\n\nWhen using these new values, it is highly recommended to increase your Sum-to-Ten value from 14 to 10. Staying at 10 is only advisable if you want a more street-level game of ca. 700 starting karma value.</text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>

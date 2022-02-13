@@ -26,6 +26,8 @@ namespace Chummer
     [Serializable]
     public class TextEventArgs : EventArgs
     {
+        public new static readonly TextEventArgs Empty = new TextEventArgs(string.Empty);
+
         public TextEventArgs(string strText)
         {
             Text = strText;

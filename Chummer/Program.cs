@@ -25,7 +25,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -49,16 +48,16 @@ namespace Chummer
     {
         private static Logger Log;
         private const string ChummerGuid = "eb0759c1-3599-495e-8bc5-57c8b3e1b31c";
-        internal static readonly Process MyProcess = Process.GetCurrentProcess();
 
+        private static readonly Lazy<Process> s_objMyProcess = new Lazy<Process>(Process.GetCurrentProcess);
+        internal static readonly Process MyProcess = s_objMyProcess.Value;
+
+        [CLSCompliant(false)]
         public static TelemetryClient ChummerTelemetryClient { get; } = new TelemetryClient();
         private static PluginControl _objPluginLoader;
         public static PluginControl PluginLoader => _objPluginLoader = _objPluginLoader ?? new PluginControl();
 
         internal static readonly IntPtr CommandLineArgsDataTypeId = (IntPtr)7593599;
-
-        private static readonly Lazy<Version> _objCurrentVersion = new Lazy<Version>(() => Assembly.GetExecutingAssembly().GetName().Version);
-        public static Version CurrentVersion => _objCurrentVersion.Value;
 
         /// <summary>
         /// Check this to see if we are currently in the Main Thread.
@@ -133,7 +132,7 @@ namespace Chummer
 
                     //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
                     PageViewTelemetry pvt = null;
-                    var startTime = DateTimeOffset.UtcNow;
+                    DateTimeOffset startTime = DateTimeOffset.UtcNow;
                     // Set default cultures based on the currently set language
                     CultureInfo.DefaultThreadCurrentCulture = GlobalSettings.CultureInfo;
                     CultureInfo.DefaultThreadCurrentUICulture = GlobalSettings.CultureInfo;
@@ -164,7 +163,7 @@ namespace Chummer
                     Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
                     // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
                     // were made in an older version (i.e. an older assembly)
-                    string strProfileOptimizationName = "chummerprofile_" + CurrentVersion + ".profile";
+                    string strProfileOptimizationName = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
                     foreach (string strProfileFile in Directory.GetFiles(Utils.GetStartupPath, "*.profile", SearchOption.TopDirectoryOnly))
                         if (!string.Equals(strProfileFile, strProfileOptimizationName,
                                            StringComparison.OrdinalIgnoreCase))
@@ -199,7 +198,7 @@ namespace Chummer
                     string strInfo =
                         string.Format(GlobalSettings.InvariantCultureInfo,
                             "Application Chummer5a build {0} started at {1} with command line arguments {2}",
-                            Assembly.GetExecutingAssembly().GetName().Version, DateTime.UtcNow,
+                            Utils.CurrentChummerVersion, DateTime.UtcNow,
                             Environment.CommandLine);
                     sw.TaskEnd("infogen");
 
@@ -210,34 +209,43 @@ namespace Chummer
 
                     sw.TaskEnd("languagefreestartup");
 
-                    void HandleCrash(object o, UnhandledExceptionEventArgs e)
+                    void HandleCrash(object o, UnhandledExceptionEventArgs exa)
                     {
-                        try
+                        if (exa.ExceptionObject is Exception ex)
                         {
-                            if (e.ExceptionObject is Exception myException)
+                            try
                             {
-                                myException.Data.Add("IsCrash", bool.TrueString);
-                                ExceptionTelemetry et = new ExceptionTelemetry(myException)
-                                { SeverityLevel = SeverityLevel.Critical };
-                                //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
-                                foreach (DictionaryEntry d in myException.Data)
+                                if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes
+                                    && ChummerTelemetryClient != null
+                                    && !Utils.IsMilestoneVersion)
                                 {
-                                    if (d.Key != null && d.Value != null)
-                                        et.Properties.Add(d.Key.ToString(), d.Value.ToString());
-                                }
+                                    ExceptionTelemetry et = new ExceptionTelemetry(ex)
+                                    {
+                                        SeverityLevel = SeverityLevel.Critical
+                                    };
+                                    //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                                    foreach (DictionaryEntry d in ex.Data)
+                                    {
+                                        if ((d.Key != null) && (d.Value != null))
+                                            et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                                    }
 
-                                ChummerTelemetryClient?.TrackException(myException);
-                                ChummerTelemetryClient?.Flush();
+                                    et.Properties.Add("IsCrash", bool.TrueString);
+                                    CustomTelemetryInitializer ti = new CustomTelemetryInitializer();
+                                    ti.Initialize(et);
+
+                                    ChummerTelemetryClient.TrackException(et);
+                                    ChummerTelemetryClient.Flush();
+                                }
                             }
-                        }
-                        catch (Exception exception)
-                        {
-                            Console.WriteLine(exception);
-                        }
+                            catch (Exception ex1)
+                            {
+                                Log.Error(ex1);
+                            }
 #if !DEBUG
-                    if (e.ExceptionObject is Exception ex)
-                        CrashHandler.WebMiniDumpHandler(ex);
+                            CrashHandler.WebMiniDumpHandler(ex);
 #endif
+                        }
                     }
 
                     AppDomain.CurrentDomain.UnhandledException += HandleCrash;
@@ -330,11 +338,11 @@ namespace Chummer
 
                             //Log an Event with AssemblyVersion and CultureInfo
                             MetricIdentifier objMetricIdentifier = new MetricIdentifier("Chummer", "Program Start",
-                                "Version", "Culture", dimension3Name: "AISetting", dimension4Name: "OSVersion");
+                                "Version", "Culture", "AISetting", "OSVersion");
                             string strOSVersion = Utils.HumanReadableOSVersion;
                             Metric objMetric = ChummerTelemetryClient.GetMetric(objMetricIdentifier);
                             objMetric.TrackValue(1,
-                                                 Assembly.GetExecutingAssembly().GetName().Version.ToString(),
+                                Utils.CurrentChummerVersion.ToString(),
                                                  CultureInfo.CurrentUICulture.TwoLetterISOLanguageName,
                                                  GlobalSettings.UseLoggingApplicationInsights.ToString(),
                                                  strOSVersion);
@@ -343,7 +351,7 @@ namespace Chummer
                             pvt = new PageViewTelemetry("frmChummerMain()")
                             {
                                 Name = "Chummer Startup: " +
-                                       Assembly.GetExecutingAssembly().GetName().Version,
+                                       Utils.CurrentChummerVersion,
                                 Id = Settings.Default.UploadClientId.ToString(),
                                 Timestamp = startTime
                             };
@@ -412,7 +420,7 @@ namespace Chummer
                     // Restore Chummer's language to en-US if we failed to load the default one.
                     if (blnRestoreDefaultLanguage)
                         GlobalSettings.Language = GlobalSettings.DefaultLanguage;
-                    MainForm = new frmChummerMain();
+                    MainForm = new ChummerMainForm();
                     try
                     {
                         PluginLoader.LoadPlugins();
@@ -482,6 +490,11 @@ namespace Chummer
                         }
                     }
 
+                    // Delete the old executable if it exists (created by the update process).
+                    Utils.SafeClearDirectory(Utils.GetStartupPath, "*.old");
+                    // Purge the temporary directory
+                    Utils.SafeClearDirectory(Utils.GetTempPath());
+
                     if (showMainForm)
                     {
                         MainForm.MyStartupPvt = pvt;
@@ -516,7 +529,7 @@ namespace Chummer
                 {
                     // Get the last error and display it.
                     int intError = Marshal.GetLastWin32Error();
-                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + ".");
+                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + '.');
                     switch (exception.NativeErrorCode)
                     {
                         case 2://file not found - that means the alternate data-stream is not present.
@@ -650,18 +663,18 @@ namespace Chummer
             Utils.BreakOnErrorIfDebug();
         }
 
-        private static frmChummerMain _frmMainForm;
+        private static ChummerMainForm _frmMainForm;
 
         /// <summary>
         /// Main application form.
         /// </summary>
-        public static frmChummerMain MainForm
+        public static ChummerMainForm MainForm
         {
             get => _frmMainForm;
             set
             {
                 _frmMainForm = value;
-                foreach (Action<frmChummerMain> funcToRun in MainFormOnAssignActions)
+                foreach (Action<ChummerMainForm> funcToRun in MainFormOnAssignActions)
                     funcToRun(_frmMainForm);
                 MainFormOnAssignActions.Clear();
             }
@@ -670,7 +683,22 @@ namespace Chummer
         /// <summary>
         /// Queue of Actions to run after MainForm is assigned
         /// </summary>
-        public static List<Action<frmChummerMain>> MainFormOnAssignActions { get; } = new List<Action<frmChummerMain>>();
+        public static List<Action<ChummerMainForm>> MainFormOnAssignActions { get; } = new List<Action<ChummerMainForm>>();
+
+        /// <summary>
+        /// Gets the form to use for creating sub-forms and displaying them as dialogs
+        /// </summary>
+        /// <param name="objCharacter">If this character's file is open, use their open form as the one we want for showing dialogs.</param>
+        /// <returns></returns>
+        public static Form GetFormForDialog(Character objCharacter = null)
+        {
+            if (MainForm == null)
+                return null;
+            if (objCharacter == null)
+                return MainForm;
+            return MainForm.OpenCharacterForms.FirstOrDefault(
+                x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form ?? MainForm;
+        }
 
         /// <summary>
         /// Whether the application is running under Mono (true) or .NET (false)

@@ -79,6 +79,7 @@
                     </xs:element>
                     <xs:element name="doublecareer" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="implemented" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="includeinlimit" minOccurs="0" maxOccurs="1">
                       <xs:complexType>

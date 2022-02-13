@@ -480,6 +480,7 @@
           <name precedence="0">REA</name>
           <val>Rating</val>
         </specificattribute>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
       </bonus>
       <rating>3</rating>
       <source>SR5</source>
@@ -1896,6 +1897,7 @@
       <avail>8R</avail>
       <cost>10000</cost>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">1</initiativepass>
       </bonus>
       <source>CF</source>
@@ -2456,8 +2458,10 @@
       <cost>78000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
+        <dodge>1</dodge> <!-- TODO: Turn this off if any initiative boosters are present, even if they don't increase REA or defense test dice -->
         <initiative precedence="0">1</initiative>
         <initiativepass precedence="0">1</initiativepass>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
       </bonus>
       <source>CF</source>
       <page>162</page>
@@ -3638,6 +3642,7 @@
           <name precedence="0">REA</name>
           <val>Rating</val>
         </specificattribute>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
       </bonus>
       <rating>3</rating>
       <source>2050</source>

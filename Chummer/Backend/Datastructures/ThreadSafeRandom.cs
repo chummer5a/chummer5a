@@ -44,6 +44,7 @@ namespace Chummer
             _objRandom = objRandom;
         }
 
+        /// <inheritdoc />
         public override int Next()
         {
             int intReturn;
@@ -52,6 +53,7 @@ namespace Chummer
             return intReturn;
         }
 
+        /// <inheritdoc />
         public override int Next(int minValue, int maxValue)
         {
             int intReturn;
@@ -60,6 +62,7 @@ namespace Chummer
             return intReturn;
         }
 
+        /// <inheritdoc />
         public override int Next(int maxValue)
         {
             int intReturn;
@@ -68,12 +71,14 @@ namespace Chummer
             return intReturn;
         }
 
+        /// <inheritdoc />
         public override void NextBytes(byte[] buffer)
         {
             lock (_objLock)
                 _objRandom.NextBytes(buffer);
         }
 
+        /// <inheritdoc />
         public override double NextDouble()
         {
             double dblReturn;
@@ -82,6 +87,7 @@ namespace Chummer
             return dblReturn;
         }
 
+        /// <inheritdoc />
         protected override double Sample()
         {
             return NextDouble();

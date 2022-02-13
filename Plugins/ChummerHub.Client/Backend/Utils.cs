@@ -323,7 +323,7 @@ namespace ChummerHub.Client.Backend
             SinnersClient client = null;
             try
             {
-                Assembly assembly = Assembly.GetAssembly(typeof(frmChummerMain));
+                Assembly assembly = Assembly.GetAssembly(typeof(ChummerMainForm));
                 Settings.Default.SINnerUrl = assembly.GetName().Version.Build == 0
                     ? "https://chummer-stable.azurewebsites.net"
                     : "https://chummer-beta.azurewebsites.net";
@@ -523,7 +523,7 @@ namespace ChummerHub.Client.Backend
                         Tag = new Action(() =>
                         {
                             using (new CursorWait(Program.MainForm))
-                                using (frmGlobalSettings frmOptions = new frmGlobalSettings("tabPlugins"))
+                                using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabPlugins"))
                                     frmOptions.ShowDialog(Program.MainForm);
                         })
                     };
@@ -952,7 +952,7 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Trace("Loading: " + fileName);
                 objCharacter = new Character {FileName = fileName};
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(fileName), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(fileName), Character.NumLoadingSections))
                 {
                     if (!await objCharacter.LoadAsync(frmLoadingForm, false))
                         return null;
@@ -1074,26 +1074,12 @@ namespace ChummerHub.Client.Backend
                 if (!string.IsNullOrEmpty(objCache.FilePath))
                 {
                     //I copy the values, because I dont know what callbacks are registered...
-                    CharacterCache tempCache = new CharacterCache();
-                    if (await tempCache.LoadFromFileAsync(objCache.FilePath))
+                    using (CharacterCache tempCache = new CharacterCache())
                     {
-                        objCache.Background = tempCache.Background;
-                        objCache.MugshotBase64 = tempCache.MugshotBase64;
-                        objCache.BuildMethod = tempCache.BuildMethod;
-                        objCache.CharacterAlias = tempCache.CharacterAlias;
-                        objCache.CharacterName = tempCache.CharacterName;
-                        objCache.CharacterNotes = tempCache.CharacterNotes;
-                        objCache.Concept = tempCache.Concept;
-                        objCache.Created = tempCache.Created;
-                        objCache.Description = tempCache.Description;
-                        objCache.Essence = tempCache.Essence;
-                        objCache.GameNotes = tempCache.GameNotes;
-                        objCache.Karma = tempCache.Karma;
-                        objCache.FileName = tempCache.FileName;
-                        objCache.Metatype = tempCache.Metatype;
-                        objCache.Metavariant = tempCache.Metavariant;
-                        objCache.PlayerName = tempCache.PlayerName;
-                        objCache.SettingsFile = tempCache.SettingsFile;
+                        if (await tempCache.LoadFromFileAsync(objCache.FilePath))
+                        {
+                            objCache.CopyFrom(tempCache);
+                        }
                     }
                 }
                 await PluginHandler.MainForm.CharacterRoster.DoThreadSafeAsync(() =>

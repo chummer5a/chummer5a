@@ -39,6 +39,7 @@ namespace Chummer
 
         private bool _blnSkipCollectionChanged;
 
+        /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             using (new EnterUpgradeableReadLock(LockerObject))
@@ -67,18 +68,17 @@ namespace Chummer
             base.OnCollectionChanged(e);
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            using (new EnterUpgradeableReadLock(LockerObject))
+            // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
+            using (new EnterWriteLock(LockerObject))
             {
                 int intExistingIndex = IndexOf(item);
-                using (new EnterWriteLock(LockerObject))
-                {
-                    if (intExistingIndex == -1)
-                        base.InsertItem(index, item);
-                    else
-                        MoveItem(intExistingIndex, Math.Min(index, Count - 1));
-                }
+                if (intExistingIndex == -1)
+                    base.InsertItem(index, item);
+                else
+                    MoveItem(intExistingIndex, Math.Min(index, Count - 1));
             }
         }
     }

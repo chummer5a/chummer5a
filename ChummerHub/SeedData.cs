@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace ChummerHub
 
         #region snippet_Initialize
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
-        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostingEnvironment env)
+        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostEnvironment env)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         {
             using (var context = new ApplicationDbContext(

@@ -50,19 +50,22 @@ namespace Chummer.Backend
 
         public string GenerateInfo()
         {
-            StringBuilder builder = new StringBuilder(Environment.NewLine);
-            int length = -1;
-
-            foreach (KeyValuePair<string, int> exception in _map.OrderBy(i => -i.Value))
+            int intLength = -1;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                length = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), length);
-                builder.Append("\t\t")
-                       .Append(exception.Value.ToString("D" + length.ToString(GlobalSettings.InvariantCultureInfo),
-                                                        GlobalSettings.InvariantCultureInfo)).Append(" - ")
-                       .AppendLine(exception.Key);
-            }
+                sbdReturn.AppendLine();
+                foreach (KeyValuePair<string, int> exception in _map.OrderBy(i => -i.Value))
+                {
+                    intLength = Math.Max((int) Math.Ceiling(Math.Log10(exception.Value)), intLength);
+                    sbdReturn.Append("\t\t")
+                             .Append(exception.Value.ToString(
+                                         "D" + intLength.ToString(GlobalSettings.InvariantCultureInfo),
+                                         GlobalSettings.InvariantCultureInfo)).Append(" - ")
+                             .AppendLine(exception.Key);
+                }
 
-            return builder.ToString();
+                return sbdReturn.ToString();
+            }
         }
 
         /// <inheritdoc />

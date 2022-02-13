@@ -7,17 +7,17 @@ namespace Translator
 {
     internal static class Program
     {
-        private static frmTranslatorMain _frmMain;
+        private static TranslatorMain _frmMain;
 
         [STAThread]
         private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            _frmMain = new frmTranslatorMain();
+            _frmMain = new TranslatorMain();
             Application.Run(_frmMain);
         }
 
-        public static frmTranslatorMain MainForm => _frmMain;
+        public static TranslatorMain MainForm => _frmMain;
     }
 }

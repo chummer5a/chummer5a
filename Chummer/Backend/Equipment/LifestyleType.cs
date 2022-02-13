@@ -27,6 +27,6 @@ namespace Chummer.Backend.Equipment
         Standard = 0,
         BoltHole = 1,
         Safehouse = 2,
-        Advanced = 3,
+        Advanced = 3
     }
 }

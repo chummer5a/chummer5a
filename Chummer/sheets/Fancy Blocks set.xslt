@@ -1692,7 +1692,7 @@
   </xsl:template>
 
   <xsl:template name="print_submersion">
-    <xsl:if test="submersiongrade &gt; 0">
+    <xsl:if test="submersiongrade &gt; 0 or count(metamagics/metamagic) &gt; 0">
 
       <table class="stats matrix">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Submersion" />]</div></td></tr>
@@ -1972,8 +1972,7 @@
   </xsl:template>
 
   <xsl:template name="print_initiation">
-    <xsl:if test="initiategrade &gt; 0">
-
+    <xsl:if test="initiategrade &gt; 0 or count(metamagics/metamagic) &gt; 0">
       <table class="stats magic">
         <tr><td><div class="bigheader">[<xsl:value-of select="$lang.Initiation" />]</div></td></tr>
         <tr><td>

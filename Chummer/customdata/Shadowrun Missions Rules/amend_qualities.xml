@@ -611,5 +611,23 @@
       <hide />
     </quality>
     <!-- End Region -->
+    <!-- Region No Future Positive Qualities -->
+    <quality>
+      <name>Candle in the Darkness</name>
+      <hide />
+    </quality>
+    <!-- End Region -->
+    <!-- Region No Future Negative Qualities -->
+    <quality>
+      <name>Stolen Gear</name>
+      <contributetolimit>False</contributetolimit>
+      <firstlevelbonus>
+        <notoriety amendoperation="addnode">2</notoriety>
+      </firstlevelbonus>
+      <bonus>
+        <nuyenmaxbp amendoperation="remove">-1</nuyenmaxbp>
+      </bonus>
+    </quality>
+    <!-- End Region -->
   </qualities>
 </chummer>

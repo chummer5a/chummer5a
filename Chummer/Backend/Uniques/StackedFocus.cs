@@ -264,18 +264,21 @@ namespace Chummer
         /// </summary>
         public string Name(CultureInfo objCulture, string strLanguage)
         {
-            StringBuilder sbdReturn = new StringBuilder();
-            foreach (Gear objGear in Gear)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
             {
-                sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage));
-                sbdReturn.Append(", ");
+                foreach (Gear objGear in Gear)
+                {
+                    sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage));
+                    sbdReturn.Append(", ");
+                }
+
+                // Remove the trailing comma.
+                if (sbdReturn.Length > 0)
+                    sbdReturn.Length -= 2;
+
+                return sbdReturn.ToString();
             }
-
-            // Remove the trailing comma.
-            if (sbdReturn.Length > 0)
-                sbdReturn.Length -= 2;
-
-            return sbdReturn.ToString();
         }
 
         public string CurrentDisplayName => Name(GlobalSettings.CultureInfo, GlobalSettings.Language);

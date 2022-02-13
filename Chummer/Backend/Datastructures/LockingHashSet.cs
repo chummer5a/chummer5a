@@ -19,12 +19,14 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Chummer
 {
-    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IDisposable
+    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IDisposable, IProducerConsumerCollection<T>
     {
         private readonly HashSet<T> _setData;
         private readonly ReaderWriterLockSlim
@@ -59,14 +61,14 @@ namespace Chummer
         public IEnumerator<T> GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return _setData.GetEnumerator();
+                return _setData.GetEnumerator().GetLockingType(_rwlThis);
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
             using (new EnterReadLock(_rwlThis))
-                return GetEnumerator();
+                return _setData.GetEnumerator().GetLockingType(_rwlThis);
         }
 
         /// <inheritdoc />
@@ -167,7 +169,7 @@ namespace Chummer
                 return _setData.Contains(item);
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(T[] array, int arrayIndex)
         {
             using (new EnterReadLock(_rwlThis))
@@ -181,13 +183,67 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+        public bool TryAdd(T item)
+        {
+            using (new EnterWriteLock(_rwlThis))
+                return _setData.Add(item);
+        }
+
+        /// <inheritdoc />
+        public bool TryTake(out T item)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (new EnterWriteLock(_rwlThis))
+            {
+                if (Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    item = this.First();
+                    if (_setData.Remove(item))
+                        return true;
+                }
+            }
+            item = default;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public T[] ToArray()
+        {
+            using (new EnterReadLock(_rwlThis))
+            {
+                T[] aobjReturn = new T[Count];
+                int i = 0;
+                foreach (T objLoop in _setData)
+                {
+                    aobjReturn[i] = objLoop;
+                    ++i;
+                }
+                return aobjReturn;
+            }
+        }
+
+        /// <inheritdoc />
         public bool Remove(T item)
         {
             using (new EnterWriteLock(_rwlThis))
                 return _setData.Remove(item);
         }
 
-        /// <inheritdoc cref="ICollection{T}" />
+        /// <inheritdoc />
+        public void CopyTo(Array array, int index)
+        {
+            using (new EnterReadLock(_rwlThis))
+            {
+                foreach (T objItem in _setData)
+                {
+                    array.SetValue(objItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        /// <inheritdoc cref="ICollection{T}.Count" />
         public int Count
         {
             get
@@ -196,6 +252,12 @@ namespace Chummer
                     return _setData.Count;
             }
         }
+
+        /// <inheritdoc />
+        public object SyncRoot => _rwlThis;
+
+        /// <inheritdoc />
+        public bool IsSynchronized => true;
 
         /// <inheritdoc />
         public bool IsReadOnly => false;

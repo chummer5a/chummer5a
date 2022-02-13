@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
@@ -196,10 +197,17 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedIsDisabled < 0)
                 {
-                    _intCachedIsDisabled = _objCharacter.Improvements.Any(x =>
-                        ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                        (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName)))
-                        && x.Enabled) ? 1 : 0;
+                    _intCachedIsDisabled = ImprovementManager
+                                           .GetCachedImprovementListForValueOf(
+                                               _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name)
+                                           .Count > 0
+                                           || ImprovementManager
+                                              .GetCachedImprovementListForValueOf(
+                                                  _objCharacter, Improvement.ImprovementType.SkillGroupCategoryDisable)
+                                              .Any(
+                                                  x => GetRelevantSkillCategories.Contains(x.ImprovedName))
+                        ? 1
+                        : 0;
                 }
                 return _intCachedIsDisabled > 0;
             }
@@ -220,14 +228,19 @@ namespace Chummer.Backend.Skills
                         _intCachedCareerIncrease = 0;
                     else
                     {
-                        var firstOrDefault = _lstAffectedSkills.Find(x => x.Enabled);
+                        Skill firstOrDefault = _lstAffectedSkills.Find(x => x.Enabled);
                         if (firstOrDefault != null)
                         {
                             int intFirstSkillTotalBaseRating = firstOrDefault.TotalBaseRating;
                             if (_lstAffectedSkills.Any(x => x.Specializations.Count != 0 || x.TotalBaseRating != intFirstSkillTotalBaseRating && x.Enabled))
                                 _intCachedCareerIncrease = 0;
-                            else if (_objCharacter.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                                                                          (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
+                            else if (ImprovementManager
+                                     .GetCachedImprovementListForValueOf(
+                                         _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name).Count > 0
+                                     || ImprovementManager
+                                        .GetCachedImprovementListForValueOf(
+                                            _objCharacter, Improvement.ImprovementType.SkillGroupCategoryDisable).Any(
+                                            x => GetRelevantSkillCategories.Contains(x.ImprovedName)))
                                 _intCachedCareerIncrease = 0;
                             else if (_lstAffectedSkills.Count == 0)
                                 _intCachedCareerIncrease = RatingMaximum > 0 ? 1 : 0;
@@ -333,7 +346,7 @@ namespace Chummer.Backend.Skills
 
             if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
                 return null;
-
+            
             foreach (SkillGroup objSkillGroup in objSkill.CharacterObject.SkillsSection.SkillGroups)
             {
                 if (objSkillGroup.Name == objSkill.SkillGroup)
@@ -346,18 +359,18 @@ namespace Chummer.Backend.Skills
 
             SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
             objNewGroup.Add(objSkill);
-            objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objNewGroup,
-                (l, r) => string.CompareOrdinal(l.CurrentDisplayName, r.CurrentDisplayName),
-                (l, r) =>
+            objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objNewGroup, SkillsSection.CompareSkillGroups,
+                (objExistingSkillGroup, objNewSkillGroup) =>
                 {
-                    foreach (Skill x in r.SkillList.Where(x => !l.SkillList.Contains(x)))
-                        l.SkillList.Add(x);
+                    foreach (Skill x in objExistingSkillGroup.SkillList.Where(x => !objExistingSkillGroup.SkillList.Contains(x)))
+                        objExistingSkillGroup.Add(x);
+                    objNewSkillGroup.UnbindSkillGroup();
                 });
 
             return objNewGroup;
         }
 
-        private void Add(Skill skill)
+        public void Add(Skill skill)
         {
             _lstAffectedSkills.Add(skill);
             skill.PropertyChanged += SkillOnPropertyChanged;
@@ -418,8 +431,8 @@ namespace Chummer.Backend.Skills
                 _intSkillFromKarma = intTemp;
         }
 
-        private static readonly DependencyGraph<string, SkillGroup> s_SkillGroupDependencyGraph =
-            new DependencyGraph<string, SkillGroup>(
+        private static readonly PropertyDependencyGraph<SkillGroup> s_SkillGroupDependencyGraph =
+            new PropertyDependencyGraph<SkillGroup>(
                 new DependencyGraphNode<string, SkillGroup>(nameof(DisplayRating),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
                     new DependencyGraphNode<string, SkillGroup>(nameof(CareerIncrease),
@@ -495,7 +508,7 @@ namespace Chummer.Backend.Skills
             {
                 case nameof(Skill.BasePoints):
                 case nameof(Skill.FreeBase):
-                    OnMultiplePropertyChanged(nameof(BaseUnbroken), nameof(KarmaUnbroken));
+                    this.OnMultiplePropertyChanged(nameof(BaseUnbroken), nameof(KarmaUnbroken));
                     break;
 
                 case nameof(Skill.KarmaPoints):
@@ -509,11 +522,11 @@ namespace Chummer.Backend.Skills
 
                 case nameof(Skill.TotalBaseRating):
                 case nameof(Skill.Enabled):
-                    OnMultiplePropertyChanged(nameof(CareerIncrease),
-                        nameof(DisplayRating),
-                        nameof(UpgradeToolTip),
-                        nameof(CurrentKarmaCost),
-                        nameof(UpgradeKarmaCost));
+                    this.OnMultiplePropertyChanged(nameof(CareerIncrease),
+                                                   nameof(DisplayRating),
+                                                   nameof(UpgradeToolTip),
+                                                   nameof(CurrentKarmaCost),
+                                                   nameof(UpgradeKarmaCost));
                     break;
             }
         }
@@ -578,10 +591,15 @@ namespace Chummer.Backend.Skills
                 }
                 if (_objCharacter.Created && !CareerIncrease)
                     return LanguageManager.GetString("Label_SkillGroup_Broken");
-                List<Skill> lstEnabledSkills = SkillList.Where(x => x.Enabled).ToList();
-                return lstEnabledSkills.Count > 1
-                    ? lstEnabledSkills.Min(x => x.TotalBaseRating).ToString(GlobalSettings.CultureInfo)
-                    : 0.ToString(GlobalSettings.CultureInfo);
+                int intReturn = int.MaxValue;
+                foreach (Skill objSkill in SkillList)
+                {
+                    if (objSkill.Enabled)
+                        intReturn = Math.Min(intReturn, objSkill.TotalBaseRating);
+                }
+                return intReturn == int.MaxValue
+                    ? 0.ToString(GlobalSettings.CultureInfo)
+                    : intReturn.ToString(GlobalSettings.CultureInfo);
             }
         }
 
@@ -591,26 +609,34 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                System.Text.StringBuilder s = new System.Text.StringBuilder();
-                if (string.IsNullOrEmpty(_strToolTip))
+                if (!string.IsNullOrEmpty(_strToolTip))
+                    return _strToolTip;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTooltip))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    s.Append(LanguageManager.GetString("Tip_SkillGroup_Skills")).Append(strSpace)
-                     .AppendJoin(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)).AppendLine();
-                }
+                    sbdTooltip.Append(LanguageManager.GetString("Tip_SkillGroup_Skills")).Append(strSpace)
+                              .AppendJoin(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)).AppendLine();
 
-                if (IsDisabled)
-                {
-                    s.AppendLine(LanguageManager.GetString("Label_SkillGroup_DisabledBy"));
-                    foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
-                            ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                            (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName)))
-                            && x.Enabled))
+                    if (IsDisabled)
                     {
-                        s.AppendLine(CharacterObject.GetObjectName(objImprovement));
+                        sbdTooltip.AppendLine(LanguageManager.GetString("Label_SkillGroup_DisabledBy"));
+                        List<Improvement> lstImprovements
+                            = ImprovementManager.GetCachedImprovementListForValueOf(
+                                _objCharacter, Improvement.ImprovementType.SkillGroupDisable, Name);
+                        lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
+                                                                       _objCharacter,
+                                                                       Improvement.ImprovementType
+                                                                           .SkillGroupCategoryDisable)
+                                                                   .Where(x => GetRelevantSkillCategories.Contains(
+                                                                              x.ImprovedName)));
+                        foreach (Improvement objImprovement in lstImprovements)
+                        {
+                            sbdTooltip.AppendLine(CharacterObject.GetObjectName(objImprovement));
+                        }
                     }
+
+                    return _strToolTip = sbdTooltip.ToString();
                 }
-                return _strToolTip;
             }
         }
 
@@ -618,9 +644,17 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                List<Skill> lstSkills = SkillList.Where(x => x.Enabled).ToList();
+                int intRating = int.MaxValue;
+                foreach (Skill objSkill in SkillList)
+                {
+                    if (objSkill.Enabled)
+                        intRating = Math.Min(intRating, objSkill.TotalBaseRating);
+                }
+
+                if (intRating == int.MaxValue)
+                    intRating = 0;
                 return string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveItem"),
-                    (lstSkills.Count > 0 ? lstSkills.Min(x => x.TotalBaseRating) : 0) + 1, UpgradeKarmaCost);
+                                     intRating + 1, UpgradeKarmaCost);
             }
         }
 
@@ -679,44 +713,54 @@ namespace Chummer.Backend.Skills
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_SkillGroupDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
+                    _intCachedFreeBase = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(FreeLevels)))
+                    _intCachedFreeLevels = int.MinValue;
+                if (setNamesOfChangedProperties.Contains(nameof(IsDisabled)))
+                    _intCachedIsDisabled = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(CareerIncrease)))
+                    _intCachedCareerIncrease = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)))
+                    _intCachedKarmaUnbroken = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
+                    _intCachedBaseUnbroken = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
+                    _strToolTip = string.Empty;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
-                return;
-
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeBase)))
-                _intCachedFreeBase = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(FreeLevels)))
-                _intCachedFreeLevels = int.MinValue;
-            if (lstNamesOfChangedProperties.Contains(nameof(IsDisabled)))
-                _intCachedIsDisabled = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(CareerIncrease)))
-                _intCachedCareerIncrease = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(KarmaUnbroken)))
-                _intCachedKarmaUnbroken = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(BaseUnbroken)))
-                _intCachedBaseUnbroken = -1;
-            if (lstNamesOfChangedProperties.Contains(nameof(ToolTip)))
-                _strToolTip = string.Empty;
-
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
@@ -756,42 +800,60 @@ namespace Chummer.Backend.Skills
             {
                 int intReturn = BasePoints;
                 int intValue = intReturn;
-
-                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
+                
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string>
+                                                                    lstRelevantCategories))
                 {
-                    if ((objLoopImprovement.Maximum == 0 || intValue <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
+                    lstRelevantCategories.AddRange(GetRelevantSkillCategories);
+                    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                     {
-                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        if ((objLoopImprovement.Maximum == 0 || intValue <= objLoopImprovement.Maximum)
+                            && objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
                         {
-                            switch (objLoopImprovement.ImproveType)
+                            if (objLoopImprovement.ImprovedName == Name
+                                || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                             {
-                                case Improvement.ImprovementType.SkillGroupPointCost:
-                                    decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                                    break;
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillGroupPointCost:
+                                        decExtra += objLoopImprovement.Value
+                                                    * (Math.Min(
+                                                        intValue,
+                                                        objLoopImprovement.Maximum == 0
+                                                            ? int.MaxValue
+                                                            : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                        break;
 
-                                case Improvement.ImprovementType.SkillGroupPointCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
+                                    case Improvement.ImprovementType.SkillGroupPointCostMultiplier:
+                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
                             }
-                        }
-                        else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
-                        {
-                            switch (objLoopImprovement.ImproveType)
+                            else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
                             {
-                                case Improvement.ImprovementType.SkillGroupCategoryPointCost:
-                                    decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                                    break;
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillGroupCategoryPointCost:
+                                        decExtra += objLoopImprovement.Value
+                                                    * (Math.Min(
+                                                        intValue,
+                                                        objLoopImprovement.Maximum == 0
+                                                            ? int.MaxValue
+                                                            : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                        break;
 
-                                case Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
+                                    case Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
                             }
                         }
                     }
                 }
+
                 if (decMultiplier != 1.0m)
                     intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
@@ -819,43 +881,65 @@ namespace Chummer.Backend.Skills
                     intCost *= _objCharacter.Settings.KarmaNewSkillGroup;
                 else
                     intCost *= _objCharacter.Settings.KarmaImproveSkillGroup;
-
-                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
+                
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string>
+                                                                    lstRelevantCategories))
                 {
-                    if (objLoopImprovement.Minimum <= intLower &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) && objLoopImprovement.Enabled)
+                    lstRelevantCategories.AddRange(GetRelevantSkillCategories);
+                    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                     {
-                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        if (objLoopImprovement.Minimum <= intLower &&
+                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                             || (objLoopImprovement.Condition == "career") == _objCharacter.Created
+                             || (objLoopImprovement.Condition == "create") != _objCharacter.Created)
+                            && objLoopImprovement.Enabled)
                         {
-                            switch (objLoopImprovement.ImproveType)
+                            if (objLoopImprovement.ImprovedName == Name
+                                || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                             {
-                                case Improvement.ImprovementType.SkillGroupKarmaCost:
-                                    decExtra += objLoopImprovement.Value * (Math.Min(intUpper, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
-                                    break;
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillGroupKarmaCost:
+                                        decExtra += objLoopImprovement.Value
+                                                    * (Math.Min(
+                                                           intUpper,
+                                                           objLoopImprovement.Maximum == 0
+                                                               ? int.MaxValue
+                                                               : objLoopImprovement.Maximum)
+                                                       - Math.Max(intLower, objLoopImprovement.Minimum - 1));
+                                        break;
 
-                                case Improvement.ImprovementType.SkillGroupKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
+                                    case Improvement.ImprovementType.SkillGroupKarmaCostMultiplier:
+                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
                             }
-                        }
-                        else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
-                        {
-                            switch (objLoopImprovement.ImproveType)
+                            else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
                             {
-                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
-                                    decExtra += objLoopImprovement.Value * (Math.Min(intUpper, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
-                                    break;
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
+                                        decExtra += objLoopImprovement.Value
+                                                    * (Math.Min(
+                                                           intUpper,
+                                                           objLoopImprovement.Maximum == 0
+                                                               ? int.MaxValue
+                                                               : objLoopImprovement.Maximum)
+                                                       - Math.Max(intLower, objLoopImprovement.Minimum - 1));
+                                        break;
 
-                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
+                                    case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
+                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
                             }
                         }
                     }
                 }
+
                 if (decMultiplier != 1.0m)
                     intCost = (intCost * decMultiplier + decExtra).StandardRound();
                 else
@@ -890,40 +974,49 @@ namespace Chummer.Backend.Skills
                 {
                     return -1;
                 }
-
-                HashSet<string> lstRelevantCategories = new HashSet<string>(GetRelevantSkillCategories);
+                
                 decimal decMultiplier = 1.0m;
                 decimal decExtra = 0;
-                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string>
+                                                                    lstRelevantCategories))
                 {
-                    if ((objLoopImprovement.Maximum == 0 || intRating + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intRating + 1 &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                        objLoopImprovement.Enabled)
+                    lstRelevantCategories.AddRange(GetRelevantSkillCategories);
+                    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                     {
-                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        if ((objLoopImprovement.Maximum == 0 || intRating + 1 <= objLoopImprovement.Maximum)
+                            && objLoopImprovement.Minimum <= intRating + 1 &&
+                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                             || (objLoopImprovement.Condition == "career") == _objCharacter.Created
+                             || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                            objLoopImprovement.Enabled)
                         {
-                            switch (objLoopImprovement.ImproveType)
+                            if (objLoopImprovement.ImprovedName == Name
+                                || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                             {
-                                case Improvement.ImprovementType.SkillGroupKarmaCost:
-                                    decExtra += objLoopImprovement.Value;
-                                    break;
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillGroupKarmaCost:
+                                        decExtra += objLoopImprovement.Value;
+                                        break;
 
-                                case Improvement.ImprovementType.SkillGroupKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
+                                    case Improvement.ImprovementType.SkillGroupKarmaCostMultiplier:
+                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
                             }
-                        }
-                        else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
-                        {
-                            switch (objLoopImprovement.ImproveType)
+                            else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
                             {
-                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
-                                    decExtra += objLoopImprovement.Value;
-                                    break;
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
+                                        decExtra += objLoopImprovement.Value;
+                                        break;
 
-                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
+                                    case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
+                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
                             }
                         }
                     }
@@ -968,7 +1061,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// List of skills that belong to this skill group.
         /// </summary>
-        public List<Skill> SkillList => _lstAffectedSkills;
+        public IReadOnlyList<Skill> SkillList => _lstAffectedSkills;
 
         #endregion All the other stuff that is required
     }

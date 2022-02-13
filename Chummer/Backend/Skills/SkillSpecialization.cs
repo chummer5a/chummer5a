@@ -19,15 +19,15 @@
 
 using System;
 using System.Globalization;
-using System.Linq;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Skills
 {
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public class SkillSpecialization : IHasName, IHasXmlNode
+    public class SkillSpecialization : IHasName, IHasXmlDataNode
     {
         private Guid _guiID;
         private string _strName;
@@ -92,15 +92,11 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("skillspecialization");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalSettings.InvariantCultureInfo));
-            int intSpecializationBonus = _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects
-                                                                             && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)
-                ? 0
-                : SpecializationBonus;
-            objWriter.WriteElementString("specbonus", intSpecializationBonus.ToString(objCulture));
+            objWriter.WriteElementString("free", Free.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("specbonus", SpecializationBonus.ToString(objCulture));
             objWriter.WriteEndElement();
         }
 
@@ -121,7 +117,7 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
+            return GetNodeXPath(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -137,19 +133,26 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + "]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData) return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = Parent?.GetNodeXPath(strLanguage)?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         /// <summary>
@@ -164,6 +167,7 @@ namespace Chummer.Backend.Skills
                 {
                     _strName = value;
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                 }
             }
         }
@@ -181,7 +185,37 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The bonus this specialization gives to relevant dicepools
         /// </summary>
-        public int SpecializationBonus => _objCharacter.Settings.SpecializationBonus + (Expertise ? 1 : 0);
+        public int SpecializationBonus
+        {
+            get
+            {
+                int intReturn = 0;
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(_objCharacter,
+                                                        Improvement.ImprovementType.DisableSpecializationEffects, Name)
+                    .Count == 0)
+                {
+                    intReturn += _objCharacter.Settings.SpecializationBonus;
+                    if (Expertise)
+                        intReturn += 1;
+                }
+                decimal decBonus = 0;
+                foreach (Improvement objImprovement in Parent.RelevantImprovements(x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true))
+                {
+                    switch (objImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.Skill:
+                        case Improvement.ImprovementType.SkillBase:
+                        case Improvement.ImprovementType.SkillCategory:
+                        case Improvement.ImprovementType.SkillGroup:
+                        case Improvement.ImprovementType.SkillGroupBase:
+                            decBonus += objImprovement.Rating;
+                            break;
+                    }
+                }
+                return intReturn + decBonus.StandardRound();
+            }
+        }
 
         #endregion Properties
     }

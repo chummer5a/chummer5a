@@ -71,6 +71,7 @@ namespace Chummer.Tests
             float fltLightGrayLightness = Color.LightGray.GetBrightness();
             float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
             Assert.IsTrue(fltLightGrayDarkModeLightness < fltLightGrayLightness);
+
             Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
             Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
             float fltRedHue = Color.Red.GetHue();
@@ -79,6 +80,15 @@ namespace Chummer.Tests
             Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
             Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
             Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
+
+            Color objColorChocolateInvert = ColorManager.GenerateInverseDarkModeColor(Color.Chocolate);
+            Color objColorChocolateInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvert);
+            float fltChocolateHue = Color.Chocolate.GetHue();
+            float fltChocolateInvertDarkHue = objColorChocolateInvertDark.GetHue();
+            Assert.IsTrue(Math.Abs(fltChocolateInvertDarkHue - fltChocolateHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorChocolateInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorChocolateInvertDark);
+            Color objColorChocolateInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorChocolateInvertDarkInvert);
+            Assert.IsTrue(objColorChocolateInvertDark == objColorChocolateInvertDarkInvertDark);
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
@@ -86,12 +96,12 @@ namespace Chummer.Tests
         public void Test01_BasicStartup()
         {
             Debug.WriteLine("Unit test initialized for: Test01_BasicStartup()");
-            frmChummerMain frmOldMainForm = Program.MainForm;
-            frmChummerMain frmTestForm = null;
+            ChummerMainForm frmOldMainForm = Program.MainForm;
+            ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = new frmChummerMain(true)
+                frmTestForm = new ChummerMainForm(true)
                 {
                     WindowState = FormWindowState.Minimized,
                     ShowInTaskbar =
@@ -99,11 +109,18 @@ namespace Chummer.Tests
                 };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // Show the main form so that we know the UI can load in properly
-                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                while
+                    (!frmTestForm
+                        .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
                     Utils.SafeSleep(true);
                 }
+
                 frmTestForm.Close();
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
             }
             finally
             {
@@ -218,16 +235,16 @@ namespace Chummer.Tests
         public void Test05_LoadCharacterForms()
         {
             Debug.WriteLine("Unit test initialized for: Test05_LoadCharacterForms()");
-            frmChummerMain frmOldMainForm = Program.MainForm;
-            frmChummerMain frmTestForm = null;
+            ChummerMainForm frmOldMainForm = Program.MainForm;
+            ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = new frmChummerMain(true)
+                frmTestForm = new ChummerMainForm(true)
                 {
                     WindowState = FormWindowState.Minimized,
                     ShowInTaskbar =
-                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
                 };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
@@ -242,8 +259,8 @@ namespace Chummer.Tests
                         try
                         {
                             using (CharacterShared frmCharacterForm = objCharacter.Created
-                                ? (CharacterShared)new frmCareer(objCharacter)
-                                : new frmCreate(objCharacter))
+                                ? (CharacterShared)new CharacterCareer(objCharacter)
+                                : new CharacterCreate(objCharacter))
                             {
                                 frmCharacterForm.MdiParent = frmTestForm;
                                 frmCharacterForm.ShowInTaskbar = false;
@@ -273,7 +290,8 @@ namespace Chummer.Tests
         /// <summary>
         /// Validate that a given list of Characters can be successfully loaded.
         /// </summary>
-        private static Character LoadCharacter(FileSystemInfo objFileInfo)
+        // ReSharper disable once SuggestBaseTypeForParameter
+        private static Character LoadCharacter(FileInfo objFileInfo)
         {
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             Character objCharacter = null;

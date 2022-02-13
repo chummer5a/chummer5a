@@ -78,7 +78,7 @@
         <specificskill xpathfilter="name = 'Artificing'" amendoperation="remove" />
         <skilldisable xpathfilter=". = 'Disenchanting'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Disenchanting'" amendoperation="remove" />
-        <skillgroupdisable xpathfilter=". 'Enchanting'" amendoperation="remove" />
+        <skillgroupdisable xpathfilter=". = 'Enchanting'" amendoperation="remove" />
       </bonus>
       <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
@@ -258,6 +258,16 @@
       </bonus>
     </quality>
     <quality>
+      <name>Acrobatic Defender</name>
+      <hide />
+    </quality>
+    <quality>
+      <id>b5f6d958-2563-431b-a7a4-a9028a9f0277</id>
+      <!-- Used to be Perceptive Defender -->
+      <name>Deductive Defender</name>
+      <karma>3</karma>
+    </quality>
+    <quality>
       <name>Vehicle Empathy</name>
       <bonus>
         <skillcategory xpathfilter="name = 'Vehicle Active'" amendoperation="remove" />
@@ -277,6 +287,11 @@
     </quality>
     <quality>
       <name>Enchanter</name>
+      <hide />
+    </quality>
+    <quality>
+      <!-- Sharper Knife from Delnar's One Karma Qualities (Not needed because everything is now defaultable) -->
+      <id>60dcf3b1-8b34-4c4f-a2f5-0131bd5dc13b</id>
       <hide />
     </quality>
   </qualities>

@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -44,14 +43,14 @@ namespace Chummer.Backend.Equipment
     {
         Month = 0,
         Week = 1,
-        Day = 2,
+        Day = 2
     }
 
     /// <summary>
     /// Lifestyle.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyPropertyChanged
+    public sealed class Lifestyle : IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyMultiplePropertyChanged, IDisposable, IHasCost
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
@@ -90,7 +89,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnTrustFund;
         private LifestyleType _eType = LifestyleType.Standard;
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
-        private readonly ObservableCollection<LifestyleQuality> _lstFreeGrids = new ObservableCollection<LifestyleQuality>();
+        private readonly EnhancedObservableCollection<LifestyleQuality> _lstFreeGrids = new EnhancedObservableCollection<LifestyleQuality>();
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
@@ -154,7 +153,10 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Lifestyle.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            LifestyleQualities.CollectionChanged += QualitiesCollectionChanged;
+            LifestyleQualities.CollectionChanged += LifestyleQualitiesCollectionChanged;
+            LifestyleQualities.BeforeClearCollectionChanged += LifestyleQualitiesOnBeforeClearCollectionChanged;
+            FreeGrids.CollectionChanged += FreeGridsOnCollectionChanged;
+            FreeGrids.BeforeClearCollectionChanged += FreeGridsOnBeforeClearCollectionChanged;
         }
 
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
@@ -167,7 +169,11 @@ namespace Chummer.Backend.Equipment
                 Utils.BreakIfDebug();
             }
             else
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objXmlLifestyle.TryGetStringFieldQuickly("name", ref _strBaseLifestyle);
             objXmlLifestyle.TryGetDecFieldQuickly("cost", ref _decCost);
             objXmlLifestyle.TryGetInt32FieldQuickly("dice", ref _intDice);
@@ -197,19 +203,19 @@ namespace Chummer.Backend.Equipment
 
             XPathNavigator xmlLifestyleXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             XPathNavigator xmlLifestyleNode =
-                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + ']');
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
             // Area.
             xmlLifestyleNode =
-                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + ']');
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
             // Security.
             xmlLifestyleNode =
-                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
+                xmlLifestyleXPathDocument.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + ']');
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
             xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
             if (_objCharacter.Settings.BookEnabled("HT") || _objCharacter.Settings.AllowFreeGrids)
@@ -228,7 +234,7 @@ namespace Chummer.Backend.Equipment
                     XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                     foreach (XmlNode xmlNode in lstGridNodes)
                     {
-                        XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = " + xmlNode.InnerText.CleanXPath() + "]");
+                        XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = " + xmlNode.InnerText.CleanXPath() + ']');
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         string strPush = xmlNode.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrWhiteSpace(strPush))
@@ -320,8 +326,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
-
-            _objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
@@ -336,10 +340,12 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(this.GetNode);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (blnCopy)
             {
@@ -373,8 +379,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             XPathNavigator xmlLifestyles = _objCharacter.LoadDataXPath("lifestyles.xml");
-            if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]") == null
-                && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =" + Name.CleanXPath() + "]") != null)
+            if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + ']') == null
+                && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =" + Name.CleanXPath() + ']') != null)
             {
                 (_strName, _strBaseLifestyle) = (_strBaseLifestyle, _strName);
             }
@@ -383,25 +389,33 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("lifestylename", ref _strBaseLifestyle);
                 if (string.IsNullOrWhiteSpace(_strBaseLifestyle))
                 {
-                    List<ListItem> lstQualities = new List<ListItem>(1);
-                    foreach (XmlNode xmlLifestyle in xmlLifestyles.SelectAndCacheExpression("/chummer/lifestyles/lifestyle"))
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
                     {
-                        string strName = xmlLifestyle.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Error");
-                        lstQualities.Add(new ListItem(strName, xmlLifestyle.SelectSingleNode("translate")?.Value ?? strName));
-                    }
-
-                    using (frmSelectItem frmSelect = new frmSelectItem
-                    {
-                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_CannotFindLifestyle"), _strName)
-                    })
-                    {
-                        frmSelect.SetGeneralItemsMode(lstQualities);
-                        if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        foreach (XPathNavigator xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(
+                                     "/chummer/lifestyles/lifestyle"))
                         {
-                            _guiID = Guid.Empty;
-                            return;
+                            string strName = xmlLifestyle.SelectSingleNode("name")?.Value
+                                             ?? LanguageManager.GetString("String_Error");
+                            lstQualities.Add(
+                                new ListItem(strName, xmlLifestyle.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                         }
-                        _strBaseLifestyle = frmSelect.SelectedItem;
+
+                        using (SelectItem frmSelect = new SelectItem
+                               {
+                                   Description = string.Format(GlobalSettings.CultureInfo,
+                                                               LanguageManager.GetString("String_CannotFindLifestyle"),
+                                                               _strName)
+                               })
+                        {
+                            frmSelect.SetGeneralItemsMode(lstQualities);
+                            if (frmSelect.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
+                            {
+                                _guiID = Guid.Empty;
+                                return;
+                            }
+
+                            _strBaseLifestyle = frmSelect.SelectedItem;
+                        }
                     }
                 }
             }
@@ -412,7 +426,7 @@ namespace Chummer.Backend.Equipment
                 && _strBaseLifestyle != "Street"
                 && (_decCostForArea != 0 || _decCostForComforts != 0 || _decCostForSecurity != 0))
             {
-                XmlNode xmlDataNode = GetNode();
+                XmlNode xmlDataNode = objMyNode.Value;
                 if (xmlDataNode != null)
                 {
                     xmlDataNode.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
@@ -421,32 +435,32 @@ namespace Chummer.Backend.Equipment
                 }
             }
             if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
-                GetNode()?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
+                objMyNode.Value?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
                 _intBonusLP = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
 
             if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
             {
                 XPathNavigator xmlLifestyleNode =
-                    xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]");
+                    xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + ']');
                 xmlLifestyleNode.TryGetInt32FieldQuickly("lp", ref _intLP);
             }
             if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
             {
                 XPathNavigator xmlLifestyleNode =
-                    xmlLifestyles.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
+                    xmlLifestyles.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + ']');
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
                 // Area.
                 xmlLifestyleNode =
-                    xmlLifestyles.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
+                    xmlLifestyles.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + ']');
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
                 // Security.
                 xmlLifestyleNode =
-                    xmlLifestyles.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
+                    xmlLifestyles.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + ']');
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
             }
@@ -491,7 +505,7 @@ namespace Chummer.Backend.Equipment
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
-                        _lstFreeGrids.Add(objQuality);
+                        FreeGrids.Add(objQuality);
                     }
                 }
             }
@@ -513,14 +527,8 @@ namespace Chummer.Backend.Equipment
             }
             else if (_eType == LifestyleType.Safehouse)
                 _eIncrement = LifestyleIncrement.Week;
-            else
-            {
-                XmlNode xmlLifestyleNode = GetNode();
-                if (xmlLifestyleNode?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
-                {
-                    _eIncrement = ConvertToLifestyleIncrement(strTemp);
-                }
-            }
+            else if (objMyNode.Value?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
+                _eIncrement = ConvertToLifestyleIncrement(strTemp);
             LegacyShim(objNode);
         }
 
@@ -533,7 +541,7 @@ namespace Chummer.Backend.Equipment
             if (_objCharacter.LastSavedVersion > new Version(5, 197, 0) ||
                 xmlLifestyleNode["costforarea"] != null) return;
             XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
-            XPathNavigator objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]");
+            XPathNavigator objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + ']');
             if (objLifestyleQualityNode != null)
             {
                 decimal decTemp = 0.0m;
@@ -556,19 +564,19 @@ namespace Chummer.Backend.Equipment
 
             // Calculate the limits of the 3 aspects.
             // Area.
-            XPathNavigator objXmlNode = objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
+            XPathNavigator objXmlNode = objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + ']');
             objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
             objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
             BaseArea = intMinArea;
             AreaMaximum = Math.Max(intMaxArea, intMinArea);
             // Comforts.
-            objXmlNode = objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
+            objXmlNode = objXmlDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + ']');
             objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
             objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
             BaseComforts = intMinComfort;
             ComfortsMaximum = Math.Max(intMaxComfort, intMinComfort);
             // Security.
-            objXmlNode = objXmlDocument.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
+            objXmlNode = objXmlDocument.SelectSingleNode("/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + ']');
             objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
             objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
             BaseSecurity = intMinSec;
@@ -620,10 +628,11 @@ namespace Chummer.Backend.Equipment
             // Retrieve the Advanced Lifestyle information if applicable.
             if (!string.IsNullOrEmpty(BaseLifestyle))
             {
-                XmlNode objXmlAspect = GetNode();
+                XPathNavigator objXmlAspect = this.GetNodeXPath();
                 if (objXmlAspect != null)
                 {
-                    strBaseLifestyle = objXmlAspect["translate"]?.InnerText ?? objXmlAspect["name"]?.InnerText ?? strBaseLifestyle;
+                    strBaseLifestyle = objXmlAspect.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                       ?? objXmlAspect.SelectSingleNode("name")?.Value ?? strBaseLifestyle;
                 }
             }
 
@@ -658,7 +667,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
-        public ObservableCollection<LifestyleQuality> FreeGrids => _lstFreeGrids;
+        public EnhancedObservableCollection<LifestyleQuality> FreeGrids => _lstFreeGrids;
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -666,13 +675,19 @@ namespace Chummer.Backend.Equipment
         public Guid SourceID
         {
             get => _guiSourceID;
-            set => _guiSourceID = value;
+            set
+            {
+                if (_guiSourceID == value)
+                    return;
+                _guiSourceID = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public string SourceIDString => SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// A custom name for the Lifestyle assigned by the player.
@@ -680,13 +695,19 @@ namespace Chummer.Backend.Equipment
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (_strName == value)
+                    return;
+                _strName = value;
+                OnPropertyChanged();
+            }
         }
 
         public string CustomName
         {
-            get => _strName;
-            set => _strName = value;
+            get => Name;
+            set => Name = value;
         }
 
         /// <summary>
@@ -698,7 +719,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return BaseLifestyle;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? BaseLifestyle;
+            return GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? BaseLifestyle;
         }
 
         /// <summary>
@@ -722,7 +743,13 @@ namespace Chummer.Backend.Equipment
         public string Source
         {
             get => _strSource;
-            set => _strSource = value;
+            set
+            {
+                if (_strSource == value)
+                    return;
+                _strSource = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -731,7 +758,13 @@ namespace Chummer.Backend.Equipment
         public string Page
         {
             get => _strPage;
-            set => _strPage = value;
+            set
+            {
+                if (_strPage == value)
+                    return;
+                _strPage = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -744,7 +777,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -754,7 +787,13 @@ namespace Chummer.Backend.Equipment
         public decimal Cost
         {
             get => _decCost;
-            set => _decCost = value;
+            set
+            {
+                if (_decCost == value)
+                    return;
+                _decCost = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -763,7 +802,13 @@ namespace Chummer.Backend.Equipment
         public int Dice
         {
             get => _intDice;
-            set => _intDice = value;
+            set
+            {
+                if (_intDice == value)
+                    return;
+                _intDice = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -772,7 +817,13 @@ namespace Chummer.Backend.Equipment
         public decimal Multiplier
         {
             get => _decMultiplier;
-            set => _decMultiplier = value;
+            set
+            {
+                if (_decMultiplier == value)
+                    return;
+                _decMultiplier = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -781,7 +832,13 @@ namespace Chummer.Backend.Equipment
         public int Increments
         {
             get => _intIncrements;
-            set => _intIncrements = value;
+            set
+            {
+                if (_intIncrements == value)
+                    return;
+                _intIncrements = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -813,7 +870,8 @@ namespace Chummer.Backend.Equipment
             get => _strBaseLifestyle;
             set
             {
-                if (_strBaseLifestyle == value) return;
+                if (_strBaseLifestyle == value)
+                    return;
                 _strBaseLifestyle = value;
                 XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                 // This needs a handler for translations, will fix later.
@@ -830,13 +888,10 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    foreach (LifestyleQuality objQuality in LifestyleQualities.Where(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole").ToList())
-                    {
-                        LifestyleQualities.Remove(objQuality);
-                    }
+                    LifestyleQualities.RemoveAll(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole");
                 }
 
-                XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + value.CleanXPath() + "]");
+                XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + value.CleanXPath() + ']');
                 if (xmlLifestyle != null)
                 {
                     _strBaseLifestyle = string.Empty;
@@ -859,6 +914,8 @@ namespace Chummer.Backend.Equipment
                     _intSecurityMaximum = 0;
                     Create(xmlLifestyle);
                 }
+
+                OnPropertyChanged();
             }
         }
 
@@ -870,7 +927,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total LP cost of the Lifestyle, including all qualities, roommates, bonus LP, etc.
         /// </summary>
-        public int TotalLP => LP - Comforts - Area - Security + Roommates + BonusLP - LifestyleQualities.Count(x => x.OriginSource != QualitySource.BuiltIn);
+        public int TotalLP => LP - Comforts - Area - Security + Roommates + BonusLP - LifestyleQualities.Sum(x => x.LP);
 
         /// <summary>
         /// Free Lifestyle points from Traveler lifestyle.
@@ -878,7 +935,13 @@ namespace Chummer.Backend.Equipment
         public int BonusLP
         {
             get => _intBonusLP;
-            set => _intBonusLP = value;
+            set
+            {
+                if (_intBonusLP == value)
+                    return;
+                _intBonusLP = value;
+                OnPropertyChanged();
+            }
         }
 
         public bool AllowBonusLP => _blnAllowBonusLP;
@@ -889,7 +952,13 @@ namespace Chummer.Backend.Equipment
         public int Comforts
         {
             get => _intComforts;
-            set => _intComforts = value;
+            set
+            {
+                if (_intComforts == value)
+                    return;
+                _intComforts = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -898,7 +967,13 @@ namespace Chummer.Backend.Equipment
         public int BaseComforts
         {
             get => _intBaseComforts;
-            set => _intBaseComforts = value;
+            set
+            {
+                if (_intBaseComforts == value)
+                    return;
+                _intBaseComforts = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -907,7 +982,13 @@ namespace Chummer.Backend.Equipment
         public int BaseArea
         {
             get => _intBaseArea;
-            set => _intBaseArea = value;
+            set
+            {
+                if (_intBaseArea == value)
+                    return;
+                _intBaseArea = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -916,7 +997,13 @@ namespace Chummer.Backend.Equipment
         public int BaseSecurity
         {
             get => _intBaseSecurity;
-            set => _intBaseSecurity = value;
+            set
+            {
+                if (_intBaseSecurity == value)
+                    return;
+                _intBaseSecurity = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -925,7 +1012,13 @@ namespace Chummer.Backend.Equipment
         public int Area
         {
             get => _intArea;
-            set => _intArea = value;
+            set
+            {
+                if (_intArea == value)
+                    return;
+                _intArea = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -943,7 +1036,13 @@ namespace Chummer.Backend.Equipment
         public int Security
         {
             get => _intSecurity;
-            set => _intSecurity = value;
+            set
+            {
+                if (_intSecurity == value)
+                    return;
+                _intSecurity = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -967,34 +1066,55 @@ namespace Chummer.Backend.Equipment
         public int AreaMaximum
         {
             get => _intAreaMaximum;
-            set => _intAreaMaximum = value;
+            set
+            {
+                if (_intAreaMaximum == value)
+                    return;
+                _intAreaMaximum = value;
+                OnPropertyChanged();
+            }
         }
 
         public int ComfortsMaximum
         {
             get => _intComfortsMaximum;
-            set => _intComfortsMaximum = value;
+            set
+            {
+                if (_intComfortsMaximum == value)
+                    return;
+                _intComfortsMaximum = value;
+                OnPropertyChanged();
+            }
         }
 
         public int SecurityMaximum
         {
             get => _intSecurityMaximum;
-            set => _intSecurityMaximum = value;
+            set
+            {
+                if (_intSecurityMaximum == value)
+                    return;
+                _intSecurityMaximum = value;
+                OnPropertyChanged();
+            }
         }
 
-        public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities.Where(x =>
-            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.ComfortMaximum);
+        public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities
+                                                             .Where(x => x.OriginSource != QualitySource.BuiltIn)
+                                                             .Sum(lq => lq.ComfortMaximum);
 
-        public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities.Where(x =>
-            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.SecurityMaximum);
+        public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities
+                                                             .Where(x => x.OriginSource != QualitySource.BuiltIn)
+                                                             .Sum(lq => lq.SecurityMaximum);
 
-        public int TotalAreaMaximum => AreaMaximum + LifestyleQualities.Where(x =>
-    x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.AreaMaximum);
+        public int TotalAreaMaximum => AreaMaximum + LifestyleQualities
+                                                     .Where(x => x.OriginSource != QualitySource.BuiltIn)
+                                                     .Sum(lq => lq.AreaMaximum);
 
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
-        public ObservableCollection<LifestyleQuality> LifestyleQualities { get; } = new ObservableCollection<LifestyleQuality>();
+        public EnhancedObservableCollection<LifestyleQuality> LifestyleQualities { get; } = new EnhancedObservableCollection<LifestyleQuality>();
 
         /// <summary>
         /// Notes.
@@ -1002,7 +1122,13 @@ namespace Chummer.Backend.Equipment
         public string Notes
         {
             get => _strNotes;
-            set => _strNotes = value;
+            set
+            {
+                if (_strNotes == value)
+                    return;
+                _strNotes = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1011,7 +1137,13 @@ namespace Chummer.Backend.Equipment
         public Color NotesColor
         {
             get => _colNotes;
-            set => _colNotes = value;
+            set
+            {
+                if (_colNotes == value)
+                    return;
+                _colNotes = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1020,7 +1152,13 @@ namespace Chummer.Backend.Equipment
         public LifestyleType StyleType
         {
             get => _eType;
-            set => _eType = value;
+            set
+            {
+                if (_eType == value)
+                    return;
+                _eType = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1029,7 +1167,13 @@ namespace Chummer.Backend.Equipment
         public LifestyleIncrement IncrementType
         {
             get => _eIncrement;
-            set => _eIncrement = value;
+            set
+            {
+                if (_eIncrement == value)
+                    return;
+                _eIncrement = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1038,7 +1182,13 @@ namespace Chummer.Backend.Equipment
         public int Roommates
         {
             get => _intRoommates;
-            set => _intRoommates = value;
+            set
+            {
+                if (_intRoommates == value)
+                    return;
+                _intRoommates = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1047,7 +1197,13 @@ namespace Chummer.Backend.Equipment
         public decimal Percentage
         {
             get => _decPercentage;
-            set => _decPercentage = value;
+            set
+            {
+                if (_decPercentage == value)
+                    return;
+                _decPercentage = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1056,7 +1212,13 @@ namespace Chummer.Backend.Equipment
         public bool TrustFund
         {
             get => _blnTrustFund && IsTrustFundEligible;
-            set => _blnTrustFund = value;
+            set
+            {
+                if (_blnTrustFund == value)
+                    return;
+                _blnTrustFund = value;
+                OnPropertyChanged();
+            }
         }
 
         public bool IsTrustFundEligible => StaticIsTrustFundEligible(_objCharacter, BaseLifestyle);
@@ -1084,7 +1246,13 @@ namespace Chummer.Backend.Equipment
         public bool PrimaryTenant
         {
             get => _blnIsPrimaryTenant || Roommates == 0 || TrustFund;
-            set => _blnIsPrimaryTenant = value;
+            set
+            {
+                if (_blnIsPrimaryTenant == value)
+                    return;
+                _blnIsPrimaryTenant = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1093,7 +1261,13 @@ namespace Chummer.Backend.Equipment
         public decimal CostForArea
         {
             get => _decCostForArea;
-            set => _decCostForArea = value;
+            set
+            {
+                if (_decCostForArea == value)
+                    return;
+                _decCostForArea = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1102,7 +1276,13 @@ namespace Chummer.Backend.Equipment
         public decimal CostForComforts
         {
             get => _decCostForComforts;
-            set => _decCostForComforts = value;
+            set
+            {
+                if (_decCostForComforts == value)
+                    return;
+                _decCostForComforts = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1111,7 +1291,13 @@ namespace Chummer.Backend.Equipment
         public decimal CostForSecurity
         {
             get => _decCostForSecurity;
-            set => _decCostForSecurity = value;
+            set
+            {
+                if (_decCostForSecurity == value)
+                    return;
+                _decCostForSecurity = value;
+                OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1120,53 +1306,96 @@ namespace Chummer.Backend.Equipment
         public int SortOrder
         {
             get => _intSortOrder;
-            set => _intSortOrder = value;
+            set
+            {
+                if (_intSortOrder == value)
+                    return;
+                _intSortOrder = value;
+                OnPropertyChanged();
+            }
         }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                        ? "/chummer/lifestyles/lifestyle[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalSettings.InvariantCultureInfo,
-                            "/chummer/lifestyles/lifestyle[id = {0} or id = {1}]",
-                            SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
+                                               .SelectSingleNode(SourceID == Guid.Empty
+                                                                     ? "/chummer/lifestyles/lifestyle[name = "
+                                                                       + Name.CleanXPath() + ']'
+                                                                     : "/chummer/lifestyles/lifestyle[id = "
+                                                                       + SourceIDString.CleanXPath() + " or id = "
+                                                                       + SourceIDString.ToUpperInvariant()
+                                                                           .CleanXPath()
+                                                                       + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public XPathNavigator GetNodeXPath(string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage)
+                                                 .SelectSingleNode(SourceID == Guid.Empty
+                                                                       ? "/chummer/lifestyles/lifestyle[name = "
+                                                                         + Name.CleanXPath() + ']'
+                                                                       : "/chummer/lifestyles/lifestyle[id = "
+                                                                         + SourceIDString.CleanXPath() + " or id = "
+                                                                         + SourceIDString.ToUpperInvariant()
+                                                                             .CleanXPath()
+                                                                         + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         /// <summary>
         /// Calculates the Expected Value of an Lifestyle at chargen under the assumption that the average value was rolled
         /// </summary>
-        public decimal ExpectedValue => _intDice * (decimal)3.5 * _decMultiplier;
+        public decimal ExpectedValue => 3.5m * Dice * Multiplier;
 
         public string City
         {
             get => _strCity;
-            set => _strCity = value;
+            set
+            {
+                if (_strCity == value)
+                    return;
+                _strCity = value;
+                OnPropertyChanged();
+            }
         }
 
         public string District
         {
             get => _strDistrict;
-            set => _strDistrict = value;
+            set
+            {
+                if (_strDistrict == value)
+                    return;
+                _strDistrict = value;
+                OnPropertyChanged();
+            }
         }
 
         public string Borough
         {
             get => _strBorough;
-            set => _strBorough = value;
+            set
+            {
+                if (_strBorough == value)
+                    return;
+                _strBorough = value;
+                OnPropertyChanged();
+            }
         }
 
         #endregion Properties
@@ -1184,7 +1413,7 @@ namespace Chummer.Backend.Equipment
             {
                 decimal d = (Roommates + Area + Comforts + Security) * 10;
                 d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost, false, BaseLifestyle, true, true);
-                if (_eType == LifestyleType.Standard)
+                if (StyleType == LifestyleType.Standard)
                 {
                     d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost);
                     d += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.BasicLifestyleCost, false, BaseLifestyle);
@@ -1282,7 +1511,7 @@ namespace Chummer.Backend.Equipment
 
                 if (!PrimaryTenant)
                 {
-                    decReturn /= _intRoommates + 1.0m;
+                    decReturn /= Roommates + 1.0m;
                 }
                 decReturn *= Percentage / 100;
 
@@ -1364,9 +1593,71 @@ namespace Chummer.Backend.Equipment
             ++Increments;
         }
 
-        private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void FreeGridsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Move) return;
+            foreach (LifestyleQuality objQuality in e.OldItems)
+            {
+                if (!LifestyleQualities.Contains(objQuality))
+                    objQuality.Dispose();
+            }
+        }
+
+        private void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (LifestyleQuality objQuality in e.OldItems)
+                    {
+                        if (!LifestyleQualities.Contains(objQuality))
+                            objQuality.Dispose();
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    List<LifestyleQuality> lstNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToList();
+                    foreach (LifestyleQuality objQuality in e.OldItems)
+                    {
+                        if (!lstNewLifestyleQualities.Contains(objQuality) && !LifestyleQualities.Contains(objQuality))
+                            objQuality.Dispose();
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    return;
+            }
+            OnPropertyChanged(nameof(FreeGrids));
+        }
+
+        private void LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (LifestyleQuality objQuality in e.OldItems)
+            {
+                if (!FreeGrids.Contains(objQuality))
+                    objQuality.Dispose();
+            }
+        }
+
+        private void LifestyleQualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (LifestyleQuality objQuality in e.OldItems)
+                    {
+                        if (!FreeGrids.Contains(objQuality))
+                            objQuality.Dispose();
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    List<LifestyleQuality> lstNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToList();
+                    foreach (LifestyleQuality objQuality in e.OldItems)
+                    {
+                        if (!lstNewLifestyleQualities.Contains(objQuality) && !FreeGrids.Contains(objQuality))
+                            objQuality.Dispose();
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    return;
+            }
             OnPropertyChanged(nameof(LifestyleQualities));
         }
 
@@ -1398,37 +1689,101 @@ namespace Chummer.Backend.Equipment
 
         #endregion Methods
 
-        private static readonly DependencyGraph<string, Lifestyle> s_LifestyleDependencyGraph =
-            new DependencyGraph<string, Lifestyle>(
+        private static readonly PropertyDependencyGraph<Lifestyle> s_LifestyleDependencyGraph =
+            new PropertyDependencyGraph<Lifestyle>(
+                new DependencyGraphNode<string, Lifestyle>(nameof(AreaDelta),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalAreaMaximum),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(AreaMaximum))
+                    ),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseArea))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(TotalArea),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseArea)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(FormattedArea),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseArea)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalAreaMaximum))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(ComfortsDelta),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalComfortsMaximum),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(ComfortsMaximum))
+                    ),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseComforts))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(TotalComforts),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseComforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(FormattedComforts),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseComforts)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalComfortsMaximum))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(SecurityDelta),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalSecurityMaximum),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(SecurityMaximum))
+                    ),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseSecurity))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(TotalSecurity),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseSecurity)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(FormattedSecurity),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseSecurity)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalAreaMaximum))
+                ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(DisplayTotalMonthlyCost),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost),
-                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedArea),
-                                new DependencyGraphNode<string, Lifestyle>(nameof(AreaDelta),
-                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalArea),
-                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalAreaMaximum),
-                                            new DependencyGraphNode<string, Lifestyle>(nameof(Area),
-                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseArea)
-                                                )))))),
-                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedComforts),
-                                new DependencyGraphNode<string, Lifestyle>(nameof(ComfortsDelta),
-                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalComforts),
-                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalComfortsMaximum),
-                                            new DependencyGraphNode<string, Lifestyle>(nameof(Comforts),
-                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseComforts)
-                                                )))))),
-                            new DependencyGraphNode<string, Lifestyle>(nameof(FormattedSecurity),
-                                new DependencyGraphNode<string, Lifestyle>(nameof(SecurityDelta),
-                                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalSecurity),
-                                        new DependencyGraphNode<string, Lifestyle>(nameof(TotalSecurityMaximum),
-                                            new DependencyGraphNode<string, Lifestyle>(nameof(Security),
-                                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseSecurity)
-                                                )))))),
-                            new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
-                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
-                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForComforts)),
-                            new DependencyGraphNode<string, Lifestyle>(nameof(CostForSecurity))
-                        ))),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(IsTrustFundEligible),
+                                new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
+                            )
+                        ),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost), x => x.TrustFund),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForArea)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForComforts)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CostForSecurity)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(PrimaryTenant),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund))
+                        ),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates), x => !x.PrimaryTenant),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(IncrementType)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Percentage))
+                    )
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(BaseCost),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Cost)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(CostMultiplier),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Security)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(StyleType)),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
+                    ),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(BaseCostMultiplier),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
+                    )
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost))
+                ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalLP),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Comforts)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Area)),
@@ -1436,41 +1791,76 @@ namespace Chummer.Backend.Equipment
                     new DependencyGraphNode<string, Lifestyle>(nameof(Roommates)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(BonusLP)),
                     new DependencyGraphNode<string, Lifestyle>(nameof(LifestyleQualities))
-                        ),
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(ExpectedValue),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Dice)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Multiplier))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(Purchased),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(IncrementsRequiredForPermanent),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(IncrementType))
+                    )
+                ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, Lifestyle>(nameof(DisplayName),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(CustomName)),
-                        new DependencyGraphNode<string, Lifestyle>(nameof(DisplayNameShort)))
-                    ));
+                        new DependencyGraphNode<string, Lifestyle>(nameof(CustomName),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(Name))
+                        ),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(DisplayNameShort),
+                            new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
+                        )
+                    )
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(SourceIDString),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(SourceID))
+                ),
+                new DependencyGraphNode<string, Lifestyle>(nameof(SourceDetail),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(Source)),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(DisplayPage),
+                        new DependencyGraphNode<string, Lifestyle>(nameof(Page))
+                    )
+                )
+            );
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            OnMultiplePropertyChanged(strPropertyName);
+            this.OnMultiplePropertyChanged(strPropertyName);
         }
 
-        public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            ICollection<string> lstNamesOfChangedProperties = null;
-            foreach (string strPropertyName in lstPropertyNames)
+            HashSet<string> setNamesOfChangedProperties = null;
+            try
             {
-                if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName);
-                else
+                foreach (string strPropertyName in lstPropertyNames)
                 {
-                    foreach (string strLoopChangedProperty in s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName))
-                        lstNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    if (setNamesOfChangedProperties == null)
+                        setNamesOfChangedProperties
+                            = s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName, true);
+                    else
+                    {
+                        foreach (string strLoopChangedProperty in s_LifestyleDependencyGraph
+                                     .GetWithAllDependentsEnumerable(this, strPropertyName))
+                            setNamesOfChangedProperties.Add(strLoopChangedProperty);
+                    }
+                }
+
+                if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
+                    return;
+
+                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                {
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                 }
             }
-
-            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
-                return;
-
-            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
+            finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                if (setNamesOfChangedProperties != null)
+                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
             }
         }
 
@@ -1478,7 +1868,10 @@ namespace Chummer.Backend.Equipment
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
                 return false;
-            return _objCharacter.Lifestyles.Remove(this);
+            if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
+                return false;
+            Dispose();
+            return true;
         }
 
         public void SetSourceDetail(Control sourceControl)
@@ -1486,6 +1879,17 @@ namespace Chummer.Backend.Equipment
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            LifestyleQualities.Clear();
+            FreeGrids.Clear();
+            LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
+            LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
+            FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
+            FreeGrids.BeforeClearCollectionChanged -= FreeGridsOnBeforeClearCollectionChanged;
         }
     }
 }

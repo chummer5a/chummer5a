@@ -50,7 +50,8 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strName = strName;
             Parent = objParent;
-            Children.AddTaggedCollectionChanged(this, ChildrenOnCollectionChanged);
+            Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.BeforeClearCollectionChanged += ChildrenOnBeforeClearCollectionChanged;
         }
 
         /// <summary>
@@ -184,7 +185,7 @@ namespace Chummer
             set => _intSortOrder = value;
         }
 
-        public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
+        public EnhancedObservableCollection<IHasLocation> Children { get; } = new EnhancedObservableCollection<IHasLocation>();
 
         public ICollection<Location> Parent { get; }
 
@@ -215,6 +216,12 @@ namespace Chummer
 
         #endregion UI Methods
 
+        private void ChildrenOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (IHasLocation objOldItem in e.OldItems)
+                objOldItem.Location = null;
+        }
+
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -230,33 +237,32 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
+                    HashSet<IHasLocation> setNewItems = e.NewItems.OfType<IHasLocation>().ToHashSet();
                     foreach (IHasLocation objOldItem in e.OldItems)
-                        objOldItem.Location = null;
-                    foreach (IHasLocation objNewItem in e.NewItems)
+                    {
+                        if (!setNewItems.Contains(objOldItem))
+                            objOldItem.Location = null;
+                    }
+                    foreach (IHasLocation objNewItem in setNewItems)
                         objNewItem.Location = this;
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
                     foreach (IHasLocation objItem in Children)
-                    {
-                        objItem.Location = null;
-                    }
+                        objItem.Location = this;
                     break;
             }
         }
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation"));
-            }
-            foreach (IHasLocation item in Children)
-            {
-                item.Location = null;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation")))
+                return false;
 
-            return Parent.Remove(Parent.SingleOrDefault(i => i.InternalId == InternalId));
+            foreach (IHasLocation item in Children)
+                item.Location = null;
+
+            return Parent?.Contains(this) != true || Parent.Remove(this);
         }
     }
 }

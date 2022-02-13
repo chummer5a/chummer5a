@@ -18,12 +18,11 @@
  */
 
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 
 namespace Chummer
 {
-    public class ObservableCollectionWithMaxSize<T> : ObservableCollection<T>
+    public class ObservableCollectionWithMaxSize<T> : EnhancedObservableCollection<T>
     {
         private readonly int _intMaxSize;
 
@@ -48,6 +47,7 @@ namespace Chummer
 
         private bool _blnSkipCollectionChanged;
 
+        /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
             if (_blnSkipCollectionChanged)
@@ -63,6 +63,7 @@ namespace Chummer
             base.OnCollectionChanged(e);
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
             if (index >= _intMaxSize)

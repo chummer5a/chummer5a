@@ -187,20 +187,40 @@ namespace Chummer
                     decKarmaMultiplier = characterObjectSettings.KarmaFlexibleSignatureFocus;
                     break;
             }
-            foreach (Improvement objLoopImprovement in GearObject.CharacterObject.Improvements.Where(x =>
-                x.ImprovedName == strFocusName &&
-                (string.IsNullOrEmpty(x.Target) ||
-                 (!string.IsNullOrWhiteSpace(strFocusExtra) && x.Target.Contains(strFocusExtra))) && x.Enabled))
-            {
-                switch (objLoopImprovement.ImproveType)
-                {
-                    case Improvement.ImprovementType.FocusBindingKarmaCost:
-                        decExtraKarmaCost += objLoopImprovement.Value;
-                        break;
 
-                    case Improvement.ImprovementType.FocusBindingKarmaMultiplier:
-                        decKarmaMultiplier += objLoopImprovement.Value;
-                        break;
+            if (string.IsNullOrWhiteSpace(strFocusExtra))
+            {
+                foreach (Improvement objLoopImprovement in GearObject.CharacterObject.Improvements.Where(
+                             x => x.ImprovedName == strFocusName && string.IsNullOrEmpty(x.Target) && x.Enabled))
+                {
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.FocusBindingKarmaCost:
+                            decExtraKarmaCost += objLoopImprovement.Value;
+                            break;
+
+                        case Improvement.ImprovementType.FocusBindingKarmaMultiplier:
+                            decKarmaMultiplier += objLoopImprovement.Value;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                foreach (Improvement objLoopImprovement in GearObject.CharacterObject.Improvements.Where(
+                             x => x.ImprovedName == strFocusName
+                                  && (string.IsNullOrEmpty(x.Target) || x.Target.Contains(strFocusExtra)) && x.Enabled))
+                {
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.FocusBindingKarmaCost:
+                            decExtraKarmaCost += objLoopImprovement.Value;
+                            break;
+
+                        case Improvement.ImprovementType.FocusBindingKarmaMultiplier:
+                            decKarmaMultiplier += objLoopImprovement.Value;
+                            break;
+                    }
                 }
             }
 

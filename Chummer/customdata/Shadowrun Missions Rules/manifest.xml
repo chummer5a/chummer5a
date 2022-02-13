@@ -22,7 +22,7 @@
 <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
   <guid>62aeb98e-e61c-4d0e-b4ff-03e0469e6e2b</guid>
-  <version>1.3</version>
+  <version>1.4</version>
   <authors>
     <author>
       <name>SRM FAQ Committee</name>
@@ -42,6 +42,15 @@
     </author>
     <author>
       <name>Grace "Pegasa" Lyttle</name>
+    </author>
+    <author>
+      <name>Aaron "Reverend0" Dykstra</name>
+    </author>
+    <author>
+      <name>Matt "Raven2049" Lemmon</name>
+    </author>
+    <author>
+      <name>Hjal "SSDR" Nelson</name>
     </author>
     <author>
       <name>Francis Jose</name>

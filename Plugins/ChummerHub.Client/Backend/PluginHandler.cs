@@ -30,7 +30,7 @@ namespace Chummer.Plugins
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public static UploadClient MyUploadClient { get; private set; }
         public static IPlugin MyPluginHandlerInstance { get; private set; }
-        public static frmChummerMain MainForm { get; private set; }
+        public static ChummerMainForm MainForm { get; private set; }
 
         [ImportingConstructor]
         public PluginHandler()
@@ -247,12 +247,13 @@ namespace Chummer.Plugins
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
-            //We should maybe add an option in the plugin-option dialog to give the user the opportunity to enable this again.
-            //if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
-            //{
-            //    if (telemetry?.Context?.User != null)
-            //        telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
-            //}
+            if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
+            {
+                if (telemetry?.Context?.User != null)
+                {
+                    telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
+                }
+            }
             return telemetry;
         }
 
@@ -357,13 +358,13 @@ namespace Chummer.Plugins
             return true;
         }
 
-        public IEnumerable<TabPage> GetTabPages(frmCareer input)
+        public IEnumerable<TabPage> GetTabPages(CharacterCareer input)
         {
             foreach (TabPage tabPage in GetTabPagesCommon(input))
                 yield return tabPage;
         }
 
-        public IEnumerable<TabPage> GetTabPages(frmCreate input)
+        public IEnumerable<TabPage> GetTabPages(CharacterCreate input)
         {
             foreach (TabPage tabPage in GetTabPagesCommon(input))
                 yield return tabPage;
@@ -456,13 +457,13 @@ namespace Chummer.Plugins
                                 CharacterShared found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
                                 switch (found)
                                 {
-                                    case frmCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                    case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                     {
                                         int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
                                         tabPage = frm.TabCharacterTabs.TabPages[index];
                                         break;
                                     }
-                                    case frmCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                    case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                     {
                                         int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
                                         tabPage = frm2.TabCharacterTabs.TabPages[index];
@@ -523,10 +524,10 @@ namespace Chummer.Plugins
                 TabControl.TabPageCollection myCollection = null;
                 switch (found)
                 {
-                    case frmCreate foundcreate:
+                    case CharacterCreate foundcreate:
                         myCollection = foundcreate.TabCharacterTabs.TabPages;
                         break;
-                    case frmCareer foundcareer:
+                    case CharacterCareer foundcareer:
                         myCollection = foundcareer.TabCharacterTabs.TabPages;
                         break;
                 }
@@ -748,7 +749,7 @@ namespace Chummer.Plugins
             return new ucSINnersOptions();
         }
 
-        public async Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
+        public async Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate)
         {
             try
             {
@@ -1157,7 +1158,7 @@ namespace Chummer.Plugins
 
         public bool BlnHasDuplicate { get; set; }
 
-        public void CustomInitialize(frmChummerMain mainControl)
+        public void CustomInitialize(ChummerMainForm mainControl)
         {
             Log.Info("CustomInitialize for Plugin ChummerHub.Client entered.");
             MainForm = mainControl;
@@ -1301,7 +1302,7 @@ namespace Chummer.Plugins
                 {
                     FileName = fileToLoad
                 };
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
                 {
                     if (objCharacter.Load(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening))
                         MainForm.OpenCharacters.Add(objCharacter);

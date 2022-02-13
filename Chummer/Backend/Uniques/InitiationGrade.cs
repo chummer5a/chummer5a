@@ -21,7 +21,6 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -72,7 +71,7 @@ namespace Chummer
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
             if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue
-                && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
+                && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.CyberadeptDaemon).Count > 0)
             {
                 decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
                 int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
@@ -251,32 +250,40 @@ namespace Chummer
         public string Text(string strLanguage)
         {
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
-            strReturn.Append(strSpace);
-            strReturn.Append(Grade.ToString(GlobalSettings.CultureInfo));
-            if (Group || Ordeal)
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
             {
-                strReturn.Append(strSpace).Append('(');
-                if (Group)
+                sbdReturn.Append(LanguageManager.GetString("String_Grade", strLanguage)).Append(strSpace)
+                         .Append(Grade.ToString(GlobalSettings.CultureInfo));
+                if (Group || Ordeal)
                 {
-                    strReturn.Append(LanguageManager.GetString(Technomancer ? "String_Network" : "String_Group", strLanguage));
-                    if (Ordeal || Schooling)
-                        strReturn.Append(',').Append(strSpace);
-                }
-                if (Ordeal)
-                {
-                    strReturn.Append(LanguageManager.GetString(Technomancer ? "String_Task" : "String_Ordeal", strLanguage));
-                    if (Schooling)
-                        strReturn.Append(',').Append(strSpace);
-                }
-                if (Schooling)
-                {
-                    strReturn.Append(LanguageManager.GetString("String_Schooling", strLanguage));
-                }
-                strReturn.Append(')');
-            }
+                    sbdReturn.Append(strSpace).Append('(');
+                    if (Group)
+                    {
+                        sbdReturn.Append(
+                            LanguageManager.GetString(Technomancer ? "String_Network" : "String_Group", strLanguage));
+                        if (Ordeal || Schooling)
+                            sbdReturn.Append(',').Append(strSpace);
+                    }
 
-            return strReturn.ToString();
+                    if (Ordeal)
+                    {
+                        sbdReturn.Append(
+                            LanguageManager.GetString(Technomancer ? "String_Task" : "String_Ordeal", strLanguage));
+                        if (Schooling)
+                            sbdReturn.Append(',').Append(strSpace);
+                    }
+
+                    if (Schooling)
+                    {
+                        sbdReturn.Append(LanguageManager.GetString("String_Schooling", strLanguage));
+                    }
+
+                    sbdReturn.Append(')');
+                }
+
+                return sbdReturn.ToString();
+            }
         }
 
         /// <summary>

@@ -2753,98 +2753,11 @@
           <name>Perception</name>
           <bonus>1</bonus>
         </specificskill>
+        <selectskill skillcategory="Combat Active">
+          <val>1</val>
+        </selectskill>
 	  </bonus>
       <choices>
-        <choice>
-          <name>+1 die to Archery</name>
-          <bonus>
-            <specificskill>
-              <name>Archery</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Automatics</name>
-          <bonus>
-            <specificskill>
-              <name>Automatics</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Blades</name>
-          <bonus>
-            <specificskill>
-              <name>Blades</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Clubs</name>
-          <bonus>
-            <specificskill>
-              <name>Clubs</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Gunnery</name>
-          <bonus>
-            <specificskill>
-              <name>Gunnery</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Heavy Weapons</name>
-          <bonus>
-            <specificskill>
-              <name>Heavy Weapons</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Longarms</name>
-          <bonus>
-            <specificskill>
-              <name>Longarms</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Pistols</name>
-          <bonus>
-            <specificskill>
-              <name>Pistols</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Throwing Weapons</name>
-          <bonus>
-            <specificskill>
-              <name>Throwing Weapons</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Unarmed Combat</name>
-          <bonus>
-            <specificskill>
-              <name>Unarmed Combat</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
         <choice set="2">
           <name>Magician: +2 dice for Combat spells</name>
           <bonus>
@@ -2908,16 +2821,13 @@
     <mentor>
       <id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
       <name>Badger</name>
-      <advantage>All: 1 level of Perceptive is gained for free</advantage>
+      <advantage>All: 2 levels of Perceptive quality are gained for free</advantage>
       <disadvantage>Badger relentlessly guards his territory. Should enemies invade an area guarded by a follower, for instance a building, or steal an object under their protection, must succeed at a WIL + CHA (3) test to not immediately go after the culprits.</disadvantage>
       <bonus>
         <addqualities>
           <addquality>Perceptive</addquality>
+          <addquality>Perceptive</addquality>
         </addqualities>
-        <specificskill>
-          <name>Perception</name>
-          <bonus>2</bonus>
-        </specificskill>
       </bonus>
       <choices>
         <choice>
@@ -2954,7 +2864,7 @@
       <advantage>All: +2 dice to one melee combat skill (choose one)</advantage>
       <disadvantage>What does a mystic guardian do when there is nothing to guard? As long as the follower does not have a specific task, an employer or a ward (or does not carry out their self-imposed duties), they suffer a -2 penalty on every test.</disadvantage>
       <bonus>
-        <selectskill skillgroup="Close Combat">
+        <selectskill limittoskill="Blades,Clubs,Exotic Melee Weapon,Unarmed Combat">
           <val>2</val>
         </selectskill>
       </bonus>

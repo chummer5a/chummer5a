@@ -4,8 +4,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Security.Cryptography;
 using System.Threading;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Parameters;
 
 namespace ChummerDataViewer.Model
 {
@@ -62,31 +65,33 @@ namespace ChummerDataViewer.Model
 
         public static byte[] Decrypt(string key, byte[] encrypted)
         {
-            byte[] buffer;
+            byte[] unencrypted;
+            byte[] nonce = GetIv(key);
             // Create the streams used for encryption.
-            AesManaged managed = null;
-            try
-            {
-                managed = new AesManaged
-                {
-                    IV = GetIv(key),
-                    Key = GetKey(key)
-                };
-                ICryptoTransform encryptor = managed.CreateDecryptor();
+            GcmBlockCipher objCipher = new GcmBlockCipher(new AesEngine());
+            objCipher.Init(true, new AeadParameters(new KeyParameter(GetKey(key)), 128, nonce, null));
 
-                MemoryStream msEncrypt = new MemoryStream();
-                // csEncrypt.Dispose() should call msEncrypt.Dispose()
-                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
+            //Decrypt Cipher Text
+            using (MemoryStream objStream = new MemoryStream(encrypted))
+            using (BinaryReader objReader = new BinaryReader(objStream))
+            {
+                byte[] cipherText = objReader.ReadBytes(encrypted.Length);
+                unencrypted = new byte[objCipher.GetOutputSize(cipherText.Length)];
+
+                try
                 {
-                    csEncrypt.Write(encrypted, 0, encrypted.Length);
-                    buffer = msEncrypt.ToArray();
+                    int len = objCipher.ProcessBytes(cipherText, 0, cipherText.Length, unencrypted, 0);
+                    objCipher.DoFinal(unencrypted, len);
+
+                }
+                catch (InvalidCipherTextException)
+                {
+                    //Return null if it doesn't authenticate
+                    return Array.Empty<byte>();
                 }
             }
-            finally
-            {
-                managed?.Dispose();
-            }
-            return buffer;
+            
+            return unencrypted;
         }
 
         private void WriteAndForget(byte[] buffer, string destinationPath, Guid guid)
@@ -146,7 +151,7 @@ namespace ChummerDataViewer.Model
             }
         }
 
-        private string Queue() => _queue.Count > 0 ? _queue.Count + " in queue" : string.Empty;
+        private string Queue() => !_queue.IsEmpty ? _queue.Count + " in queue" : string.Empty;
 
         #region IDisposable Support
 

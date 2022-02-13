@@ -85,7 +85,7 @@ namespace Chummer.Properties
             catch(Exception ex2)
             {
 #>
-#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in comments below).
+#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in full in comments below): <#= ex.Message #>
         /* "<#= ex2.ToString() #>"
 <#
                 if (ex2.ToString().Contains("(403)"))
@@ -107,7 +107,7 @@ namespace Chummer.Properties
         else
         {
 #>
-#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in comments below).
+#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in full in comments below): <#= ex.Message #>
         /* "<#= ex.ToString() #>"
 <#
             if (ex.ToString().Contains("(403)"))

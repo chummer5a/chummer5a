@@ -13,6 +13,7 @@
                   <xs:sequence>
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="dice" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="lp" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -109,6 +110,7 @@
           <xs:sequence>
             <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
             <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
           <xs:element name="lp" type="xs:integer" minOccurs="1" maxOccurs="1" />
           <xs:element name="allowed" type="xs:string" minOccurs="1" maxOccurs="1" />
