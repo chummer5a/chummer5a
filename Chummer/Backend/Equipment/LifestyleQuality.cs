@@ -377,6 +377,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private void LegacyShim()
         {
+            if (Utils.IsUnitTest)
+                return;
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
             if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
                 return;
