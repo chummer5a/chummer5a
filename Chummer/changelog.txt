@@ -45,6 +45,7 @@ Changed/New Strings:
 - Checkbox_CharacterOptions_EncumbrancePenaltyReaction
 - Checkbox_CharacterOptions_EncumbrancePenaltyWoundModifier
 - Label_OtherLiftAndCarryHits
+- Label_SelectBP_MaxNuyen
 
 Removed Strings:
 - Tip_LiftAndCarry

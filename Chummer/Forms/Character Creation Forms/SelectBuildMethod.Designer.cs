@@ -148,7 +148,7 @@ namespace Chummer
             this.lblMaxNuyenLabel.Size = new System.Drawing.Size(94, 13);
             this.lblMaxNuyenLabel.TabIndex = 15;
             this.lblMaxNuyenLabel.Tag = "Label_SelectBP_MaxNuyen";
-            this.lblMaxNuyenLabel.Text = "Nuyen Karma Max";
+            this.lblMaxNuyenLabel.Text = "Max Nuyen Karma";
             this.lblMaxNuyenLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tlpMain
@@ -522,7 +522,7 @@ namespace Chummer
             this.lblStartingKarma.Size = new System.Drawing.Size(100, 23);
             this.lblStartingKarma.TabIndex = 0;
             // 
-            // frmSelectBuildMethod
+            // SelectBuildMethod
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
