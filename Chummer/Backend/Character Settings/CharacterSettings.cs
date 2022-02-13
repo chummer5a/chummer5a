@@ -153,6 +153,8 @@ namespace Chummer
         private int _intMaxNumberMaxAttributesCreate = 1;
         private int _intMaxSkillRatingCreate = 6;
         private int _intMaxKnowledgeSkillRatingCreate = 6;
+        private int _intMaxSkillRating = 12;
+        private int _intMaxKnowledgeSkillRating = 12;
 
         // Initiative variables
         private int _intMinInitiativeDice = 1;
@@ -600,6 +602,8 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _intMaxNumberMaxAttributesCreate;
                 hashCode = (hashCode * 397) ^ _intMaxSkillRatingCreate;
                 hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRatingCreate;
+                hashCode = (hashCode * 397) ^ _intMaxSkillRating;
+                hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRating;
                 hashCode = (hashCode * 397) ^ _intMinInitiativeDice;
                 hashCode = (hashCode * 397) ^ _intMaxInitiativeDice;
                 hashCode = (hashCode * 397) ^ _intMinAstralInitiativeDice;
@@ -904,8 +908,12 @@ namespace Chummer
                     objWriter.WriteElementString("maxnumbermaxattributescreate", _intMaxNumberMaxAttributesCreate.ToString(GlobalSettings.InvariantCultureInfo));
                     // <maxskillratingcreate />
                     objWriter.WriteElementString("maxskillratingcreate", _intMaxSkillRatingCreate.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <maxskillratingcreate />
+                    // <maxknowledgeskillratingcreate />
                     objWriter.WriteElementString("maxknowledgeskillratingcreate", _intMaxKnowledgeSkillRatingCreate.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxskillrating />
+                    objWriter.WriteElementString("maxskillrating", _intMaxSkillRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxknowledgeskillrating />
+                    objWriter.WriteElementString("maxknowledgeskillrating", _intMaxKnowledgeSkillRating.ToString(GlobalSettings.InvariantCultureInfo));
 
                     // <dicepenaltysustaining />
                     objWriter.WriteElementString("dicepenaltysustaining", _intDicePenaltySustaining.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1415,6 +1423,14 @@ namespace Chummer
             objXmlNode.TryGetInt32FieldQuickly("maxskillratingcreate", ref _intMaxSkillRatingCreate);
             // Maximum knowledge skill rating in character creation
             objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillratingcreate", ref _intMaxKnowledgeSkillRatingCreate);
+            // Maximum skill rating
+            if (objXmlNode.TryGetInt32FieldQuickly("maxskillrating", ref _intMaxSkillRating)
+                && _intMaxSkillRatingCreate > _intMaxSkillRating)
+                _intMaxSkillRatingCreate = _intMaxSkillRating;
+            // Maximum knowledge skill rating
+            if (objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillrating", ref _intMaxKnowledgeSkillRating)
+                && _intMaxKnowledgeSkillRatingCreate > _intMaxKnowledgeSkillRating)
+                _intMaxKnowledgeSkillRatingCreate = _intMaxKnowledgeSkillRating;
 
             //House Rule: The DicePenalty per sustained spell or form
             objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
@@ -3714,6 +3730,42 @@ namespace Chummer
                 if (_intMaxKnowledgeSkillRatingCreate != value)
                 {
                     _intMaxKnowledgeSkillRatingCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum skill rating
+        /// </summary>
+        public int MaxSkillRating
+        {
+            get => _intMaxSkillRating;
+            set
+            {
+                if (_intMaxSkillRating != value)
+                {
+                    _intMaxSkillRating = value;
+                    if (MaxSkillRatingCreate > value)
+                        MaxSkillRatingCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum knowledge skill rating
+        /// </summary>
+        public int MaxKnowledgeSkillRating
+        {
+            get => _intMaxKnowledgeSkillRatingCreate;
+            set
+            {
+                if (_intMaxKnowledgeSkillRating != value)
+                {
+                    _intMaxKnowledgeSkillRating = value;
+                    if (MaxKnowledgeSkillRatingCreate > value)
+                        MaxKnowledgeSkillRatingCreate = value;
                     OnPropertyChanged();
                 }
             }
