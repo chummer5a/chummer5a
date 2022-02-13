@@ -22552,33 +22552,33 @@ namespace Chummer
 
         #region Special Methods
 
-        public bool ConvertCyberzombie()
+        public async Task<bool> ConvertCyberzombie()
         {
             bool blnEssence = true;
-            string strMessage = LanguageManager.GetString("Message_CyberzombieRequirements");
+            string strMessage = await LanguageManager.GetStringAsync("Message_CyberzombieRequirements");
 
             // Make sure the character has an Essence lower than 0.
             if (Essence() >= 0)
             {
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsEssence");
+                strMessage += Environment.NewLine + '\t' + await LanguageManager.GetStringAsync("Message_CyberzombieRequirementsEssence");
                 blnEssence = false;
             }
 
             bool blnEnabled = ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.EnableCyberzombie).Count > 0;
 
             if (!blnEnabled)
-                strMessage += Environment.NewLine + '\t' + LanguageManager.GetString("Message_CyberzombieRequirementsImprovement");
+                strMessage += Environment.NewLine + '\t' + await LanguageManager.GetStringAsync("Message_CyberzombieRequirementsImprovement");
 
             if (!blnEssence || !blnEnabled)
             {
                 Program.MainForm.ShowMessageBox(strMessage,
-                    LanguageManager.GetString("MessageTitle_CyberzombieRequirements"),
+                    await LanguageManager.GetStringAsync("MessageTitle_CyberzombieRequirements"),
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
-            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CyberzombieConfirm"),
-                    LanguageManager.GetString("MessageTitle_CyberzombieConfirm"),
+            if (Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CyberzombieConfirm"),
+                    await LanguageManager.GetStringAsync("MessageTitle_CyberzombieConfirm"),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return false;
 
@@ -22586,12 +22586,12 @@ namespace Chummer
             // Get the player to roll Dice to make a WIL Test and record the result.
             using (SelectDiceHits frmWILHits = new SelectDiceHits
             {
-                Text = LanguageManager.GetString("String_CyberzombieWILText"),
-                Description = LanguageManager.GetString("String_CyberzombieWILDescription"),
+                Text = await LanguageManager.GetStringAsync("String_CyberzombieWILText"),
+                Description = await LanguageManager.GetStringAsync("String_CyberzombieWILDescription"),
                 Dice = WIL.TotalValue
             })
             {
-                frmWILHits.ShowDialogSafe(this);
+                await frmWILHits.ShowDialogSafeAsync(this);
 
                 if (frmWILHits.DialogResult != DialogResult.OK)
                     return false;
@@ -22620,7 +22620,7 @@ namespace Chummer
             // Add the Cyberzombie Lifestyle if it is not already taken.
             if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))
             {
-                XmlDocument objXmlLifestyleDocument = LoadData("lifestyles.xml");
+                XmlDocument objXmlLifestyleDocument = await LoadDataAsync("lifestyles.xml");
                 XmlNode objXmlLifestyle = objXmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Cyberzombie Lifestyle Addition\"]");
 
                 if (objXmlLifestyle != null)
@@ -22640,7 +22640,7 @@ namespace Chummer
             // Gain the Dual Natured Critter Power if it does not yet exist.
             if (CritterPowers.All(x => x.Name != "Dual Natured"))
             {
-                XmlNode objXmlPowerNode = LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
+                XmlNode objXmlPowerNode = (await LoadDataAsync("critterpowers.xml")).SelectSingleNode("/chummer/powers/power[name = \"Dual Natured\"]");
 
                 if (objXmlPowerNode != null)
                 {
@@ -22653,7 +22653,7 @@ namespace Chummer
             // Gain the Immunity (Normal Weapons) Critter Power if it does not yet exist.
             if (!CritterPowers.Any(x => x.Name == "Immunity" && x.Extra == "Normal Weapons"))
             {
-                XmlNode objXmlPowerNode = LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+                XmlNode objXmlPowerNode = (await LoadDataAsync("critterpowers.xml")).SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                 if (objXmlPowerNode != null)
                 {

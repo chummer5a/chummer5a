@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 
 namespace Chummer
@@ -29,8 +30,8 @@ namespace Chummer
     /// <typeparam name="T"></typeparam>
     public class TaggedObservableCollection<T> : ThreadSafeObservableCollection<T>
     {
-        private readonly LockingDictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedDelegates = new LockingDictionary<object, NotifyCollectionChangedEventHandler>();
-        private readonly LockingDictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedBeforeClearDelegates = new LockingDictionary<object, NotifyCollectionChangedEventHandler>();
+        private readonly LockingDictionary<object, HashSet<NotifyCollectionChangedEventHandler>> _dicTaggedAddedDelegates = new LockingDictionary<object, HashSet<NotifyCollectionChangedEventHandler>>();
+        private readonly LockingDictionary<object, HashSet<NotifyCollectionChangedEventHandler>> _dicTaggedAddedBeforeClearDelegates = new LockingDictionary<object, HashSet<NotifyCollectionChangedEventHandler>>();
 
         /// <summary>
         /// Use in place of CollectionChanged Adder
@@ -40,7 +41,12 @@ namespace Chummer
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
         public bool AddTaggedCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
-            if (_dicTaggedAddedDelegates.TryAdd(objTag, funcDelegateToAdd))
+            if (!_dicTaggedAddedDelegates.TryGetValue(objTag, out HashSet<NotifyCollectionChangedEventHandler> setFuncs))
+            {
+                setFuncs = new HashSet<NotifyCollectionChangedEventHandler>();
+                _dicTaggedAddedDelegates.Add(objTag, setFuncs);
+            }
+            if (setFuncs.Add(funcDelegateToAdd))
             {
                 base.CollectionChanged += funcDelegateToAdd;
                 return true;
@@ -56,13 +62,18 @@ namespace Chummer
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
         public bool RemoveTaggedCollectionChanged(object objTag)
         {
-            if (_dicTaggedAddedDelegates.TryRemove(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
+            if (!_dicTaggedAddedDelegates.TryGetValue(
+                    objTag, out HashSet<NotifyCollectionChangedEventHandler> setFuncs))
+            {
+                Utils.BreakIfDebug();
+                return false;
+            }
+            foreach (NotifyCollectionChangedEventHandler funcDelegateToRemove in setFuncs)
             {
                 base.CollectionChanged -= funcDelegateToRemove;
-                return true;
             }
-            Utils.BreakIfDebug();
-            return false;
+            setFuncs.Clear();
+            return true;
         }
 
         /// <inheritdoc />
@@ -80,9 +91,14 @@ namespace Chummer
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
         public bool AddTaggedBeforeClearCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
-            if (_dicTaggedAddedBeforeClearDelegates.TryAdd(objTag, funcDelegateToAdd))
+            if (!_dicTaggedAddedBeforeClearDelegates.TryGetValue(objTag, out HashSet<NotifyCollectionChangedEventHandler> setFuncs))
             {
-                base.BeforeClearCollectionChanged += funcDelegateToAdd;
+                setFuncs = new HashSet<NotifyCollectionChangedEventHandler>();
+                _dicTaggedAddedBeforeClearDelegates.Add(objTag, setFuncs);
+            }
+            if (setFuncs.Add(funcDelegateToAdd))
+            {
+                base.CollectionChanged += funcDelegateToAdd;
                 return true;
             }
             Utils.BreakIfDebug();
@@ -96,13 +112,18 @@ namespace Chummer
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
         public bool RemoveTaggedBeforeClearCollectionChanged(object objTag)
         {
-            if (_dicTaggedAddedBeforeClearDelegates.TryRemove(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
+            if (!_dicTaggedAddedBeforeClearDelegates.TryGetValue(
+                    objTag, out HashSet<NotifyCollectionChangedEventHandler> setFuncs))
             {
-                base.BeforeClearCollectionChanged -= funcDelegateToRemove;
-                return true;
+                Utils.BreakIfDebug();
+                return false;
             }
-            Utils.BreakIfDebug();
-            return false;
+            foreach (NotifyCollectionChangedEventHandler funcDelegateToRemove in setFuncs)
+            {
+                base.CollectionChanged -= funcDelegateToRemove;
+            }
+            setFuncs.Clear();
+            return true;
         }
 
         /// <inheritdoc />

@@ -49,7 +49,6 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static TelemetryClient TelemetryClient { get; } = new TelemetryClient();
         private readonly Character _objCharacter;
-        private readonly CharacterSettings _objSettings;
         private bool _blnIsDirty;
         private bool _blnIsRefreshing;
         private bool _blnLoading = true;
@@ -58,7 +57,7 @@ namespace Chummer
         protected CharacterShared(Character objCharacter)
         {
             _objCharacter = objCharacter;
-            _objSettings = _objCharacter?.Settings;
+            _objCharacter.PropertyChanged += RecacheSettingsOnSettingsChange;
             string name = "Show_Form_" + GetType();
             PageViewTelemetry pvt = new PageViewTelemetry(name)
             {
@@ -80,9 +79,93 @@ namespace Chummer
             };
         }
 
+        private void RecacheSettingsOnSettingsChange(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Character.Settings))
+            {
+                _objCachedSettings = null;
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+        }
+
         [Obsolete("This constructor is for use by form designers only.", true)]
         protected CharacterShared()
         {
+        }
+
+        /// <summary>
+        /// Set up data bindings to set Dirty flag and/or the flag to request a character update when specific collections change
+        /// </summary>
+        /// <param name="blnAddBindings"></param>
+        protected void SetupCommonCollectionDatabindings(bool blnAddBindings)
+        {
+            if (blnAddBindings)
+            {
+                CharacterObject.Spells.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.ComplexForms.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Arts.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Enhancements.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Metamagics.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.InitiationGrades.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Powers.ListChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.AIPrograms.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.CritterPowers.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Qualities.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.MartialArts.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Lifestyles.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Contacts.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Spirits.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Armor.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.ArmorLocations.CollectionChanged += MakeDirty;
+                CharacterObject.Weapons.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.WeaponLocations.CollectionChanged += MakeDirty;
+                CharacterObject.Gear.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.GearLocations.CollectionChanged += MakeDirty;
+                CharacterObject.Drugs.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Cyberware.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.Vehicles.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.VehicleLocations.CollectionChanged += MakeDirty;
+
+                CharacterObject.Improvements.CollectionChanged += MakeDirtyWithCharacterUpdate;
+                CharacterObject.ImprovementGroups.CollectionChanged += MakeDirty;
+                CharacterObject.Calendar.ListChanged += MakeDirty;
+                CharacterObject.SustainedCollection.CollectionChanged += MakeDirty;
+                CharacterObject.ExpenseEntries.CollectionChanged += MakeDirtyWithCharacterUpdate;
+            }
+            else
+            {
+                CharacterObject.Spells.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.ComplexForms.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Arts.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Enhancements.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Metamagics.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.InitiationGrades.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Powers.ListChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.AIPrograms.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.CritterPowers.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Qualities.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.MartialArts.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Lifestyles.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Contacts.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Spirits.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Armor.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.ArmorLocations.CollectionChanged -= MakeDirty;
+                CharacterObject.Weapons.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.WeaponLocations.CollectionChanged -= MakeDirty;
+                CharacterObject.Gear.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.GearLocations.CollectionChanged -= MakeDirty;
+                CharacterObject.Drugs.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Cyberware.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.Vehicles.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.VehicleLocations.CollectionChanged -= MakeDirty;
+
+                CharacterObject.Improvements.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+                CharacterObject.ImprovementGroups.CollectionChanged -= MakeDirty;
+                CharacterObject.Calendar.ListChanged -= MakeDirty;
+                CharacterObject.SustainedCollection.CollectionChanged -= MakeDirty;
+                CharacterObject.ExpenseEntries.CollectionChanged -= MakeDirtyWithCharacterUpdate;
+            }
         }
 
         /// <summary>
@@ -174,19 +257,19 @@ namespace Chummer
                         }
                     }
 
-                    string strShowFileName = _objCharacter.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                    string strShowFileName = CharacterObject.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
 
                     if (string.IsNullOrEmpty(strShowFileName))
-                        strShowFileName = _objCharacter.CharacterName + ".chum5";
+                        strShowFileName = CharacterObject.CharacterName + ".chum5";
                     foreach (char invalidChar in Path.GetInvalidFileNameChars())
                     {
                         strShowFileName = strShowFileName.Replace(invalidChar, '_');
                     }
 
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                    if (!_objCharacter.Save(strFilePath, false, false))
+                    if (!CharacterObject.Save(strFilePath, false, false))
                     {
-                        Log.Info("Autosave failed for character " + _objCharacter.CharacterName + " (" + _objCharacter.FileName + ')');
+                        Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " (" + CharacterObject.FileName + ')');
                     }
                 }
                 finally
@@ -210,7 +293,7 @@ namespace Chummer
                 string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                 if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
                     return;
-                LimitModifier objLimitModifier = _objCharacter.LimitModifiers.FindById(strGuid);
+                LimitModifier objLimitModifier = CharacterObject.LimitModifiers.FindById(strGuid);
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
@@ -225,12 +308,12 @@ namespace Chummer
                         return;
 
                     //Remove the old LimitModifier to ensure we don't double up.
-                    _objCharacter.LimitModifiers.Remove(objLimitModifier);
+                    CharacterObject.LimitModifiers.Remove(objLimitModifier);
                     // Create the new limit modifier.
-                    objLimitModifier = new LimitModifier(_objCharacter, strGuid);
+                    objLimitModifier = new LimitModifier(CharacterObject, strGuid);
                     objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
 
-                    _objCharacter.LimitModifiers.Add(objLimitModifier);
+                    CharacterObject.LimitModifiers.Add(objLimitModifier);
 
                     IsCharacterUpdateRequested = true;
 
@@ -375,7 +458,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    if (!_objCharacter.Created)
+                                    if (!CharacterObject.Created)
                                     {
                                         objAttrib.Base = 0;
                                         objAttrib.Karma = 0;
@@ -398,7 +481,7 @@ namespace Chummer
                                         }
                                     }
 
-                                    if (!_objCharacter.Created)
+                                    if (!CharacterObject.Created)
                                     {
                                         objAttrib.Base = 0;
                                         objAttrib.Karma = 0;
@@ -492,7 +575,7 @@ namespace Chummer
                     treSpells.Nodes.Clear();
 
                     // Add the Spells that exist.
-                    foreach (Spell objSpell in _objCharacter.Spells)
+                    foreach (Spell objSpell in CharacterObject.Spells)
                     {
                         if (objSpell.Grade > 0)
                         {
@@ -701,7 +784,7 @@ namespace Chummer
                 }
                 if (objSpell.Grade > 0)
                 {
-                    InitiationGrade objGrade = _objCharacter.InitiationGrades.FirstOrDefault(x => x.Grade == objSpell.Grade);
+                    InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objSpell.Grade);
                     if (objGrade != null)
                     {
                         TreeNode nodMetamagicParent = treMetamagic?.FindNodeByTag(objGrade);
@@ -991,7 +1074,7 @@ namespace Chummer
                 }
                 if (objComplexForm.Grade > 0)
                 {
-                    InitiationGrade objGrade = _objCharacter.InitiationGrades.FirstOrDefault(x => x.Grade == objComplexForm.Grade);
+                    InitiationGrade objGrade = CharacterObject.InitiationGrades.FirstOrDefault(x => x.Grade == objComplexForm.Grade);
                     if (objGrade != null)
                     {
                         TreeNode nodMetamagicParent = treMetamagic?.FindNodeByTag(objGrade);
@@ -1050,13 +1133,13 @@ namespace Chummer
                     TreeNodeCollection lstRootNodes = treMetamagic.Nodes;
                     lstRootNodes.Clear();
 
-                    foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+                    foreach (InitiationGrade objGrade in CharacterObject.InitiationGrades)
                     {
                         AddToTree(objGrade);
                     }
 
                     int intOffset = lstRootNodes.Count;
-                    foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+                    foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
                     {
                         if (objMetamagic.Grade < 0)
                         {
@@ -1144,7 +1227,7 @@ namespace Chummer
             {
                 TreeNode nodGrade = objInitiationGrade.CreateTreeNode(cmsMetamagic);
                 TreeNodeCollection lstParentNodeChildren = nodGrade.Nodes;
-                foreach (Art objArt in _objCharacter.Arts)
+                foreach (Art objArt in CharacterObject.Arts)
                 {
                     if (objArt.Grade == objInitiationGrade.Grade)
                     {
@@ -1163,7 +1246,7 @@ namespace Chummer
                         lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
-                foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+                foreach (Metamagic objMetamagic in CharacterObject.Metamagics)
                 {
                     if (objMetamagic.Grade == objInitiationGrade.Grade)
                     {
@@ -1182,7 +1265,7 @@ namespace Chummer
                         lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
-                foreach (Spell objSpell in _objCharacter.Spells)
+                foreach (Spell objSpell in CharacterObject.Spells)
                 {
                     if (objSpell.Grade == objInitiationGrade.Grade)
                     {
@@ -1201,7 +1284,7 @@ namespace Chummer
                         lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
-                foreach (ComplexForm objComplexForm in _objCharacter.ComplexForms)
+                foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms)
                 {
                     if (objComplexForm.Grade == objInitiationGrade.Grade)
                     {
@@ -1220,7 +1303,7 @@ namespace Chummer
                         lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
-                foreach (Enhancement objEnhancement in _objCharacter.Enhancements)
+                foreach (Enhancement objEnhancement in CharacterObject.Enhancements)
                 {
                     if (objEnhancement.Grade == objInitiationGrade.Grade)
                     {
@@ -1239,7 +1322,7 @@ namespace Chummer
                         lstParentNodeChildren.Insert(intTargetIndex, objNode);
                     }
                 }
-                foreach (Power objPower in _objCharacter.Powers)
+                foreach (Power objPower in CharacterObject.Powers)
                 {
                     foreach (Enhancement objEnhancement in objPower.Enhancements)
                     {
@@ -1437,6 +1520,8 @@ namespace Chummer
                     case ListChangedType.ItemAdded:
                         {
                             CharacterObject.Powers[e.NewIndex].Enhancements.AddTaggedCollectionChanged(treMetamagic,
+                                MakeDirtyWithCharacterUpdate);
+                            CharacterObject.Powers[e.NewIndex].Enhancements.AddTaggedCollectionChanged(treMetamagic,
                                 (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes, y));
                         }
                         break;
@@ -1459,6 +1544,8 @@ namespace Chummer
                         {
                             foreach (Power objPower in CharacterObject.Powers)
                             {
+                                objPower.Enhancements.AddTaggedCollectionChanged(treMetamagic,
+                                    MakeDirtyWithCharacterUpdate);
                                 objPower.Enhancements.AddTaggedCollectionChanged(treMetamagic,
                                     (x, y) => RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
                                         y));
@@ -1604,7 +1691,7 @@ namespace Chummer
                                            string.Empty;
                     treCritterPowers.Nodes.Clear();
                     // Add the Critter Powers that exist.
-                    foreach (CritterPower objPower in _objCharacter.CritterPowers)
+                    foreach (CritterPower objPower in CharacterObject.CritterPowers)
                     {
                         AddToTree(objPower, false);
                     }
@@ -1752,7 +1839,7 @@ namespace Chummer
                         (treQualities.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
                     // Create the root nodes.
-                    foreach (Quality objQuality in _objCharacter.Qualities)
+                    foreach (Quality objQuality in CharacterObject.Qualities)
                         objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                     treQualities.Nodes.Clear();
 
@@ -1760,7 +1847,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setQualitiesToPrint))
                     {
-                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             setQualitiesToPrint.Add(objQuality.SourceIDString + '|' +
                                                     objQuality.GetSourceName(GlobalSettings.Language) + '|' +
@@ -1768,7 +1855,7 @@ namespace Chummer
                         }
 
                         // Add Qualities
-                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        foreach (Quality objQuality in CharacterObject.Qualities)
                         {
                             if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + '|' +
                                                             objQuality.GetSourceName(GlobalSettings.Language) + '|' +
@@ -2016,11 +2103,11 @@ namespace Chummer
             {
                 foreach (XPathNavigator objNode in objNodeList)
                 {
-                    Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x => x.Name == objNode.Value);
+                    Quality objQuality = CharacterObject.Qualities.FirstOrDefault(x => x.Name == objNode.Value);
                     if (objQuality != null)
                     {
                         objQuality.DeleteQuality();
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower,
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower,
                                                               objQuality.InternalId);
                     }
                 }
@@ -2215,7 +2302,7 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            foreach (string strLocation in _objCharacter.ImprovementGroups)
+                            foreach (string strLocation in CharacterObject.ImprovementGroups)
                             {
                                 TreeNode objLocation = treImprovements.FindNode(strLocation, false);
                                 if (objLocation != null)
@@ -2371,15 +2458,15 @@ namespace Chummer
                     case NotifyCollectionChangedAction.Reset:
                         {
                             List<Location> lstLocations = new List<Location>(
-                                _objCharacter.ArmorLocations.Count + _objCharacter.WeaponLocations.Count
-                                                                   + _objCharacter.GearLocations.Count
-                                                                   + _objCharacter.VehicleLocations.Count
-                                                                   + _objCharacter.Vehicles.Count);
-                            lstLocations.AddRange(_objCharacter.ArmorLocations);
-                            lstLocations.AddRange(_objCharacter.WeaponLocations);
-                            lstLocations.AddRange(_objCharacter.GearLocations);
-                            lstLocations.AddRange(_objCharacter.VehicleLocations);
-                            lstLocations.AddRange(_objCharacter.Vehicles.SelectMany(x => x.Locations));
+                                CharacterObject.ArmorLocations.Count + CharacterObject.WeaponLocations.Count
+                                                                   + CharacterObject.GearLocations.Count
+                                                                   + CharacterObject.VehicleLocations.Count
+                                                                   + CharacterObject.Vehicles.Count);
+                            lstLocations.AddRange(CharacterObject.ArmorLocations);
+                            lstLocations.AddRange(CharacterObject.WeaponLocations);
+                            lstLocations.AddRange(CharacterObject.GearLocations);
+                            lstLocations.AddRange(CharacterObject.VehicleLocations);
+                            lstLocations.AddRange(CharacterObject.Vehicles.SelectMany(x => x.Locations));
                             foreach (Location objLocation in lstLocations)
                             {
                                 TreeNode nodLocation = treSelected.FindNode(objLocation.InternalId, false);
@@ -2597,8 +2684,10 @@ namespace Chummer
                     foreach (Armor objArmor in CharacterObject.Armor)
                     {
                         AddToTree(objArmor, -1, false);
+                        objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                         objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
                             (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
+                        objArmor.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                         objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
                             (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
                                 () => objArmor.ArmorMods.Count, y));
@@ -2606,6 +2695,7 @@ namespace Chummer
                             objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                         foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                         {
+                            objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                             objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
                                 (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                             foreach (Gear objGear in objArmorMod.GearChildren)
@@ -2629,8 +2719,10 @@ namespace Chummer
                                 {
                                     AddToTree(objArmor, intNewIndex);
                                     ++intNewIndex;
+                                    objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                                     objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
                                         (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
+                                    objArmor.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                                     objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
                                         (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
                                             () => objArmor.ArmorMods.Count, y));
@@ -2638,6 +2730,7 @@ namespace Chummer
                                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                                     foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                     {
+                                        objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                                         objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
                                             (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                                         foreach (Gear objGear in objArmorMod.GearChildren)
@@ -2695,8 +2788,10 @@ namespace Chummer
                                 {
                                     AddToTree(objArmor, intNewIndex);
                                     ++intNewIndex;
+                                    objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                                     objArmor.ArmorMods.AddTaggedCollectionChanged(treArmor,
                                         (x, y) => RefreshArmorMods(treArmor, objArmor, cmsArmorMod, cmsArmorGear, y));
+                                    objArmor.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                                     objArmor.GearChildren.AddTaggedCollectionChanged(treArmor,
                                         (x, y) => objArmor.RefreshChildrenGears(treArmor, cmsArmorGear,
                                             () => objArmor.ArmorMods.Count, y));
@@ -2704,6 +2799,7 @@ namespace Chummer
                                         objGear.SetupChildrenGearsCollectionChanged(true, treArmor, cmsArmorGear);
                                     foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
                                     {
+                                        objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                                         objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
                                             (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                                         foreach (Gear objGear in objArmorMod.GearChildren)
@@ -2799,6 +2895,7 @@ namespace Chummer
                             foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objArmorMod, intNewIndex);
+                                objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                                 objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
                                     (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                                 foreach (Gear objGear in objArmorMod.GearChildren)
@@ -2836,6 +2933,7 @@ namespace Chummer
                             foreach (ArmorMod objArmorMod in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objArmorMod, intNewIndex);
+                                objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor, MakeDirtyWithCharacterUpdate);
                                 objArmorMod.GearChildren.AddTaggedCollectionChanged(treArmor,
                                     (x, y) => objArmorMod.RefreshChildrenGears(treArmor, cmsArmorGear, null, y));
                                 foreach (Gear objGear in objArmorMod.GearChildren)
@@ -2969,6 +3067,7 @@ namespace Chummer
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objGear, intNewIndex);
+                                    objGear.Children.AddTaggedCollectionChanged(treGear, MakeDirtyWithCharacterUpdate);
                                     objGear.Children.AddTaggedCollectionChanged(treGear,
                                         (x, y) => objGear.RefreshChildrenGears(treGear, cmsGear, null, y));
                                     objGear.SetupChildrenGearsCollectionChanged(true, treGear, cmsGear);
@@ -3385,26 +3484,31 @@ namespace Chummer
                     foreach (Vehicle objVehicle in CharacterObject.Vehicles)
                     {
                         AddToTree(objVehicle, -1, false);
+                        objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                         objVehicle.Mods.AddTaggedCollectionChanged(treVehicles,
                             (x, y) => objVehicle.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
                                 cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                 cmsVehicleWeaponAccessoryGear, null, y));
+                        objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                         objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles,
                             (x, y) => objVehicle.RefreshVehicleWeaponMounts(treVehicles, cmsVehicleWeaponMount,
                                 cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                 cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                        objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                         objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles,
                             (x, y) => objVehicle.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                 cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                 () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                         foreach (VehicleMod objMod in objVehicle.Mods)
                         {
+                            objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                             objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
                                 (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear,
                                     null, y));
                             foreach (Cyberware objCyberware in objMod.Cyberware)
                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware,
                                     cmsCyberwareGear);
+                            objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                             objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
                                 (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
@@ -3416,10 +3520,12 @@ namespace Chummer
 
                         foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                         {
+                            objMount.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                             objMount.Mods.AddTaggedCollectionChanged(treVehicles,
                                 (x, y) => objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
                                     cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                     cmsVehicleWeaponAccessoryGear, null, y));
+                            objMount.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                             objMount.Weapons.AddTaggedCollectionChanged(treVehicles,
                                 (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMount.Mods.Count,
@@ -3441,12 +3547,14 @@ namespace Chummer
                         foreach (Weapon objWeapon in objVehicle.Weapons)
                             objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
                                 cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                        objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                         objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
                             (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
                                 () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
                                       (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                         foreach (Gear objGear in objVehicle.GearChildren)
                             objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                        objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirty);
                         objVehicle.Locations.AddTaggedCollectionChanged(treVehicles,
                             (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                 () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
@@ -3469,26 +3577,31 @@ namespace Chummer
                                 foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objVehicle, intNewIndex);
+                                    objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.Mods.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => objVehicle.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
                                             cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, null, y));
+                                    objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => objVehicle.RefreshVehicleWeaponMounts(treVehicles, cmsVehicleWeaponMount,
                                             cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                             cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                                    objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => objVehicle.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                             cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                             () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                                     foreach (VehicleMod objMod in objVehicle.Mods)
                                     {
+                                        objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                         objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
                                             (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware,
                                                 cmsCyberwareGear, null, y));
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                 cmsCyberware, cmsCyberwareGear);
+                                        objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                         objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
                                             (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                                 cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
@@ -3500,10 +3613,12 @@ namespace Chummer
 
                                     foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                     {
+                                        objMount.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                         objMount.Mods.AddTaggedCollectionChanged(treVehicles,
                                             (x, y) => objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
                                                 cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                                 cmsVehicleWeaponAccessoryGear, null, y));
+                                        objMount.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                         objMount.Weapons.AddTaggedCollectionChanged(treVehicles,
                                             (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                                 cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
@@ -3526,12 +3641,14 @@ namespace Chummer
                                     foreach (Weapon objWeapon in objVehicle.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
                                             cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
                                             () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
                                                   (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                                     foreach (Gear objGear in objVehicle.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirty);
                                     objVehicle.Locations.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                             () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
@@ -3634,26 +3751,31 @@ namespace Chummer
                                 foreach (Vehicle objVehicle in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objVehicle, intNewIndex);
+                                    objVehicle.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.Mods.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => objVehicle.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
                                             cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                             cmsVehicleWeaponAccessoryGear, null, y));
+                                    objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.WeaponMounts.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => objVehicle.RefreshVehicleWeaponMounts(treVehicles, cmsVehicleWeaponMount,
                                             cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                             cmsCyberware, cmsCyberwareGear, cmsVehicle, () => objVehicle.Mods.Count, y));
+                                    objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.Weapons.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => objVehicle.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                             cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
                                             () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                                     foreach (VehicleMod objMod in objVehicle.Mods)
                                     {
+                                        objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                         objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
                                             (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware,
                                                 cmsCyberwareGear, null, y));
                                         foreach (Cyberware objCyberware in objMod.Cyberware)
                                             objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                 cmsCyberware, cmsCyberwareGear);
+                                        objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                         objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
                                             (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                                 cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
@@ -3665,10 +3787,12 @@ namespace Chummer
 
                                     foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                                     {
+                                        objMount.Mods.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                         objMount.Mods.AddTaggedCollectionChanged(treVehicles,
                                             (x, y) => objMount.RefreshVehicleMods(treVehicles, cmsVehicle, cmsCyberware,
                                                 cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                                 cmsVehicleWeaponAccessoryGear, null, y));
+                                        objMount.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                         objMount.Weapons.AddTaggedCollectionChanged(treVehicles,
                                             (x, y) => objMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                                 cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
@@ -3678,12 +3802,14 @@ namespace Chummer
                                                 cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
                                         foreach (VehicleMod objMod in objMount.Mods)
                                         {
+                                            objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                             objMod.Cyberware.AddTaggedCollectionChanged(treVehicles,
                                                 (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware,
                                                     cmsCyberwareGear, null, y));
                                             foreach (Cyberware objCyberware in objMod.Cyberware)
                                                 objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles,
                                                     cmsCyberware, cmsCyberwareGear);
+                                            objMod.Weapons.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                             objMod.Weapons.AddTaggedCollectionChanged(treVehicles,
                                                 (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon,
                                                     cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
@@ -3698,12 +3824,14 @@ namespace Chummer
                                     foreach (Weapon objWeapon in objVehicle.Weapons)
                                         objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon,
                                             cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                                    objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.GearChildren.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => objVehicle.RefreshChildrenGears(treVehicles, cmsVehicleGear,
                                             () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
                                                   (objVehicle.WeaponMounts.Count > 0 ? 1 : 0), y));
                                     foreach (Gear objGear in objVehicle.GearChildren)
                                         objGear.SetupChildrenGearsCollectionChanged(true, treVehicles, cmsVehicleGear);
+                                    objVehicle.Locations.AddTaggedCollectionChanged(treVehicles, MakeDirtyWithCharacterUpdate);
                                     objVehicle.Locations.AddTaggedCollectionChanged(treVehicles,
                                         (x, y) => RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                             () => objVehicle.Mods.Count + objVehicle.Weapons.Count +
@@ -3792,11 +3920,11 @@ namespace Chummer
 
                     int intFociTotal = 0;
 
-                    int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-                    if (_objSettings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                        intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+                    int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                    if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                        intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
 
-                    foreach (Gear objGear in _objCharacter.Gear)
+                    foreach (Gear objGear in CharacterObject.Gear)
                     {
                         switch (objGear.Category)
                         {
@@ -3808,19 +3936,19 @@ namespace Chummer
                                         continue;
                                     objNode.Text = objNode.Text.CheapReplace(LanguageManager.GetString("String_Rating"),
                                         () => LanguageManager.GetString(objGear.RatingLabel));
-                                    for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
+                                    for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                     {
-                                        if (i < _objCharacter.Foci.Count)
+                                        if (i < CharacterObject.Foci.Count)
                                         {
-                                            Focus objFocus = _objCharacter.Foci[i];
+                                            Focus objFocus = CharacterObject.Foci[i];
                                             if (objFocus.GearObject == objGear)
                                             {
                                                 intFociTotal += objFocus.Rating;
                                                 // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                                                if (intFociTotal > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                                                if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
                                                 {
                                                     objGear.Bonded = false;
-                                                    _objCharacter.Foci.RemoveAt(i);
+                                                    CharacterObject.Foci.RemoveAt(i);
                                                     objNode.Checked = false;
                                                 }
                                                 else
@@ -3835,11 +3963,11 @@ namespace Chummer
 
                             case "Stacked Focus":
                                 {
-                                    foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                                    foreach (StackedFocus objStack in CharacterObject.StackedFoci)
                                     {
                                         if (objStack.GearId == objGear.InternalId)
                                         {
-                                            ImprovementManager.RemoveImprovements(_objCharacter,
+                                            ImprovementManager.RemoveImprovements(CharacterObject,
                                                 Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
 
                                             if (objStack.Bonded)
@@ -3848,12 +3976,12 @@ namespace Chummer
                                                 {
                                                     if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                         ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                    ImprovementManager.CreateImprovements(_objCharacter,
+                                                    ImprovementManager.CreateImprovements(CharacterObject,
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                         objFociGear.Bonus, objFociGear.Rating,
                                                         objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                     if (objFociGear.WirelessOn)
-                                                        ImprovementManager.CreateImprovements(_objCharacter,
+                                                        ImprovementManager.CreateImprovements(CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                             objFociGear.WirelessBonus, objFociGear.Rating,
                                                             objFociGear.DisplayNameShort(GlobalSettings.Language));
@@ -3878,15 +4006,15 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Add:
                             {
                                 bool blnWarned = false;
-                                int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-                                if (_objSettings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+                                int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                                if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
 
                                 HashSet<Gear> setNewGears = new HashSet<Gear>();
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                     setNewGears.Add(objGear);
 
-                                int intFociTotal = _objCharacter.Foci.Where(x => !setNewGears.Contains(x.GearObject))
+                                int intFociTotal = CharacterObject.Foci.Where(x => !setNewGears.Contains(x.GearObject))
                                     .Sum(x => x.Rating);
 
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -3902,20 +4030,20 @@ namespace Chummer
                                                 objNode.Text = objNode.Text.CheapReplace(
                                                     LanguageManager.GetString("String_Rating"),
                                                     () => LanguageManager.GetString("String_Force"));
-                                                for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
+                                                for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                                 {
-                                                    if (i < _objCharacter.Foci.Count)
+                                                    if (i < CharacterObject.Foci.Count)
                                                     {
-                                                        Focus objFocus = _objCharacter.Foci[i];
+                                                        Focus objFocus = CharacterObject.Foci[i];
                                                         if (objFocus.GearObject == objGear)
                                                         {
                                                             intFociTotal += objFocus.Rating;
                                                             // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                                                            if (intFociTotal > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                                                            if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
                                                             {
                                                                 // Mark the Gear a Bonded.
                                                                 objGear.Bonded = false;
-                                                                _objCharacter.Foci.RemoveAt(i);
+                                                                CharacterObject.Foci.RemoveAt(i);
                                                                 objNode.Checked = false;
                                                                 if (!blnWarned)
                                                                 {
@@ -3939,11 +4067,11 @@ namespace Chummer
 
                                         case "Stacked Focus":
                                             {
-                                                foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                                                foreach (StackedFocus objStack in CharacterObject.StackedFoci)
                                                 {
                                                     if (objStack.GearId == objGear.InternalId)
                                                     {
-                                                        ImprovementManager.RemoveImprovements(_objCharacter,
+                                                        ImprovementManager.RemoveImprovements(CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
 
                                                         if (objStack.Bonded)
@@ -3952,12 +4080,12 @@ namespace Chummer
                                                             {
                                                                 if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                     ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                                ImprovementManager.CreateImprovements(_objCharacter,
+                                                                ImprovementManager.CreateImprovements(CharacterObject,
                                                                     Improvement.ImprovementSource.StackedFocus,
                                                                     objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
                                                                     objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                                 if (objFociGear.WirelessOn)
-                                                                    ImprovementManager.CreateImprovements(_objCharacter,
+                                                                    ImprovementManager.CreateImprovements(CharacterObject,
                                                                         Improvement.ImprovementSource.StackedFocus,
                                                                         objStack.InternalId, objFociGear.WirelessBonus,
                                                                         objFociGear.Rating,
@@ -3984,14 +4112,14 @@ namespace Chummer
                                         case "Foci":
                                         case "Metamagic Foci":
                                             {
-                                                for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
+                                                for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                                 {
-                                                    if (i < _objCharacter.Foci.Count)
+                                                    if (i < CharacterObject.Foci.Count)
                                                     {
-                                                        Focus objFocus = _objCharacter.Foci[i];
+                                                        Focus objFocus = CharacterObject.Foci[i];
                                                         if (objFocus.GearObject == objGear)
                                                         {
-                                                            _objCharacter.Foci.RemoveAt(i);
+                                                            CharacterObject.Foci.RemoveAt(i);
                                                         }
                                                     }
                                                 }
@@ -4002,14 +4130,14 @@ namespace Chummer
 
                                         case "Stacked Focus":
                                             {
-                                                for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
+                                                for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
                                                 {
-                                                    if (i < _objCharacter.StackedFoci.Count)
+                                                    if (i < CharacterObject.StackedFoci.Count)
                                                     {
-                                                        StackedFocus objStack = _objCharacter.StackedFoci[i];
+                                                        StackedFocus objStack = CharacterObject.StackedFoci[i];
                                                         if (objStack.GearId == objGear.InternalId)
                                                         {
-                                                            _objCharacter.StackedFoci.RemoveAt(i);
+                                                            CharacterObject.StackedFoci.RemoveAt(i);
                                                             treFoci.FindNodeByTag(objStack)?.Remove();
                                                         }
                                                     }
@@ -4030,14 +4158,14 @@ namespace Chummer
                                         case "Foci":
                                         case "Metamagic Foci":
                                             {
-                                                for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
+                                                for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                                 {
-                                                    if (i < _objCharacter.Foci.Count)
+                                                    if (i < CharacterObject.Foci.Count)
                                                     {
-                                                        Focus objFocus = _objCharacter.Foci[i];
+                                                        Focus objFocus = CharacterObject.Foci[i];
                                                         if (objFocus.GearObject == objGear)
                                                         {
-                                                            _objCharacter.Foci.RemoveAt(i);
+                                                            CharacterObject.Foci.RemoveAt(i);
                                                         }
                                                     }
                                                 }
@@ -4048,14 +4176,14 @@ namespace Chummer
 
                                         case "Stacked Focus":
                                             {
-                                                for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
+                                                for (int i = CharacterObject.StackedFoci.Count - 1; i >= 0; --i)
                                                 {
-                                                    if (i < _objCharacter.StackedFoci.Count)
+                                                    if (i < CharacterObject.StackedFoci.Count)
                                                     {
-                                                        StackedFocus objStack = _objCharacter.StackedFoci[i];
+                                                        StackedFocus objStack = CharacterObject.StackedFoci[i];
                                                         if (objStack.GearId == objGear.InternalId)
                                                         {
-                                                            _objCharacter.StackedFoci.RemoveAt(i);
+                                                            CharacterObject.StackedFoci.RemoveAt(i);
                                                             treFoci.FindNodeByTag(objStack)?.Remove();
                                                         }
                                                     }
@@ -4066,15 +4194,15 @@ namespace Chummer
                                 }
 
                                 bool blnWarned = false;
-                                int intMaxFocusTotal = _objCharacter.MAG.TotalValue * 5;
-                                if (_objSettings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, _objCharacter.MAGAdept.TotalValue * 5);
+                                int intMaxFocusTotal = CharacterObject.MAG.TotalValue * 5;
+                                if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                                    intMaxFocusTotal = Math.Min(intMaxFocusTotal, CharacterObject.MAGAdept.TotalValue * 5);
 
                                 HashSet<Gear> setNewGears = new HashSet<Gear>();
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
                                     setNewGears.Add(objGear);
 
-                                int intFociTotal = _objCharacter.Foci.Where(x => !setNewGears.Contains(x.GearObject))
+                                int intFociTotal = CharacterObject.Foci.Where(x => !setNewGears.Contains(x.GearObject))
                                     .Sum(x => x.Rating);
 
                                 foreach (Gear objGear in notifyCollectionChangedEventArgs.NewItems)
@@ -4090,20 +4218,20 @@ namespace Chummer
                                                 objNode.Text = objNode.Text.CheapReplace(
                                                     LanguageManager.GetString("String_Rating"),
                                                     () => LanguageManager.GetString("String_Force"));
-                                                for (int i = _objCharacter.Foci.Count - 1; i >= 0; --i)
+                                                for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                                 {
-                                                    if (i < _objCharacter.Foci.Count)
+                                                    if (i < CharacterObject.Foci.Count)
                                                     {
-                                                        Focus objFocus = _objCharacter.Foci[i];
+                                                        Focus objFocus = CharacterObject.Foci[i];
                                                         if (objFocus.GearObject == objGear)
                                                         {
                                                             intFociTotal += objFocus.Rating;
                                                             // Do not let the number of BP spend on bonded Foci exceed MAG * 5.
-                                                            if (intFociTotal > intMaxFocusTotal && !_objCharacter.IgnoreRules)
+                                                            if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
                                                             {
                                                                 // Mark the Gear a Bonded.
                                                                 objGear.Bonded = false;
-                                                                _objCharacter.Foci.RemoveAt(i);
+                                                                CharacterObject.Foci.RemoveAt(i);
                                                                 objNode.Checked = false;
                                                                 if (!blnWarned)
                                                                 {
@@ -4127,11 +4255,11 @@ namespace Chummer
 
                                         case "Stacked Focus":
                                             {
-                                                foreach (StackedFocus objStack in _objCharacter.StackedFoci)
+                                                foreach (StackedFocus objStack in CharacterObject.StackedFoci)
                                                 {
                                                     if (objStack.GearId == objGear.InternalId)
                                                     {
-                                                        ImprovementManager.RemoveImprovements(_objCharacter,
+                                                        ImprovementManager.RemoveImprovements(CharacterObject,
                                                             Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
 
                                                         if (objStack.Bonded)
@@ -4140,12 +4268,12 @@ namespace Chummer
                                                             {
                                                                 if (!string.IsNullOrEmpty(objFociGear.Extra))
                                                                     ImprovementManager.ForcedValue = objFociGear.Extra;
-                                                                ImprovementManager.CreateImprovements(_objCharacter,
+                                                                ImprovementManager.CreateImprovements(CharacterObject,
                                                                     Improvement.ImprovementSource.StackedFocus,
                                                                     objStack.InternalId, objFociGear.Bonus, objFociGear.Rating,
                                                                     objFociGear.DisplayNameShort(GlobalSettings.Language));
                                                                 if (objFociGear.WirelessOn)
-                                                                    ImprovementManager.CreateImprovements(_objCharacter,
+                                                                    ImprovementManager.CreateImprovements(CharacterObject,
                                                                         Improvement.ImprovementSource.StackedFocus,
                                                                         objStack.InternalId, objFociGear.WirelessBonus,
                                                                         objFociGear.Rating,
@@ -4209,6 +4337,7 @@ namespace Chummer
                     foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                     {
                         AddToTree(objMartialArt, false);
+                        objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, MakeDirtyWithCharacterUpdate);
                         objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts,
                             (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique, y));
                     }
@@ -4227,6 +4356,7 @@ namespace Chummer
                                 foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objMartialArt);
+                                    objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, MakeDirtyWithCharacterUpdate);
                                     objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts,
                                         (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique,
                                             y));
@@ -4270,6 +4400,7 @@ namespace Chummer
                                 foreach (MartialArt objMartialArt in notifyCollectionChangedEventArgs.NewItems)
                                 {
                                     AddToTree(objMartialArt);
+                                    objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts, MakeDirtyWithCharacterUpdate);
                                     objMartialArt.Techniques.AddTaggedCollectionChanged(treMartialArts,
                                         (x, y) => RefreshMartialArtTechniques(treMartialArts, objMartialArt, cmsTechnique,
                                             y));
@@ -6588,17 +6719,17 @@ namespace Chummer
                     {
                         if (bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb)
                         {
-                            _objCharacter.Mugshots.Add(
+                            CharacterObject.Mugshots.Add(
                                 bmpMugshot.Clone() as Bitmap); // Clone makes sure file handle is closed
                         }
                         else
                         {
-                            _objCharacter.Mugshots.Add(bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
+                            CharacterObject.Mugshots.Add(bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
                         }
                     }
 
-                    if (_objCharacter.MainMugshotIndex == -1)
-                        _objCharacter.MainMugshotIndex = _objCharacter.Mugshots.Count - 1;
+                    if (CharacterObject.MainMugshotIndex == -1)
+                        CharacterObject.MainMugshotIndex = CharacterObject.Mugshots.Count - 1;
                 }
 
                 return true;
@@ -6614,13 +6745,13 @@ namespace Chummer
         {
             if (picMugshot == null)
                 return;
-            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count || _objCharacter.Mugshots[intCurrentMugshotIndexInList] == null)
+            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= CharacterObject.Mugshots.Count || CharacterObject.Mugshots[intCurrentMugshotIndexInList] == null)
             {
                 picMugshot.Image = null;
                 return;
             }
 
-            Image imgMugshot = _objCharacter.Mugshots[intCurrentMugshotIndexInList];
+            Image imgMugshot = CharacterObject.Mugshots[intCurrentMugshotIndexInList];
 
             try
             {
@@ -6641,19 +6772,19 @@ namespace Chummer
         /// <param name="intCurrentMugshotIndexInList"></param>
         protected void RemoveMugshot(int intCurrentMugshotIndexInList)
         {
-            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= _objCharacter.Mugshots.Count)
+            if (intCurrentMugshotIndexInList < 0 || intCurrentMugshotIndexInList >= CharacterObject.Mugshots.Count)
             {
                 return;
             }
 
-            _objCharacter.Mugshots.RemoveAt(intCurrentMugshotIndexInList);
-            if (intCurrentMugshotIndexInList == _objCharacter.MainMugshotIndex)
+            CharacterObject.Mugshots.RemoveAt(intCurrentMugshotIndexInList);
+            if (intCurrentMugshotIndexInList == CharacterObject.MainMugshotIndex)
             {
-                _objCharacter.MainMugshotIndex = -1;
+                CharacterObject.MainMugshotIndex = -1;
             }
-            else if (intCurrentMugshotIndexInList < _objCharacter.MainMugshotIndex)
+            else if (intCurrentMugshotIndexInList < CharacterObject.MainMugshotIndex)
             {
-                --_objCharacter.MainMugshotIndex;
+                --CharacterObject.MainMugshotIndex;
             }
         }
 
@@ -6712,9 +6843,40 @@ namespace Chummer
             */
         }
 
+        public void MakeDirtyWithCharacterUpdate(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        public void MakeDirtyWithCharacterUpdate(object sender, ListChangedEventArgs e)
+        {
+            if (e.ListChangedType != ListChangedType.ItemAdded
+                && e.ListChangedType != ListChangedType.ItemChanged
+                && e.ListChangedType != ListChangedType.ItemDeleted
+                && e.ListChangedType != ListChangedType.Reset)
+                return;
+
+            IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
         public void MakeDirtyWithCharacterUpdate(object sender, EventArgs e)
         {
             IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
+        }
+
+        public void MakeDirty(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
 
             IsDirty = true;
         }
@@ -6728,7 +6890,9 @@ namespace Chummer
 
         public Character CharacterObject => _objCharacter;
 
-        protected CharacterSettings CharacterObjectSettings => _objSettings;
+        private CharacterSettings _objCachedSettings;
+
+        protected CharacterSettings CharacterObjectSettings => _objCachedSettings ?? (_objCachedSettings = CharacterObject?.Settings);
 
         protected virtual string FormMode => string.Empty;
 
@@ -6762,8 +6926,7 @@ namespace Chummer
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space");
-            string strTitle = _objCharacter.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' +
-                              _objSettings.Name + ')';
+            string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
             this.QueueThreadSafe(() => Text = strTitle);
@@ -6777,7 +6940,7 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
-                if (string.IsNullOrEmpty(_objCharacter.FileName))
+                if (string.IsNullOrEmpty(CharacterObject.FileName))
                 {
                     return await SaveCharacterAs(blnDoCreated);
                 }
@@ -6795,10 +6958,10 @@ namespace Chummer
                 {
                     using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
                     {
-                        frmProgressBar.PerformStep(_objCharacter.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                        if (!_objCharacter.Save())
+                        frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
+                        if (!CharacterObject.Save())
                             return false;
-                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
+                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);
                         IsDirty = false;
                     }
                 }
@@ -6826,19 +6989,19 @@ namespace Chummer
                              await LanguageManager.GetStringAsync("DialogFilter_All")
                 })
                 {
-                    string strShowFileName = _objCharacter.FileName
+                    string strShowFileName = CharacterObject.FileName
                         .SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
                         .LastOrDefault();
 
                     if (string.IsNullOrEmpty(strShowFileName))
-                        strShowFileName = _objCharacter.CharacterName;
+                        strShowFileName = CharacterObject.CharacterName;
 
                     saveFileDialog.FileName = strShowFileName;
 
                     if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                         return false;
 
-                    _objCharacter.FileName = saveFileDialog.FileName;
+                    CharacterObject.FileName = saveFileDialog.FileName;
                 }
 
                 return await SaveCharacter(false, blnDoCreated);
@@ -6891,6 +7054,7 @@ namespace Chummer
         {
             if (disposing)
             {
+                _objCharacter.PropertyChanged -= RecacheSettingsOnSettingsChange;
                 _frmPrintView?.Dispose();
             }
             base.Dispose(disposing);
@@ -6902,7 +7066,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("gear.xml");
+                XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                 bool blnAddAgain;
 
                 do

@@ -7153,7 +7153,7 @@ namespace Chummer
             this.chkInitiationOrdeal.Tag = "Checkbox_InitiationOrdeal";
             this.chkInitiationOrdeal.Text = "Initiatory Ordeal (-10%)";
             this.chkInitiationOrdeal.UseVisualStyleBackColor = true;
-            this.chkInitiationOrdeal.CheckedChanged += new System.EventHandler(this.chkInitiationOrdeal_CheckedChanged);
+            this.chkInitiationOrdeal.CheckedChanged += new System.EventHandler(this.MakeDirtyWithCharacterUpdate);
             // 
             // chkInitiationSchooling
             // 
@@ -7243,7 +7243,7 @@ namespace Chummer
             this.chkInitiationGroup.Tag = "Checkbox_InitiationGroup";
             this.chkInitiationGroup.Text = "Group Initiation (-10%)";
             this.chkInitiationGroup.UseVisualStyleBackColor = true;
-            this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.chkInitiationGroup_CheckedChanged);
+            this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.MakeDirtyWithCharacterUpdate);
             this.chkInitiationGroup.EnabledChanged += new System.EventHandler(this.chkInitiationGroup_EnabledChanged);
             // 
             // lblGroupNotes
@@ -7278,7 +7278,7 @@ namespace Chummer
             this.chkJoinGroup.Tag = "Checkbox_JoinedGroup";
             this.chkJoinGroup.Text = "Join Group";
             this.chkJoinGroup.UseVisualStyleBackColor = true;
-            this.chkJoinGroup.CheckedChanged += new System.EventHandler(this.chkJoinGroup_CheckedChanged);
+            this.chkJoinGroup.CheckedChanged += new System.EventHandler(this.MakeDirtyWithCharacterUpdate);
             // 
             // lblMetamagicSource
             // 

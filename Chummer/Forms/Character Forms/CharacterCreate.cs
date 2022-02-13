@@ -305,8 +305,6 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_refresh", op_load_frm_create))
                     {
-                        OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.Ambidextrous)));
-
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
                         cmdLifeModule.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodIsLifeModule));
@@ -396,6 +394,8 @@ namespace Chummer
                         CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
                         CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
                         CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
+
+                        SetupCommonCollectionDatabindings(true);
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_tradition", op_load_frm_create))
@@ -665,7 +665,7 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_frm_create_OnCharacterPropertyChanged", op_load_frm_create))
                     {
                         // Run through all appropriate property changers
-                        foreach (PropertyInfo objProperty in CharacterObject.GetType().GetProperties())
+                        foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
                             OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
                     }
 
@@ -986,6 +986,8 @@ namespace Chummer
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
                 CharacterObjectSettings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
 
+                SetupCommonCollectionDatabindings(false);
+
                 treGear.ItemDrag -= treGear_ItemDrag;
                 treGear.DragEnter -= treGear_DragEnter;
                 treGear.DragDrop -= treGear_DragDrop;
@@ -1114,6 +1116,8 @@ namespace Chummer
                 case nameof(Character.MysticAdeptPowerPoints):
                 case nameof(Character.MagicTradition):
                 case nameof(Character.GroupMember):
+                case nameof(Character.HomeNode):
+                case nameof(Character.ActiveCommlink):
                     IsCharacterUpdateRequested = true;
                     break;
 
@@ -1601,11 +1605,13 @@ namespace Chummer
                     }
                 case nameof(Character.MetatypeCategory):
                     {
+                        IsCharacterUpdateRequested = true;
                         mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie";
                         break;
                     }
                 case nameof(Character.IsSprite):
                     {
+                        IsCharacterUpdateRequested = true;
                         mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
                         break;
                     }
@@ -1618,6 +1624,12 @@ namespace Chummer
                         RefreshSelectedWeapon();
                         break;
                     }
+                case nameof(Character.Settings):
+                {
+                    foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
+                        OnCharacterPropertyChanged(CharacterObjectSettings, new PropertyChangedEventArgs(objProperty.Name));
+                    break;
+                }
             }
         }
 
@@ -1997,19 +2009,13 @@ namespace Chummer
                 using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
                 {
                     await frmPickBP.ShowDialogSafeAsync(this);
-
-                    if (frmPickBP.DialogResult != DialogResult.Cancel)
-                        IsCharacterUpdateRequested = true;
                 }
             }
         }
 
-        private void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
+        private async void mnuSpecialCyberzombie_Click(object sender, EventArgs e)
         {
-            if (!CharacterObject.ConvertCyberzombie())
-                return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            await CharacterObject.ConvertCyberzombie();
         }
 
         private async void mnuSpecialAddCyberwareSuite_Click(object sender, EventArgs e)
@@ -2775,9 +2781,6 @@ namespace Chummer
 
                             AddChildVehicles(objArmor.InternalId);
                             AddChildWeapons(objArmor.InternalId);
-
-                            IsCharacterUpdateRequested = true;
-                            IsDirty = true;
                         }
 
                         break;
@@ -2795,9 +2798,6 @@ namespace Chummer
 
                             AddChildVehicles(objArmorMod.InternalId);
                             AddChildWeapons(objArmorMod.InternalId);
-
-                            IsCharacterUpdateRequested = true;
-                            IsDirty = true;
                         }
 
                         break;
@@ -2835,9 +2835,6 @@ namespace Chummer
 
                             AddChildVehicles(objCyberware.InternalId);
                             AddChildWeapons(objCyberware.InternalId);
-
-                            IsCharacterUpdateRequested = true;
-                            IsDirty = true;
                         }
 
                         break;
@@ -2882,8 +2879,6 @@ namespace Chummer
                         // Reset the number of months back to 1 since 0 isn't valid in Create Mode.
                         objLifestyle.Increments = 1;
                         CharacterObject.Lifestyles.Add(objLifestyle);
-                        IsCharacterUpdateRequested = true;
-                        IsDirty = true;
                         break;
                     }
                 case ClipboardContentType.Vehicle:
@@ -2893,8 +2888,6 @@ namespace Chummer
                         Vehicle objVehicle = new Vehicle(CharacterObject);
                         objVehicle.Load(objXmlNode, true);
                         CharacterObject.Vehicles.Add(objVehicle);
-                        IsCharacterUpdateRequested = true;
-                        IsDirty = true;
                         break;
                     }
                 case ClipboardContentType.Weapon:
@@ -2942,9 +2935,6 @@ namespace Chummer
 
                             AddChildVehicles(objWeapon.InternalId);
                             AddChildWeapons(objWeapon.InternalId);
-
-                            IsCharacterUpdateRequested = true;
-                            IsDirty = true;
                         }
 
                         break;
@@ -2963,9 +2953,6 @@ namespace Chummer
 
                             AddChildVehicles(objMod.InternalId);
                             AddChildWeapons(objMod.InternalId);
-
-                            IsCharacterUpdateRequested = true;
-                            IsDirty = true;
                         }
 
                         break;
@@ -3016,10 +3003,6 @@ namespace Chummer
             CharacterObject.CritterPowers.Add(objPower);
 
             CharacterObject.MetatypeCategory = "Free Sprite";
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         #endregion Menu Events
@@ -3102,10 +3085,6 @@ namespace Chummer
 
                         CharacterObject.Spells.Add(objSpell);
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -3119,10 +3098,7 @@ namespace Chummer
             // Spells that come from Initiation Grades can't be deleted normally.
             if (objSpell.Grade != 0)
                 return;
-            if (!objSpell.Remove())
-                return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objSpell.Remove();
         }
 
         private void cmdAddSpirit_Click(object sender, EventArgs e)
@@ -3169,11 +3145,7 @@ namespace Chummer
         {
             if (!(treCyberware.SelectedNode?.Tag is ICanRemove selectedObject))
                 return;
-            if (!selectedObject.Remove())
-                return;
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            selectedObject.Remove();
         }
 
         private async void cmdAddComplexForm_Click(object sender, EventArgs e)
@@ -3216,10 +3188,6 @@ namespace Chummer
                         continue;
 
                     CharacterObject.ComplexForms.Add(objComplexForm);
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -3274,10 +3242,6 @@ namespace Chummer
                         continue;
 
                     CharacterObject.AIPrograms.Add(objProgram);
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -3287,11 +3251,7 @@ namespace Chummer
         {
             if (!(treArmor.SelectedNode?.Tag is ICanRemove selectedObject))
                 return;
-            if (!selectedObject.Remove())
-                return;
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            selectedObject.Remove();
         }
 
         private async void cmdAddBioware_Click(object sender, EventArgs e)
@@ -3354,10 +3314,6 @@ namespace Chummer
                         CharacterObject.Weapons.Add(objExtraWeapon);
                     }
 
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
-
                     return frmPickWeapon.AddAgain;
                 }
             }
@@ -3367,10 +3323,7 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is ICanRemove objSelectedNode))
                 return;
-            if (!objSelectedNode.Remove())
-                return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objSelectedNode.Remove();
         }
 
         private async void cmdAddLifestyle_Click(object sender, EventArgs e)
@@ -3398,10 +3351,6 @@ namespace Chummer
                     }
 
                     CharacterObject.Lifestyles.Add(objLifestyle);
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -3412,10 +3361,7 @@ namespace Chummer
             // Delete the selected Lifestyle.
             if (!(treLifestyles.SelectedNode?.Tag is ICanRemove objSelectedObject))
                 return;
-            if (!objSelectedObject.Remove())
-                return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objSelectedObject.Remove();
         }
 
         private async void cmdAddGear_Click(object sender, EventArgs e)
@@ -3435,12 +3381,9 @@ namespace Chummer
 
         private void cmdDeleteGear_Click(object sender, EventArgs e)
         {
-            if (!(treGear.SelectedNode?.Tag is ICanRemove objSelectedGear)
-                || !objSelectedGear.Remove())
+            if (!(treGear.SelectedNode?.Tag is ICanRemove objSelectedGear))
                 return;
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
+            objSelectedGear.Remove();
         }
 
         private async ValueTask<bool> AddVehicle(Location objLocation = null)
@@ -3478,10 +3421,6 @@ namespace Chummer
                     objLocation?.Children.Add(objVehicle);
 
                     CharacterObject.Vehicles.Add(objVehicle);
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
 
                     return frmPickVehicle.AddAgain;
                 }
@@ -3554,19 +3493,11 @@ namespace Chummer
                         }
 
                         objMod.DeleteVehicleMod();
-
-                        IsCharacterUpdateRequested = true;
-                        IsDirty = true;
                         break;
                     }
                 case ICanRemove selectedObject:
                     {
-                        if (selectedObject.Remove())
-                        {
-                            IsCharacterUpdateRequested = true;
-                            IsDirty = true;
-                        }
-
+                        selectedObject.Remove();
                         break;
                     }
             }
@@ -3574,19 +3505,14 @@ namespace Chummer
 
         private void cmdAddMartialArt_Click(object sender, EventArgs e)
         {
-            if (!MartialArt.Purchase(CharacterObject))
-                return;
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
+            MartialArt.Purchase(CharacterObject);
         }
 
         private void cmdDeleteMartialArt_Click(object sender, EventArgs e)
         {
-            if (!(treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode)
-                || !objSelectedNode.Remove())
+            if (!(treMartialArts.SelectedNode?.Tag is ICanRemove objSelectedNode))
                 return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objSelectedNode.Remove();
         }
 
         private async void cmdAddMugshot_Click(object sender, EventArgs e)
@@ -3710,10 +3636,6 @@ namespace Chummer
                     objGrade.Create(CharacterObject.SubmersionGrade + 1, true, chkInitiationGroup.Checked, chkInitiationOrdeal.Checked, chkInitiationSchooling.Checked);
                     CharacterObject.InitiationGrades.AddWithSort(objGrade);
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
         }
 
@@ -3721,10 +3643,7 @@ namespace Chummer
         {
             if (!(treMetamagic.SelectedNode?.Tag is ICanRemove selectedObject))
                 return;
-            if (!selectedObject.Remove())
-                return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            selectedObject.Remove();
         }
 
         private async void cmdAddCritterPower_Click(object sender, EventArgs e)
@@ -3756,10 +3675,6 @@ namespace Chummer
 
                         CharacterObject.CritterPowers.Add(objPower);
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -3770,21 +3685,14 @@ namespace Chummer
             // If the selected object is not a critter or it comes from an initiate grade, we don't want to remove it.
             if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objCritterPower) || objCritterPower.Grade != 0)
                 return;
-            if (!objCritterPower.Remove())
-                return;
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objCritterPower.Remove();
         }
 
         private void cmdDeleteComplexForm_Click(object sender, EventArgs e)
         {
             if (!(treComplexForms.SelectedNode?.Tag is ICanRemove objSelectedObject))
                 return;
-            if (!objSelectedObject.Remove())
-                return;
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objSelectedObject.Remove();
         }
 
         private void cmdDeleteAIProgram_Click(object sender, EventArgs e)
@@ -3792,11 +3700,7 @@ namespace Chummer
             // Delete the selected AI Program.
             if (!(treAIPrograms.SelectedNode?.Tag is ICanRemove objSelectedObject))
                 return;
-            if (!objSelectedObject.Remove())
-                return;
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            objSelectedObject.Remove();
         }
 
         private async void cmdLifeModule_Click(object sender, EventArgs e)
@@ -3858,10 +3762,6 @@ namespace Chummer
 
                     //Stupid hardcoding but no sane way
                     //To do group skills (not that anything else is sane)
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -3980,10 +3880,6 @@ namespace Chummer
                                 {
                                     CharacterObject.Weapons.Add(objWeapon);
                                 }
-
-                                IsCharacterUpdateRequested = true;
-
-                                IsDirty = true;
                             }
                             else
                             {
@@ -4170,14 +4066,6 @@ namespace Chummer
                     i = CharacterObject.Qualities.Count;
                 }
             }
-
-            // Only refresh if at least one quality was removed
-            if (!blnFirstRemoval)
-            {
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
         }
 
         private async void cmdAddLocation_Click(object sender, EventArgs e)
@@ -4195,8 +4083,6 @@ namespace Chummer
                 Location objLocation = new Location(CharacterObject, CharacterObject.GearLocations, frmPickText.SelectedValue);
                 CharacterObject.GearLocations.Add(objLocation);
             }
-
-            IsDirty = true;
         }
 
         private async void cmdAddWeaponLocation_Click(object sender, EventArgs e)
@@ -4214,8 +4100,6 @@ namespace Chummer
                 Location objLocation = new Location(CharacterObject, CharacterObject.WeaponLocations, frmPickText.SelectedValue);
                 CharacterObject.WeaponLocations.Add(objLocation);
             }
-
-            IsDirty = true;
         }
 
         private async void cmdCreateStackedFocus_Click(object sender, EventArgs e)
@@ -4318,10 +4202,6 @@ namespace Chummer
             CharacterObject.Gear.Add(objStackItem);
 
             objStack.GearId = objStackItem.InternalId;
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private async void cmdAddArmor_Click(object sender, EventArgs e)
@@ -4370,10 +4250,6 @@ namespace Chummer
                         CharacterObject.Weapons.Add(objWeapon);
                     }
 
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
-
                     return frmPickArmor.AddAgain;
                 }
             }
@@ -4394,8 +4270,6 @@ namespace Chummer
                 Location objLocation = new Location(CharacterObject, CharacterObject.ArmorLocations, frmPickText.SelectedValue);
                 CharacterObject.ArmorLocations.Add(objLocation);
             }
-
-            IsDirty = true;
         }
 
         private void cmdArmorEquipAll_Click(object sender, EventArgs e)
@@ -4407,7 +4281,6 @@ namespace Chummer
                 objArmor.Equipped = true;
             }
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -4420,7 +4293,6 @@ namespace Chummer
                 objArmor.Equipped = false;
             }
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -4454,8 +4326,6 @@ namespace Chummer
                 Location objLocation = new Location(CharacterObject, destCollection, frmPickText.SelectedValue);
                 destCollection.Add(objLocation);
             }
-
-            IsDirty = true;
         }
 
         #endregion Button Events
@@ -4596,9 +4466,6 @@ namespace Chummer
 
                         objWeapon.WeaponAccessories.Add(objAccessory);
                     }
-
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -4679,10 +4546,6 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -4719,10 +4582,6 @@ namespace Chummer
                         return;
                     objVehicle.WeaponMounts.Add(frmPickVehicleMod.WeaponMount);
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
         }
 
@@ -4850,10 +4709,6 @@ namespace Chummer
 
                         objVehicle.Mods.Add(objMod);
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -4945,9 +4800,6 @@ namespace Chummer
 
                         blnAddAgain = frmPickWeapon.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
                     }
-
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -5011,9 +4863,6 @@ namespace Chummer
 
                         objWeapon.WeaponAccessories.Add(objAccessory);
                     }
-
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -5071,9 +4920,6 @@ namespace Chummer
                             objLoopWeapon.AllowAccessory = false;
                     }
                 }
-
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
             }
         }
 
@@ -5123,10 +4969,6 @@ namespace Chummer
                         return;
 
                     objMartialArt.Techniques.Add(objTechnique);
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -5242,10 +5084,6 @@ namespace Chummer
                             }
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -5305,10 +5143,6 @@ namespace Chummer
                     objLifestyle.StyleType = LifestyleType.Advanced;
 
                     CharacterObject.Lifestyles.Add(objLifestyle);
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             }
             while (blnAddAgain);
@@ -5438,10 +5272,6 @@ namespace Chummer
 
                     objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
                 }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
         }
 
@@ -5869,18 +5699,13 @@ namespace Chummer
 
                         XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + ']');
                         Cyberware objCyberware = new Cyberware(CharacterObject);
-                        if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
-                                                  frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating,
-                                                  objVehicle, objMod.Cyberware, CharacterObject.Vehicles,
-                                                  objMod.Weapons,
-                                                  frmPickCyberware.Markup, frmPickCyberware.FreeCost,
-                                                  frmPickCyberware.BlackMarketDiscount, true,
-                                                  "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
-                        {
-                            IsCharacterUpdateRequested = true;
-                            IsDirty = true;
-                        }
-                        else
+                        if (!objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
+                                                   frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating,
+                                                   objVehicle, objMod.Cyberware, CharacterObject.Vehicles,
+                                                   objMod.Weapons,
+                                                   frmPickCyberware.Markup, frmPickCyberware.FreeCost,
+                                                   frmPickCyberware.BlackMarketDiscount, true,
+                                                   "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
                             objCyberware.DeleteCyberware();
                     }
                 }
@@ -5923,6 +5748,8 @@ namespace Chummer
             }
 
             treArmor.SelectedNode.Text = objArmor.CurrentDisplayName;
+
+            IsDirty = true;
         }
 
         private async void tsLifestyleName_Click(object sender, EventArgs e)
@@ -6025,10 +5852,6 @@ namespace Chummer
                 Spell objSpell = frmSpell.SelectedSpell;
                 CharacterObject.Spells.Add(objSpell);
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private async void tsArmorRenameLocation_Click(object sender, EventArgs e)
@@ -6155,10 +5978,6 @@ namespace Chummer
 
                         objCyberware.GearChildren.Add(objNewGear);
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -6241,10 +6060,6 @@ namespace Chummer
 
                         objCyberware.GearChildren.Add(objNewGear);
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -6329,10 +6144,6 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -6416,10 +6227,6 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -6494,10 +6301,6 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -6577,10 +6380,6 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -6620,10 +6419,6 @@ namespace Chummer
                 Weapon objWeapon = frmCreateNaturalWeapon.SelectedWeapon;
                 CharacterObject.Weapons.Add(objWeapon);
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private async void tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -6705,10 +6500,6 @@ namespace Chummer
                             }
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -6784,10 +6575,6 @@ namespace Chummer
                             objAccessory.Parent.Children.Add(objLoopWeapon);
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
                 }
             } while (blnAddAgain);
         }
@@ -6857,8 +6644,7 @@ namespace Chummer
             if (!(treQualities.SelectedNode?.Tag is Quality objSelectedQuality))
                 return;
             int intCurrentLevels = objSelectedQuality.Levels;
-
-            bool blnRequireUpdate = false;
+            
             // Adding new levels
             for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
             {
@@ -6930,7 +6716,6 @@ namespace Chummer
 
                 if (blnAddItem)
                 {
-                    blnRequireUpdate = true;
                     //to avoid an System.InvalidOperationException: Cannot change ObservableCollection during a CollectionChanged event.
                     _blnSkipQualityLevelChanged = true;
                     CharacterObject.Qualities.Add(objQuality);
@@ -6954,27 +6739,12 @@ namespace Chummer
             for (; nudQualityLevel.Value < intCurrentLevels; --intCurrentLevels)
             {
                 Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.SourceIDString == objSelectedQuality.SourceIDString && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
-                if (objInvisibleQuality != null && RemoveQuality(objInvisibleQuality, false, false))
+                if (objInvisibleQuality == null || !RemoveQuality(objInvisibleQuality, false, false))
                 {
-                    blnRequireUpdate = true;
-                }
-                else if (RemoveQuality(objSelectedQuality, false, false))
-                {
-                    blnRequireUpdate = true;
+                    if (!RemoveQuality(objSelectedQuality, false, false))
+                        UpdateQualityLevelValue(objSelectedQuality);
                     break;
                 }
-                else
-                {
-                    UpdateQualityLevelValue(objSelectedQuality);
-                    break;
-                }
-            }
-
-            if (blnRequireUpdate)
-            {
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
         }
 
@@ -7004,7 +6774,6 @@ namespace Chummer
             objCyberware.Grade = objNewGrade;
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7016,7 +6785,6 @@ namespace Chummer
             objCyberware.PrototypeTranshuman = chkPrototypeTranshuman.Checked;
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7119,7 +6887,6 @@ namespace Chummer
             }
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7427,7 +7194,6 @@ namespace Chummer
             IsRefreshing = false;
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7482,7 +7248,6 @@ namespace Chummer
             }
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7496,7 +7261,6 @@ namespace Chummer
             objGear.Quantity = nudGearQty.Value;
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7554,7 +7318,6 @@ namespace Chummer
             }
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7583,7 +7346,6 @@ namespace Chummer
             }
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7597,7 +7359,6 @@ namespace Chummer
             objAccessory.IncludedInWeapon = chkIncludedInWeapon.Checked;
             
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -7726,9 +7487,6 @@ namespace Chummer
             if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
                 return;
             objCommlink.SetHomeNode(CharacterObject, chkGearHomeNode.Checked);
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
         }
 
         private void chkArmorHomeNode_CheckedChanged(object sender, EventArgs e)
@@ -7738,9 +7496,6 @@ namespace Chummer
             if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
                 return;
             objCommlink.SetHomeNode(CharacterObject, chkArmorHomeNode.Checked);
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
         }
 
         private void chkWeaponHomeNode_CheckedChanged(object sender, EventArgs e)
@@ -7750,9 +7505,6 @@ namespace Chummer
             if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
                 return;
             objCommlink.SetHomeNode(CharacterObject, chkWeaponHomeNode.Checked);
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
         }
 
         private void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
@@ -7762,9 +7514,6 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
                 return;
             objCommlink.SetHomeNode(CharacterObject, chkCyberwareHomeNode.Checked);
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
         }
 
         private void chkCommlinks_CheckedChanged(object sender, EventArgs e)
@@ -7781,9 +7530,6 @@ namespace Chummer
             if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
-
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         private void chkArmorActiveCommlink_CheckedChanged(object sender, EventArgs e)
@@ -7795,9 +7541,6 @@ namespace Chummer
             if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkArmorActiveCommlink.Checked);
-
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         private void chkWeaponActiveCommlink_CheckedChanged(object sender, EventArgs e)
@@ -7809,9 +7552,6 @@ namespace Chummer
             if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkWeaponActiveCommlink.Checked);
-
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         private void chkCyberwareActiveCommlink_CheckedChanged(object sender, EventArgs e)
@@ -7822,9 +7562,6 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkCyberwareActiveCommlink.Checked);
-
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         private void chkVehicleActiveCommlink_CheckedChanged(object sender, EventArgs e)
@@ -7835,9 +7572,6 @@ namespace Chummer
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkVehicleActiveCommlink.Checked);
-
-            IsDirty = true;
-            IsCharacterUpdateRequested = true;
         }
 
         private void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
@@ -8244,6 +7978,7 @@ namespace Chummer
                     return;
             }
 
+            IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
 
@@ -8268,9 +8003,6 @@ namespace Chummer
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             objTarget.SetHomeNode(CharacterObject, chkVehicleHomeNode.Checked);
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
         }
 
         #endregion Additional Vehicle Tab Control Events
@@ -8312,7 +8044,6 @@ namespace Chummer
             }
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -8453,7 +8184,6 @@ namespace Chummer
             }
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -8522,7 +8252,6 @@ namespace Chummer
             }
 
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -8557,7 +8286,6 @@ namespace Chummer
                 CharacterObject.MagicTradition.ResetTradition();
 
                 IsCharacterUpdateRequested = true;
-
                 IsDirty = true;
             }
             else if (strSelectedId == Tradition.CustomMagicalTraditionGuid)
@@ -8585,7 +8313,6 @@ namespace Chummer
                     cboSpiritManipulation.Visible = true;
 
                     IsCharacterUpdateRequested = true;
-
                     IsDirty = true;
                 }
                 else
@@ -8621,7 +8348,6 @@ namespace Chummer
                     CharacterObject.MagicTradition.SetSourceDetail(lblTraditionSource);
 
                     IsCharacterUpdateRequested = true;
-
                     IsDirty = true;
                 }
                 else
@@ -8656,7 +8382,6 @@ namespace Chummer
             if (xmlNewStreamNode != null && CharacterObject.MagicTradition.Create(xmlNewStreamNode, true))
             {
                 IsCharacterUpdateRequested = true;
-
                 IsDirty = true;
             }
             else
@@ -8707,27 +8432,12 @@ namespace Chummer
 
         #region Additional Initiation Tab Control Events
 
-        private void chkInitiationGroup_CheckedChanged(object sender, EventArgs e)
-        {
-            IsCharacterUpdateRequested = true;
-        }
-
-        private void chkInitiationOrdeal_CheckedChanged(object sender, EventArgs e)
-        {
-            IsCharacterUpdateRequested = true;
-        }
-
         private void chkInitiationGroup_EnabledChanged(object sender, EventArgs e)
         {
             if (!chkInitiationGroup.Enabled)
             {
                 chkInitiationGroup.Checked = false;
             }
-        }
-
-        private void chkJoinGroup_CheckedChanged(object sender, EventArgs e)
-        {
-            IsCharacterUpdateRequested = true;
         }
 
         private void chkInitiationSchooling_CheckedChanged(object sender, EventArgs e)
@@ -11939,10 +11649,6 @@ namespace Chummer
                     CharacterObject.Vehicles.AddRange(lstVehicles);
                 }
 
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-
                 return frmPickCyberware.AddAgain;
             }
         }
@@ -12062,10 +11768,11 @@ namespace Chummer
                         objLocation?.Children.Add(objGear);
                         destinationGear.Add(objGear);
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
+                    else
+                    {
+                        IsCharacterUpdateRequested = true;
+                        IsDirty = true;
+                    }
 
                     return frmPickGear.AddAgain;
                 }
@@ -12200,10 +11907,6 @@ namespace Chummer
                             objSelectedArmor.GearChildren.Add(objGear);
                         }
                     }
-
-                    IsCharacterUpdateRequested = true;
-
-                    IsDirty = true;
 
                     return frmPickGear.AddAgain;
                 }
@@ -14941,10 +14644,6 @@ namespace Chummer
 
             pgbProgress.Visible = false;
 
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-
             return blnAddAgain;
         }
 
@@ -15273,10 +14972,6 @@ namespace Chummer
                     }
                 }
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         /// <summary>
@@ -15488,10 +15183,6 @@ namespace Chummer
 
                 CharacterObject.Metamagics.Add(objNewMetamagic);
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private async void tsMetamagicAddArt_Click(object sender, EventArgs e)
@@ -15518,10 +15209,6 @@ namespace Chummer
 
                 CharacterObject.Arts.Add(objArt);
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private async void tsMetamagicAddEnchantment_Click(object sender, EventArgs e)
@@ -15551,10 +15238,6 @@ namespace Chummer
 
                 CharacterObject.Spells.Add(objNewSpell);
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private async void tsMetamagicAddRitual_Click(object sender, EventArgs e)
@@ -15584,10 +15267,6 @@ namespace Chummer
 
                 CharacterObject.Spells.Add(objNewSpell);
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private async void tsInitiationNotes_Click(object sender, EventArgs e)
@@ -15639,10 +15318,6 @@ namespace Chummer
                     CharacterObject.Enhancements.Add(objEnhancement);
                 }
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void panContacts_Click(object sender, EventArgs e)
@@ -15989,10 +15664,6 @@ namespace Chummer
                     }
                 }
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private async void cmdVehicleCyberwareChangeMount_Click(object sender, EventArgs e)
@@ -16092,10 +15763,6 @@ namespace Chummer
                     }
                 }
             }
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
         }
 
         private void cmdContactsExpansionToggle_Click(object sender, EventArgs e)
@@ -16262,11 +15929,7 @@ namespace Chummer
         {
             if (!(treCustomDrugs.SelectedNode?.Tag is ICanRemove selectedObject))
                 return;
-            if (!selectedObject.Remove())
-                return;
-
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
+            selectedObject.Remove();
         }
 
         private void cboVehicleWeaponFiringMode_SelectedIndexChanged(object sender, EventArgs e)
