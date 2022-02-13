@@ -20,6 +20,7 @@ Application Changes:
 - Added the ability to change the maximum rating for active skills and the maximum rating for knowledge skills both at character creation and in-game via character settings.
 - Weapons can now be equipped or unequipped, and underbarrel weapons, weapon accessories, and gear that come built into a weapon or weapon accessory now properly cannot be unequipped/uninstalled.
 - Fixed a crash that would happen when selecting irremovable weapons on characters with Black Market Discount.
+- Fixed Adapsin grades showing up for characters without Adapsin.
 
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.

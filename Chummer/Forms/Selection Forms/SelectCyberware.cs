@@ -1390,20 +1390,19 @@ namespace Chummer
                                                                             .DisableCyberwareGrade)
                                     .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
                                     continue;
-                                if (_objCharacter.AdapsinEnabled && !objWareGrade.Adapsin
-                                                                 && _lstGrades.Any(
-                                                                     x => objWareGrade.Name.Contains(x.Name)))
+                                if (_objCharacter.AdapsinEnabled)
                                 {
-                                    continue;
+                                    if (!objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
+                                        continue;
                                 }
+                                else if (objWareGrade.Adapsin)
+                                    continue;
                             }
 
                             if (_objCharacter.BurnoutEnabled)
                             {
                                 if (!objWareGrade.Burnout && _lstGrades.Any(x => x.Burnout && objWareGrade.Name.Contains(x.Name)))
-                                {
                                     continue;
-                                }
                             }
                             else if (objWareGrade.Burnout)
                                 continue;
