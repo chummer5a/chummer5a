@@ -2740,7 +2740,7 @@
     </string>
     <string>
       <key>Message_AttributeMaximum</key>
-      <text>You cannot have more than one Attribute at its maximum value during character creation.</text>
+      <text>You cannot have more than {0} Attribute(s) at its/their maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_AttributeBuildPoints</key>
@@ -2765,6 +2765,10 @@
     <string>
       <key>Message_InvalidBeginning</key>
       <text>This character is not valid and breaks the following rules:</text>
+    </string>
+    <string>
+      <key>Message_TooManyAttributesAtMax</key>
+      <text>{0} Attribute(s) is/are at their metatype maximum when only {1} is/are allowed.</text>
     </string>
     <string>
       <key>Message_InvalidAttributeExcess</key>
@@ -8063,6 +8067,18 @@
     <string>
       <key>Label_CharacterOptions_NuyenExpression</key>
       <text>Nuyen Expression</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxNumberMaxAttributes</key>
+      <text>Max Number of Attributes at Max</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxSkillRating</key>
+      <text>Max Skill Rating</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxKnowledgeSkillRating</key>
+      <text>Max Knowledge Skill Rating</text>
     </string>
     <string>
       <key>Label_CharacterOptions_AllowedCyberwareGrades</key>

@@ -1256,6 +1256,9 @@ namespace Chummer
             nudMaxNuyenKarma.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.NuyenMaximumBP));
             nudMaxAvail.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaximumAvailability));
             nudQualityKarmaLimit.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.QualityKarmaLimit));
+            nudMaxNumberMaxAttributes.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxNumberMaxAttributesCreate));
+            nudMaxSkillRatingCreate.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRatingCreate));
+            nudMaxKnowledgeSkillRatingCreate.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate));
             txtContactPoints.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.ContactPointsExpression));
             txtKnowledgePoints.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.KnowledgePointsExpression));
             txtNuyenExpression.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.ChargenKarmaToNuyenExpression));

@@ -787,9 +787,14 @@ namespace Chummer.Backend.Skills
             get
             {
                 int intOtherBonus = RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled).Sum(x => x.Maximum);
-                if (CharacterObject.Created || CharacterObject.IgnoreRules)
-                    return 12 + intOtherBonus;
-                return (IsKnowledgeSkill && CharacterObject.EffectiveBuildMethodIsLifeModule ? 9 : 6) + intOtherBonus;
+                int intBaseMax = 12;
+                if (!CharacterObject.Created && !CharacterObject.IgnoreRules)
+                {
+                    intBaseMax = IsKnowledgeSkill
+                        ? CharacterObject.Settings.MaxKnowledgeSkillRatingCreate
+                        : CharacterObject.Settings.MaxSkillRatingCreate;
+                }
+                return intBaseMax + intOtherBonus;
             }
         }
 

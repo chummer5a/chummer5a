@@ -13474,6 +13474,25 @@ namespace Chummer
                         }
                     }
 
+                    // Check if the character has more attributes at their metatype max than allowed
+                    if (CharacterObject.Settings.MaxNumberMaxAttributesCreate
+                        < CharacterObject.AttributeSection.AttributeList.Count)
+                    {
+                        int intCountAttributesAtMax = CharacterObject.AttributeSection.AttributeList.Count(
+                            x => x.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard
+                                 && x.AtMetatypeMaximum);
+                        if (intCountAttributesAtMax > CharacterObject.Settings.MaxNumberMaxAttributesCreate)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                              LanguageManager.GetString(
+                                                                                  "Message_TooManyAttributesAtMax"),
+                                                                              intCountAttributesAtMax,
+                                                                              CharacterObject.Settings
+                                                                                  .MaxNumberMaxAttributesCreate);
+                        }
+                    }
+
                     int i = CharacterObject.TotalAttributes
                             - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
                     // Check if the character has gone over on Primary Attributes

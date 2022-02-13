@@ -1516,7 +1516,7 @@
         </string>
         <string>
             <key>Message_AttributeMaximum</key>
-            <text>キャラクター作成地は, 2つ以上の能力値を最大値にすることはできません.</text>
+            <text>キャラクター作成地は, {0}つ以上の能力値を最大値にすることはできません.</text>
         </string>
         <string>
             <key>Message_AttributeBuildPoints</key>

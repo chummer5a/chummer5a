@@ -295,19 +295,16 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private bool CanBeMetatypeMax(int intValue)
         {
-            if (_objCharacter.IgnoreRules || AttributeObject.MetatypeCategory == CharacterAttrib.AttributeCategory.Special)
-                return true;
             int intTotalMaximum = AttributeObject.TotalMaximum;
             if (intValue < intTotalMaximum || intTotalMaximum == 0)
                 return true;
-            //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
-            //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value.
-            int intMaxOtherAttributesAtMax = _objCharacter.Settings.Allow2ndMaxAttribute ? 1 : 0;
-            int intNumOtherAttributeAtMax = _objCharacter.AttributeSection.AttributeList.Count(att =>
-                att.AtMetatypeMaximum && att.Abbrev != AttributeName && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard);
 
-            if (intNumOtherAttributeAtMax <= intMaxOtherAttributesAtMax) return true;
-            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_AttributeMaximum"),
+            if (_objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject))
+                return true;
+
+            Program.MainForm.ShowMessageBox(
+                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_AttributeMaximum"),
+                              _objCharacter.Settings.MaxNumberMaxAttributesCreate),
                 LanguageManager.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return false;

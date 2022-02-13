@@ -1542,7 +1542,7 @@
         </string>
         <string>
             <key>Message_AttributeMaximum</key>
-            <text>在角色创建阶段，你不能有多于一个的属性到达最大值。</text>
+            <text>在角色创建阶段，你不能有多于{0}个的属性到达最大值。</text>
         </string>
         <string>
             <key>Message_AttributeBuildPoints</key>

@@ -16,6 +16,8 @@ Application Changes:
 - Paragons from Kill Code now show up in the Master Index.
 - Added backend support for Shadowrun 5e's encumbrance rules as they are stated on p. 420 of the core rulebook. Because no item weights are specified in any of the books, items do not weigh anything in Chummer by default, but custom datasets can add weights to weapons, weapon accessories, armor, armor mods, gear, and cyberware with the `<weight>` node. Weights specified this way fully support both decimals and calculated quantities similar to how costs can be specified.
 - Exposed a large amount of options for dealing with encumbrance and weights to character settings. Among other things, carry limits and the interval at which encumbrance penalty ticks are applied can be custom-defined by settings, and penalties to Physical Limit, movement speeds, Agility, and/or Reaction and/or adding extra Wound Modifiers can all be selected as encumbrance penalties.
+- Added the ability to change the maximum number of attributes at a character's metatype maximum via character settings.
+- Added the ability to change the maximum rating for active skills and the maximum rating for knowledge skills at character creation via character settings.
 
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
@@ -46,6 +48,11 @@ Changed/New Strings:
 - Checkbox_CharacterOptions_EncumbrancePenaltyWoundModifier
 - Label_OtherLiftAndCarryHits
 - Label_SelectBP_MaxNuyen
+- Message_AttributeMaximum
+- Message_TooManyAttributesAtMax
+- Label_CharacterOptions_MaxNumberMaxAttributes
+- Label_CharacterOptions_MaxSkillRating
+- Label_CharacterOptions_MaxKnowledgeSkillRating
 
 Removed Strings:
 - Tip_LiftAndCarry

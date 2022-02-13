@@ -1205,6 +1205,22 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        /// <summary>
+        /// Can an attribute be increased to its metatype maximum?
+        /// Note: if the attribute is already at its metatype maximum, this method assumes that we just raised it and will decrease it if it's illegal.
+        /// </summary>
+        /// <param name="objAttribute">Attribute to raise to its metatype maximum.</param>
+        /// <returns></returns>
+        public bool CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute)
+        {
+            if (_objCharacter.Created || _objCharacter.IgnoreRules
+                                      || objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special
+                                      || _objCharacter.Settings.MaxNumberMaxAttributesCreate >= AttributeList.Count)
+                return true;
+            return AttributeList.Count(x => x.MetatypeCategory == objAttribute.MetatypeCategory && x != objAttribute && x.AtMetatypeMaximum)
+                   < _objCharacter.Settings.MaxNumberMaxAttributesCreate;
+        }
+
         #endregion Methods
 
         #region Properties

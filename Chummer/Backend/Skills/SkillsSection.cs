@@ -150,8 +150,36 @@ namespace Chummer.Backend.Skills
 
         private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e?.PropertyName == nameof(CharacterSettings.KnowledgePointsExpression))
-                OnPropertyChanged(nameof(KnowledgeSkillPoints));
+            switch (e?.PropertyName)
+            {
+                case nameof(CharacterSettings.KnowledgePointsExpression):
+                    OnPropertyChanged(nameof(KnowledgeSkillPoints));
+                    break;
+                case nameof(CharacterSettings.MaxSkillRatingCreate):
+                {
+                    if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                    {
+                        foreach (Skill objSkill in Skills)
+                            objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                        foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => !x.IsKnowledgeSkill))
+                            objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                    }
+
+                    break;
+                }
+                case nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate):
+                {
+                    if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                    {
+                        foreach (KnowledgeSkill objSkill in KnowledgeSkills)
+                            objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                        foreach (Skill objSkill in _dicSkillBackups.Values.Where(x => x.IsKnowledgeSkill))
+                            objSkill.OnPropertyChanged(nameof(Skill.RatingMaximum));
+                    }
+
+                    break;
+                }
+            }
         }
 
         [NotifyPropertyChangedInvocator]

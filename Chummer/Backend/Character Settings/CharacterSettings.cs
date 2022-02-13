@@ -60,8 +60,6 @@ namespace Chummer
         private bool _blnDoingCopy;
 
         // Settings.
-        // ReSharper disable once InconsistentNaming
-        private bool _blnAllow2ndMaxAttribute;
 
         private bool _blnAllowBiowareSuites;
         private bool _blnAllowCyberwareESSDiscounts;
@@ -152,6 +150,9 @@ namespace Chummer
         private bool _blnUnclampAttributeMinimum;
         private bool _blnDroneMods;
         private bool _blnDroneModsMaximumPilot;
+        private int _intMaxNumberMaxAttributesCreate = 1;
+        private int _intMaxSkillRatingCreate = 6;
+        private int _intMaxKnowledgeSkillRatingCreate = 6;
 
         // Initiative variables
         private int _intMinInitiativeDice = 1;
@@ -507,7 +508,6 @@ namespace Chummer
                 int hashCode = _guiSourceId.GetHashCode();
                 hashCode = (hashCode * 397) ^ (_strFileName?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strName?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ _blnAllow2ndMaxAttribute.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowBiowareSuites.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowCyberwareESSDiscounts.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowEditPartOfBaseWeapon.GetHashCode();
@@ -597,6 +597,9 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnUnclampAttributeMinimum.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDroneMods.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDroneModsMaximumPilot.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intMaxNumberMaxAttributesCreate;
+                hashCode = (hashCode * 397) ^ _intMaxSkillRatingCreate;
+                hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRatingCreate;
                 hashCode = (hashCode * 397) ^ _intMinInitiativeDice;
                 hashCode = (hashCode * 397) ^ _intMaxInitiativeDice;
                 hashCode = (hashCode * 397) ^ _intMinAstralInitiativeDice;
@@ -743,8 +746,6 @@ namespace Chummer
                     objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString(GlobalSettings.InvariantCultureInfo));
                     // <cyberlegmovement />
                     objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allow2ndmaxattribute />
-                    objWriter.WriteElementString("allow2ndmaxattribute", _blnAllow2ndMaxAttribute.ToString(GlobalSettings.InvariantCultureInfo));
                     // <contactpointsexpression />
                     objWriter.WriteElementString("contactpointsexpression", _strContactPointsExpression);
                     // <knowledgepointsexpression />
@@ -899,6 +900,12 @@ namespace Chummer
                     objWriter.WriteElementString("dronemods", _blnDroneMods.ToString(GlobalSettings.InvariantCultureInfo));
                     // <dronemodsmaximumpilot />
                     objWriter.WriteElementString("dronemodsmaximumpilot", _blnDroneModsMaximumPilot.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxnumbermaxattributescreate />
+                    objWriter.WriteElementString("maxnumbermaxattributescreate", _intMaxNumberMaxAttributesCreate.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxskillratingcreate />
+                    objWriter.WriteElementString("maxskillratingcreate", _intMaxSkillRatingCreate.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxskillratingcreate />
+                    objWriter.WriteElementString("maxknowledgeskillratingcreate", _intMaxKnowledgeSkillRatingCreate.ToString(GlobalSettings.InvariantCultureInfo));
 
                     // <dicepenaltysustaining />
                     objWriter.WriteElementString("dicepenaltysustaining", _intDicePenaltySustaining.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1189,8 +1196,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("ignoreart", ref _blnIgnoreArt);
             // Use Cyberleg Stats for Movement
             objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
-            // Allow a 2nd Max Attribute
-            objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref _blnAllow2ndMaxAttribute);
             // XPath expression for contact points
             if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
             {
@@ -1396,6 +1401,20 @@ namespace Chummer
             // Apply maximum drone attribute improvement rule to Pilot, too
             if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
                 GlobalSettings.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty, true);
+
+            // Maximum number of attributes at metatype maximum in character creation
+            if (!objXmlNode.TryGetInt32FieldQuickly("maxnumbermaxattributescreate",
+                                                    ref _intMaxNumberMaxAttributesCreate))
+            {
+                // Legacy shim
+                bool blnTemp = false;
+                if (objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref blnTemp) && blnTemp)
+                    _intMaxNumberMaxAttributesCreate = 2;
+            }
+            // Maximum skill rating in character creation
+            objXmlNode.TryGetInt32FieldQuickly("maxskillratingcreate", ref _intMaxSkillRatingCreate);
+            // Maximum knowledge skill rating in character creation
+            objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillratingcreate", ref _intMaxKnowledgeSkillRatingCreate);
 
             //House Rule: The DicePenalty per sustained spell or form
             objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
@@ -2386,23 +2405,6 @@ namespace Chummer
         }
 
         public bool MysAdeptSecondMAGAttributeEnabled => !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPpCareer;
-
-        /// <summary>
-        /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
-        public bool Allow2ndMaxAttribute
-        {
-            get => _blnAllow2ndMaxAttribute;
-            set
-            {
-                if (_blnAllow2ndMaxAttribute != value)
-                {
-                    _blnAllow2ndMaxAttribute = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         /// <summary>
         /// The XPath expression to use to determine how many contact points the character has
@@ -3664,6 +3666,54 @@ namespace Chummer
                 if (_blnDroneModsMaximumPilot != value)
                 {
                     _blnDroneModsMaximumPilot = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of attributes at metatype maximum in character creation
+        /// </summary>
+        public int MaxNumberMaxAttributesCreate
+        {
+            get => _intMaxNumberMaxAttributesCreate;
+            set
+            {
+                if (_intMaxNumberMaxAttributesCreate != value)
+                {
+                    _intMaxNumberMaxAttributesCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum skill rating in character creation
+        /// </summary>
+        public int MaxSkillRatingCreate
+        {
+            get => _intMaxSkillRatingCreate;
+            set
+            {
+                if (_intMaxSkillRatingCreate != value)
+                {
+                    _intMaxSkillRatingCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum knowledge skill rating in character creation
+        /// </summary>
+        public int MaxKnowledgeSkillRatingCreate
+        {
+            get => _intMaxKnowledgeSkillRatingCreate;
+            set
+            {
+                if (_intMaxKnowledgeSkillRatingCreate != value)
+                {
+                    _intMaxKnowledgeSkillRatingCreate = value;
                     OnPropertyChanged();
                 }
             }

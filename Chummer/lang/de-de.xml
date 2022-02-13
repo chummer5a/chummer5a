@@ -1357,7 +1357,7 @@
         </string>
         <string>
             <key>Message_AttributeMaximum</key>
-            <text>Sie können bei der Charakter-Erschaffung nicht mehr als ein Attribut auf das natürliche Maximum steigern.</text>
+            <text>Sie können bei der Charakter-Erschaffung nicht mehr als {0} Attribut/e auf das natürliche Maximum steigern.</text>
         </string>
         <string>
             <key>Message_AttributeBuildPoints</key>

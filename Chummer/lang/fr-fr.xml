@@ -2147,7 +2147,7 @@
     </string>
     <string>
       <key>Message_AttributeMaximum</key>
-      <text>Vous ne pouvez pas avoir plus d'un Attribut à son maximum à la création du personnage.</text>
+      <text>Vous ne pouvez pas avoir plus de {0} Attribut(s) à son maximum à la création du personnage.</text>
     </string>
     <string>
       <key>Message_AttributeBuildPoints</key>
