@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <skills>
+    <skill xpathfilter="name = 'Automatics'" amendoperation="remove" />
+    <!-- This construction makes sure we don't add the Automatics specs if there's a previously loaded amend that already adds them to one or all skills -->
+    <skill xpathfilter="name = 'Pistols' and count(specs/spec[. = 'Machine Pistols']) = 0" addifnotfound="False">
+      <specs>
+        <spec amendoperation="addnode">Machine Pistols</spec>
+      </specs>
+    </skill>
+    <!-- Three separate Longarms nodes needed in case there's an amend that adds one/some of the specs but not all -->
+    <skill xpathfilter="name = 'Longarms' and count(specs/spec[. = 'Submachine Guns']) = 0" addifnotfound="False">
+      <specs>
+        <spec amendoperation="addnode">Submachine Guns</spec>
+      </specs>
+    </skill>
+    <skill xpathfilter="name = 'Longarms' and count(specs/spec[. = 'Assault Rifles']) = 0" addifnotfound="False">
+      <specs>
+        <spec amendoperation="addnode">Assault Rifles</spec>
+      </specs>
+    </skill>
+    <skill xpathfilter="name = 'Longarms' and count(specs/spec[. = 'Carbines']) = 0" addifnotfound="False">
+      <specs>
+        <spec amendoperation="addnode">Carbines</spec>
+      </specs>
+    </skill>
+    <!-- Removing Automatics would leave the Firearms group with 2 skills, so put Heavy Weapons in there -->
+    <skill>
+      <name>Heavy Weapons</name>
+      <skillgroup>Firearms</skillgroup>
+    </skill>
+  </skills>
+</chummer>

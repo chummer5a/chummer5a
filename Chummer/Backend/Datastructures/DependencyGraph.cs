@@ -26,7 +26,7 @@ namespace Chummer
     /// This class is for managing directed graphs where each node is an object and each directed edge points from a given object to another object on which the first depends.
     /// When changing an object, this allows for any and all objects that depend on the first in some way to be fetched.
     /// </summary>
-    public sealed class DependencyGraph<T, T2>
+    public class DependencyGraph<T, T2>
     {
         /// <summary>
         /// Initializes a directed graph of dependent items based on a blueprint specified in the constructor.
@@ -46,7 +46,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        public HashSet<T> GetWithAllDependents(T2 objParentInstance, T objKey)
+        public virtual HashSet<T> GetWithAllDependents(T2 objParentInstance, T objKey)
         {
             HashSet<T> objReturn = new HashSet<T>();
             if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
@@ -74,19 +74,16 @@ namespace Chummer
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
         /// <param name="objReturn">Collection containing all keys that depend on <paramref name="objKey"/> in some way. It's a HashSet to prevent infinite loops in case of cycles</param>
-        private void CollectDependents(T2 objParentInstance, T objKey, ICollection<T> objReturn)
+        protected void CollectDependents(T2 objParentInstance, T objKey, ICollection<T> objReturn)
         {
-            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
+            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode) && !objReturn.Contains(objLoopNode.MyObject))
             {
-                if (!objReturn.Contains(objLoopNode.MyObject))
+                objReturn.Add(objLoopNode.MyObject);
+                foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                 {
-                    objReturn.Add(objLoopNode.MyObject);
-                    foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
+                    if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
                     {
-                        if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
-                        {
-                            CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
-                        }
+                        CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
                     }
                 }
             }
@@ -117,6 +114,7 @@ namespace Chummer
         }
 
         private readonly Dictionary<T, DependencyGraphNode<T, T2>> _dicNodeDictionary = new Dictionary<T, DependencyGraphNode<T, T2>>();
+
         /// <summary>
         /// Dictionary of nodes in the graph. This is where the graph is actually stored, and doubles as a fast way to get any node in the graph.
         /// It's an IReadOnlyDictionary because dependency graphs are intended to be set up once based on a blueprint called as part of the constructor.

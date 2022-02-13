@@ -27,7 +27,7 @@ namespace Chummer
     /// A node for use with DependencyGraph. Essentially just a directed graph node that is doubly-linked with all graph nodes to which it has edges.
     /// </summary>
     [DebuggerDisplay("{" + nameof(MyObject) + "}")]
-    public sealed class DependencyGraphNode<T, T2>
+    public sealed class DependencyGraphNode<T, T2> : IEquatable<DependencyGraphNode<T, T2>>
     {
         /// <summary>
         /// Constructor used for to make a blueprint of a DependencyGraph.
@@ -104,27 +104,31 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            if (obj is DependencyGraphNode<T, T2> objOtherNode)
-            {
-                if (Root != null)
-                    return Root == objOtherNode.Root
-                           && (MyObject.Equals(default(T)) && objOtherNode.MyObject.Equals(default(T))
-                               || MyObject?.Equals(objOtherNode.MyObject) == true);
-                if (objOtherNode.Root != null)
-                    return false;
-            }
+            if (ReferenceEquals(obj, this))
+                return true;
+            return obj is DependencyGraphNode<T, T2> objOtherNode && Equals(objOtherNode);
+        }
 
-            // ReSharper disable once BaseObjectEqualsIsObjectEquals
-            return base.Equals(obj);
+        public bool Equals(DependencyGraphNode<T, T2> other)
+        {
+            if (other == null)
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            if (Root != null)
+                return Root == other.Root
+                       && (MyObject.Equals(default(T)) && other.MyObject.Equals(default(T))
+                           || MyObject?.Equals(other.MyObject) == true);
+            return false;
         }
 
         public override int GetHashCode()
         {
             if (Root != null)
-                return MyObject?.GetHashCode() ?? 0;
-
-            // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
-            return base.GetHashCode();
+                return MyObject != null
+                    ? (Root, MyObject).GetHashCode()
+                    : Root.GetHashCode();
+            return MyObject != null ? MyObject.GetHashCode() : 0;
         }
 
         public override string ToString()

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<skills>
+		<skill>
+			<id>5d9c796d-2eff-4ad6-beb6-e2e309c237d9</id>
+			<name>Directed Energy</name>
+			<attribute>AGI</attribute>
+			<category>Combat Active</category>
+			<default>False</default>
+			<skillgroup />
+			<specs>
+				<spec>Ares Screech Sonic Rifle</spec>
+				<spec>Fichetti Pain Inducer</spec>
+				<spec>Laser Weapons</spec>
+				<spec>Microwave</spec>
+				<spec>Narcoject PEP</spec>
+			</specs>
+			<source>NA</source>
+			<page>4</page>
+		</skill>
+		<skill>
+			<id>cb9d98b4-d6d6-4c33-8404-0f1b79a3b922</id>
+			<name>Exotic Ballistic</name>
+			<attribute>AGI</attribute>
+			<category>Combat Active</category>
+			<default>False</default>
+			<skillgroup>Hunting</skillgroup>
+			<specs>
+				<spec>Blowgun</spec>
+				<spec>Grapple Gun</spec>
+				<spec>Net Guns</spec>
+				<spec>Bola Launchers</spec>
+			</specs>
+			<source>NA</source>
+			<page>4</page>
+		</skill>
+		<skill>
+			<id>1f73c685-e5a3-41af-bb68-6b7a1d3485c9</id>
+			<name>Spray Weapons</name>
+			<attribute>AGI</attribute>
+			<category>Combat Active</category>
+			<default>False</default>
+			<skillgroup />
+			<specs>
+				<spec>Ares S-III Super Squirt</spec>
+				<spec>Atomizer</spec>
+				<spec>BioSprayer</spec>
+				<spec>Flamethrowers</spec>
+				<spec>Hold-Fast Sprayer</spec>
+				<spec>Narcoject Gas Gun</spec>
+				<spec>Narcoject Trackstopper</spec>
+				<spec>Spray Pen</spec>
+			</specs>
+			<source>NA</source>
+			<page>4</page>
+		</skill>
+		<skill>
+			<id>9eb154f1-8406-40ba-8710-5bd1ffde30eb</id>
+			<name>Flexile Melee</name>
+			<attribute>AGI</attribute>
+			<category>Combat Active</category>
+			<default>False</default>
+			<skillgroup />
+			<specs>
+				<spec>Bullwhip</spec>
+				<spec>Garrote</spec>
+				<spec>Improvised</spec>
+				<spec>Monofilament Whip</spec>
+				<spec>Oral Slasher</spec>
+				<spec>Yo-Yo</spec>
+			</specs>
+			<source>NA</source>
+			<page>4</page>
+		</skill>
+		<skill>
+			<id>be47ec7b-03ba-41c1-b231-09214001f2e5</id>
+			<name>Atypical Melee</name>
+			<attribute>AGI</attribute>
+			<category>Combat Active</category>
+			<default>False</default>
+			<skillgroup />
+			<specs>
+				<spec>Chainsaw</spec>
+				<spec>Injection</spec>
+				<spec>Rolling Blades</spec>
+				<spec>Shields</spec>
+				<spec>Krime Stun Lance</spec>
+			</specs>
+			<source>NA</source>
+			<page>5</page>
+		</skill>
+		<skill>
+			<id>ec407933-9b75-43fc-9511-6b8d28246db5</id>
+			<name>Mechanic</name>
+			<attribute>LOG</attribute>
+			<category>Technical Active</category>
+			<default>False</default>
+			<skillgroup>Engineering</skillgroup>
+			<specs>
+				<spec>Aeronautics Mechanic</spec>
+				<spec>Automotive Mechanic</spec>
+				<spec>Industrial Mechanic</spec>
+				<spec>Nautical Mechanic</spec>
+			</specs>
+			<source>NA</source>
+			<page>5</page>
+		</skill>
+	</skills>
+</chummer>

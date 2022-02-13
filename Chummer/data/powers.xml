@@ -347,6 +347,7 @@
         <magicianswayforbids />
       </adeptwayrequires>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
         <specificattribute>
           <name>REA</name>
@@ -760,8 +761,8 @@
       <points>0.5</points>
       <levels>True</levels>
       <limit>1</limit>
-      <source>SG</source>
-      <page>170</page>
+      <source>SGE</source>
+      <page>4</page>
       <adeptway>0.25</adeptway>
       <!-- Awaiting activation by errata
 	  <adeptwayrequires>
@@ -943,8 +944,8 @@
       <points>0.5</points>
       <levels>False</levels>
       <limit>1</limit>
-      <source>SG</source>
-      <page>1</page>
+      <source>SGE</source>
+      <page>4</page>
       <action>Free</action>
       <adeptway>0.25</adeptway>
     </power>
@@ -980,9 +981,7 @@
       <limit>1</limit>
       <source>SG</source>
       <page>172</page>
-      <bonus>
-        <nativelanguagelimit>1</nativelanguagelimit>
-      </bonus>
+      <bonus />
     </power>
     <power>
       <id>ee72398d-9daf-493f-b79b-5dab81e84013</id>
@@ -990,8 +989,8 @@
       <points>1</points>
       <levels>False</levels>
       <limit>1</limit>
-      <source>SG</source>
-      <page>1</page>
+      <source>SGE</source>
+      <page>4</page>
       <adeptway>0.5</adeptway>
     </power>
     <power>
@@ -1381,7 +1380,7 @@
       <source>SS</source>
       <page>191</page>
       <action>Complex</action>
-      <adeptway>0.5</adeptway>      
+      <adeptway>0.5</adeptway>
     </power>
     <!-- End Region -->
     <!-- Region Shadow Spells -->
@@ -1689,7 +1688,7 @@
       <levels>True</levels>
       <limit>1</limit>
       <source>HT</source>
-      <page>190</page>
+      <page>191</page>
       <bonus>
         <throwrangestr>Rating*2</throwrangestr>
       </bonus>
@@ -1765,7 +1764,7 @@
       <levels>True</levels>
       <limit>1</limit>
       <source>BTB</source>
-      <page>153</page>
+      <page>159</page>
       <adeptway>0.25</adeptway>
       <action>Simple</action>
       <maxlevels>3</maxlevels>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>3a709a36-87b7-4d49-8187-60e6efc8f95f</guid>
+  <version>1.3</version>
+  <authors>
+    <author>
+      <name>SRM FAQ Committee</name>
+      <main>true</main>
+    </author>
+    <author>
+      <name>Danny "Jayde Moon" Oliver</name>
+    </author>
+    <author>
+      <name>Robert "Banshee" Volbrecht</name>
+    </author>
+    <author>
+      <name>Nick "DireRadiant" Van</name>
+    </author>
+    <author>
+      <name>Michael "Cadre Elite" Messmer</name>
+    </author>
+    <author>
+      <name>Grace "Pegasa" Lyttle</name>
+    </author>
+    <author>
+      <name>Francis Jose</name>
+    </author>
+    <author>
+      <name>Brent Evans</name>
+    </author>
+    <author>
+      <name>Matt Heerdt</name>
+    </author>
+    <author>
+      <name>Jeff Laubenstein</name>
+    </author>
+    <author>
+      <name>Jason Hardy</name>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset implements the Neotokyo-specific parts of the rules of the Shadowrun Missions Combined FAQ.\n\nFor more information, please visit the Shadowrun Missions website and Discord channel (https://srmissionsonline.com/) or its Facebook page (https://www.facebook.com/SRMissions/).</text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+  <dependencies>
+    <dependency>
+      <name>Shadowrun Missions Rules</name>
+      <guid>62aeb98e-e61c-4d0e-b4ff-03e0469e6e2b</guid>
+    </dependency>
+  </dependencies>
+</manifest>

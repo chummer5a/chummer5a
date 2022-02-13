@@ -16,11 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Chummer
 {
-    public class MostRecentlyUsedCollection<T> : ObservableCollectionWithMaxSize<T>
+    public class MostRecentlyUsedCollection<T> : ThreadSafeObservableCollectionWithMaxSize<T>
     {
         public MostRecentlyUsedCollection(int intMaxSize) : base(intMaxSize)
         {
@@ -34,22 +37,49 @@ namespace Chummer
         {
         }
 
-        public override void Add(T item)
+        private bool _blnSkipCollectionChanged;
+
+        /// <inheritdoc />
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            int intExistingIndex = IndexOf(item);
-            if (intExistingIndex == -1)
-                base.Add(item);
-            else
-                MoveItem(intExistingIndex, Count);
+            using (new EnterUpgradeableReadLock(LockObject))
+            {
+                if (_blnSkipCollectionChanged)
+                    return;
+                if (e.Action == NotifyCollectionChangedAction.Reset)
+                {
+                    _blnSkipCollectionChanged = true;
+                    using (new EnterWriteLock(LockObject))
+                    {
+                        // Remove all duplicate entries
+                        for (int intLastIndex = Count - 1; intLastIndex >= 0; --intLastIndex)
+                        {
+                            T objItem = this[intLastIndex];
+                            for (int intIndex = IndexOf(objItem); intIndex != intLastIndex; intIndex = IndexOf(objItem))
+                            {
+                                RemoveAt(intIndex);
+                                --intLastIndex;
+                            }
+                        }
+                    }
+                    _blnSkipCollectionChanged = false;
+                }
+            }
+            base.OnCollectionChanged(e);
         }
 
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            int intExistingIndex = IndexOf(item);
-            if (intExistingIndex == -1)
-                base.InsertItem(index, item);
-            else
-                MoveItem(intExistingIndex, index);
+            // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
+            using (new EnterWriteLock(LockObject))
+            {
+                int intExistingIndex = IndexOf(item);
+                if (intExistingIndex == -1)
+                    base.InsertItem(index, item);
+                else
+                    MoveItem(intExistingIndex, Math.Min(index, Count - 1));
+            }
         }
     }
 }

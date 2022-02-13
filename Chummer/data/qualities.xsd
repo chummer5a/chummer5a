@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
   <xs:include schemaLocation="bonuses.xsd" />
   <xs:include schemaLocation="conditions.xsd" />
   <xs:include schemaLocation="SchemaExtensions.xsd" />
@@ -79,6 +79,7 @@
                     </xs:element>
                     <xs:element name="doublecareer" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="implemented" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="includeinlimit" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
@@ -123,8 +124,8 @@
                     <xs:element name="print" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="refundkarmaonremove" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="stagedpurchase" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="firstlevelbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
+                    <xs:element name="firstlevelbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />

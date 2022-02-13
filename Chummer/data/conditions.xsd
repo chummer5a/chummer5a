@@ -106,6 +106,8 @@
           </xs:simpleContent>
         </xs:complexType>
       </xs:element>
+      <xs:element name="damageresistance" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="depenabled" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="ess" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:simpleContent>
@@ -120,7 +122,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attribute name="minrating" type="xs:integer" use="optional"  />
+              <xs:attribute name="minrating" type="xs:integer" use="optional" />
               <xs:attribute name="rating" type="xs:integer" use="optional" />
               <xs:attribute name="maxrating" type="xs:integer" use="optional" />
             </xs:extension>
@@ -177,6 +179,15 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
+      <xs:element name="skilltotal" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="skills" type="xs:string" minOccurs="1" maxOccurs="1" />
+            <xs:element name="type" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="val" type="xs:integer" minOccurs="1" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="spell" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="spellcategory" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
@@ -202,7 +213,7 @@
   </xs:group>
   <xs:group name="details">
     <xs:sequence>
-      <xs:element name="geardetails" minOccurs="0" >
+      <xs:element name="geardetails" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="OR" minOccurs="0" maxOccurs="1">
@@ -214,7 +225,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="vehicledetails" minOccurs="0" >
+      <xs:element name="vehicledetails" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="OR" minOccurs="0" maxOccurs="1">
@@ -226,7 +237,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="weapondetails" minOccurs="0" >
+      <xs:element name="weapondetails" minOccurs="0">
         <xs:complexType>
           <xs:sequence>
             <xs:element name="OR" minOccurs="0" maxOccurs="1">
@@ -256,7 +267,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -269,7 +280,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -278,7 +289,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -287,7 +298,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -296,7 +307,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -309,7 +320,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -318,7 +329,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -327,7 +338,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -341,7 +352,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -350,7 +361,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -359,7 +370,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -368,7 +379,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -377,7 +388,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -386,7 +397,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -395,7 +406,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -404,7 +415,7 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
-              <xs:attributeGroup ref="xmloperations"/>
+              <xs:attributeGroup ref="xmloperations" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -412,6 +423,6 @@
     </xs:sequence>
   </xs:group>
   <xs:attributeGroup name="xmloperations">
-    <xs:attribute name="operation" type="xs:string" use="optional"/>
+    <xs:attribute name="operation" type="xs:string" use="optional" />
   </xs:attributeGroup>
 </xs:schema>

@@ -17,29 +17,20 @@ using Microsoft.Extensions.Logging;
 
 namespace ChummerHub.Services.GoogleDrive
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler'
     public class DriveHandler
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler'
-
     {
-#pragma warning disable CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
-        GoogleCredential Credential = null;
-#pragma warning restore CS0414 // The field 'DriveHandler.Credential' is assigned but its value is never used
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
+        private readonly GoogleCredential Credential = null;
         public static string[] Scopes = {
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.Scopes'
             DriveService.Scope.DriveFile,
             DriveService.Scope.Drive,
             DriveService.Scope.DriveAppdata,
             DriveService.Scope.DriveMetadata
 
         };
-#pragma warning disable CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
-        static string ApplicationName = "SINners";
-#pragma warning restore CS0414 // The field 'DriveHandler.ApplicationName' is assigned but its value is never used
+        private const string ApplicationName = "SINners";
         private readonly ILogger _logger;
 
-        private static string _contentType = "application/octet-stream";
+        private const string _contentType = "application/octet-stream";
         private static string _folderId = string.Empty;
         readonly IConfiguration Configuration;
 
@@ -49,18 +40,17 @@ namespace ChummerHub.Services.GoogleDrive
 
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.GetUserCredential(IConfiguration)'
         public async Task<UserCredential> GetUserCredential(IConfiguration configuration)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.GetUserCredential(IConfiguration)'
         {
             try
             {
-                string refreshToken = Configuration["Authentication:Google:RefreshToken"];
+                var keys = new KeyVault(_logger);
+                string refreshToken = keys.GetSecret("AuthenticationGoogleRefreshToken");//Startup.AppSettings["AuthenticationGoogleRefreshToken"];
                 UserCredential credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
                            new ClientSecrets
                            {
-                               ClientId = Configuration["Authentication:Google:GoogleChummerSINersId"],
-                               ClientSecret = Configuration["Authentication:Google:GoogleChummerSINersSecret"]
+                               ClientId = keys.GetSecret("GoogleChummerSINersId"), //Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
+                               ClientSecret = keys.GetSecret("GoogleChummerSINersSecret"), //Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
                            }, Scopes, "user", CancellationToken.None, new GoogleIDataStore("me", refreshToken, _logger));
 
                 return credential;
@@ -76,28 +66,37 @@ namespace ChummerHub.Services.GoogleDrive
         {
             try
             {
-                string refreshToken = Configuration["Authentication:Google:RefreshToken"];
+                //string refreshToken = Startup.AppSettings["AuthenticationGoogleRefreshToken"];
+                var keys = new KeyVault(_logger);
+                string refreshToken = keys.GetSecret("AuthenticationGoogleRefreshToken");
 
-                if (string.IsNullOrEmpty(refreshToken))
-                    throw new ArgumentException("Configuration[\"Authentication:Google:RefreshToken\"] == null! ");
+                //_logger.LogInformation("AuthenticationGoogleRefreshToken retrieved from KeyVault: " + refreshToken);
+                
+                    
 
                 var token = new TokenResponse
                 {
                     AccessToken = "",
                     RefreshToken = refreshToken
                 };
-
+            
+                
                 var flow2 = new GoogleAuthorizationCodeFlow(new GoogleAuthorizationCodeFlow.Initializer
                 {
+                    
                     ClientSecrets = new ClientSecrets
                     {
-                        ClientId = Configuration["Authentication:Google:GoogleChummerSINersId"],
-                        ClientSecret = Configuration["Authentication:Google:GoogleChummerSINersSecret"]
+
+                        ClientId = keys.GetSecret("GoogleChummerSINersId"),//Startup.AppSettings["Authentication.Google.GoogleChummerSINersId"],
+                        ClientSecret = keys.GetSecret("GoogleChummerSINersSecret"),//Startup.AppSettings["Authentication.Google.GoogleChummerSINersSecret"]
                     },
                     Scopes = Scopes,
                     DataStore = new GoogleIDataStore("me", refreshToken, _logger)
                 });
 
+                _logger.LogInformation("AuthenticationGoogleRefreshToken retrieved from KeyVault: " + refreshToken
+                    + Environment.NewLine + "\tGoogleChummerSINersId: " + flow2.ClientSecrets.ClientId + Environment.NewLine 
+                    + "\tGoogleChummerSINersSecret: " + flow2.ClientSecrets.ClientSecret);
 
                 UserCredential credential = new UserCredential(flow2, "me", token);
                 return credential;
@@ -109,21 +108,15 @@ namespace ChummerHub.Services.GoogleDrive
             }
         }
 
-#pragma warning disable CS0414 // The field 'DriveHandler.flow' is assigned but its value is never used
-        private static IAuthorizationCodeFlow flow = null;
-#pragma warning restore CS0414 // The field 'DriveHandler.flow' is assigned but its value is never used
+        private static readonly IAuthorizationCodeFlow flow = null;
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.DriveHandler(ILogger<Startup>, IConfiguration)'
         public DriveHandler(ILogger<Startup> Logger, IConfiguration configuration)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'DriveHandler.DriveHandler(ILogger<Startup>, IConfiguration)'
         {
             Configuration = configuration;
             _logger = Logger;
-            string refreshToken = Configuration["Authentication:Google:RefreshToken"];
-
-            if (string.IsNullOrEmpty(_folderId))
-                _folderId = Configuration["Authentication:Google:ChummerFolderId"];
+            var keys = new KeyVault(Logger);
+            _folderId = keys.GetSecret("ChummerFolderId");
         }
 
         internal string StoreXmlInCloud(SINnerUploadAble uploadFile, IFormFile uploadedFile)
@@ -144,10 +137,6 @@ namespace ChummerHub.Services.GoogleDrive
                     ApplicationName = "SINners",
                     GZipEnabled = true,
                 };
-#pragma warning disable CS0219 // The variable 'cancellationToken' is assigned but its value is never used
-                CancellationToken cancellationToken = new CancellationToken();
-#pragma warning restore CS0219 // The variable 'cancellationToken' is assigned but its value is never used
-
 
                 // Create Drive API service.
                 var service = new DriveService(initializer);
@@ -301,7 +290,7 @@ namespace ChummerHub.Services.GoogleDrive
                 //{
                 //    fileMetadata.Properties.Add(tag.Display, tag.TagValue);
                 //}
-                _logger.LogError("Updating " + uploadFile.FileName + " as " + googlefileMetadata.Name);// + " to folder: " + _folderId);
+                _logger.LogInformation("Updating " + uploadFile.FileName + " as " + googlefileMetadata.Name + " to folder: " + _folderId + " GoogleDriveFileId: " + fileMetaData.GoogleDriveFileId);
                 //fileMetadata.MimeType = _contentType;
                 googlefileMetadata.OriginalFilename = uploadFile.FileName;
 

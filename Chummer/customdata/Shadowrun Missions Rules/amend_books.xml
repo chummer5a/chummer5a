@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <books>
+    <!-- Region Specifically excluded (designated as Optional) -->
+    <book>
+      <name>Bullets &amp; Bandages</name>
+      <hide />
+    </book>
+    <!-- End Region -->
+    <!-- Region Specifically excluded (not intended for Missions play) -->
+    <book>
+      <name>Splintered State</name>
+      <hide />
+    </book>
+    <!--
+    Note: While Bloody Business is not allowed, the Body Sculpt adept power explicitly is allowed, and that is the only content from this book in Chummer5a
+    <book>
+      <name>Bloody Business</name>
+      <hide />
+    </book>
+    Note: While Shadows In Focus: Sioux Nation: Counting Coup is not allowed, the Coyote mentor spirit explicitly is allowed, and that is the only content from this book in Chummer5a
+    <book>
+      <name>Shadows In Focus: Sioux Nation: Counting Coup</name>
+      <hide />
+    </book>
+    -->
+    <book>
+      <name>Dark Terrors</name>
+      <hide />
+    </book>
+<!--
+    Note: These books are excluded but have no rules/equipment that need to be supported in Chummer5a
+
+          Serrated Edge, Denver Adventure 1
+          False Flag, Denver Adventure 1
+          Battle of Manhattan
+          Shadows In Focus: Sioux Nation: Starving the Masses
+-->
+    <!-- End Region -->
+    <!-- Region Equipment/rules specifically excluded by Missions FAQ -->
+    <book>
+      <name>Data Trails (Dissonant Echoes)</name>
+      <hide />
+    </book>
+    <!-- End Region -->
+    <!-- Region Not specifically included in Missions FAQ -->
+    <book>
+      <name>Hong Kong Sourcebook</name>
+      <hide />
+    </book>
+    <book>
+      <name>Shadowrun 2050 (5th Edition)</name>
+      <!-- Shadowrun 2050 is for 5e in German, but 4e in English. So we need to hide it because we only have the 5e version in Chummer5a, which is German-only -->
+      <hide />
+    </book>
+    <book>
+      <name>No Future</name>
+      <!-- Note: this is for 6e only per SRM -->
+      <hide />
+    </book>
+    <book>
+      <name>Krime Katalog</name>
+      <!-- Note: this is for 6e only per SRM -->
+      <hide />
+    </book>
+    <!-- End Region -->
+    <!-- Region German (not specifically included in Missions FAQ) -->
+    <book>
+      <name>Shadowrun 5th Edition (German-exclusive Content)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Street Grimoire (German-exclusive Content)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Run Faster (German-exclusive Content)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Schattenhandbuch (German Handbook)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Schattenhandbuch 2 (German Handbook)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Schattenhandbuch 3 (German Handbook)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Rigger 5.0 (German-exclusive Content)</name>
+      <hide />
+    </book>
+    <book>
+      <name>State of the Art ADL (German Handbook)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Hamburg (German-exclusive)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Datapuls SOTA 2080 (German-exclusive)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Datapuls Verschlusssache (German-exclusive)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Grimmes Erwachen (German-exclusive)</name>
+      <hide />
+    </book>
+    <!-- End Region -->
+  </books>
+</chummer>

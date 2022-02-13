@@ -53,6 +53,7 @@
     <tip>
       <id>ccaae7df-40ba-4da9-837e-c0df92f07038</id>
       <text>You have enough money to retire with a Low Lifestyle. Keep at it! A nuyen saved is a nuyen earned!</text>
+      <careeronly />
       <forbidden>
         <allof>
           <nuyen>500000</nuyen>
@@ -61,13 +62,13 @@
       <required>
         <allof>
           <nuyen>200000</nuyen>
-          <careeronly />
         </allof>
       </required>
     </tip>
     <tip>
       <id>ff26b01d-1aa4-45ac-8685-0d199e115d1f</id>
       <text>You have enough money to retire with a Medium Lifestyle. 2.5 kids, picket fence AR overlay, loving partner. Is it really worth saving up for that next upgrade?</text>
+      <careeronly />
       <forbidden>
         <allof>
           <nuyen>1000000</nuyen>
@@ -76,17 +77,16 @@
         <required>
         <allof>
           <nuyen>500000</nuyen>
-          <careeronly />
         </allof>
       </required>
     </tip>
     <tip>
       <id>b6da9d78-024d-4516-821c-93ad8207075d</id>
       <text>You have enough money to retire with a Luxury Lifestyle. Molly Millions has nothing on you!</text>
+      <careeronly />
         <required>
         <allof>
           <nuyen>100000000</nuyen>
-          <careeronly />
         </allof>
       </required>
     </tip>

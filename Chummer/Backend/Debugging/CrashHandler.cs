@@ -16,41 +16,35 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
-using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
+using NLog;
 
 namespace Chummer.Backend
 {
     public static class CrashHandler
     {
-        private static class NativeMethods
-        {
-            [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-            internal static extern uint GetCurrentThreadId();
-        }
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
-        private sealed class DumpData : ISerializable
+        private sealed class DumpData : ISerializable, IDisposable
         {
             public DumpData(Exception ex)
             {
-                _dicPretendFiles = new Dictionary<string, string> {{"exception.txt", ex?.ToString() ?? "No Exception Specified"}};
+                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString() ?? "No Exception Specified" } };
 
                 _dicAttributes = new Dictionary<string, string>
                 {
-                    {"visible-crash-id", Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo)},
+                    {"visible-crash-id", Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo)},
 #if DEBUG
                     {"visible-build-type", "DEBUG"},
 #else
@@ -63,13 +57,14 @@ namespace Chummer.Backend
                     {"application-dir", Application.ExecutablePath},
                     {"os-type", Environment.OSVersion.VersionString},
                     {"visible-error-friendly", ex?.Message ?? "No description available"},
-                    { "installation-id", Properties.Settings.Default.UploadClientId.ToString() },
-                    { "option-upload-logs-set", GlobalOptions.UseLoggingApplicationInsights.ToString() }
+                    {"visible-stacktrace", ex?.StackTrace ?? "No stack trace available"},
+                    {"installation-id", Properties.Settings.Default.UploadClientId.ToString() },
+                    {"option-upload-logs-set", GlobalSettings.UseLoggingApplicationInsights.ToString() }
                 };
 
                 try
                 {
-                    _dicAttributes.Add("chummer-ui-language", GlobalOptions.Language);
+                    _dicAttributes.Add("chummer-ui-language", GlobalSettings.Language);
                 }
                 catch (Exception e)
                 {
@@ -77,7 +72,7 @@ namespace Chummer.Backend
                 }
                 try
                 {
-                    _dicAttributes.Add("chummer-cultureinfo", GlobalOptions.CultureInfo.ToString());
+                    _dicAttributes.Add("chummer-cultureinfo", GlobalSettings.CultureInfo.ToString());
                 }
                 catch (Exception e)
                 {
@@ -85,7 +80,7 @@ namespace Chummer.Backend
                 }
                 try
                 {
-                    _dicAttributes.Add("system-cultureinfo", GlobalOptions.SystemCultureInfo.ToString());
+                    _dicAttributes.Add("system-cultureinfo", GlobalSettings.SystemCultureInfo.ToString());
                 }
                 catch (Exception e)
                 {
@@ -140,13 +135,17 @@ namespace Chummer.Backend
 
             // JavaScriptSerializer requires that all properties it accesses be public.
             // ReSharper disable once MemberCanBePrivate.Local
-            public readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
+            public readonly LockingDictionary<string, string> _dicCapturedFiles = new LockingDictionary<string, string>();
+
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly Dictionary<string, string> _dicPretendFiles;
+
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly Dictionary<string, string> _dicAttributes;
+
             // ReSharper disable once MemberCanBePrivate.Local
-            public readonly int _intProcessId = Process.GetCurrentProcess().Id;
+            public readonly int _intProcessId = Program.MyProcess.Id;
+
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
 
@@ -183,38 +182,32 @@ namespace Chummer.Backend
                 foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicCapturedFiles)
                     info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
             }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                _dicCapturedFiles?.Dispose();
+            }
         }
 
         public static void WebMiniDumpHandler(Exception ex)
         {
+            
+
             try
             {
-                DumpData dump = new DumpData(ex);
-                dump.AddFile(Path.Combine(Utils.GetStartupPath, "settings", "default.xml"));
-                dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
-
-                byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
-                File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
-
-                if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
+                using (DumpData dump = new DumpData(ex))
                 {
-                    if (Program.ChummerTelemetryClient != null)
+                    foreach (string strSettingFile in Directory.EnumerateFiles(
+                        Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
                     {
-                        ex.Data.Add("IsCrash", bool.TrueString);
-                        ExceptionTelemetry et = new ExceptionTelemetry(ex)
-                        {
-                            SeverityLevel = SeverityLevel.Critical
-
-                        };
-                        //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
-                        foreach (DictionaryEntry d in ex.Data)
-                        {
-                            if ((d.Key != null) && (d.Value != null))
-                                et.Properties.Add(d.Key.ToString(), d.Value.ToString());
-                        }
-                        Program.ChummerTelemetryClient.TrackException(et);
-                        Program.ChummerTelemetryClient.Flush();
+                        dump.AddFile(strSettingFile);
                     }
+
+                    dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
+
+                    byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
+                    File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
                 }
 
                 //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
@@ -224,12 +217,11 @@ namespace Chummer.Backend
             }
             catch (Exception nex)
             {
-                Program.MainForm.ShowMessageBox(new StringBuilder()
-                    .AppendLine("Failed to create crash report.")
-                    .AppendLine("Here is some information to help the developers figure out why:")
-                    .AppendLine(nex.ToString())
-                    .AppendLine("Crash information:")
-                    .Append(ex).ToString());
+                Program.MainForm.ShowMessageBox(
+                    "Failed to create crash report." + Environment.NewLine +
+                    "Chummer crashed with version: " + Utils.CurrentChummerVersion + Environment.NewLine +
+                    "Here is some information to help the developers figure out why:" + Environment.NewLine + nex +
+                    Environment.NewLine + "Crash information:" + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

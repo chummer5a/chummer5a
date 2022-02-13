@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Globalization;
 
@@ -40,6 +41,7 @@ namespace Chummer
                 case 'R':
                     Suffix = chrSuffix;
                     break;
+
                 default:
                     Suffix = 'Z';
                     break;
@@ -61,8 +63,8 @@ namespace Chummer
                 AddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
                 if (Suffix == 'F' || Suffix == 'R')
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-                Value = blnIsSuccess ? Convert.ToInt32(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                Value = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
             else
             {
@@ -78,7 +80,7 @@ namespace Chummer
 
         public override string ToString()
         {
-            return ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            return ToString(GlobalSettings.CultureInfo, GlobalSettings.Language);
         }
 
         public string ToString(CultureInfo objCulture, string strLanguage)
@@ -90,6 +92,7 @@ namespace Chummer
             {
                 case 'F':
                     return strBaseAvail + LanguageManager.GetString("String_AvailForbidden", strLanguage);
+
                 case 'R':
                     return strBaseAvail + LanguageManager.GetString("String_AvailRestricted", strLanguage);
             }
@@ -115,6 +118,11 @@ namespace Chummer
             return intCompareResult;
         }
 
+        public bool Equals(AvailabilityValue other)
+        {
+            return Value.Equals(other.Value) && Suffix.Equals(other.Suffix) && AddToParent.Equals(other.AddToParent);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is AvailabilityValue objOther)
@@ -126,7 +134,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new { Value, Suffix, AddToParent, IncludedInParent }.GetHashCode();
+            return (Value, Suffix, AddToParent, IncludedInParent).GetHashCode();
         }
 
         public static bool operator ==(AvailabilityValue left, AvailabilityValue right)
@@ -157,11 +165,6 @@ namespace Chummer
         public static bool operator >=(AvailabilityValue left, AvailabilityValue right)
         {
             return left.CompareTo(right) >= 0;
-        }
-
-        public bool Equals(AvailabilityValue other)
-        {
-            return Value.Equals(other.Value) && Suffix.Equals(other.Suffix) && AddToParent.Equals(other.AddToParent);
         }
     }
 }

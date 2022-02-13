@@ -626,10 +626,6 @@
             <text>アップデートを確認</text>
         </string>
         <string>
-            <key>Menu_Main_Omae</key>
-            <text>Omae キャラクター交換</text>
-        </string>
-        <string>
             <key>Menu_Main_NewWindow</key>
             <text>新しいウィンドウ (&amp;N)</text>
         </string>
@@ -795,15 +791,11 @@
             <text>装備を追加 (&amp;D)</text>
         </string>
         <string>
-            <key>Menu_AddNexus</key>
-            <text>ネクサスを追加 (&amp;N)</text>
-        </string>
-        <string>
             <key>Menu_AddWeapon</key>
             <text>武器を追加 (&amp;W)</text>
         </string>
         <string>
-            <key>Menu_AddAdvantage</key>
+            <key>Menu_AddTechnique</key>
             <text>利点を追加 (&amp;A)</text>
         </string>
         <string>
@@ -1123,10 +1115,6 @@
             <text>この複合体を削除してもよろしいですか?</text>
         </string>
         <string>
-            <key>Message_DeleteComplexFormOption</key>
-            <text>この複合体のオプションを削除してもよろしいですか?</text>
-        </string>
-        <string>
             <key>Message_DeleteQuality</key>
             <text>この資質を削除してもよろしいですか?</text>
         </string>
@@ -1177,14 +1165,6 @@
         <string>
             <key>MessageTitle_PowerLevel</key>
             <text>パワーレベル</text>
-        </string>
-        <string>
-            <key>Message_MartialArtManeuverLimit</key>
-            <text>「格闘技」のレーティング1につき習得できる格闘動作は2つまでです.</text>
-        </string>
-        <string>
-            <key>MessageTitle_MartialArtManeuverLimit</key>
-            <text>格闘動作の最大数</text>
         </string>
         <string>
             <key>Message_SelectMartialArtTechnique</key>
@@ -1515,18 +1495,6 @@
             <text>複合体を選択</text>
         </string>
         <string>
-            <key>Message_CannotAddComplexFormOption</key>
-            <text>この複合体にオプションを追加できません.</text>
-        </string>
-        <string>
-            <key>Message_CannotAddComplexFormOptionLimit</key>
-            <text>レーティングによる制限のため, この複合体には {0} より多くのオプションを追加できません.</text>
-        </string>
-        <string>
-            <key>MessageTitle_CannotAddComplexFormOption</key>
-            <text>オプションを追加できません</text>
-        </string>
-        <string>
             <key>Message_FocusMaximumForce</key>
             <text>結合済みの収束具の【フォース】の合計は, 【魔力】の5倍を超えることはできません.</text>
         </string>
@@ -1548,7 +1516,7 @@
         </string>
         <string>
             <key>Message_AttributeMaximum</key>
-            <text>キャラクター作成地は, 2つ以上の能力値を最大値にすることはできません.</text>
+            <text>キャラクター作成地は, {0}つ以上の能力値を最大値にすることはできません.</text>
         </string>
         <string>
             <key>Message_AttributeBuildPoints</key>
@@ -1596,7 +1564,7 @@
         </string>
         <string>
             <key>Message_InvalidAvail</key>
-            <text>入手値が上限の{1} を超過している {0} 個のアイテムがあります</text>
+            <text>入手値が上限の{1} を超過している {0} 個のアイテムがあります:</text>
         </string>
         <string>
             <key>MessageTitle_Invalid</key>
@@ -1701,10 +1669,6 @@
         <string>
             <key>Message_ConfirmKarmaExpenseRemove</key>
             <text>{0} を削除するために {1} カルマ消費してもよろしいですか?</text>
-        </string>
-        <string>
-            <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
-            <text>この複合体オプションの追加のために {0} カルマ消費してもよろしいですか?</text>
         </string>
         <string>
             <key>Message_ConfirmKarmaExpenseFocus</key>
@@ -2015,14 +1979,6 @@
             <text>複合体</text>
         </string>
         <string>
-            <key>String_ExpenseAddComplexFormOption</key>
-            <text>複合体オプションの追加</text>
-        </string>
-        <string>
-            <key>String_ExpenseComplexFormOption</key>
-            <text>複合体オプション</text>
-        </string>
-        <string>
             <key>String_ExpenseQuickenMetamagic</key>
             <text>固着術の使用</text>
         </string>
@@ -2157,10 +2113,6 @@
         <string>
             <key>String_ExpenseLearnMartialArt</key>
             <text>格闘技の習得</text>
-        </string>
-        <string>
-            <key>String_ExpenseLearnManeuver</key>
-            <text>格闘動作の習得</text>
         </string>
         <string>
             <key>String_ExpenseLearnMetamagic</key>
@@ -2721,7 +2673,7 @@
         </string>
         <string>
             <key>Tip_CommonNuyen</key>
-            <text>装備購入のためにキャラクターが使える新円の額. 1 BP = {0} \.</text>
+            <text>装備購入のためにキャラクターが使える新円の額. {0}.</text>
         </string>
         <string>
             <key>Tip_CommonAIRating</key>
@@ -2824,10 +2776,6 @@
         <string>
             <key>Node_SelectedMartialArts</key>
             <text>習得した格闘技</text>
-        </string>
-        <string>
-            <key>Node_SelectedManeuvers</key>
-            <text>習得した格闘動作</text>
         </string>
         <!-- Spells Tab -->
         <string>
@@ -3379,6 +3327,10 @@
         <!-- Character Info Tab -->
         <string>
             <key>Label_Sex</key>
+            <text>性別:</text>
+        </string>
+        <string>
+            <key>Label_Gender</key>
             <text>性別:</text>
         </string>
         <string>
@@ -3947,27 +3899,6 @@
             <key>MenuItem_CreateCritter</key>
             <text>クリッターを作成する</text>
         </string>
-        <!-- Omae -->
-        <string>
-            <key>Omae_NoDescription</key>
-            <text>概要なし.</text>
-        </string>
-        <string>
-            <key>Omae_UpdatedDate</key>
-            <text>更新日</text>
-        </string>
-        <string>
-            <key>Omae_DownloadCount</key>
-            <text>ダウンロード回数 {0} 回</text>
-        </string>
-        <string>
-            <key>Omae_Download</key>
-            <text>ダウンロード</text>
-        </string>
-        <string>
-            <key>Omae_PostUpdate</key>
-            <text>アップデートを投稿</text>
-        </string>
         <!-- Adept Powers -->
         <string>
             <key>Label_Power_PowerRating</key>
@@ -4424,429 +4355,6 @@
             <key>Title_Notes</key>
             <text>ノート</text>
         </string>
-        <!-- Omae Window -->
-        <string>
-            <key>Title_Omae</key>
-            <text>Chummer: Omae キャラクター交換</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotConnection</key>
-            <text>Omae に接続できません. コンピュータがマトリックスに接続されているか確認してください. 問題が解決しない場合, Omae のサイトが現在接続不能になっている可能性があります.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CannotConnection</key>
-            <text>Omae に接続できません</text>
-        </string>
-        <string>
-            <key>Message_Omae_FileExists</key>
-            <text>ファイル "{0}" はすでにOmae 保存フォルダに存在します.\nダウンロード中のファイルで上書きしてもよろしいですか?</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_FileExists</key>
-            <text>既存のキャラクター</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotFindCharacter</key>
-            <text>このキャラクターのアップロード情報が見つかりません.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CannotFindCharacter</key>
-            <text>キャラクターが見つかりません</text>
-        </string>
-        <string>
-            <key>Message_Omae_CharacterDownloaded</key>
-            <text>キャラクターのダウンロードが完了しました. すぐに開きますか?</text>
-        </string>
-        <string>
-            <key>Message_Omae_NPCPackDownloaded</key>
-            <text>NPC パックのダウンロードが完了しました.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CharacterDownloaded</key>
-            <text>キャラクターのダウンロード完了</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_DeleteCharacter</key>
-            <text>キャラクターの削除</text>
-        </string>
-        <string>
-            <key>Message_Omae_ConfirmDelete</key>
-            <text>このキャラクターを削除すると, Omae からこのキャラクターのすべての情報が削除されます. このキャラクターを削除してもよろしいですか?</text>
-        </string>
-        <string>
-            <key>Message_Omae_CharacterDeleted</key>
-            <text>キャラクターの削除が完了しました.</text>
-        </string>
-        <string>
-            <key>Message_Omae_CharacterDeleteError</key>
-            <text>キャラクターの削除時にエラーが発生しました. 後でやり直してください.</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotFindData</key>
-            <text>このデータファイルのアップロード情報が見つかりません.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CannotFindData</key>
-            <text>データファイルが見つかりません</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_DeleteData</key>
-            <text>データの削除</text>
-        </string>
-        <string>
-            <key>Message_Omae_ConfirmData</key>
-            <text>このデータを削除すると, Omae からこのデータのすべての情報が削除されます. このデータを削除してもよろしいですか?</text>
-        </string>
-        <string>
-            <key>Message_Omae_DataDeleted</key>
-            <text>データの削除が完了しました.</text>
-        </string>
-        <string>
-            <key>Message_Omae_DataDeleteError</key>
-            <text>データの削除時にエラーが発生しました. 後でやり直してください.</text>
-        </string>
-        <string>
-            <key>Message_Omae_DataDownloaded</key>
-            <text>データファイルのダウンロードが完了しました. 上書きダウンロードを行った場合は, 変更を有効にするために Chummer を再起動する必要があります.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_DataDownloaded</key>
-            <text>データファイルのダウンロード完了</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotFindSheet</key>
-            <text>このキャラクターシートのアップロード情報が見つかりません.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CannotFindSheet</key>
-            <text>キャラクターシートが見つかりません</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_DeleteSheet</key>
-            <text>キャラクターシートの削除</text>
-        </string>
-        <string>
-            <key>Message_Omae_ConfirmSheet</key>
-            <text>このキャラクターシートを削除すると, Omae からこのキャラクターシートのすべての情報が削除されます. このキャラクターシートを削除してもよろしいですか?</text>
-        </string>
-        <string>
-            <key>Message_Omae_SheetDeleted</key>
-            <text>キャラクターシートの削除が完了しました.</text>
-        </string>
-        <string>
-            <key>Message_Omae_SheetDeleteError</key>
-            <text>キャラクターシートの削除時にエラーが発生しました. 後でやり直してください.</text>
-        </string>
-        <string>
-            <key>Message_Omae_SheetDownloaded</key>
-            <text>キャラクターシートのダウンロードが完了しました.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_SheetDownloaded</key>
-            <text>キャラクターシートのダウンロード完了</text>
-        </string>
-        <string>
-            <key>Message_Omae_ChooseUsername</key>
-            <text>ユーザー名を選択してください.</text>
-        </string>
-        <string>
-            <key>Message_Omae_EnterUsername</key>
-            <text>ユーザー名を入力してください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_ChooseUsername</key>
-            <text>ユーザー名が必要</text>
-        </string>
-        <string>
-            <key>Message_Omae_ChoosePassword</key>
-            <text>パスワードを選択してください.</text>
-        </string>
-        <string>
-            <key>Message_Omae_EnterPassword</key>
-            <text>パスワードを入力してください</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_ChoosePassword</key>
-            <text>パスワードが必要</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_Registration</key>
-            <text>Omae ユーザー登録</text>
-        </string>
-        <string>
-            <key>Message_Omae_AccountCreated</key>
-            <text>あなたの Omae アカウントの作成が完了しました.</text>
-        </string>
-        <string>
-            <key>Message_Omae_AccountExists</key>
-            <text>このユーザー名のアカウントはすでに存在します.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_OmaeLogin</key>
-            <text>Omae ログイン</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotLogin</key>
-            <text>Omae にログインできません. ユーザー名とパスワードが正しいか確認してください.</text>
-        </string>
-        <string>
-            <key>Message_Omae_MustLogin</key>
-            <text>キャラクターをアップロードするには Omae にログインしなければなりません. キャラクターをアップロードするには, あなたのアカウントでログインするか, アカウントを作成してください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_PasswordReset</key>
-            <text>パスワードのリセット</text>
-        </string>
-        <string>
-            <key>Message_Omae_PasswordNoEmail</key>
-            <text>このアカウントに紐付けされた電子メールアドレスが存在しないため, パスワードがリセットできません.</text>
-        </string>
-        <string>
-            <key>Message_Omae_PasswordReset</key>
-            <text>パスワードのリセットが完了しました. 新しいパスワードはメールで伝達されます.</text>
-        </string>
-        <string>
-            <key>Message_Omae_InfoRequiresLogin</key>
-            <text>あなたのアカウント情報を得るには Omae にログインしなければなりません.</text>
-        </string>
-        <string>
-            <key>String_Omae_NoCharacters</key>
-            <text>キャラクターが見つかりません.</text>
-        </string>
-        <string>
-            <key>String_Omae_NoData</key>
-            <text>データファイルが見つかりません.</text>
-        </string>
-        <string>
-            <key>String_Omae_NoSheets</key>
-            <text>キャラクターシートが見つかりません.</text>
-        </string>
-        <string>
-            <key>Checkbox_Omae_AutoLogin</key>
-            <text>自動的にログインする</text>
-        </string>
-        <string>
-            <key>Button_Omae_ClearFilter</key>
-            <text>リセット</text>
-        </string>
-        <string>
-            <key>Button_Omae_ShowFilter</key>
-            <text>表示</text>
-        </string>
-        <string>
-            <key>Button_Omae_HideFilter</key>
-            <text>隠す</text>
-        </string>
-        <string>
-            <key>Button_Omae_Login</key>
-            <text>ログイン</text>
-        </string>
-        <string>
-            <key>Button_Omae_MyAccount</key>
-            <text>マイ アカウント</text>
-        </string>
-        <string>
-            <key>Button_Omae_PasswordReset</key>
-            <text>パスワードのリセット</text>
-        </string>
-        <string>
-            <key>Button_Omae_Register</key>
-            <text>登録</text>
-        </string>
-        <string>
-            <key>Button_Omae_Search</key>
-            <text>検索 (&amp;S)</text>
-        </string>
-        <string>
-            <key>Button_Omae_Upload</key>
-            <text>キャラクターのアップロード (&amp;U)</text>
-        </string>
-        <string>
-            <key>Button_Omae_UploadData</key>
-            <text>ファイルのアップロード (&amp;U)</text>
-        </string>
-        <string>
-            <key>Label_Omae_Username</key>
-            <text>ユーザー名:</text>
-        </string>
-        <string>
-            <key>Label_Omae_Password</key>
-            <text>パスワード:</text>
-        </string>
-        <string>
-            <key>Label_Omae_SearchFor</key>
-            <text>検索対象</text>
-        </string>
-        <string>
-            <key>Label_Omae_Filtering</key>
-            <text>フィルタ:</text>
-        </string>
-        <string>
-            <key>Label_Omae_CurrentMode</key>
-            <text>現在のモード:</text>
-        </string>
-        <string>
-            <key>Label_Omae_Quality</key>
-            <text>資質:</text>
-        </string>
-        <string>
-            <key>Label_Omae_OrQuality</key>
-            <text>または</text>
-        </string>
-        <string>
-            <key>Label_Omae_Creator</key>
-            <text>作者:</text>
-        </string>
-        <string>
-            <key>Label_Omae_LoggedInAs</key>
-            <text>ユーザー名 {0} でログイン中</text>
-        </string>
-        <string>
-            <key>Label_Omae_SortedBy</key>
-            <text>ソート順</text>
-        </string>
-        <!-- Omae Account Window -->
-        <string>
-            <key>Title_OmaeAccount</key>
-            <text>Omae アカウント</text>
-        </string>
-        <string>
-            <key>Label_OmaeAccount_EmailAddress</key>
-            <text>電子メールアドレス</text>
-        </string>
-        <!-- Omae Upload Window -->
-        <string>
-            <key>Title_OmaeUpload</key>
-            <text>Omae にキャラクターをアップロード</text>
-        </string>
-        <string>
-            <key>Title_OmaeUploadData</key>
-            <text>Omae にカスタムデータをアップロード</text>
-        </string>
-        <string>
-            <key>Title_OmaeUploadSheet</key>
-            <text>Omae にキャラクターシートをアップロード</text>
-        </string>
-        <string>
-            <key>Label_OmaeUpload_FileName</key>
-            <text>アップロードするファイル:</text>
-        </string>
-        <string>
-            <key>Label_OmaeUpload_CharacterName</key>
-            <text>キャラクター名:</text>
-        </string>
-        <string>
-            <key>Label_OmaeUpload_CharacterType</key>
-            <text>キャラクターの種類:</text>
-        </string>
-        <string>
-            <key>Label_OmaeUpload_Description</key>
-            <text>概要:</text>
-        </string>
-        <string>
-            <key>Button_OmaeUpload_Upload</key>
-            <text>アップロード</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_CannotUploadFile</key>
-            <text>Chummer のキャラクターファイルのみアップロードできます.</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_CannotUploadSheet</key>
-            <text>XSL および XSLT ファイルのみアップロードできます</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_CannotUploadFile</key>
-            <text>ファイルをアップロードできません</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_UnnamedCharacter</key>
-            <text>名前のないキャラクターはアップロードできません.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_UnnamedCharacter</key>
-            <text>キャラクターをアップロードできません</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_SelectFile</key>
-            <text>アップロードするファイルを選択してください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_SelectFile</key>
-            <text>アップロードするファイルを選択</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_CharacterDescription</key>
-            <text>このキャラクターのことが他のユーザーにもわかるよう, 簡単な概要を添えてください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_CharacterDescription</key>
-            <text>キャラクターの概要</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_FileTooLarge</key>
-            <text>このキャラクターファイルは大きすぎるため Omae にアップロードできません. 顔写真がある場合は, 縮小するか削除してから再度アップロードしてください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_FileTooLarge</key>
-            <text>ファイルが大きすぎます</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_UploadFailed</key>
-            <text>ファイルをアップロードできませんでした.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_UploadFailed</key>
-            <text>アップロード失敗</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_UploadComplete</key>
-            <text>ファイルのアップロード完了. 提供に感謝します!</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_UploadComplete</key>
-            <text>アップロード完了</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_DataName</key>
-            <text>このデータファイルの名前を入力してください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_DataName</key>
-            <text>データファイル名</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_DataDescription</key>
-            <text>このデータファイルの内容がわかるよう, 簡単な概要を添えてください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_DataDescription</key>
-            <text>データファイルの概要</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_DataSelectFiles</key>
-            <text>アップロードする際は少なくとも1つのファイルを含めてください.</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_SheetName</key>
-            <text>このキャラクターシートの名前を入力してください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_SheetName</key>
-            <text>キャラクターシートの名前</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_SheetDescription</key>
-            <text>このキャラクターシートの内容がわかるよう, 簡単な概要を添えてください.</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_SheetDescription</key>
-            <text>キャラクターシートの概要</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_SheetSelectFiles</key>
-            <text>アップロードする際は少なくとも1つのファイルを含めてください.</text>
-        </string>
         <!-- Options Window -->
         <string>
             <key>Title_Options</key>
@@ -4909,10 +4417,6 @@
             <text>通常のキャラクターの四肢:</text>
         </string>
         <string>
-            <key>Label_Options_NuyenPerBP</key>
-            <text>1BPあたりの新円:</text>
-        </string>
-        <string>
             <key>Checkbox_Options_AutomaticUpdates</key>
             <text>自動的にアップデート</text>
         </string>
@@ -4961,10 +4465,6 @@
             <text>格闘技</text>
         </string>
         <string>
-            <key>Label_Options_BPMartialArtManeuver</key>
-            <text>格闘動作</text>
-        </string>
-        <string>
             <key>Label_Options_BPSkillGroup</key>
             <text>技能グループの技能値</text>
         </string>
@@ -4995,10 +4495,6 @@
         <string>
             <key>Label_Options_BPComplexForm</key>
             <text>複合体のレーティング</text>
-        </string>
-        <string>
-            <key>Label_Options_BPComplexFormOption</key>
-            <text>複合体オプションのレーティング</text>
         </string>
         <string>
             <key>Label_Options_NewSpecialization</key>
@@ -5081,23 +4577,11 @@
             <text>新しい複合体</text>
         </string>
         <string>
-            <key>Label_Options_ImproveComplexForm</key>
-            <text>複合体を1成長</text>
-        </string>
-        <string>
-            <key>Label_Options_ComplexFormOptions</key>
-            <text>複合体オプション</text>
-        </string>
-        <string>
-            <key>Label_Options_ComplexFormSkillsoft</key>
-            <text>複合体スキルソフト</text>
-        </string>
-        <string>
             <key>Label_Options_Spirit</key>
             <text>精霊</text>
         </string>
         <string>
-            <key>Label_Options_CombatManeuver</key>
+            <key>Label_Options_MartialArtTechnique</key>
             <text>格闘動作</text>
         </string>
         <string>
@@ -5434,7 +4918,7 @@
         </string>
         <string>
             <key>Button_Options_PDFTest</key>
-            <text>テスト - 5ページを開く</text>
+            <text>テスト - 3ページを開く</text>
         </string>
         <!-- Print Multiple Window -->
         <string>
@@ -5732,15 +5216,10 @@
             <key>Title_SelectMartialArt</key>
             <text>格闘技を選択</text>
         </string>
-        <!-- Select Martial Art Advantage Window -->
+        <!-- Select Martial Art Technique Window -->
         <string>
             <key>Title_SelectMartialArtTechnique</key>
             <text>利点を選択</text>
-        </string>
-        <!-- Select Martial Art Maneuver Window -->
-        <string>
-            <key>Title_SelectMartialArtManeuver</key>
-            <text>格闘動作を選択</text>
         </string>
         <!-- Select Mentor Spirit Window -->
         <string>
@@ -5764,31 +5243,6 @@
             <text>どちらかを選択:</text>
         </string>
         <!-- Select Metamagic Window -->
-        <!-- Select Nexus Window -->
-        <string>
-            <key>Title_SelectNexus</key>
-            <text>ネクサスを作成</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_Nexus</key>
-            <text>ネクサス</text>
-        </string>
-        <string>
-            <key>Label_SelectNexus_Processor</key>
-            <text>プロセッサ:</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_Processor</key>
-            <text>プロセッサ</text>
-        </string>
-        <string>
-            <key>Label_SelectNexus_PersonaLimit</key>
-            <text>ペルソナ上限:</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_PersonaLimit</key>
-            <text>ペルソナ上限</text>
-        </string>
         <!-- Select Number Window -->
         <string>
             <key>Title_SelectNumber</key>
@@ -7025,14 +6479,6 @@
             <text>Select a Skill/Skill Group</text>
         </string>
         <string>
-            <key>Checkbox_Options_MayBuyQualities</key>
-            <text>May buy Qualities (RC 40)</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_ContactPoints</key>
-            <text>Contact points instead of fixed Contacts (RC 40)</text>
-        </string>
-        <string>
             <key>Checkbox_Options_UseLogging</key>
             <text>Use Debug Logging</text>
         </string>
@@ -7636,15 +7082,15 @@
         </string>
         <string>
             <key>About_Description_Text</key>
-            <text>Character generator for Shadowrun 5th Edition\n\r\n\rThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\r\n\rBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
+            <text>Character generator for Shadowrun 5th Edition\n\nThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\nBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
         </string>
         <string>
             <key>About_Company_Text</key>
-            <text>Original Chummer for 4th edition by Keith Rudolph.\n\rChummer5 update by Adam Schmidt: srchummer5@gmail.com\n\rChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\rAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com</text>
+            <text>Original Chummer for 4th edition by Keith Rudolph.\nChummer5 update by Adam Schmidt: srchummer5@gmail.com\nChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\nAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com\nAdditional 5a updates by Delnar_Ersike: delnar.ersike@gmail.com</text>
         </string>
         <string>
             <key>About_Copyright_Text</key>
-            <text>Copyright © Keith Rudolph 2013</text>
+            <text>Copyright © Keith Rudolph 2013, Licensed GNU GPLv3</text>
         </string>
         <string>
             <key>About_Label_Contributors</key>
@@ -7654,10 +7100,10 @@
             <key>About_Label_Disclaimer</key>
             <text>Disclaimer</text>
         </string>
-        <string>
-            <key>About_Label_Disclaimer_Text</key>
-            <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummer uses icons from the Silk icon set made by Mark James which is available at www.famfamfam.com.</text>
-        </string>
+      <string>
+        <key>About_Label_Disclaimer_Text</key>
+        <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\nUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\nBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\nChummerは、https://www.fatcow.com/free-icons で入手可能なFatCow Icon Setのアイコンを使用しています。</text>
+      </string>
         <string>
             <key>Label_Roster_File_Name</key>
             <text>File Name:</text>
@@ -7720,7 +7166,7 @@
         </string>
         <string>
             <key>Menu_SpecialChangeOptions</key>
-            <text>Change &amp;Options File</text>
+            <text>Change &amp;Settings File</text>
         </string>
         <string>
             <key>String_MutantCritter</key>
@@ -7816,7 +7262,7 @@
         </string>
         <string>
             <key>Message_RestrictedGearUsed</key>
-            <text>Restricted Gear was used on:\n{0}</text>
+            <text>Restricted Gear was used on:{0}</text>
         </string>
         <string>
             <key>Message_InvalidCyberwareGrades</key>
@@ -8319,10 +7765,6 @@
             <text>Allow incrementing values of numericupdown controls by hovering over the control</text>
         </string>
         <string>
-            <key>Checkbox_Options_OmaeEnabled</key>
-            <text>Enable Omae character exchange</text>
-        </string>
-        <string>
             <key>Checkbox_Options_UseLifeModule</key>
             <text>Life modules available</text>
         </string>
@@ -8381,10 +7823,6 @@
         <string>
             <key>Checkbox_SelectLifeModule_LimitList</key>
             <text>Show only Life Modules I can take</text>
-        </string>
-        <string>
-            <key>Tip_Omae_Warning</key>
-            <text>Omae is outside the current developers control and contain old characters that may not work or crash the current version of chummer. Proceed at your own risk.\nDo you want to continue?</text>
         </string>
         <string>
             <key>Tip_LifeModule_Warning</key>
@@ -8595,14 +8033,6 @@
             <text>Result of {0}D6: (</text>
         </string>
         <string>
-            <key>Checkbox_Options_KnowledgeMultiplier</key>
-            <text>Override Knowledge Points (INT + LOG) Multiplier</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_ContactMultiplier</key>
-            <text>Override Contact Points Charisma Multiplier</text>
-        </string>
-        <string>
             <key>Checkbox_Options_Live_CustomData</key>
             <text>Allow Live Data Updates from customdata Directory</text>
         </string>
@@ -8700,7 +8130,7 @@
         </string>
         <string>
             <key>Message_Options_CloseForms</key>
-            <text>Options are only enumerated on character load. Should we restart the application?</text>
+            <text>Settings are only enumerated on character load. Should we restart the application?</text>
         </string>
         <string>
             <key>Message_Options_SaveForms</key>
@@ -9040,7 +8470,7 @@
         </string>
         <string>
             <key>Message_CharacterOptions_OpenOptions</key>
-            <text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Options menu now?</text>
+            <text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Settings menu now?</text>
         </string>
         <string>
             <key>MessageTitle_CharacterOptions_OpenOptions</key>
@@ -9151,7 +8581,7 @@
             <text>Custom data directory of this name already exists.</text>
         </string>
         <string>
-            <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+            <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
             <text>Duplicate Custom Data Directory Name</text>
         </string>
         <string>

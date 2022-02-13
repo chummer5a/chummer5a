@@ -3017,22 +3017,10 @@
                 <altcode>SR5</altcode>
             </book>
             <book>
-                <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-                <name>Shadowrun 5th Edition (German-exclusive Content)</name>
-                <translate>Shadowrun 5. Edition (Deutsch-exklusiver Inhalt)</translate>
-                <altcode>SR5G</altcode>
-            </book>
-            <book>
                 <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
                 <name>Street Grimoire</name>
                 <translate>Straßengrimoire</translate>
                 <altcode>SG</altcode>
-            </book>
-            <book>
-                <id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
-                <name>Street Grimoire (German-exclusive Content)</name>
-                <translate>Straßengrimoire (Deutsch-exklusiver Inhalt)</translate>
-                <altcode>SGG</altcode>
             </book>
             <book translated="True">
                 <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
@@ -3057,12 +3045,6 @@
                 <name>Run Faster</name>
                 <translate>Schattenläufer</translate>
                 <altcode>RF</altcode>
-            </book>
-            <book>
-                <id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-                <name>Run Faster (German-exclusive Content)</name>
-                <translate>Schattenläufer (Deutsch-exklusiver Inhalt)</translate>
-                <altcode>RFG</altcode>
             </book>
             <book>
                 <id>01994ce6-832f-4e29-aded-e16c1bf139bd</id>
@@ -3123,12 +3105,6 @@
                 <name>Rigger 5.0</name>
                 <translate>Asphaltkrieger</translate>
                 <altcode>R5</altcode>
-            </book>
-            <book>
-                <id>e3e23ca4-b7b8-11e6-80f5-76304dec7eb7</id>
-                <name>Rigger 5.0 (German-exclusive Content)</name>
-                <translate>Asphaltkrieger (Deutsch-exklusiver Inhalt)</translate>
-                <altcode>R5G</altcode>
             </book>
             <book>
                 <id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
@@ -3465,6 +3441,12 @@
                 <translate>Materialisierung</translate>
                 <altpage>398</altpage>
             </power>
+          <power>
+            <id>c5ecc4fa-3f9d-49da-ad63-3ee35843ca17</id>
+            <name>Manifest</name>
+            <translate>Manifestieren</translate>
+            <altpage>313</altpage>
+          </power>
             <power>
                 <id>153bc9aa-1a5e-41ac-877d-751470624bc7</id>
                 <name>Mimicry</name>
@@ -4973,6 +4955,7 @@
             <category translate="Technocritter">Technocritters</category>
             <category translate="Schattengeister">Shadow Spirits</category>
             <category translate="Kriegsformen">Warforms</category>
+          <category translate="Extraplanare Reisende">Extraplanar Travelers</category>
         </categories>
         <metatypes>
             <metatype>
@@ -13358,7 +13341,7 @@
             <gear>
                 <id>2d4edef2-2891-4383-83f6-81f05cfbd046</id>
                 <name>Single Sensor</name>
-                <translate>Einzelensor</translate>
+                <translate>Einzelsensor</translate>
                 <altpage>449</altpage>
             </gear>
             <gear>
@@ -21565,71 +21548,26 @@
                 <altdisadvantage>Wenn jemand eindringlich um Hilfe bittet, kann ein Anhänger des Feuerbringers diese nicht verweigern, wenn ihm keine Probe auf Charisma + Willenskraft (3) gelingt.</altdisadvantage>
                 <altpage>321</altpage>
             </mentor>
-            <mentor translated="True">
-                <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-                <name>Great Mother (SASS)</name>
-                <translate>Große Mutter (SASS)</translate>
+          <!--Great mother from SG-->
+            <mentor>
+                <id>a23c8a3d-b056-4173-88e4-e73bb64dd731</id>
+                <name>Great Mother</name>
+                <translate>Große Mutter</translate>
+                <name>+2 dice to First Aid</name>
+                <translate>+2 Würfel für Erste Hilfe Proben</translate>
                 <choices>
-                    <choice>
-                        <name>+2 to First Aid</name>
-                        <translate>+2 Würfel für Proben auf Erste Hilfe</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to Medicine</name>
-                        <translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice for Health spells</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Rapid Healing</name>
-                        <translate>Adept: Empathische Heilung gratis</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to First Aid</name>
-                        <translate>+2 Würfel für Proben auf Erste Hilfe</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to Medicine</name>
-                        <translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice for Health spells</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Rapid Healing</name>
-                        <translate>Adept: Empathische Heilung gratis</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to First Aid</name>
-                        <translate>+2 Würfel für Proben auf Erste Hilfe</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to Medicine</name>
-                        <translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice for Health spells</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Rapid Healing</name>
-                        <translate>Adept: Empathische Heilung gratis</translate>
-                    </choice>
-                    <choice>
-                        <name>Magician: +2 for health spells, preparations, and spell rituals.</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice>
-                        <name>Adept: Gain Empathic Healing for free.</name>
-                        <translate>Adept: Empathische Heilung gratis</translate>
-                    </choice>
+                  <choice>
+                    <name>Magicians: +2 for health spells, preparations, and spell rituals.</name>
+                    <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemistische Erzeugnisse der Kategorie Heiilung</translate>
+                  </choice>
+                  <choice>
+                    <name>Adepts: Gain Empathic Healing for free.</name>
+                    <translate>Adepten: Erhalte Empatische Heilung Gratis</translate>
+                  </choice>
                 </choices>
                 <altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
-                <altdisadvantage>Anhänger der Großen Mutter sind Liebhaber und Heiler, keine Kämpfer. Dadurch leiden sie unter einem –1 Würfel-Pool Modifikator für alle Aktionen, die mit Kämpfen in Verbindung stehen (Kampffertigkeit, oder einen Zauberspruch aus der Kategorie Kampf).</altdisadvantage>
-                <altpage>33</altpage>
+                <altdisadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er seine Zuwiderhandlung wiedergutgemacht hat.</altdisadvantage>
+                <altpage>232</altpage>
             </mentor>
             <mentor>
                 <id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
@@ -21839,7 +21777,7 @@
                         <translate>+2 Würfel für Unterrichtsproben</translate>
                     </choice>
                     <choice set="2">
-                        <name>Magician:+2 dice for Combat spells</name>
+                        <name>Magician: +2 dice for Combat spells</name>
                         <translate>Zauberer: +2 Würfel für Kampfzauber</translate>
                     </choice>
                     <choice set="2">
@@ -21857,7 +21795,7 @@
                 <translate>Wolf</translate>
                 <choices>
                     <choice>
-                        <name>Magician:+2 dice for Combat spells</name>
+                        <name>Magician: +2 dice for Combat spells</name>
                         <translate>Zauberer: +2 Würfel for Kampfzauber</translate>
                     </choice>
                     <choice>
@@ -21883,7 +21821,7 @@
                         <translate>Adept: 1 Verbesserte Fertigkeit aus den Gruppen Schauspielerei oder Einfluss</translate>
                     </choice>
                     <choice>
-                        <name>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</name>
+                        <name>Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group</name>
                         <translate>Adept: 1 Verbesserte Fertigkeit aus den Gruppen Schauspielerei oder Einfluss</translate>
                     </choice>
                 </choices>
@@ -22613,32 +22551,6 @@
                 <altpage>123</altpage>
             </mentor>
             <mentor>
-                <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-                <name>Great Mother</name>
-                <translate>Great Mother</translate>
-                <choices>
-                    <choice>
-                        <name>+2 to First Aid</name>
-                        <translate>+2 Würfel für Proben auf Erste Hilfe</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to Medicine</name>
-                        <translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice for Health spells</name>
-                        <translate>Zauberer: +2 Würfel für Heilzauber</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Rapid Healing</name>
-                        <translate>Adept: 1 Stufe Beschleunigte Heilung gratis</translate>
-                    </choice>
-                </choices>
-                <altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe oder Medizin</altadvantage>
-                <altdisadvantage>Followers of the Great Mother are lovers and healers, not fighters. As a result, they suffer a –1 dice pool modifier for any combat-related actions (using a combat skill, or casting a spell from the Combat category).</altdisadvantage>
-                <altpage>33</altpage>
-            </mentor>
-            <mentor>
                 <id>a9f0231a-2354-44a9-864b-630bf3d58ddb</id>
                 <name>Coyote</name>
                 <translate>Kojote</translate>
@@ -22730,7 +22642,7 @@
             </mentor>
             <mentor translated="True">
                 <id>f892e9b9-c400-4519-9ce0-ca8e77be12c9</id>
-                <name>Klabautermann</name>
+                <name>Sea Kobold</name>
                 <translate>Klabautermann</translate>
                 <choices>
                     <choice>
@@ -22766,7 +22678,7 @@
             </mentor>
             <mentor translated="True">
                 <id>6eb6293e-5a64-4e46-94f6-4e828c160628</id>
-                <name>Wolpertinger</name>
+                <name>Jackalope</name>
                 <translate>Wolpertinger</translate>
                 <choices>
                     <choice>
@@ -22927,8 +22839,12 @@
                         <translate>Zauberer: +2 Würfel für das Wirken der Zauber Ein [Metatyp] Weniger, [Metatyp/Spezies] erschlagen, [Metatyp/Spezies] Niedermetzeln, Manaball, Manablitz und Todeshand</translate>
                     </choice>
                     <choice>
-                        <name>Adept: Gain 1 free level of Killing Hands or Plague Cloud (choose one).</name>
-                        <translate>Adept: Todeskralle oder Seuchenwolke (nach Wahl des Spielers) gratis</translate>
+                        <name>Adept: Gain 1 free level of Killing Hands</name>
+                        <translate>Adept: Todeskralle gratis</translate>
+                    </choice>
+                    <choice>
+                        <name>Adept: Gain 1 free level of Plague Cloud</name>
+                        <translate>Adept: Seuchenwolke gratis</translate>
                     </choice>
                 </choices>
                 <altadvantage>Allgemein: +4 Stufen in der Wissensfertigkeit Anatomie, Infizierte, Seuchen oder Untote (nach Wahl des Spielers).</altadvantage>
@@ -23133,17 +23049,18 @@
                 <altdisadvantage> Ratte ist von Natur aus ein Einzelgänger. Daher fällt es ihr manchmal schwer, anderen zu vertrauen. In Verbindung mit ihrer Intoleranz gegenüber Inkompetent könnte das in einem Team problematisch werden. Anhänger von Ratte können anderen nur durch Teamworkproben helfen oder von ihnen Hilfe erhalten, wenn sie diesen Personen vertrauen. Wenn sie diesen Personen vertrauen, dieses Vertrauen aber durch Verrat oder Inkompetenz missbraucht wird, muss ihnen zukünftig immer eine Probe auf Charisma + Willenskraft (4) gelingen, um mit dieser Person bei einer Teamworkprobe zusammenzuarbeiten.</altdisadvantage>
                 <altpage>99</altpage>
             </mentor>
+          <!--Great Mother from Forbidden Arcana-->
             <mentor>
                 <id>4d15a346-8f27-42c5-be8c-33a7bd56067d</id>
-                <name>Great Mother</name>
-                <translate>Große Mutter</translate>
+                <name>Great Mother (alt)</name>
+                <translate>Große Mutter (alt)</translate>
                 <altadvantage>Allgemein: Außerhalb urbaner Bereiche +1 Würfel auf alle Proben mit Fertigkeiten aus der Fertigkeitsgruppe Natur</altadvantage>
                 <altdisadvantage>Sämtliche Hintergrundstrahlung wegen Verschmutzung oder verdorbener Umgebung wirkt mit ihrer doppelten Stufe.</altdisadvantage>
                 <altpage>94</altpage>
                 <choices>
                     <choice>
                         <name>Magician: +2 for health spells, preparations, and spell rituals.</name>
-                        <translate>Zauberer: + Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorie Heilung</translate>
+                        <translate>Zauberer: +2 Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorie Heilung</translate>
                     </choice>
                     <choice>
                         <name>Adept: Gain Empathic Healing for free.</name>
@@ -23151,7 +23068,34 @@
                     </choice>
                 </choices>
             </mentor>
-            <mentor>
+          <!--Great Mother from SASS-->
+          <mentor>
+            <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
+            <name>Great Mother</name>
+            <translate>Große Mutter</translate>
+            <altadvantage>Allgemein: 2+ Würfel auf Erste Hilfe oder Medizin</altadvantage>
+            <altdisadvantage>Anhänger der Großen Mutter sind liebende und keine Kämpfer. Deswegen erhalten sie -1 Würfel für alle Kampf Aktionen (Benutzung einer Kampffertigkeit oder verwendung eines Zaubers der Kategorie Kampf)</altdisadvantage>
+            <choices>
+              <choice>
+                <name>+2 to First Aid</name>
+                <translate>+2 Würfel auf Erste Hilfe</translate>
+              </choice>
+              <choice>
+                <name>+2 to Medicine</name>
+                <translate>+2 Würfel auf Medizin</translate>
+              </choice>
+              <choice set="2">
+                <name>Magician: +2 dice for Health spells, preparations and rituals</name>
+                <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung
+                </translate>
+              </choice>
+              <choice set="2">
+                <name>Adept: 1 free level of Rapid Healing</name>
+                <translate>Adepten: Erhalte eine Stuffe der Kraft Schnellheilung gratis</translate>
+              </choice>
+            </choices>
+          </mentor>
+          <mentor>
                 <id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
                 <name>Guanyin</name>
                 <translate>Guanyin</translate>
@@ -23160,7 +23104,7 @@
                 <altpage>145</altpage>
                 <choices>
                     <choice>
-                        <name>Magician: +2 dice for Healing spells</name>
+                        <name>Magician: +2 dice for Health spells</name>
                         <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
                     </choice>
                     <choice>
@@ -23182,7 +23126,7 @@
                         <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Manipulation</translate>
                     </choice>
                     <choice>
-                        <name>Adept: Gain 2 free level of Analytics.</name>
+                        <name>Adept: 2 free levels of Analytics</name>
                         <translate>Adept: 2 Stufen Analytik gratis</translate>
                     </choice>
                 </choices>
@@ -23196,11 +23140,11 @@
                 <altpage>29</altpage>
                 <choices>
                     <choice>
-                        <name>Magician: +1 dice for Combat and Detection spells</name>
+                        <name>Magician: +1 die for Combat and Detection spells</name>
                         <translate>Zauberer: +1 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf und Wahrnehmung</translate>
                     </choice>
                     <choice>
-                        <name>Adept: Danger Sense level 2</name>
+                        <name>Adept: 2 levels of Danger Sense</name>
                         <translate>Adept: 2 Stufen Gefahrensinn gratis</translate>
                     </choice>
                 </choices>
@@ -23214,43 +23158,43 @@
                 <altpage>29</altpage>
                 <choices>
                     <choice>
-                        <name>+1 dice on Archery</name>
+                        <name>+1 die to Archery</name>
                         <translate>+1 Würfel für Proben auf Klingenwaffen</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Automatics</name>
+                        <name>+1 die to Automatics</name>
                         <translate>+1 Würfel für Proben auf Schnellfeuerwaffen</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Blades</name>
+                        <name>+1 die to Blades</name>
                         <translate>+1 Würfel für Proben auf Klingenwaffen</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Clubs</name>
+                        <name>+1 die to Clubs</name>
                         <translate>+1 Würfel für Proben auf Knüppel</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Gunnery</name>
+                        <name>+1 die to Gunnery</name>
                         <translate>+1 Würfel für Proben auf Geschütze</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Heavy Weapons</name>
+                        <name>+1 die to Heavy Weapons</name>
                         <translate>+1 Würfel für Proben auf Schwere Waffen</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Longarms</name>
+                        <name>+1 die to Longarms</name>
                         <translate>+1 Würfel für Proben auf Gewehre</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Pistols</name>
+                        <name>+1 die to Pistols</name>
                         <translate>+1 Würfel für Proben auf Pistolen</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Throwing Weapons</name>
+                        <name>+1 die to Throwing Weapons</name>
                         <translate>+1 Würfel für Proben auf Wurfwaffen</translate>
                     </choice>
                     <choice>
-                        <name>+1 dice on Unarmed Combat</name>
+                        <name>+1 die to Unarmed Combat</name>
                         <translate>+1 Würfel für Proben auf Waffenloser Kampf</translate>
                     </choice>
                     <choice set="2">
@@ -23276,7 +23220,7 @@
                         <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
                     </choice>
                     <choice>
-                        <name>Adept: 1 free levels of Enhanced Perception</name>
+                        <name>Adept: 1 free level of Enhanced Perception</name>
                         <translate>Adept: 1 Stufe Verbesserte Wahrnehmung gratis</translate>
                     </choice>
                 </choices>
@@ -23290,11 +23234,11 @@
                 <altpage>31</altpage>
                 <choices>
                     <choice>
-                        <name>Magician: +1 dice for Counterspelling and Combat Spells</name>
+                        <name>Magician: +1 die for Counterspelling and Combat Spells</name>
                         <translate>Zauberer: +1 Würfel für Proben auf Antimagie und +1 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Kampf</translate>
                     </choice>
                     <choice>
-                        <name>Adept: Danger Sense level 2</name>
+                        <name>Adept: 2 levels of Danger Sense</name>
                         <translate>Adept: 2 Stufen Gefahrensinn gratis</translate>
                     </choice>
                 </choices>
@@ -23308,27 +23252,11 @@
                 <altpage>31</altpage>
                 <choices>
                     <choice>
-                        <name>+1 dice on Blades</name>
-                        <translate>+1 Würfel für Proben auf Klingenwaffen</translate>
-                    </choice>
-                    <choice>
-                        <name>+1 dice on Clubs</name>
-                        <translate>+1 Würfel für Proben auf Knüppel</translate>
-                    </choice>
-                    <choice>
-                        <name>+1 dice on Longarms</name>
-                        <translate>+1 Würfel für Proben auf Gewehre</translate>
-                    </choice>
-                    <choice>
-                        <name>+1 dice on Unarmed Combat</name>
-                        <translate>+1 Würfel für Proben auf Waffenloser Kampf</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice pool bonus when summoning guardian or animal spirits (chose 1 when selecting this mentor spirit).</name>
+                        <name>Magician: +2 dice for summoning guardian or beast spirits (choose one)</name>
                         <translate>Zauberer: +2 Würfel für das Herbeirufen von Beschützer- oder Tiergeistern (bitte per Hand ergänzen)</translate>
                     </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Magic Sense</name>
+                    <choice>
+                        <name>Adept: Magic Sense</name>
                         <translate>Adept: Magiegespür gratis</translate>
                     </choice>
                 </choices>
@@ -23342,7 +23270,7 @@
                 <altpage>32</altpage>
                 <choices>
                     <choice>
-                        <name>Magician: +2 dice to Contractual Rituals (please add manually)</name>
+                        <name>Magician: +2 dice to Contractual Rituals</name>
                         <translate>Zauberer: +2 Würfel für das Besiegeln von Kontraktritualen (bitte selbst ergänzen)</translate>
                     </choice>
                     <choice>
@@ -23360,8 +23288,8 @@
                 <altpage>32</altpage>
                 <choices>
                     <choice>
-                        <name>Magician: +2 dice to Contractual Rituals (please add manually)</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
+                        <name>Magician: +2 dice for Detection spells</name>
+                        <translate>Zauberer: +2 Würfel auf Wahrnehmungszauber</translate>
                     </choice>
                     <choice>
                         <name>Adept: Gain Three-Dimensional Memory for free</name>
@@ -23378,7 +23306,7 @@
                 <altpage>32</altpage>
                 <choices>
                     <choice>
-                        <name>Magician: Magician: +2 dice summoning spirits of guardian spirits, task spirits or spirits of man</name>
+                        <name>Magician: +2 dice summoning guardian spirits, task spirits or spirits of man (choose one)</name>
                         <translate>Zauberer: +2 Würfel für das Herbeirufen von Beschützergeistern, Helfergeistern oder Geistern des Menschen</translate>
                     </choice>
                     <choice>
@@ -28459,13 +28387,6 @@
                 <translate>Natürliche Waffe: Tritt (Zentaur)</translate>
                 <altpage>81</altpage>
             </quality>
-            <quality translated="True">
-                <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
-                <name>Magic Sense</name>
-                <source>SG</source>
-                <translate>Magiegespühr</translate>
-                <altpage>203</altpage>
-            </quality>
             <quality>
                 <id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>
                 <name>Natural Weapon: Bite (Naga)</name>
@@ -28820,7 +28741,7 @@
                 <id>912bef16-2f72-45e2-95bb-96ef7eea4811</id>
                 <name>Magic Sense</name>
                 <source>RF</source>
-                <translate>Magiegespür</translate>
+                <translate>Magiegespür (Metagenetisch)</translate>
                 <altpage>93</altpage>
             </quality>
             <quality>
@@ -29733,13 +29654,13 @@
             </quality>
             <quality>
                 <id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
-                <name>Biocompatability (Cyberware)</name>
+                <name>Biocompatibility (Cyberware)</name>
                 <translate>Biokompatibilität (Cyberware)</translate>
                 <altpage>58</altpage>
             </quality>
             <quality>
                 <id>dcecd7e5-8cf1-4f83-89fa-177e28cfba03</id>
-                <name>Biocompatability (Bioware)</name>
+                <name>Biocompatibility (Bioware)</name>
                 <translate>Biokompatibilität (Bioware)</translate>
                 <altpage>58</altpage>
             </quality>
@@ -37656,12 +37577,6 @@
                 <altpage>23</altpage>
             </spell>
             <spell>
-                <id>2c7be069-208e-41e4-b3cf-97c9fc480fbc</id>
-                <name>Hemorrhage</name>
-                <translate>Blutsturz</translate>
-                <altpage>95</altpage>
-            </spell>
-            <spell>
                 <id>eab0bcfd-9bf5-4482-9cca-2bdecb7f7b59</id>
                 <name>Hand of Glory</name>
                 <translate>Hand des Ruhms</translate>
@@ -37982,7 +37897,7 @@
             <spell>
                 <id>c6995b10-5fff-44c2-8182-0a0a1b30cc6b</id>
                 <name>Petrify</name>
-                <translate>Petrify</translate>
+                <translate>Versteinern</translate>
                 <altpage>21</altpage>
             </spell>
             <spell>
@@ -38572,9 +38487,9 @@
                 <translate>Brockenhexen</translate>
                 <altpage>42</altpage>
             </tradition>
-            <tradition translated="True">
+            <tradition>
                 <id>da78c84d-0494-483e-a15e-c17ddf28f6aa</id>
-                <name>Faustianer</name>
+                <name>Faustian</name>
                 <translate>Faustianer</translate>
                 <altpage>45</altpage>
             </tradition>
@@ -39068,55 +38983,55 @@
             </spirit>
             <spirit>
                 <id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
-                <name>Homonculus (Fragile)</name>
+                <name>Homunculus (Fragile)</name>
                 <translate>Homunkulus (zerbrechlich)</translate>
                 <altpage>297</altpage>
             </spirit>
             <spirit>
                 <id>28d8859b-21da-43f7-b401-181cf1284f97</id>
-                <name>Homonculus (Cheap Material)</name>
+                <name>Homunculus (Cheap Material)</name>
                 <translate>Homunkulus (billiges Material)</translate>
                 <altpage>297</altpage>
             </spirit>
             <spirit>
                 <id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
-                <name>Homonculus (Average Material)</name>
+                <name>Homunculus (Average Material)</name>
                 <translate>Homunkulus (durchschnittliches Material)</translate>
                 <altpage>297</altpage>
             </spirit>
             <spirit>
                 <id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
-                <name>Homonculus (Heavy Material)</name>
+                <name>Homunculus (Heavy Material)</name>
                 <translate>Homunkulus (schweres Material)</translate>
                 <altpage>297</altpage>
             </spirit>
             <spirit>
                 <id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
-                <name>Homonculus (Reinforced Material)</name>
+                <name>Homunculus (Reinforced Material)</name>
                 <translate>Homunkulus (verstärktes Material)</translate>
                 <altpage>297</altpage>
             </spirit>
             <spirit>
                 <id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
-                <name>Homonculus (Structural Material)</name>
+                <name>Homunculus (Structural Material)</name>
                 <translate>Homunkulus (tragendes Material)</translate>
                 <altpage>297</altpage>
             </spirit>
             <spirit>
                 <id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
-                <name>Homonculus (Heavy Structural Material)</name>
+                <name>Homunculus (Heavy Structural Material)</name>
                 <translate>Homunkulus (schweres tragendes Material)</translate>
                 <altpage>297</altpage>
             </spirit>
             <spirit>
                 <id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
-                <name>Homonculus (Armored Material)</name>
+                <name>Homunculus (Armored Material)</name>
                 <translate>Homunkulus (gepanzertes verstärktes Material)</translate>
                 <altpage>297</altpage>
             </spirit>
             <spirit>
                 <id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
-                <name>Homonculus (Hardened Material)</name>
+                <name>Homunculus (Hardened Material)</name>
                 <translate>Homunkulus (gehärtetes Material)</translate>
                 <altpage>297</altpage>
             </spirit>
@@ -42685,7 +42600,7 @@
             <category translate="Granatwerfer">Grenade Launchers</category>
             <category translate="Raketenwerfer">Missile Launchers</category>
             <category translate="Improvisierte Waffen">Improvised Weapons</category>
-            <category translate="Gewehre">Sporting Rifles</category>
+            <category translate="Sportgewehre">Sporting Rifles</category>
             <category translate="Biowaffen">Bio-Weapon</category>
             <category translate="Cyberwaffen">Cyberweapon</category>
             <category translate="Unterlaufwaffen">Underbarrel Weapons</category>
@@ -45734,6 +45649,12 @@
                 <altpage>39</altpage>
             </weapon>
             <weapon>
+                <id>6cfbb0cf-16e1-40b7-b2b8-9822c5642198</id>
+                <name>Onotari HL-13 (Sniper Rifle)</name>
+                <translate>Onotari HL-13 (Scharfschützengewehr)</translate>
+                <altpage>39</altpage>
+            </weapon>
+            <weapon>
                 <id>75a192ee-b109-4c68-a139-65de302f622d</id>
                 <name>PSG Enforcer</name>
                 <translate>HK PSG Enforcer</translate>
@@ -46189,6 +46110,12 @@
                 <name>Underbarrel Chainsaw</name>
                 <translate>Unterlauf-Kettensäge</translate>
                 <altpage>52</altpage>
+            </weapon>
+            <weapon>
+              <id>59b08aa4-e71a-4f94-ad79-faa0668b0c81</id>
+              <name>Underbarrel Weapon</name>
+              <translate>Unterlaufwaffe</translate>
+              <altpage>14</altpage>
             </weapon>
             <!-- End of translation for Custom Rule 'German Data Changes - Underbarrel Weapons'-->
         </weapons>
@@ -48169,11 +48096,11 @@
             <contact translate="Vory Shestiorka" translated="True">Vory Shestiorka</contact>
             <contact translate="Wiz Kid Ganger" translated="True">Wiz Kid Ganger</contact>
         </contacts>
-        <sexes>
-            <sex translate="Weiblich">Female</sex>
-            <sex translate="Männlich">Male</sex>
-            <sex translate="Unbekannt">Unknown</sex>
-        </sexes>
+        <genders>
+            <gender translate="Weiblich">Female</gender>
+            <gender translate="Männlich">Male</gender>
+            <gender translate="Unbekannt">Unknown</gender>
+        </genders>
         <ages>
             <age translate="Jung">Young</age>
             <age translate="Mittleren Alters">Middle-Aged</age>
@@ -48795,34 +48722,54 @@
             </power>
         </powers>
     </chummer>
-    <chummer file="gameplayoptions.xml">
-        <gameplayoptions>
-            <gameplayoption translated="True">
-                <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
-                <name>Standard</name>
-                <translate>Standard</translate>
-            </gameplayoption>
-            <gameplayoption>
-                <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
-                <name>Prime Runner</name>
-                <translate>Top-Runner</translate>
-            </gameplayoption>
-            <gameplayoption>
-                <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
-                <name>Street Level</name>
-                <translate>Straßenrunner</translate>
-            </gameplayoption>
-            <gameplayoption>
-                <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
-                <name>Street Scum</name>
-                <translate>Straßenabschaum</translate>
-            </gameplayoption>
-            <gameplayoption>
-                <id>e6ac4dae-23bc-4b77-9e00-a6bfdacd0760</id>
-                <name>High Life</name>
-                <translate>Luxusleben</translate>
-            </gameplayoption>
-        </gameplayoptions>
+    <chummer file="settings.xml">
+      <settings>
+        <setting translated="True">
+          <id>223a11ff-80e0-428b-89a9-6ef1c243b8b6</id>
+          <name>Standard</name>
+          <translate>Standard</translate>
+        </setting>
+        <setting>
+          <id>507eef8e-eba8-41ea-84c4-4282258fe669</id>
+          <name>Street Level</name>
+          <translate>Straßenrunner</translate>
+        </setting>
+        <setting>
+          <id>33e5317f-12aa-416e-816e-3b8b6ad95712</id>
+          <name>Prime Runner</name>
+          <translate>Top-Runner</translate>
+        </setting>
+        <setting>
+          <id>4c34a8ed-2888-410c-afda-024475fa3c76</id>
+          <name>Street Scum (BCDEE)</name>
+          <translate>Straßenabschaum (BCDEE)</translate>
+        </setting>
+        <setting>
+          <id>9da22725-0596-4d68-ba2b-54f701e75e74</id>
+          <name>Street Scum (CCDDE)</name>
+          <translate>Straßenabschaum (CCDDE)</translate>
+        </setting>
+        <setting>
+          <id>9e1c2dec-d2fa-42a0-a842-8bf575943780</id>
+          <name>High Life</name>
+          <translate>Luxusleben</translate>
+        </setting>
+        <setting>
+          <id>3509a807-68ee-4c18-b7d5-b130313b4b77</id>
+          <name>Sum to Ten</name>
+          <translate>Zehn-Punkte-Option</translate>
+        </setting>
+        <setting>
+          <id>fe7bb0d9-3cd9-4a75-825e-135b95a4f3ef</id>
+          <name>Point Buy</name>
+          <translate>Punktekauf</translate>
+        </setting>
+        <setting>
+          <id>8a31af6d-7137-4284-872b-7d8087e156c6</id>
+          <name>Life Modules</name>
+          <translate>Lebensmodule</translate>
+        </setting>
+      </settings>
     </chummer>
     <chummer file="vessels.xml">
         <categories>

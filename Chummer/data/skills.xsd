@@ -1,16 +1,20 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
   <xs:element name="skill">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-		<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="attribute" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="default" type="xs:string" minOccurs="1" maxOccurs="1" />
-    <xs:element name="exotic" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="exotic" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="skillgroup" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="requiresgroundmovement" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="requiresswimmovement" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="requiresflymovement" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="specs" minOccurs="1" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>

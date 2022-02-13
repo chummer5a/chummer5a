@@ -360,51 +360,9 @@
       <page>323</page>
     </mentor>
     <mentor>
-      <id>1bd89b48-f900-476f-9278-1128ecdd6f14</id>
-      <name>Raven (German)</name>
-      <advantage>All: +2 dice for Con tests.</advantage>
-      <disadvantage>You must make a Charisma + Willpower (3) Test to avoid exploiting someone else’s misfortune to your own advantage or to pull a clever trick or prank even if it’s to the disadvantage of your friends.</disadvantage>
-      <bonus>
-        <specificskill>
-          <name>Con</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice for Manipulation spells</name>
-          <bonus>
-            <spellcategory>
-              <name>Manipulation</name>
-              <val>2</val>
-            </spellcategory>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: Free Traceless Walk</name>
-          <bonus>
-            <specificpower>
-              <name>Traceless Walk</name>
-            </specificpower>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: 1 level of Voice Control</name>
-          <bonus>
-            <specificpower>
-              <name>Voice Control</name>
-              <val>1</val>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>SR5G</source>
-      <page>323</page>
-    </mentor>
-    <mentor>
       <id>0242ba67-f93b-44e1-a1ad-b0d6f9051525</id>
       <name>Sea</name>
-      <advantage>All:+2 dice for Swimming Tests.</advantage>
+      <advantage>All: +2 dice for Swimming Tests.</advantage>
       <disadvantage>You must make a Charisma + Willpower (3) Test to give away something you own or be charitable in some way.</disadvantage>
       <bonus>
         <specificskill>
@@ -595,7 +553,7 @@
           </bonus>
         </choice>
         <choice set="2">
-          <name>Magician:+2 dice for Combat spells</name>
+          <name>Magician: +2 dice for Combat spells</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -635,7 +593,7 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician:+2 dice for Combat spells</name>
+          <name>Magician: +2 dice for Combat spells</name>
           <bonus>
             <spellcategory>
               <name>Combat</name>
@@ -965,9 +923,10 @@
       <source>SG</source>
       <page>86</page>
     </mentor>
+    <!--Great Mother from SASS-->
     <mentor>
       <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-      <name>Great Mother (SASS)</name>
+      <name>Great Mother</name>
       <advantage>All: +2 to First Aid or Medicine Tests</advantage>
       <disadvantage>Followers of the Great Mother are lovers and healers, not fighters. As a result, they suffer a –1 dice pool modifier for any combat-related actions (using a combat skill, or casting a spell from the Combat category).</disadvantage>
       <choices>
@@ -990,7 +949,7 @@
           </bonus>
         </choice>
         <choice set="2">
-          <name>Magician: +2 dice for Health spells</name>
+          <name>Magician: +2 dice for Health spells, preparations and rituals</name>
           <bonus>
             <spellcategory>
               <name>Health</name>
@@ -1311,215 +1270,6 @@
       <page>179</page>
     </mentor>
     <mentor>
-      <id>5ec3f3d5-8ae7-4ddd-a38c-2b21f135945f</id>
-      <name>Dachshund</name>
-      <advantage>All: +2 dice to Tracking.</advantage>
-      <disadvantage>A follower of Dachshund must succeed in a WIL+CHA (3) test, to follow the orders of a leader or a abide to a group decision.</disadvantage>
-      <bonus>
-        <specificskill>
-          <name>Tracking</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice for Detection Spells.</name>
-          <bonus>
-            <spellcategory>
-              <name>Detection</name>
-              <val>2</val>
-            </spellcategory>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: 2 free level of Combat Sense.</name>
-          <bonus>
-            <specificpower>
-              <name>Combat Sense</name>
-              <val>2</val>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>SGG</source>
-      <page>231</page>
-    </mentor>
-    <mentor>
-      <id>ce5caf76-0c0e-4c91-98a4-78e15b73b5fe</id>
-      <name>Electro Marten</name>
-      <advantage>All: +2 dice to Hardware or Electronic Warfare</advantage>
-      <disadvantage>Electro Marten has problems discerning between different signals. A follower of Electro Marten has to succeed in a CHA + WIL (3) test to not lose himself in the signals or hunt after the wrong one. In stressful situations, he is distracted for 3 combat rounds (minus 1 for each success). If he has no successes, he involuntarily attracts attention in the system.</disadvantage>
-      <bonus>
-        <selectskill limittoskill="Hardware,Electronic Warfare">
-          <val>2</val>
-        </selectskill>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice for Illusion Spells.</name>
-          <bonus>
-            <spellcategory>
-              <name>Illusion</name>
-              <val>2</val>
-            </spellcategory>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: 1 free level of Elemental Strike.</name>
-          <bonus>
-            <specificpower>
-              <name>Elemental Strike</name>
-              <val>1</val>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>SGG</source>
-      <page>232</page>
-    </mentor>
-    <mentor>
-      <id>f892e9b9-c400-4519-9ce0-ca8e77be12c9</id>
-      <name>Klabautermann</name>
-      <advantage>All: +2 dice to Nautical Mechanic</advantage>
-      <disadvantage>Whenever a follower of Klabautermann is in danger (in reality or only in his imagination) or he has to stay on or in a vehicle for a prolonged time (be it cars, ships, planes or trains), he must make a CHA+WIL(3) test. Should he fail, he is convinced he saw the Klabautermann, resulting in him running scared and trying to flee, as well as trying to convince other characters that their plans will lead to a bad end.</disadvantage>
-      <bonus>
-        <specificskill>
-          <name>Nautical Mechanic</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice for Detection Spells.</name>
-          <bonus>
-            <spellcategory>
-              <name>Detection</name>
-              <val>2</val>
-            </spellcategory>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: 2 Free levels of Danger Sense.</name>
-          <bonus>
-            <specificpower>
-              <name>Danger Sense</name>
-              <val>2</val>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>SGG</source>
-      <page>232</page>
-    </mentor>
-    <mentor>
-      <id>fd791bde-7887-43d7-a5af-9750b25c5948</id>
-      <name>Luna</name>
-      <advantage>All: +2 dice for Negotiation tests.</advantage>
-      <disadvantage>Luna is independent and free. A follower of Luna must pass a CHA+WIL(3) test to follow a direct order that does not correlate to her momentary personal wishes - especially if her own logic tells her that it would be better to disregard her own desires for the moment.</disadvantage>
-      <bonus>
-        <specificskill>
-          <name>Negotiation</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice for Illusion Spells.</name>
-          <bonus>
-            <spellcategory>
-              <name>Illusion</name>
-              <val>2</val>
-            </spellcategory>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: 2 free levels of Enhanced Accuracy (skill)</name>
-          <bonus>
-            <specificpower>
-              <name>Enhanced Accuracy (skill)</name>
-              <val>1</val>
-            </specificpower>
-            <specificpower>
-              <name>Enhanced Accuracy (skill)</name>
-              <val>1</val>
-            </specificpower>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: 1 free level of Spell Resistance</name>
-          <bonus>
-            <specificpower>
-              <name>Spell Resistance</name>
-              <val>1</val>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>SGG</source>
-      <page>233</page>
-    </mentor>
-    <mentor>
-      <id>66377dd9-49ee-46cb-a67a-405d796056f0</id>
-      <name>Tatzelwurm</name>
-      <advantage>All: +2 dice to Unarmed Combat.</advantage>
-      <disadvantage>Combat Junkie quality is gained for free.</disadvantage>
-      <bonus>
-        <addqualities>
-          <addquality>Combat Junkie</addquality>
-        </addqualities>
-        <specificskill>
-          <name>Unarmed Combat</name>
-          <bonus>2</bonus>
-        </specificskill>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice for summoning spirits of earth</name>
-        </choice>
-        <choice>
-          <name>Adept: 1 free level of Critical Strike.</name>
-          <bonus>
-            <specificpower>
-              <name>Critical Strike</name>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>SGG</source>
-      <page>234</page>
-    </mentor>
-    <mentor>
-      <id>6eb6293e-5a64-4e46-94f6-4e828c160628</id>
-      <name>Wolpertinger</name>
-      <advantage>All: +2 dice to dodge tests.</advantage>
-      <disadvantage>Whenever a follower of Wolpertinger is in danger (in reality or only in his imagination), he has to succeed in a WIL+CHA (3) test to not immediately succumb to his urge to flee.</disadvantage>
-      <bonus>
-        <dodge>2</dodge>
-      </bonus>
-      <choices>
-        <choice>
-          <name>Magician: +2 dice for Illusion Spells.</name>
-          <bonus>
-            <spellcategory>
-              <name>Illusion</name>
-              <val>2</val>
-            </spellcategory>
-          </bonus>
-        </choice>
-        <choice>
-          <name>Adept: 2 free levels of Danger Sense.</name>
-          <bonus>
-            <specificpower>
-              <name>Danger Sense</name>
-              <val>2</val>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>SGG</source>
-      <page>234</page>
-    </mentor>
-    <mentor>
       <id>16bd99dd-49df-41aa-a8a2-9b8962fac44c</id>
       <name>Boar</name>
       <advantage>All: Home Ground Quality is gained for free.</advantage>
@@ -1740,7 +1490,7 @@
     <mentor>
       <id>924e0d72-a83a-44c2-90ba-24455c389207</id>
       <name>Spider</name>
-      <advantage>All:+2 dice to Computer skill tests</advantage>
+      <advantage>All: +2 dice to Computer skill tests</advantage>
       <disadvantage>Followers of Spider are already paranoid about people having any misconceptions about them being insect shamans. They will keep such details from casual conversation. Followers of Spider also have taken advantage of the Matrix more than more traditional shamans in creating connections. This makes followers more agoraphobic as they avoid uncontrolled social situations and unfamiliar environments. They receive a –1 dice pool modifier to Magic tests while out in the open (this includes very large indoor rooms such as auditoriums, theaters, and stadiums). The penalty doubles if there is a large crowd of people to deal with.</disadvantage>
       <bonus>
         <specificskill>
@@ -1809,7 +1559,7 @@
       <id>c9b8f607-43f7-4707-aaac-60da183f22ac</id>
       <name>Lion</name>
       <advantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</advantage>
-      <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fight to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t benefit the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
+      <disadvantage>In combat situations, a Lion will never leave a comrade behind, and will fight to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot flee combat before your team members are safe. Further, whenever taking actions that don’t benefit the team somehow, your physical and mental limits are reduced by 2.</disadvantage>
       <bonus>
         <selectskill limittoskill="Survival,Running,Tracking">
           <val>2</val>
@@ -1945,13 +1695,11 @@
         <choice>
           <name>Magician: Determined by spirit type and gamemaster approval.</name>
           <bonus>
-
           </bonus>
         </choice>
         <choice>
           <name>Adept: Determined by spirit type and gamemaster approval.</name>
           <bonus>
-
           </bonus>
         </choice>
       </choices>
@@ -1962,7 +1710,7 @@
       <id>19d69029-259a-4ed6-b66b-944b4ddbc172</id>
       <name>Arcana</name>
       <advantage>All: Once per day, when making a decision or test influenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</advantage>
-      <disadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their frst beneft, with the cards of Tarot being the focus of their centering.</disadvantage>
+      <disadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their first benefit, with the cards of Tarot being the focus of their centering.</disadvantage>
       <choices>
         <choice>
           <name>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</name>
@@ -2130,7 +1878,7 @@
       <id>12a4d51d-1d4c-405f-b62e-1ba5ad0aaf01</id>
       <name>Tohu Wa-Bohu</name>
       <advantage>All: +2 dice pool modifier for Intimidation or Demolitions tests (choose one)</advantage>
-      <disadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never beneft from teamwork or leadership bonuses.</disadvantage>
+      <disadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never benefit from teamwork or leadership bonuses.</disadvantage>
       <bonus>
         <addqualities>
           <addquality>Driven</addquality>
@@ -2348,7 +2096,7 @@
     </mentor>
     <mentor>
       <id>4d15a346-8f27-42c5-be8c-33a7bd56067d</id>
-      <name>Great Mother</name>
+      <name>Great Mother (alt)</name>
       <advantage>All: When not in an urban area, gain +1 to any skill test with skills in the Outdoors skill group.</advantage>
       <disadvantage>Treat any background count due to pollution or twisted element as twice the actual rating.</disadvantage>
       <choices>
@@ -2495,7 +2243,7 @@
       <id>3244e940-4666-4510-b1a1-c34df97797fe</id>
       <name>Eurasian Jay</name>
       <advantage>All: +1 dice pool modifier for tests using the Perception and Palming skills.</advantage>
-      <disadvantage>Eurasian Jay loves to split his posessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
+      <disadvantage>Eurasian Jay loves to split his possessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
       <bonus>
         <specificskill>
           <name>Palming</name>
@@ -3005,98 +2753,11 @@
           <name>Perception</name>
           <bonus>1</bonus>
         </specificskill>
+        <selectskill skillcategory="Combat Active">
+          <val>1</val>
+        </selectskill>
 	  </bonus>
       <choices>
-        <choice>
-          <name>+1 die to Archery</name>
-          <bonus>
-            <specificskill>
-              <name>Archery</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Automatics</name>
-          <bonus>
-            <specificskill>
-              <name>Automatics</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Blades</name>
-          <bonus>
-            <specificskill>
-              <name>Blades</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Clubs</name>
-          <bonus>
-            <specificskill>
-              <name>Clubs</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Gunnery</name>
-          <bonus>
-            <specificskill>
-              <name>Gunnery</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Heavy Weapons</name>
-          <bonus>
-            <specificskill>
-              <name>Heavy Weapons</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Longarms</name>
-          <bonus>
-            <specificskill>
-              <name>Longarms</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Pistols</name>
-          <bonus>
-            <specificskill>
-              <name>Pistols</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Throwing Weapons</name>
-          <bonus>
-            <specificskill>
-              <name>Throwing Weapons</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice>
-          <name>+1 die to Unarmed Combat</name>
-          <bonus>
-            <specificskill>
-              <name>Unarmed Combat</name>
-              <bonus>1</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
         <choice set="2">
           <name>Magician: +2 dice for Combat spells</name>
           <bonus>
@@ -3115,7 +2776,7 @@
             </specificpower>
           </bonus>
         </choice>
-      </choices>		
+      </choices>
       <source>SOTG</source>
       <page>29</page>
     </mentor>
@@ -3160,16 +2821,13 @@
     <mentor>
       <id>5c465bf3-665f-41f2-865e-41abb879ee1f</id>
       <name>Badger</name>
-      <advantage>All: 1 level of Perceptive is gained for free</advantage>
+      <advantage>All: 2 levels of Perceptive quality are gained for free</advantage>
       <disadvantage>Badger relentlessly guards his territory. Should enemies invade an area guarded by a follower, for instance a building, or steal an object under their protection, must succeed at a WIL + CHA (3) test to not immediately go after the culprits.</disadvantage>
       <bonus>
         <addqualities>
           <addquality>Perceptive</addquality>
+          <addquality>Perceptive</addquality>
         </addqualities>
-        <specificskill>
-          <name>Perception</name>
-          <bonus>2</bonus>
-        </specificskill>
       </bonus>
       <choices>
         <choice>
@@ -3206,7 +2864,7 @@
       <advantage>All: +2 dice to one melee combat skill (choose one)</advantage>
       <disadvantage>What does a mystic guardian do when there is nothing to guard? As long as the follower does not have a specific task, an employer or a ward (or does not carry out their self-imposed duties), they suffer a -2 penalty on every test.</disadvantage>
       <bonus>
-        <selectskill skillgroup="Close Combat">
+        <selectskill limittoskill="Blades,Clubs,Exotic Melee Weapon,Unarmed Combat">
           <val>2</val>
         </selectskill>
       </bonus>

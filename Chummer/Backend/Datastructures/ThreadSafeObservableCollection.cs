@@ -16,119 +16,240 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : ObservableCollection<T>
+    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>, IHasLockObject
     {
-        private readonly object _objLock = new object();
+        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
-        public new T this[int index]
+        public ThreadSafeObservableCollection()
         {
-            get
-            {
-                lock (_objLock)
-                    return base[index];
-            }
-            set
-            {
-                lock (_objLock)
-                    base[index] = value;
-            }
         }
 
+        public ThreadSafeObservableCollection(IEnumerable<T> collection) : base(collection)
+        {
+        }
+
+        public ThreadSafeObservableCollection(List<T> list) : base(list)
+        {
+        }
+
+        /// <inheritdoc />
         public new int Count
         {
             get
             {
-                lock (_objLock)
+                using (new EnterReadLock(LockObject))
                     return base.Count;
             }
         }
 
-        protected new IList<T> Items
+        /// <inheritdoc cref="List{T}" />
+        public new T this[int index]
         {
             get
             {
-                lock (_objLock)
-                    return base.Items;
+                using (new EnterReadLock(LockObject))
+                    return base[index];
+            }
+            set
+            {
+                using (new EnterUpgradeableReadLock(LockObject))
+                {
+                    if (base[index].Equals(value))
+                        return;
+                    using (new EnterWriteLock(LockObject))
+                        base[index] = value;
+                }
             }
         }
 
-        public new virtual void Add(T item)
+        /// <inheritdoc cref="List{T}.Contains" />
+        public new bool Contains(T item)
         {
-            lock (_objLock)
-                base.Add(item);
-        }
-
-        public new virtual bool Contains(T item)
-        {
-            lock (_objLock)
+            using (new EnterReadLock(LockObject))
                 return base.Contains(item);
         }
 
+        /// <inheritdoc />
         public new void CopyTo(T[] array, int index)
         {
-            lock (_objLock)
+            using (new EnterReadLock(LockObject))
                 base.CopyTo(array, index);
         }
 
-        public new IEnumerator<T> GetEnumerator()
+        /// <inheritdoc />
+        public virtual bool TryAdd(T item)
         {
-            lock (_objLock)
-                return base.GetEnumerator();
+            Add(item);
+            return true;
         }
 
+        /// <inheritdoc />
+        public bool TryTake(out T item)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (new EnterWriteLock(LockObject))
+            {
+                if (base.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    item = base[0];
+                    base.RemoveItem(0);
+                    return true;
+                }
+            }
+
+            item = default;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public T[] ToArray()
+        {
+            using (new EnterReadLock(LockObject))
+            {
+                T[] aobjReturn = new T[Count];
+                for (int i = 0; i < Count; ++i)
+                {
+                    aobjReturn[i] = base[i];
+                }
+                return aobjReturn;
+            }
+        }
+
+        /// <inheritdoc />
+        public new IEnumerator<T> GetEnumerator()
+        {
+            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            objReturn.SetEnumerator(base.GetEnumerator());
+            return objReturn;
+        }
+
+        /// <inheritdoc cref="List{T}.IndexOf(T)" />
         public new int IndexOf(T item)
         {
-            lock (_objLock)
+            using (new EnterReadLock(LockObject))
                 return base.IndexOf(item);
         }
 
+        /// <inheritdoc />
+        public override event NotifyCollectionChangedEventHandler CollectionChanged
+        {
+            add
+            {
+                using (new EnterWriteLock(LockObject))
+                    base.CollectionChanged += value;
+            }
+            remove
+            {
+                using (new EnterWriteLock(LockObject))
+                    base.CollectionChanged -= value;
+            }
+        }
+
+        /// <inheritdoc />
+        public override event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged
+        {
+            add
+            {
+                using (new EnterWriteLock(LockObject))
+                    base.BeforeClearCollectionChanged += value;
+            }
+            remove
+            {
+                using (new EnterWriteLock(LockObject))
+                    base.BeforeClearCollectionChanged -= value;
+            }
+        }
+
+        /// <inheritdoc />
+        protected override event PropertyChangedEventHandler PropertyChanged
+        {
+            add
+            {
+                using (new EnterWriteLock(LockObject))
+                    base.PropertyChanged += value;
+            }
+            remove
+            {
+                using (new EnterWriteLock(LockObject))
+                    base.PropertyChanged -= value;
+            }
+        }
+
+        /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            lock (_objLock)
+            using (new EnterWriteLock(LockObject))
                 base.InsertItem(index, item);
         }
 
+        /// <inheritdoc />
         protected override void MoveItem(int oldIndex, int newIndex)
         {
-            lock (_objLock)
+            using (new EnterWriteLock(LockObject))
                 base.MoveItem(oldIndex, newIndex);
         }
 
-        public new void Move(int oldIndex, int newIndex)
-        {
-            lock (_objLock)
-                base.Move(oldIndex, newIndex);
-        }
-        protected new IDisposable BlockReentrancy()
-        {
-            lock (_objLock)
-                return base.BlockReentrancy();
-        }
-        protected new void CheckReentrancy()
-        {
-            lock (_objLock)
-                base.CheckReentrancy();
-        }
+        /// <inheritdoc />
         protected override void ClearItems()
         {
-            lock (_objLock)
+            using (new EnterWriteLock(LockObject))
                 base.ClearItems();
         }
+
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
-            lock (_objLock)
+            using (new EnterWriteLock(LockObject))
                 base.RemoveItem(index);
         }
+
+        /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
-            lock (_objLock)
+            using (new EnterWriteLock(LockObject))
                 base.SetItem(index, item);
+        }
+
+        /// <inheritdoc />
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            using (new EnterReadLock(LockObject))
+                base.OnPropertyChanged(e);
+        }
+
+        /// <inheritdoc />
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            using (new EnterReadLock(LockObject))
+                base.OnCollectionChanged(e);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
+                    Utils.SafeSleep();
+                LockObject.Dispose();
+            }
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

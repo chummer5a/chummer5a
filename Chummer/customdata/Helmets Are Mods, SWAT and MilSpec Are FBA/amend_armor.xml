@@ -52,6 +52,14 @@
       <addmodcategory>Full Body Armor Mods</addmodcategory>
     </armor>
     <armor>
+      <name>StattKrieg: Armor Jacket</name>
+      <addmodcategory>High-Fashion Armor Clothing Mods</addmodcategory>
+    </armor>
+    <armor>
+      <name>StattKrieg: Padded Overall</name>
+      <addmodcategory>High-Fashion Armor Clothing Mods</addmodcategory>
+    </armor>
+    <armor>
       <id>403adcb1-0739-4b20-816f-7854005eb227</id>
       <addmodcategory>Urban Explorer Jumpsuit Accessories</addmodcategory>
     </armor>
@@ -61,6 +69,10 @@
     </armor>
     <armor>
       <name>Security Armor: Helmet</name>
+      <hide />
+    </armor>
+    <armor>
+      <name>StattKrieg: Helmet</name>
       <hide />
     </armor>
     <armor>
@@ -78,7 +90,8 @@
       <name>SWAT Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
       <armor>+3</armor>
-      <armorcapacity>[-8]</armorcapacity>
+      <armorcapacity>[0]</armorcapacity>
+      <gearcapacity>8</gearcapacity>
       <required>
         <parentdetails>
           <name>SWAT Armor</name>
@@ -94,7 +107,8 @@
       <name>Hardened Mil-Spec Battle Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
       <armor>+3</armor>
-      <armorcapacity>[-8]</armorcapacity>
+      <armorcapacity>[0]</armorcapacity>
+      <gearcapacity>8</gearcapacity>
       <required>
         <parentdetails>
           <OR>
@@ -113,7 +127,8 @@
       <name>Security Armor: Helmet</name>
       <category>Full Body Armor Mods</category>
       <armor>+3</armor>
-      <armorcapacity>[-5]</armorcapacity>
+      <armorcapacity>[0]</armorcapacity>
+      <gearcapacity>5</gearcapacity>
       <required>
         <parentdetails>
           <name operation="contains">Security Armor</name>
@@ -125,11 +140,36 @@
       <page>67</page>
     </mod>
     <mod amendoperation="addnode">
+      <id>7ea82508-a0ad-4477-bac8-57708973f2e9</id>
+      <name>StattKrieg: Helmet</name>
+      <category>High-Fashion Armor Clothing Mods</category>
+      <armor>+2</armor>
+      <armorcapacity>[0]</armorcapacity>
+      <gearcapacity>2</gearcapacity>
+      <required>
+        <parentdetails>
+          <name operation="contains">StattKrieg</name>
+        </parentdetails>
+      </required>
+      <avail>4</avail>
+      <cost>150</cost>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>-1</value>
+          <condition>LimitCondition_ExcludeFansGangers</condition>
+        </limitmodifier>
+      </bonus>
+      <source>SAG</source>
+      <page>93</page>
+    </mod>
+    <mod amendoperation="addnode">
       <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>
       <name>Urban Explorer Daedalus: Helmet</name>
       <category>Urban Explorer Jumpsuit Accessories</category>
       <armor>+2</armor>
-      <armorcapacity>[-6]</armorcapacity>
+      <armorcapacity>[0]</armorcapacity>
+      <gearcapacity>6</gearcapacity>
       <required>
         <parentdetails>
           <name>Urban Explorer Daedalus</name>

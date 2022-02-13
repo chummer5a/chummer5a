@@ -58,13 +58,13 @@
     <improvement>
       <name>Replace Attribute</name>
       <id>replaceattribute</id>
-      <internal>replaceattribute</internal>
+      <internal>replaceattributes</internal>
       <fields>
         <field>SelectAttribute</field>
         <field>min</field>
         <field>max</field>
       </fields>
-      <xml><![CDATA[<name>{select}</name><min>{min}</min><max>{max}</max>]]></xml>
+      <xml><![CDATA[<replaceattribute><name>{select}</name><min>{min}</min><max>{max}</max></replaceattribute>]]></xml>
       <page>Overrides the Metatype limitations for an attribute. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum.</page>
     </improvement>
     <improvement>
@@ -781,6 +781,82 @@
       </fields>
       <xml><![CDATA[{val}]]></xml>
       <page>Adjusts the character's Social Limit by the listed value.</page>
+    </improvement>
+    <improvement>
+      <name>Walk Multiplier</name>
+      <id>walkmultiplier</id>
+      <internal>walkmultiplier</internal>
+      <fields>
+        <field>category</field>
+        <field>val</field>
+        <field>percent</field>
+      </fields>
+      <xml><![CDATA[<category>{category}</category><val>{val}</val><percent>{percent}</percent>]]></xml>
+      <page>Increases the walking speed of a character for a particular category of movement. Positive numbers increase the factor by which attributes are multiplied to get walking speeds. Negative numbers decrease the factor by which attributes are multiplied to get walking speeds. Category can be Ground, Swim, or Fly for walking speed on land, in water, and in the air respectively. Value increases the walking factor by a fixed amount. Percent increases the walking factor by a percentage amount. Fields may be left at 0 if you do not want to affect walking speed in that particular way.</page>
+    </improvement>
+    <improvement>
+      <name>Run Multiplier</name>
+      <id>runmultiplier</id>
+      <internal>runmultiplier</internal>
+      <fields>
+        <field>category</field>
+        <field>val</field>
+        <field>percent</field>
+      </fields>
+      <xml><![CDATA[<category>{category}</category><val>{val}</val><percent>{percent}</percent>]]></xml>
+      <page>Increases the running speed of a character for a particular category of movement. Positive numbers increase the factor by which attributes are multiplied to get running speeds. Negative numbers decrease the factor by which attributes are multiplied to get running speeds. Category can be Ground, Swim, or Fly for running speed on land, in water, and in the air respectively. Value increases the running factor by a fixed amount. Percent increases the running factor by a percentage amount. Fields may be left at 0 if you do not want to affect running speed in that particular way.</page>
+    </improvement>
+    <improvement>
+      <name>Sprint Bonus</name>
+      <id>sprintbonus</id>
+      <internal>sprintbonus</internal>
+      <fields>
+        <field>category</field>
+        <field>val</field>
+        <field>percent</field>
+      </fields>
+      <xml><![CDATA[<category>{category}</category><val>{val}</val><percent>{percent}</percent>]]></xml>
+      <page>Increases the sprinting speed of a character for a particular category of movement. Positive numbers increase the number of meters sprinted per hit. Negative numbers decrease the number of meters sprinted per hit. Category can be Ground, Swim, or Fly for sprinting speed on land, in water, and in the air respectively. Value increases sprinted meters per hit by a fixed amount. Percent increases the sprinted meters per hit by a percentage amount. Fields may be left at 0 if you do not want to affect sprinting speed in that particular way.</page>
+    </improvement>
+    <improvement>
+      <name>Add Metamagic</name>
+      <id>addmetamagic</id>
+      <internal>addmetamagic</internal>
+      <fields>
+        <field>SelectMetamagic</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free metamagic to the character. Any metamagic can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
+    <improvement>
+      <name>Add Echo</name>
+      <id>addecho</id>
+      <internal>addecho</internal>
+      <fields>
+        <field>SelectEcho</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free echo to the character. Any echo can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
+    <improvement>
+      <name>Add Spell</name>
+      <id>addspell</id>
+      <internal>addspell</internal>
+      <fields>
+        <field>SelectSpell</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free spell to the character. Any spell can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
+    <improvement>
+      <name>Add Complex Form</name>
+      <id>addcomplexform</id>
+      <internal>addcomplexform</internal>
+      <fields>
+        <field>SelectComplexForm</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free Complex Form to the character. Any Complex Form can be added, even ones for which the character would not be normally eligible.</page>
     </improvement>
   </improvements>
 </chummer>

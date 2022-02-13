@@ -286,16 +286,12 @@
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 31000</cost>
       <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -309,16 +305,12 @@
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 32000</cost>
       <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>SR5</source>
       <page>459</page>
@@ -445,8 +437,8 @@
           <name>AGI</name>
           <val>1</val>
         </specificattribute>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>1</val>
         </specificattribute>
         <specificattribute>
@@ -484,10 +476,11 @@
       <cost>Rating * 95000</cost>
       <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
       </bonus>
       <rating>3</rating>
       <source>SR5</source>
@@ -572,6 +565,8 @@
       <avail>12R or Gear</avail>
       <cost>20000 + (99 * Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -596,6 +591,8 @@
       <avail>12R or Gear</avail>
       <cost>26000 + (99 * Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -616,6 +613,8 @@
       <avail>12R or Gear</avail>
       <cost>26000 + (99 * Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -641,6 +640,8 @@
       <avail>12F or Gear</avail>
       <cost>24000 + (99 * Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -662,6 +663,8 @@
       <avail>12</avail>
       <cost>2000 + (4 * Parent Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -1099,7 +1102,7 @@
     </bioware>
     <bioware>
       <id>8f12d662-9fc6-475f-8435-a11829c14956</id>
-      <name>Tailored Critter Pheremones</name>
+      <name>Tailored Critter Pheromones</name>
       <category>Basic</category>
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
@@ -1400,7 +1403,7 @@
       <blocksmounts>wrist,elbow,shoulder</blocksmounts>
       <selectside />
       <pairbonus>
-        <unarmedreach>1</unarmedreach>
+        <reach name="Retractable Claws (Bio-Weapon)">1</reach>
       </pairbonus>
       <source>CF</source>
       <page>120</page>
@@ -1418,7 +1421,7 @@
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
       <pairbonus>
-        <unarmedreach>1</unarmedreach>
+        <reach name="Claws (Bio-Weapon)">1</reach>
       </pairbonus>
       <source>CF</source>
       <page>120</page>
@@ -1436,7 +1439,7 @@
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <selectside />
       <pairbonus>
-        <unarmedreach>1</unarmedreach>
+        <reach name="Retractable Claws (Bio-Weapon)">1</reach>
       </pairbonus>
       <source>CF</source>
       <page>120</page>
@@ -1894,6 +1897,7 @@
       <avail>8R</avail>
       <cost>10000</cost>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">1</initiativepass>
       </bonus>
       <source>CF</source>
@@ -2307,7 +2311,7 @@
     </bioware>
     <bioware>
       <id>cd0d68d6-34e5-440e-9d78-5400008a5f71</id>
-      <name>Hyper Glucagon</name>
+      <name>Hyper-Glucagon</name>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -2454,8 +2458,10 @@
       <cost>78000</cost>
       <forcegrade>None</forcegrade>
       <bonus>
+        <dodge>1</dodge> <!-- TODO: Turn this off if any initiative boosters are present, even if they don't increase REA or defense test dice -->
         <initiative precedence="0">1</initiative>
         <initiativepass precedence="0">1</initiativepass>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
       </bonus>
       <source>CF</source>
       <page>162</page>
@@ -2480,7 +2486,7 @@
     </bioware>
     <bioware>
       <id>6aa86a49-d947-47ac-bf04-e1578c029333</id>
-      <name>Tetrachromatic Vision</name>
+      <name>Tetrachromacy</name>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -2989,7 +2995,7 @@
     <bioware>
       <id>181f09c2-af17-4676-bb6a-62706c4fc521</id>
       <name>Immunization</name>
-      <limit>{BODBase}</limit>
+      <limit>{BODUnaug}</limit>
       <category>Genemods</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
@@ -3377,8 +3383,8 @@
           <name>AGI</name>
           <val>1</val>
         </specificattribute>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>1</val>
         </specificattribute>
         <specificattribute>
@@ -3461,17 +3467,13 @@
       <capacity>0</capacity>
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 25000</cost>
-      <bonus>
+      <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
-          <name precedence="0">AGI</name>
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>2050</source>
       <page>205</page>
@@ -3485,16 +3487,12 @@
       <avail>(Rating * 5)R</avail>
       <cost>Rating * 20000</cost>
       <bonus unique="muscle">
+        <disablequality>Celerity</disablequality>
         <specificattribute>
           <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
-      <forbidden>
-        <oneof>
-          <quality>Celerity</quality>
-        </oneof>
-      </forbidden>
       <rating>4</rating>
       <source>2050</source>
       <page>205</page>
@@ -3640,10 +3638,11 @@
       <cost>Rating * 100000</cost>
       <bonus>
         <initiativepass precedence="0">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
       </bonus>
       <rating>3</rating>
       <source>2050</source>
@@ -3701,7 +3700,7 @@
     <!-- Region Kill Code -->
     <bioware>
       <id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
-      <name>MCT Biolink</name>
+      <name>MCT BioLink</name>
       <category>Basic</category>
       <ess>0.5</ess>
       <capacity>0</capacity>

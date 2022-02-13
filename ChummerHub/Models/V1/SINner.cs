@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Transactions;
 using System.Xml.Serialization;
@@ -41,9 +42,7 @@ namespace ChummerHub.Models.V1
 
         [NotMapped]
         [MaxLength(8)]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.MyHash'
         public string MyHash
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.MyHash'
         {
             get
             {
@@ -51,34 +50,24 @@ namespace ChummerHub.Models.V1
                     Hash = $"{Id.ToString().GetHashCode():X}";
                 return Hash;
             }
-            set { Hash = value; }
+            set => Hash = value;
         }
 
         [MaxLength(6)]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.Language'
         public string Language { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.Language'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.SINnerMetaData'
         public SINnerMetaData SINnerMetaData { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.SINnerMetaData'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.LastDownload'
         public DateTime? LastDownload { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.LastDownload'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.MyGroup'
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
+        [DataMember(EmitDefaultValue = false)]
         public SINnerGroup MyGroup { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.MyGroup'
 
         [MaxLength(64)]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.Alias'
         public string Alias { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.Alias'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINner.SINner()'
         public SINner()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINner.SINner()'
         {
             Id = Guid.NewGuid();
             SINnerMetaData = new SINnerMetaData();

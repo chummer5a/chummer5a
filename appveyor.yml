@@ -1,109 +1,106 @@
-version: "5.212.{build}"
+version: 5.221.{build}
 branches:
   only:
   - master
 skip_tags: true
-image: Visual Studio 2019
+image: Visual Studio 2022
 configuration: Release
 platform: Any CPU
-
+init:
+- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
   assembly_version: '{version}'
   assembly_file_version: '{version}'
   assembly_informational_version: '{version}'
-hosts:
-  api.nuget.org: 93.184.221.200
 environment:
   SolutionDir: C:\projects\chummer\
-  matrix:
-  - project_name: Chummer
-    api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
-init:
-
+install:
+- ps: ''
+nuget:
+  disable_publish_on_pr: true
+cache:
+  - packages -> **\packages.config                        # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+  - '%USERPROFILE%\.nuget\packages -> **\project.json'    # project.json cache
+before_build:
 - ps: |
+    $token = $env:api_token
     $headers = @{
-    "Authorization" = "Bearer $token"
-    "Content-type" = "application/json"
+        "Authorization" = "Bearer $token"
+        "Content-type" = "application/json"
     }
-
     $apiURL = "https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG"
     $history = Invoke-RestMethod -Uri "$apiURL/history?recordsNumber=2" -Headers $headers  -Method Get
-
+    $exitBuild = $false
     if ($history.builds.Count -eq 2)
     {
         $CurrentCommitID = $history.builds[0].commitId
         $PreviousCommitID = $history.builds[1].commitId
         Write-host "Current Commit ID: $CurrentCommitID"
         Write-host "Previous Commit ID: $PreviousCommitID"
-        if (($CurrentCommitID -eq $PreviousCommitID) -and $env:APPVEYOR_SCHEDULED_BUILD -eq $true)
+        if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
         {
-        Write-host "Current Commit ID is the same as previous, exiting build."
-        Exit-AppveyorBuild
+            $PreviousCommitStatus = $history.builds[1].status
+            if ($PreviousCommitStatus -eq "failed")
+            {
+                Write-Host "Current Commit ID is the same as previous, but previous build failed, so going ahead and building."
+            }
+            else
+            {
+                Write-host "Current Commit ID is the same as previous, exiting build."
+                $exitBuild = $true
+            }
         }
     }
-install:
-- ps: |
-    $token = $env:api_token
-    $accountName = 'chummer5a'
-    $projectSlug = 'chummer'
-    $headers = @{
-    "Authorization" = "Bearer $token"
-    "Content-type" = "application/json"
-    }
-
-    Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
-    Write-Host "Environment Variable: $env:OldMinorVersion"
-    $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
-
-    $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))', 
-    [System.Text.RegularExpressions.RegexOptions]::MultiLine)
-
-    $content = [IO.File]::ReadAllText($assemblyFile)
-
-    $version = $null
-
-    $match = $regex.Match($content)
-    if($match.Success) {
-    $version = $match.groups[3].value
-    }
-
-    $Major = $version.Split('.')[0]
-    $Minor = $version.Split('.')[1]
-
-    If ($Minor -ne $($env:OldMinorVersion)) {
-      Write-Host "Current Minor: $Minor"
-      Write-Host "Old Minor: $($env:OldMinorVersion))"
-      Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
-      $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug'
-      $BuildNumber = '{ nextBuildNumber: 1; }'
-      $Format = '{ versionFormat: $Major.$Minor.1; }'
-      # get project with last build details
-      Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber
-      Invoke-RestMethod -Method Put -Uri "$apiUrl/settings" -Headers $headers -Body $BuildNumber
-      Update-AppveyorBuild -Version "$Major.$Minor.1"
+    # Needs to be in this format, otherwise Exit-AppVeyorBuild won't work. That command has to be the final one executed in the script
+    if ($exitBuild)
+    {
+        Exit-AppVeyorBuild
     }
     else
     {
-      Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
+        nuget restore
+        & 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
+        Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
+        Write-Host "Environment Variable: $env:OldMinorVersion"
+        $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
+        $regex = new-object System.Text.RegularExpressions.Regex ('(AssemblyVersion(Attribute)?\s*\(\s*\")(.*)(\"\s*\))',  [System.Text.RegularExpressions.RegexOptions]::MultiLine)
+        $content = [IO.File]::ReadAllText($assemblyFile)
+        $version = $null
+        $match = $regex.Match($content)
+        if($match.Success) {
+        $version = $match.groups[3].value
+        }
+        $Major = $version.Split('.')[0]
+        $Minor = $version.Split('.')[1]
+        if ($Minor -ne $($env:OldMinorVersion))
+        {
+          Write-Host "Current Minor: $Minor"
+          Write-Host "Old Minor: $($env:OldMinorVersion))"
+          Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
+          $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug'
+          $BuildNumber = '{ nextBuildNumber: 1; }'
+          $Format = '{ versionFormat: $Major.$Minor.1; }'
+          # get project with last build details
+          Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber
+          Invoke-RestMethod -Method Put -Uri "$apiUrl/settings" -Headers $headers -Body $BuildNumber
+          Update-AppveyorBuild -Version "$Major.$Minor.1"
+        }
+        else
+        {
+          Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
+        }
+        Write-Host "Setting Docker target OS to Linux."
+        & 'C:\Program Files\Docker\Docker\DockerCli.exe' -SwitchDaemon -SwitchLinuxEngine
     }
-nuget:
-  account_feed: true
-  project_feed: true
-  disable_publish_on_pr: true
-before_build:
-- ps: 
-    nuget restore
-
-    & ${env:CommonProgramFiles(x86)}'\Microsoft Shared\TextTemplating\14.0\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
 build:
   project: Chummer.sln
-  verbosity: normal
+  verbosity: minimal
 after_build:
 - ps: 7z a Chummer.Nightly.zip C:\projects\chummer\Chummer\bin\release\* -r
-on_failure:
-- ps: Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
+test_script:
+- cmd: vstest.console /logger:Appveyor "%APPVEYOR_BUILD_FOLDER%\Chummer.Tests\bin\Release\Chummer.Tests.dll"
 artifacts:
 - path: Chummer.Nightly.zip
   name: Chummer
@@ -115,5 +112,11 @@ deploy:
   artifact: Chummer
   draft: false
   prerelease: true
-test_script:
-- cmd: vstest.console /logger:Appveyor "%APPVEYOR_BUILD_FOLDER%\Chummer.Tests\bin\Release\Chummer.Tests.dll"
+on_failure:
+- ps: |
+    Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
+    if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true)
+    {
+      Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+      ./send.ps1 failure $env:DISCORD_WEBHOOK_URL
+    }

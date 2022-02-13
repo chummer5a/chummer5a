@@ -16,26 +16,36 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Skills
 {
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public class SkillSpecialization : IHasName, IHasXmlNode
+    public class SkillSpecialization : IHasName, IHasXmlDataNode
     {
         private Guid _guiID;
+        private bool _blnNameLoaded;
+        private Task<string> _tskNameLoader;
         private string _strName;
         private readonly bool _blnFree;
         private readonly bool _blnExpertise;
+        private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
-        public SkillSpecialization(string strName, bool blnFree = false, bool blnExpertise = false)
+
+        public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
-            _strName = LanguageManager.ReverseTranslateExtra(strName);
+            _objCharacter = objCharacter;
+            _tskNameLoader
+                = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
+                               strName, GlobalSettings.Language, "skills.xml"));
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
             _blnExpertise = blnExpertise;
@@ -50,23 +60,27 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("spec");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("name", Name);
+            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
         /// <summary>
         /// Re-create a saved SkillSpecialization from an XmlNode;
         /// </summary>
+        /// <param name="objCharacter">Character to load for.</param>
         /// <param name="xmlNode">XmlNode to load.</param>
-        public static SkillSpecialization Load(XmlNode xmlNode)
+        public static SkillSpecialization Load(Character objCharacter, XmlNode xmlNode)
         {
-            if (!xmlNode.TryGetField("guid",Guid.TryParse, out Guid guiTemp))
+            string strName = string.Empty;
+            if (!xmlNode.TryGetStringFieldQuickly("name", ref strName) || string.IsNullOrEmpty(strName))
+                return null;
+            if (!xmlNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
-            return new SkillSpecialization(xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
+            return new SkillSpecialization(objCharacter, strName, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
             {
                 _guiID = guiTemp
             };
@@ -83,38 +97,38 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("skillspecialization");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("free", _blnFree.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("expertise", _blnExpertise.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("free", Free.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("specbonus", SpecializationBonus.ToString(objCulture));
             objWriter.WriteEndElement();
         }
 
-        #endregion
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
 
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Skill Specialization's name.
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists in the program's current language.
         /// </summary>
-        public string CurrentDisplayName => DisplayName(GlobalOptions.Language);
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         /// <summary>
         /// The Skill to which this specialization belongs
@@ -124,19 +138,41 @@ namespace Chummer.Backend.Skills
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
-            return GetNode(GlobalOptions.Language);
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            if (Parent == null)
+                _objCachedMyXmlNode = null;
+            else
+                _objCachedMyXmlNode = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? Parent.GetNode(strLanguage)
+                        : await Parent.GetNodeAsync(strLanguage))
+                    ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
+            return _objCachedMyXmlNode;
         }
 
-        public XmlNode GetNode(string strLanguage)
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
-            {
-                _objCachedMyXmlNode = Parent?.GetNode(strLanguage)?.SelectSingleNode("specs/spec[text() = \"" + Name + "\"]");
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
-            return _objCachedMyXmlNode;
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            if (Parent == null)
+                _objCachedMyXmlNode = null;
+            else
+                _objCachedMyXPathNode = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? Parent.GetNodeXPath(strLanguage)
+                        : await Parent.GetNodeXPathAsync(strLanguage))
+                    ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         /// <summary>
@@ -144,19 +180,30 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string Name
         {
-            get => _strName;
+            get
+            {
+                if (!_blnNameLoaded)
+                {
+                    _blnNameLoaded = true;
+                    _strName = _tskNameLoader.GetAwaiter().GetResult();
+                }
+                return _strName;
+            }
             set
             {
-                if (_strName != value)
-                {
-                    _strName = value;
-                    _objCachedMyXmlNode = null;
-                }
+                if (Name == value)
+                    return;
+                _blnNameLoaded = false;
+                _tskNameLoader
+                    = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
+                                   value, GlobalSettings.Language, "skills.xml"));
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
         }
 
         /// <summary>
-        /// Is this a forced specialization or player entered
+        /// Is this a forced specialization (true) or player entered (false)
         /// </summary>
         public bool Free => _blnFree;
 
@@ -168,8 +215,39 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The bonus this specialization gives to relevant dicepools
         /// </summary>
-        public int SpecializationBonus => Parent.CharacterObject.Options.SpecializationBonus + (Expertise ? 1 : 0);
+        public int SpecializationBonus
+        {
+            get
+            {
+                int intReturn = 0;
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(_objCharacter,
+                                                        Improvement.ImprovementType.DisableSpecializationEffects, Name)
+                    .Count == 0)
+                {
+                    if (Expertise)
+                        intReturn += _objCharacter.Settings.ExpertiseBonus;
+                    else
+                        intReturn += _objCharacter.Settings.SpecializationBonus;
+                }
+                decimal decBonus = 0;
+                foreach (Improvement objImprovement in Parent.RelevantImprovements(x => x.Condition == Name && !x.AddToRating, blnIncludeConditionals: true))
+                {
+                    switch (objImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.Skill:
+                        case Improvement.ImprovementType.SkillBase:
+                        case Improvement.ImprovementType.SkillCategory:
+                        case Improvement.ImprovementType.SkillGroup:
+                        case Improvement.ImprovementType.SkillGroupBase:
+                            decBonus += objImprovement.Rating;
+                            break;
+                    }
+                }
+                return intReturn + decBonus.StandardRound();
+            }
+        }
 
-        #endregion
+        #endregion Properties
     }
 }

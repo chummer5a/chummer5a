@@ -456,21 +456,6 @@
       <rating>6</rating>
     </cyberware>
     <cyberware>
-      <id>c533c0db-3a04-4fdd-95f9-d4d9781a3e79</id>
-      <name>Skilljack (German)</name>
-      <category>Headware</category>
-      <ess>0.1</ess>
-      <capacity>0</capacity>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 1000</cost>
-      <source>SR5G</source>
-      <page>452</page>
-      <bonus>
-        <skillsoftaccess precedence="0">Rating</skillsoftaccess>
-      </bonus>
-      <rating>6</rating>
-    </cyberware>
-    <cyberware>
       <id>99128200-57f7-4ea1-ba48-7bae7215d6bb</id>
       <name>Taste Booster</name>
       <category>Headware</category>
@@ -979,14 +964,14 @@
       <source>SR5</source>
       <page>455</page>
       <bonus>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
       <wirelesspairbonus mode="replace">
-        <specificattribute>
-          <name precedence="1">REA</name>
+        <specificattribute precedence="1">
+          <name>REA</name>
           <val>Rating</val>
           <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
@@ -1053,16 +1038,18 @@
       <source>SR5</source>
       <page>455</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
       <wirelesspairbonus mode="replace">
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="1">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="1">REA</name>
+        <specificattribute precedence="1">
+          <name>REA</name>
           <val>Rating</val>
           <aug>FixedValues(0,0,1)</aug>
         </specificattribute>
@@ -1085,6 +1072,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1109,6 +1097,7 @@
         </oneof>
       </forbidden>
       <limbslot>arm</limbslot>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>c7b88f7e-4e3c-4c29-9f86-a4e244ec5066</id>
@@ -1122,6 +1111,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1148,6 +1138,7 @@
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>eee044c5-3586-4f04-9577-5e290466c485</id>
@@ -1161,6 +1152,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1183,6 +1175,7 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>cc503281-ff05-4e22-9121-09116a4a8306</id>
@@ -1196,6 +1189,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1214,6 +1208,7 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>fdb0ef96-2234-46fa-9d51-55c7d1164b7a</id>
@@ -1227,6 +1222,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1259,6 +1255,7 @@
         <name>Synthetic Lower Arm, Modular</name>
         <name>Synthetic Lower Leg, Modular</name>
       </pairinclude>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>f769235c-c295-4c31-9843-e9d413d77adf</id>
@@ -1272,6 +1269,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1307,6 +1305,7 @@
         <name>Synthetic Lower Arm, Modular</name>
         <name>Synthetic Lower Leg, Modular</name>
       </pairinclude>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>48e490fb-fe6a-482c-a47d-40cb04985897</id>
@@ -1320,6 +1319,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1356,6 +1356,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1393,6 +1394,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1417,6 +1419,7 @@
         </oneof>
       </forbidden>
       <limbslot>arm</limbslot>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>bf29ff5e-839a-4fd3-8063-371ce05065d6</id>
@@ -1430,6 +1433,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1456,6 +1460,7 @@
         </oneof>
       </forbidden>
       <limbslot>leg</limbslot>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>1e511ad7-4806-4862-8685-a04887b1bec9</id>
@@ -1469,6 +1474,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <bonus>
@@ -1491,6 +1497,7 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>a1591e59-d859-40fc-aaf8-30fde5cf6a42</id>
@@ -1504,6 +1511,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1522,6 +1530,7 @@
           <cyberware>Smart Articulation</cyberware>
         </oneof>
       </forbidden>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>4e8c4c99-b0bf-494f-b82c-1ab15ec26eb7</id>
@@ -1535,6 +1544,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1567,6 +1577,7 @@
         <name>Synthetic Lower Arm, Modular</name>
         <name>Synthetic Lower Leg, Modular</name>
       </pairinclude>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>d3a7e6f2-cb8c-42c0-9aef-c88b26648859</id>
@@ -1580,6 +1591,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1616,6 +1628,7 @@
         <name>Synthetic Lower Arm, Modular</name>
         <name>Synthetic Lower Leg, Modular</name>
       </pairinclude>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>40878e5d-cabc-4980-ad87-0dd5d5f5c037</id>
@@ -1629,6 +1642,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1665,6 +1679,7 @@
       <source>SR5</source>
       <page>456</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -1867,6 +1882,7 @@
       <addtoparentess />
       <capacity>[1]</capacity>
       <addtoparentcapacity />
+      <addparentweaponaccessory>External Clip Port</addparentweaponaccessory>
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
@@ -1990,6 +2006,7 @@
       <addtoparentess />
       <capacity>[1]</capacity>
       <addtoparentcapacity />
+      <addparentweaponaccessory>Laser Sight</addparentweaponaccessory>
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
@@ -2085,6 +2102,7 @@
       <addtoparentess />
       <capacity>[2]</capacity>
       <addtoparentcapacity />
+      <addparentweaponaccessory>Silencer/Suppressor</addparentweaponaccessory>
       <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
@@ -2327,6 +2345,35 @@
           <value>-1</value>
         </limitmodifier>
       </bonus>
+      <forbidden>
+        <parentdetails>
+          <category>Cyberlimb</category>
+        </parentdetails>
+      </forbidden>
+    </cyberware>
+    <cyberware>
+      <!-- Yes, I know duplicating Additional Eye Mount as Bodyware just so it can work with cyberlimbs is stupid, but if it's stupid and it works, it ain't stupid -->
+      <id>3bfb8c0e-87a6-49ba-9b33-f2a991ed26ea</id>
+      <name>Additional Eye Mount</name>
+      <limit>False</limit>
+      <category>Bodyware</category>
+      <ess>0.2</ess>
+      <capacity>[2]</capacity>
+      <avail>8</avail>
+      <cost>1000</cost>
+      <source>CF</source>
+      <page>75</page>
+      <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>-1</value>
+        </limitmodifier>
+      </bonus>
+      <required>
+        <parentdetails>
+          <category>Cyberlimb</category>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f51aeeaf-dc86-420e-a078-b50a45de600c</id>
@@ -2921,12 +2968,13 @@
       <page>84</page>
       <!-- TODO: Allow user to deactivate the bonus/penalties -->
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire precedence="0">Rating * 2</skillwire>
         <sociallimit>-Rating</sociallimit>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -3176,6 +3224,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3198,6 +3247,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3219,6 +3269,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3240,6 +3291,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3274,6 +3326,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3307,6 +3360,7 @@
       <source>CF</source>
       <page>86</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <selectside />
@@ -3778,6 +3832,7 @@
       <page>88</page>
       <mountsto>ankle</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3805,6 +3860,7 @@
       <page>88</page>
       <mountsto>wrist</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3832,6 +3888,7 @@
       <page>88</page>
       <mountsto>ankle</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3859,6 +3916,7 @@
       <page>88</page>
       <mountsto>wrist</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3886,6 +3944,7 @@
       <page>88</page>
       <mountsto>elbow</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3928,6 +3987,7 @@
       <page>88</page>
       <mountsto>knee</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -3970,6 +4030,7 @@
       <page>88</page>
       <mountsto>elbow</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4012,6 +4073,7 @@
       <page>88</page>
       <mountsto>knee</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4054,6 +4116,7 @@
       <page>88</page>
       <mountsto>shoulder</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4086,6 +4149,7 @@
       <page>88</page>
       <mountsto>hip</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4118,6 +4182,7 @@
       <page>88</page>
       <mountsto>shoulder</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4150,6 +4215,7 @@
       <page>88</page>
       <mountsto>hip</mountsto>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4508,6 +4574,7 @@
       <source>CF</source>
       <page>88</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4619,6 +4686,7 @@
       <source>CF</source>
       <page>87</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4650,6 +4718,7 @@
       <source>CF</source>
       <page>87</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4682,6 +4751,7 @@
       <page>87</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4720,6 +4790,7 @@
       <page>87</page>
       <blocksmounts>ankle,knee,hip</blocksmounts>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -4754,7 +4825,12 @@
       <cost>2000</cost>
       <source>CF</source>
       <page>87</page>
+      <bonus>
+        <!-- Empty because TODO: add support for showing bonuses to limits of a skill where the limit type isn't known ahead of time -->
+        <selectskill knowledgeskills="False" />
+      </bonus>
       <pairbonus>
+        <!-- Though this is a selectskill, the fact that a selectskill exists in the bonus node means the same skill will get forced on this one -->
         <selectskill knowledgeskills="False">
           <val>1</val>
         </selectskill>
@@ -5943,6 +6019,25 @@
       </required>
     </cyberware>
     <cyberware>
+      <id>10450C2C-9FC5-460D-A7A1-7A8AC3B1C219</id>
+      <name>Overclocked</name>
+      <limit>False</limit>
+      <category>Cyber Implant Weapon Accessory</category>
+      <ess>0</ess>
+      <capacity>[0]</capacity>
+      <addtoparentcapacity />
+      <addparentweaponaccessory>Overclocked</addparentweaponaccessory>
+      <avail>6F</avail>
+      <cost>200</cost>
+      <source>HT</source>
+      <page>182</page>
+      <required>
+        <parentdetails>
+          <category>Cyber Implant Weapon</category>
+        </parentdetails>
+      </required>
+    </cyberware>
+    <cyberware>
       <id>370546a7-25e8-4a98-9467-d2dec2b3e968</id>
       <name>Cyberfinger (Credstick)</name>
       <limit>{arm} * 5</limit>
@@ -7061,11 +7156,12 @@
       <source>HS</source>
       <page>182</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiative precedence="0">FixedValues(3,6,9)</initiative>
         <initiativepass precedence="0">FixedValues(0,1,1)</initiativepass>
         <skillwire>Rating * 2</skillwire>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -7125,7 +7221,7 @@
     </cyberware>
     <cyberware>
       <id>9e961542-91fd-4ea3-bffc-9e19111610bf</id>
-      <name>Cortexbombe (2050)</name>
+      <name>Cortex Bomb (2050)</name>
       <limit>False</limit>
       <category>Headware</category>
       <ess>0</ess>
@@ -7251,7 +7347,7 @@
     </cyberware>
     <cyberware>
       <id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-      <name>Cosmetic Modifications Eye (2050)</name>
+      <name>Cosmetic Modifications: Eye (2050)</name>
       <limit>False</limit>
       <category>Eyeware</category>
       <ess>0</ess>
@@ -7263,7 +7359,7 @@
     </cyberware>
     <cyberware>
       <id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
-      <name>Cosmetic Modifications Ear (2050)</name>
+      <name>Cosmetic Modifications: Ear (2050)</name>
       <limit>False</limit>
       <category>Earware</category>
       <ess>0</ess>
@@ -7300,7 +7396,7 @@
     </cyberware>
     <cyberware>
       <id>9ac9d78f-6a33-4bd1-bb9c-539b487ae618</id>
-      <name>Vision Magnifcation (2050)</name>
+      <name>Vision Magnification (2050)</name>
       <limit>False</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
@@ -7336,7 +7432,7 @@
     </cyberware>
     <cyberware>
       <id>75f71536-b34a-452e-9045-17ce7ef02daf</id>
-      <name>Hearing Amplifcation (2050)</name>
+      <name>Hearing Amplification (2050)</name>
       <category>Earware</category>
       <ess>0.2</ess>
       <capacity>[1]</capacity>
@@ -7379,18 +7475,6 @@
       <page>201</page>
     </cyberware>
     <cyberware>
-      <id>c6fc9433-b33f-45ac-b05a-6341b4d5accc</id>
-      <name>Cosmetic Modifcations Ear</name>
-      <limit>False</limit>
-      <category>Earware</category>
-      <ess>0</ess>
-      <capacity>0</capacity>
-      <avail>2</avail>
-      <cost>1000</cost>
-      <source>2050</source>
-      <page>201</page>
-    </cyberware>
-    <cyberware>
       <id>fd3f6510-e145-492b-8c47-9063ea24da2f</id>
       <name>Cyberlimb Full Arm, Obvious (2050)</name>
       <limit>{arm}</limit>
@@ -7402,6 +7486,7 @@
       <source>2050</source>
       <page>203</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7420,6 +7505,7 @@
         </conditionmonitor>
       </bonus>
       <limbslot>arm</limbslot>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>4ca30ddc-f990-40bc-bf1f-4789996ae34c</id>
@@ -7433,6 +7519,7 @@
       <source>2050</source>
       <page>203</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7451,6 +7538,7 @@
         </conditionmonitor>
       </bonus>
       <limbslot>leg</limbslot>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>1839428f-b8a2-4461-af47-c821ae808dde</id>
@@ -7464,6 +7552,7 @@
       <source>2050</source>
       <page>203</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7482,6 +7571,7 @@
         </conditionmonitor>
       </bonus>
       <limbslot>arm</limbslot>
+      <blocksmounts>wrist,elbow,shoulder</blocksmounts>
     </cyberware>
     <cyberware>
       <id>b8d74993-2ae6-4c42-98ef-f72e96415d7b</id>
@@ -7495,6 +7585,7 @@
       <source>2050</source>
       <page>203</page>
       <allowgear>
+        <gearcategory>Custom</gearcategory>
         <gearcategory>Sensors</gearcategory>
       </allowgear>
       <allowsubsystems>
@@ -7513,6 +7604,7 @@
         </conditionmonitor>
       </bonus>
       <limbslot>leg</limbslot>
+      <blocksmounts>ankle,knee,hip</blocksmounts>
     </cyberware>
     <cyberware>
       <id>4415180f-c3a0-4bb9-8580-3ed689ab6863</id>
@@ -7670,7 +7762,7 @@
     </cyberware>
     <cyberware>
       <id>df427266-60ea-4289-94ee-a30bb46ceb89</id>
-      <name>Cosmetic Modifcations (2050)</name>
+      <name>Cosmetic Modifications (2050)</name>
       <limit>False</limit>
       <category>Bodyware</category>
       <ess>0</ess>
@@ -7692,12 +7784,12 @@
       <page>203</page>
       <bonus>
         <disablequality>Celerity</disablequality>
-        <specificattribute>
-          <name precedence="0">AGI</name>
+        <specificattribute precedence="0">
+          <name>AGI</name>
           <val>Rating</val>
         </specificattribute>
-        <specificattribute>
-          <name precedence="0">STR</name>
+        <specificattribute precedence="0">
+          <name>STR</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -7769,7 +7861,7 @@
     </cyberware>
     <cyberware>
       <id>1fd9fa93-a617-4261-b0ab-9255a4750fcb</id>
-      <name>Boosted Refexes (2050)</name>
+      <name>Boosted Reflexes (2050)</name>
       <category>Bodyware</category>
       <ess>FixedValues(2,3,5)</ess>
       <capacity>0</capacity>
@@ -7778,9 +7870,10 @@
       <source>2050</source>
       <page>203</page>
       <bonus>
+        <disablequality>3564b678-7721-4a8d-ac79-1600cf92dc14</disablequality>
         <initiativepass precedence="0">Rating</initiativepass>
-        <specificattribute>
-          <name precedence="0">REA</name>
+        <specificattribute precedence="0">
+          <name>REA</name>
           <val>Rating</val>
         </specificattribute>
       </bonus>
@@ -7811,7 +7904,7 @@
       <source>2050</source>
       <page>203</page>
       <bonus>
-        <smartlink />
+        <smartlink>2</smartlink>
       </bonus>
     </cyberware>
     <cyberware>

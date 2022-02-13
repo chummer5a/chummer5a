@@ -1111,10 +1111,6 @@
       <text>Procurar Atualizações</text>
     </string>
     <string>
-      <key>Menu_Main_Omae</key>
-      <text>Omae</text>
-    </string>
-    <string>
       <key>Menu_Main_NewWindow</key>
       <text>&amp;Nova Janela</text>
     </string>
@@ -1323,15 +1319,11 @@
       <text>A&amp;dicionar Equipamento</text>
     </string>
     <string>
-      <key>Menu_AddNexus</key>
-      <text>Adicionar &amp;Nexo</text>
-    </string>
-    <string>
       <key>Menu_AddWeapon</key>
       <text>Adiconar A&amp;rma</text>
     </string>
     <string>
-      <key>Menu_AddAdvantage</key>
+      <key>Menu_AddTechnique</key>
       <text>&amp;Adicionar Técnica</text>
     </string>
     <string>
@@ -1703,10 +1695,6 @@
       <text>Você tem certeza que quer excluir esta Forma Complexa?</text>
     </string>
     <string>
-      <key>Message_DeleteComplexFormOption</key>
-      <text>Você tem certeza que quer excluir esta Opção de Forma Complexa?</text>
-    </string>
-    <string>
       <key>Message_DeleteQuality</key>
       <text>Você tem certeza que quer excluir esta Qualidade?</text>
     </string>
@@ -1773,14 +1761,6 @@
     <string>
       <key>MessageTitle_CannotDeleteLimitModifier</key>
       <text>Não Foi Possível Excluir</text>
-    </string>
-    <string>
-      <key>Message_MartialArtManeuverLimit</key>
-      <text>Você só pode ter 2 Manobras por Nível de Arte Marcial.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtManeuverLimit</key>
-      <text>Número Máximo de Manobras</text>
     </string>
     <string>
       <key>Message_SelectMartialArtTechnique</key>
@@ -2135,18 +2115,6 @@
       <text>Selecione Forma Complexa</text>
     </string>
     <string>
-      <key>Message_CannotAddComplexFormOption</key>
-      <text>Esta Forma Complexa não permite Opções.</text>
-    </string>
-    <string>
-      <key>Message_CannotAddComplexFormOptionLimit</key>
-      <text>Esta Forma Complexa não pode ter mais do que {0} Opções devido ao seu Nível.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotAddComplexFormOption</key>
-      <text>Não Foi Possível Adicionar Opção</text>
-    </string>
-    <string>
       <key>Message_FocusMaximumForce</key>
       <text>A Potência total de todos os seus Focos vinculados não pode exceder cinco vezes seu valor de MAG.</text>
     </string>
@@ -2168,7 +2136,7 @@
     </string>
     <string>
       <key>Message_AttributeMaximum</key>
-      <text>Você não pode ter mais do que um Atributo em seu valor máximo durante a criação de personagem.</text>
+      <text>Você não pode ter mais do que {0} Atributo(s) em seu valor máximo durante a criação de personagem.</text>
     </string>
     <string>
       <key>Message_AttributeBuildPoints</key>
@@ -2236,11 +2204,11 @@
     </string>
     <string>
       <key>Message_InvalidAvail</key>
-      <text>{0} itens mais com Disponibilidade maior que {1} do que o permitido</text>
+      <text>{0} itens mais com Disponibilidade maior que o permitido {1}:</text>
     </string>
     <string>
       <key>Message_RestrictedGearUsed</key>
-      <text>Equipamento Restrito foi usado em:\n{0}</text>
+      <text>Equipamento Restrito foi usado em:{0}</text>
     </string>
     <string>
       <key>Message_InvalidCyberwareGrades</key>
@@ -2425,10 +2393,6 @@
     <string>
       <key>Message_ConfirmKarmaExpenseRemove</key>
       <text>Você tem certeza que quer gastar {1} Carma removendo {0}?</text>
-    </string>
-    <string>
-      <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
-      <text>Você tem certeza que quer adicionar esta Forma Complexa por {0} Carma?</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpenseFocus</key>
@@ -2815,14 +2779,6 @@
       <text>Forma Complexa</text>
     </string>
     <string>
-      <key>String_ExpenseAddComplexFormOption</key>
-      <text>Opção de Forma Complexa Adicionada</text>
-    </string>
-    <string>
-      <key>String_ExpenseComplexFormOption</key>
-      <text>Opção de Forma Complexa</text>
-    </string>
-    <string>
       <key>String_ExpenseLearnProgram</key>
       <text>Programa de IA Aprendido</text>
     </string>
@@ -2965,10 +2921,6 @@
     <string>
       <key>String_ExpenseLearnMartialArt</key>
       <text>Arte Marcial Aprendida</text>
-    </string>
-    <string>
-      <key>String_ExpenseLearnManeuver</key>
-      <text>Manobra Aprendida</text>
     </string>
     <string>
       <key>String_ExpenseLearnMetamagic</key>
@@ -3658,7 +3610,7 @@
     </string>
     <string>
       <key>Tip_CommonNuyen</key>
-      <text>O total de Neoienes que seu personagem tem para comprar equipamento. 1 Carma = {0}¥.</text>
+      <text>O total de Neoienes que seu personagem tem para comprar equipamento. {0}.</text>
     </string>
     <string>
       <key>Tip_CommonAIRating</key>
@@ -3815,10 +3767,6 @@
     <string>
       <key>Node_SelectedMartialArts</key>
       <text>Artes Marciais</text>
-    </string>
-    <string>
-      <key>Node_SelectedManeuvers</key>
-      <text>Manobras</text>
     </string>
     <!-- End Region -->
     <!-- Region Spells Tab -->
@@ -4487,6 +4435,10 @@
       <text>Sexo:</text>
     </string>
     <string>
+      <key>Label_Gender</key>
+      <text>Gênero:</text>
+    </string>
+    <string>
       <key>Label_Age</key>
       <text>Idade:</text>
     </string>
@@ -4797,10 +4749,6 @@
       <text>Permitir incrementar os valores de controles numérico-sobe-desce passando por cima do controle</text>
     </string>
     <string>
-      <key>Checkbox_Options_OmaeEnabled</key>
-      <text>Permitir troca de personagem Omae</text>
-    </string>
-    <string>
       <key>Checkbox_Options_UseLifeModule</key>
       <text>Módulos de vida disponíveis</text>
     </string>
@@ -4847,10 +4795,6 @@
     <string>
       <key>Tip_BuildNegativeQualities</key>
       <text>Personagens pode selecionar até -25 Carma de Qualidade Negativas. Qualidades em vermelho escuro não contam no limite de -25 Carma.</text>
-    </string>
-    <string>
-      <key>Tip_Omae_Warning</key>
-      <text>Omae está fora do controle dos desenvolvedores atuais e contém personagens antigos que podem não funcionar ou travar a versão atual do Chummer. Prossiga por sua conta e risco.</text>
     </string>
     <!-- End Region-->
     <!-- Region Other Info Tab -->
@@ -5288,28 +5232,6 @@
     <string>
       <key>MenuItem_CreateCritter</key>
       <text>Criar Criatura</text>
-    </string>
-    <!-- End Region-->
-    <!-- Region Omae -->
-    <string>
-      <key>Omae_NoDescription</key>
-      <text>Sem descrição.</text>
-    </string>
-    <string>
-      <key>Omae_UpdatedDate</key>
-      <text>Atualizado</text>
-    </string>
-    <string>
-      <key>Omae_DownloadCount</key>
-      <text>Baixado {0} vezes</text>
-    </string>
-    <string>
-      <key>Omae_Download</key>
-      <text>Baixar</text>
-    </string>
-    <string>
-      <key>Omae_PostUpdate</key>
-      <text>Postar Atualização</text>
     </string>
     <!-- End Region-->
     <!-- Region Adept Powers -->
@@ -5816,432 +5738,6 @@
       <text>Observações</text>
     </string>
     <!-- End Region-->
-    <!-- Region Omae Window -->
-    <string>
-      <key>Title_Omae</key>
-      <text>Troca de Personagem Chummer: Omae</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotConnection</key>
-      <text>Não foi possível se conectar ao Omae. Por favor, certifique-se de que seu computador está conectado à Matriz. Se o problema persistir, o site Omae pode estar inacessível no momento.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CannotConnection</key>
-      <text>Não Foi Possível Conectar ao Omae</text>
-    </string>
-    <string>
-      <key>Message_Omae_FileExists</key>
-      <text>Um arquivo chamado "{0}" já existe no seu diretório Omae.\nVocê quer sobrescrever este arquivo baixando o arquivo selecionado?</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_FileExists</key>
-      <text>Personagem Já Existe</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotFindCharacter</key>
-      <text>Não foi possível localizar a informação enviada para este personagem.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CannotFindCharacter</key>
-      <text>Não Foi Possível Encontrar Personagem</text>
-    </string>
-    <string>
-      <key>Message_Omae_CharacterDownloaded</key>
-      <text>Personagem baixado. Você gostaria de abri-lo agora?</text>
-    </string>
-    <string>
-      <key>Message_Omae_NPCPackDownloaded</key>
-      <text>Pacote de PdM baixado.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CharacterDownloaded</key>
-      <text>Personagem Baixado</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_DeleteCharacter</key>
-      <text>Excluir Personagem</text>
-    </string>
-    <string>
-      <key>Message_Omae_ConfirmDelete</key>
-      <text>Excluir este personagem removerá todas as informações do personagem do Omae. Você tem certeza que quer excluir este personagem?</text>
-    </string>
-    <string>
-      <key>Message_Omae_CharacterDeleted</key>
-      <text>Personagem excluído.</text>
-    </string>
-    <string>
-      <key>Message_Omae_CharacterDeleteError</key>
-      <text>Houve um erro excluíndo este personagem. Por favor, tente de novo mais tarde.</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotFindData</key>
-      <text>Não foi possível localizar a informação enviada para este arquivo de dados.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CannotFindData</key>
-      <text>Não Foi Possível Encontrar Arquivo de Dados</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_DeleteData</key>
-      <text>Excluir Dados</text>
-    </string>
-    <string>
-      <key>Message_Omae_ConfirmData</key>
-      <text>Excluir estes dados removerá todas as suas informações do Omae. Você tem certeza que quer excluir estes dados?</text>
-    </string>
-    <string>
-      <key>Message_Omae_DataDeleted</key>
-      <text>Dados excluídos.</text>
-    </string>
-    <string>
-      <key>Message_Omae_DataDeleteError</key>
-      <text>Houve um erro excluíndo estes dados. Por favor, tente de novo mais tarde.</text>
-    </string>
-    <string>
-      <key>Message_Omae_DataDownloaded</key>
-      <text>Arquivo de dados baixado. Você precisará reiniciar o Chummer se você baixou e sobrescreveu arquivos, para que estas mudanças tenham efeito.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_DataDownloaded</key>
-      <text>Arquivo de Dados Baixado</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotFindSheet</key>
-      <text>Não foi possível localizar a informação enviada para esta ficha de personagem.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CannotFindSheet</key>
-      <text>Não Foi Possível Encontrar Ficha de Personagem</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_DeleteSheet</key>
-      <text>Excluir Ficha de Personagem</text>
-    </string>
-    <string>
-      <key>Message_Omae_ConfirmSheet</key>
-      <text>Excluir esta ficha de personagem removerá todas as suas informações do Omae. Você tem certeza que quer excluir esta ficha de personagem?</text>
-    </string>
-    <string>
-      <key>Message_Omae_SheetDeleted</key>
-      <text>Ficha de personagem excluída.</text>
-    </string>
-    <string>
-      <key>Message_Omae_SheetDeleteError</key>
-      <text>Houve um erro excluíndo esta ficha de personagem. Por favor, tente de novo mais tarde.</text>
-    </string>
-    <string>
-      <key>Message_Omae_SheetDownloaded</key>
-      <text>Ficha de personagem baixada.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_SheetDownloaded</key>
-      <text>Ficha de Personagem Baixada.</text>
-    </string>
-    <string>
-      <key>Message_Omae_ChooseUsername</key>
-      <text>Por favor, escolha um nome de usuário.</text>
-    </string>
-    <string>
-      <key>Message_Omae_EnterUsername</key>
-      <text>Por favor, digite seu nome de usuário.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_ChooseUsername</key>
-      <text>Nome de Usuário Requerido</text>
-    </string>
-    <string>
-      <key>Message_Omae_ChoosePassword</key>
-      <text>Por favor, escolha uma senha.</text>
-    </string>
-    <string>
-      <key>Message_Omae_EnterPassword</key>
-      <text>Por favor, digite sua senha.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_ChoosePassword</key>
-      <text>Senha Requerida</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_Registration</key>
-      <text>Registro no Omae</text>
-    </string>
-    <string>
-      <key>Message_Omae_AccountCreated</key>
-      <text>Sua conta no Omae foi criada!</text>
-    </string>
-    <string>
-      <key>Message_Omae_AccountExists</key>
-      <text>Uma conta com este nome de usuário já existe.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_OmaeLogin</key>
-      <text>Login ao Omae</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotLogin</key>
-      <text>Não foi possível logar no Omae. Por favor, certifique-se de que seu nome de usuário e senha estão corretos.</text>
-    </string>
-    <string>
-      <key>Message_Omae_MustLogin</key>
-      <text>Você deve estar logado no Omae para poder enviar um personagem. Por favor, faça login com sua conta, ou registre sua conta para enviar seu personagem.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_PasswordReset</key>
-      <text>Redefinir Senha</text>
-    </string>
-    <string>
-      <key>Message_Omae_PasswordNoEmail</key>
-      <text>Sua senha não pode ser redefinida, porque você não tem um endereço de e-mail vinculado à sua conta.</text>
-    </string>
-    <string>
-      <key>Message_Omae_PasswordReset</key>
-      <text>Sua senha foi redefinida. Um e-mail foi enviado com sua nova senha.</text>
-    </string>
-    <string>
-      <key>Message_Omae_InfoRequiresLogin</key>
-      <text>Você deve estar logado no Omae para recuperar as informações da sua conta.</text>
-    </string>
-    <string>
-      <key>String_Omae_NoCharacters</key>
-      <text>Nenhum personagem encontrado.</text>
-    </string>
-    <string>
-      <key>String_Omae_NoData</key>
-      <text>Nenhum arquivo de dados encontrado.</text>
-    </string>
-    <string>
-      <key>String_Omae_NoSheets</key>
-      <text>Nenhuma ficha de personagem encontrada.</text>
-    </string>
-    <string>
-      <key>Checkbox_Omae_AutoLogin</key>
-      <text>Logar-se Automaticamente</text>
-    </string>
-    <string>
-      <key>Button_Omae_ClearFilter</key>
-      <text>Apagar Filtro</text>
-    </string>
-    <string>
-      <key>Button_Omae_ShowFilter</key>
-      <text>Mostrar Filtro</text>
-    </string>
-    <string>
-      <key>Button_Omae_HideFilter</key>
-      <text>Ocultar Filtro</text>
-    </string>
-    <string>
-      <key>Button_Omae_Login</key>
-      <text>Login</text>
-    </string>
-    <string>
-      <key>Button_Omae_MyAccount</key>
-      <text>Minha Conta</text>
-    </string>
-    <string>
-      <key>Button_Omae_PasswordReset</key>
-      <text>Redefinir Senha</text>
-    </string>
-    <string>
-      <key>Button_Omae_Register</key>
-      <text>Registrar</text>
-    </string>
-    <string>
-      <key>Button_Omae_Search</key>
-      <text>&amp;Procurar</text>
-    </string>
-    <string>
-      <key>Button_Omae_Upload</key>
-      <text>&amp;Enviar um Personagem</text>
-    </string>
-    <string>
-      <key>Button_Omae_UploadData</key>
-      <text>&amp;Enviar Arquivos</text>
-    </string>
-    <string>
-      <key>Label_Omae_Username</key>
-      <text>Nome de usuário:</text>
-    </string>
-    <string>
-      <key>Label_Omae_Password</key>
-      <text>Senha:</text>
-    </string>
-    <string>
-      <key>Label_Omae_SearchFor</key>
-      <text>Procurar por</text>
-    </string>
-    <string>
-      <key>Label_Omae_Filtering</key>
-      <text>Filtrando:</text>
-    </string>
-    <string>
-      <key>Label_Omae_CurrentMode</key>
-      <text>Modo Atual:</text>
-    </string>
-    <string>
-      <key>Label_Omae_Quality</key>
-      <text>Qualidade:</text>
-    </string>
-    <string>
-      <key>Label_Omae_OrQuality</key>
-      <text>ou Qualidade:</text>
-    </string>
-    <string>
-      <key>Label_Omae_Creator</key>
-      <text>Criador</text>
-    </string>
-    <string>
-      <key>Label_Omae_LoggedInAs</key>
-      <text>Logado como {0}</text>
-    </string>
-    <string>
-      <key>Label_Omae_SortedBy</key>
-      <text>classificado por</text>
-    </string>
-    <!--End Region-->
-    <!-- Region Omae Account Window -->
-    <string>
-      <key>Title_OmaeAccount</key>
-      <text>Minha Conta Omae</text>
-    </string>
-    <string>
-      <key>Label_OmaeAccount_EmailAddress</key>
-      <text>Endereço de e-mail:</text>
-    </string>
-    <!--End Region-->
-    <!-- Region Omae Upload Window -->
-    <string>
-      <key>Title_OmaeUpload</key>
-      <text>Enviar Personagem ao Omae</text>
-    </string>
-    <string>
-      <key>Title_OmaeUploadData</key>
-      <text>Enviar Dados Personalizados ao Omae</text>
-    </string>
-    <string>
-      <key>Title_OmaeUploadSheet</key>
-      <text>Enviar Ficha de Personagem ao Omae</text>
-    </string>
-    <string>
-      <key>Label_OmaeUpload_FileName</key>
-      <text>Arquivo para Enviar</text>
-    </string>
-    <string>
-      <key>Label_OmaeUpload_CharacterName</key>
-      <text>Nome de Personagem;</text>
-    </string>
-    <string>
-      <key>Label_OmaeUpload_CharacterType</key>
-      <text>Tipo de Personagem:</text>
-    </string>
-    <string>
-      <key>Label_OmaeUpload_Description</key>
-      <text>Descrição</text>
-    </string>
-    <string>
-      <key>Button_OmaeUpload_Upload</key>
-      <text>Enviar</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_CannotUploadFile</key>
-      <text>Apenas arquivos de personagem do Chummer podem ser enviados.</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_CannotUploadSheet</key>
-      <text>Apenas arquivos XSL e XSLT podem ser enviados.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_CannotUploadFile</key>
-      <text>Não Foi Possível Enviar Arquivo</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_UnnamedCharacter</key>
-      <text>Você não pode enviar um personagem sem nome.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_UnnamedCharacter</key>
-      <text>Não Foi Possível Enviar Personagem</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_SelectFile</key>
-      <text>Você deve selecionar um arquivo para enviar.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_SelectFile</key>
-      <text>Selecione Arquivo para Enviar</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_CharacterDescription</key>
-      <text>Por favor, forneça uma descrição curta do personagem para que os outros usuários tenham alguma ideia sobre este personagem.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_CharacterDescription</key>
-      <text>Descrição do Personagem</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_FileTooLarge</key>
-      <text>Este arquivo de personagem é muito grande para enviar ao Omae. Se este arquivo tem uma foto de rosto, você pode precisar cortá-la ou removê-la antes de tentar enviar isto de novo.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_FileTooLarge</key>
-      <text>Arquivo Muito Grande</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_UploadFailed</key>
-      <text>Não foi possível enviar arquivo.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_UploadFailed</key>
-      <text>Envio Falhou</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_UploadComplete</key>
-      <text>Arquivo enviado. Obrigado por sua submissão!</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_UploadComplete</key>
-      <text>Arquivo Enviado</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_DataName</key>
-      <text>Você deve digitar um nome para este arquivo de dados.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_DataName</key>
-      <text>Nome do Arquivo de Dados</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_DataDescription</key>
-      <text>Por favor, forneça uma descrição curta do que este arquivo de dados contém.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_DataDescription</key>
-      <text>Descrição do Arquivo de Dados</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_DataSelectFiles</key>
-      <text>Você deve incluir pelo menos 1 arquivo no seu envio de arquivo de dados.</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_SheetName</key>
-      <text>Você deve digitar um nome para esta ficha de personagem.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_SheetName</key>
-      <text>Nome da Ficha de Personagem</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_SheetDescription</key>
-      <text>Por favor, forneça uma descrição curta do que esta ficha de personagem contém.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_SheetDescription</key>
-      <text>Descrição da Ficha de Personagem</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_SheetSelectFiles</key>
-      <text>Você deve incluir pelo menos 1 arquivo no seu envio de ficha de personagem.</text>
-    </string>
-    <!-- End Region-->
     <!-- Region Options Window -->
     <string>
       <key>Title_Options</key>
@@ -6308,26 +5804,6 @@
       <text>Membros para Personagens Padrão:</text>
     </string>
     <string>
-      <key>Label_Options_NuyenPerBP</key>
-      <text>Neoiene por Ponto de Construção:</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
-      <text>Pode comprar Qualidades (RC 40)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_KnowledgeMultiplier</key>
-      <text>Pontos de Conhecimento gratuitos igual a (INT+LOG)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactMultiplier</key>
-      <text>Pontos de Contato gratuitos igual a Carisma</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactPoints</key>
-      <text>Pontos de contato em vez de Contatos fixos (RC 40)</text>
-    </string>
-    <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
       <text>Atualizações Automáticas</text>
     </string>
@@ -6392,10 +5868,6 @@
       <text>Nível de Arte Marcial</text>
     </string>
     <string>
-      <key>Label_Options_BPMartialArtManeuver</key>
-      <text>Manobra de Arte Marcial</text>
-    </string>
-    <string>
       <key>Label_Options_BPSkillGroup</key>
       <text>Nível de Grupo de Perícia</text>
     </string>
@@ -6425,11 +5897,7 @@
     </string>
     <string>
       <key>Label_Options_BPComplexForm</key>
-      <text>Nível de Forma Complexa</text>
-    </string>
-    <string>
-      <key>Label_Options_BPComplexFormOption</key>
-      <text>Nível de Opção de Forma Complexa</text>
+      <text>Forma Complexa</text>
     </string>
     <string>
       <key>Label_Options_NewSpecialization</key>
@@ -6508,24 +5976,12 @@
       <text>Nova Forma Complexa</text>
     </string>
     <string>
-      <key>Label_Options_ImproveComplexForm</key>
-      <text>Melhorar Forma Complexa em 1</text>
-    </string>
-    <string>
-      <key>Label_Options_ComplexFormOptions</key>
-      <text>Opções de Forma Complexa</text>
-    </string>
-    <string>
-      <key>Label_Options_ComplexFormSkillsoft</key>
-      <text>Períciasoft de Forma Complexa</text>
-    </string>
-    <string>
       <key>Label_Options_Spirit</key>
       <text>Espírito</text>
     </string>
     <string>
-      <key>Label_Options_CombatManeuver</key>
-      <text>Manobra de Combate</text>
+      <key>Label_Options_MartialArtTechnique</key>
+      <text>Manobra de Arte Marcial</text>
     </string>
     <string>
       <key>Label_Options_Nuyen</key>
@@ -6989,7 +6445,7 @@
     </string>
     <string>
       <key>Button_Options_PDFTest</key>
-      <text>Teste - Abrir na Página 5</text>
+      <text>Teste - Abrir na Página 3</text>
     </string>
     <string>
       <key>Checkbox_Options_OpenPDFsAsURLs</key>
@@ -7399,16 +6855,10 @@
       <text>Selecione uma Arte Marcial</text>
     </string>
     <!-- End Region-->
-    <!-- Region Select Martial Art Advantage Window -->
+    <!-- Region Select Martial Art Technique Window -->
     <string>
       <key>Title_SelectMartialArtTechnique</key>
       <text>Selecione uma Vantagem</text>
-    </string>
-    <!-- End Region-->
-    <!-- Region Select Martial Art Maneuver Window -->
-    <string>
-      <key>Title_SelectMartialArtManeuver</key>
-      <text>Selecione uma Manobra</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Mentor Spirit Window -->
@@ -7465,32 +6915,6 @@
     <string>
       <key>Checkbox_SelectGeneric_LimitList</key>
       <text>Mostrar apenas {0} que eu posso pegar</text>
-    </string>
-    <!-- End Region-->
-    <!-- Region Select Nexus Window -->
-    <string>
-      <key>Title_SelectNexus</key>
-      <text>Construir Nexo</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_Nexus</key>
-      <text>Nexo</text>
-    </string>
-    <string>
-      <key>Label_SelectNexus_Processor</key>
-      <text>Processador:</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_Processor</key>
-      <text>Processador</text>
-    </string>
-    <string>
-      <key>Label_SelectNexus_PersonaLimit</key>
-      <text>Limite de Persona:</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_PersonaLimit</key>
-      <text>Limite de Persona</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Number Window -->
@@ -8765,7 +8189,7 @@
       <text>Diretório de dados personalizados com este nome já existe.</text>
     </string>
     <string>
-      <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
       <text>Nome de Diretório de Dados Personalizados Duplicado</text>
     </string>
     <string>
@@ -9022,15 +8446,15 @@
     </string>
     <string>
       <key>About_Description_Text</key>
-      <text>Gerador de personagem para Shadowrun 5ª Editção\n\r\n\rObrigado a Keith pelo excelente trabalho que fez criando e mantendo Chummer para a 4ª Edição. Sem ele, nada disso seria possível.\n\r\n\rMuito obrigado a todos na comunidade Dumpshock por apoiar este projeto com todos os seus valiosos feedbacks, grandes ideias, avisos de bugs, e apontar meus erros bobos. E também muito obrigado a todos que dedicaram seu tempo traduzindo Chummer para outros idiomas!</text>
+      <text>Gerador de personagem para Shadowrun 5ª Editção\n\nObrigado a Keith pelo excelente trabalho que fez criando e mantendo Chummer para a 4ª Edição. Sem ele, nada disso seria possível.\n\nMuito obrigado a todos na comunidade Dumpshock por apoiar este projeto com todos os seus valiosos feedbacks, grandes ideias, avisos de bugs, e apontar meus erros bobos. E também muito obrigado a todos que dedicaram seu tempo traduzindo Chummer para outros idiomas!</text>
     </string>
     <string>
       <key>About_Company_Text</key>
-      <text>Chummer original para a 4ª edição por Keith Rudolph.\n\rAtualização para o Chummer5 por Adam Schmidt: srchummer5@gmail.com\n\rAtualização para o Chummer5a pelo Anônimo fa/tg/uy: chummer5isalive@gmail.com\n\rAtualizações adicionais para 5a por Johannes Elgaard: joha4270@gmail.com</text>
+      <text>Chummer original para a 4ª edição por Keith Rudolph.\nAtualização para o Chummer5 por Adam Schmidt: srchummer5@gmail.com\nAtualização para o Chummer5a pelo Anônimo fa/tg/uy: chummer5isalive@gmail.com\nAtualizações adicionais para 5a por Johannes Elgaard: joha4270@gmail.com\nAtualizações adicionais para 5a por Delnar_Ersike: delnar.ersike@gmail.com</text>
     </string>
     <string>
       <key>About_Copyright_Text</key>
-      <text>Copyright © Keith Rudolph 2013</text>
+      <text>Copyright © Keith Rudolph 2013, licença GNU GPLv3</text>
     </string>
     <string>
       <key>About_Label_Contributors</key>
@@ -9042,7 +8466,7 @@
     </string>
     <string>
       <key>About_Label_Disclaimer_Text</key>
-      <text>Chummer é completamente não oficial e não é de forma alguma endossado por The Topps Company, Inc. ou Catalyst Game Labs. The Topps Company, Inc. tem a propriedade exclusiva dos nomes, logos, artes, marcas, fotografias, sons, audios, vídeos e/ou qualquer outro material proprietário usado em conexão com o jogo Shadowrun.\n\r\n\rA não ser que acordado por escrito, o desenvolvedor fornece o Trabalho (e cada Contribuidor fornece suas Contribuições) da forma "COMO ESTÁ", SEM GARANTIAS OU CONDIÇÕES DE QUALQUER TIPO, tanto expressas quanto implícitas, incluindo, sem limitações, quaisquer garantias ou condições de TÍTULO, NÃO-VIOLAÇÃO, COMERCIALIZAÇÃO ou ADEQUAÇÃO PARA UM PROPÓSITO ESPECÍFICO.\n\r\n\rAo utilizar Chummer Você concorda que Você possui legalmente uma cópia do livro de regras de Shadowrun e qualquer suplemento na qual as informações você selecionou para usar. Você é o único responsável por determinar a apropriabilidade do uso e redistribuição do conteúdo que Você criar e assume quaisquer riscos associados com Seu exercício de permissões sob esta Licença.\n\r\n\rChummer utiliza ícones do conjunto de ícones Silk feito por Mark James que está disponível em at www.famfamfam.com.</text>
+      <text>Chummer é completamente não oficial e não é de forma alguma endossado por The Topps Company, Inc. ou Catalyst Game Labs. The Topps Company, Inc. tem a propriedade exclusiva dos nomes, logos, artes, marcas, fotografias, sons, audios, vídeos e/ou qualquer outro material proprietário usado em conexão com o jogo Shadowrun.\n\nA não ser que acordado por escrito, o desenvolvedor fornece o Trabalho (e cada Contribuidor fornece suas Contribuições) da forma "COMO ESTÁ", SEM GARANTIAS OU CONDIÇÕES DE QUALQUER TIPO, tanto expressas quanto implícitas, incluindo, sem limitações, quaisquer garantias ou condições de TÍTULO, NÃO-VIOLAÇÃO, COMERCIALIZAÇÃO ou ADEQUAÇÃO PARA UM PROPÓSITO ESPECÍFICO.\n\nAo utilizar Chummer Você concorda que Você possui legalmente uma cópia do livro de regras de Shadowrun e qualquer suplemento na qual as informações você selecionou para usar. Você é o único responsável por determinar a apropriabilidade do uso e redistribuição do conteúdo que Você criar e assume quaisquer riscos associados com Seu exercício de permissões sob esta Licença.\n\nChummer utiliza ícones do 'FatCow Icon Set' disponíveis em https://www.fatcow.com/free-icons.</text>
     </string>
     <string>
       <key>String_MutantCritter</key>

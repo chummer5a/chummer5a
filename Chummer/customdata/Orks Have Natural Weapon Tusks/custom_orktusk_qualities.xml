@@ -27,11 +27,11 @@
       <naturalweapons>
         <naturalweapon>
           <id>0f884cd7-f4d2-4e63-8538-0cffdb03e4f6</id>
-          <name>Horns</name>
+          <name>Tusks</name>
           <category>Bio-Weapon</category>
           <type>Melee</type>
           <conceal>0</conceal>
-          <accuracy>4</accuracy>
+          <accuracy>6</accuracy>
           <reach>0</reach>
           <damage>(STR)P</damage>
           <ap>-1</ap>

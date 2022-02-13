@@ -196,7 +196,7 @@
         </oneof>
       </forbidden>
     </quality>
-    <quality xpathfilter="name = 'Jack of All Trades'">
+    <quality xpathfilter="name = 'Jack of All Trades Master of None'">
       <karma>1</karma>
       <bonus amendoperation="replace" />
     </quality>
@@ -282,6 +282,11 @@
       </required>
       <source>SR5</source>
       <page>1</page>
+    </quality>
+    <quality>
+      <!-- Hey, This Is Easy from Delnar's One Karma Qualities (Not needed because everything is now Jack of All Trades Master of None's effect) -->
+      <id>60dcf3b1-8b34-4c4f-a2f5-0131bd5dc13b</id>
+      <hide />
     </quality>
   </qualities>
 </chummer>

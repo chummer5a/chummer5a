@@ -16,8 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
@@ -30,16 +31,19 @@ namespace Chummer
     /// <summary>
     /// A Location.
     /// </summary>
-    [DebuggerDisplay("{DisplayName()}")]
+    [DebuggerDisplay("{nameof(Name)}")]
     public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort
     {
         private Guid _guiID;
         private string _strName;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
+
         #region Constructor, Create, Save, Load, and Print Methods
-        public Location(Character objCharacter, ObservableCollection<Location> objParent, string strName = "")
+
+        public Location(Character objCharacter, ICollection<Location> objParent, string strName = "")
         {
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
@@ -47,6 +51,7 @@ namespace Chummer
             _strName = strName;
             Parent = objParent;
             Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.BeforeClearCollectionChanged += ChildrenOnBeforeClearCollectionChanged;
         }
 
         /// <summary>
@@ -58,10 +63,11 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("location");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("notes", _strNotes);
-            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -79,7 +85,11 @@ namespace Chummer
             else
             {
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
-                objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+                objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
             }
 
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -92,26 +102,29 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        /// <param name="strLanguageToPrint">Language in which to print</param>
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("location");
             objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", DisplayNameShort());
-            objWriter.WriteElementString("fullname", DisplayName());
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Metamagic name.
@@ -125,19 +138,24 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort()
+        public string DisplayNameShort(string strLanguage = "")
         {
-            return Name;
+            if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
+                return Name;
+            return _objCharacter.TranslateExtra(
+                !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? LanguageManager.ReverseTranslateExtra(Name, GlobalSettings.Language, _objCharacter)
+                    : Name, strLanguage);
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName()
+        public string DisplayName(string strLanguage = "")
         {
-            string strReturn = DisplayNameShort();
-
-            return strReturn;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            return DisplayNameShort(strLanguage);
         }
 
         /// <summary>
@@ -150,6 +168,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Used by our sorting algorithm to remember which order the user moves things to
         /// </summary>
         public int SortOrder
@@ -158,15 +185,17 @@ namespace Chummer
             set => _intSortOrder = value;
         }
 
-        public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
+        public EnhancedObservableCollection<IHasLocation> Children { get; } = new EnhancedObservableCollection<IHasLocation>();
 
-        public ObservableCollection<Location> Parent { get; }
-        #endregion
+        public ICollection<Location> Parent { get; }
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
         {
-            string strText = DisplayName();
+            string strText = DisplayName(GlobalSettings.Language);
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
@@ -180,20 +209,18 @@ namespace Chummer
             return objNode;
         }
 
-        public Color PreferredColor
+        public Color PreferredColor =>
+            !string.IsNullOrEmpty(Notes)
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
+                : ColorManager.WindowText;
+
+        #endregion UI Methods
+
+        private void ChildrenOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            get
-            {
-                if (!string.IsNullOrEmpty(Notes))
-                {
-                    return Color.SaddleBrown;
-                }
-
-                return SystemColors.WindowText;
-            }
+            foreach (IHasLocation objOldItem in e.OldItems)
+                objOldItem.Location = null;
         }
-        #endregion
-
 
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -203,37 +230,39 @@ namespace Chummer
                     foreach (IHasLocation objNewItem in e.NewItems)
                         objNewItem.Location = this;
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (IHasLocation objOldItem in e.OldItems)
                         objOldItem.Location = null;
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
+                    HashSet<IHasLocation> setNewItems = e.NewItems.OfType<IHasLocation>().ToHashSet();
                     foreach (IHasLocation objOldItem in e.OldItems)
-                        objOldItem.Location = null;
-                    foreach (IHasLocation objNewItem in e.NewItems)
+                    {
+                        if (!setNewItems.Contains(objOldItem))
+                            objOldItem.Location = null;
+                    }
+                    foreach (IHasLocation objNewItem in setNewItems)
                         objNewItem.Location = this;
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     foreach (IHasLocation objItem in Children)
-                    {
-                        objItem.Location = null;
-                    }
+                        objItem.Location = this;
                     break;
             }
         }
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                _objCharacter.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation"));
-            }
-            foreach (IHasLocation item in Children)
-            {
-                item.Location = null;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation")))
+                return false;
 
-            return Parent.Remove(Parent.SingleOrDefault(i => i.InternalId == InternalId));
+            foreach (IHasLocation item in Children)
+                item.Location = null;
+
+            return Parent?.Contains(this) != true || Parent.Remove(this);
         }
     }
 }

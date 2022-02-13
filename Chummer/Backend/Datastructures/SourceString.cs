@@ -16,71 +16,81 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Globalization;
-using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public class SourceString : IComparable, IEquatable<SourceString>
+    public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
-        private readonly int _intPage;
-        private readonly string _strCachedSpace;
+        private static readonly LockingDictionary<string, Tuple<string, string>> s_DicCachedStrings = new LockingDictionary<string, Tuple<string, string>>();
         private readonly int _intHashCode;
 
-        public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null)
+        public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
-            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
+            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
             string strCode = strSourceString ?? string.Empty;
+            Page = 0;
             int intWhitespaceIndex = strCode.IndexOf(' ');
             if (intWhitespaceIndex != -1)
             {
                 strCode = strCode.Substring(0, intWhitespaceIndex);
                 if (intWhitespaceIndex + 1 < strCode.Length)
-                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
+                {
+                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
+                    Page = intPage;
+                }
             }
 
-            Code = CommonFunctions.LanguageBookShort(strCode, Language);
-            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
-            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strCode, Language))
-                .Append(_strCachedSpace).Append(LanguageManager.GetString("String_Page", strLanguage))
-                .Append(_strCachedSpace).Append(_intPage.ToString(CultureInfo)).ToString();
+            Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter);
+            _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
+            if (!s_DicCachedStrings.ContainsKey(Language))
+                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
+                        LanguageManager.GetString("String_Space", Language),
+                        LanguageManager.GetString("String_Page", Language)));
+            string strSpace = s_DicCachedStrings[Language].Item1;
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
-        public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null)
+        public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
-            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
-            int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
+            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
+            int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
+            Page = intPage;
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language);
-            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
-            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language))
-                .Append(_strCachedSpace).Append(LanguageManager.GetString("String_Page", strLanguage))
-                .Append(_strCachedSpace).Append(_intPage.ToString(CultureInfo)).ToString();
+            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
+            _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
+            if (!s_DicCachedStrings.ContainsKey(Language))
+                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
+                    LanguageManager.GetString("String_Space", Language),
+                    LanguageManager.GetString("String_Page", Language)));
+            string strSpace = s_DicCachedStrings[Language].Item1;
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
-        public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null)
+        public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
-            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
-            _intPage = intPage;
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
+            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
+            Page = intPage;
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language);
-            _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
-            _strCachedSpace = LanguageManager.GetString("String_Space", strLanguage);
-            LanguageBookTooltip = new StringBuilder(CommonFunctions.LanguageBookLong(strSource, Language))
-                .Append(_strCachedSpace).Append(LanguageManager.GetString("String_Page", strLanguage))
-                .Append(_strCachedSpace).Append(_intPage.ToString(CultureInfo)).ToString();
+            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
+            _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
+            if (!s_DicCachedStrings.ContainsKey(Language))
+                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
+                    LanguageManager.GetString("String_Space", Language),
+                    LanguageManager.GetString("String_Page", Language)));
+            string strSpace = s_DicCachedStrings[Language].Item1;
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
         public override string ToString()
         {
-            return Code + _strCachedSpace + Page.ToString(CultureInfo);
+            return Code + s_DicCachedStrings[Language].Item1 + Page.ToString(CultureInfo);
         }
 
         /// <summary>
@@ -101,7 +111,7 @@ namespace Chummer
         /// <summary>
         /// Page of the source info, possibly modified from English by the language of the source info
         /// </summary>
-        public int Page => _intPage;
+        public int Page { get; }
 
         /// <summary>
         /// Provides the long-form name of the object's sourcebook and page reference.
@@ -113,17 +123,15 @@ namespace Chummer
             return CompareTo((SourceString)obj);
         }
 
-        public int CompareTo(SourceString strOther)
+        public int CompareTo(SourceString other)
         {
-            if (strOther == null)
-                return 1;
-            int intCompareResult = string.Compare(Language, strOther.Language, false, GlobalOptions.CultureInfo);
+            int intCompareResult = string.Compare(Language, other.Language, false, GlobalSettings.CultureInfo);
             if (intCompareResult == 0)
             {
-                intCompareResult = string.Compare(Code, strOther.Code, false, GlobalOptions.CultureInfo);
+                intCompareResult = string.Compare(Code, other.Code, false, GlobalSettings.CultureInfo);
                 if (intCompareResult == 0)
                 {
-                    intCompareResult = _intPage.CompareTo(strOther.Page);
+                    intCompareResult = Page.CompareTo(other.Page);
                 }
             }
             return intCompareResult;
@@ -141,10 +149,13 @@ namespace Chummer
             source.SetToolTip(LanguageBookTooltip);
         }
 
+        public bool Equals(SourceString other)
+        {
+            return Language == other.Language && Code == other.Code && Page == other.Page;
+        }
+
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj))
-                return true;
             if (obj is SourceString objOther)
                 return Equals(objOther);
             return false;
@@ -155,18 +166,8 @@ namespace Chummer
             return _intHashCode;
         }
 
-        public bool Equals(SourceString other)
-        {
-            return other != null && Language == other.Language && Code == other.Code && Page == other.Page;
-        }
-
         public static bool operator ==(SourceString left, SourceString right)
         {
-            if (left is null)
-            {
-                return right is null;
-            }
-
             return left.Equals(right);
         }
 
@@ -177,22 +178,22 @@ namespace Chummer
 
         public static bool operator <(SourceString left, SourceString right)
         {
-            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+            return left.CompareTo(right) < 0;
         }
 
         public static bool operator <=(SourceString left, SourceString right)
         {
-            return left is null || left.CompareTo(right) <= 0;
+            return left.CompareTo(right) <= 0;
         }
 
         public static bool operator >(SourceString left, SourceString right)
         {
-            return !(left is null) && left.CompareTo(right) > 0;
+            return left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(SourceString left, SourceString right)
         {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
+            return left.CompareTo(right) >= 0;
         }
     }
 }

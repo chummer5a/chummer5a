@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <weapons>
+    <weapon xpathfilter="(category = 'Holdouts' or (category = 'Underbarrel Weapons' and type = 'Ranged' and (useskill = 'Pistols' or useskill = 'Automatics' or useskill = 'Longarms' or useskill = 'Heavy Weapons'))) and not(damage[(substring(., string-length(.) - string-length('S') + 1) = 'S') or (substring(., string-length(.) - string-length('S(e)') + 1) = 'S(e)')])">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">$1F</avail>
+    </weapon>
+    <weapon xpathfilter="category = 'Light Pistols' and not(damage[(substring(., string-length(.) - string-length('S') + 1) = 'S') or (substring(., string-length(.) - string-length('S(e)') + 1) = 'S(e)')])">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">2+$1F</avail>
+    </weapon>
+    <weapon xpathfilter="(category = 'Heavy Pistols' or category = 'Machine Pistols') and not(damage[(substring(., string-length(.) - string-length('S') + 1) = 'S') or (substring(., string-length(.) - string-length('S(e)') + 1) = 'S(e)')])">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">4+$1F</avail>
+    </weapon>
+    <weapon xpathfilter="(category = 'Shotguns' or contains(category,'Rifles') or category = 'Carbines' or category = 'Submachine Guns') and not(damage[(substring(., string-length(.) - string-length('S') + 1) = 'S') or (substring(., string-length(.) - string-length('S(e)') + 1) = 'S(e)')])">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">6+$1F</avail>
+    </weapon>
+    <weapon xpathfilter="(category = 'Missile Launchers' or category = 'Grenade Launchers' or category = 'Laser Weapons' or category = 'Flamethrowers' or category = 'Assault Cannons' or contains(category,'Machine Guns')) and not(damage[(substring(., string-length(.) - string-length('S') + 1) = 'S') or (substring(., string-length(.) - string-length('S(e)') + 1) = 'S(e)')])">
+      <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">8+$1F</avail>
+    </weapon>
+    <weapon>
+      <name>Narcoject One</name>
+      <!-- Classified as a Light Pistol, but still R-rated because it can only fire Narcoject ammo -->
+      <avail>8R</avail>
+    </weapon>
+  </weapons>
+</chummer>

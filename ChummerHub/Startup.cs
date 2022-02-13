@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Configuration;
 using ChummerHub.Data;
 using ChummerHub.Services;
 using ChummerHub.Services.Application_Insights;
@@ -24,8 +25,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Newtonsoft.Json.Converters;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 
 namespace ChummerHub
 {
@@ -61,30 +66,25 @@ namespace ChummerHub
 
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Startup(ILogger<Startup>, IConfiguration)'
         public Startup(ILogger<Startup> logger, IConfiguration configuration)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Startup(ILogger<Startup>, IConfiguration)'
         {
             _logger = logger;
             Configuration = configuration;
+            AppSettings = System.Configuration.ConfigurationManager.AppSettings;
             if (_gdrive == null)
                 _gdrive = new DriveHandler(logger, configuration);
+           
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'
         public IConfiguration Configuration { get; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'
+        public static System.Collections.Specialized.NameValueCollection AppSettings { get; set; }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
         public IServiceCollection MyServices { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
 
         //readonly string MyAllowAllOrigins = "AllowAllOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
         public void ConfigureServices(IServiceCollection services)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
         {
             MyServices = services;
 
@@ -118,12 +118,23 @@ namespace ChummerHub
 
             // Add SnapshotCollector telemetry processor.
             //services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
+            Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions
+                = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            // Disables adaptive sampling.
+            aiOptions.EnableAdaptiveSampling = true;
 
-            var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
-            tcbuilder.Use(next => new GroupNotFoundFilter(next));
+            // Disables QuickPulse (Live Metrics stream).
+            aiOptions.EnableQuickPulseMetricStream = true;
 
-            // If you have more processors:
-            tcbuilder.Use(next => new ExceptionDataProcessor(next));
+            services.AddApplicationInsightsTelemetry(aiOptions);
+            
+
+
+            //var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
+            //tcbuilder.Use(next => new GroupNotFoundFilter(next));
+
+            //// If you have more processors:
+            //tcbuilder.Use(next => new ExceptionDataProcessor(next));
 
 
 
@@ -174,11 +185,14 @@ namespace ChummerHub
               .AddDefaultTokenProviders()
               .AddSignInManager();
 
-            // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-
-            services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            //// Add application services.
+            //services.AddTransient<IEmailSender, EmailSender>();
+
+            ////services.AddSingleton<IEmailSender, EmailSender>();
+            //services.Configure<AuthMessageSenderOptions>(Configuration);
 
 
 
@@ -199,12 +213,18 @@ namespace ChummerHub
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");
                 })
-                .AddJsonOptions(x =>
+                .AddNewtonsoftJson(x =>
                 {
-                    //x.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
-                    //x.SerializerSettings.PreserveReferencesHandling =
-                    //    PreserveReferencesHandling.Objects;
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                    x.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    x.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+            
                 });
+            // order is vital, this *must* be called *after* AddNewtonsoftJson()
+            services.AddSwaggerGenNewtonsoftSupport();
+
+
 
 
             services.AddAuthentication(options =>
@@ -213,15 +233,15 @@ namespace ChummerHub
             })
                 //.AddFacebook(facebookOptions =>
                 //{
-                //    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                //    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                //    facebookOptions.AppId = Configuration["Authentication.Facebook.AppId"];
+                //    facebookOptions.AppSecret = Configuration["Authentication.Facebook.AppSecret"];
                 //    facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
                 //    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
                 //})
                 //.AddGoogle(options =>
                 //{
-                //    options.ClientId = Configuration["Authentication:Google:ClientId"];
-                //    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                //    options.ClientId = Configuration["Authentication.Google.ClientId"];
+                //    options.ClientSecret = Configuration["Authentication.Google.ClientSecret"];
                 //    options.CallbackPath = new PathString("/ExternalLogin");
                 //})
                 .AddCookie("Cookies", options =>
@@ -299,7 +319,7 @@ namespace ChummerHub
                     options.SubstituteApiVersionInUrl = true;
                 })
                 .AddAuthorization();
-
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;
@@ -326,40 +346,18 @@ namespace ChummerHub
                 //});
                 // resolve the IApiVersionDescriptionProvider service
                 // note: that we have to build a temporary service provider here because one has not been created yet
-                var provider = services.BuildServiceProvider()
-                .GetRequiredService<IApiVersionDescriptionProvider>();
-
-                // add a swagger document for each discovered API version
-                // note: you might choose to skip or document deprecated API versions differently
-
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerDoc(description.GroupName, new OpenApiInfo()
-                    {
-                        Version = description.GroupName,
-                        Title = "ChummerHub",
-                        Description = "Description for API " + description.GroupName + " to store and search Chummer Xml files",
-                        Contact = new OpenApiContact
-                        {
-                            Name = "Archon Megalon",
-                            Email = "archon.megalon@gmail.com",
-                        },
-                        License = new OpenApiLicense
-                        {
-                            Name = "License",
-                            Url = new Uri("https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt"),
-
-                        }
-
-                    });
-                }
+                options.UseAllOfToExtendReferenceSchemas();
+                
+                AddSwaggerApiVersionDescriptions(services, options);
+                
+                
 
                 //options.OperationFilter<FileUploadOperation>();
 
                 // add a custom operation filter which sets default values
                 //options.OperationFilter<SwaggerDefaultValues>();
 
-                options.DescribeAllEnumsAsStrings();
+                //options.DescribeAllEnumsAsStrings();
 
                 options.ExampleFilters();
 
@@ -381,6 +379,7 @@ namespace ChummerHub
                 //});
 
             });
+            services.AddAzureAppConfiguration();
 
 
             //services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
@@ -399,12 +398,41 @@ namespace ChummerHub
 
         }
 
+        private static void AddSwaggerApiVersionDescriptions(IServiceCollection services, Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
+        {
+            var provider = services.BuildServiceProvider()
+                .GetRequiredService<IApiVersionDescriptionProvider>();
+
+            // add a swagger document for each discovered API version
+            // note: you might choose to skip or document deprecated API versions differently
+
+            foreach (var description in provider.ApiVersionDescriptions)
+            {
+                options.SwaggerDoc(description.GroupName, new OpenApiInfo()
+                {
+                    Version = description.GroupName,
+                    Title = "ChummerHub",
+                    Description = "Description for API " + description.GroupName + " to store and search Chummer Xml files",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Archon Megalon",
+                        Email = "archon.megalon@gmail.com",
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "License",
+                        Url = new Uri("https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt"),
+
+                    }
+
+                });
+            }
+        }
+
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             //app.UseSession();
             app.UseCors(options => options.AllowAnyOrigin());
@@ -412,7 +440,7 @@ namespace ChummerHub
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
 
             }
             else
@@ -423,6 +451,14 @@ namespace ChummerHub
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            try
+            {
+                app.UseAzureAppConfiguration();
+            }
+            catch(Exception e)
+            {
+                _logger?.LogWarning(e, e.Message);
+            }
             app.UseRouting();
             //app.UseCookiePolicy();
 
@@ -466,13 +502,24 @@ namespace ChummerHub
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                //dbContext.Database.EnsureDeleted();
-                dbContext.Database.EnsureCreated();
-
+                if (dbContext != null)
+                {
+                    try
+                    {
+                        dbContext.Database.EnsureCreated();
+                    }
+                    catch(SqlException e)
+                    {
+                        if(!e.Message?.Contains("already exists") == true)
+                        {
+                            throw;
+                        }
+                    }
+                    
+                }
             }
 
             Seed(app);
-
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
@@ -489,6 +536,12 @@ namespace ChummerHub
                 try
                 {
                     context.Database.Migrate();
+                }
+                catch(SqlException e)
+                {
+                    if (!e.Message.Contains("already exists") == true)
+                        throw;
+                    logger.LogWarning(e, e.Message);
                 }
                 catch (Exception e)
                 {
@@ -513,7 +566,7 @@ namespace ChummerHub
                 var testUserPw = config["SeedUserPW"];
                 try
                 {
-                    var env = services.GetService<IHostingEnvironment>();
+                    var env = services.GetService<IHostEnvironment>();
                     SeedData.Initialize(services, testUserPw, env).Wait();
                 }
                 catch (Exception ex)

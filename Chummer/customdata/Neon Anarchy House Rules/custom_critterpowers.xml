@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<categories>
+		<category>Chimeric</category>
+		<category>Warform</category>
+	</categories>
+	<powers>
+		<power>
+			<id>eaf48a0c-96f6-4ec9-84f0-f384c07df5c6</id>
+			<name>All-Around Sight</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>170</page>
+		</power>
+		<power>
+			<id>dc566f11-f892-43c0-93fe-a02fbf5650df</id>
+			<name>Aquatic Adaptation</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<specificskill>
+					<name>Swimming</name>
+					<bonus>2</bonus>
+				</specificskill>
+			</bonus>
+			<source>HS</source>
+			<page>170</page>
+		</power>
+		<power>
+			<id>6570e813-0919-42b4-bedc-efb95dad71df</id>
+			<name>Attribute Enhancement</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>170</page>
+			<notes>Add the bonus manually using the Improvements tab.</notes>
+		</power>
+		<!--
+			<power>
+				<id>8d94c84d-1011-45d4-9d91-7c10b4c24d2d</id>
+				<name>Attribute Enhancement (BOD)</name>
+				<category>Chimeric</category>
+				<type>P</type>
+				<action>Auto</action>
+				<range>Self</range>
+				<duration>Always</duration>
+				<karma />
+				<bonus>
+					<specificattribute>
+						<name>BOD</name>
+						<val>(BOD + 1) * 0.5</val>
+						<affectbase />
+					</specificattribute>
+				</bonus>
+				<source>HS</source>
+				<page>170</page>
+			</power>
+			<power>
+				<id>c180fb74-b20c-4008-a502-cfe533a63fc0</id>
+				<name>Attribute Enhancement (AGI)</name>
+				<category>Chimeric</category>
+				<type>P</type>
+				<action>Auto</action>
+				<range>Self</range>
+				<duration>Always</duration>
+				<karma />
+				<bonus>
+					<specificattribute>
+						<name>AGI</name>
+						<val>(AGI + 1) * 0.5</val>
+						<affectbase />
+					</specificattribute>
+				</bonus>
+				<source>HS</source>
+				<page>170</page>
+			</power>
+			<power>
+				<id>dffe1d47-7209-4aa7-86e8-6b0ff8d96e6c</id>
+				<name>Attribute Enhancement (REA)</name>
+				<category>Chimeric</category>
+				<type>P</type>
+				<action>Auto</action>
+				<range>Self</range>
+				<duration>Always</duration>
+				<karma />
+				<bonus>
+					<specificattribute>
+						<name>REA</name>
+						<val>(REA + 1) * 0.5</val>
+						<affectbase />
+					</specificattribute>
+				</bonus>
+				<source>HS</source>
+				<page>170</page>
+			</power>
+			<power>
+				<id>a3159374-e8ff-4991-a78f-9ff7b4c84af7</id>
+				<name>Attribute Enhancement (STR)</name>
+				<category>Chimeric</category>
+				<type>P</type>
+				<action>Auto</action>
+				<range>Self</range>
+				<duration>Always</duration>
+				<karma />
+				<bonus>
+					<specificattribute>
+						<name>STR</name>
+						<val>(STR + 1) * 0.5</val>
+						<affectbase />
+					</specificattribute>
+				</bonus>
+				<source>HS</source>
+				<page>170</page>
+			</power>
+			<power>
+				<id>89e9de85-6d3b-47b1-b71b-4496bddb1b55</id>
+				<name>Attribute Enhancement (CHA)</name>
+				<category>Chimeric</category>
+				<type>P</type>
+				<action>Auto</action>
+				<range>Self</range>
+				<duration>Always</duration>
+				<karma />
+				<bonus>
+					<specificattribute>
+						<name>CHA</name>
+						<val>(CHA + 1) * 0.5</val>
+						<affectbase />
+					</specificattribute>
+				</bonus>
+				<source>HS</source>
+				<page>170</page>
+			</power>
+			<power>
+				<id>3be14bcb-f002-4992-a94d-b6c580bba930</id>
+				<name>Attribute Enhancement (INT)</name>
+				<category>Chimeric</category>
+				<type>P</type>
+				<action>Auto</action>
+				<range>Self</range>
+				<duration>Always</duration>
+				<karma />
+				<bonus>
+					<specificattribute>
+						<name>INT</name>
+						<val>(INT + 1) * 0.5</val>
+						<affectbase />
+					</specificattribute>
+				</bonus>
+				<source>HS</source>
+				<page>170</page>
+			</power>
+			<power>
+				<id>a63cc706-26fc-4707-bccc-01896e97f01e</id>
+				<name>Attribute Enhancement (LOG)</name>
+				<category>Chimeric</category>
+				<type>P</type>
+				<action>Auto</action>
+				<range>Self</range>
+				<duration>Always</duration>
+				<karma />
+				<bonus>
+					<specificattribute>
+						<name>LOG</name>
+						<val>(LOG + 1) * 0.5</val>
+						<affectbase />
+					</specificattribute>
+				</bonus>
+				<source>HS</source>
+				<page>170</page>
+			</power>
+		-->
+		<power>
+			<id>9fcb6000-7b29-41b2-8377-571248b35434</id>
+			<name>Balance Tail</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<specificskill>
+					<name>Gymnastics</name>
+					<bonus>2</bonus>
+				</specificskill>
+			</bonus>
+			<source>HS</source>
+			<page>170</page>
+		</power>
+		<power>
+			<id>fcd92a25-4ddf-4d1e-aeba-bd6c09347e83</id>
+			<name>Bioluminescence</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>170</page>
+		</power>
+		<power>
+			<id>40f5cc90-f784-4990-9e92-af28a3f67bb0</id>
+			<name>Biotoxin Alteration</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<selecttext />
+				<critterpowers>
+					<power select="Tailored Nutrition">Dietary Requirement</power>
+				</critterpowers>
+			</bonus>
+			<source>HS</source>
+			<page>170</page>
+		</power>
+		<power>
+			<id>d2d199dc-2204-4f1f-866e-d96fc5b6a02c</id>
+			<name>Camouflage</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>171</page>
+		</power>
+		<power>
+			<id>2398560f-fa2c-47fa-b75b-274cba6ddd68</id>
+			<name>Celerity</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<walkmultiplier>
+					<category>Ground</category>
+					<val>+1</val>
+				</walkmultiplier>
+				<runmultiplier>
+					<category>Ground</category>
+					<val>+1</val>
+				</runmultiplier>
+				<sprintbonus>
+					<category>Ground</category>
+					<val>100</val>
+				</sprintbonus>
+			</bonus>
+			<source>HS</source>
+			<page>171</page>
+		</power>
+		<power>
+			<id>fd5e754a-5529-4976-9c06-874e83ee1d84</id>
+			<name>Climate Adaptation</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>HS</source>
+			<page>171</page>
+		</power>
+		<power>
+			<id>be8a3cb7-519c-4ba6-a251-1b68a195401a</id>
+			<name>Defensive Secretion</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>171</page>
+		</power>
+		<power>
+			<id>039f170a-1f04-4ff6-966a-8482a4ab8680</id>
+			<name>Dynamic Coloration</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>171</page>
+		</power>
+		<power>
+			<id>5c85fe69-4712-4ef3-b68c-3e5fce0abd97</id>
+			<name>Echolocation</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>171</page>
+		</power>
+		<power>
+			<id>0e39d986-dd7c-4a20-ac67-eaa384001456</id>
+			<name>Electrocytes</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<karma />
+			<!--
+				<bonus>
+					<addweapon>
+						<name>Electrocytes</name>
+					</addweapon>
+				</bonus>
+			-->
+			<source>HS</source>
+			<page>171</page>
+		</power>
+		<power>
+			<id>f5434e67-7dae-491b-9a63-2e850480a55b</id>
+			<name>Enhanced Sense</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>HS</source>
+			<page>171</page>
+		</power>
+		<power>
+			<id>62de096b-7407-4928-8e72-2869e9f7ad98</id>
+			<name>Extra Head</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<conditionmonitor>
+					<physical>1</physical>
+				</conditionmonitor>
+				<specificskill>
+					<name>Perception</name>
+					<bonus>1</bonus>
+				</specificskill>
+			</bonus>
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>d3ac85dc-f847-41f2-9446-aa2951d6946a</id>
+			<name>Frog Tongue</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<!--
+			<bonus>
+				<specificskill>
+					<name>Exotic Melee Weapon (Frog Tongue)</name>
+					<bonus>1</bonus>
+					<applytorating>True</applytorating>
+				</specificskill>
+			</bonus>
+			-->
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>0ba45060-b47b-4a82-b233-8d187f11b142</id>
+			<name>Gills</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>382a5bc2-e14d-4f7c-b9cc-97ebc7c2f856</id>
+			<name>Ink Extrusion</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>(BOD)</range>
+			<duration>Instant</duration>
+			<karma />
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>1f4152c3-41a6-4014-823b-592332e01f5b</id>
+			<name>Magnetoception</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<specificskill>
+					<name>Navigation</name>
+					<bonus>2</bonus>
+				</specificskill>
+			</bonus>
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>95efd5b8-91f0-4538-bd29-a180d6e95632</id>
+			<name>Natural Weapon</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<bonus>
+				<selecttext />
+			</bonus>
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>eb07941e-d804-41c0-9039-45e3b77cb2e2</id>
+			<name>Proboscis</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<karma />
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>da6e07d1-dcfa-4ead-a8c6-784bbf83f968</id>
+			<name>Potent Venom</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>b0cba8c3-cdf2-43bc-9b38-3e79f8725c4c</id>
+			<name>Quills</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<karma />
+			<source>HS</source>
+			<page>172</page>
+		</power>
+		<power>
+			<id>b4c5f6f6-aba7-4140-b8e6-d2cdfa8f3112</id>
+			<name>Scent Spray</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>(BOD)</range>
+			<duration>Instant</duration>
+			<karma />
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>fec66ea4-eb64-4774-8bb9-cd5702b05cb3</id>
+			<name>Skill Enhancement</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<selectskill>
+					<val>2</val>
+				</selectskill>
+			</bonus>
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>4650768f-cd30-4719-bcf0-586e586a637e</id>
+			<name>Sturdiness</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<physicallimit>+1</physicallimit>
+			</bonus>
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>a671bc6f-b364-4876-8dac-be6f2afe5a40</id>
+			<name>Thermosense</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>df0acad7-ed20-4e04-b552-5e709f9833fe</id>
+			<name>Thicker Hide</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>ada604a3-d103-4b94-85a0-a340bc62e362</id>
+			<name>Venom</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>5a13bc33-c9ac-4c0f-bbe2-5f858ae65b62</id>
+			<name>Vestigial Wings</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>10525b05-033b-4b62-a5de-523314aba05a</id>
+			<name>Wall Climbing</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>3883e904-ef3e-4637-afb4-f7041ab3a206</id>
+			<name>Web Extrusion</name>
+			<category>Chimeric</category>
+			<type>P</type>
+			<action>Complex</action>
+			<range>Touch</range>
+			<duration>Instant</duration>
+			<karma />
+			<source>HS</source>
+			<page>173</page>
+		</power>
+		<power>
+			<id>c9c69397-096b-4fb6-b725-dfc651232aae</id>
+			<name>Warform Modification</name>
+			<category>Warform</category>
+			<type>P</type>
+			<action>Auto</action>
+			<range>Self</range>
+			<duration>Always</duration>
+			<karma />
+			<bonus>
+				<selectattributes>
+					<selectattribute>
+						<excludeattribute>EDG</excludeattribute>
+						<excludeattribute>MAG</excludeattribute>
+						<excludeattribute>RES</excludeattribute>
+						<affectbase>True</affectbase>
+						<val>1</val>
+					</selectattribute>
+					<selectattribute>
+						<excludeattribute>EDG</excludeattribute>
+						<excludeattribute>MAG</excludeattribute>
+						<excludeattribute>RES</excludeattribute>
+						<affectbase>True</affectbase>
+						<val>1</val>
+					</selectattribute>
+				</selectattributes>
+				<biowareessmultiplier>90</biowareessmultiplier>
+				<cyberwareessmultiplier>90</cyberwareessmultiplier>
+				<genetechessmultiplier>90</genetechessmultiplier>
+				<genetechcostmultiplier>80</genetechcostmultiplier>
+				<!--<prototypetranshuman>1</prototypetranshuman>-->
+				<!--<notes>Remember that you can start with 1.00 Essence worth of Bioware that does not count against your character's Essence.</notes>-->
+				<critterpowers>
+					<power>Domesticated</power>
+				</critterpowers>
+			</bonus>
+			<source>HS</source>
+			<page>173</page>
+		</power>
+	</powers>
+</chummer>

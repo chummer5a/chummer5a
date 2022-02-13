@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<skillgroups amendoperation="replace">
+		<name>Acting</name>
+		<name>Athletics</name>
+		<!--<name>Biotech</name>-->
+		<name>Close Combat</name>
+		<name>Conjuring</name>
+		<name>Cracking</name>
+		<name>Electronics</name>
+		<name>Enchanting</name>
+		<name>Firearms</name>
+		<name>Hunting</name>
+		<name>Influence</name>
+		<name>Engineering</name>
+		<name>Outdoors</name>
+		<name>Sorcery</name>
+		<name>Stealth</name>
+		<name>Tasking</name>
+	</skillgroups>
+	<skills>
+		<skill amendoperation="remove">
+			<name>Biotechnology</name>
+			<skillgroup amendoperation="replace" />
+			<hide />
+		</skill>
+		<skill amendoperation="remove">
+			<name>Cybertechnology</name>
+			<skillgroup amendoperation="replace" />
+			<hide />
+		</skill>
+		<skill amendoperation="remove">
+			<name>Chemistry</name>
+			<!--<skillgroup amendoperation="replace">Biotech</skillgroup>-->
+			<hide />
+		</skill>
+		<skill>
+			<name>First Aid</name>
+			<skillgroup amendoperation="replace" />
+		</skill>
+		<skill amendoperation="remove">
+			<name>Medicine</name>
+			<skillgroup amendoperation="replace" />
+			<hide />
+		</skill>
+		<skill amendoperation="remove">
+			<name>Instruction</name>
+			<hide />
+		</skill>
+		<skill amendoperation="remove">
+			<name>Diving</name>
+			<hide />
+		</skill>
+		<skill>
+			<name>Swimming</name>
+			<specs amendoperation="replace">
+				<spec>Dash</spec>
+				<spec>Long Distance</spec>
+				<spec>Diving</spec>
+			</specs>
+		</skill>
+		<skill>
+			<name>Blades</name>
+			<specs amendoperation="replace">
+				<spec>Axes</spec>
+				<spec>Chakrams</spec>
+				<spec>Knives</spec>
+				<spec>Lance</spec>
+				<spec>Swords</spec>
+				<spec>Parrying</spec>
+			</specs>
+		</skill>
+		<skill>
+			<name>Clubs</name>
+			<specs amendoperation="replace">
+				<spec>Batons</spec>
+				<spec>Battering Rams</spec>
+				<spec>Hammers</spec>
+				<spec>Lance</spec>
+				<spec>Saps</spec>
+				<spec>Staves</spec>
+				<spec>Parrying</spec>
+			</specs>
+		</skill>
+		<skill>
+			<name>Unarmed Combat</name>
+			<specs amendoperation="replace">
+				<spec>Blocking</spec>
+				<spec>Cyber Implants</spec>
+				<spec>Natural Weapons</spec>
+				<spec>Subduing Combat</spec>
+				<spec>[Martial Art]</spec>
+			</specs>
+		</skill>
+		<skill>
+			<name>Longarms</name>
+			<specs amendoperation="replace">
+				<spec>Dart Rifle</spec>
+				<spec>Extended-Range Shots</spec>
+				<spec>Long-Range Shots</spec>
+				<spec>Shotguns</spec>
+				<spec>Sniper Rifles</spec>
+				<spec>Sporting Rifles</spec>
+			</specs>
+		</skill>
+		<skill>
+			<name>Pistols</name>
+			<specs amendoperation="replace">
+				<spec>Bracers</spec>
+				<spec>Dart Pistol</spec>
+				<spec>Flare Launcher</spec>
+				<spec>Gun Canes</spec>
+				<spec>Gyrojet Pistol</spec>
+				<spec>Holdouts</spec>
+				<spec>Revolvers</spec>
+				<spec>Semi-Automatics</spec>
+				<spec>Tasers</spec>
+			</specs>
+		</skill>
+		<skill>
+			<name>Throwing Weapons</name>
+			<skillgroup>Hunting</skillgroup>
+			<specs amendoperation="replace">
+				<spec>Aerodynamic</spec>
+				<spec>Blades</spec>
+				<spec>Bolas</spec>
+				<spec>Chakram</spec>
+				<spec>Non-Aerodynamic</spec>
+				<spec>Throwing Syringe</spec>
+			</specs>
+		</skill>
+		<skill amendoperation="remove">
+			<name>Aeronautics Mechanic</name>
+			<skillgroup amendoperation="replace" />
+			<hide />
+		</skill>
+		<skill amendoperation="remove">
+			<name>Automotive Mechanic</name>
+			<skillgroup amendoperation="replace" />
+			<hide />
+		</skill>
+		<skill amendoperation="remove">
+			<name>Industrial Mechanic</name>
+			<skillgroup amendoperation="replace" />
+			<hide />
+		</skill>
+		<skill amendoperation="remove">
+			<name>Nautical Mechanic</name>
+			<skillgroup amendoperation="replace" />
+			<hide />
+		</skill>
+		<skill>
+			<name>Armorer</name>
+			<skillgroup amendoperation="replace">Engineering</skillgroup>
+		</skill>
+		<skill>
+			<name>Demolitions</name>
+			<skillgroup amendoperation="replace">Engineering</skillgroup>
+		</skill>
+		<skill amendoperation="remove">
+			<name>Free-Fall</name>
+			<hide />
+		</skill>
+		<skill>
+			<name>Gymnastics</name>
+			<specs amendoperation="replace">
+				<spec>Balance</spec>
+				<spec>Climbing</spec>
+				<spec>Dance</spec>
+				<spec>Dodging</spec>
+				<spec>Freefall</spec>
+				<spec>Leaping</spec>
+				<spec>Parkour</spec>
+				<spec>Rolling</spec>
+			</specs>
+		</skill>
+		<skill>
+			<name>Archery</name>
+			<skillgroup>Hunting</skillgroup>
+		</skill>
+	</skills>
+</chummer>

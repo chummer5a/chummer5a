@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Xml;
 
@@ -34,7 +35,26 @@ namespace Chummer.Backend.Skills
             node.TryGetStringFieldQuickly("specific", ref _strSpecific);
         }
 
-        public override bool AllowDelete => !CharacterObject.Created;
+        public static bool IsExoticSkillName(string strSkillName)
+        {
+            return !string.IsNullOrEmpty(strSkillName) &&
+                   (strSkillName.Contains("Exotic Melee Weapon", StringComparison.OrdinalIgnoreCase) ||
+                    strSkillName.Contains("Exotic Ranged Weapon", StringComparison.OrdinalIgnoreCase) ||
+                    strSkillName.Contains("Pilot Exotic Vehicle", StringComparison.OrdinalIgnoreCase));
+        }
+
+        public override bool IsExoticSkill => true;
+
+        public override bool AllowDelete => !CharacterObject.Created && FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0;
+
+        public override bool BuyWithKarma
+        {
+            get => false;
+            set
+            {
+                // Dummy
+            }
+        }
 
         public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
@@ -44,35 +64,9 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
-        public override void WriteTo(XmlTextWriter objWriter)
+        public override void WriteToDerived(XmlTextWriter objWriter)
         {
-            objWriter.WriteStartElement("skill");
-            objWriter.WriteElementString("guid", Id.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("suid", SkillId.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("isknowledge", bool.FalseString);
-            objWriter.WriteElementString("skillcategory", SkillCategory);
-            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
-            objWriter.WriteElementString("notes", Notes);
-            if (!CharacterObject.Created)
-            {
-                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            }
-
-            if (Specializations.Count != 0)
-            {
-                objWriter.WriteStartElement("specs");
-                foreach (SkillSpecialization objSpecialization in Specializations)
-                {
-                    objSpecialization.Save(objWriter);
-                }
-                objWriter.WriteEndElement();
-            }
-
-            objWriter.WriteElementString("specific", _strSpecific);
-
-            objWriter.WriteEndElement();
-
+            objWriter.WriteElementString("specific", Specific);
         }
 
         public string Specific
@@ -80,18 +74,18 @@ namespace Chummer.Backend.Skills
             get => _strSpecific;
             set
             {
+                if (_strSpecific == value)
+                    return;
                 _strSpecific = value;
-
                 OnPropertyChanged();
             }
         }
 
         public string DisplaySpecific(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
-                return Specific;
-
-            return LanguageManager.TranslateExtra(Specific, strLanguage);
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Specific
+                : CharacterObject.TranslateExtra(Specific, strLanguage);
         }
 
         public override string DisplaySpecialization(string strLanguage)

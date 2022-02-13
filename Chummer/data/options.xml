@@ -51,6 +51,10 @@
       <value>/A "page={page}" "{localpath}"</value>
     </pdfargument>
     <pdfargument>
+      <name>Acrobat-style - New instance</name>
+      <value>/A /N "page={page}" "{localpath}"</value>
+    </pdfargument>
+    <pdfargument>
       <name>Unix-style</name>
       <value>-p {page} "{localpath}"</value>
     </pdfargument>
@@ -72,4 +76,36 @@
     <category>Vehicles</category>
     <category>Weapons</category>
   </blackmarketpipelinecategories>
+  <availmap>
+    <avail>
+      <id>0A39C082-AE54-4096-94D3-0CA213ACDA0A</id>
+      <value>100.0</value>
+      <duration>6</duration>
+      <interval>String_Hours</interval>
+    </avail>
+    <avail>
+      <id>335BB55A-A1A7-48C4-8852-4EA11929F242</id>
+      <value>1000.0</value>
+      <duration>1</duration>
+      <interval>String_Day</interval>
+    </avail>
+    <avail>
+      <id>0DC43627-56E8-46DB-B4C8-3A389C6999D2</id>
+      <value>10000.0</value>
+      <duration>2</duration>
+      <interval>String_Days</interval>
+    </avail>
+    <avail>
+      <id>06B72D98-3510-4A91-825E-CB55AD873749</id>
+      <value>100000.0</value>
+      <duration>1</duration>
+      <interval>String_Week</interval>
+    </avail>
+    <avail>
+      <id>67BC5453-8AD0-4C69-A91C-8259FD070A1D</id>
+      <value>79228162514264337593543950335</value>
+      <duration>1</duration>
+      <interval>String_Month</interval>
+    </avail>
+  </availmap>
 </chummer>

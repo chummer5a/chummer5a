@@ -13,7 +13,7 @@
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Chummer5a.  If not, see <http://www.gnu.org/licenses />.
+  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
 
   You can obtain the full source code for Chummer5a at
   https://github.com/chummer5a/chummer5a
@@ -32,7 +32,7 @@
       <name>Ambidextrous</name>
       <karma>4</karma>
       <category>Positive</category>
-      <limit>3</limit>
+      <limit>{arm} - 1</limit>
       <bonus>
         <ambidextrous />
       </bonus>
@@ -125,7 +125,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext />
+        <actiondicepool category='Matrix' />
       </bonus>
       <source>SR5</source>
       <page>72</page>
@@ -182,9 +182,12 @@
       <karma>4</karma>
       <category>Positive</category>
       <limit>6</limit>
+      <!-- TODO: penaltyfreesustain done in a way that works well with quality ratings -->
+      <bonus />
       <required>
         <oneof>
           <power>Adept Spell</power>
+          <quality>Barehanded Adept</quality>
           <quality>Aware</quality>
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
@@ -584,7 +587,7 @@
       <category>Positive</category>
       <limit>False</limit>
       <bonus>
-        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit[not(contains(name, 'Watcher') or contains(name, 'Homonculus'))]" allowedit="True" />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit[not(contains(name, 'Watcher') or contains(name, 'Homunculus'))]" allowedit="True" />
       </bonus>
       <required>
         <oneof>
@@ -653,7 +656,9 @@
       <name>Out For Myself</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <surprise>3</surprise>
+      </bonus>
       <source>AP</source>
       <page>17</page>
     </quality>
@@ -828,7 +833,8 @@
           <quality>Explorer</quality>
           <quality>Aware</quality>
           <quality>Apprentice</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -862,7 +868,8 @@
           <quality>Enchanter</quality>
           <quality>Explorer</quality>
           <quality>Apprentice</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -895,7 +902,8 @@
           <quality>Enchanter</quality>
           <quality>Explorer</quality>
           <quality>Apprentice</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -924,16 +932,9 @@
       </bonus>
       <forbidden>
         <oneof>
-          <metatypecategory>Metasapient</metatypecategory>
-          <metatypecategory>Shapeshifter</metatypecategory>
-          <quality>Aware</quality>
-          <quality>Magician</quality>
-          <quality>Mystic Adept</quality>
-          <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
-          <quality>Adept</quality>
+          <quality>Latent Dracomorphosis</quality>
+          <magenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -964,7 +965,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -1533,7 +1535,7 @@
       <karma>-25</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/* | /chummer/storybuilder/macros/megadoublea/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -1569,7 +1571,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/* | /chummer/storybuilder/macros/megadoublea/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -2481,12 +2483,10 @@
       <name>Conjuring Geas</name>
       <karma>-5</karma>
       <category>Negative</category>
+      <careeronly />
       <bonus>
         <astralreputation>-1</astralreputation>
       </bonus>
-      <required>
-        <careeronly />
-      </required>
       <source>SG</source>
       <page>199</page>
     </quality>
@@ -3190,7 +3190,10 @@
       <limit>3</limit>
       <nolevels />
       <bonus>
-        <restrictedgear>24</restrictedgear>
+        <restrictedgear>
+          <availability>24</availability>
+          <amount>1</amount>
+        </restrictedgear>
       </bonus>
       <source>RF</source>
       <page>149</page>
@@ -3684,7 +3687,6 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
-
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3696,7 +3698,6 @@
       <bonus>
         <notoriety>1</notoriety>
       </bonus>
-
       <source>RF</source>
       <page>141</page>
     </quality>
@@ -3942,7 +3943,6 @@
       <name>In Debt</name>
       <karma>-1</karma>
       <category>Negative</category>
-      <contributetobp>False</contributetobp>
       <limit>15</limit>
       <bonus>
         <nuyenamt>5000</nuyenamt>
@@ -4400,7 +4400,7 @@
       <limit>10</limit>
       <nolevels />
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -5009,6 +5009,7 @@
       <name>Climate Adaptation (Arctic)</name>
       <karma>4</karma>
       <category>Positive</category>
+      <metagenic>True</metagenic>
       <bonus />
       <forbidden>
         <oneof>
@@ -6404,6 +6405,7 @@
       <name>Proboscis</name>
       <karma>5</karma>
       <category>Positive</category>
+      <metagenic>True</metagenic>
       <bonus />
       <required>
         <oneof>
@@ -7097,7 +7099,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7107,7 +7109,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7186,33 +7188,30 @@
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>BOD</attribute>
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
             <attribute>INT</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
         </selectattributes>
       </bonus>
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7234,7 +7233,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7359,7 +7358,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7381,7 +7381,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7391,7 +7391,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7514,7 +7514,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7536,7 +7537,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7546,7 +7547,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7652,7 +7653,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7674,7 +7676,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7684,7 +7686,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7795,7 +7797,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7817,7 +7820,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7827,7 +7830,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7938,7 +7941,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7960,7 +7964,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -7970,7 +7974,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8081,7 +8085,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8103,7 +8108,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8113,7 +8118,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8224,7 +8229,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8246,7 +8252,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8256,7 +8262,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8367,7 +8373,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8389,7 +8396,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8399,7 +8406,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8463,15 +8470,15 @@
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
-            <min>3</min>
-            <max>9</max>
-            <aug>13</aug>
+            <min>1</min>
+            <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
-            <max>4</max>
-            <aug>8</aug>
+            <max>2</max>
+            <aug>6</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
@@ -8510,7 +8517,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8532,7 +8540,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8637,7 +8645,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8659,7 +8668,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8669,7 +8678,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8802,7 +8811,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8825,7 +8835,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8835,7 +8845,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8957,7 +8967,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8979,7 +8990,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -8989,7 +9000,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9115,7 +9126,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9137,7 +9149,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9147,7 +9159,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9276,7 +9288,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9308,7 +9321,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9318,7 +9331,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9447,7 +9460,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Infected: Fomoraig</quality>
           <quality>Infected: Dzoo-Noo-Qua</quality>
           <quality>Infected: Ghoul (Troll)</quality>
@@ -9485,7 +9499,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9618,7 +9632,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9640,7 +9655,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9767,7 +9782,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9789,7 +9805,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -9919,7 +9935,8 @@
           <metatypecategory>Metasapient</metatypecategory>
           <metatypecategory>Shapeshifter</metatypecategory>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9936,7 +9953,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -10064,7 +10081,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -10086,7 +10104,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -10217,7 +10235,8 @@
           <metatypecategory>Metasapient</metatypecategory>
           <metatypecategory>Shapeshifter</metatypecategory>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -10244,7 +10263,7 @@
         <naturalweapon>
           <name>Infected Claws</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -10254,7 +10273,7 @@
         <naturalweapon>
           <name>Infected Bite</name>
           <reach>-1</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -10349,14 +10368,12 @@
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>BOD</attribute>
             <attribute>REA</attribute>
             <attribute>STR</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
@@ -10364,7 +10381,6 @@
             <attribute>CHA</attribute>
             <attribute>LOG</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
           <selectattribute>
             <attribute>WIL</attribute>
@@ -10372,7 +10388,6 @@
             <attribute>CHA</attribute>
             <attribute>LOG</attribute>
             <val>1</val>
-            <affectbase />
           </selectattribute>
         </selectattributes>
         <unlockskills>Magician</unlockskills>
@@ -10388,7 +10403,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -10728,7 +10744,7 @@
       </required>
       <source>RF</source>
       <page>136</page>
-    </quality>	
+    </quality>
 	<quality>
       <id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
       <name>Infected Advanced Optional Power: Mimicry</name>
@@ -10752,7 +10768,7 @@
       </required>
       <source>SR5</source>
       <page>398</page>
-    </quality>    
+    </quality>
 	<quality>
       <id>7843087c-30a3-4d87-aaa2-5ebdb90cccd8</id>
       <name>Infected Optional Power: Mist Form</name>
@@ -10775,7 +10791,7 @@
       </required>
       <source>RF</source>
       <page>136</page>
-    </quality>	
+    </quality>
     <quality>
       <id>6d9f205e-52a0-4bb2-a4c2-e49232dd8346</id>
       <name>Infected Optional Power: Paralyzing Howl</name>
@@ -10823,7 +10839,7 @@
       </required>
       <source>SR5</source>
       <page>400</page>
-    </quality>    
+    </quality>
     <quality>
       <id>311ebb96-bf65-483e-86b7-62702a43aae3</id>
       <name>Infected Optional Power: Regeneration</name>
@@ -10921,7 +10937,6 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus />
-
       <source>DT</source>
       <page>45</page>
     </quality>
@@ -11548,7 +11563,7 @@
     <!--Region Chrome Flesh Positive Qualities -->
     <quality>
       <id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
-      <name>Biocompatability (Cyberware)</name>
+      <name>Biocompatibility (Cyberware)</name>
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
@@ -11556,7 +11571,7 @@
       </bonus>
       <forbidden>
         <oneof>
-          <quality>Biocompatability (Bioware)</quality>
+          <quality>Biocompatibility (Bioware)</quality>
         </oneof>
       </forbidden>
       <source>CF</source>
@@ -11564,7 +11579,7 @@
     </quality>
     <quality>
       <id>dcecd7e5-8cf1-4f83-89fa-177e28cfba03</id>
-      <name>Biocompatability (Bioware)</name>
+      <name>Biocompatibility (Bioware)</name>
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
@@ -11572,7 +11587,7 @@
       </bonus>
       <forbidden>
         <oneof>
-          <quality>Biocompatability (Cyberware)</quality>
+          <quality>Biocompatibility (Cyberware)</quality>
         </oneof>
       </forbidden>
       <source>CF</source>
@@ -12437,7 +12452,7 @@
         <naturalweapon>
           <name>Dracoform Claws</name>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -12503,7 +12518,7 @@
         <naturalweapon>
           <name>Dracoform Horns</name>
           <reach>0</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -12565,7 +12580,7 @@
         <naturalweapon>
           <name>Dracoform Tail</name>
           <reach>1</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -12635,7 +12650,7 @@
         <naturalweapon>
           <name>Dracoform Fangs</name>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -14011,7 +14026,7 @@
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
       <bonus>
-        <addspell>Alter Ballistics</addspell>
+        <addspell alchemical="True">Alter Ballistics</addspell>
       </bonus>
       <required>
         <allof>
@@ -14344,7 +14359,7 @@
       <category>Positive</category>
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
-      <bonus>
+      <bonus useselected="False">
         <allowspellrange>T</allowspellrange>
         <allowspellrange>T (A)</allowspellrange>
         <freespells attribute="MAG" limit="half,touchonly" />
@@ -16881,7 +16896,7 @@
         <naturalweapon>
           <name>Crystal Jaw</name>
           <reach>-1</reach>
-          <damage>(STR+2)P</damage>
+          <damage>({STR}+2)P</damage>
           <ap>-4</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -17005,7 +17020,7 @@
         <naturalweapon>
           <name>Crystalline Blade</name>
           <reach>1</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>-2</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -17037,7 +17052,7 @@
         <naturalweapon>
           <name>Crystal Claw</name>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-1</ap>
           <useskill>Unarmed Combat</useskill>
           <accuracy>Physical</accuracy>
@@ -17130,7 +17145,7 @@
         <naturalweapon>
           <name>Crystalline Shards</name>
           <reach>0</reach>
-          <damage>(STR+3)P</damage>
+          <damage>({STR}+3)P</damage>
           <ap>4</ap>
           <useskill>Throwing Weapons</useskill>
           <accuracy>Physical</accuracy>
@@ -17208,7 +17223,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>FA</source>
@@ -17239,7 +17255,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>FA</source>
@@ -17267,7 +17284,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>FA</source>
@@ -17394,7 +17412,8 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <limitspellcategory />
+        <allowspellcategory>Rituals</allowspellcategory>
+        <limitspellcategory exclude="Rituals" />
         <skillgroupdisable>Conjuring</skillgroupdisable>
         <spellcategorydrain>
           <val>-2</val>
@@ -17981,7 +18000,7 @@
       <karma>-3</karma>
       <category>Negative</category>
       <bonus>
-        <selectskill limittoskill="Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software"></selectskill>
+        <selectskill limittoskill="Compiling, Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software"></selectskill>
       </bonus>
       <source>KC</source>
       <page>78</page>
@@ -18623,6 +18642,26 @@
       <doublecareer>False</doublecareer>
       <bonus>
         <cyberadeptdaemon />
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Fault Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Companion Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Fault Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Companion Sprite</condition>
+        </specificskill>
       </bonus>
       <forbidden>
         <oneof>
@@ -18648,7 +18687,42 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <!-- These are the CFs that affect devices -->
+        <fadingvalue specific="Diffusion of [Matrix Attribute]">-2</fadingvalue>
+        <fadingvalue specific="Infusion of [Matrix Attribute]">-2</fadingvalue>
+        <fadingvalue specific="Puppeteer">-2</fadingvalue>
+        <fadingvalue specific="Resonance Channel">-2</fadingvalue>
+        <fadingvalue specific="Resonance Spike">-2</fadingvalue>
+        <fadingvalue specific="Resonance Veil">-2</fadingvalue>
+        <fadingvalue specific="FAQ">-2</fadingvalue>
+        <fadingvalue specific="Redundancy">-2</fadingvalue>
+        <fadingvalue specific="LOTO">-2</fadingvalue>
+        <fadingvalue specific="Causal Nexus">-2</fadingvalue>
+        <fadingvalue specific="Dissonance Spike">-2</fadingvalue>
+        <fadingvalue specific="Bootleg Program">-2</fadingvalue>
+        <fadingvalue specific="Search History">-2</fadingvalue>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Machine Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>2</bonus>
+          <condition>Generalist Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Machine Sprite</condition>
+        </specificskill>
+        <specificskill>
+          <name>Decompiling</name>
+          <bonus>2</bonus>
+          <condition>Generalist Sprite</condition>
+        </specificskill>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Cyberadept</quality>
@@ -18673,7 +18747,10 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <fadingvalue>-2</fadingvalue>
+        <addecho>Sourcerer Daemon</addecho>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Cyberadept</quality>
@@ -18807,8 +18884,13 @@
         <addgear>
           <name>Fake SIN</name>
           <category>ID/Credsticks</category>
-          <rating>4</rating>
+          <rating>3</rating>
           <children>
+            <child>
+              <name>Fake License</name>
+              <category>ID/Credsticks</category>
+              <rating>3</rating>
+            </child>
             <child>
               <name>Fake License</name>
               <category>ID/Credsticks</category>

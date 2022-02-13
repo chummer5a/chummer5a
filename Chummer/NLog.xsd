@@ -1101,6 +1101,7 @@
       <xs:element name="precision" minOccurs="0" maxOccurs="1" type="xs:byte" />
       <xs:element name="scale" minOccurs="0" maxOccurs="1" type="xs:byte" />
       <xs:element name="parameterType" minOccurs="0" maxOccurs="1" type="xs:string" />
+      <xs:element name="allowDbNull" minOccurs="0" maxOccurs="1" type="xs:boolean" />
       <xs:element name="format" minOccurs="0" maxOccurs="1" type="xs:string" />
       <xs:element name="culture" minOccurs="0" maxOccurs="1" type="xs:string" />
     </xs:choice>
@@ -1137,6 +1138,11 @@
     <xs:attribute name="parameterType" type="xs:string">
       <xs:annotation>
         <xs:documentation>Type of the parameter.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="allowDbNull" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Whether empty value should translate into DbNull. Requires database column to allow NULL values.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="format" type="xs:string">
@@ -2757,6 +2763,7 @@
           <xs:element name="proxyAddress" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="encoding" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="url" minOccurs="0" maxOccurs="1" type="xs:anyURI" />
+          <xs:element name="userAgent" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="escapeDataNLogLegacy" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="escapeDataRfc3986" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="preAuthenticate" minOccurs="0" maxOccurs="1" type="xs:boolean" />
@@ -2808,6 +2815,11 @@
         <xs:attribute name="url" type="xs:anyURI">
           <xs:annotation>
             <xs:documentation>Web service URL.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="userAgent" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Value of the User-agent HTTP header.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="escapeDataNLogLegacy" type="xs:boolean">
@@ -2978,6 +2990,7 @@
           <xs:element name="renderEmptyObject" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="suppressSpaces" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="excludeEmptyProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="excludeProperties" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeGdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
@@ -2998,6 +3011,11 @@
         <xs:attribute name="suppressSpaces" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Option to suppress the extra spaces in the output json</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="excludeEmptyProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to exclude null/empty properties from the log event (as JSON)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeProperties" type="xs:string">

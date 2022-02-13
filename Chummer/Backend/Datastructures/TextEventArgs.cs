@@ -16,13 +16,18 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Runtime.InteropServices;
 
 namespace Chummer
 {
+    [ComVisible(true)]
+    [Serializable]
     public class TextEventArgs : EventArgs
     {
+        public new static readonly TextEventArgs Empty = new TextEventArgs(string.Empty);
+
         public TextEventArgs(string strText)
         {
             Text = strText;
@@ -30,7 +35,4 @@ namespace Chummer
 
         public string Text { get; }
     }
-
-    [ComVisible(true)]
-    public delegate void TextEventHandler(object sender, TextEventArgs e);
 }

@@ -16,8 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Diagnostics;
+
+using System;
+using System.Diagnostics;
 
 namespace Chummer
 {
@@ -28,7 +29,7 @@ namespace Chummer
             sw.Stop();
 
             TimeSpan elapsed = sw.Elapsed;
-            Trace.WriteLine(string.Format(GlobalOptions.InvariantCultureInfo, "{0} finished in {1} ms", task, elapsed.TotalMilliseconds));
+            Trace.WriteLine(string.Format(GlobalSettings.InvariantCultureInfo, "{0} finished in {1} ms", task, elapsed.TotalMilliseconds));
 
             sw.Restart();
             return elapsed;

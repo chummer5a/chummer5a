@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<weapons>
+		<weapon>
+			<id>6aa0fdb2-c6dc-11ea-87d0-0242ac130003</id>
+			<name>Grenade: Painade</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>8S</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>10R</avail>
+			<cost>100</cost>
+			<source>CA</source>
+			<page>135</page>
+			<range>Standard Grenade</range>
+			<spec>Non-Aerodynamic</spec>
+			<useskill>Throwing Weapons</useskill>
+		</weapon>
+		<weapon>
+			<id>6414c5fa-c6dc-11ea-87d0-0242ac130003</id>
+			<name>Grenade: Painade, Aerodynamic</name>
+			<category>Gear</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>Physical</accuracy>
+			<reach>0</reach>
+			<damage>8S</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>10R</avail>
+			<cost>100</cost>
+			<source>CA</source>
+			<page>135</page>
+			<range>Aerodynamic Grenade</range>
+			<spec>Aerodynamic</spec>
+			<useskill>Throwing Weapons</useskill>
+		</weapon>
+		<weapon>
+			<id>8bf5c745-8aae-475d-b79e-29a8803ae7fc</id>
+			<name>Single-shot Dart</name>
+			<category>Micro-Drone Weapons</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>As Drug/Toxin</damage>
+			<ap>-</ap>
+			<mode>SS</mode>
+			<rc>5</rc>
+			<ammo>1(b)</ammo>
+			<avail>4R</avail>
+			<cost>400</cost>
+			<source>R5</source>
+			<page>124</page>
+			<accessorymounts>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<range>Heavy Pistols</range>
+			<sizecategory>Heavy Pistols</sizecategory>
+		</weapon>
+		<weapon>
+			<id>68bde947-d5d3-4a63-908b-66f85ac2ee6d</id>
+			<name>Single-shot Bullet</name>
+			<category>Micro-Drone Weapons</category>
+			<type>Ranged</type>
+			<conceal>0</conceal>
+			<accuracy>4</accuracy>
+			<reach>0</reach>
+			<damage>6P</damage>
+			<ap>-</ap>
+			<mode>SS</mode>
+			<rc>5</rc>
+			<ammo>1(b)</ammo>
+			<avail>4R</avail>
+			<cost>325</cost>
+			<source>R5</source>
+			<page>124</page>
+			<accessorymounts>
+				<mount>Top</mount>
+				<mount>Stock</mount>
+				<mount>Side</mount>
+			</accessorymounts>
+			<range>Heavy Pistols</range>
+			<sizecategory>Heavy Pistols</sizecategory>
+		</weapon>
+		<weapon>
+			<id>e1b8c8c4-db31-41b5-bbdb-450926e35976</id>
+			<name>Medusa Bite</name>
+			<category>Blades</category>
+			<type>Melee</type>
+			<conceal>0</conceal>
+			<accuracy>5</accuracy>
+			<reach>0</reach>
+			<damage>Toxin</damage>
+			<ap>-</ap>
+			<mode>0</mode>
+			<rc>0</rc>
+			<ammo>0</ammo>
+			<avail>0</avail>
+			<cost>0</cost>
+			<source>CA</source>
+			<page>147</page>
+			<allowgear>
+				<gearcategory>Drugs</gearcategory>
+				<gearcategory>Toxins</gearcategory>
+			</allowgear>
+			<useskill>Atypical Melee</useskill>
+			<spec>Injection</spec>
+			<hide />
+		</weapon>
+	</weapons>
+</chummer>

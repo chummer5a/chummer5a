@@ -29,9 +29,9 @@ namespace Chummer.Properties
 {
     public static class Contributors
     {
-        public static ReadOnlyCollection<string> Usernames => Array.AsReadOnly(_lstUsernames);
+        public static ReadOnlyCollection<string> Usernames => Array.AsReadOnly(s_LstUsernames);
 
-        private static readonly string[] _lstUsernames = {
+        private static readonly string[] s_LstUsernames = {
 <#
     // Code originally written by joha4270
 
@@ -42,14 +42,17 @@ namespace Chummer.Properties
 #warning No OAuth token specified, so for everyone past the 59th place in the list, only usernames will be fetched
 <#
     }
-    else if (!strOAuthToken.StartsWith("client_id="))
-        strOAuthToken = "client_id=" + strOAuthToken;
     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
     JavaScriptSerializer jss = new JavaScriptSerializer();
 
     // TODO: Add support for proper pagination if we get more than 200 total contributors
-    string strPerPageString = string.IsNullOrEmpty(strOAuthToken) ? "per_page=200" : "&per_page=200";
-    HttpWebRequest webRequest = System.Net.WebRequest.Create($"https://api.github.com/repos/chummer5a/chummer5a/contributors?{strOAuthToken}{strPerPageString}") as HttpWebRequest;
+    string strPerPageString = "per_page=200";
+    HttpWebRequest webRequest = System.Net.WebRequest.Create($"https://api.github.com/repos/chummer5a/chummer5a/contributors?{strPerPageString}") as HttpWebRequest;
+    if (!string.IsNullOrEmpty(strOAuthToken))
+    {
+        webRequest.Headers.Add("Authorization", "token " + strOAuthToken);
+        webRequest.PreAuthenticate = true;
+    }
     webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
     webRequest.Accept = "application/json";
     webRequest.Timeout = 5000;
@@ -66,8 +69,6 @@ namespace Chummer.Properties
         if (!string.IsNullOrEmpty(strOAuthToken))
         {
             // Try again, but this time without the OAuthToken
-            strOAuthToken = string.Empty;
-            strPerPageString = strPerPageString.Substring(1, strPerPageString.Length); // Escape the "&"
             webRequest = System.Net.WebRequest.Create($"https://api.github.com/repos/chummer5a/chummer5a/contributors?{strPerPageString}") as HttpWebRequest;
             webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             webRequest.Accept = "application/json";
@@ -84,7 +85,7 @@ namespace Chummer.Properties
             catch(Exception ex2)
             {
 #>
-#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in comments below).
+#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in full in comments below): <#= ex.Message #>
         /* "<#= ex2.ToString() #>"
 <#
                 if (ex2.ToString().Contains("(403)"))
@@ -106,7 +107,7 @@ namespace Chummer.Properties
         else
         {
 #>
-#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in comments below).
+#error Contributors.tt encountered an error that prevented it from fetching data from GitHub (printed in full in comments below): <#= ex.Message #>
         /* "<#= ex.ToString() #>"
 <#
             if (ex.ToString().Contains("(403)"))
@@ -136,7 +137,12 @@ namespace Chummer.Properties
             string username = contributer["login"].ToString();
             string name = string.Empty;
 
-            webRequest = System.Net.WebRequest.Create(contributer["url"].ToString() + "?" + strOAuthToken) as HttpWebRequest;
+            webRequest = System.Net.WebRequest.Create(contributer["url"].ToString()) as HttpWebRequest;
+            if (!string.IsNullOrEmpty(strOAuthToken))
+            {
+                webRequest.Headers.Add("Authorization", "token " + strOAuthToken);
+                webRequest.PreAuthenticate = true;
+            }
             webRequest.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             webRequest.Accept = "application/json";
             webRequest.Timeout = 5000;

@@ -162,9 +162,10 @@
       <adept>False</adept>
       <magician>True</magician>
       <required>
-        <allof>
+        <oneof>
           <metamagic>Paradigm Shift: Toxic</metamagic>
-        </allof>
+          <tradition>Elder God</tradition>
+        </oneof>
       </required>
       <source>SG</source>
       <page>87</page>
@@ -591,7 +592,7 @@
       <bonus>
         <critterpowers>
           <power select="Self-Only × 3">Movement</power>
-        </critterpowers>  
+        </critterpowers>
       </bonus>
       <required>
         <allof>
@@ -624,6 +625,20 @@
       <name>Spirit Expansion: UMT</name>
       <adept>False</adept>
       <magician>True</magician>
+      <bonus>
+        <addspirit>
+          <spirit>Guardian Spirit</spirit>
+          <spirit>Guidance Spirit</spirit>
+          <spirit>Spirit of Air</spirit>
+          <spirit>Spirit of Beasts</spirit>
+          <spirit>Spirit of Earth</spirit>
+          <spirit>Spirit of Man</spirit>        
+          <spirit>Spirit of Fire</spirit>
+          <spirit>Plant Spirit</spirit>
+          <spirit>Spirit of Water</spirit>
+          <spirit>Task Spirit</spirit>
+        </addspirit>
+      </bonus>
       <source>FA</source>
       <page>44</page>
     </metamagic>
@@ -632,6 +647,11 @@
       <name>Spirit Expansion: Shedim</name>
       <adept>False</adept>
       <magician>True</magician>
+      <bonus>
+        <addspirit>
+          <spirit>Shedim</spirit>
+        </addspirit>
+      </bonus>
       <source>FA</source>
       <page>44</page>
     </metamagic>

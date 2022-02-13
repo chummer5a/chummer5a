@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>cf9ae1d9-ade6-4c78-bdb7-75a5577437dc</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>Delnar_Ersike</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset adds a splatbook that adds eight positive qualities that cost only cost one karma and three negative qualities that only provide one karma. One karma qualities are unfortunately quite absent from Shadowrun 5th edition, and these additions remedy that absence.\n\nTo view the full details of this remake, go to this Google Doc: https://docs.google.com/document/d/1XZTJzImQ5m6N9lRrjbnCKD8AspYpZOWeaY1-3p0zrsU/. </text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>

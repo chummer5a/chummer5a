@@ -18,7 +18,6 @@
  */
 ﻿using System;
 
-#pragma warning disable 1591
 // ReSharper disable UnusedMember.Global
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -393,10 +392,10 @@ namespace Chummer.Annotations
   /// </summary>
   [MeansImplicitUse(ImplicitUseTargetFlags.WithMembers)]
   [AttributeUsage(AttributeTargets.All)]
-  public sealed class PublicAPIAttribute : Attribute
+  public sealed class PublicApiAttribute : Attribute
   {
-    public PublicAPIAttribute() { }
-    public PublicAPIAttribute([NotNull] string comment)
+    public PublicApiAttribute() { }
+    public PublicApiAttribute([NotNull] string comment)
     {
       Comment = comment;
     }

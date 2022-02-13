@@ -6,17 +6,17 @@
   <xsl:template name="Metamagics">
 
     <xsl:for-each select="metamagics/metamagic">
-      <xsl:sort select="name"/>
+      <xsl:sort select="name" />
       <tr style="text-align: left" valign="top">
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
-        <td><xsl:value-of select="name"/></td>
-        <td/>
+        <td><xsl:value-of select="name" /></td>
+        <td />
         <td style="text-align: center">
-          <xsl:value-of select="source"/>
+          <xsl:value-of select="source" />
           <xsl:text> </xsl:text>
-          <xsl:value-of select="page"/>
+          <xsl:value-of select="page" />
         </td>
       </tr>
       <xsl:if test="notes != '' and $ProduceNotes">
@@ -26,16 +26,15 @@
           </xsl:if>
           <td colspan="100" style="padding: 0 2%; text-align: justify;">
             <xsl:call-template name="PreserveLineBreaks">
-              <xsl:with-param name="text" select="notes"/>
+              <xsl:with-param name="text" select="notes" />
             </xsl:call-template>
           </td>
         </tr>
       </xsl:if>
       <xsl:call-template name="Xline">
-        <xsl:with-param name="cntl" select="last()-position()"/>
-        <xsl:with-param name="nte" select="notes != '' and $ProduceNotes"/>
+        <xsl:with-param name="cntl" select="last()-position()" />
+        <xsl:with-param name="nte" select="notes != '' and $ProduceNotes" />
       </xsl:call-template>
     </xsl:for-each>
-
   </xsl:template>
 </xsl:stylesheet>

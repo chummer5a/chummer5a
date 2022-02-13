@@ -14,7 +14,7 @@
       OverFlow:  This will draw additional boxes past the TotalBoxes Marked OVR,OVR...OVR,DEAD.
       DamageTaken:This will mark first boxes as "greyed" to indicate previous damage already taken.
 
-  This Template builds a Condition Monitor by calling "ConditionRow", which then recursively calls itself to build 
+  This Template builds a Condition Monitor by calling "ConditionRow", which then recursively calls itself to build
   successive Rows.  Each Row calls "ConditionBox", which recursively calls iteself to build each box needed in the Row.
 -->
   <xsl:template name="ConditionMonitor">
@@ -30,14 +30,14 @@
       border: solid 0.1em #1c4a2d;
       padding: 0.1em 0.1em 0.1em 0.1em;
       margin: 0;
-      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
-      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      border-radius: <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm;
+      min-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      min-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      width: <xsl:value-of select="9.0 * $Scale" />mm;
+      height: <xsl:value-of select="9.0 * $Scale" />mm;
+      font-size: <xsl:value-of select="8.25 * $Scale" />pt;
       text-align: right;
       vertical-align: bottom;
       font-weight: bold;
@@ -48,14 +48,14 @@
       border: solid 0.1em #1c4a2d;
       padding: 0.1em 0.1em 0.1em 0.1em;
       margin: 0;
-      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
-      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      border-radius: <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm;
+      min-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      min-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      width: <xsl:value-of select="9.0 * $Scale" />mm;
+      height: <xsl:value-of select="9.0 * $Scale" />mm;
+      font-size: <xsl:value-of select="8.25 * $Scale" />pt;
       text-align: right;
       vertical-align: bottom;
       font-weight: bold;
@@ -66,14 +66,14 @@
       border: solid 0.1em #1c4a2d;
       padding: 0.1em 0.1em 0.1em 0.1em;
       margin: 0;
-      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
-      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      border-radius: <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm;
+      min-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      min-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      width: <xsl:value-of select="9.0 * $Scale" />mm;
+      height: <xsl:value-of select="9.0 * $Scale" />mm;
+      font-size: <xsl:value-of select="8.25 * $Scale" />pt;
       text-align: right;
       vertical-align: bottom;
       font-weight: bold;
@@ -85,14 +85,14 @@
       border: solid 0.1em #1c4a2d;
       padding: 0.1em 0.1em 0.1em 0.1em;
       margin: 0;
-      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
-      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      border-radius: <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm;
+      min-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      min-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      width: <xsl:value-of select="9.0 * $Scale" />mm;
+      height: <xsl:value-of select="9.0 * $Scale" />mm;
+      font-size: <xsl:value-of select="8.25 * $Scale" />pt;
       text-align: right;
       vertical-align: bottom;
       font-weight: bold;
@@ -103,14 +103,14 @@
       border:solid 0.0em #ffffff;
       padding: 0.1em 0.1em 0.1em 0.1em;
       margin: 0;
-      border-radius: <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm <xsl:value-of select="1 * $Scale"/>mm;
-      min-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      min-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      max-height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      width: <xsl:value-of select="9.0 * $Scale"/>mm;
-      height: <xsl:value-of select="9.0 * $Scale"/>mm;
-      font-size: <xsl:value-of select="8.25 * $Scale"/>pt;
+      border-radius: <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm <xsl:value-of select="1 * $Scale" />mm;
+      min-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      min-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-width: <xsl:value-of select="9.0 * $Scale" />mm;
+      max-height: <xsl:value-of select="9.0 * $Scale" />mm;
+      width: <xsl:value-of select="9.0 * $Scale" />mm;
+      height: <xsl:value-of select="9.0 * $Scale" />mm;
+      font-size: <xsl:value-of select="8.25 * $Scale" />pt;
       text-align: right;
       vertical-align: bottom;
       font-weight: bold;
@@ -183,7 +183,7 @@
       </xsl:call-template>
     </xsl:if>
   </xsl:template>
-    
+
 <!--
   *** ConditionBox(PenaltyBox,CMWidth,TotalBoxes,OverFlow,DamageTaken,LowBox,HighBox)
     Parameters:
@@ -196,9 +196,9 @@
       DamageTaken:This will mark first boxes as "greyed" to indicate previous damage already taken.
       LowBox:    This is the number of the first box in this Row.
       HighBox:  This is the last box in this Row.
-      
+
     This template draws a box, which can be colored based on it having Damage Taken, and also, it determines
-  if this box needs text in it, such as markings for OverFlow, or Penalties.  Then it determins if more 
+  if this box needs text in it, such as markings for OverFlow, or Penalties.  Then it determins if more
   boxes are needed for this Row(Is LowBox less than HighBox), if more are needed, it recursively calls
   itself incrementing LowBox and HighBox by CMWidth.
 -->
@@ -226,15 +226,15 @@
         <xsl:when test="$LowBox &gt; ($TotalBoxes + $OverFlow)">&#160;</xsl:when>
         <!-- Last Box of OverFlow needs DEAD -->
         <xsl:when test="$LowBox = ($TotalBoxes + $OverFlow) and $OverFlow &gt; 0">
-          <xsl:value-of select="$lang.Dead"/>
+          <xsl:value-of select="$lang.Dead" />
         </xsl:when>
         <!-- Boxes of OverFlow are Marked OVR -->
         <xsl:when test="$LowBox &gt; $TotalBoxes">
-          <xsl:value-of select="$lang.OVR"/>
+          <xsl:value-of select="$lang.OVR" />
         </xsl:when>
         <!-- Last Normal Box -->
         <xsl:when test="$LowBox = $TotalBoxes">
-          <xsl:value-of select="$lang.Down"/>
+          <xsl:value-of select="$lang.Down" />
         </xsl:when>
         <!-- Boxes that incur a penalty are shown with the penalty -->
         <xsl:when test="($LowBox - $Offset) mod $PenaltyBox = 0 and $LowBox &gt; $Offset">

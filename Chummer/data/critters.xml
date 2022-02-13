@@ -36,6 +36,7 @@
     <category>Paranormal Critters</category>
     <category>Primordial Spirits</category>
     <category>Protosapients</category>
+    <category>Ritual</category>
     <category>Shadow Spirits</category>
     <category>Shedim</category>
     <category>Spirits</category>
@@ -44,6 +45,8 @@
     <category>Toxic Critters</category>
     <category>Toxic Spirits</category>
     <category>Warforms</category>
+    <category>Extraplanar Travelers</category>
+    <category>Necro Spirits</category>
   </categories>
   <metatypes>
     <!-- Region Mundane Critters -->
@@ -17852,6 +17855,11 @@
       <walk>3/1/0</walk>
       <run>5/0/0</run>
       <sprint>3/1/0</sprint>
+      <qualities>
+        <positive>
+          <quality>Magician</quality>
+        </positive>
+      </qualities>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -26386,7 +26394,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/60</movement>
+      <walk>2/1/0</walk>
+      <run>6/0/0</run>
+      <sprint>4/1/0</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -26398,7 +26408,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <initiativepass>2</initiativepass>
+        <initiativepass>1</initiativepass>
       </bonus>
       <powers>
         <power>Compulsion</power>
@@ -26406,20 +26416,17 @@
         <power select="Thermographic Vision">Enhanced Senses</power>
         <power>Movement</power>
         <power select="Mask">Innate Spell</power>
-        <power select="Claws/Bite: DV 5P, AP -1">Natural Weapon</power>
-        <power select="Sunlight, Mild">Allergy</power>
+        <power select="Claws/Bite: DV 8P, AP -1">Natural Weapon</power>
       </powers>
       <skills>
-        <skill rating="4">Infiltration</skill>
+        <skill rating="5">Sneaking</skill>
         <skill rating="4">Perception</skill>
-        <skill rating="3">Running</skill>
-        <skill rating="3">Shadowing</skill>
-        <skill rating="2">Spellcasting</skill>
-        <skill rating="4">Tracking</skill>
-        <skill rating="5">Unarmed Combat</skill>
+        <skill rating="1">Running</skill>
+        <skill rating="5">Tracking</skill>
+        <skill rating="7">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>153</page>
+      <source>SW</source>
+      <page>14</page>
     </metatype>
     <metatype>
       <id>754ee2e6-e802-4acf-9660-d28c82483b53</id>
@@ -27722,14 +27729,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -27812,7 +27819,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <essmin>F</essmin>
+      <essmin>0</essmin>
       <essmax>F</essmax>
       <essaug>F</essaug>
       <walk>2/2/2</walk>
@@ -27826,7 +27833,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower select="Air">Elemental Attack</optionalpower>
           <optionalpower>Energy Aura</optionalpower>
           <optionalpower>Fear</optionalpower>
@@ -27897,14 +27904,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -27920,7 +27927,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -27988,14 +27995,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28011,7 +28018,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Engulf</optionalpower>
@@ -28078,14 +28085,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>5/5/5</sprint>
@@ -28101,7 +28108,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Fear</optionalpower>
           <optionalpower>Guard</optionalpower>
           <optionalpower>Noxious Breath</optionalpower>
@@ -28170,14 +28177,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28193,7 +28200,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Fear</optionalpower>
           <optionalpower>Innate Spell</optionalpower>
           <optionalpower>Movement</optionalpower>
@@ -28262,14 +28269,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28285,7 +28292,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Binding</optionalpower>
           <optionalpower select="Water">Elemental Attack</optionalpower>
@@ -28355,14 +28362,14 @@
       <magmax>1</magmax>
       <magaug>1</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>0/0/0</walk>
       <run>0/0/0</run>
       <sprint>0/0/0</sprint>
@@ -28431,14 +28438,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28454,7 +28461,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Animal Control</optionalpower>
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Elemental Attack</optionalpower>
@@ -28525,14 +28532,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28548,7 +28555,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Engulf</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -28620,14 +28627,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28643,7 +28650,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Movement</optionalpower>
@@ -28713,14 +28720,14 @@
       <magmax>F</magmax>
       <magaug>F</magaug>
       <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/2/2</walk>
       <run>4/4/4</run>
       <sprint>2/2/2</sprint>
@@ -28736,7 +28743,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower select="Hearing">Enhanced Senses</optionalpower>
           <optionalpower select="Low-Light Vision">Enhanced Senses</optionalpower>
@@ -28812,7 +28819,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <essmin>F</essmin>
+      <essmin>0</essmin>
       <essmax>F</essmax>
       <essaug>F</essaug>
       <walk>2/1/0</walk>
@@ -28830,7 +28837,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -28843,8 +28850,10 @@
         <power>Astral Form</power>
         <power>Binding</power>
         <power>Energy Drain</power>
+        <power>Evanescence</power>
         <power>Fear</power>
         <power>Materialization</power>
+        <power select="DV (Force)P, AP 0">Natural Weapon</power>
         <power>Essence Loss</power>
       </powers>
       <skills>
@@ -28902,7 +28911,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <essmin>F</essmin>
+      <essmin>0</essmin>
       <essmax>F</essmax>
       <essaug>F</essaug>
       <walk>2/1/0</walk>
@@ -28920,7 +28929,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Corrosive Spit</optionalpower>
           <optionalpower>Guard</optionalpower>
@@ -29000,7 +29009,7 @@
       <depmin>0</depmin>
       <depmax>0</depmax>
       <depaug>0</depaug>
-      <essmin>F</essmin>
+      <essmin>0</essmin>
       <essmax>F</essmax>
       <essaug>F</essaug>
       <walk>2/1/0</walk>
@@ -29018,7 +29027,7 @@
           <name>critter</name>
         </enabletab>
         <initiativepass>1</initiativepass>
-        <optionalpowers count="{MAG} div 3">
+        <optionalpowers count="floor({MAG} div 3)">
           <optionalpower>Accident</optionalpower>
           <optionalpower>Concealment</optionalpower>
           <optionalpower>Confusion</optionalpower>
@@ -29046,6 +29055,698 @@
       </skills>
       <source>SG</source>
       <page>88</page>
+    </metatype>
+    <!-- End Region -->
+    <!-- Region Ritual -->
+    <metatype>
+      <id>c24746f8-2a42-4d51-9b58-60200701b036</id>
+      <name>Watcher</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>0</bodmin>
+      <bodmax>0</bodmax>
+      <bodaug>0</bodaug>
+      <agimin>0</agimin>
+      <agimax>0</agimax>
+      <agiaug>0</agiaug>
+      <reamin>0</reamin>
+      <reamax>0</reamax>
+      <reaaug>0</reaaug>
+      <strmin>0</strmin>
+      <strmax>0</strmax>
+      <straug>0</straug>
+      <chamin>F-2</chamin>
+      <chamax>F-2</chamax>
+      <chaaug>F-2</chaaug>
+      <intmin>F-2</intmin>
+      <intmax>F-2</intmax>
+      <intaug>F-2</intaug>
+      <logmin>F-2</logmin>
+      <logmax>F-2</logmax>
+      <logaug>F-2</logaug>
+      <wilmin>F-2</wilmin>
+      <wilmax>F-2</wilmax>
+      <wilaug>F-2</wilaug>
+      <inimin>F*2</inimin>
+      <inimax>F*2</inimax>
+      <iniaug>F*2</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>0</essmax>
+      <essaug>0</essaug>
+      <walk>500/500/500</walk>
+      <run>500/500/500</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Manifest</power>
+        <power>Sapience</power>
+        <power>Search</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
+      <name>Homunculus (Fragile)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>1</bodmin>
+      <bodmax>1</bodmax>
+      <bodaug>1</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>28d8859b-21da-43f7-b401-181cf1284f97</id>
+      <name>Homunculus (Cheap Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>2</bodmin>
+      <bodmax>2</bodmax>
+      <bodaug>2</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
+      <name>Homunculus (Average Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>4</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>4</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
+      <name>Homunculus (Heavy Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>6</bodmin>
+      <bodmax>6</bodmax>
+      <bodaug>6</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
+      <name>Homunculus (Reinforced Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>8</bodmin>
+      <bodmax>8</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
+      <name>Homunculus (Structural Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>10</bodmin>
+      <bodmax>10</bodmax>
+      <bodaug>10</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
+      <name>Homunculus (Heavy Structural Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>12</bodmin>
+      <bodmax>12</bodmax>
+      <bodaug>12</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
+      <name>Homunculus (Armored Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>14</bodmin>
+      <bodmax>14</bodmax>
+      <bodaug>14</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
+      <name>Homunculus (Hardened Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>16</bodmin>
+      <bodmax>16</bodmax>
+      <bodaug>16</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
     </metatype>
     <!-- End Region -->
     <!-- Region Toxic Critters -->
@@ -29163,7 +29864,6 @@
       <source>HS</source>
       <page>93</page>
     </metatype>
-
     <metatype>
       <id>34df2bf4-07e3-4576-b8b5-3638fde15c54</id>
       <name>Blink Sloth</name>
@@ -29221,7 +29921,6 @@
       <source>HS</source>
       <page>93</page>
     </metatype>
-
     <metatype>
       <id>bce587d2-812e-43d6-855d-3b93cd0b4b4a</id>
       <name>Blood Dog</name>
@@ -29486,6 +30185,7 @@
     <metatype>
       <id>b2bae7c6-3570-4bd8-9cb3-277c97dcfb60</id>
       <name>Glow Rat</name>
+      <category>Toxic Critters</category>
       <bodmin>2</bodmin>
       <bodmax>2</bodmax>
       <bodaug>6</bodaug>
@@ -29512,111 +30212,54 @@
       <wilaug>7</wilaug>
       <edgmin>2</edgmin>
       <edgmax>2</edgmax>
-      <edgaug>6</edgaug>
+      <edgaug>2</edgaug>
       <magmin>4</magmin>
-      <magmax>4</magmax>
-      <magaug>8</magaug>
-      <essmin>6</essmin>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
+      <essmin>0</essmin>
       <essmax>6</essmax>
-      <essaug>10</essaug>
+      <essaug>6</essaug>
       <walk>1/1/0</walk>
       <run>2/0/0</run>
       <sprint>1/1/0</sprint>
-      <armor>2</armor>
       <skills>
-        <skill rating="6">Exotic Ranged Weapon (Spit)</skill>
+        <skill rating="6" spec="Spit">Exotic Ranged Weapon</skill>
         <skill rating="5">Gymnastics</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="2">Running</skill>
+        <skill rating="6">Sneaking</skill>
+        <skill rating="5">Unarmed Combat</skill>
       </skills>
       <powers>
         <power select="Mundane Rodents">Animal Control</power>
         <power select="2">Armor</power>
         <power>Corrosive Spit</power>
         <power>Concealment</power>
+        <power select="Low-Light Vision">Enhanced Senses</power>
+        <power select="Toxins">Immunity</power>
+        <power select="Claws: DV 2P, AP -">Natural Weapon</power>
+        <power>Venom</power>
+        <power select="Sunlight, Mild">Allergy</power>
       </powers>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
+        <enableattribute>
+          <name>MAG</name>
+          <min>1</min>
+          <max>6</max>
+          <aug>6</aug>
+          <val>4</val>
+        </enableattribute>
+        <reach>-1</reach>
       </bonus>
       <source>HS</source>
       <page>95</page>
     </metatype>
     <metatype>
-      <id>9beb359e-f6c9-41a1-8bd9-cb283133b5ef</id>
-      <name>Hellcow (Running Wild)</name>
-      <category>Mutant Critters</category>
-      <karma>0</karma>
-      <bodmin>10</bodmin>
-      <bodmax>10</bodmax>
-      <bodaug>10</bodaug>
-      <agimin>3</agimin>
-      <agimax>3</agimax>
-      <agiaug>3</agiaug>
-      <reamin>3</reamin>
-      <reamax>3</reamax>
-      <reaaug>3</reaaug>
-      <strmin>8</strmin>
-      <strmax>8</strmax>
-      <straug>8</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>1</intmin>
-      <intmax>1</intmax>
-      <intaug>1</intaug>
-      <logmin>1</logmin>
-      <logmax>1</logmax>
-      <logaug>1</logaug>
-      <wilmin>1</wilmin>
-      <wilmax>1</wilmax>
-      <wilaug>1</wilaug>
-      <inimin>2</inimin>
-      <inimax>11</inimax>
-      <iniaug>11</iniaug>
-      <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
-      <magmin>0</magmin>
-      <magmax>6</magmax>
-      <magaug>6</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>2</essmax>
-      <essaug>2</essaug>
-      <movement>15/30</movement>
-      <qualities>
-        <positive>
-          <quality>Corrosive Spit</quality>
-          <quality>Dermal Alteration (Dragon Skin)</quality>
-          <quality>Ogre Stomach</quality>
-        </positive>
-      </qualities>
-      <bonus>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-      </bonus>
-      <powers>
-        <power select="Smell, Complete">Reduced Senses</power>
-      </powers>
-      <optionalpowers />
-      <skills>
-        <skill rating="2">Exotic Ranged Weapon</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="2">Running</skill>
-        <skill rating="4">Unarmed Combat</skill>
-      </skills>
-      <source>RW</source>
-      <page>163</page>
-    </metatype>
-    <metatype>
       <id>3429f34a-507f-449d-90d5-c017f03ea57b</id>
-      <name>Hellcow (Howling Shadows)</name>
+      <name>Hellcow</name>
       <category>Mutant Critters</category>
       <bodmin>10</bodmin>
       <bodmax>10</bodmax>
@@ -29725,6 +30368,66 @@
       <page>97</page>
     </metatype>
     <metatype>
+      <id>88dca0b2-5889-49bd-b5fc-b109c9141169</id>
+      <name>Killdeer</name>
+      <category>Mutant Critters</category>
+      <bodmin>5</bodmin>
+      <bodmax>5</bodmax>
+      <bodaug>9</bodaug>
+      <agimin>6</agimin>
+      <agimax>6</agimax>
+      <agiaug>10</agiaug>
+      <reamin>5</reamin>
+      <reamax>5</reamax>
+      <reaaug>9</reaaug>
+      <strmin>5</strmin>
+      <strmax>5</strmax>
+      <straug>9</straug>
+      <chamin>4</chamin>
+      <chamax>4</chamax>
+      <chaaug>8</chaaug>
+      <intmin>5</intmin>
+      <intmax>5</intmax>
+      <intaug>9</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>5</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>5</wilaug>
+      <edgmin>2</edgmin>
+      <edgmax>2</edgmax>
+      <edgaug>2</edgaug>
+      <essmin>0</essmin>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>2/1/0</walk>
+      <run>5/0/0</run>
+      <sprint>4/1/0</sprint>
+      <skills>
+        <skill rating="4">Gymnastics</skill>
+        <skill rating="4">Impersonation</skill>
+        <skill rating="8">Perception</skill>
+        <skill rating="8">Unarmed Combat</skill>
+        <skill rating="6">Running</skill>
+      </skills>
+      <powers>
+        <power rating="4">Armor</power>
+        <power select="Hearing">Enhanced Senses</power>
+        <power select="Toxins">Immunity</power>
+        <power select="Antlers: DV 9P, AP -2, Reach +1">Natural Weapon</power>
+        <power select="Bite: DV 10P, AP -3, Reach -1">Natural Weapon</power>
+        <power rating="3">Toughness</power>
+      </powers>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <source>HS</source>
+      <page>97</page>
+    </metatype>
+    <metatype>
       <id>48051ad0-a30d-4182-9d4b-32d5ee52c384</id>
       <name>Lab Rat</name>
       <category>Mutant Critters</category>
@@ -29804,34 +30507,34 @@
       <karma>0</karma>
       <bodmin>1</bodmin>
       <bodmax>1</bodmax>
-      <bodaug>1</bodaug>
+      <bodaug>5</bodaug>
       <agimin>3</agimin>
       <agimax>3</agimax>
-      <agiaug>3</agiaug>
+      <agiaug>7</agiaug>
       <reamin>2</reamin>
       <reamax>2</reamax>
-      <reaaug>2</reaaug>
+      <reaaug>6</reaaug>
       <strmin>1</strmin>
       <strmax>1</strmax>
-      <straug>1</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
+      <straug>5</straug>
+      <chamin>3</chamin>
+      <chamax>3</chamax>
+      <chaaug>7</chaaug>
       <intmin>3</intmin>
       <intmax>3</intmax>
-      <intaug>3</intaug>
+      <intaug>7</intaug>
       <logmin>3</logmin>
       <logmax>3</logmax>
-      <logaug>3</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
+      <logaug>7</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>5</wilaug>
       <inimin>2</inimin>
       <inimax>11</inimax>
       <iniaug>11</iniaug>
-      <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
+      <edgmin>3</edgmin>
+      <edgmax>3</edgmax>
+      <edgaug>3</edgaug>
       <magmin>0</magmin>
       <magmax>6</magmax>
       <magaug>6</magaug>
@@ -29842,33 +30545,34 @@
       <depmax>0</depmax>
       <depaug>0</depaug>
       <essmin>0</essmin>
-      <essmax>4</essmax>
-      <essaug>4</essaug>
-      <movement>20/40</movement>
-      <qualities>
-        <positive>
-          <quality>Dermal Alteration (Granite Shell)</quality>
-        </positive>
-      </qualities>
+      <essmax>6</essmax>
+      <essaug>6</essaug>
+      <walk>1/1/2</walk>
+      <run>3/0/4</run>
+      <sprint>2/1/4</sprint>
       <bonus>
         <enabletab>
           <name>critter</name>
         </enabletab>
       </bonus>
       <powers>
+        <power select="Claw/Bite: DV 3P, AP -">Natural Weapon</power>
+        <power select="Smell">Enhanced Senses</power>
         <power select="Echolocation">Enhanced Senses</power>
-        <power rating="3">Fragile</power>
+        <power rating="6">Armor</power>
         <power>Gestalt Consciousness</power>
+        <power rating="3">Fragile</power>
         <power select="Sight">Reduced Senses</power>
       </powers>
-      <optionalpowers />
       <skills>
-        <skill rating="2">Climbing</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="4">Unarmed Combat</skill>
+        <skill rating="1" spec="Climbing">Gymnastics</skill>
+        <skill rating="4">Flight</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="4">Sneaking</skill>
+        <skill rating="5">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>165</page>
+      <source>HS</source>
+      <page>99</page>
     </metatype>
     <metatype>
       <id>ec7a37f2-1c72-427a-bf0a-c5aab657287c</id>
@@ -30099,37 +30803,37 @@
       <name>Sea Leech</name>
       <category>Toxic Critters</category>
       <karma>0</karma>
-      <bodmin>5</bodmin>
-      <bodmax>5</bodmax>
-      <bodaug>5</bodaug>
+      <bodmin>7</bodmin>
+      <bodmax>7</bodmax>
+      <bodaug>11</bodaug>
       <agimin>3</agimin>
       <agimax>3</agimax>
-      <agiaug>3</agiaug>
+      <agiaug>7</agiaug>
       <reamin>2</reamin>
       <reamax>2</reamax>
-      <reaaug>2</reaaug>
+      <reaaug>6</reaaug>
       <strmin>8</strmin>
       <strmax>8</strmax>
-      <straug>8</straug>
-      <chamin>1</chamin>
-      <chamax>1</chamax>
-      <chaaug>1</chaaug>
-      <intmin>3</intmin>
-      <intmax>3</intmax>
-      <intaug>3</intaug>
-      <logmin>4</logmin>
-      <logmax>4</logmax>
-      <logaug>4</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>3</wilmax>
-      <wilaug>3</wilaug>
+      <straug>12</straug>
+      <chamin>3</chamin>
+      <chamax>3</chamax>
+      <chaaug>7</chaaug>
+      <intmin>4</intmin>
+      <intmax>4</intmax>
+      <intaug>8</intaug>
+      <logmin>3</logmin>
+      <logmax>3</logmax>
+      <logaug>7</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>5</wilaug>
       <inimin>2</inimin>
       <inimax>11</inimax>
       <iniaug>11</iniaug>
-      <edgmin>0</edgmin>
-      <edgmax>0</edgmax>
-      <edgaug>0</edgaug>
-      <magmin>0</magmin>
+      <edgmin>4</edgmin>
+      <edgmax>4</edgmax>
+      <edgaug>4</edgaug>
+      <magmin>6</magmin>
       <magmax>6</magmax>
       <magaug>6</magaug>
       <resmin>0</resmin>
@@ -30141,7 +30845,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>Swim 15/25</movement>
+      <walk>2/3/0</walk>
+      <run>3/8/0</run>
+      <sprint>2/4/0</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -30153,26 +30859,28 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <reach>3</reach>
+        <reach>1</reach>
       </bonus>
       <powers>
+        <power rating="4">Armor</power>
         <power>Confusion</power>
-        <power select="Thermal, Touch">Enhanced Senses</power>
+        <power select="Thermal">Enhanced Senses</power>
+        <power select="Touch">Enhanced Senses</power>
         <power>Essence Drain</power>
         <power>Gills</power>
         <power>Mutagen</power>
+        <power select="Bite: DV 11P, AP -2">Natural Weapon</power>
         <power select="Fire, Moderate">Allergy</power>
         <power select="Vision">Reduced Senses</power>
       </powers>
-      <optionalpowers />
       <skills>
-        <skill rating="3">Escape Artist</skill>
-        <skill rating="3">Perception</skill>
-        <skill rating="4">Swimming</skill>
-        <skill rating="3">Unarmed Combat</skill>
+        <skill rating="4">Escape Artist</skill>
+        <skill rating="4">Perception</skill>
+        <skill rating="5">Swimming</skill>
+        <skill rating="6" spec="Grapple">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>166</page>
+      <source>HS</source>
+      <page>102</page>
     </metatype>
     <metatype>
       <id>835a9968-abfc-4b57-84dd-b5201f4f2541</id>
@@ -42821,6 +43529,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -42903,6 +43612,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -42985,6 +43695,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43064,6 +43775,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43145,6 +43857,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43211,6 +43924,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43277,6 +43991,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43343,6 +44058,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43409,6 +44125,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43477,6 +44194,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43555,6 +44273,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43634,6 +44353,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43716,6 +44436,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43796,6 +44517,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43873,6 +44595,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -43906,6 +44629,103 @@
     </metatype>
     <!-- End Region -->
     <!-- Region Infected -->
+    <metatype>
+      <id>dc636061-6285-47c6-92ee-35c8cba323bf</id>
+      <name>Vampire</name>
+      <category>Infected</category>
+      <karma>0</karma>
+      <bodmin>4</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>4</bodaug>
+      <agimin>3</agimin>
+      <agimax>3</agimax>
+      <agiaug>3</agiaug>
+      <reamin>5</reamin>
+      <reamax>5</reamax>
+      <reaaug>5</reaaug>
+      <strmin>4</strmin>
+      <strmax>4</strmax>
+      <straug>4</straug>
+      <chamin>5</chamin>
+      <chamax>5</chamax>
+      <chaaug>5</chaaug>
+      <intmin>4</intmin>
+      <intmax>4</intmax>
+      <intaug>4</intaug>
+      <logmin>3</logmin>
+      <logmax>3</logmax>
+      <logaug>3</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>4</wilmax>
+      <wilaug>4</wilaug>
+      <inimin>3</inimin>
+      <inimax>15</inimax>
+      <iniaug>15</iniaug>
+      <edgmin>3</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>0</magmin>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>2D6</essmax>
+      <essaug>2D6</essaug>
+      <walk>3/1/0</walk>
+      <run>5/0/0</run>
+      <sprint>3/1/0</sprint>
+      <qualities>
+        <positive>
+          <quality>Magician</quality>
+        </positive>
+      </qualities>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>1</min>
+          <max>6</max>
+          <aug>6</aug>
+          <val>3</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Dual Natured</power>
+        <power select="Hearing">Enhanced Senses</power>
+        <power select="Smell">Enhanced Senses</power>
+        <power select="Thermographic Vision">Enhanced Senses</power>
+        <power>Essence Drain</power>
+        <power select="Age">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
+        <power>Infection</power>
+        <power>Mist Form</power>
+        <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+        <power>Regeneration</power>
+        <power>Sapience</power>
+        <power select="Sunlight, Severe">Allergy</power>
+        <power select="Wood, Severe">Allergy</power>
+        <power select="Metahuman Blood">Dietary Requirement</power>
+        <power>Essence Loss</power>
+        <power select="Lack of Air, (Essence) Minutes">Induced Dormancy</power>
+      </powers>
+      <skills>
+        <skill rating="4">Running</skill>
+        <skill rating="5">Perception</skill>
+        <skill rating="6">Sneaking</skill>
+        <skill rating="5">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>82</page>
+    </metatype>
     <metatype>
       <id>a8611e90-7ec2-4e04-bdea-2d52081fead7</id>
       <name>Bandersnatch</name>
@@ -48409,8 +49229,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F-2)*2/(F-2)*2/(F-2)*2</walk>
-      <run>(F-2)*4/(F-2)*4/(F-2)*4</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -48496,8 +49316,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F*2)/(F*2)/(F*2)</walk>
-      <run>(F*4)/(F*4)/(F*4)</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -48587,8 +49407,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F*2)/(F*2)/(F*2)</walk>
-      <run>(F*4)/(F*4)/(F*4)</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -48675,8 +49495,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F*2)/(F*2)/(F*2)</walk>
-      <run>(F*4)/(F*4)/(F*4)</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -48766,8 +49586,8 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <walk>(F*2)/(F*2)/(F*2)</walk>
-      <run>(F*4)/(F*4)/(F*4)</run>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
       <sprint>2/2/2</sprint>
       <bonus>
         <enableattribute>
@@ -49363,6 +50183,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -49429,6 +50250,7 @@
       <essmin>0</essmin>
       <essmax>0</essmax>
       <essaug>0</essaug>
+      <forceislevels />
       <movement>Special</movement>
       <bonus>
         <enabletab>
@@ -50659,6 +51481,8 @@
     <metatype>
       <id>e5727729-0e19-4c1e-924d-b2bc4232e752</id>
       <name>Anarch</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -50731,6 +51555,8 @@
     <metatype>
       <id>46f688ea-66ab-4b63-a2ea-ce797ad001e6</id>
       <name>Arboreal</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -50803,6 +51629,8 @@
     <metatype>
       <id>c1989f9a-c4c7-4f08-83eb-e252663b5142</id>
       <name>Blackjack</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -50876,25 +51704,44 @@
     <metatype>
       <id>7499b2df-7a18-4390-a812-30c3ba528856</id>
       <name>Boggle</name>
-      <category>Spirits</category>
-      <bod>F-2</bod>
-      <agi>F-1</agi>
-      <rea>F-1</rea>
-      <str>F-2</str>
-      <cha>F</cha>
-      <int>F</int>
-      <log>F</log>
-      <wil>F+2</wil>
-      <ini>0</ini>
-      <edg>F/2</edg>
-      <mag>F</mag>
-      <res>0</res>
-      <dep>0</dep>
-      <ess>F</ess>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
+      <bodmin>F-2</bodmin>
+      <bodmax>F-2</bodmax>
+      <bodaug>F-2</bodaug>
+      <agimin>F-1</agimin>
+      <agimax>F-1</agimax>
+      <agiaug>F-1</agiaug>
+      <reamin>F-1</reamin>
+      <reamax>F-1</reamax>
+      <reaaug>F-1</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <chamin>F</chamin>
+      <chamax>F</chamax>
+      <chaaug>F</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F+2</wilmin>
+      <wilmax>F+2</wilmax>
+      <wilaug>F+2</wilaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <essmin>F</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
       <walk>2/1/0</walk>
       <run>4/0/0</run>
       <sprint>2/1/0</sprint>
-      <armor>0</armor>
       <skills>
         <group>Close Combat</group>
         <skill>Assensing</skill>
@@ -50916,6 +51763,8 @@
     <metatype>
       <id>a2cf75f0-ab9c-4d27-84c5-cebefb0f0d98</id>
       <name>Bugul</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bod>F</bod>
       <agi>F-1</agi>
       <rea>F-1</rea>
@@ -50949,8 +51798,8 @@
       <powers>
         <power>Astral Form</power>
         <power>Aura Masking</power>
-        <power select="Smell">Improved Sense</power>
-        <power>Thermal)</power>
+        <power select="Smell">Improved Senses</power>
+        <power select="Thermal">Improved Senses</power>
         <power>Materialization</power>
         <power>Sapience</power>
         <power select="4">Spell Resistance</power>
@@ -50967,6 +51816,8 @@
     <metatype>
       <id>42a1c03d-d70a-47df-a23f-2260615bdefe</id>
       <name>Chindi</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -51028,6 +51879,8 @@
     <metatype>
       <id>a296f3ad-26c1-40c4-9cdb-732aa5b86f56</id>
       <name>Corpselight</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>5</bodmin>
       <bodmax>5</bodmax>
       <bodaug>9</bodaug>
@@ -51086,6 +51939,8 @@
     <metatype>
       <id>943af23e-b4b0-4b0b-84ed-25d97a92ce77</id>
       <name>Croki</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -51124,12 +51979,12 @@
       <sprint>2/1/0</sprint>
       <armor>0</armor>
       <skills>
-        <skill>Artifcing</skill>
+        <skill>Artificing</skill>
         <skill>Assensing</skill>
         <skill>Astral Combat</skill>
         <skill>Gymnastics</skill>
         <skill>Perception</skill>
-        <skill rating="Ritual Spellcasting"></skill>
+        <skill>Ritual Spellcasting</skill>
         <skill>Spellcasting</skill>
       </skills>
       <powers>
@@ -51138,8 +51993,8 @@
         <power>Fae Glamour</power>
         <power>Flay Touch</power>
         <power>Fold Perception</power>
-        <power select="Smell">Improved Sense</power>
-        <power>Thermal)</power>
+        <power select="Smell">Improved Senses</power>
+        <power select="Thermal">Improved Senses</power>
         <power>Materialization</power>
         <power>Sapience</power>
         <power>Spirit Pact</power>
@@ -51155,6 +52010,8 @@
     <metatype>
       <id>d1d30016-6f62-4e08-8387-5de731f1086e</id>
       <name>Duende</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -51223,6 +52080,8 @@
     <metatype>
       <id>0919e53d-6e38-48b6-8c4b-f0c22f8cd41d</id>
       <name>Elvar</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -51291,6 +52150,8 @@
     <metatype>
       <id>de407ebd-f896-4efe-b16e-511d0181d774</id>
       <name>Ejerian</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -51365,6 +52226,8 @@
     <metatype>
       <id>33951b3b-65f5-493f-8eb1-65e208f77a74</id>
       <name>Erinyes</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -51419,7 +52282,7 @@
         <power select="Air">Engulf</power>
         <power>Fear</power>
         <power select="Normal Weapons">Immunity</power>
-        <power>Inﬂuence</power>
+        <power>Influence</power>
         <power>Materialization</power>
         <power select="Claws (DV (F+2)P AP –F)">Natural Weapon</power>
         <power select="Wings (DV (F+6)S AP -F)">Natural Weapon</power>
@@ -51439,6 +52302,8 @@
     <metatype>
       <id>6504cd2d-5e31-4dce-8c78-cbfcfda094f7</id>
       <name>Green Man/Heart of the City</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -51499,6 +52364,8 @@
     <metatype>
       <id>7aa16d7a-4f70-4e3a-a9c0-9a3d9ab6e07e</id>
       <name>Imp</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -51558,6 +52425,8 @@
     <metatype>
       <id>fb5ad9e1-f13e-4da7-b00e-30197cd5ef6c</id>
       <name>Jarl</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+2</bodmin>
       <bodmax>F+2</bodmax>
       <bodaug>F+2</bodaug>
@@ -51617,6 +52486,8 @@
     <metatype>
       <id>17b642e0-f3ea-4b1c-8b51-a3eccf0a1ab8</id>
       <name>Kappa</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+5</bodmin>
       <bodmax>F+5</bodmax>
       <bodaug>F+5</bodaug>
@@ -51675,6 +52546,8 @@
     <metatype>
       <id>5e37b646-6a2b-438d-92b2-4452d3d3599f</id>
       <name>Morbi</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F</bodmin>
       <bodmax>F</bodmax>
       <bodaug>F</bodaug>
@@ -51741,6 +52614,8 @@
     <metatype>
       <id>31fa84e3-5d2a-406f-8e6e-4c25ea7e3779</id>
       <name>Nocnitsa</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F-3</bodmin>
       <bodmax>F-3</bodmax>
       <bodaug>F-3</bodaug>
@@ -51806,6 +52681,8 @@
     <metatype>
       <id>18ab8683-9c7e-4234-9d1d-35d0f779ec71</id>
       <name>Phantom</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -51884,6 +52761,8 @@
     <metatype>
       <id>be973a8d-b997-4d64-b9a7-20d85bc48d08</id>
       <name>Preta</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F-1</bodmin>
       <bodmax>F-1</bodmax>
       <bodaug>F-1</bodaug>
@@ -51942,7 +52821,7 @@
         <power>Confusion</power>
         <power>Fear</power>
         <power select="F">Hardened Mystic Armor</power>
-        <power>Inﬂuence</power>
+        <power>Influence</power>
         <power>Materialization</power>
         <power select="DV (F-1)S">Natural Weapon (Fist</power>
         <power>AP –Force)</power>
@@ -51961,6 +52840,8 @@
     <metatype>
       <id>d189dcde-b36c-45f4-9a6d-99905af063ba</id>
       <name>Stabber</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -52028,6 +52909,8 @@
     <metatype>
       <id>98c87b5e-24ad-4fbb-9ad5-29218b801b5b</id>
       <name>Tungak</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+1</bodmin>
       <bodmax>F+1</bodmax>
       <bodaug>F+1</bodaug>
@@ -52094,6 +52977,8 @@
     <metatype>
       <id>d6fa5e21-29bd-4cbd-a678-1bf14327a98f</id>
       <name>Ver</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>4</bodmin>
       <bodmax>4</bodmax>
       <bodaug>8</bodaug>
@@ -52153,6 +53038,8 @@
     <metatype>
       <id>6cc44762-1e85-4097-bbb4-4f6e5eed2724</id>
       <name>Vucub Caquix</name>
+      <category>Extraplanar Travelers</category>
+      <forcecreature />
       <bodmin>F+3</bodmin>
       <bodmax>F+3</bodmax>
       <bodaug>F+3</bodaug>
@@ -52219,5 +53106,479 @@
       <page>135</page>
     </metatype>
     <!-- End Region -->
+    <!--Region Necro Spirits-->
+    <metatype>
+      <id>3ba5a627-736f-4ce7-98d8-163b58d0665e</id>
+      <name>Carcass Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+3</bodmin>
+      <bodmax>F+3</bodmax>
+      <bodaug>F+3</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F</reamin>
+      <reamax>F</reamax>
+      <reaaug>F</reaaug>
+      <strmin>F+2</strmin>
+      <strmax>F+2</strmax>
+      <straug>F+2</straug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <inimin>(F*2)</inimin>
+      <inimax>(F*2)</inimax>
+      <iniaug>(F*2)</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower select="Claw/Bite: DV 0P, AP 0">Natural Weapon</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+          <optionalpower>Venom</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Animal Control</power>
+        <power>Astral Form</power>
+        <power>Deathly Aura</power>
+        <power select="Smell, Hearing. Low-Light Vision">Enhanced Senses</power>
+        <power>Fear</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Movement</power>
+        <power>Sapience</power>
+        <power>Possession</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>52</page>
+    </metatype>
+    <metatype>
+      <id>6e3dd953-b445-41a1-9e0b-6886b33e0b44</id>
+      <name>Corpse Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
+      <agimin>F-1</agimin>
+      <agimax>F-1</agimax>
+      <agiaug>F-1</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Movement</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+          <optionalpower>Psychokinesis</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Concealment</power>
+        <power>Confusion</power>
+        <power>Deathly Aura</power>
+        <power select="Thermographic Vision, Low-Light Vision">Enhanced Senses</power>
+        <power>Guard</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Influence</power>
+        <power>Sapience</power>
+        <power>Possession</power>
+        <power>Search</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>53</page>
+    </metatype>
+    <metatype>
+      <id>64336dfd-9ef5-4ddc-8ed2-ad8f8785223b</id>
+      <name>Palefire Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
+      <agimin>F+1</agimin>
+      <agimax>F+1</agimax>
+      <agiaug>F+1</agiaug>
+      <reamin>F+3</reamin>
+      <reamax>F+3</reamax>
+      <reaaug>F+3</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <inimin>(F*2)+3</inimin>
+      <inimax>(F*2)+3</inimax>
+      <iniaug>(F*2)+3</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Confusion</power>
+        <power select="Fire">Elemental Attack</power>
+        <power>Deathly Aura</power>
+        <power>Engulf</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>53</page>
+    </metatype>
+    <metatype>
+      <id>7223d9d8-640f-4a1b-9e08-ece2e096948d</id>
+      <name>Rot Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+3</bodmin>
+      <bodmax>F+3</bodmax>
+      <bodaug>F+3</bodaug>
+      <agimin>F-1</agimin>
+      <agimax>F-1</agimax>
+      <agiaug>F-1</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Accident</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Movement</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Concealment</power>
+        <power>Confusion</power>
+        <power>Deathly Aura</power>
+        <power>Engulf</power>
+        <power>Fear</power>
+        <power>Guard</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Magical Guard</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Silence</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Counterspelling</skill>
+        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>53</page>
+    </metatype>
+    <metatype>
+      <id>ccaafb9d-ebbb-4c5f-bd64-124eab6cb2ff</id>
+      <name>Detritus Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+5</bodmin>
+      <bodmax>F+5</bodmax>
+      <bodaug>F+5</bodaug>
+      <agimin>F-3</agimin>
+      <agimax>F-3</agimax>
+      <agiaug>F-3</agiaug>
+      <reamin>F-1</reamin>
+      <reamax>F-1</reamax>
+      <reaaug>F-1</reaaug>
+      <strmin>F+4</strmin>
+      <strmax>F+4</strmax>
+      <straug>F+4</straug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <logmin>F-1</logmin>
+      <logmax>F-1</logmax>
+      <logaug>F-1</logaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Elemental Attack</optionalpower>
+          <optionalpower>Engulf</optionalpower>
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Binding</power>
+        <power>Deathly Aura</power>
+        <power>Guard</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Search</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>53</page>
+    </metatype>
+    <!--End Region Necro Spirits-->
   </metatypes>
 </chummer>

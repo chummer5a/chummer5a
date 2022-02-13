@@ -20,19 +20,129 @@
 <chummer>
   <qualities>
     <quality>
-      <name>Escaped Custody</name>
+      <name>Brilliant Heuristics</name>
       <required>
-        <allof>
-          <quality amendoperation="remove">Technomancer</quality>
-        </allof>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
       </required>
     </quality>
     <quality>
       <name>Hold the Door</name>
       <required>
-        <allof>
-          <quality amendoperation="remove">Technomancer</quality>
-        </allof>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Fractal Punch</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Lone Wolf</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Team Player</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Trust Data, Not Lore</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Trust Lore, Not Data</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Unique Avatar</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Code of Honor: Black Hat</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Data Hog</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Escaped Custody</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>On the Wagon</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>'Ware Intolerance</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
+      </required>
+    </quality>
+    <quality>
+      <name>Wired User</name>
+      <required>
+        <allof xpathfilter="quality = 'Technomancer'" amendoperation="remove" />
+        <oneof>
+          <quality xpathfilter=". = 'Technomancer'" amendoperation="remove" />
+        </oneof>
       </required>
     </quality>
   </qualities>

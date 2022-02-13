@@ -19,20 +19,14 @@ namespace ChummerHub.Services.GoogleDrive
     public class GoogleIDataStore : IDataStore
     {
         private static ILogger _logger;
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore._store'
         public static Dictionary<string, TokenResponse> _store;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore._store'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore()'
         public GoogleIDataStore()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore()'
         {
             _store = new Dictionary<string, TokenResponse>();
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore(string, string, ILogger)'
         public GoogleIDataStore(string key, string refreshToken, ILogger Logger)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'GoogleIDataStore.GoogleIDataStore(string, string, ILogger)'
         {
             try
             {
@@ -59,9 +53,9 @@ namespace ChummerHub.Services.GoogleDrive
         /// Remove all items
         /// </summary>
         /// <returns></returns>
-        public async Task ClearAsync()
+        public Task ClearAsync()
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 _store.Clear();
             });
@@ -78,7 +72,7 @@ namespace ChummerHub.Services.GoogleDrive
             // check type
             AssertCorrectType<T>();
             if (_store.ContainsKey(key))
-                return await Task.Run(() => { return (T)(object)_store[key]; });
+                return await Task.Run(() => (T)(object)_store[key]);
             // key not found
             return default;
         }
@@ -105,7 +99,7 @@ namespace ChummerHub.Services.GoogleDrive
         /// Validate we can store this type
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        private void AssertCorrectType<T>()
+        private static void AssertCorrectType<T>()
         {
             if (typeof(T) != typeof(TokenResponse))
                 throw new NotImplementedException(typeof(T).ToString());
@@ -117,9 +111,9 @@ namespace ChummerHub.Services.GoogleDrive
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task DeleteAsync<T>(string key)
+        public Task DeleteAsync<T>(string key)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 // check type
                 AssertCorrectType<T>();

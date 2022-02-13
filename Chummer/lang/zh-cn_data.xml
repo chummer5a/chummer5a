@@ -17,8 +17,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360 
-     translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0 
+<!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360
+     translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0
 -->
 
 <chummer>
@@ -1418,7 +1418,7 @@
       <id>3550fe0d-453d-431f-bd84-d9cd50581f39</id>
       <name>Radiation Tolerance</name>
       <translate></translate>
-    </bioware> 
+    </bioware>
       <bioware>
       <id>181f09c2-af17-4676-bb6a-62706c4fc521</id>
       <name>Immunization</name>
@@ -1978,11 +1978,11 @@
       <contact translate="律贼（Vory Shestiorka）">Vory Shestiorka</contact>
       <contact translate="魔法之子（Wiz Kid）帮派成员">Wiz Kid Ganger</contact>
     </contacts>
-    <sexes>
-      <sex translate="女性">Female</sex>
-      <sex translate="男性">Male</sex>
-      <sex translate="未知">Unknown</sex>
-    </sexes>
+    <genders>
+      <gender translate="女性">Female</gender>
+      <gender translate="男性">Male</gender>
+      <gender translate="未知">Unknown</gender>
+    </genders>
     <ages>
       <age translate="年轻">Young</age>
       <age translate="中年">Middle-Aged</age>
@@ -2775,7 +2775,7 @@
         <id>1f074d5a-af5a-4f9e-9863-5a328da6cec3</id>
         <name>Harrow Spirit</name>
         <translate></translate>
-      </metatype> 
+      </metatype>
       <metatype>
         <id>b82e0b0e-e3c4-4d41-94f2-7a93f8247dbf</id>
         <name>Carnage Spirit</name>
@@ -4328,27 +4328,54 @@
             </echo>
         </echoes>
     </chummer>
-  <chummer file="gameplayoptions.xml">
-      <gameplayoption>
-        <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
+  <chummer file="settings.xml">
+    <settings>
+      <setting>
+        <id>223a11ff-80e0-428b-89a9-6ef1c243b8b6</id>
         <name>Standard</name>
         <translate>标准等级</translate>
-      </gameplayoption>
-      <gameplayoption>
-        <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
-        <name>Prime Runner</name>
-        <translate>精英狂奔者等级</translate>
-      </gameplayoption>
-      <gameplayoption>
-        <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
+      </setting>
+      <setting>
+        <id>507eef8e-eba8-41ea-84c4-4282258fe669</id>
         <name>Street Level</name>
         <translate>街头等级</translate>
-      </gameplayoption>
-      <gameplayoption>
-        <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
-        <name>Street Scum</name>
-        <translate>街头渣滓</translate>
-      </gameplayoption>
+      </setting>
+      <setting>
+        <id>33e5317f-12aa-416e-816e-3b8b6ad95712</id>
+        <name>Prime Runner</name>
+        <translate>精英狂奔者等级</translate>
+      </setting>
+      <setting>
+        <id>4c34a8ed-2888-410c-afda-024475fa3c76</id>
+        <name>Street Scum (BCDEE)</name>
+        <translate>街头渣滓(BCDEE)</translate>
+      </setting>
+      <setting>
+        <id>9da22725-0596-4d68-ba2b-54f701e75e74</id>
+        <name>Street Scum (CCDDE)</name>
+        <translate>街头渣滓(CCDDE)</translate>
+      </setting>
+      <setting>
+        <id>9e1c2dec-d2fa-42a0-a842-8bf575943780</id>
+        <name>High Life</name>
+        <translate>高生活</translate>
+      </setting>
+      <setting>
+        <id>3509a807-68ee-4c18-b7d5-b130313b4b77</id>
+        <name>Sum to Ten</name>
+        <translate>总计10</translate>
+      </setting>
+      <setting>
+        <id>fe7bb0d9-3cd9-4a75-825e-135b95a4f3ef</id>
+        <name>Point Buy</name>
+        <translate>业力模式</translate>
+      </setting>
+      <setting>
+        <id>8a31af6d-7137-4284-872b-7d8087e156c6</id>
+        <name>Life Modules</name>
+        <translate>生命历程模块</translate>
+      </setting>
+    </settings>
   </chummer>
     <chummer file="gear.xml">
         <categories>
@@ -14777,12 +14804,12 @@
   <!--Region Chrome Flesh Positive Qualities -->
     <quality>
       <id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
-      <name>Biocompatability (Cyberware)</name>
+      <name>Biocompatibility (Cyberware)</name>
      <translate>生物相容性（赛博改造）</translate>
     </quality>
     <quality>
       <id>dcecd7e5-8cf1-4f83-89fa-177e28cfba03</id>
-      <name>Biocompatability (Bioware)</name>
+      <name>Biocompatibility (Bioware)</name>
       <translate>生物相容性（生体改造）</translate>
     </quality>
     <quality>
@@ -17006,7 +17033,7 @@
                 <id>35d509e2-f0c7-432f-919a-34e526079097</id>
                 <name>Mana Window</name>
                 <translate>法力窥口</translate>
-            </spell>  
+            </spell>
       <spell>
                 <id>237ee405-062f-4e11-96a8-78336e1d6a0a</id>
                 <name>Astral Window</name>
@@ -17077,7 +17104,7 @@
                 <name>Decrease [Attribute]</name>
                 <translate>降低[属性]</translate>
             </spell>
-            
+
             <spell>
                 <id>3d019dea-b5ae-4f9c-ab14-eb8a329ed9ba</id>
                 <name>Detox</name>
@@ -21310,7 +21337,7 @@
         <name>Grapple Fist</name>
         <translate>射勾手</translate>
       </weapon>
-      
+
     <weapon>
       <id>3a60c3ee-9f6f-46cb-be2f-bec0bccc3318</id>
       <name>Tactical Grapple Gun</name>

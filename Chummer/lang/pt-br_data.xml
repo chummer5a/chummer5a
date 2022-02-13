@@ -2860,22 +2860,10 @@
                 <altcode>SR5</altcode>
             </book>
             <book>
-                <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-                <name>Shadowrun 5th Edition (German-exclusive Content)</name>
-                <translate>Shadowrun 5th Edition (German-exclusive Content)</translate>
-                <altcode>SR5G</altcode>
-            </book>
-            <book>
                 <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
                 <name>Street Grimoire</name>
                 <translate>Street Grimoire</translate>
                 <altcode>SG</altcode>
-            </book>
-            <book>
-                <id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
-                <name>Street Grimoire (German-exclusive Content)</name>
-                <translate>Street Grimoire (German-exclusive Content)</translate>
-                <altcode>SGG</altcode>
             </book>
             <book>
                 <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
@@ -2900,12 +2888,6 @@
                 <name>Run Faster</name>
                 <translate>Run Faster</translate>
                 <altcode>RF</altcode>
-            </book>
-            <book>
-                <id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-                <name>Run Faster (German-exclusive Content)</name>
-                <translate>Run Faster (German-exclusive Content)</translate>
-                <altcode>RFG</altcode>
             </book>
             <book>
                 <id>01994ce6-832f-4e29-aded-e16c1bf139bd</id>
@@ -2966,12 +2948,6 @@
                 <name>Rigger 5.0</name>
                 <translate>Rigger 5.0</translate>
                 <altcode>R5</altcode>
-            </book>
-            <book>
-                <id>e3e23ca4-b7b8-11e6-80f5-76304dec7eb7</id>
-                <name>Rigger 5.0 (German-exclusive Content)</name>
-                <translate>Rigger 5.0 (German-exclusive Content)</translate>
-                <altcode>R5G</altcode>
             </book>
             <book>
                 <id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
@@ -24185,12 +24161,6 @@
                 <altpage>105</altpage>
             </quality>
             <quality>
-                <id>244dea68-fe8b-4532-954a-4ff2f78952f8</id>
-                <name>Magic Sense</name>
-                <translate>Magic Sense</translate>
-                <altpage>172</altpage>
-            </quality>
-            <quality>
                 <id>efc80d70-30ec-4460-bddb-f6006333dd3b</id>
                 <name>Natural Weapon: Bite (Naga)</name>
                 <translate>Natural Weapon: Bite (Naga)</translate>
@@ -25200,14 +25170,14 @@
             </quality>
             <quality>
                 <id>23bfa65d-9241-4183-b7ea-0e2935e42f29</id>
-                <name>Biocompatability (Cyberware)</name>
-                <translate>Biocompatability (Cyberware)</translate>
+                <name>Biocompatibility (Cyberware)</name>
+                <translate>Biocompatibility (Cyberware)</translate>
                 <altpage>54</altpage>
             </quality>
             <quality>
                 <id>dcecd7e5-8cf1-4f83-89fa-177e28cfba03</id>
-                <name>Biocompatability (Bioware)</name>
-                <translate>Biocompatability (Bioware)</translate>
+                <name>Biocompatibility (Bioware)</name>
+                <translate>Biocompatibility (Bioware)</translate>
                 <altpage>54</altpage>
             </quality>
             <quality>
@@ -32182,12 +32152,6 @@
                 <name>Incision</name>
                 <translate>Incision</translate>
                 <altpage>21</altpage>
-            </spell>
-            <spell>
-                <id>2c7be069-208e-41e4-b3cf-97c9fc480fbc</id>
-                <name>Hemorrhage</name>
-                <translate>Hemorrhage</translate>
-                <altpage>91</altpage>
             </spell>
             <spell>
                 <id>eab0bcfd-9bf5-4482-9cca-2bdecb7f7b59</id>
@@ -41255,11 +41219,11 @@
             <contact translate="Vory Shestiorka">Vory Shestiorka</contact>
             <contact translate="Gangueiro da Magi Pirralhos">Wiz Kid Ganger</contact>
         </contacts>
-        <sexes>
-            <sex translate="Feminino">Female</sex>
-            <sex translate="Masculino">Male</sex>
-            <sex translate="Desconhecido">Unknown</sex>
-        </sexes>
+        <genders>
+            <gender translate="Feminino">Female</gender>
+            <gender translate="Masculino">Male</gender>
+            <gender translate="Desconhecido">Unknown</gender>
+        </genders>
         <ages>
             <age translate="Jovem">Young</age>
             <age translate="Meia-Idade">Middle-Aged</age>
@@ -41331,29 +41295,54 @@
             <hobbyvice translate="Armas (Militares)">Weapons (Military)</hobbyvice>
         </hobbiesvices>
     </chummer>
-    <chummer file="gameplayoptions.xml">
-        <gameplayoptions>
-            <gameplayoption>
-                <id>054559be-d80a-42b9-a0a9-d6957d2b3c55</id>
-                <name>Standard</name>
-                <translate>Padrão</translate>
-            </gameplayoption>
-            <gameplayoption translated="True">
-                <id>5b1281c0-466d-441d-a844-5a2bc93d9843</id>
-                <name>Prime Runner</name>
-                <translate>Runner de Prestígio</translate>
-            </gameplayoption>
-            <gameplayoption>
-                <id>def8a6aa-4bfa-4c73-a20f-2a8e80d2b1df</id>
-                <name>Street Level</name>
-                <translate>Nível de Rua</translate>
-            </gameplayoption>
-            <gameplayoption translated="True">
-                <id>b9d5c0ae-0d2c-4e86-9e09-f42a23ab27a6</id>
-                <name>Street Scum</name>
-                <translate>Escória das Ruas</translate>
-            </gameplayoption>
-        </gameplayoptions>
+    <chummer file="settings.xml">
+      <settings>
+        <setting>
+          <id>223a11ff-80e0-428b-89a9-6ef1c243b8b6</id>
+          <name>Standard</name>
+          <translate>Padrão</translate>
+        </setting>
+        <setting>
+          <id>507eef8e-eba8-41ea-84c4-4282258fe669</id>
+          <name>Street Level</name>
+          <translate>Nível de Rua</translate>
+        </setting>
+        <setting>
+          <id>33e5317f-12aa-416e-816e-3b8b6ad95712</id>
+          <name>Prime Runner</name>
+          <translate>Runner de Prestígio</translate>
+        </setting>
+        <setting>
+          <id>4c34a8ed-2888-410c-afda-024475fa3c76</id>
+          <name>Street Scum (BCDEE)</name>
+          <translate>Escória das Ruas (BCDEE)</translate>
+        </setting>
+        <setting>
+          <id>9da22725-0596-4d68-ba2b-54f701e75e74</id>
+          <name>Street Scum (CCDDE)</name>
+          <translate>Escória das Ruas (CCDDE)</translate>
+        </setting>
+        <setting>
+          <id>9e1c2dec-d2fa-42a0-a842-8bf575943780</id>
+          <name>High Life</name>
+          <translate>Vie de luxe</translate>
+        </setting>
+        <setting>
+          <id>3509a807-68ee-4c18-b7d5-b130313b4b77</id>
+          <name>Sum to Ten</name>
+          <translate>Somar Dez</translate>
+        </setting>
+        <setting>
+          <id>fe7bb0d9-3cd9-4a75-825e-135b95a4f3ef</id>
+          <name>Point Buy</name>
+          <translate>Compra por Pontos</translate>
+        </setting>
+        <setting>
+          <id>8a31af6d-7137-4284-872b-7d8087e156c6</id>
+          <name>Life Modules</name>
+          <translate>Módulo de Vida</translate>
+        </setting>
+      </settings>
     </chummer>
     <chummer file="paragons.xml">
         <categories>
@@ -42131,8 +42120,8 @@
                         <translate>Magician: +2 dice for Illusion spells</translate>
                     </choice>
                     <choice>
-                        <name>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</name>
-                        <translate>Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group</translate>
+                        <name>Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group</name>
+                        <translate>Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group</translate>
                     </choice>
                 </choices>
             </mentor>
@@ -42875,7 +42864,7 @@
                 <name>Lion</name>
                 <translate>Lion</translate>
                 <altadvantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
-                <altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot ﬂee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
+                <altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot flee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
                 <altpage>129</altpage>
                 <choices>
                     <choice>
@@ -42950,7 +42939,7 @@
                 <id>19d69029-259a-4ed6-b66b-944b4ddbc172</id>
                 <name>Arcana</name>
                 <translate>Arcana</translate>
-                <altadvantage>All: Once per day, when making a decision or test inﬂuenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</altadvantage>
+                <altadvantage>All: Once per day, when making a decision or test influenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</altadvantage>
                 <altdisadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their frst beneft, with the cards of Tarot being the focus of their centering.</altdisadvantage>
                 <altpage>95</altpage>
                 <choices>

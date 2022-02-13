@@ -17,8 +17,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360 
-     translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0 
+<!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360
+     translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0
 -->
 <chummer>
     <version>-350</version>
@@ -656,10 +656,6 @@
             <text>检查更新</text>
         </string>
         <string>
-            <key>Menu_Main_Omae</key>
-            <text>Omae</text>
-        </string>
-        <string>
             <key>Menu_Main_NewWindow</key>
             <text>新窗口(&amp;N)</text>
         </string>
@@ -825,15 +821,11 @@
             <text>添加装备(&amp;D)</text>
         </string>
         <string>
-            <key>Menu_AddNexus</key>
-            <text>Add &amp;Nexus</text>
-        </string>
-        <string>
             <key>Menu_AddWeapon</key>
             <text>添加武器(&amp;W)</text>
         </string>
         <string>
-            <key>Menu_AddAdvantage</key>
+            <key>Menu_AddTechnique</key>
             <text>添加武技(&amp;A)</text>
         </string>
         <string>
@@ -1153,10 +1145,6 @@
             <text>你确定要删除该复合程式吗？</text>
         </string>
         <string>
-            <key>Message_DeleteComplexFormOption</key>
-            <text>Are you sure you want to delete this Complex Form Option?</text>
-        </string>
-        <string>
             <key>Message_DeleteQuality</key>
             <text>你确定要删除该特质吗？</text>
         </string>
@@ -1207,14 +1195,6 @@
         <string>
             <key>MessageTitle_PowerLevel</key>
             <text>异能等级</text>
-        </string>
-        <string>
-            <key>Message_MartialArtManeuverLimit</key>
-            <text>You may only have 2 Maneuvers per Martial Art Rating.</text>
-        </string>
-        <string>
-            <key>MessageTitle_MartialArtManeuverLimit</key>
-            <text>Maximum Number of Maneuvers</text>
         </string>
         <string>
             <key>Message_SelectMartialArtTechnique</key>
@@ -1562,7 +1542,7 @@
         </string>
         <string>
             <key>Message_AttributeMaximum</key>
-            <text>在角色创建阶段，你不能有多于一个的属性到达最大值。</text>
+            <text>在角色创建阶段，你不能有多于{0}个的属性到达最大值。</text>
         </string>
         <string>
             <key>Message_AttributeBuildPoints</key>
@@ -1610,7 +1590,7 @@
         </string>
         <string>
             <key>Message_InvalidAvail</key>
-            <text>{0}个装备的可获得性高于上限{1}。</text>
+            <text>{0}个装备的可获得性高于上限{1}：</text>
         </string>
         <string>
             <key>MessageTitle_Invalid</key>
@@ -2139,10 +2119,6 @@
         <string>
             <key>String_ExpenseLearnMartialArt</key>
             <text>学习武术流派</text>
-        </string>
-        <string>
-            <key>String_ExpenseLearnManeuver</key>
-            <text>学习武技</text>
         </string>
         <string>
             <key>String_ExpenseLearnMetamagic</key>
@@ -2693,7 +2669,7 @@
         </string>
         <string>
             <key>Tip_CommonNuyen</key>
-            <text>你角色用来购买装备的新円数量。1业力＝{0}¥。</text>
+            <text>你角色用来购买装备的新円数量。{0}。</text>
         </string>
         <string>
             <key>Tip_CommonContacts</key>
@@ -2776,10 +2752,6 @@
         <string>
             <key>Node_SelectedMartialArts</key>
             <text>已习得武术流派</text>
-        </string>
-        <string>
-            <key>Node_SelectedManeuvers</key>
-            <text>已习得武技</text>
         </string>
         <!-- Spells Tab -->
         <string>
@@ -3279,6 +3251,10 @@
         <!-- Character Info Tab -->
         <string>
             <key>Label_Sex</key>
+            <text>性別：</text>
+        </string>
+        <string>
+            <key>Label_Gender</key>
             <text>性別：</text>
         </string>
         <string>
@@ -3859,27 +3835,6 @@
             <key>MenuItem_CreateCritter</key>
             <text>创建角色</text>
         </string>
-        <!-- Omae -->
-        <string>
-            <key>Omae_NoDescription</key>
-            <text>没有描述</text>
-        </string>
-        <string>
-            <key>Omae_UpdatedDate</key>
-            <text>更新日</text>
-        </string>
-        <string>
-            <key>Omae_DownloadCount</key>
-            <text>下载{0}次</text>
-        </string>
-        <string>
-            <key>Omae_Download</key>
-            <text>下载</text>
-        </string>
-        <string>
-            <key>Omae_PostUpdate</key>
-            <text>Post Update</text>
-        </string>
         <!-- Adept Powers -->
         <string>
             <key>Label_Power_PowerRating</key>
@@ -4394,10 +4349,6 @@
             <text>通常的角色肢体</text>
         </string>
         <string>
-            <key>Label_Options_NuyenPerBP</key>
-            <text>每点业力能兑换的新円：</text>
-        </string>
-        <string>
             <key>Checkbox_Options_AutomaticUpdates</key>
             <text>自动更新</text>
         </string>
@@ -4446,10 +4397,6 @@
             <text>武术流派等级</text>
         </string>
         <string>
-            <key>Label_Options_BPMartialArtManeuver</key>
-            <text>武技</text>
-        </string>
-        <string>
             <key>Label_Options_BPSkillGroup</key>
             <text>技能组等级</text>
         </string>
@@ -4479,11 +4426,7 @@
         </string>
         <string>
             <key>Label_Options_BPComplexForm</key>
-            <text>Complex Form Rating</text>
-        </string>
-        <string>
-            <key>Label_Options_BPComplexFormOption</key>
-            <text>Complex Form Option Rating</text>
+            <text>Complex Form</text>
         </string>
         <string>
             <key>Label_Options_NewSpecialization</key>
@@ -4566,23 +4509,11 @@
             <text>新复合程式</text>
         </string>
         <string>
-            <key>Label_Options_ImproveComplexForm</key>
-            <text>Improve Complex Form by 1</text>
-        </string>
-        <string>
-            <key>Label_Options_ComplexFormOptions</key>
-            <text>Complex Form Options</text>
-        </string>
-        <string>
-            <key>Label_Options_ComplexFormSkillsoft</key>
-            <text>Complex Form Skillsoft</text>
-        </string>
-        <string>
             <key>Label_Options_Spirit</key>
             <text>精魂</text>
         </string>
         <string>
-            <key>Label_Options_CombatManeuver</key>
+            <key>Label_Options_MartialArtTechnique</key>
             <text>武技</text>
         </string>
         <string>
@@ -4927,7 +4858,7 @@
         </string>
         <string>
             <key>Button_Options_PDFTest</key>
-            <text>测试 - 显示到第五页</text>
+            <text>测试 - 显示到第三页</text>
         </string>
         <!-- Print Multiple Window -->
         <string>
@@ -5237,15 +5168,10 @@
             <key>Title_SelectMartialArt</key>
             <text>选择一个武术流派</text>
         </string>
-        <!-- Select Martial Art Advantage Window -->
+        <!-- Select Martial Art Technique Window -->
         <string>
             <key>Title_SelectMartialArtTechnique</key>
             <text>选择一个武技</text>
-        </string>
-        <!-- Select Martial Art Maneuver Window -->
-        <string>
-            <key>Title_SelectMartialArtManeuver</key>
-            <text>选择一个战术</text>
         </string>
         <!-- Select Mentor Spirit Window -->
         <string>
@@ -5300,31 +5226,6 @@
         <string>
             <key>Checkbox_SelectEcho_LimitList</key>
             <text>显示已学会的回声</text>
-        </string>
-        <!-- Select Nexus Window -->
-        <string>
-            <key>Title_SelectNexus</key>
-            <text>Build Nexus</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_Nexus</key>
-            <text>Nexus</text>
-        </string>
-        <string>
-            <key>Label_SelectNexus_Processor</key>
-            <text>Processor:</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_Processor</key>
-            <text>Processor</text>
-        </string>
-        <string>
-            <key>Label_SelectNexus_PersonaLimit</key>
-            <text>化身界限：</text>
-        </string>
-        <string>
-            <key>String_SelectNexus_PersonaLimit</key>
-            <text>化身界限</text>
         </string>
         <!-- Select Number Window -->
         <string>
@@ -6598,14 +6499,6 @@
             <text>选择一个技能/技能组</text>
         </string>
         <string>
-            <key>Checkbox_Options_MayBuyQualities</key>
-            <text>May buy Qualities (RC 40)</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_ContactPoints</key>
-            <text>使用人脉点数而非固定的人脉（RC 40）</text>
-        </string>
-        <string>
             <key>Checkbox_Options_UseLogging</key>
             <text>使用调试日志</text>
         </string>
@@ -7280,10 +7173,6 @@
             <text>没有找到武器，可能是名称或其他信息有变动。请先移除武器并再次添加。</text>
         </string>
         <string>
-            <key>Checkbox_Options_ContactMultiplier</key>
-            <text>免费人脉点数等于魅力属性</text>
-        </string>
-        <string>
             <key>Label_FreeContactPoints</key>
             <text>剩余免费人脉业力：</text>
         </string>
@@ -7310,10 +7199,6 @@
         <string>
             <key>Label_Options_SpellShapingFocus</key>
             <text>塑法法器</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_KnowledgeMultiplier</key>
-            <text>免费知识和语言技能点等于（直觉+逻辑）</text>
         </string>
         <string>
             <key>Label_PowerLevels</key>
@@ -7727,452 +7612,6 @@
             <key>Label_Options_CharacterRoster</key>
             <text>角色浏览文件夹</text>
         </string>
-        <!-- Region Omae -->
-        <string>
-            <key>Omae_NoDescription</key>
-            <text>没有描述</text>
-        </string>
-        <string>
-            <key>Omae_UpdatedDate</key>
-            <text>已更新</text>
-        </string>
-        <string>
-            <key>Omae_DownloadCount</key>
-            <text>已下载{0}次</text>
-        </string>
-        <string>
-            <key>Omae_Download</key>
-            <text>下载</text>
-        </string>
-        <string>
-            <key>Omae_PostUpdate</key>
-            <text>发布更新</text>
-        </string>
-        <!-- Region Omae Window -->
-        <string>
-            <key>Title_Omae</key>
-            <text>Chummer：Omae角色交换</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotConnection</key>
-            <text>无法连接到Omae。请确认你的计算机已经连接到矩阵。如果问题仍未解决，可能是由于Omae主机目前无法访问。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CannotConnection</key>
-            <text>无法连接到Omae</text>
-        </string>
-        <string>
-            <key>Message_Omae_FileExists</key>
-            <text>名为“{0}”的文件已经存在于你的存储目录。\n你想下载选中的文件覆盖它吗？</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_FileExists</key>
-            <text>角色已存在</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotFindCharacter</key>
-            <text>无法找到该角色的上传信息。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CannotFindCharacter</key>
-            <text>无法找到角色</text>
-        </string>
-        <string>
-            <key>Message_Omae_CharacterDownloaded</key>
-            <text>角色已下载，你要现在打开它吗？</text>
-        </string>
-        <string>
-            <key>Message_Omae_NPCPackDownloaded</key>
-            <text>NPC套件已下载。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CharacterDownloaded</key>
-            <text>角色已下载</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_DeleteCharacter</key>
-            <text>删除角色</text>
-        </string>
-        <string>
-            <key>Message_Omae_ConfirmDelete</key>
-            <text>删除该角色会移除Omae上该角色的所有信息。你确定要删除该角色吗？</text>
-        </string>
-        <string>
-            <key>Message_Omae_CharacterDeleted</key>
-            <text>角色已删除。</text>
-        </string>
-        <string>
-            <key>Message_Omae_CharacterDeleteError</key>
-            <text>该角色中发现了一个错误，请稍后尝试。</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotFindData</key>
-            <text>无法找到该数据文件的上传信息。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CannotFindData</key>
-            <text>无法找到数据文件</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_DeleteData</key>
-            <text>删除数据</text>
-        </string>
-        <string>
-            <key>Message_Omae_ConfirmData</key>
-            <text>删除该数据会移除Omae上该角色的所有信息。你确定要删除该数据吗？</text>
-        </string>
-        <string>
-            <key>Message_Omae_DataDeleted</key>
-            <text>数据已删除。</text>
-        </string>
-        <string>
-            <key>Message_Omae_DataDeleteError</key>
-            <text>该数据中发现了一个错误，请稍后尝试。</text>
-        </string>
-        <string>
-            <key>Message_Omae_DataDownloaded</key>
-            <text>数据文件已下载。如果你下载的文件覆盖了原有文件，需要重启Chummer才能生效。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_DataDownloaded</key>
-            <text>数据文件已下载</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotFindSheet</key>
-            <text>无法找到该角色表的上传信息。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_CannotFindSheet</key>
-            <text>无法找到角色表</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_DeleteSheet</key>
-            <text>删除角色表</text>
-        </string>
-        <string>
-            <key>Message_Omae_ConfirmSheet</key>
-            <text>删除该角色表会移除Omae上该角色的所有信息。你确定要删除该角色表吗？</text>
-        </string>
-        <string>
-            <key>Message_Omae_SheetDeleted</key>
-            <text>角色表已删除。</text>
-        </string>
-        <string>
-            <key>Message_Omae_SheetDeleteError</key>
-            <text>该角色表中发现了一个错误，请稍后尝试。</text>
-        </string>
-        <string>
-            <key>Message_Omae_SheetDownloaded</key>
-            <text>角色表已下载。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_SheetDownloaded</key>
-            <text>角色表已下载</text>
-        </string>
-        <string>
-            <key>Message_Omae_ChooseUsername</key>
-            <text>请选择一个用户名。</text>
-        </string>
-        <string>
-            <key>Message_Omae_EnterUsername</key>
-            <text>请输入你的用户名。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_ChooseUsername</key>
-            <text>需要用户名</text>
-        </string>
-        <string>
-            <key>Message_Omae_ChoosePassword</key>
-            <text>请选择一个密码。</text>
-        </string>
-        <string>
-            <key>Message_Omae_EnterPassword</key>
-            <text>请输入你的密码。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_ChoosePassword</key>
-            <text>需要密码</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_Registration</key>
-            <text>Omae注册</text>
-        </string>
-        <string>
-            <key>Message_Omae_AccountCreated</key>
-            <text>你的Omae账户创建成功！</text>
-        </string>
-        <string>
-            <key>Message_Omae_AccountExists</key>
-            <text>该用户名已存在。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_OmaeLogin</key>
-            <text>Omae登录</text>
-        </string>
-        <string>
-            <key>Message_Omae_CannotLogin</key>
-            <text>无法登录Omae。请确认你的用户名和密码正确。</text>
-        </string>
-        <string>
-            <key>Message_Omae_MustLogin</key>
-            <text>你必须登录Omae才能上传角色。请先登录或注册。</text>
-        </string>
-        <string>
-            <key>MessageTitle_Omae_PasswordReset</key>
-            <text>重置密码</text>
-        </string>
-        <string>
-            <key>Message_Omae_PasswordNoEmail</key>
-            <text>由于你的账户没有关联电子邮箱，你无法重置密码。</text>
-        </string>
-        <string>
-            <key>Message_Omae_PasswordReset</key>
-            <text>你的密码已被重置。新密码已经发送到你的电子邮箱。</text>
-        </string>
-        <string>
-            <key>Message_Omae_InfoRequiresLogin</key>
-            <text>你必须登录Omae才能恢复账户信息。</text>
-        </string>
-        <string>
-            <key>String_Omae_NoCharacters</key>
-            <text>没有角色。</text>
-        </string>
-        <string>
-            <key>String_Omae_NoData</key>
-            <text>没有数据文件。</text>
-        </string>
-        <string>
-            <key>String_Omae_NoSheets</key>
-            <text>没有角色表。</text>
-        </string>
-        <string>
-            <key>Checkbox_Omae_AutoLogin</key>
-            <text>自动登录</text>
-        </string>
-        <string>
-            <key>Button_Omae_ClearFilter</key>
-            <text>清除Filter</text>
-        </string>
-        <string>
-            <key>Button_Omae_ShowFilter</key>
-            <text>显示Filter</text>
-        </string>
-        <string>
-            <key>Button_Omae_HideFilter</key>
-            <text>隐藏Filter</text>
-        </string>
-        <string>
-            <key>Button_Omae_Login</key>
-            <text>登录</text>
-        </string>
-        <string>
-            <key>Button_Omae_MyAccount</key>
-            <text>我的账户</text>
-        </string>
-        <string>
-            <key>Button_Omae_PasswordReset</key>
-            <text>重置密码</text>
-        </string>
-        <string>
-            <key>Button_Omae_Register</key>
-            <text>注册</text>
-        </string>
-        <string>
-            <key>Button_Omae_Search</key>
-            <text>搜索（&amp;S）</text>
-        </string>
-        <string>
-            <key>Button_Omae_Upload</key>
-            <text>上传角色（&amp;U）</text>
-        </string>
-        <string>
-            <key>Button_Omae_UploadData</key>
-            <text>上传文件（&amp;U）</text>
-        </string>
-        <string>
-            <key>Label_Omae_Username</key>
-            <text>用户名：</text>
-        </string>
-        <string>
-            <key>Label_Omae_Password</key>
-            <text>密码：</text>
-        </string>
-        <string>
-            <key>Label_Omae_SearchFor</key>
-            <text>搜索</text>
-        </string>
-        <string>
-            <key>Label_Omae_Filtering</key>
-            <text>Filtering:</text>
-        </string>
-        <string>
-            <key>Label_Omae_CurrentMode</key>
-            <text>当前模式：</text>
-        </string>
-        <string>
-            <key>Label_Omae_Quality</key>
-            <text>特质：</text>
-        </string>
-        <string>
-            <key>Label_Omae_OrQuality</key>
-            <text>或特质：</text>
-        </string>
-        <string>
-            <key>Label_Omae_Creator</key>
-            <text>创建者：</text>
-        </string>
-        <string>
-            <key>Label_Omae_LoggedInAs</key>
-            <text>以{0}登录。</text>
-        </string>
-        <string>
-            <key>Label_Omae_SortedBy</key>
-            <text>分类依照</text>
-        </string>
-        <!--End Region-->
-        <!-- Region Omae Account Window -->
-        <string>
-            <key>Title_OmaeAccount</key>
-            <text>我的Omae账户</text>
-        </string>
-        <string>
-            <key>Label_OmaeAccount_EmailAddress</key>
-            <text>电子邮箱：</text>
-        </string>
-        <!--End Region-->
-        <!-- Region Omae Upload Window -->
-        <string>
-            <key>Title_OmaeUpload</key>
-            <text>上传角色到Omae</text>
-        </string>
-        <string>
-            <key>Title_OmaeUploadData</key>
-            <text>上传定制数据到Omae</text>
-        </string>
-        <string>
-            <key>Title_OmaeUploadSheet</key>
-            <text>上传角色表到Omae</text>
-        </string>
-        <string>
-            <key>Label_OmaeUpload_FileName</key>
-            <text>要上传的文件：</text>
-        </string>
-        <string>
-            <key>Label_OmaeUpload_CharacterName</key>
-            <text>角色姓名：</text>
-        </string>
-        <string>
-            <key>Label_OmaeUpload_CharacterType</key>
-            <text>角色类别：</text>
-        </string>
-        <string>
-            <key>Label_OmaeUpload_Description</key>
-            <text>描述：</text>
-        </string>
-        <string>
-            <key>Button_OmaeUpload_Upload</key>
-            <text>上传</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_CannotUploadFile</key>
-            <text>只能上传Chummer角色文件。</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_CannotUploadSheet</key>
-            <text>只能上传XSL和XSLT文件。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_CannotUploadFile</key>
-            <text>无法上传文件</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_UnnamedCharacter</key>
-            <text>你不能上传一个未命名角色。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_UnnamedCharacter</key>
-            <text>无法上传角色</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_SelectFile</key>
-            <text>你必须选择要上传的文件。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_SelectFile</key>
-            <text>选择上传文件</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_CharacterDescription</key>
-            <text>请提供角色的简短描述，方便其他用户了解。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_CharacterDescription</key>
-            <text>角色描述</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_FileTooLarge</key>
-            <text>角色文件过大。如果文件包含了肖像，你可能需要再次上传之前先修改或去除肖像。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_FileTooLarge</key>
-            <text>文件过大</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_UploadFailed</key>
-            <text>无法上传文件。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_UploadFailed</key>
-            <text>上传失败</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_UploadComplete</key>
-            <text>文件已上传。感谢提交！</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_UploadComplete</key>
-            <text>文件已上传</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_DataName</key>
-            <text>你必须为该文件命名。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_DataName</key>
-            <text>数据文件名称</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_DataDescription</key>
-            <text>你必须为该数据文件内容提供一个简短的描述。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_DataDescription</key>
-            <text>数据文件描述</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_DataSelectFiles</key>
-            <text>你要上传的数据文件里必须至少包括一个文件。</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_SheetName</key>
-            <text>你必须为该角色表命名。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_SheetName</key>
-            <text>角色表名称</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_SheetDescription</key>
-            <text>你必须为该角色表内容提供一个简短的描述。</text>
-        </string>
-        <string>
-            <key>MessageTitle_OmaeUpload_SheetDescription</key>
-            <text>角色表描述</text>
-        </string>
-        <string>
-            <key>Message_OmaeUpload_SheetSelectFiles</key>
-            <text>你要上传的角色表里必须至少包括一个文件。</text>
-        </string>
         <string>
             <key>Label_Protection</key>
             <text>保护：</text>
@@ -8224,10 +7663,6 @@
         <string>
             <key>Checkbox_Options_Missions</key>
             <text>隐藏SRM禁止的特质</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_OmaeEnabled</key>
-            <text>允许Omae角色交换</text>
         </string>
         <string>
             <key>Checkbox_SelectLifeModule_LimitList</key>
@@ -8475,7 +7910,7 @@
         </string>
         <string>
             <key>Message_RestrictedGearUsed</key>
-            <text>「限制装备」应用于：\n{0}</text>
+            <text>「限制装备」应用于：{0}</text>
         </string>
         <string>
             <key>Label_Size</key>
@@ -8658,7 +8093,7 @@
             <text>该名称的个性化数据目录已存在。</text>
         </string>
         <string>
-            <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+            <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
             <text>个性化数据目录名称重复</text>
         </string>
         <string>
@@ -8731,7 +8166,7 @@
         </string>
         <string>
             <key>About_Description_Text</key>
-            <text>暗影狂奔5版角色生成器\n\r\n\r感谢Keith和他在制作和维持SR4E的Chummer中所做的一切。没有他，这一切都不会存在。\n\r\n\r感谢Dumpshock社群中的每一位成员，用珍贵的反馈、妙想、Bug报告支持这个项目，指出我愚蠢的错误。同样感谢那些把Chummer到其他语言的志愿者！</text>
+            <text>暗影狂奔5版角色生成器\n\n感谢Keith和他在制作和维持SR4E的Chummer中所做的一切。没有他，这一切都不会存在。\n\n感谢Dumpshock社群中的每一位成员，用珍贵的反馈、妙想、Bug报告支持这个项目，指出我愚蠢的错误。同样感谢那些把Chummer到其他语言的志愿者！</text>
         </string>
         <string>
             <key>About_Label_Contributors</key>
@@ -8743,7 +8178,7 @@
         </string>
         <string>
             <key>About_Company_Text</key>
-            <text>初版Chummer由Keith Rudolph为4版制作。\n\rChummer5由Adam Schmidt更新：srchummer5@gmail.com\n\rChummer5a由Anonymous fa/tg/uy更新：chummer5isalive@gmail.com\n\r其他5a更新由Johannes Elgaard完成：joha4270@gmail.com</text>
+            <text>初版Chummer由Keith Rudolph为4版制作。\nChummer5由Adam Schmidt更新：srchummer5@gmail.com\nChummer5a由Anonymous fa/tg/uy更新：chummer5isalive@gmail.com\n其他5a更新由Johannes Elgaard完成：joha4270@gmail.com\n其他5a更新由Delnar_Ersike完成：delnar.ersike@gmail.com</text>
         </string>
         <string>
             <key>String_Cyberzombie</key>
@@ -8758,8 +8193,12 @@
             <text>物理CM</text>
         </string>
         <string>
-            <key>About_Label_Disclaimer_Text</key>
-            <text>Chummer完全是非官方的，并无The Topps Company, Inc或Catalyst Game Labs的支持。The Topps Company, Inc.拥有与游戏《暗影狂奔》相关的名称、标志、艺术作品、商标、图片、声音、音频、视频和/或任何使用的专利材料的独占权。\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummer uses icons from the Silk icon set made by Mark James which is available at www.famfamfam.com.</text>
+          <key>About_Label_Disclaimer_Text</key>
+          <text>Chummer完全是非官方的，并无The Topps Company, Inc或Catalyst Game Labs的支持。The Topps Company, Inc.拥有与游戏《暗影狂奔》相关的名称、标志、艺术作品、商标、图片、声音、音频、视频和/或任何使用的专利材料的独占权。\n\nUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\nBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\nChummer使用的图标来自FatCow Icon Set，可在https://www.fatcow.com/free-icons。</text>
+        </string>
+        <string>
+          <key>About_Copyright_Text</key>
+          <text>版权© Keith Rudolph 2013，授权给GNU GPLv3</text>
         </string>
         <string>
             <key>Button_AddMod</key>
@@ -9042,10 +8481,6 @@
             <text>{1}品级消耗的精华至少为{0}：你目前是{2}</text>
         </string>
         <string>
-            <key>MessageTitle_CannotAddComplexFormOption</key>
-            <text>无法添加选项</text>
-        </string>
-        <string>
             <key>String_Pilot</key>
             <text>自驾</text>
         </string>
@@ -9112,10 +8547,6 @@
         <string>
             <key>Checkbox_Options_CompensateSkillGroupKarmaDifference</key>
             <text>在技能组中最后一个技能被提升，技能组重建时，补偿业力花费</text>
-        </string>
-        <string>
-            <key>Tip_Omae_Warning</key>
-            <text>Omae不在当前开发者的控制之中，包含旧有的角色，可能不会生效或导致当前版本崩溃。风险自担。\n你要继续吗？</text>
         </string>
         <string>
             <key>Tip_LifeModule_Warning</key>

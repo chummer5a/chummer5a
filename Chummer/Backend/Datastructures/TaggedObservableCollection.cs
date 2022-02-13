@@ -16,8 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+
+using System;
 using System.Collections.Specialized;
 
 namespace Chummer
@@ -27,9 +27,10 @@ namespace Chummer
     /// ObservableCollection that allows for adding and removal of anonymous delegates by an associated tag
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class TaggedObservableCollection<T> : ObservableCollection<T>
+    public class TaggedObservableCollection<T> : ThreadSafeObservableCollection<T>
     {
-        private readonly Dictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedDelegates = new Dictionary<object, NotifyCollectionChangedEventHandler>();
+        private readonly LockingDictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedDelegates = new LockingDictionary<object, NotifyCollectionChangedEventHandler>();
+        private readonly LockingDictionary<object, NotifyCollectionChangedEventHandler> _dicTaggedAddedBeforeClearDelegates = new LockingDictionary<object, NotifyCollectionChangedEventHandler>();
 
         /// <summary>
         /// Use in place of CollectionChanged Adder
@@ -39,10 +40,9 @@ namespace Chummer
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
         public bool AddTaggedCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
-            if (!_dicTaggedAddedDelegates.ContainsKey(objTag))
+            if (_dicTaggedAddedDelegates.TryAdd(objTag, funcDelegateToAdd))
             {
-                _dicTaggedAddedDelegates.Add(objTag, funcDelegateToAdd);
-                CollectionChanged += funcDelegateToAdd;
+                base.CollectionChanged += funcDelegateToAdd;
                 return true;
             }
             Utils.BreakIfDebug();
@@ -56,14 +56,70 @@ namespace Chummer
         /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
         public bool RemoveTaggedCollectionChanged(object objTag)
         {
-            if (_dicTaggedAddedDelegates.TryGetValue(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
+            if (_dicTaggedAddedDelegates.TryRemove(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
             {
-                CollectionChanged -= funcDelegateToRemove;
-                _dicTaggedAddedDelegates.Remove(objTag);
+                base.CollectionChanged -= funcDelegateToRemove;
                 return true;
             }
             Utils.BreakIfDebug();
             return false;
+        }
+
+        /// <inheritdoc />
+        public override event NotifyCollectionChangedEventHandler CollectionChanged
+        {
+            add => throw new NotSupportedException("TaggedObservableCollection should use AddTaggedCollectionChanged method instead of adding to CollectionChanged");
+            remove => throw new NotSupportedException("TaggedObservableCollection should use RemoveTaggedCollectionChanged method instead of removing from CollectionChanged");
+        }
+
+        /// <summary>
+        /// Use in place of CollectionChanged Adder
+        /// </summary>
+        /// <param name="objTag">Tag to associate with added delegate</param>
+        /// <param name="funcDelegateToAdd">Delegate to add to CollectionChanged</param>
+        /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
+        public bool AddTaggedBeforeClearCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
+        {
+            if (_dicTaggedAddedBeforeClearDelegates.TryAdd(objTag, funcDelegateToAdd))
+            {
+                base.BeforeClearCollectionChanged += funcDelegateToAdd;
+                return true;
+            }
+            Utils.BreakIfDebug();
+            return false;
+        }
+
+        /// <summary>
+        /// Use in place of CollectionChanged Subtract
+        /// </summary>
+        /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
+        /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
+        public bool RemoveTaggedBeforeClearCollectionChanged(object objTag)
+        {
+            if (_dicTaggedAddedBeforeClearDelegates.TryRemove(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
+            {
+                base.BeforeClearCollectionChanged -= funcDelegateToRemove;
+                return true;
+            }
+            Utils.BreakIfDebug();
+            return false;
+        }
+
+        /// <inheritdoc />
+        public override event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged
+        {
+            add => throw new NotSupportedException("TaggedObservableCollection should use AddTaggedBeforeClearCollectionChanged method instead of adding to BeforeClearCollectionChanged");
+            remove => throw new NotSupportedException("TaggedObservableCollection should use RemoveTaggedBeforeClearCollectionChanged method instead of removing from BeforeClearCollectionChanged");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _dicTaggedAddedDelegates.Dispose();
+                _dicTaggedAddedBeforeClearDelegates.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace ChummerHub.Data
 {
@@ -16,13 +17,13 @@ namespace ChummerHub.Data
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.HostingEnvironment'
-        public IHostingEnvironment HostingEnvironment { get; set; }
+        public IHostEnvironment HostingEnvironment { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.HostingEnvironment'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Configuration'
         public IConfiguration Configuration { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Configuration'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>, IHostingEnvironment)'
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHostingEnvironment env)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHostEnvironment env)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>, IHostingEnvironment)'
             : base(options)
         {
@@ -55,20 +56,16 @@ namespace ChummerHub.Data
             }
             if (error)
             {
-                int counter = 0;
                 string wholeMessage = "Error while validating Entities:" + Environment.NewLine;
                 foreach (var valResult in validationResults)
                 {
-                    counter++;
                     string msg = "Members " + string.Join(", ", valResult.MemberNames) + " not valid: ";
                     msg += valResult.ErrorMessage;
                     wholeMessage += msg + Environment.NewLine;
                 }
                 var ex = new HubException(wholeMessage);
-                counter = 0;
                 foreach (var valResult in validationResults)
                 {
-                    counter++;
                     foreach (var member in valResult.MemberNames)
                     {
                         ex.Data.Add("member_" + member, valResult.ErrorMessage);
@@ -143,15 +140,19 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.FavoriteGuid);
             try
             {
-                Database.ExecuteSqlCommand(
-                    @"CREATE VIEW View_SINnerUserRights AS 
+                using (var dbContextTransaction = Database.BeginTransaction())
+                {
+                    Database.ExecuteSqlRaw(
+                        @"CREATE VIEW View_SINnerUserRights AS 
         SELECT        dbo.SINners.Alias, dbo.UserRights.EMail, dbo.SINners.Id, dbo.UserRights.CanEdit, dbo.SINners.GoogleDriveFileId, dbo.SINners.MyGroupId, dbo.SINners.LastChange
                          
 FROM            dbo.SINners INNER JOIN
                          dbo.SINnerMetaData ON dbo.SINners.SINnerMetaDataId = dbo.SINnerMetaData.Id INNER JOIN
                          dbo.SINnerVisibility ON dbo.SINnerMetaData.VisibilityId = dbo.SINnerVisibility.Id INNER JOIN
                          dbo.UserRights ON dbo.SINnerVisibility.Id = dbo.UserRights.SINnerVisibilityId"
-                );
+                    );
+                    dbContextTransaction.Commit();
+                }
             }
             catch (Exception e)
             {
