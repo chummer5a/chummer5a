@@ -93,6 +93,7 @@ namespace Chummer
         private decimal _decCachedCarryLimit = decimal.MinValue;
         private decimal _decCachedLiftLimit = decimal.MinValue;
         private decimal _decCachedTotalCarriedWeight = decimal.MinValue;
+        private decimal _decCachedEncumbranceInterval = decimal.MinValue;
 
         // General character info.
         private string _strName = string.Empty;
@@ -630,6 +631,9 @@ namespace Chummer
                     this.OnMultiplePropertyChanged(nameof(DisplayNuyen), nameof(DisplayCareerNuyen),
                                                    nameof(DisplayStolenNuyen));
                     break;
+                case nameof(CharacterSettings.WeightFormat):
+                    this.OnMultiplePropertyChanged(nameof(LiftAndCarryLimits), nameof(DisplayTotalCarriedWeight));
+                    break;
                 case nameof(CharacterSettings.EssenceFormat):
                 case nameof(CharacterSettings.DontRoundEssenceInternally):
                     this.OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence),
@@ -711,6 +715,44 @@ namespace Chummer
                     break;
                 case nameof(CharacterSettings.MaxHotSimInitiativeDice):
                     OnPropertyChanged(nameof(MatrixInitiativeHotDice));
+                    break;
+                case nameof(CharacterSettings.LiftLimitExpression):
+                    OnPropertyChanged(nameof(LiftLimit));
+                    break;
+                case nameof(CharacterSettings.CarryLimitExpression):
+                    OnPropertyChanged(nameof(CarryLimit));
+                    break;
+                case nameof(CharacterSettings.EncumbranceIntervalExpression):
+                    OnPropertyChanged(nameof(EncumbranceInterval));
+                    break;
+                case nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit):
+                case nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed):
+                case nameof(CharacterSettings.DoEncumbrancePenaltyAgility):
+                case nameof(CharacterSettings.DoEncumbrancePenaltyReaction):
+                    OnPropertyChanged(nameof(Encumbrance));
+                    break;
+                case nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit):
+                    if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                        OnPropertyChanged(nameof(Encumbrance));
+                    break;
+                case nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed):
+                    if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                        OnPropertyChanged(nameof(Encumbrance));
+                    break;
+                case nameof(CharacterSettings.EncumbrancePenaltyAgility):
+                    if (Settings.DoEncumbrancePenaltyAgility)
+                        OnPropertyChanged(nameof(Encumbrance));
+                    break;
+                case nameof(CharacterSettings.EncumbrancePenaltyReaction):
+                    if (Settings.DoEncumbrancePenaltyReaction)
+                        OnPropertyChanged(nameof(Encumbrance));
+                    break;
+                case nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier):
+                    this.OnMultiplePropertyChanged(nameof(WoundModifier), nameof(Encumbrance));
+                    break;
+                case nameof(CharacterSettings.EncumbrancePenaltyWoundModifier):
+                    if (Settings.DoEncumbrancePenaltyWoundModifier)
+                        this.OnMultiplePropertyChanged(nameof(WoundModifier), nameof(Encumbrance));
                     break;
             }
         }
@@ -2511,6 +2553,9 @@ namespace Chummer
                     // <totalcarriedweight />
                     objWriter.WriteElementString("totalcarriedweight",
                                                  _decCachedTotalCarriedWeight.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbranceinterval />
+                    objWriter.WriteElementString("encumbranceinterval",
+                                                 _decCachedEncumbranceInterval.ToString(GlobalSettings.InvariantCultureInfo));
                     // <streetcred />
                     objWriter.WriteElementString("streetcred",
                         _intStreetCred.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3860,6 +3905,7 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("carrylimit", ref _decCachedCarryLimit);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("liftlimit", ref _decCachedLiftLimit);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("totalcarriedweight", ref _decCachedTotalCarriedWeight);
+                                xmlCharacterNavigator.TryGetDecFieldQuickly("encumbranceinterval", ref _decCachedEncumbranceInterval);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("ainormalprogramlimit",
                                     ref _intAINormalProgramLimit);
@@ -6617,6 +6663,7 @@ namespace Chummer
             _decCachedCarryLimit = decimal.MinValue;
             _decCachedLiftLimit = decimal.MinValue;
             _decCachedTotalCarriedWeight = decimal.MinValue;
+            _decCachedEncumbranceInterval = decimal.MinValue;
             _intCachedDealerConnectionDiscount = int.MinValue;
             _intCachedEnemyKarma = int.MinValue;
             _intCachedErased = int.MinValue;
@@ -9696,7 +9743,7 @@ namespace Chummer
             {
                 if (_decCachedCarryLimit == decimal.MinValue)
                 {
-                    string strExpression = Settings.WeightCarryLimitExpression;
+                    string strExpression = Settings.CarryLimitExpression;
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -9727,7 +9774,7 @@ namespace Chummer
             {
                 if (_decCachedLiftLimit == decimal.MinValue)
                 {
-                    string strExpression = Settings.WeightLiftLimitExpression;
+                    string strExpression = Settings.LiftLimitExpression;
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -9746,6 +9793,41 @@ namespace Chummer
                 }
 
                 return _decCachedLiftLimit;
+            }
+        }
+
+        /// <summary>
+        /// Encumbrance interval (in kg).
+        /// </summary>
+        public decimal EncumbranceInterval
+        {
+            get
+            {
+                if (_decCachedEncumbranceInterval == decimal.MinValue)
+                {
+                    string strExpression = Settings.EncumbranceIntervalExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdValue))
+                        {
+                            sbdValue.Append(strExpression);
+                            AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                            // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                            object objProcess
+                                = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
+                            _decCachedEncumbranceInterval = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                        }
+                    }
+                    else
+                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCachedEncumbranceInterval);
+
+                    // Need this to make sure our division doesn't go haywire
+                    if (_decCachedEncumbranceInterval <= 0)
+                        _decCachedEncumbranceInterval = Convert.ToDecimal(double.Epsilon);
+                }
+
+                return _decCachedEncumbranceInterval;
             }
         }
 
@@ -14067,7 +14149,7 @@ namespace Chummer
                 decimal decCarriedWeight = TotalCarriedWeight;
 
                 return decCarriedWeight > decCarryLimit
-                    ? -((decCarriedWeight - decCarryLimit) / 15.0m).StandardRound()
+                    ? -((decCarriedWeight - decCarryLimit) / EncumbranceInterval).StandardRound()
                     : 0;
             }
         }
@@ -18009,14 +18091,16 @@ namespace Chummer
                 if (Settings.ChargenKarmaToNuyenExpression.Contains(strExpressionToFind))
                     lstPropertyChangedHolder.Add(nameof(TotalStartingNuyen));
             }
-            if (Settings.WeightCarryLimitExpression.Contains(strExpressionToFind))
+            if (Settings.CarryLimitExpression.Contains(strExpressionToFind))
                 lstPropertyChangedHolder.Add(nameof(CarryLimit));
-            if (Settings.WeightLiftLimitExpression.Contains(strExpressionToFind))
+            if (Settings.LiftLimitExpression.Contains(strExpressionToFind))
                 lstPropertyChangedHolder.Add(nameof(LiftLimit));
             if (Settings.BoundSpiritExpression.Contains(strExpressionToFind))
                 lstPropertyChangedHolder.Add(nameof(BoundSpiritLimit));
             if (Settings.RegisteredSpriteExpression.Contains(strExpressionToFind))
                 lstPropertyChangedHolder.Add(nameof(RegisteredSpriteLimit));
+            if (Settings.EncumbranceIntervalExpression.Contains(strExpressionToFind))
+                lstPropertyChangedHolder.Add(nameof(EncumbranceInterval));
         }
 
         public void RefreshBODDependentProperties(object sender, PropertyChangedEventArgs e)
@@ -18510,14 +18594,68 @@ namespace Chummer
                 return;
             // Remove any Improvements from Armor Encumbrance.
             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Encumbrance);
+            if (!Settings.DoEncumbrancePenaltyPhysicalLimit
+                && !Settings.DoEncumbrancePenaltyMovementSpeed
+                && !Settings.DoEncumbrancePenaltyAgility
+                && !Settings.DoEncumbrancePenaltyReaction)
+                return;
             // Create the Encumbrance Improvements.
             int intEncumbrance = Encumbrance;
-            if (intEncumbrance != 0)
-            {
+            if (intEncumbrance == 0)
+                return;
+            if (Settings.DoEncumbrancePenaltyPhysicalLimit)
                 ImprovementManager.CreateImprovement(this, "Physical", Improvement.ImprovementSource.Encumbrance,
-                                                     string.Empty, Improvement.ImprovementType.PhysicalLimit, "precedence-1", intEncumbrance);
-                ImprovementManager.Commit(this);
+                                                     string.Empty, Improvement.ImprovementType.PhysicalLimit,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyPhysicalLimit);
+            if (Settings.DoEncumbrancePenaltyMovementSpeed)
+            {
+                ImprovementManager.CreateImprovement(this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                ImprovementManager.CreateImprovement(this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                ImprovementManager.CreateImprovement(this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                ImprovementManager.CreateImprovement(this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                ImprovementManager.CreateImprovement(this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.WalkMultiplierPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.WalkMultiplierPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                ImprovementManager.CreateImprovement(this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.WalkMultiplierPercent,
+                                                     "precedence-1",
+                                                     intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
             }
+            if (Settings.DoEncumbrancePenaltyAgility)
+                ImprovementManager.CreateImprovement(this, "AGI", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0,
+                                                     intEncumbrance * Settings.EncumbrancePenaltyAgility);
+            if (Settings.DoEncumbrancePenaltyReaction)
+                ImprovementManager.CreateImprovement(this, "REA", Improvement.ImprovementSource.Encumbrance,
+                                                     string.Empty, Improvement.ImprovementType.Attribute, "precedence-1", 0, 1, 0, 0,
+                                                     intEncumbrance * Settings.EncumbrancePenaltyReaction);
+            ImprovementManager.Commit(this);
         }
 
         public void RefreshArmorEncumbrance()
@@ -18561,8 +18699,9 @@ namespace Chummer
                                        .Count > 0
                 ? 0
                 : Math.Min(0, PhysicalCMThresholdOffset - intPhysicalCMFilled) / intCMThreshold;
-
             _intWoundModifier = intPhysicalCMPenalty + intStunCMPenalty;
+            if (Settings.DoEncumbrancePenaltyWoundModifier && Encumbrance != 0)
+                _intWoundModifier += Encumbrance * Settings.EncumbrancePenaltyWoundModifier;
         }
 
         private int _intWoundModifier;
@@ -18941,7 +19080,8 @@ namespace Chummer
                             new DependencyGraphNode<string, Character>(nameof(PhysicalCMFilled)),
                             new DependencyGraphNode<string, Character>(nameof(CMThreshold)),
                             new DependencyGraphNode<string, Character>(nameof(IsAI))
-                        )
+                        ),
+                        new DependencyGraphNode<string, Character>(nameof(Encumbrance), x => x.Settings.DoEncumbrancePenaltyWoundModifier)
                     ),
                     new DependencyGraphNode<string, Character>(nameof(CMThresholdOffsets),
                         new DependencyGraphNode<string, Character>(nameof(PhysicalCMThresholdOffset)),
@@ -19225,7 +19365,8 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(Encumbrance),
                         new DependencyGraphNode<string, Character>(nameof(CarryLimit)),
-                        new DependencyGraphNode<string, Character>(nameof(TotalCarriedWeight))
+                        new DependencyGraphNode<string, Character>(nameof(TotalCarriedWeight)),
+                        new DependencyGraphNode<string, Character>(nameof(EncumbranceInterval))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayTotalCarriedWeight),
                         new DependencyGraphNode<string, Character>(nameof(CarryLimit)),
@@ -19500,6 +19641,11 @@ namespace Chummer
                 if (setNamesOfChangedProperties.Contains(nameof(LiftLimit)))
                 {
                     _decCachedLiftLimit = decimal.MinValue;
+                }
+
+                if (setNamesOfChangedProperties.Contains(nameof(EncumbranceInterval)))
+                {
+                    _decCachedEncumbranceInterval = decimal.MinValue;
                 }
 
                 if (setNamesOfChangedProperties.Contains(nameof(TotalArmorRating)))

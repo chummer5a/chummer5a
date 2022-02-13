@@ -241,9 +241,9 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strXPathExpression))
                     strXPathExpression = strXPathExpression
-                                         .Replace('{' + strCharAttributeName + '}', "0")
-                                         .Replace('{' + strCharAttributeName + "Unaug}", "0")
-                                         .Replace('{' + strCharAttributeName + "Base}", "0");
+                                         .Replace('{' + strCharAttributeName + '}', "1")
+                                         .Replace('{' + strCharAttributeName + "Unaug}", "1")
+                                         .Replace('{' + strCharAttributeName + "Base}", "1");
             }
 
             if (string.IsNullOrEmpty(strXPathExpression))

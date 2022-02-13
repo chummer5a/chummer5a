@@ -109,6 +109,19 @@ namespace Chummer
         private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
         private string _strBoundSpiritExpression = "{CHA}";
         private string _strRegisteredSpriteExpression = "{LOG}";
+        private string _strLiftLimitExpression = "{STR} * 15";
+        private string _strCarryLimitExpression = "{STR} * 10";
+        private string _strEncumbranceIntervalExpression = "15";
+        private bool _blnDoEncumbrancePenaltyPhysicalLimit = true;
+        private bool _blnDoEncumbrancePenaltyMovementSpeed;
+        private bool _blnDoEncumbrancePenaltyAgility;
+        private bool _blnDoEncumbrancePenaltyReaction;
+        private bool _blnDoEncumbrancePenaltyWoundModifier;
+        private int _intEncumbrancePenaltyPhysicalLimit = 1;
+        private int _intEncumbrancePenaltyMovementSpeed = 1;
+        private int _intEncumbrancePenaltyAgility = 1;
+        private int _intEncumbrancePenaltyReaction = 1;
+        private int _intEncumbrancePenaltyWoundModifier = 1;
         private bool _blnDoNotRoundEssenceInternally;
         private bool _blnEnableEnemyTracking;
         private bool _blnEnemyKarmaQualityLimit = true;
@@ -127,6 +140,7 @@ namespace Chummer
         private bool _blnMysAdeptSecondMAGAttribute;
         private bool _blnReverseAttributePriorityOrder;
         private string _strNuyenFormat = "#,0.##";
+        private string _strWeightFormat = "#,0.###";
         private bool _blnCompensateSkillGroupKarmaDifference;
         private bool _blnIncreasedImprovedAbilityMultiplier;
         private bool _blnAllowFreeGrids;
@@ -278,6 +292,8 @@ namespace Chummer
                     _intCachedMinNuyenDecimals = -1;
                 if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
                     _intCachedEssenceDecimals = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
+                    _intCachedWeightDecimals = -1;
                 if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
                     RecalculateEnabledCustomDataDirectories();
                 if (setNamesOfChangedProperties.Contains(nameof(Books)))
@@ -319,6 +335,9 @@ namespace Chummer
                 ),
                 new DependencyGraphNode<string, CharacterSettings>(nameof(EssenceDecimals),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(EssenceFormat))
+                ),
+                new DependencyGraphNode<string, CharacterSettings>(nameof(WeightDecimals),
+                    new DependencyGraphNode<string, CharacterSettings>(nameof(WeightFormat))
                 ),
                 new DependencyGraphNode<string, CharacterSettings>(nameof(BuiltInOption),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(SourceId))
@@ -535,6 +554,19 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strLiftLimitExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strCarryLimitExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strEncumbranceIntervalExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyPhysicalLimit.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyMovementSpeed.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyAgility.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyReaction.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyWoundModifier.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyPhysicalLimit.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyMovementSpeed.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyAgility.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyReaction.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyWoundModifier.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDoNotRoundEssenceInternally.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnEnableEnemyTracking.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnEnemyKarmaQualityLimit.GetHashCode();
@@ -553,6 +585,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnMysAdeptSecondMAGAttribute.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnReverseAttributePriorityOrder.GetHashCode();
                 hashCode = (hashCode * 397) ^ (_strNuyenFormat?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strWeightFormat?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _blnCompensateSkillGroupKarmaDifference.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnIncreasedImprovedAbilityMultiplier.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowFreeGrids.GetHashCode();
@@ -722,6 +755,32 @@ namespace Chummer
                     objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
                     // <compiledspriteexpression />
                     objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
+                    // <liftlimitexpression />
+                    objWriter.WriteElementString("liftlimitexpression", _strLiftLimitExpression);
+                    // <carrylimitexpression />
+                    objWriter.WriteElementString("carrylimitexpression", _strCarryLimitExpression);
+                    // <encumbranceintervalexpression />
+                    objWriter.WriteElementString("encumbranceintervalexpression", _strEncumbranceIntervalExpression);
+                    // <doencumbrancepenaltyphysicallimit />
+                    objWriter.WriteElementString("doencumbrancepenaltyphysicallimit", _blnDoEncumbrancePenaltyPhysicalLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <doencumbrancepenaltymovementspeed />
+                    objWriter.WriteElementString("doencumbrancepenaltymovementspeed", _blnDoEncumbrancePenaltyMovementSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <doencumbrancepenaltyagility />
+                    objWriter.WriteElementString("doencumbrancepenaltyagility", _blnDoEncumbrancePenaltyAgility.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <doencumbrancepenaltyreaction />
+                    objWriter.WriteElementString("doencumbrancepenaltyreaction", _blnDoEncumbrancePenaltyReaction.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <doencumbrancepenaltywoundmodifier />
+                    objWriter.WriteElementString("doencumbrancepenaltywoundmodifier", _blnDoEncumbrancePenaltyWoundModifier.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltyphysicallimit />
+                    objWriter.WriteElementString("encumbrancepenaltyphysicallimit", _intEncumbrancePenaltyPhysicalLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltymovementspeed />
+                    objWriter.WriteElementString("encumbrancepenaltymovementspeed", _intEncumbrancePenaltyMovementSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltyagility />
+                    objWriter.WriteElementString("encumbrancepenaltyagility", _intEncumbrancePenaltyAgility.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltyreaction />
+                    objWriter.WriteElementString("encumbrancepenaltyreaction", _intEncumbrancePenaltyReaction.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltywoundmodifier />
+                    objWriter.WriteElementString("encumbrancepenaltywoundmodifier", _intEncumbrancePenaltyWoundModifier.ToString(GlobalSettings.InvariantCultureInfo));
                     // <dronearmormultiplierenabled />
                     objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                     // <dronearmorflatnumber />
@@ -782,6 +841,8 @@ namespace Chummer
                     objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString(GlobalSettings.InvariantCultureInfo));
                     // <nuyenformat />
                     objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
+                    // <weightformat />
+                    objWriter.WriteElementString("weightformat", _strWeightFormat);
                     // <essencedecimals />
                     objWriter.WriteElementString("essenceformat", _strEssenceFormat);
                     // <enforcecapacity />
@@ -1167,8 +1228,23 @@ namespace Chummer
             {
                 _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
             }
+            // Various expressions used to determine certain character stats
             objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
             objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
+            objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
+            objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
+            objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression", ref _strEncumbranceIntervalExpression);
+            // Whether to apply certain penalties to encumbrance and, if so, how much per tick
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyphysicallimit", ref _blnDoEncumbrancePenaltyPhysicalLimit);
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltymovementspeed", ref _blnDoEncumbrancePenaltyMovementSpeed);
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyagility", ref _blnDoEncumbrancePenaltyAgility);
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyreaction", ref _blnDoEncumbrancePenaltyReaction);
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltywoundmodifier", ref _blnDoEncumbrancePenaltyWoundModifier);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyphysicallimit", ref _intEncumbrancePenaltyPhysicalLimit);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltymovementspeed", ref _intEncumbrancePenaltyMovementSpeed);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyagility", ref _intEncumbrancePenaltyAgility);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyreaction", ref _intEncumbrancePenaltyReaction);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltywoundmodifier", ref _intEncumbrancePenaltyWoundModifier);
             // Drone Armor Multiplier Enabled
             objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
             // Drone Armor Multiplier Value
@@ -1235,6 +1311,13 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
             // Format in which nuyen values are displayed
             objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
+            // Format in which weight values are displayed
+            if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
+            {
+                int intDecimalPlaces = _strWeightFormat.IndexOf('.');
+                if (intDecimalPlaces == -1)
+                    _strWeightFormat += ".###";
+            }
             // Format in which essence values should be displayed (and to which they should be rounded)
             if (!objXmlNode.TryGetStringFieldQuickly("essenceformat", ref _strEssenceFormat))
             {
@@ -2913,11 +2996,277 @@ namespace Chummer
             }
         }
 
-        public string WeightFormat => "#,0.###";
+        /// <summary>
+        /// Format in which weight values should be displayed (does not include kg units).
+        /// </summary>
+        public string WeightFormat
+        {
+            get => _strWeightFormat;
+            set
+            {
+                if (_strWeightFormat != value)
+                {
+                    _strWeightFormat = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
-        public string WeightCarryLimitExpression => "{STR} * 10";
+        private int _intCachedWeightDecimals = -1;
 
-        public string WeightLiftLimitExpression => "{STR} * 15";
+        /// <summary>
+        /// Number of decimal places to round to when calculating Essence.
+        /// </summary>
+        public int WeightDecimals
+        {
+            get
+            {
+                if (_intCachedWeightDecimals >= 0)
+                    return _intCachedWeightDecimals;
+                string strWeightFormat = WeightFormat;
+                int intDecimalPlaces = strWeightFormat.IndexOf('.');
+                intDecimalPlaces = strWeightFormat.Length - intDecimalPlaces - 1;
+
+                return _intCachedWeightDecimals = intDecimalPlaces;
+            }
+            set
+            {
+                int intCurrentWeightDecimals = WeightDecimals;
+                int intNewWeightDecimals = Math.Max(value, 0);
+                if (intNewWeightDecimals < intCurrentWeightDecimals)
+                {
+                    WeightFormat = EssenceFormat.Substring(0, EssenceFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals));
+                }
+                else if (intNewWeightDecimals > intCurrentWeightDecimals)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdWeightFormat))
+                    {
+                        sbdWeightFormat.Append(string.IsNullOrEmpty(WeightFormat) ? "#,0" : WeightFormat);
+                        if (intCurrentWeightDecimals == 0)
+                        {
+                            sbdWeightFormat.Append('.');
+                        }
+                        for (int i = intCurrentWeightDecimals; i < intNewWeightDecimals; ++i)
+                        {
+                            sbdWeightFormat.Append('#');
+                        }
+                        WeightFormat = sbdWeightFormat.ToString();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the maximum weight the character can lift in kg
+        /// </summary>
+        public string LiftLimitExpression
+        {
+            get => _strLiftLimitExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strLiftLimitExpression != strNewValue)
+                {
+                    _strLiftLimitExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the maximum weight the character can carry in kg
+        /// </summary>
+        public string CarryLimitExpression
+        {
+            get => _strCarryLimitExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strCarryLimitExpression != strNewValue)
+                {
+                    _strCarryLimitExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the amount of weight necessary to increase encumbrance penalties by one tick
+        /// </summary>
+        public string EncumbranceIntervalExpression
+        {
+            get => _strEncumbranceIntervalExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strEncumbranceIntervalExpression != strNewValue)
+                {
+                    _strEncumbranceIntervalExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Physical Limit from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyPhysicalLimit
+        {
+            get => _blnDoEncumbrancePenaltyPhysicalLimit;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyPhysicalLimit != value)
+                {
+                    _blnDoEncumbrancePenaltyPhysicalLimit = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Physical Limit that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyPhysicalLimit
+        {
+            get => _intEncumbrancePenaltyPhysicalLimit;
+            set
+            {
+                if (_intEncumbrancePenaltyPhysicalLimit != value)
+                {
+                    _intEncumbrancePenaltyPhysicalLimit = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Movement Speeds from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyMovementSpeed
+        {
+            get => _blnDoEncumbrancePenaltyMovementSpeed;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyMovementSpeed != value)
+                {
+                    _blnDoEncumbrancePenaltyMovementSpeed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Movement Speeds that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyMovementSpeed
+        {
+            get => _intEncumbrancePenaltyMovementSpeed;
+            set
+            {
+                if (_intEncumbrancePenaltyMovementSpeed != value)
+                {
+                    _intEncumbrancePenaltyMovementSpeed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Agility from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyAgility
+        {
+            get => _blnDoEncumbrancePenaltyAgility;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyAgility != value)
+                {
+                    _blnDoEncumbrancePenaltyAgility = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Agility that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyAgility
+        {
+            get => _intEncumbrancePenaltyAgility;
+            set
+            {
+                if (_intEncumbrancePenaltyAgility != value)
+                {
+                    _intEncumbrancePenaltyAgility = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Reaction from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyReaction
+        {
+            get => _blnDoEncumbrancePenaltyReaction;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyReaction != value)
+                {
+                    _blnDoEncumbrancePenaltyReaction = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Reaction that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyReaction
+        {
+            get => _intEncumbrancePenaltyReaction;
+            set
+            {
+                if (_intEncumbrancePenaltyReaction != value)
+                {
+                    _intEncumbrancePenaltyReaction = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Physical Active and Weapon skills from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyWoundModifier
+        {
+            get => _blnDoEncumbrancePenaltyWoundModifier;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyWoundModifier != value)
+                {
+                    _blnDoEncumbrancePenaltyWoundModifier = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Reaction that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyWoundModifier
+        {
+            get => _intEncumbrancePenaltyWoundModifier;
+            set
+            {
+                if (_intEncumbrancePenaltyWoundModifier != value)
+                {
+                    _intEncumbrancePenaltyWoundModifier = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private int _intCachedEssenceDecimals = -1;
 

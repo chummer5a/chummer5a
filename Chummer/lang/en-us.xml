@@ -2379,6 +2379,50 @@
       <text>Registered Sprite Limit:</text>
     </string>
     <string>
+      <key>Label_CharacterOptions_WeightDecimalPlaces</key>
+      <text>Number of decimal places to show for weight:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_LiftLimit</key>
+      <text>Lift Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_CarryLimit</key>
+      <text>Carry Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbranceIntervalLeft</key>
+      <text>Increase encumbrance penalty every</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbranceIntervalRight</key>
+      <text>kg over Carry Limit</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbrancePenaltiesHeader</key>
+      <text>Each encumbrance penalty tick does the following:</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyPhysicalLimit</key>
+      <text>Lower Physical Limit by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyMovementSpeed</key>
+      <text>Lower Movement Speeds by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyAgility</key>
+      <text>Lower Agility by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyReaction</key>
+      <text>Lower Reaction by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyWoundModifier</key>
+      <text>Apply an additional Wound Modifier of</text>
+    </string>
+    <string>
       <key>Message_CannotRemoveCyberware</key>
       <text>This item cannot be removed because it is included as a base feature for a piece of Cyberware.</text>
     </string>

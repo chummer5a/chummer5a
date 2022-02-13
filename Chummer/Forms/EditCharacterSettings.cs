@@ -747,30 +747,61 @@ namespace Chummer
 
         private void txtContactPoints_TextChanged(object sender, EventArgs e)
         {
-            txtContactPoints.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtContactPoints.Text) ?
-                ColorManager.WindowText : ColorManager.ErrorColor;
+            txtContactPoints.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtContactPoints.Text)
+                ? ColorManager.WindowText
+                : ColorManager.ErrorColor;
         }
 
         private void txtKnowledgePoints_TextChanged(object sender, EventArgs e)
         {
-            txtKnowledgePoints.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtKnowledgePoints.Text) ?
-                ColorManager.WindowText : ColorManager.ErrorColor;
+            txtKnowledgePoints.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtKnowledgePoints.Text)
+                ? ColorManager.WindowText
+                : ColorManager.ErrorColor;
         }
 
         private void txtNuyenExpression_TextChanged(object sender, EventArgs e)
         {
-            txtNuyenExpression.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtNuyenExpression.Text) ?
-                ColorManager.WindowText : ColorManager.ErrorColor;
+            txtNuyenExpression.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtNuyenExpression.Text)
+                ? ColorManager.WindowText
+                : ColorManager.ErrorColor;
         }
+
         private void txtBoundSpiritLimit_TextChanged(object sender, EventArgs e)
         {
-            txtBoundSpiritLimit.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtBoundSpiritLimit.Text) ?
-                ColorManager.WindowText : ColorManager.ErrorColor;
+            txtBoundSpiritLimit.ForeColor
+                = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtBoundSpiritLimit.Text)
+                    ? ColorManager.WindowText
+                    : ColorManager.ErrorColor;
         }
+
         private void txtRegisteredSpriteLimit_TextChanged(object sender, EventArgs e)
         {
-            txtRegisteredSpriteLimit.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtRegisteredSpriteLimit.Text) ?
-                ColorManager.WindowText : ColorManager.ErrorColor;
+            txtRegisteredSpriteLimit.ForeColor
+                = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtRegisteredSpriteLimit.Text)
+                    ? ColorManager.WindowText
+                    : ColorManager.ErrorColor;
+        }
+
+        private void txtLiftLimit_TextChanged(object sender, EventArgs e)
+        {
+            txtLiftLimit.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtLiftLimit.Text)
+                ? ColorManager.WindowText
+                : ColorManager.ErrorColor;
+        }
+
+        private void txtCarryLimit_TextChanged(object sender, EventArgs e)
+        {
+            txtCarryLimit.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtCarryLimit.Text)
+                ? ColorManager.WindowText
+                : ColorManager.ErrorColor;
+        }
+
+        private void txtEncumbranceInterval_TextChanged(object sender, EventArgs e)
+        {
+            txtEncumbranceInterval.ForeColor
+                = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtEncumbranceInterval.Text)
+                    ? ColorManager.WindowText
+                    : ColorManager.ErrorColor;
         }
 
         private void chkGrade_CheckedChanged(object sender, EventArgs e)
@@ -1230,6 +1261,22 @@ namespace Chummer
             txtNuyenExpression.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.ChargenKarmaToNuyenExpression));
             txtRegisteredSpriteLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.RegisteredSpriteExpression));
             txtBoundSpiritLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.BoundSpiritExpression));
+            txtLiftLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.LiftLimitExpression));
+            txtCarryLimit.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.CarryLimitExpression));
+            txtEncumbranceInterval.DoDataBinding("Text", _objCharacterSettings, nameof(CharacterSettings.EncumbranceIntervalExpression));
+            nudWeightDecimals.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.WeightDecimals));
+
+            chkEncumbrancePenaltyPhysicalLimit.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyPhysicalLimit));
+            chkEncumbrancePenaltyMovementSpeed.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyMovementSpeed));
+            chkEncumbrancePenaltyAgility.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyAgility));
+            chkEncumbrancePenaltyReaction.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyReaction));
+            chkEncumbrancePenaltyWoundModifier.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.DoEncumbrancePenaltyWoundModifier));
+
+            nudEncumbrancePenaltyPhysicalLimit.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyPhysicalLimit));
+            nudEncumbrancePenaltyMovementSpeed.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyMovementSpeed));
+            nudEncumbrancePenaltyAgility.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyAgility));
+            nudEncumbrancePenaltyReaction.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyReaction));
+            nudEncumbrancePenaltyWoundModifier.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.EncumbrancePenaltyWoundModifier));
 
             chkEnforceCapacity.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.EnforceCapacity));
             chkLicenseEachRestrictedItem.DoDataBinding("Checked", _objCharacterSettings, nameof(CharacterSettings.LicenseRestricted));
@@ -1431,8 +1478,18 @@ namespace Chummer
                        CommonFunctions.IsCharacterAttributeXPathValidOrNull(
                            _objCharacterSettings.KnowledgePointsExpression) &&
                        CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.ChargenKarmaToNuyenExpression.Replace("{Karma}", "0")
-                               .Replace("{PriorityNuyen}", "0"));
+                           _objCharacterSettings.ChargenKarmaToNuyenExpression.Replace("{Karma}", "1")
+                               .Replace("{PriorityNuyen}", "1")) &&
+                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                           _objCharacterSettings.RegisteredSpriteExpression) &&
+                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                           _objCharacterSettings.BoundSpiritExpression) &&
+                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                           _objCharacterSettings.LiftLimitExpression) &&
+                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                           _objCharacterSettings.CarryLimitExpression) &&
+                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                           _objCharacterSettings.EncumbranceIntervalExpression);
             }
         }
 

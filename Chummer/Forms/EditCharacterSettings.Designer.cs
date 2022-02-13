@@ -72,6 +72,28 @@ namespace Chummer
             this.txtNuyenExpression = new System.Windows.Forms.TextBox();
             this.lblContactPoints = new Chummer.LabelWithToolTip();
             this.txtContactPoints = new System.Windows.Forms.TextBox();
+            this.gpbBasicOptionsEncumbrance = new System.Windows.Forms.GroupBox();
+            this.tlpBasicOptionsEncumbrance = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblCarryLimit = new Chummer.LabelWithToolTip();
+            this.lblLiftLimit = new Chummer.LabelWithToolTip();
+            this.txtLiftLimit = new System.Windows.Forms.TextBox();
+            this.txtCarryLimit = new System.Windows.Forms.TextBox();
+            this.lblEncumbrancePenaltiesHeader = new System.Windows.Forms.Label();
+            this.tlpEncumbranceInterval = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblEncumbranceIntervalLeft = new Chummer.LabelWithToolTip();
+            this.txtEncumbranceInterval = new System.Windows.Forms.TextBox();
+            this.lblEncumbranceIntervalRight = new Chummer.LabelWithToolTip();
+            this.chkEncumbrancePenaltyPhysicalLimit = new Chummer.ColorableCheckBox(this.components);
+            this.chkEncumbrancePenaltyMovementSpeed = new Chummer.ColorableCheckBox(this.components);
+            this.chkEncumbrancePenaltyAgility = new Chummer.ColorableCheckBox(this.components);
+            this.chkEncumbrancePenaltyReaction = new Chummer.ColorableCheckBox(this.components);
+            this.chkEncumbrancePenaltyWoundModifier = new Chummer.ColorableCheckBox(this.components);
+            this.nudEncumbrancePenaltyPhysicalLimit = new Chummer.NumericUpDownEx();
+            this.nudEncumbrancePenaltyAgility = new Chummer.NumericUpDownEx();
+            this.nudEncumbrancePenaltyReaction = new Chummer.NumericUpDownEx();
+            this.nudEncumbrancePenaltyWoundModifier = new Chummer.NumericUpDownEx();
+            this.nudEncumbrancePenaltyMovementSpeed = new Chummer.NumericUpDownEx();
+            this.lblEncumbrancePenaltyMovementSpeedPercent = new Chummer.LabelWithToolTip();
             this.gpbBasicOptionsOfficialRules = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsOfficialRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkAllowFreeGrids = new Chummer.ColorableCheckBox(this.components);
@@ -262,6 +284,7 @@ namespace Chummer
             this.gpbDirectoryAuthors = new System.Windows.Forms.GroupBox();
             this.pnlDirectoryAuthors = new System.Windows.Forms.Panel();
             this.lblDirectoryAuthors = new System.Windows.Forms.Label();
+            this.rtbDirectoryDescription = new System.Windows.Forms.RichTextBox();
             this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
             this.tlpOptionalRulesButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdToTopCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
@@ -334,7 +357,8 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.rtbDirectoryDescription = new System.Windows.Forms.RichTextBox();
+            this.nudWeightDecimals = new Chummer.NumericUpDownEx();
+            this.lblWeightDecimalPlaces = new Chummer.LabelWithToolTip();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -348,6 +372,14 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
+            this.gpbBasicOptionsEncumbrance.SuspendLayout();
+            this.tlpBasicOptionsEncumbrance.SuspendLayout();
+            this.tlpEncumbranceInterval.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyPhysicalLimit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyAgility)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyReaction)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyWoundModifier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyMovementSpeed)).BeginInit();
             this.gpbBasicOptionsOfficialRules.SuspendLayout();
             this.tlpBasicOptionsOfficialRules.SuspendLayout();
             this.gpbBasicOptionsCyberlimbs.SuspendLayout();
@@ -449,6 +481,7 @@ namespace Chummer
             this.flpKarmaGainedFromEnemies.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).BeginInit();
             this.tlpButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudWeightDecimals)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -575,6 +608,7 @@ namespace Chummer
             this.flpBasicOptions.AutoScroll = true;
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsCreateSettings);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsOfficialRules);
+            this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsEncumbrance);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsCyberlimbs);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsRounding);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsInitiativeDice);
@@ -984,6 +1018,402 @@ namespace Chummer
             this.txtContactPoints.Text = "{CHAUnaug} * 3";
             this.txtContactPoints.TextChanged += new System.EventHandler(this.txtContactPoints_TextChanged);
             // 
+            // gpbBasicOptionsEncumbrance
+            // 
+            this.gpbBasicOptionsEncumbrance.AutoSize = true;
+            this.gpbBasicOptionsEncumbrance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbBasicOptionsEncumbrance.Controls.Add(this.tlpBasicOptionsEncumbrance);
+            this.gpbBasicOptionsEncumbrance.Location = new System.Drawing.Point(481, 211);
+            this.gpbBasicOptionsEncumbrance.Name = "gpbBasicOptionsEncumbrance";
+            this.gpbBasicOptionsEncumbrance.Size = new System.Drawing.Size(369, 278);
+            this.gpbBasicOptionsEncumbrance.TabIndex = 7;
+            this.gpbBasicOptionsEncumbrance.TabStop = false;
+            this.gpbBasicOptionsEncumbrance.Tag = "String_Encumbrance";
+            this.gpbBasicOptionsEncumbrance.Text = "Encumbrance";
+            // 
+            // tlpBasicOptionsEncumbrance
+            // 
+            this.tlpBasicOptionsEncumbrance.AutoSize = true;
+            this.tlpBasicOptionsEncumbrance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpBasicOptionsEncumbrance.ColumnCount = 4;
+            this.tlpBasicOptionsEncumbrance.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBasicOptionsEncumbrance.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBasicOptionsEncumbrance.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBasicOptionsEncumbrance.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.lblWeightDecimalPlaces, 0, 0);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.lblCarryLimit, 0, 2);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.lblLiftLimit, 0, 1);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.txtLiftLimit, 1, 1);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.txtCarryLimit, 1, 2);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.lblEncumbrancePenaltiesHeader, 0, 4);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.tlpEncumbranceInterval, 0, 4);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.chkEncumbrancePenaltyPhysicalLimit, 0, 6);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.chkEncumbrancePenaltyMovementSpeed, 0, 7);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.chkEncumbrancePenaltyAgility, 0, 8);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.chkEncumbrancePenaltyReaction, 0, 9);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.chkEncumbrancePenaltyWoundModifier, 0, 10);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.nudEncumbrancePenaltyPhysicalLimit, 2, 6);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.nudEncumbrancePenaltyAgility, 2, 8);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.nudEncumbrancePenaltyReaction, 2, 9);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.nudEncumbrancePenaltyWoundModifier, 2, 10);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.nudEncumbrancePenaltyMovementSpeed, 2, 7);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.lblEncumbrancePenaltyMovementSpeedPercent, 3, 7);
+            this.tlpBasicOptionsEncumbrance.Controls.Add(this.nudWeightDecimals, 2, 0);
+            this.tlpBasicOptionsEncumbrance.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpBasicOptionsEncumbrance.Location = new System.Drawing.Point(3, 16);
+            this.tlpBasicOptionsEncumbrance.Name = "tlpBasicOptionsEncumbrance";
+            this.tlpBasicOptionsEncumbrance.RowCount = 11;
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsEncumbrance.Size = new System.Drawing.Size(363, 259);
+            this.tlpBasicOptionsEncumbrance.TabIndex = 0;
+            // 
+            // lblCarryLimit
+            // 
+            this.lblCarryLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCarryLimit.AutoSize = true;
+            this.lblCarryLimit.Location = new System.Drawing.Point(3, 58);
+            this.lblCarryLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCarryLimit.Name = "lblCarryLimit";
+            this.lblCarryLimit.Size = new System.Drawing.Size(58, 13);
+            this.lblCarryLimit.TabIndex = 2;
+            this.lblCarryLimit.Tag = "Label_CharacterOptions_CarryLimit";
+            this.lblCarryLimit.Text = "Carry Limit:";
+            this.lblCarryLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblCarryLimit.ToolTipText = "";
+            // 
+            // lblLiftLimit
+            // 
+            this.lblLiftLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblLiftLimit.AutoSize = true;
+            this.lblLiftLimit.Location = new System.Drawing.Point(13, 32);
+            this.lblLiftLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftLimit.Name = "lblLiftLimit";
+            this.lblLiftLimit.Size = new System.Drawing.Size(48, 13);
+            this.lblLiftLimit.TabIndex = 1;
+            this.lblLiftLimit.Tag = "Label_CharacterOptions_LiftLimit";
+            this.lblLiftLimit.Text = "Lift Limit:";
+            this.lblLiftLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblLiftLimit.ToolTipText = "";
+            // 
+            // txtLiftLimit
+            // 
+            this.txtLiftLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.txtLiftLimit, 3);
+            this.txtLiftLimit.Location = new System.Drawing.Point(67, 29);
+            this.txtLiftLimit.Name = "txtLiftLimit";
+            this.txtLiftLimit.Size = new System.Drawing.Size(293, 20);
+            this.txtLiftLimit.TabIndex = 3;
+            this.txtLiftLimit.Text = "{STR} * 15";
+            this.txtLiftLimit.TextChanged += new System.EventHandler(this.txtLiftLimit_TextChanged);
+            // 
+            // txtCarryLimit
+            // 
+            this.txtCarryLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.txtCarryLimit, 3);
+            this.txtCarryLimit.Location = new System.Drawing.Point(67, 55);
+            this.txtCarryLimit.Name = "txtCarryLimit";
+            this.txtCarryLimit.Size = new System.Drawing.Size(293, 20);
+            this.txtCarryLimit.TabIndex = 4;
+            this.txtCarryLimit.Text = "{STR} * 10";
+            this.txtCarryLimit.TextChanged += new System.EventHandler(this.txtCarryLimit_TextChanged);
+            // 
+            // lblEncumbrancePenaltiesHeader
+            // 
+            this.lblEncumbrancePenaltiesHeader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblEncumbrancePenaltiesHeader.AutoSize = true;
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.lblEncumbrancePenaltiesHeader, 4);
+            this.lblEncumbrancePenaltiesHeader.Location = new System.Drawing.Point(3, 84);
+            this.lblEncumbrancePenaltiesHeader.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblEncumbrancePenaltiesHeader.Name = "lblEncumbrancePenaltiesHeader";
+            this.lblEncumbrancePenaltiesHeader.Size = new System.Drawing.Size(248, 13);
+            this.lblEncumbrancePenaltiesHeader.TabIndex = 53;
+            this.lblEncumbrancePenaltiesHeader.Tag = "Label_CharacterOptions_EncumbrancePenaltiesHeader";
+            this.lblEncumbrancePenaltiesHeader.Text = "Each encumbrance penalty tick does the following:";
+            this.lblEncumbrancePenaltiesHeader.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // tlpEncumbranceInterval
+            // 
+            this.tlpEncumbranceInterval.AutoSize = true;
+            this.tlpEncumbranceInterval.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpEncumbranceInterval.ColumnCount = 3;
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.tlpEncumbranceInterval, 4);
+            this.tlpEncumbranceInterval.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpEncumbranceInterval.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpEncumbranceInterval.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpEncumbranceInterval.Controls.Add(this.lblEncumbranceIntervalLeft, 0, 0);
+            this.tlpEncumbranceInterval.Controls.Add(this.txtEncumbranceInterval, 1, 0);
+            this.tlpEncumbranceInterval.Controls.Add(this.lblEncumbranceIntervalRight, 2, 0);
+            this.tlpEncumbranceInterval.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpEncumbranceInterval.Location = new System.Drawing.Point(0, 103);
+            this.tlpEncumbranceInterval.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpEncumbranceInterval.Name = "tlpEncumbranceInterval";
+            this.tlpEncumbranceInterval.RowCount = 1;
+            this.tlpEncumbranceInterval.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpEncumbranceInterval.Size = new System.Drawing.Size(363, 26);
+            this.tlpEncumbranceInterval.TabIndex = 59;
+            // 
+            // lblEncumbranceIntervalLeft
+            // 
+            this.lblEncumbranceIntervalLeft.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblEncumbranceIntervalLeft.AutoSize = true;
+            this.lblEncumbranceIntervalLeft.Location = new System.Drawing.Point(3, 6);
+            this.lblEncumbranceIntervalLeft.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblEncumbranceIntervalLeft.Name = "lblEncumbranceIntervalLeft";
+            this.lblEncumbranceIntervalLeft.Size = new System.Drawing.Size(182, 13);
+            this.lblEncumbranceIntervalLeft.TabIndex = 5;
+            this.lblEncumbranceIntervalLeft.Tag = "Label_CharacterOptions_EncumbranceIntervalLeft";
+            this.lblEncumbranceIntervalLeft.Text = "Increase encumbrance penalty every";
+            this.lblEncumbranceIntervalLeft.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblEncumbranceIntervalLeft.ToolTipText = "";
+            // 
+            // txtEncumbranceInterval
+            // 
+            this.txtEncumbranceInterval.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtEncumbranceInterval.Location = new System.Drawing.Point(191, 3);
+            this.txtEncumbranceInterval.Name = "txtEncumbranceInterval";
+            this.txtEncumbranceInterval.Size = new System.Drawing.Size(69, 20);
+            this.txtEncumbranceInterval.TabIndex = 52;
+            this.txtEncumbranceInterval.Text = "15";
+            this.txtEncumbranceInterval.TextChanged += new System.EventHandler(this.txtEncumbranceInterval_TextChanged);
+            // 
+            // lblEncumbranceIntervalRight
+            // 
+            this.lblEncumbranceIntervalRight.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEncumbranceIntervalRight.AutoSize = true;
+            this.lblEncumbranceIntervalRight.Location = new System.Drawing.Point(266, 6);
+            this.lblEncumbranceIntervalRight.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblEncumbranceIntervalRight.Name = "lblEncumbranceIntervalRight";
+            this.lblEncumbranceIntervalRight.Size = new System.Drawing.Size(94, 13);
+            this.lblEncumbranceIntervalRight.TabIndex = 51;
+            this.lblEncumbranceIntervalRight.Tag = "Label_CharacterOptions_EncumbranceIntervalRight";
+            this.lblEncumbranceIntervalRight.Text = "kg over Carry Limit";
+            this.lblEncumbranceIntervalRight.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblEncumbranceIntervalRight.ToolTipText = "";
+            // 
+            // chkEncumbrancePenaltyPhysicalLimit
+            // 
+            this.chkEncumbrancePenaltyPhysicalLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkEncumbrancePenaltyPhysicalLimit.AutoSize = true;
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.chkEncumbrancePenaltyPhysicalLimit, 2);
+            this.chkEncumbrancePenaltyPhysicalLimit.DefaultColorScheme = true;
+            this.chkEncumbrancePenaltyPhysicalLimit.Location = new System.Drawing.Point(23, 133);
+            this.chkEncumbrancePenaltyPhysicalLimit.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkEncumbrancePenaltyPhysicalLimit.Name = "chkEncumbrancePenaltyPhysicalLimit";
+            this.chkEncumbrancePenaltyPhysicalLimit.Size = new System.Drawing.Size(135, 17);
+            this.chkEncumbrancePenaltyPhysicalLimit.TabIndex = 54;
+            this.chkEncumbrancePenaltyPhysicalLimit.Tag = "Checkbox_CharacterOptions_EncumbrancePenaltyPhysicalLimit";
+            this.chkEncumbrancePenaltyPhysicalLimit.Text = "Lower Physical Limit by";
+            this.chkEncumbrancePenaltyPhysicalLimit.UseVisualStyleBackColor = true;
+            // 
+            // chkEncumbrancePenaltyMovementSpeed
+            // 
+            this.chkEncumbrancePenaltyMovementSpeed.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkEncumbrancePenaltyMovementSpeed.AutoSize = true;
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.chkEncumbrancePenaltyMovementSpeed, 2);
+            this.chkEncumbrancePenaltyMovementSpeed.DefaultColorScheme = true;
+            this.chkEncumbrancePenaltyMovementSpeed.Location = new System.Drawing.Point(23, 159);
+            this.chkEncumbrancePenaltyMovementSpeed.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkEncumbrancePenaltyMovementSpeed.Name = "chkEncumbrancePenaltyMovementSpeed";
+            this.chkEncumbrancePenaltyMovementSpeed.Size = new System.Drawing.Size(161, 17);
+            this.chkEncumbrancePenaltyMovementSpeed.TabIndex = 55;
+            this.chkEncumbrancePenaltyMovementSpeed.Tag = "Checkbox_CharacterOptions_EncumbrancePenaltyMovementSpeed";
+            this.chkEncumbrancePenaltyMovementSpeed.Text = "Lower Movement Speeds by";
+            this.chkEncumbrancePenaltyMovementSpeed.UseVisualStyleBackColor = true;
+            // 
+            // chkEncumbrancePenaltyAgility
+            // 
+            this.chkEncumbrancePenaltyAgility.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkEncumbrancePenaltyAgility.AutoSize = true;
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.chkEncumbrancePenaltyAgility, 2);
+            this.chkEncumbrancePenaltyAgility.DefaultColorScheme = true;
+            this.chkEncumbrancePenaltyAgility.Location = new System.Drawing.Point(23, 185);
+            this.chkEncumbrancePenaltyAgility.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkEncumbrancePenaltyAgility.Name = "chkEncumbrancePenaltyAgility";
+            this.chkEncumbrancePenaltyAgility.Size = new System.Drawing.Size(99, 17);
+            this.chkEncumbrancePenaltyAgility.TabIndex = 56;
+            this.chkEncumbrancePenaltyAgility.Tag = "Checkbox_CharacterOptions_EncumbrancePenaltyAgility";
+            this.chkEncumbrancePenaltyAgility.Text = "Lower Agility by";
+            this.chkEncumbrancePenaltyAgility.UseVisualStyleBackColor = true;
+            // 
+            // chkEncumbrancePenaltyReaction
+            // 
+            this.chkEncumbrancePenaltyReaction.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkEncumbrancePenaltyReaction.AutoSize = true;
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.chkEncumbrancePenaltyReaction, 2);
+            this.chkEncumbrancePenaltyReaction.DefaultColorScheme = true;
+            this.chkEncumbrancePenaltyReaction.Location = new System.Drawing.Point(23, 211);
+            this.chkEncumbrancePenaltyReaction.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkEncumbrancePenaltyReaction.Name = "chkEncumbrancePenaltyReaction";
+            this.chkEncumbrancePenaltyReaction.Size = new System.Drawing.Size(115, 17);
+            this.chkEncumbrancePenaltyReaction.TabIndex = 57;
+            this.chkEncumbrancePenaltyReaction.Tag = "Checkbox_CharacterOptions_EncumbrancePenaltyReaction";
+            this.chkEncumbrancePenaltyReaction.Text = "Lower Reaction by";
+            this.chkEncumbrancePenaltyReaction.UseVisualStyleBackColor = true;
+            // 
+            // chkEncumbrancePenaltyWoundModifier
+            // 
+            this.chkEncumbrancePenaltyWoundModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkEncumbrancePenaltyWoundModifier.AutoSize = true;
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.chkEncumbrancePenaltyWoundModifier, 2);
+            this.chkEncumbrancePenaltyWoundModifier.DefaultColorScheme = true;
+            this.chkEncumbrancePenaltyWoundModifier.Location = new System.Drawing.Point(23, 237);
+            this.chkEncumbrancePenaltyWoundModifier.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkEncumbrancePenaltyWoundModifier.Name = "chkEncumbrancePenaltyWoundModifier";
+            this.chkEncumbrancePenaltyWoundModifier.Size = new System.Drawing.Size(205, 17);
+            this.chkEncumbrancePenaltyWoundModifier.TabIndex = 58;
+            this.chkEncumbrancePenaltyWoundModifier.Tag = "Checkbox_CharacterOptions_EncumbrancePenaltySkillWoundModifier";
+            this.chkEncumbrancePenaltyWoundModifier.Text = "Apply an additional Wound Modifier of";
+            this.chkEncumbrancePenaltyWoundModifier.UseVisualStyleBackColor = true;
+            // 
+            // nudEncumbrancePenaltyPhysicalLimit
+            // 
+            this.nudEncumbrancePenaltyPhysicalLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudEncumbrancePenaltyPhysicalLimit.AutoSize = true;
+            this.nudEncumbrancePenaltyPhysicalLimit.Enabled = false;
+            this.nudEncumbrancePenaltyPhysicalLimit.Location = new System.Drawing.Point(234, 132);
+            this.nudEncumbrancePenaltyPhysicalLimit.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyPhysicalLimit.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyPhysicalLimit.Name = "nudEncumbrancePenaltyPhysicalLimit";
+            this.nudEncumbrancePenaltyPhysicalLimit.Size = new System.Drawing.Size(41, 20);
+            this.nudEncumbrancePenaltyPhysicalLimit.TabIndex = 60;
+            this.nudEncumbrancePenaltyPhysicalLimit.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // nudEncumbrancePenaltyAgility
+            // 
+            this.nudEncumbrancePenaltyAgility.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudEncumbrancePenaltyAgility.AutoSize = true;
+            this.nudEncumbrancePenaltyAgility.Enabled = false;
+            this.nudEncumbrancePenaltyAgility.Location = new System.Drawing.Point(234, 184);
+            this.nudEncumbrancePenaltyAgility.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyAgility.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyAgility.Name = "nudEncumbrancePenaltyAgility";
+            this.nudEncumbrancePenaltyAgility.Size = new System.Drawing.Size(41, 20);
+            this.nudEncumbrancePenaltyAgility.TabIndex = 61;
+            this.nudEncumbrancePenaltyAgility.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // nudEncumbrancePenaltyReaction
+            // 
+            this.nudEncumbrancePenaltyReaction.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudEncumbrancePenaltyReaction.AutoSize = true;
+            this.nudEncumbrancePenaltyReaction.Enabled = false;
+            this.nudEncumbrancePenaltyReaction.Location = new System.Drawing.Point(234, 210);
+            this.nudEncumbrancePenaltyReaction.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyReaction.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyReaction.Name = "nudEncumbrancePenaltyReaction";
+            this.nudEncumbrancePenaltyReaction.Size = new System.Drawing.Size(41, 20);
+            this.nudEncumbrancePenaltyReaction.TabIndex = 62;
+            this.nudEncumbrancePenaltyReaction.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // nudEncumbrancePenaltyWoundModifier
+            // 
+            this.nudEncumbrancePenaltyWoundModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudEncumbrancePenaltyWoundModifier.AutoSize = true;
+            this.nudEncumbrancePenaltyWoundModifier.Enabled = false;
+            this.nudEncumbrancePenaltyWoundModifier.Location = new System.Drawing.Point(234, 236);
+            this.nudEncumbrancePenaltyWoundModifier.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyWoundModifier.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyWoundModifier.Name = "nudEncumbrancePenaltyWoundModifier";
+            this.nudEncumbrancePenaltyWoundModifier.Size = new System.Drawing.Size(41, 20);
+            this.nudEncumbrancePenaltyWoundModifier.TabIndex = 63;
+            this.nudEncumbrancePenaltyWoundModifier.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // nudEncumbrancePenaltyMovementSpeed
+            // 
+            this.nudEncumbrancePenaltyMovementSpeed.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudEncumbrancePenaltyMovementSpeed.AutoSize = true;
+            this.nudEncumbrancePenaltyMovementSpeed.Enabled = false;
+            this.nudEncumbrancePenaltyMovementSpeed.Location = new System.Drawing.Point(234, 158);
+            this.nudEncumbrancePenaltyMovementSpeed.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyMovementSpeed.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudEncumbrancePenaltyMovementSpeed.Name = "nudEncumbrancePenaltyMovementSpeed";
+            this.nudEncumbrancePenaltyMovementSpeed.Size = new System.Drawing.Size(41, 20);
+            this.nudEncumbrancePenaltyMovementSpeed.TabIndex = 64;
+            this.nudEncumbrancePenaltyMovementSpeed.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // lblEncumbrancePenaltyMovementSpeedPercent
+            // 
+            this.lblEncumbrancePenaltyMovementSpeedPercent.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblEncumbrancePenaltyMovementSpeedPercent.AutoSize = true;
+            this.lblEncumbrancePenaltyMovementSpeedPercent.Location = new System.Drawing.Point(281, 161);
+            this.lblEncumbrancePenaltyMovementSpeedPercent.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblEncumbrancePenaltyMovementSpeedPercent.Name = "lblEncumbrancePenaltyMovementSpeedPercent";
+            this.lblEncumbrancePenaltyMovementSpeedPercent.Size = new System.Drawing.Size(15, 13);
+            this.lblEncumbrancePenaltyMovementSpeedPercent.TabIndex = 65;
+            this.lblEncumbrancePenaltyMovementSpeedPercent.Tag = "";
+            this.lblEncumbrancePenaltyMovementSpeedPercent.Text = "%";
+            this.lblEncumbrancePenaltyMovementSpeedPercent.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblEncumbrancePenaltyMovementSpeedPercent.ToolTipText = "";
+            // 
             // gpbBasicOptionsOfficialRules
             // 
             this.gpbBasicOptionsOfficialRules.AutoSize = true;
@@ -1147,7 +1577,7 @@ namespace Chummer
             this.gpbBasicOptionsCyberlimbs.AutoSize = true;
             this.gpbBasicOptionsCyberlimbs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbBasicOptionsCyberlimbs.Controls.Add(this.tlpBasicOptionsCyberlimbs);
-            this.gpbBasicOptionsCyberlimbs.Location = new System.Drawing.Point(481, 211);
+            this.gpbBasicOptionsCyberlimbs.Location = new System.Drawing.Point(3, 495);
             this.gpbBasicOptionsCyberlimbs.Name = "gpbBasicOptionsCyberlimbs";
             this.gpbBasicOptionsCyberlimbs.Size = new System.Drawing.Size(385, 147);
             this.gpbBasicOptionsCyberlimbs.TabIndex = 2;
@@ -1406,7 +1836,7 @@ namespace Chummer
             this.gpbBasicOptionsRounding.AutoSize = true;
             this.gpbBasicOptionsRounding.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbBasicOptionsRounding.Controls.Add(this.tlpBasicOptionsRounding);
-            this.gpbBasicOptionsRounding.Location = new System.Drawing.Point(3, 436);
+            this.gpbBasicOptionsRounding.Location = new System.Drawing.Point(394, 495);
             this.gpbBasicOptionsRounding.Name = "gpbBasicOptionsRounding";
             this.gpbBasicOptionsRounding.Size = new System.Drawing.Size(361, 122);
             this.gpbBasicOptionsRounding.TabIndex = 1;
@@ -1559,7 +1989,7 @@ namespace Chummer
             // 
             this.gpbBasicOptionsInitiativeDice.AutoSize = true;
             this.gpbBasicOptionsInitiativeDice.Controls.Add(this.tlpBasicOptionsInitiativeDice);
-            this.gpbBasicOptionsInitiativeDice.Location = new System.Drawing.Point(370, 436);
+            this.gpbBasicOptionsInitiativeDice.Location = new System.Drawing.Point(3, 648);
             this.gpbBasicOptionsInitiativeDice.Name = "gpbBasicOptionsInitiativeDice";
             this.gpbBasicOptionsInitiativeDice.Size = new System.Drawing.Size(239, 148);
             this.gpbBasicOptionsInitiativeDice.TabIndex = 6;
@@ -4096,6 +4526,18 @@ namespace Chummer
             this.lblDirectoryAuthors.Text = "[Directory Authors]";
             this.lblDirectoryAuthors.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // rtbDirectoryDescription
+            // 
+            this.rtbDirectoryDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tlpDirectoryInfo.SetColumnSpan(this.rtbDirectoryDescription, 2);
+            this.rtbDirectoryDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbDirectoryDescription.Location = new System.Drawing.Point(3, 142);
+            this.rtbDirectoryDescription.Name = "rtbDirectoryDescription";
+            this.rtbDirectoryDescription.ReadOnly = true;
+            this.rtbDirectoryDescription.Size = new System.Drawing.Size(468, 273);
+            this.rtbDirectoryDescription.TabIndex = 17;
+            this.rtbDirectoryDescription.Text = "";
+            // 
             // lblCustomDataDirectoriesLabel
             // 
             this.lblCustomDataDirectoriesLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -5212,17 +5654,44 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // rtbDirectoryDescription
+            // nudWeightDecimals
             // 
-            this.rtbDirectoryDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.tlpDirectoryInfo.SetColumnSpan(this.rtbDirectoryDescription, 2);
-            this.rtbDirectoryDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtbDirectoryDescription.Location = new System.Drawing.Point(3, 142);
-            this.rtbDirectoryDescription.Name = "rtbDirectoryDescription";
-            this.rtbDirectoryDescription.ReadOnly = true;
-            this.rtbDirectoryDescription.Size = new System.Drawing.Size(468, 273);
-            this.rtbDirectoryDescription.TabIndex = 17;
-            this.rtbDirectoryDescription.Text = "";
+            this.nudWeightDecimals.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudWeightDecimals.AutoSize = true;
+            this.nudWeightDecimals.Location = new System.Drawing.Point(234, 3);
+            this.nudWeightDecimals.Maximum = new decimal(new int[] {
+            28,
+            0,
+            0,
+            0});
+            this.nudWeightDecimals.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudWeightDecimals.Name = "nudWeightDecimals";
+            this.nudWeightDecimals.Size = new System.Drawing.Size(35, 20);
+            this.nudWeightDecimals.TabIndex = 66;
+            this.nudWeightDecimals.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            // 
+            // lblWeightDecimalPlaces
+            // 
+            this.lblWeightDecimalPlaces.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeightDecimalPlaces.AutoSize = true;
+            this.tlpBasicOptionsEncumbrance.SetColumnSpan(this.lblWeightDecimalPlaces, 2);
+            this.lblWeightDecimalPlaces.Location = new System.Drawing.Point(7, 6);
+            this.lblWeightDecimalPlaces.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeightDecimalPlaces.Name = "lblWeightDecimalPlaces";
+            this.lblWeightDecimalPlaces.Size = new System.Drawing.Size(221, 13);
+            this.lblWeightDecimalPlaces.TabIndex = 67;
+            this.lblWeightDecimalPlaces.Tag = "Label_CharacterOptions_WeightDecimalPlaces";
+            this.lblWeightDecimalPlaces.Text = "Number of decimal places to show for weight:";
+            this.lblWeightDecimalPlaces.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblWeightDecimalPlaces.ToolTipText = "";
             // 
             // EditCharacterSettings
             // 
@@ -5261,6 +5730,17 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
+            this.gpbBasicOptionsEncumbrance.ResumeLayout(false);
+            this.gpbBasicOptionsEncumbrance.PerformLayout();
+            this.tlpBasicOptionsEncumbrance.ResumeLayout(false);
+            this.tlpBasicOptionsEncumbrance.PerformLayout();
+            this.tlpEncumbranceInterval.ResumeLayout(false);
+            this.tlpEncumbranceInterval.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyPhysicalLimit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyAgility)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyReaction)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyWoundModifier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudEncumbrancePenaltyMovementSpeed)).EndInit();
             this.gpbBasicOptionsOfficialRules.ResumeLayout(false);
             this.gpbBasicOptionsOfficialRules.PerformLayout();
             this.tlpBasicOptionsOfficialRules.ResumeLayout(false);
@@ -5401,6 +5881,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudWeightDecimals)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -5706,5 +6187,29 @@ namespace Chummer
         private NumericUpDownEx nudMinColdSimInitiativeDice;
         private NumericUpDownEx nudMinHotSimInitiativeDice;
         private System.Windows.Forms.RichTextBox rtbDirectoryDescription;
+        private System.Windows.Forms.GroupBox gpbBasicOptionsEncumbrance;
+        private BufferedTableLayoutPanel tlpBasicOptionsEncumbrance;
+        private LabelWithToolTip lblCarryLimit;
+        private LabelWithToolTip lblLiftLimit;
+        private System.Windows.Forms.TextBox txtLiftLimit;
+        private System.Windows.Forms.TextBox txtCarryLimit;
+        private LabelWithToolTip lblEncumbranceIntervalLeft;
+        private LabelWithToolTip lblEncumbranceIntervalRight;
+        private System.Windows.Forms.TextBox txtEncumbranceInterval;
+        private System.Windows.Forms.Label lblEncumbrancePenaltiesHeader;
+        private BufferedTableLayoutPanel tlpEncumbranceInterval;
+        private ColorableCheckBox chkEncumbrancePenaltyPhysicalLimit;
+        private ColorableCheckBox chkEncumbrancePenaltyMovementSpeed;
+        private ColorableCheckBox chkEncumbrancePenaltyAgility;
+        private ColorableCheckBox chkEncumbrancePenaltyReaction;
+        private ColorableCheckBox chkEncumbrancePenaltyWoundModifier;
+        private NumericUpDownEx nudEncumbrancePenaltyPhysicalLimit;
+        private NumericUpDownEx nudEncumbrancePenaltyAgility;
+        private NumericUpDownEx nudEncumbrancePenaltyReaction;
+        private NumericUpDownEx nudEncumbrancePenaltyWoundModifier;
+        private NumericUpDownEx nudEncumbrancePenaltyMovementSpeed;
+        private LabelWithToolTip lblEncumbrancePenaltyMovementSpeedPercent;
+        private LabelWithToolTip lblWeightDecimalPlaces;
+        private NumericUpDownEx nudWeightDecimals;
     }
 }
