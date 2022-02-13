@@ -7548,6 +7548,9 @@ namespace Chummer
                     }
 
                     break;
+
+                default:
+                    return;
             }
 
             IsCharacterUpdateRequested = true;
@@ -7555,7 +7558,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void chkWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
+        private void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || treWeapons.SelectedNode == null)
                 return;
@@ -7563,19 +7566,23 @@ namespace Chummer
             {
                 // Locate the selected Weapon Accessory or Modification.
                 case WeaponAccessory objAccessory:
-                    objAccessory.Equipped = chkWeaponAccessoryInstalled.Checked;
+                    objAccessory.Equipped = chkWeaponEquipped.Checked;
                     break;
 
                 case Weapon objWeapon:
-                    objWeapon.Equipped = chkWeaponAccessoryInstalled.Checked;
+                    objWeapon.Equipped = chkWeaponEquipped.Checked;
                     break;
 
                 case Gear objGear:
-                    objGear.Equipped = chkWeaponAccessoryInstalled.Checked;
-                    objGear.ChangeEquippedStatus(chkWeaponAccessoryInstalled.Checked);
-                    IsCharacterUpdateRequested = true;
+                    objGear.Equipped = chkWeaponEquipped.Checked;
+                    objGear.ChangeEquippedStatus(chkWeaponEquipped.Checked);
                     break;
+
+                default:
+                    return;
             }
+
+            IsCharacterUpdateRequested = true;
 
             IsDirty = true;
         }
@@ -7588,8 +7595,10 @@ namespace Chummer
             if (!(treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory))
                 return;
             objAccessory.IncludedInWeapon = chkIncludedInWeapon.Checked;
-            IsDirty = true;
+            
             IsCharacterUpdateRequested = true;
+
+            IsDirty = true;
         }
 
         private void treGear_ItemDrag(object sender, ItemDragEventArgs e)
@@ -10511,9 +10520,12 @@ namespace Chummer
                         lblWeaponConcealLabel.Visible = true;
                         lblWeaponConceal.Visible = true;
                         lblWeaponConceal.Text = objWeapon.DisplayConcealability;
-                        chkWeaponAccessoryInstalled.Visible = true;
-                        chkWeaponAccessoryInstalled.Enabled = objWeapon.Parent != null;
-                        chkWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
+                        chkWeaponEquipped.Text
+                            = LanguageManager.GetString(objWeapon.Parent == null
+                                                            ? "Checkbox_Equipped"
+                                                            : "Checkbox_Installed");
+                        chkWeaponEquipped.Enabled = !objWeapon.IncludedInWeapon;
+                        chkWeaponEquipped.Checked = objWeapon.Equipped;
                         chkIncludedInWeapon.Visible = objWeapon.Parent != null;
                         chkIncludedInWeapon.Enabled = false;
                         chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
@@ -10700,9 +10712,12 @@ namespace Chummer
                         lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
                         lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
                         lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                        chkWeaponAccessoryInstalled.Visible = true;
-                        chkWeaponAccessoryInstalled.Enabled = objSelectedAccessory.Parent != null;
-                        chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Equipped;
+                        chkWeaponEquipped.Text
+                            = LanguageManager.GetString(objSelectedAccessory.Parent == null
+                                                            ? "Checkbox_Equipped"
+                                                            : "Checkbox_Installed");
+                        chkWeaponEquipped.Enabled = !objSelectedAccessory.IncludedInWeapon;
+                        chkWeaponEquipped.Checked = objSelectedAccessory.Equipped;
                         chkIncludedInWeapon.Visible = objSelectedAccessory.Parent != null;
                         chkIncludedInWeapon.Enabled = CharacterObjectSettings.AllowEditPartOfBaseWeapon;
                         chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
@@ -10844,9 +10859,9 @@ namespace Chummer
                         lblWeaponSlots.Visible = false;
                         lblWeaponConcealLabel.Visible = false;
                         lblWeaponConceal.Visible = false;
-                        chkWeaponAccessoryInstalled.Visible = true;
-                        chkWeaponAccessoryInstalled.Enabled = objGear.IncludedInParent;
-                        chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
+                        chkWeaponEquipped.Text = LanguageManager.GetString("Checkbox_Equipped");
+                        chkWeaponEquipped.Enabled = !objGear.IncludedInParent;
+                        chkWeaponEquipped.Checked = objGear.Equipped;
                         chkIncludedInWeapon.Visible = false;
 
                         if (CharacterObject.BlackMarketDiscount)
@@ -15058,8 +15073,6 @@ namespace Chummer
                     .Replace("{PriorityNuyen}", LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen"))));
             // Armor Tab.
             chkArmorEquipped.SetToolTip(LanguageManager.GetString("Tip_ArmorEquipped"));
-            // Weapon Tab.
-            chkWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled"));
             // Gear Tab.
             chkGearActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink"));
             chkCyberwareActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink"));

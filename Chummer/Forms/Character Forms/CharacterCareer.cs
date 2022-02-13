@@ -10522,6 +10522,9 @@ namespace Chummer
                     }
 
                     break;
+
+                default:
+                    return;
             }
 
             IsCharacterUpdateRequested = true;
@@ -10554,7 +10557,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void chkWeaponAccessoryInstalled_CheckedChanged(object sender, EventArgs e)
+        private void chkWeaponEquipped_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
@@ -10562,19 +10565,23 @@ namespace Chummer
             switch (treWeapons.SelectedNode?.Tag)
             {
                 case Weapon objWeapon:
-                    objWeapon.Equipped = chkWeaponAccessoryInstalled.Checked;
+                    objWeapon.Equipped = chkWeaponEquipped.Checked;
                     break;
 
                 case Gear objGear:
                     // Find the selected Gear.
-                    objGear.Equipped = chkWeaponAccessoryInstalled.Checked;
-                    objGear.ChangeEquippedStatus(chkWeaponAccessoryInstalled.Checked);
+                    objGear.Equipped = chkWeaponEquipped.Checked;
+                    objGear.ChangeEquippedStatus(chkWeaponEquipped.Checked);
                     break;
 
                 case WeaponAccessory objAccessory:
-                    objAccessory.Equipped = chkWeaponAccessoryInstalled.Checked;
+                    objAccessory.Equipped = chkWeaponEquipped.Checked;
                     break;
+
+                default:
+                    return;
             }
+
             IsCharacterUpdateRequested = true;
 
             IsDirty = true;
@@ -13582,9 +13589,12 @@ namespace Chummer
                         lblWeaponConceal.Visible = true;
                         lblWeaponConceal.Text = objWeapon.DisplayConcealability;
                         cmdWeaponMoveToVehicle.Visible = cmdDeleteWeapon.Enabled && CharacterObject.Vehicles.Count > 0;
-                        chkWeaponAccessoryInstalled.Visible = true;
-                        chkWeaponAccessoryInstalled.Enabled = objWeapon.Parent != null;
-                        chkWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
+                        chkWeaponEquipped.Text
+                            = LanguageManager.GetString(objWeapon.Parent == null
+                                                            ? "Checkbox_Equipped"
+                                                            : "Checkbox_Installed");
+                        chkWeaponEquipped.Enabled = !objWeapon.IncludedInWeapon;
+                        chkWeaponEquipped.Checked = objWeapon.Equipped;
                         chkIncludedInWeapon.Visible = objWeapon.Parent != null;
                         chkIncludedInWeapon.Enabled = false;
                         chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
@@ -13890,9 +13900,12 @@ namespace Chummer
                         lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
                         lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
                         lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                        chkWeaponAccessoryInstalled.Visible = true;
-                        chkWeaponAccessoryInstalled.Enabled = objSelectedAccessory.Parent != null;
-                        chkWeaponAccessoryInstalled.Checked = objSelectedAccessory.Equipped;
+                        chkWeaponEquipped.Text
+                            = LanguageManager.GetString(objSelectedAccessory.Parent == null
+                                                            ? "Checkbox_Equipped"
+                                                            : "Checkbox_Installed");
+                        chkWeaponEquipped.Enabled = !objSelectedAccessory.IncludedInWeapon;
+                        chkWeaponEquipped.Checked = objSelectedAccessory.Equipped;
                         chkIncludedInWeapon.Visible = objSelectedAccessory.Parent != null;
                         chkIncludedInWeapon.Enabled = CharacterObjectSettings.AllowEditPartOfBaseWeapon;
                         chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
@@ -14022,9 +14035,9 @@ namespace Chummer
                         lblWeaponSlots.Visible = false;
                         lblWeaponConcealLabel.Visible = false;
                         lblWeaponConceal.Visible = false;
-                        chkWeaponAccessoryInstalled.Visible = true;
-                        chkWeaponAccessoryInstalled.Enabled = objGear.IncludedInParent;
-                        chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
+                        chkWeaponEquipped.Text = LanguageManager.GetString("Checkbox_Equipped");
+                        chkWeaponEquipped.Enabled = !objGear.IncludedInParent;
+                        chkWeaponEquipped.Checked = objGear.Equipped;
                         chkIncludedInWeapon.Visible = false;
 
                         // gpbWeaponsMatrix
@@ -16669,7 +16682,6 @@ namespace Chummer
             // ToolTipFactory.SetToolTip(cmdArmorIncrease, LanguageManager.GetString("Tip_ArmorDegradationAPlus"));
             // ToolTipFactory.SetToolTip(cmdArmorDecrease, LanguageManager.GetString("Tip_ArmorDegradationAMinus"));
             // Weapon Tab.
-            chkWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled"));
             cmdWeaponBuyAmmo.ToolTipText = LanguageManager.GetString("Tip_BuyAmmo");
             cmdWeaponMoveToVehicle.ToolTipText = LanguageManager.GetString("Tip_TransferToVehicle");
             // Gear Tab.

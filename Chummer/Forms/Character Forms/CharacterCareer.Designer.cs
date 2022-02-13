@@ -287,6 +287,8 @@ namespace Chummer
             this.lblDodge = new Chummer.LabelWithToolTip();
             this.lblLiftCarryLimitsLabel = new System.Windows.Forms.Label();
             this.lblLiftCarryLimits = new Chummer.LabelWithToolTip();
+            this.lblLiftCarryHitsLabel = new System.Windows.Forms.Label();
+            this.nudLiftCarryHits = new Chummer.NumericUpDownEx();
             this.tabDefenses = new System.Windows.Forms.TabPage();
             this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
             this.nudCounterspellingDice = new Chummer.NumericUpDownEx();
@@ -868,7 +870,7 @@ namespace Chummer
             this.lblWeaponCost = new System.Windows.Forms.Label();
             this.flpWeaponsCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdWeaponMoveToVehicle = new Chummer.ButtonWithToolTip(this.components);
-            this.chkWeaponAccessoryInstalled = new Chummer.ColorableCheckBox(this.components);
+            this.chkWeaponEquipped = new Chummer.ColorableCheckBox(this.components);
             this.chkIncludedInWeapon = new Chummer.ColorableCheckBox(this.components);
             this.lblWeaponSource = new System.Windows.Forms.Label();
             this.lblWeaponSourceLabel = new System.Windows.Forms.Label();
@@ -1371,8 +1373,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.lblLiftCarryHitsLabel = new System.Windows.Forms.Label();
-            this.nudLiftCarryHits = new Chummer.NumericUpDownEx();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1404,6 +1404,7 @@ namespace Chummer
             this.flpCMEdge.SuspendLayout();
             this.tabOtherInfo.SuspendLayout();
             this.tlpInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLiftCarryHits)).BeginInit();
             this.tabDefenses.SuspendLayout();
             this.tlpSpellDefense.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudCounterspellingDice)).BeginInit();
@@ -1662,7 +1663,6 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudLiftCarryHits)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTraditionSource
@@ -5247,6 +5247,37 @@ namespace Chummer
             this.lblLiftCarryLimits.TabIndex = 94;
             this.lblLiftCarryLimits.Text = "0/0 kg";
             this.lblLiftCarryLimits.ToolTipText = "";
+            // 
+            // lblLiftCarryHitsLabel
+            // 
+            this.lblLiftCarryHitsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblLiftCarryHitsLabel.AutoSize = true;
+            this.lblLiftCarryHitsLabel.Location = new System.Drawing.Point(35, 506);
+            this.lblLiftCarryHitsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftCarryHitsLabel.Name = "lblLiftCarryHitsLabel";
+            this.lblLiftCarryHitsLabel.Size = new System.Drawing.Size(131, 13);
+            this.lblLiftCarryHitsLabel.TabIndex = 95;
+            this.lblLiftCarryHitsLabel.Tag = "Label_OtherLiftAndCarryHits";
+            this.lblLiftCarryHitsLabel.Text = "Active Lift/Carry Test Hits:";
+            // 
+            // nudLiftCarryHits
+            // 
+            this.nudLiftCarryHits.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudLiftCarryHits.AutoSize = true;
+            this.nudLiftCarryHits.Location = new System.Drawing.Point(172, 503);
+            this.nudLiftCarryHits.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudLiftCarryHits.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudLiftCarryHits.Name = "nudLiftCarryHits";
+            this.nudLiftCarryHits.Size = new System.Drawing.Size(41, 20);
+            this.nudLiftCarryHits.TabIndex = 96;
             // 
             // tabDefenses
             // 
@@ -14047,7 +14078,7 @@ namespace Chummer
             this.tabWeapons.Location = new System.Drawing.Point(4, 22);
             this.tabWeapons.Name = "tabWeapons";
             this.tabWeapons.Padding = new System.Windows.Forms.Padding(3);
-            this.tabWeapons.Size = new System.Drawing.Size(184, 48);
+            this.tabWeapons.Size = new System.Drawing.Size(969, 605);
             this.tabWeapons.TabIndex = 2;
             this.tabWeapons.Tag = "Tab_Weapons";
             this.tabWeapons.Text = "Weapons";
@@ -14067,7 +14098,7 @@ namespace Chummer
             this.tlpWeapons.RowCount = 2;
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpWeapons.Size = new System.Drawing.Size(178, 42);
+            this.tlpWeapons.Size = new System.Drawing.Size(963, 599);
             this.tlpWeapons.TabIndex = 227;
             // 
             // treWeapons
@@ -14083,7 +14114,7 @@ namespace Chummer
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode21});
             this.treWeapons.ShowNodeToolTips = true;
-            this.treWeapons.Size = new System.Drawing.Size(50, 7);
+            this.treWeapons.Size = new System.Drawing.Size(302, 564);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
             this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
@@ -14099,10 +14130,10 @@ namespace Chummer
             this.flpWeapons.Controls.Add(this.tabWeaponCM);
             this.flpWeapons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpWeapons.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpWeapons.Location = new System.Drawing.Point(56, 29);
+            this.flpWeapons.Location = new System.Drawing.Point(308, 29);
             this.flpWeapons.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeapons.Name = "flpWeapons";
-            this.flpWeapons.Size = new System.Drawing.Size(122, 13);
+            this.flpWeapons.Size = new System.Drawing.Size(655, 570);
             this.flpWeapons.TabIndex = 229;
             this.flpWeapons.WrapContents = false;
             // 
@@ -14351,13 +14382,13 @@ namespace Chummer
             this.flpWeaponsCommonCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpWeaponsCommon.SetColumnSpan(this.flpWeaponsCommonCheckBoxes, 2);
             this.flpWeaponsCommonCheckBoxes.Controls.Add(this.cmdWeaponMoveToVehicle);
-            this.flpWeaponsCommonCheckBoxes.Controls.Add(this.chkWeaponAccessoryInstalled);
+            this.flpWeaponsCommonCheckBoxes.Controls.Add(this.chkWeaponEquipped);
             this.flpWeaponsCommonCheckBoxes.Controls.Add(this.chkIncludedInWeapon);
             this.flpWeaponsCommonCheckBoxes.Location = new System.Drawing.Point(252, 100);
             this.flpWeaponsCommonCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeaponsCommonCheckBoxes.Name = "flpWeaponsCommonCheckBoxes";
             this.tlpWeaponsCommon.SetRowSpan(this.flpWeaponsCommonCheckBoxes, 2);
-            this.flpWeaponsCommonCheckBoxes.Size = new System.Drawing.Size(234, 30);
+            this.flpWeaponsCommonCheckBoxes.Size = new System.Drawing.Size(240, 30);
             this.flpWeaponsCommonCheckBoxes.TabIndex = 103;
             // 
             // cmdWeaponMoveToVehicle
@@ -14381,20 +14412,20 @@ namespace Chummer
             this.cmdWeaponMoveToVehicle.UseVisualStyleBackColor = true;
             this.cmdWeaponMoveToVehicle.Click += new System.EventHandler(this.cmdWeaponMoveToVehicle_Click);
             // 
-            // chkWeaponAccessoryInstalled
+            // chkWeaponEquipped
             // 
-            this.chkWeaponAccessoryInstalled.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkWeaponAccessoryInstalled.AutoSize = true;
-            this.chkWeaponAccessoryInstalled.DefaultColorScheme = true;
-            this.chkWeaponAccessoryInstalled.Location = new System.Drawing.Point(33, 6);
-            this.chkWeaponAccessoryInstalled.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkWeaponAccessoryInstalled.Name = "chkWeaponAccessoryInstalled";
-            this.chkWeaponAccessoryInstalled.Size = new System.Drawing.Size(65, 17);
-            this.chkWeaponAccessoryInstalled.TabIndex = 79;
-            this.chkWeaponAccessoryInstalled.Tag = "Checkbox_Installed";
-            this.chkWeaponAccessoryInstalled.Text = "Installed";
-            this.chkWeaponAccessoryInstalled.UseVisualStyleBackColor = true;
-            this.chkWeaponAccessoryInstalled.CheckedChanged += new System.EventHandler(this.chkWeaponAccessoryInstalled_CheckedChanged);
+            this.chkWeaponEquipped.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkWeaponEquipped.AutoSize = true;
+            this.chkWeaponEquipped.DefaultColorScheme = true;
+            this.chkWeaponEquipped.Location = new System.Drawing.Point(33, 6);
+            this.chkWeaponEquipped.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkWeaponEquipped.Name = "chkWeaponEquipped";
+            this.chkWeaponEquipped.Size = new System.Drawing.Size(71, 17);
+            this.chkWeaponEquipped.TabIndex = 79;
+            this.chkWeaponEquipped.Tag = "Checkbox_Equipped";
+            this.chkWeaponEquipped.Text = "Equipped";
+            this.chkWeaponEquipped.UseVisualStyleBackColor = true;
+            this.chkWeaponEquipped.CheckedChanged += new System.EventHandler(this.chkWeaponEquipped_CheckedChanged);
             // 
             // chkIncludedInWeapon
             // 
@@ -14402,7 +14433,7 @@ namespace Chummer
             this.chkIncludedInWeapon.AutoSize = true;
             this.chkIncludedInWeapon.DefaultColorScheme = true;
             this.chkIncludedInWeapon.Enabled = false;
-            this.chkIncludedInWeapon.Location = new System.Drawing.Point(104, 6);
+            this.chkIncludedInWeapon.Location = new System.Drawing.Point(110, 6);
             this.chkIncludedInWeapon.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkIncludedInWeapon.Name = "chkIncludedInWeapon";
             this.chkIncludedInWeapon.Size = new System.Drawing.Size(127, 17);
@@ -15923,7 +15954,7 @@ namespace Chummer
             this.tlpWeaponsButtons.Name = "tlpWeaponsButtons";
             this.tlpWeaponsButtons.RowCount = 1;
             this.tlpWeaponsButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpWeaponsButtons.Size = new System.Drawing.Size(178, 29);
+            this.tlpWeaponsButtons.Size = new System.Drawing.Size(312, 29);
             this.tlpWeaponsButtons.TabIndex = 230;
             // 
             // cmdAddWeapon
@@ -15934,7 +15965,7 @@ namespace Chummer
             this.cmdAddWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddWeapon.Location = new System.Drawing.Point(3, 3);
             this.cmdAddWeapon.Name = "cmdAddWeapon";
-            this.cmdAddWeapon.Size = new System.Drawing.Size(53, 23);
+            this.cmdAddWeapon.Size = new System.Drawing.Size(98, 23);
             this.cmdAddWeapon.SplitMenuStrip = this.cmsWeapon;
             this.cmdAddWeapon.TabIndex = 103;
             this.cmdAddWeapon.Tag = "Button_AddWeapon";
@@ -15947,9 +15978,9 @@ namespace Chummer
             this.cmdAddWeaponLocation.AutoSize = true;
             this.cmdAddWeaponLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddWeaponLocation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdAddWeaponLocation.Location = new System.Drawing.Point(121, 3);
+            this.cmdAddWeaponLocation.Location = new System.Drawing.Point(211, 3);
             this.cmdAddWeaponLocation.Name = "cmdAddWeaponLocation";
-            this.cmdAddWeaponLocation.Size = new System.Drawing.Size(54, 23);
+            this.cmdAddWeaponLocation.Size = new System.Drawing.Size(98, 23);
             this.cmdAddWeaponLocation.TabIndex = 118;
             this.cmdAddWeaponLocation.Tag = "Button_AddLocation";
             this.cmdAddWeaponLocation.Text = "Add Location";
@@ -15962,9 +15993,9 @@ namespace Chummer
             this.cmdDeleteWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteWeapon.ContextMenuStrip = this.cmsDeleteWeapon;
             this.cmdDeleteWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteWeapon.Location = new System.Drawing.Point(62, 3);
+            this.cmdDeleteWeapon.Location = new System.Drawing.Point(107, 3);
             this.cmdDeleteWeapon.Name = "cmdDeleteWeapon";
-            this.cmdDeleteWeapon.Size = new System.Drawing.Size(53, 23);
+            this.cmdDeleteWeapon.Size = new System.Drawing.Size(98, 23);
             this.cmdDeleteWeapon.SplitMenuStrip = this.cmsDeleteWeapon;
             this.cmdDeleteWeapon.TabIndex = 55;
             this.cmdDeleteWeapon.Tag = "String_Delete";
@@ -22057,37 +22088,6 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
-            // lblLiftCarryHitsLabel
-            // 
-            this.lblLiftCarryHitsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblLiftCarryHitsLabel.AutoSize = true;
-            this.lblLiftCarryHitsLabel.Location = new System.Drawing.Point(35, 506);
-            this.lblLiftCarryHitsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLiftCarryHitsLabel.Name = "lblLiftCarryHitsLabel";
-            this.lblLiftCarryHitsLabel.Size = new System.Drawing.Size(131, 13);
-            this.lblLiftCarryHitsLabel.TabIndex = 95;
-            this.lblLiftCarryHitsLabel.Tag = "Label_OtherLiftAndCarryHits";
-            this.lblLiftCarryHitsLabel.Text = "Active Lift/Carry Test Hits:";
-            // 
-            // nudLiftCarryHits
-            // 
-            this.nudLiftCarryHits.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudLiftCarryHits.AutoSize = true;
-            this.nudLiftCarryHits.Location = new System.Drawing.Point(172, 503);
-            this.nudLiftCarryHits.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudLiftCarryHits.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudLiftCarryHits.Name = "nudLiftCarryHits";
-            this.nudLiftCarryHits.Size = new System.Drawing.Size(41, 20);
-            this.nudLiftCarryHits.TabIndex = 96;
-            // 
             // CharacterCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -22151,6 +22151,7 @@ namespace Chummer
             this.tabOtherInfo.PerformLayout();
             this.tlpInfo.ResumeLayout(false);
             this.tlpInfo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLiftCarryHits)).EndInit();
             this.tabDefenses.ResumeLayout(false);
             this.tlpSpellDefense.ResumeLayout(false);
             this.tlpSpellDefense.PerformLayout();
@@ -22596,7 +22597,6 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.nudLiftCarryHits)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -23680,7 +23680,7 @@ namespace Chummer
         private ColorableCheckBox chkIncludedInArmor;
         private ColorableCheckBox chkArmorEquipped;
         private ColorableCheckBox chkIncludedInWeapon;
-        private ColorableCheckBox chkWeaponAccessoryInstalled;
+        private ColorableCheckBox chkWeaponEquipped;
         private ColorableCheckBox chkArmorWireless;
         private ColorableCheckBox chkWeaponWireless;
         private ColorableCheckBox chkCyberwareWireless;

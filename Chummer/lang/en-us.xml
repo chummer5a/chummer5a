@@ -5264,10 +5264,6 @@
       <text>Selected Weapons</text>
     </string>
     <string>
-      <key>Tip_WeaponInstalled</key>
-      <text>Installed Weapon Accessories and Mods count towards a Weapon's stats.</text>
-    </string>
-    <string>
       <key>String_WeaponAccessory</key>
       <text>Weapon Accessory</text>
     </string>

@@ -18,6 +18,7 @@ Application Changes:
 - Exposed a large amount of options for dealing with encumbrance and weights to character settings. Among other things, carry limits and the interval at which encumbrance penalty ticks are applied can be custom-defined by settings, and penalties to Physical Limit, movement speeds, Agility, and/or Reaction and/or adding extra Wound Modifiers can all be selected as encumbrance penalties.
 - Added the ability to change the maximum number of attributes at a character's metatype maximum via character settings.
 - Added the ability to change the maximum rating for active skills and the maximum rating for knowledge skills both at character creation and in-game via character settings.
+- Weapons can now be equipped or unequipped, and underbarrel weapons, weapon accessories, and gear that come built into a weapon or weapon accessory now properly cannot be unequipped/uninstalled.
 
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
@@ -56,6 +57,7 @@ Changed/New Strings:
 
 Removed Strings:
 - Tip_LiftAndCarry
+- Tip_WeaponInstalled
 
 Build 221
 Application Changes:
