@@ -10536,7 +10536,7 @@ namespace Chummer
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
                                     .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objWeapon.Category);
                             chkWeaponBlackMarketDiscount.Checked = objWeapon.IncludedInWeapon
-                                ? objWeapon.Parent.DiscountCost
+                                ? objWeapon.Parent?.DiscountCost == true
                                 : objWeapon.DiscountCost;
                         }
                         else
@@ -10728,7 +10728,7 @@ namespace Chummer
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
                                     .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objSelectedAccessory.Parent.Category);
                             chkWeaponBlackMarketDiscount.Checked = objSelectedAccessory.IncludedInWeapon
-                                ? objSelectedAccessory.Parent.DiscountCost
+                                ? objSelectedAccessory.Parent?.DiscountCost == true
                                 : objSelectedAccessory.DiscountCost;
                         }
                         else
@@ -12563,7 +12563,7 @@ namespace Chummer
                             .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("vehicles.xml")
                                 .SelectSingleNodeAndCacheExpression("/chummer/weaponmountcategories")).Contains(objWeaponMount.Category);
                         chkWeaponBlackMarketDiscount.Checked = objWeaponMount.IncludedInVehicle
-                            ? objWeaponMount.Parent.DiscountCost
+                            ? objWeaponMount.Parent?.DiscountCost == true
                             : objWeaponMount.DiscountCost;
                     }
                     else
@@ -12647,7 +12647,7 @@ namespace Chummer
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
                                     .SelectSingleNodeAndCacheExpression("/chummer/modcategories")).Contains(objMod.Category);
                             chkWeaponBlackMarketDiscount.Checked = objMod.IncludedInVehicle
-                                ? (objMod.WeaponMountParent?.DiscountCost ?? objMod.Parent.DiscountCost)
+                                ? (objMod.WeaponMountParent?.DiscountCost ?? objMod.Parent?.DiscountCost) == true
                                 : objMod.DiscountCost;
                         }
                         else
@@ -12711,7 +12711,7 @@ namespace Chummer
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
                                     .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objWeapon.Category);
                             chkWeaponBlackMarketDiscount.Checked = objWeapon.IncludedInWeapon
-                                ? objWeapon.Parent.DiscountCost
+                                ? objWeapon.Parent?.DiscountCost == true
                                 : objWeapon.DiscountCost;
                         }
                         else
@@ -12883,7 +12883,7 @@ namespace Chummer
                                 .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
                                     .SelectSingleNodeAndCacheExpression("/chummer")).Contains(objAccessory.Parent.Category);
                             chkWeaponBlackMarketDiscount.Checked = objAccessory.IncludedInWeapon
-                                ? objAccessory.Parent.DiscountCost
+                                ? objAccessory.Parent?.DiscountCost == true
                                 : objAccessory.DiscountCost;
                         }
                         else
