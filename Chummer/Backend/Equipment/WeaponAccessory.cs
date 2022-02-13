@@ -397,46 +397,55 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Build an accessory from the accessory's parent object XML. 
         /// </summary>
+        /// <param name="objAccessory"></param>
         /// <param name="objXmlWeaponAccessory"></param>
         /// <param name="blnCreateChildren"></param>
         /// <param name="blnCreateImprovements"></param>
         /// <param name="lstWeapons"></param>
         /// <param name="objXmlDocument"></param>
         public void CreateFromParent(WeaponAccessory objAccessory, XmlNode objXmlWeaponAccessory, bool blnCreateChildren, bool blnCreateImprovements,
-            IList<Weapon> lstWeapons, XmlDocument objXmlDocument)
+                                     IList<Weapon> lstWeapons, XmlDocument objXmlDocument)
         {
             XmlNode objXmlAccessory = null;
-            if (objXmlWeaponAccessory["name"] != null)
-                objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = \"" + objXmlWeaponAccessory["name"]?.InnerText + "\"]");
-            else if (objXmlWeaponAccessory["id"] != null)
-                objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = \"" + objXmlWeaponAccessory["id"]?.InnerText + "\"]");
+            string strId = string.Empty;
+            if (objXmlWeaponAccessory.TryGetStringFieldQuickly("id", ref strId))
+                objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + strId.CleanXPath() + ']');
+            else if (objXmlWeaponAccessory.TryGetStringFieldQuickly("name", ref strId))
+                objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = " + strId.CleanXPath() + ']');
 
-            if (objXmlAccessory == null) return;
+            if (objXmlAccessory == null)
+                return;
             
             int intAccessoryRating = 0;
-            if (objXmlWeaponAccessory["rating"] != null)
+            objXmlWeaponAccessory.TryGetInt32FieldQuickly("rating", ref intAccessoryRating);
+
+            string strMount = "Internal";
+            if (objXmlWeaponAccessory.TryGetStringFieldQuickly("mount", ref strMount))
             {
-                intAccessoryRating = Convert.ToInt32(objXmlWeaponAccessory["rating"].InnerText);
-            }
-            if (objXmlWeaponAccessory.InnerXml.Contains("mount"))
-            {
-                objAccessory.Create(objXmlAccessory,
-                    objXmlWeaponAccessory.InnerXml.Contains("<extramount>")
-                        ? new Tuple<string, string>(objXmlAccessory["mount"].InnerText, objXmlAccessory["extramount"].InnerText)
-                        : new Tuple<string, string>(objXmlAccessory["mount"].InnerText, "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
+                string strExtraMount = "None";
+                objXmlWeaponAccessory.TryGetStringFieldQuickly("extramount", ref strExtraMount);
+                objAccessory.Create(objXmlAccessory, new Tuple<string, string>(strMount, strExtraMount), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
             }
             else
             {
                 objAccessory.Create(objXmlAccessory, new Tuple<string, string>("Internal", "None"), intAccessoryRating, false, blnCreateChildren, blnCreateImprovements);
             }
+
             // Add any extra Gear that comes with the Weapon Accessory.
             XmlNode xmlGearsNode = objXmlWeaponAccessory["gears"];
-            if (xmlGearsNode == null) return;
-            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
-            foreach (XmlNode objXmlAccessoryGear in xmlGearsNode.SelectNodes("usegear"))
+            if (xmlGearsNode == null)
+                return;
+            using (XmlNodeList xmlGearsList = xmlGearsNode.SelectNodes("usegear"))
             {
-                Gear objGear = new Gear(_objCharacter);
-                objGear.CreateFromNode(objXmlGearDocument, objXmlAccessoryGear, lstWeapons);
+                if (xmlGearsList?.Count > 0)
+                {
+                    XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
+                    foreach (XmlNode objXmlAccessoryGear in xmlGearsList)
+                    {
+                        Gear objGear = new Gear(_objCharacter);
+                        objGear.CreateFromNode(objXmlGearDocument, objXmlAccessoryGear, lstWeapons);
+                    }
+                }
             }
         }
 
@@ -487,7 +496,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteRaw(_nodAllowGear.OuterXml);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalSettings.InvariantCultureInfo));
             if (_lstChildren.Count > 0)
             {
                 objWriter.WriteStartElement("children");

@@ -793,9 +793,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.DeepAny(y => y.Children, z => z.Gear.Count > 0)))
+                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.DeepAny(y => y.Children, z => z.GearChildren.Count > 0)))
                 {
-                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories.DeepWhere(x => x.Children, y => y.Gear.Count > 0))
+                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories.DeepWhere(x => x.Children, y => y.GearChildren.Count > 0))
                     {
                         Gear objReturn = objAccessory.GearChildren.DeepFindById(strGuid);
 
