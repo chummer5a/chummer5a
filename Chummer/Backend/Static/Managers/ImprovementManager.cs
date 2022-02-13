@@ -282,9 +282,17 @@ namespace Chummer
                                       bool blnAddToRating = false, string strImprovedName = "",
                                       bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
-            return MetaValueOf(objCharacter, objImprovementType, out lstUsedImprovements, x => x.Value,
-                               s_DictionaryCachedValues, blnAddToRating, strImprovedName, blnUnconditionalOnly,
-                               blnIncludeNonImproved);
+            decimal decReturn = MetaValueOf(objCharacter, objImprovementType, out lstUsedImprovements,
+                                            x => x.Value,
+                                            s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
+                                            blnUnconditionalOnly,
+                                            blnIncludeNonImproved);
+            if (decReturn != 0 && lstUsedImprovements.Count == 0)
+            {
+                Log.Warn("A cached value modifier somehow is not zero while having no used improvements in its list.");
+                Utils.BreakIfDebug();
+            }
+            return decReturn;
         }
 
         /// <summary>
@@ -336,9 +344,17 @@ namespace Chummer
                                                string strImprovedName = "",
                                                bool blnUnconditionalOnly = true, bool blnIncludeNonImproved = false)
         {
-            return MetaValueOf(objCharacter, objImprovementType, out lstUsedImprovements, x => x.Augmented * x.Rating,
-                               s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName, blnUnconditionalOnly,
-                               blnIncludeNonImproved);
+            decimal decReturn = MetaValueOf(objCharacter, objImprovementType, out lstUsedImprovements,
+                                           x => x.Augmented * x.Rating,
+                                           s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
+                                           blnUnconditionalOnly,
+                                           blnIncludeNonImproved);
+            if (decReturn != 0 && lstUsedImprovements.Count == 0)
+            {
+                Log.Warn("A cached augmented value modifier somehow is not zero while having no used improvements in its list.");
+                Utils.BreakIfDebug();
+            }
+            return decReturn;
         }
 
         /// <summary>
@@ -412,15 +428,14 @@ namespace Chummer
                 if (dicCachedValuesToUse != null)
                 {
                     // First check to make sure an existing caching for this particular value is not already running. If one is, wait for it to finish before continuing
-                    int intLoopCount = 0;
-                    while (!s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck) && intLoopCount < 1000)
+                    int intEmergencyRelease = 0;
+                    for (;!s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck) && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
                     {
-                        ++intLoopCount;
                         Utils.SafeSleep();
                     }
 
                     // Emergency exit, so break if we are debugging and return the default value (just in case)
-                    if (intLoopCount >= 1000)
+                    if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
                     {
                         Utils.BreakIfDebug();
                         lstUsedImprovements = new List<Improvement>();
@@ -430,15 +445,14 @@ namespace Chummer
                     // Also make sure we block off the conditionless check because we will be adding cached keys that will be used by the conditionless check
                     if (!string.IsNullOrWhiteSpace(strImprovedName) && !blnIncludeNonImproved)
                     {
-                        intLoopCount = 0;
-                        while (!s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck) && intLoopCount < 1000)
+                        intEmergencyRelease = 0;
+                        for (;!s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck) && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
                         {
-                            ++intLoopCount;
                             Utils.SafeSleep();
                         }
 
                         // Emergency exit, so break if we are debugging and return the default value (just in case)
-                        if (intLoopCount >= 1000)
+                        if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
                         {
                             Utils.BreakIfDebug();
                             lstUsedImprovements = new List<Improvement>();

@@ -388,7 +388,7 @@ namespace Chummer
                 int intEmergencyRelease = 0;
                 xmlReferenceOfReturn = new XmlReference();
                 // We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
-                for (; intEmergencyRelease <= 1000; ++intEmergencyRelease)
+                for (; intEmergencyRelease <= Utils.EmergencyReleaseSleepTicks; ++intEmergencyRelease)
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
@@ -402,7 +402,7 @@ namespace Chummer
                     // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
                     xmlReferenceOfReturn = new XmlReference();
                 }
-                if (intEmergencyRelease > 1000) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
+                if (intEmergencyRelease > Utils.EmergencyReleaseSleepTicks) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
                 {
                     Utils.BreakIfDebug();
                     return new XmlDocument { XmlResolver = null };

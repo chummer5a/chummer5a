@@ -169,6 +169,8 @@ namespace Chummer
 
         public const int DefaultSleepDuration = 15;
 
+        public const int EmergencyReleaseSleepTicks = 1500;
+
         /// <summary>
         /// Can the current user context write to a given file path?
         /// </summary>
