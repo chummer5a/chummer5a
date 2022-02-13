@@ -5867,7 +5867,7 @@ namespace Chummer
                         }
 
                         frmPickCyberware.LockGrade();
-                        frmPickCyberware.ParentVehicle = objVehicle ?? objMod.Parent;
+                        frmPickCyberware.ParentVehicle = objVehicle ?? objMod.ParentVehicle;
                         frmPickCyberware.ShowDialogSafe(this);
 
                         if (frmPickCyberware.DialogResult == DialogResult.Cancel)

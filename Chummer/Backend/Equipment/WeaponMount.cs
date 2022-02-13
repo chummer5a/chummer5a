@@ -118,7 +118,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objOldMod.WeaponMountParent != this)
                                 continue;
-                            objOldMod.Parent = null;
+                            objOldMod.ParentVehicle = null;
                         }
                         break;
                     case NotifyCollectionChangedAction.Replace:
@@ -126,7 +126,7 @@ namespace Chummer.Backend.Equipment
                         {
                             if (objOldMod.WeaponMountParent != this)
                                 continue;
-                            objOldMod.Parent = null;
+                            objOldMod.ParentVehicle = null;
                         }
                         foreach (VehicleMod objNewMod in args.NewItems)
                         {
