@@ -69,6 +69,8 @@ namespace Chummer
             this.tslEssence = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslNuyenRemainingLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslNuyenRemaining = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslCarriedWeightLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.tslCarriedWeight = new System.Windows.Forms.ToolStripStatusLabel();
             this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
             this.lblAttributesAug = new System.Windows.Forms.Label();
@@ -1066,8 +1068,8 @@ namespace Chummer
             this.tsGearAllowRenameName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameExtra = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tslCarriedWeightLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tslCarriedWeight = new System.Windows.Forms.ToolStripStatusLabel();
+            this.lblLiftCarryHitsLabel = new System.Windows.Forms.Label();
+            this.nudLiftCarryHits = new Chummer.NumericUpDownEx();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1299,6 +1301,7 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsGearAllowRename.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudLiftCarryHits)).BeginInit();
             this.SuspendLayout();
             // 
             // StatusStrip
@@ -1376,6 +1379,20 @@ namespace Chummer
             this.tslNuyenRemaining.Name = "tslNuyenRemaining";
             this.tslNuyenRemaining.Size = new System.Drawing.Size(23, 19);
             this.tslNuyenRemaining.Text = "0¥";
+            // 
+            // tslCarriedWeightLabel
+            // 
+            this.tslCarriedWeightLabel.Name = "tslCarriedWeightLabel";
+            this.tslCarriedWeightLabel.Size = new System.Drawing.Size(89, 19);
+            this.tslCarriedWeightLabel.Tag = "Label_CarriedWeight";
+            this.tslCarriedWeightLabel.Text = "Carried Weight:";
+            // 
+            // tslCarriedWeight
+            // 
+            this.tslCarriedWeight.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
+            this.tslCarriedWeight.Name = "tslCarriedWeight";
+            this.tslCarriedWeight.Size = new System.Drawing.Size(66, 19);
+            this.tslCarriedWeight.Text = "0 kg / 0 kg";
             // 
             // pgbProgress
             // 
@@ -14552,17 +14569,17 @@ namespace Chummer
             this.tlpOtherInfo.ColumnCount = 2;
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
             this.tlpOtherInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
-            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 20);
+            this.tlpOtherInfo.Controls.Add(this.lblFly, 1, 21);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINI, 1, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 20);
+            this.tlpOtherInfo.Controls.Add(this.lblFlyLabel, 0, 21);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysicalLabel, 0, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 19);
+            this.tlpOtherInfo.Controls.Add(this.lblSwim, 1, 20);
             this.tlpOtherInfo.Controls.Add(this.lblRiggingINILabel, 0, 7);
-            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 19);
+            this.tlpOtherInfo.Controls.Add(this.lblSwimLabel, 0, 20);
             this.tlpOtherInfo.Controls.Add(this.lblCMPhysical, 1, 0);
-            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 18);
+            this.tlpOtherInfo.Controls.Add(this.lblMovement, 1, 19);
             this.tlpOtherInfo.Controls.Add(this.lblMemory, 1, 16);
-            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 18);
+            this.tlpOtherInfo.Controls.Add(this.lblMovementLabel, 0, 19);
             this.tlpOtherInfo.Controls.Add(this.lblMatrixINIHot, 1, 6);
             this.tlpOtherInfo.Controls.Add(this.lblMemoryLabel, 0, 16);
             this.tlpOtherInfo.Controls.Add(this.lblCMStunLabel, 0, 1);
@@ -14594,11 +14611,14 @@ namespace Chummer
             this.tlpOtherInfo.Controls.Add(this.lblDodge, 1, 9);
             this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLimitsLabel, 0, 17);
             this.tlpOtherInfo.Controls.Add(this.lblLiftCarryLimits, 1, 17);
+            this.tlpOtherInfo.Controls.Add(this.lblLiftCarryHitsLabel, 0, 18);
+            this.tlpOtherInfo.Controls.Add(this.nudLiftCarryHits, 1, 18);
             this.tlpOtherInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOtherInfo.Location = new System.Drawing.Point(3, 3);
             this.tlpOtherInfo.Margin = new System.Windows.Forms.Padding(0);
             this.tlpOtherInfo.Name = "tlpOtherInfo";
-            this.tlpOtherInfo.RowCount = 22;
+            this.tlpOtherInfo.RowCount = 23;
+            this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOtherInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -14627,7 +14647,7 @@ namespace Chummer
             // lblFly
             // 
             this.lblFly.AutoSize = true;
-            this.lblFly.Location = new System.Drawing.Point(172, 506);
+            this.lblFly.Location = new System.Drawing.Point(172, 532);
             this.lblFly.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFly.Name = "lblFly";
             this.lblFly.Size = new System.Drawing.Size(13, 13);
@@ -14649,7 +14669,7 @@ namespace Chummer
             // 
             this.lblFlyLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFlyLabel.AutoSize = true;
-            this.lblFlyLabel.Location = new System.Drawing.Point(143, 506);
+            this.lblFlyLabel.Location = new System.Drawing.Point(143, 532);
             this.lblFlyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFlyLabel.Name = "lblFlyLabel";
             this.lblFlyLabel.Size = new System.Drawing.Size(23, 13);
@@ -14660,7 +14680,7 @@ namespace Chummer
             // lblSwim
             // 
             this.lblSwim.AutoSize = true;
-            this.lblSwim.Location = new System.Drawing.Point(172, 481);
+            this.lblSwim.Location = new System.Drawing.Point(172, 507);
             this.lblSwim.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwim.Name = "lblSwim";
             this.lblSwim.Size = new System.Drawing.Size(13, 13);
@@ -14671,7 +14691,7 @@ namespace Chummer
             // 
             this.lblSwimLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSwimLabel.AutoSize = true;
-            this.lblSwimLabel.Location = new System.Drawing.Point(131, 481);
+            this.lblSwimLabel.Location = new System.Drawing.Point(131, 507);
             this.lblSwimLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSwimLabel.Name = "lblSwimLabel";
             this.lblSwimLabel.Size = new System.Drawing.Size(35, 13);
@@ -14693,7 +14713,7 @@ namespace Chummer
             // lblMovement
             // 
             this.lblMovement.AutoSize = true;
-            this.lblMovement.Location = new System.Drawing.Point(172, 456);
+            this.lblMovement.Location = new System.Drawing.Point(172, 482);
             this.lblMovement.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovement.Name = "lblMovement";
             this.lblMovement.Size = new System.Drawing.Size(13, 13);
@@ -14715,7 +14735,7 @@ namespace Chummer
             // 
             this.lblMovementLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblMovementLabel.AutoSize = true;
-            this.lblMovementLabel.Location = new System.Drawing.Point(106, 456);
+            this.lblMovementLabel.Location = new System.Drawing.Point(106, 482);
             this.lblMovementLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMovementLabel.Name = "lblMovementLabel";
             this.lblMovementLabel.Size = new System.Drawing.Size(60, 13);
@@ -15380,19 +15400,36 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
             // 
-            // tslCarriedWeightLabel
+            // lblLiftCarryHitsLabel
             // 
-            this.tslCarriedWeightLabel.Name = "tslCarriedWeightLabel";
-            this.tslCarriedWeightLabel.Size = new System.Drawing.Size(89, 19);
-            this.tslCarriedWeightLabel.Tag = "Label_CarriedWeight";
-            this.tslCarriedWeightLabel.Text = "Carried Weight:";
+            this.lblLiftCarryHitsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblLiftCarryHitsLabel.AutoSize = true;
+            this.lblLiftCarryHitsLabel.Location = new System.Drawing.Point(35, 456);
+            this.lblLiftCarryHitsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLiftCarryHitsLabel.Name = "lblLiftCarryHitsLabel";
+            this.lblLiftCarryHitsLabel.Size = new System.Drawing.Size(131, 13);
+            this.lblLiftCarryHitsLabel.TabIndex = 96;
+            this.lblLiftCarryHitsLabel.Tag = "Label_OtherLiftAndCarryHits";
+            this.lblLiftCarryHitsLabel.Text = "Active Lift/Carry Test Hits:";
             // 
-            // tslCarriedWeight
+            // nudLiftCarryHits
             // 
-            this.tslCarriedWeight.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Right;
-            this.tslCarriedWeight.Name = "tslCarriedWeight";
-            this.tslCarriedWeight.Size = new System.Drawing.Size(66, 19);
-            this.tslCarriedWeight.Text = "0 kg / 0 kg";
+            this.nudLiftCarryHits.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudLiftCarryHits.AutoSize = true;
+            this.nudLiftCarryHits.Location = new System.Drawing.Point(172, 453);
+            this.nudLiftCarryHits.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudLiftCarryHits.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudLiftCarryHits.Name = "nudLiftCarryHits";
+            this.nudLiftCarryHits.Size = new System.Drawing.Size(41, 20);
+            this.nudLiftCarryHits.TabIndex = 97;
             // 
             // CharacterCreate
             // 
@@ -15801,6 +15838,7 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsGearAllowRename.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nudLiftCarryHits)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -16815,5 +16853,7 @@ namespace Chummer
         private LabelWithToolTip lblLiftCarryLimits;
         private System.Windows.Forms.ToolStripStatusLabel tslCarriedWeightLabel;
         private System.Windows.Forms.ToolStripStatusLabel tslCarriedWeight;
+        private System.Windows.Forms.Label lblLiftCarryHitsLabel;
+        private NumericUpDownEx nudLiftCarryHits;
     }
 }

@@ -44,6 +44,7 @@ Changed/New Strings:
 - Checkbox_CharacterOptions_EncumbrancePenaltyAgility
 - Checkbox_CharacterOptions_EncumbrancePenaltyReaction
 - Checkbox_CharacterOptions_EncumbrancePenaltyWoundModifier
+- Label_OtherLiftAndCarryHits
 
 Removed Strings:
 - Tip_LiftAndCarry

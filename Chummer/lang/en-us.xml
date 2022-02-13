@@ -6118,6 +6118,10 @@
       <text>{0}/{1} kg</text>
     </string>
     <string>
+      <key>Label_OtherLiftAndCarryHits</key>
+      <text>Active Lift/Carry Test Hits:</text>
+    </string>
+    <string>
       <key>Tip_OtherCMPhysical</key>
       <text>Physical CM is calculated as 8 + (BOD / 2).</text>
     </string>

@@ -775,6 +775,9 @@ namespace Chummer
                         nudCounterspellingDice.DoDataBinding("Value", CharacterObject,
                             nameof(Character.CurrentCounterspellingDice));
 
+                        nudLiftCarryHits.DoDataBinding("Value", CharacterObject,
+                                                       nameof(Character.CurrentLiftCarryHits));
+
                         lblMovement.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayMovement));
                         lblSwim.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplaySwim));
                         lblFly.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayFly));

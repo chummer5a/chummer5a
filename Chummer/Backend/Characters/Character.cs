@@ -87,11 +87,12 @@ namespace Chummer
         private int _intContactPointsUsed;
         private int _intCachedRedlinerBonus = int.MinValue;
         private int _intCurrentCounterspellingDice;
+        private int _intCurrentLiftCarryHits;
         private int _intEdgeUsed;
         private int _intBoundSpiritLimit = int.MinValue;
         private int _intRegisteredSpriteLimit = int.MinValue;
-        private decimal _decCachedCarryLimit = decimal.MinValue;
-        private decimal _decCachedLiftLimit = decimal.MinValue;
+        private decimal _decCachedBaseCarryLimit = decimal.MinValue;
+        private decimal _decCachedBaseLiftLimit = decimal.MinValue;
         private decimal _decCachedTotalCarriedWeight = decimal.MinValue;
         private decimal _decCachedEncumbranceInterval = decimal.MinValue;
 
@@ -717,10 +718,10 @@ namespace Chummer
                     OnPropertyChanged(nameof(MatrixInitiativeHotDice));
                     break;
                 case nameof(CharacterSettings.LiftLimitExpression):
-                    OnPropertyChanged(nameof(LiftLimit));
+                    OnPropertyChanged(nameof(BaseLiftLimit));
                     break;
                 case nameof(CharacterSettings.CarryLimitExpression):
-                    OnPropertyChanged(nameof(CarryLimit));
+                    OnPropertyChanged(nameof(BaseCarryLimit));
                     break;
                 case nameof(CharacterSettings.EncumbranceIntervalExpression):
                     OnPropertyChanged(nameof(EncumbranceInterval));
@@ -2544,12 +2545,15 @@ namespace Chummer
                     // <currentcounterspellingdice />
                     objWriter.WriteElementString("currentcounterspellingdice",
                         _intCurrentCounterspellingDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <currentliftcarryhits />
+                    objWriter.WriteElementString("currentliftcarryhits",
+                                                 _intCurrentLiftCarryHits.ToString(GlobalSettings.InvariantCultureInfo));
                     // <carrylimit />
-                    objWriter.WriteElementString("carrylimit",
-                                                 _decCachedCarryLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString("basecarrylimit",
+                                                 _decCachedBaseCarryLimit.ToString(GlobalSettings.InvariantCultureInfo));
                     // <liftlimit />
-                    objWriter.WriteElementString("liftlimit",
-                                                 _decCachedLiftLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString("baseliftlimit",
+                                                 _decCachedBaseLiftLimit.ToString(GlobalSettings.InvariantCultureInfo));
                     // <totalcarriedweight />
                     objWriter.WriteElementString("totalcarriedweight",
                                                  _decCachedTotalCarriedWeight.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3902,8 +3906,8 @@ namespace Chummer
                                     ref _intCachedContactPoints);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused",
                                     ref _intContactPointsUsed);
-                                xmlCharacterNavigator.TryGetDecFieldQuickly("carrylimit", ref _decCachedCarryLimit);
-                                xmlCharacterNavigator.TryGetDecFieldQuickly("liftlimit", ref _decCachedLiftLimit);
+                                xmlCharacterNavigator.TryGetDecFieldQuickly("basecarrylimit", ref _decCachedBaseCarryLimit);
+                                xmlCharacterNavigator.TryGetDecFieldQuickly("baseliftlimit", ref _decCachedBaseLiftLimit);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("totalcarriedweight", ref _decCachedTotalCarriedWeight);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("encumbranceinterval", ref _decCachedEncumbranceInterval);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("cfplimit", ref _intCFPLimit);
@@ -3913,6 +3917,8 @@ namespace Chummer
                                     ref _intAIAdvancedProgramLimit);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("currentcounterspellingdice",
                                     ref _intCurrentCounterspellingDice);
+                                xmlCharacterNavigator.TryGetInt32FieldQuickly("currentliftcarryhits",
+                                                                              ref _intCurrentLiftCarryHits);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("spelllimit", ref _intFreeSpells);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("karma", ref _intKarma);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("totalkarma", ref _intTotalKarma);
@@ -6660,8 +6666,8 @@ namespace Chummer
             _intCachedBlackMarketDiscount = int.MinValue;
             _intCachedCareerKarma = int.MinValue;
             _intCachedContactPoints = int.MinValue;
-            _decCachedCarryLimit = decimal.MinValue;
-            _decCachedLiftLimit = decimal.MinValue;
+            _decCachedBaseCarryLimit = decimal.MinValue;
+            _decCachedBaseLiftLimit = decimal.MinValue;
             _decCachedTotalCarriedWeight = decimal.MinValue;
             _decCachedEncumbranceInterval = decimal.MinValue;
             _intCachedDealerConnectionDiscount = int.MinValue;
@@ -6688,6 +6694,7 @@ namespace Chummer
             _intCachedTotalFallingArmorRating = int.MinValue;
             _intCachedTotalFireArmorRating = int.MinValue;
             _intCurrentCounterspellingDice = 0;
+            _intCurrentLiftCarryHits = 0;
             _decCachedBiowareEssence = decimal.MinValue;
             _decCachedCyberwareEssence = decimal.MinValue;
             ResetCachedEssence();
@@ -9735,13 +9742,18 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Carry limit (in kg).
+        /// Carry limit (in kg) with added Lift and Carry hits.
         /// </summary>
-        public decimal CarryLimit
+        public decimal CarryLimit => BaseCarryLimit + CurrentLiftCarryHits * 10m;
+
+        /// <summary>
+        /// Carry limit (in kg) without added Lift and Carry hits.
+        /// </summary>
+        public decimal BaseCarryLimit
         {
             get
             {
-                if (_decCachedCarryLimit == decimal.MinValue)
+                if (_decCachedBaseCarryLimit == decimal.MinValue)
                 {
                     string strExpression = Settings.CarryLimitExpression;
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
@@ -9754,25 +9766,30 @@ namespace Chummer
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             object objProcess
                                 = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
-                            _decCachedCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                            _decCachedBaseCarryLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                         }
                     }
                     else
-                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCachedCarryLimit);
+                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCachedBaseCarryLimit);
                 }
 
-                return _decCachedCarryLimit;
+                return _decCachedBaseCarryLimit;
             }
         }
 
         /// <summary>
-        /// Lift limit (in kg).
+        /// Lift limit (in kg) with added Lift and Carry hits.
         /// </summary>
-        public decimal LiftLimit
+        public decimal LiftLimit => BaseLiftLimit + CurrentLiftCarryHits * 10m;
+
+        /// <summary>
+        /// Lift limit (in kg) without added Lift and Carry hits.
+        /// </summary>
+        public decimal BaseLiftLimit
         {
             get
             {
-                if (_decCachedLiftLimit == decimal.MinValue)
+                if (_decCachedBaseLiftLimit == decimal.MinValue)
                 {
                     string strExpression = Settings.LiftLimitExpression;
                     if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
@@ -9785,14 +9802,14 @@ namespace Chummer
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             object objProcess
                                 = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out bool blnIsSuccess);
-                            _decCachedLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+                            _decCachedBaseLiftLimit = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                         }
                     }
                     else
-                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCachedLiftLimit);
+                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCachedBaseLiftLimit);
                 }
 
-                return _decCachedLiftLimit;
+                return _decCachedBaseLiftLimit;
             }
         }
 
@@ -13236,6 +13253,20 @@ namespace Chummer
                 }
             }
         }
+
+        public int CurrentLiftCarryHits
+        {
+            get => _intCurrentLiftCarryHits;
+            set
+            {
+                if (_intCurrentLiftCarryHits != value)
+                {
+                    _intCurrentLiftCarryHits = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         #region Dodge
         public int Dodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating + WoundModifier + SustainingPenalty;
 
@@ -13988,12 +14019,6 @@ namespace Chummer
                               .Append(')').Append(strSpace).Append('+').Append(strSpace)
                               .Append(LanguageManager.GetString("Tip_Skill_Sustain")).Append(strSpace).Append('(')
                               .Append(SustainingPenalty.ToString(GlobalSettings.CultureInfo)).Append(')');
-
-                    if (CurrentCounterspellingDice != 0)
-                        sbdToolTip.Append(strSpace).Append('+').Append(strSpace)
-                                  .Append(LanguageManager.GetString("Label_CounterspellingDice")).Append(strSpace)
-                                  .Append('(').Append(CurrentCounterspellingDice.ToString(GlobalSettings.CultureInfo))
-                                  .Append(')');
 
                     int intModifiers = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise)
                                                          .StandardRound();
@@ -18092,9 +18117,9 @@ namespace Chummer
                     lstPropertyChangedHolder.Add(nameof(TotalStartingNuyen));
             }
             if (Settings.CarryLimitExpression.Contains(strExpressionToFind))
-                lstPropertyChangedHolder.Add(nameof(CarryLimit));
+                lstPropertyChangedHolder.Add(nameof(BaseCarryLimit));
             if (Settings.LiftLimitExpression.Contains(strExpressionToFind))
-                lstPropertyChangedHolder.Add(nameof(LiftLimit));
+                lstPropertyChangedHolder.Add(nameof(BaseLiftLimit));
             if (Settings.BoundSpiritExpression.Contains(strExpressionToFind))
                 lstPropertyChangedHolder.Add(nameof(BoundSpiritLimit));
             if (Settings.RegisteredSpriteExpression.Contains(strExpressionToFind))
@@ -19360,8 +19385,14 @@ namespace Chummer
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(LiftAndCarryLimits),
-                        new DependencyGraphNode<string, Character>(nameof(LiftLimit)),
-                        new DependencyGraphNode<string, Character>(nameof(CarryLimit))
+                        new DependencyGraphNode<string, Character>(nameof(LiftLimit),
+                            new DependencyGraphNode<string, Character>(nameof(BaseLiftLimit)),
+                            new DependencyGraphNode<string, Character>(nameof(CurrentLiftCarryHits))
+                        ),
+                        new DependencyGraphNode<string, Character>(nameof(CarryLimit),
+                            new DependencyGraphNode<string, Character>(nameof(BaseCarryLimit)),
+                            new DependencyGraphNode<string, Character>(nameof(CurrentLiftCarryHits))
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(Encumbrance),
                         new DependencyGraphNode<string, Character>(nameof(CarryLimit)),
@@ -19633,14 +19664,14 @@ namespace Chummer
                     _intCachedContactPoints = int.MinValue;
                 }
 
-                if (setNamesOfChangedProperties.Contains(nameof(CarryLimit)))
+                if (setNamesOfChangedProperties.Contains(nameof(BaseCarryLimit)))
                 {
-                    _decCachedCarryLimit = decimal.MinValue;
+                    _decCachedBaseCarryLimit = decimal.MinValue;
                 }
 
-                if (setNamesOfChangedProperties.Contains(nameof(LiftLimit)))
+                if (setNamesOfChangedProperties.Contains(nameof(BaseLiftLimit)))
                 {
-                    _decCachedLiftLimit = decimal.MinValue;
+                    _decCachedBaseLiftLimit = decimal.MinValue;
                 }
 
                 if (setNamesOfChangedProperties.Contains(nameof(EncumbranceInterval)))
