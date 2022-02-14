@@ -10732,7 +10732,7 @@
       <source>R5</source>
       <avail>6</avail>
       <category>Powertrain</category>
-      <cost>FixedValues(Acceleration * 10000,Acceleration * 25000)</cost>
+      <cost>FixedValues(max((Acceleration,0.5)) * 10000,max((Acceleration,0.5)) * 25000)</cost>
       <rating>2</rating>
       <slots>FixedValues(4,8)</slots>
       <bonus>
@@ -10763,7 +10763,7 @@
       <source>R5</source>
       <avail>(12 + 4*number(Body > 12))R</avail>
       <category>Powertrain</category>
-      <cost>Body * 3000 + (Body * 1000)*number(Body > 12)</cost>
+      <cost>max((Body,0.5)) * 3000 + (Body * 1000)*number(Body > 12)</cost>
       <rating>0</rating>
       <slots>5 + 5*number(Body > 12)</slots>
     </mod>
@@ -10774,7 +10774,7 @@
       <source>R5</source>
       <avail>FixedValues(6,8,10)</avail>
       <category>Powertrain</category>
-      <cost>FixedValues(Handling*2000,Handling*5000,Handling*12000)</cost>
+      <cost>FixedValues(max((Handling,0.5))*2000,max((Handling,0.5))*5000,max((Handling,0.5))*12000)</cost>
       <rating>3</rating>
       <slots>FixedValues(4,10,18)</slots>
       <bonus>
@@ -10811,7 +10811,7 @@
       <source>R5</source>
       <avail>10</avail>
       <category>Powertrain</category>
-      <cost>Body * 1000</cost>
+      <cost>max((Body,0.5)) * 1000</cost>
       <rating>0</rating>
       <slots>4</slots>
     </mod>
@@ -10859,7 +10859,7 @@
       <source>R5</source>
       <avail>16F</avail>
       <category>Powertrain</category>
-      <cost>Body * 5000</cost>
+      <cost>max((Body,0.5)) * 5000</cost>
       <rating>0</rating>
       <slots>10</slots>
     </mod>
@@ -10881,7 +10881,7 @@
       <source>R5</source>
       <avail>6</avail>
       <category>Powertrain</category>
-      <cost>Body * 200</cost>
+      <cost>max((Body,0.5)) * 200</cost>
       <rating>0</rating>
       <slots>4</slots>
     </mod>
@@ -10892,7 +10892,7 @@
       <source>R5</source>
       <avail>12R</avail>
       <category>Powertrain</category>
-      <cost>Body * 2000</cost>
+      <cost>max((Body,0.5)) * 2000</cost>
       <rating>0</rating>
       <slots>8</slots>
     </mod>
@@ -10903,7 +10903,7 @@
       <source>R5</source>
       <avail>12</avail>
       <category>Powertrain</category>
-      <cost>Body * 1000</cost>
+      <cost>max((Body,0.5)) * 1000</cost>
       <rating>0</rating>
       <slots>8</slots>
     </mod>
@@ -10914,7 +10914,7 @@
       <source>R5</source>
       <avail>12R</avail>
       <category>Powertrain</category>
-      <cost>Body * 3000</cost>
+      <cost>max((Body,0.5)) * 3000</cost>
       <rating>0</rating>
       <slots>10</slots>
     </mod>
@@ -10925,7 +10925,7 @@
       <source>R5</source>
       <avail>10</avail>
       <category>Powertrain</category>
-      <cost>Body * 1000</cost>
+      <cost>max((Body,0.5)) * 1000</cost>
       <rating>0</rating>
       <slots>6</slots>
     </mod>
@@ -10936,7 +10936,7 @@
       <source>R5</source>
       <avail>12</avail>
       <category>Powertrain</category>
-      <cost>Body * 2000</cost>
+      <cost>max((Body,0.5)) * 2000</cost>
       <rating>0</rating>
       <slots>8</slots>
     </mod>
@@ -10947,7 +10947,7 @@
       <source>R5</source>
       <avail>FixedValues(6,8,12)</avail>
       <category>Powertrain</category>
-      <cost>FixedValues(Speed * 2000,Speed * 5000,Speed * 12000)</cost>
+      <cost>FixedValues(max((Speed,0.5)) * 2000,max((Speed,0.5)) * 5000,max((Speed,0.5)) * 12000)</cost>
       <rating>3</rating>
       <slots>FixedValues(5,14,20)</slots>
       <bonus>
@@ -11236,7 +11236,7 @@
       <source>R5</source>
       <avail>6R</avail>
       <category>Weapons</category>
-      <cost>Body * 250</cost>
+      <cost>max((Body,0.5)) * 250</cost>
       <rating>0</rating>
       <slots>1</slots>
     </mod>
@@ -11293,7 +11293,7 @@
       <source>R5</source>
       <avail>12F</avail>
       <category>Body</category>
-      <cost>Body * 1000</cost>
+      <cost>max((Body,0.5)) * 1000</cost>
       <rating>0</rating>
       <slots>2</slots>
     </mod>
@@ -11340,7 +11340,7 @@
       <source>R5</source>
       <avail>8</avail>
       <category>Body</category>
-      <cost>FixedValues(Body * 500,Body * 2000)</cost>
+      <cost>FixedValues(max((Body,0.5)) * 500,max((Body,0.5)) * 2000)</cost>
       <rating>2</rating>
       <slots>2</slots>
     </mod>
@@ -11384,7 +11384,7 @@
       <source>R5</source>
       <avail>(Rating * 3)R</avail>
       <category>Body</category>
-      <cost>Rating * Body * 1000</cost>
+      <cost>Rating * max((Body,0.5)) * 1000</cost>
       <rating>4</rating>
       <slots>Rating</slots>
     </mod>
@@ -11483,7 +11483,7 @@
       <source>R5</source>
       <avail>6R</avail>
       <category>Electromagnetic</category>
-      <cost>Body * 500</cost>
+      <cost>max((Body,0.5)) * 500</cost>
       <rating>0</rating>
       <slots>2</slots>
     </mod>
@@ -11588,7 +11588,7 @@
       <source>R5</source>
       <avail>6</avail>
       <category>Electromagnetic</category>
-      <cost>Body * 500</cost>
+      <cost>max((Body,0.5)) * 500</cost>
       <rating>0</rating>
       <slots>2</slots>
     </mod>
@@ -11599,7 +11599,7 @@
       <source>R5</source>
       <avail>8</avail>
       <category>Electromagnetic</category>
-      <cost>Body * 500</cost>
+      <cost>max((Body,0.5)) * 500</cost>
       <rating>0</rating>
       <slots>3</slots>
     </mod>
@@ -11681,7 +11681,7 @@
       <source>HT</source>
       <avail>0</avail>
       <category>Cosmetic</category>
-      <cost>Body * 2</cost>
+      <cost>max((Body,0.5)) * 2</cost>
       <rating>0</rating>
       <slots>0</slots>
     </mod>
@@ -11825,7 +11825,7 @@
       <source>R5</source>
       <avail>4R</avail>
       <category>All</category>
-      <cost>Body * 150</cost>
+      <cost>max((Body,0.5)) * 150</cost>
       <rating>0</rating>
       <slots>1</slots>
       <optionaldrone />
@@ -11937,7 +11937,7 @@
       <source>R5</source>
       <avail>FixedValues(2,4,8,12R)</avail>
       <category>All</category>
-      <cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 1000,Body * Body * 5000)</cost>
+      <cost>FixedValues(max((Body,0.5)) * max((Body,0.5)) * 100,max((Body,0.5)) * max((Body,0.5)) * 500,max((Body,0.5)) * max((Body,0.5)) * 1000,max((Body,0.5)) * max((Body,0.5)) * 5000)</cost>
       <rating>4</rating>
       <slots>0</slots>
       <optionaldrone />
@@ -11954,7 +11954,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * Body * 100</cost>
+      <cost>max((Body,0.5)) * max((Body,0.5)) * 100</cost>
       <rating>0</rating>
       <slots>1</slots>
       <optionaldrone />
@@ -11971,7 +11971,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * Body * 1000</cost>
+      <cost>max((Body,0.5)) * max((Body,0.5)) * 1000</cost>
       <rating>0</rating>
       <slots>2</slots>
       <optionaldrone />
@@ -11988,7 +11988,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * 100</cost>
+      <cost>max((Body,0.5)) * 100</cost>
       <rating>0</rating>
       <slots>1</slots>
       <optionaldrone />
@@ -12217,7 +12217,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * 300</cost>
+      <cost>max((Body,0.5)) * 300</cost>
       <rating>0</rating>
       <slots>0</slots>
       <optionaldrone />
@@ -12234,7 +12234,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * 75</cost>
+      <cost>max((Body,0.5)) * 75</cost>
       <rating>0</rating>
       <slots>0</slots>
       <optionaldrone />
@@ -12452,7 +12452,7 @@
       <source>SS</source>
       <avail>12R</avail>
       <category>All</category>
-      <cost>Body * 2000</cost>
+      <cost>max((Body,0.5)) * 2000</cost>
       <rating>0</rating>
       <slots>0</slots>
     </mod>
@@ -12677,7 +12677,7 @@
       <source>R5</source>
       <avail>Rating * 2</avail>
       <category>Handling</category>
-      <cost>Body * Rating * 200</cost>
+      <cost>max((Body,0.5)) * Rating * 200</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>(Rating - Handling - 1) * number(Rating - Handling - 1 >= 0)</slots>
@@ -12700,7 +12700,7 @@
       <source>R5</source>
       <avail>Rating * 2</avail>
       <category>Speed</category>
-      <cost>Body * Rating * 400</cost>
+      <cost>max((Body,0.5)) * Rating * 400</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>(Rating - Speed - 1) * number(Rating - Speed - 1 >= 0)</slots>
@@ -12723,7 +12723,7 @@
       <source>R5</source>
       <avail>Rating * 4</avail>
       <category>Acceleration</category>
-      <cost>Body * Rating * 200</cost>
+      <cost>max((Body,0.5)) * Rating * 200</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>(Rating - Acceleration - 1) * number(Rating - Acceleration - 1 >= 0)</slots>
@@ -12746,7 +12746,7 @@
       <source>R5</source>
       <avail>FixedValues(1,2,3,4,5,6,7R,8R,9R,10R,11R,12R,RatingF)</avail>
       <category>Armor</category>
-      <cost>Rating * Body * 200</cost>
+      <cost>Rating * max((Body,0.5)) * 200</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>(Rating - Armor - 3) * number(Rating - Armor - 3 >= 0)</slots>
@@ -12932,7 +12932,7 @@
       <source>2050</source>
       <avail>4</avail>
       <category>Cosmetic</category>
-      <cost>Body * 1000</cost>
+      <cost>max((Body,0.5)) * 1000</cost>
       <rating>0</rating>
       <slots>0</slots>
       <required>

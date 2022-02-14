@@ -28,6 +28,7 @@ Application Changes:
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
 - Barehanded Adept no longer shows "T, T (A)" after its name after it is added.
+- Vehicle and drone mods that rely on a vehicle stat to calculate costs now properly use a value of 0.5 in place of that stat for vehicles and drones with a stat of 0 (e.g. Body 0 drones).
 
 Changed/New Strings:
 - Tip_SpellDrain

@@ -2380,7 +2380,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intBody = _intBody;
+                int intBody = Body;
 
                 foreach (VehicleMod objMod in Mods)
                 {
@@ -2615,12 +2615,12 @@ namespace Chummer.Backend.Equipment
                 if (IsDrone && _objCharacter.Settings.DroneMods)
                 {
                     if (intModArmor <= 0)
-                        intModArmor += _intArmor;
+                        intModArmor += Armor;
                 }
                 // Drones have no theoretical armor cap in the optional rules, otherwise, it's capped
                 else
                 {
-                    intModArmor = Math.Min(MaxArmor, intModArmor + _intArmor);
+                    intModArmor = Math.Min(MaxArmor, intModArmor + Armor);
                 }
                 return intModArmor;
             }
@@ -2638,15 +2638,14 @@ namespace Chummer.Backend.Equipment
                     return int.MaxValue;
 
                 // Rigger 5 says max extra armor is Body + starting Armor, p159
-                int intReturn = _intBody + _intArmor;
-
+                // When you need to use a 0 for the math, use 0.5 instead
+                int intReturn;
                 if (IsDrone && _objCharacter.Settings.DroneArmorMultiplierEnabled)
-                {
-                    intReturn *= _objCharacter.Settings.DroneArmorMultiplier;
-                }
+                    intReturn = ((Math.Max(Body, 0.5m) + Armor) * _objCharacter.Settings.DroneArmorMultiplier).StandardRound();
+                else
+                    intReturn = Math.Max(Body + Armor, 1);
 
-                //When you need to use a 0 for the math, use 0.5 instead
-                return Math.Max(intReturn, 1);
+                return intReturn;
             }
         }
 
@@ -2661,7 +2660,7 @@ namespace Chummer.Backend.Equipment
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules)
                 {
-                    return Math.Max(_intSpeed * 2, 1);
+                    return Math.Max(Speed * 2, 1);
                 }
                 return int.MaxValue;
             }
@@ -2678,7 +2677,7 @@ namespace Chummer.Backend.Equipment
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules)
                 {
-                    return Math.Max(_intHandling * 2, 1);
+                    return Math.Max(Handling * 2, 1);
                 }
                 return int.MaxValue;
             }
@@ -2695,7 +2694,7 @@ namespace Chummer.Backend.Equipment
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules)
                 {
-                    return Math.Max(_intAccel * 2, 1);
+                    return Math.Max(Accel * 2, 1);
                 }
                 return int.MaxValue;
             }
@@ -2712,7 +2711,7 @@ namespace Chummer.Backend.Equipment
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules)
                 {
-                    return Math.Max(_intSensor * 2, 1);
+                    return Math.Max(BaseSensor * 2, 1);
                 }
                 return int.MaxValue;
             }
@@ -2729,7 +2728,7 @@ namespace Chummer.Backend.Equipment
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules && _objCharacter.Settings.DroneModsMaximumPilot)
                 {
-                    return Math.Max(_intPilot * 2, 1);
+                    return Math.Max(Pilot * 2, 1);
                 }
                 return int.MaxValue;
             }
@@ -2753,7 +2752,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string PowertrainModSlotsUsed(int intModSlots = 0)
         {
-            int intTotal = _intBody + _intAddPowertrainModSlots;
+            int intTotal = Body + _intAddPowertrainModSlots;
             return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Powertrain") + intModSlots, intTotal);
         }
 
@@ -2762,7 +2761,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ProtectionModSlotsUsed(int intModSlots = 0)
         {
-            int intTotal = _intBody + _intAddProtectionModSlots;
+            int intTotal = Body + _intAddProtectionModSlots;
             return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Protection") + intModSlots, intTotal);
         }
 
@@ -2771,7 +2770,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string WeaponModSlotsUsed(int intModSlots = 0)
         {
-            int intTotal = _intBody + _intAddWeaponModSlots;
+            int intTotal = Body + _intAddWeaponModSlots;
             return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Weapons") + intModSlots, intTotal);
         }
 
@@ -2780,7 +2779,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string BodyModSlotsUsed(int intModSlots = 0)
         {
-            int intTotal = _intBody + _intAddBodyModSlots;
+            int intTotal = Body + _intAddBodyModSlots;
             return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Body") + intModSlots, intTotal);
         }
 
@@ -2789,7 +2788,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string ElectromagneticModSlotsUsed(int intModSlots = 0)
         {
-            int intTotal = _intBody + _intAddElectromagneticModSlots;
+            int intTotal = Body + _intAddElectromagneticModSlots;
             return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Electromagnetic") + intModSlots, intTotal);
         }
 
@@ -2798,7 +2797,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CosmeticModSlotsUsed(int intModSlots = 0)
         {
-            int intTotal = _intBody + _intAddCosmeticModSlots;
+            int intTotal = Body + _intAddCosmeticModSlots;
             return string.Format(GlobalSettings.CultureInfo, "{0}/{1}", intTotal - CalcCategoryAvail("Cosmetic") + intModSlots, intTotal);
         }
 
@@ -3089,7 +3088,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int CalcCategoryAvail(string strCategory)
         {
-            int intBase = _intBody;
+            int intBase = Body;
 
             switch (strCategory)
             {
