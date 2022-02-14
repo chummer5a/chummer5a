@@ -22,10 +22,10 @@
   <spirits>
     <spirit>
       <skills>
-        <skill xpathfilter="text() = 'Electronic Warfare' or text() = 'Cybercombat'" amendoperation="remove" />
-        <skill xpathfilter="text() = 'Computer'">Matrix</skill>
-        <skill xpathfilter="text() = 'Hacking'">Cyberwarfare</skill>
-        <skill xpathfilter="text() = 'Hardware'">Electronics</skill>
+        <skill xpathfilter=". = 'Electronic Warfare' or . = 'Cybercombat'" amendoperation="remove" />
+        <skill xpathfilter=". = 'Computer'">Matrix</skill>
+        <skill xpathfilter=". = 'Hacking'">Cyberwarfare</skill>
+        <skill xpathfilter=". = 'Hardware'">Electronics</skill>
       </skills>
     </spirit>
   </spirits>

@@ -166,10 +166,10 @@
     <range>
       <name>Bows</name>
       <min>0</min>
-      <short>STR</short>
-      <medium>STR*10</medium>
-      <long>STR*30</long>
-      <extreme>STR*60</extreme>
+      <short>{STR}</short>
+      <medium>{STR}*10</medium>
+      <long>{STR}*30</long>
+      <extreme>{STR}*60</extreme>
     </range>
     <range>
       <name>Light Crossbows</name>
@@ -198,42 +198,42 @@
     <range>
       <name>Thrown Knife</name>
       <min>0</min>
-      <short>STR</short>
-      <medium>STR*2</medium>
-      <long>STR*3</long>
-      <extreme>STR*5</extreme>
+      <short>{STR}</short>
+      <medium>{STR}*2</medium>
+      <long>{STR}*3</long>
+      <extreme>{STR}*5</extreme>
     </range>
     <range>
       <name>Net</name>
       <min>0</min>
-      <short>STR/2</short>
-      <medium>STR</medium>
-      <long>STR*1.5</long>
-      <extreme>STR*2.5</extreme>
+      <short>{STR}/2</short>
+      <medium>{STR}</medium>
+      <long>{STR}*1.5</long>
+      <extreme>{STR}*2.5</extreme>
     </range>
     <range>
       <name>Shuriken</name>
       <min>0</min>
-      <short>STR</short>
-      <medium>STR*2</medium>
-      <long>STR*5</long>
-      <extreme>STR*7</extreme>
+      <short>{STR}</short>
+      <medium>{STR}*2</medium>
+      <long>{STR}*5</long>
+      <extreme>{STR}*7</extreme>
     </range>
     <range>
       <name>Standard Grenade</name>
       <min>0</min>
-      <short>STR*2</short>
-      <medium>STR*4</medium>
-      <long>STR*6</long>
-      <extreme>STR*10</extreme>
+      <short>{STR}*2</short>
+      <medium>{STR}*4</medium>
+      <long>{STR}*6</long>
+      <extreme>{STR}*10</extreme>
     </range>
     <range>
       <name>Aerodynamic Grenade</name>
       <min>0</min>
-      <short>STR*2</short>
-      <medium>STR*4</medium>
-      <long>STR*8</long>
-      <extreme>STR*15</extreme>
+      <short>{STR}*2</short>
+      <medium>{STR}*4</medium>
+      <long>{STR}*8</long>
+      <extreme>{STR}*15</extreme>
     </range>
     <range>
       <name>Harpoon Gun</name>

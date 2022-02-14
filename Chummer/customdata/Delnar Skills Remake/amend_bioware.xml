@@ -35,7 +35,7 @@
     <bioware xpathfilter="name = 'Enhanced Articulation (2050)' or name = 'Enhanced Articulation'">
       <bonus>
         <limitmodifier>
-          <condition>Only for Contortion</condition>
+          <condition>LimitCondition_SkillsActiveContortion</condition>
         </limitmodifier>
       </bonus>
     </bioware>

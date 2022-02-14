@@ -1,11 +1,12 @@
-﻿@page
+@page
 @model EnableAuthenticatorModel
 @{
     ViewData["Title"] = "Configure authenticator app";
     ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
 }
 
-@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+@await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 <h4>@ViewData["Title"]</h4>
 <div>
     <p>To use an authenticator app go through the following steps:</p>

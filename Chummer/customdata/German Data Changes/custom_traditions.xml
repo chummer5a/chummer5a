@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it {WIL}l be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MER{CHA}NTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <traditions>
+    <tradition>
+      <id>e4308e13-9e29-4d44-bb6e-015bcca41559</id>
+      <name>Brocken Witches</name>
+      <drain>{WIL} + {INT}</drain>
+      <source>SG</source>
+      <page>42</page>
+      <spirits>
+        <spiritcombat>Plant Spirit</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Beasts</spirithealth>
+        <spiritillusion>Spirit of Fire</spiritillusion>
+        <spiritmanipulation>Spirit of Air</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>da78c84d-0494-483e-a15e-c17ddf28f6aa</id>
+      <name>Faustian</name>
+      <drain>{WIL} + {LOG}</drain>
+      <source>SG</source>
+      <page>45</page>
+      <spirits>
+        <spiritcombat>Guidance Spirit</spiritcombat>
+        <spiritdetection>Spirit of Water</spiritdetection>
+        <spirithealth>Spirit of Fire</spirithealth>
+        <spiritillusion>Spirit of Man</spiritillusion>
+        <spiritmanipulation>Spirit of Earth</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>241cbc2e-5411-43af-a3c1-7fd3a2709fa2</id>
+      <name>Sorbic Theurgy</name>
+      <drain>{WIL} + {CHA}</drain>
+      <source>SG</source>
+      <page>51</page>
+      <spirits>
+        <spiritcombat>Spirit of Earth</spiritcombat>
+        <spiritdetection>Spirit of Air</spiritdetection>
+        <spirithealth>Spirit of Water</spirithealth>
+        <spiritillusion>Spirit of Man</spiritillusion>
+        <spiritmanipulation>Spirit of Beasts</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <tradition>
+      <id>72374b26-89da-4ca3-aab7-b25a58c7a130</id>
+      <name>Street Witches</name>
+      <drain>{WIL} + {CHA}</drain>
+      <source>SG</source>
+      <page>52</page>
+      <spirits>
+        <spiritcombat>Spirit of Fire</spiritcombat>
+        <spiritdetection>Spirit of Man</spiritdetection>
+        <spirithealth>Guidance Spirit</spirithealth>
+        <spiritillusion>Spirit of Water</spiritillusion>
+        <spiritmanipulation>Spirit of Air</spiritmanipulation>
+      </spirits>
+    </tradition>
+  </traditions>
+</chummer>

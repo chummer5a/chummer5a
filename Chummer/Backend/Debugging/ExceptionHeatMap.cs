@@ -16,8 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,51 +26,52 @@ using System.Text;
 
 namespace Chummer.Backend
 {
-    public sealed class ExceptionHeatMap
+    public sealed class ExceptionHeatMap : IDisposable
     {
-        readonly ConcurrentDictionary<string, int> _map = new ConcurrentDictionary<string, int>();
+        private readonly LockingDictionary<string, int> _map = new LockingDictionary<string, int>();
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
+            if (e == null)
+                return;
             //Notes down the line number of every first chance exception.
-            //Then counts the occurences. Should make it easier to find what throws the most exceptions
+            //Then counts the occurrences. Should make it easier to find what throws the most exceptions
             StackTrace trace = new StackTrace(e.Exception, true);
 
             StackFrame frame = trace.GetFrame(0);
             // This kind of resolves a crash due to other applications querying Chummer's frames.
             // Specifically, the NVDA screen reader. See https://github.com/chummer5a/chummer5a/issues/1888
             // In theory shouldn't mask any existing issues?
-            if (frame == null) return;
-            string heat = $"{frame.GetFileName()}:{frame.GetFileLineNumber()}";
-
-            if (_map.TryGetValue(heat, out int intTmp))
-            {
-                _map[heat] += intTmp + 1;
-            }
-            else
-            {
-                _map.TryAdd(heat, 1);
-            }
+            if (frame == null)
+                return;
+            string heat = string.Format(GlobalSettings.InvariantCultureInfo, "{0}:{1}", frame.GetFileName(), frame.GetFileLineNumber());
+            _map.AddOrUpdate(heat, 1, (a, b) => b + 1);
         }
 
         public string GenerateInfo()
         {
-            StringBuilder builder = new StringBuilder(Environment.NewLine);
-            int lenght = -1;
-            IOrderedEnumerable<KeyValuePair<string, int>> exceptions = from i in _map
-                orderby -i.Value
-                select i;
-
-            foreach (KeyValuePair<string, int> exception in exceptions)
+            int intLength = -1;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                builder.Append('\t'); builder.Append('\t');
-                lenght = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), lenght);
-                builder.Append(exception.Value.ToString($"D{lenght}"));
+                sbdReturn.AppendLine();
+                foreach (KeyValuePair<string, int> exception in _map.OrderBy(i => -i.Value))
+                {
+                    intLength = Math.Max((int) Math.Ceiling(Math.Log10(exception.Value)), intLength);
+                    sbdReturn.Append("\t\t")
+                             .Append(exception.Value.ToString(
+                                         "D" + intLength.ToString(GlobalSettings.InvariantCultureInfo),
+                                         GlobalSettings.InvariantCultureInfo)).Append(" - ")
+                             .AppendLine(exception.Key);
+                }
 
-                builder.Append(" - ").AppendLine(exception.Key);
+                return sbdReturn.ToString();
             }
+        }
 
-            return builder.ToString();
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _map?.Dispose();
         }
     }
 }

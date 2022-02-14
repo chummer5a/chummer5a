@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="bioware" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+<xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
   <xs:include schemaLocation="bonuses.xsd" />
   <xs:include schemaLocation="conditions.xsd" />
 
@@ -14,6 +14,22 @@
                 <xs:complexType>
                   <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
                     <xs:extension base="xs:string">
+                      <xs:attribute name="blackmarket" type="xs:string" use="optional" />
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="modcategories" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="blackmarket" type="xs:string" use="optional" />
                     </xs:extension>
                   </xs:simpleContent>
                 </xs:complexType>
@@ -30,6 +46,7 @@
                     <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="addoncategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -49,7 +66,8 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
+                    <xs:element name="wirelessbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element name="addmodcategory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="forcemodcategory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="mods" minOccurs="0" maxOccurs="1">
@@ -104,12 +122,13 @@
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="armor" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="maxrating" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="armorcapacity" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element name="gears" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>

@@ -16,50 +16,65 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 
 namespace Chummer
 {
-    class NuyenString : IComparable
+    public readonly struct NuyenString : IComparable, IEquatable<NuyenString>, IComparable<NuyenString>
     {
-        private readonly string _strBaseString;
-        private readonly decimal _decValue;
-        private readonly bool _blnUseDecimal;
-
-        public string BaseString => _strBaseString;
-        public decimal Value => _decValue;
-        public bool UseDecimal => _blnUseDecimal;
+        public string BaseString { get; }
+        public decimal Value { get; }
+        public bool UseDecimal { get; }
 
         public NuyenString(string strNuyenString)
         {
-            _strBaseString = strNuyenString.FastEscape('¥');
-            _blnUseDecimal = decimal.TryParse(_strBaseString, out _decValue);
+            BaseString = strNuyenString.FastEscape('¥');
+            UseDecimal = decimal.TryParse(BaseString, out decimal decValue);
+            Value = decValue;
         }
 
         public override string ToString()
         {
-            return _strBaseString + '¥';
+            return BaseString + '¥';
         }
 
         public string ToString(string format)
         {
-            if (_blnUseDecimal)
-                return _decValue.ToString(format) + '¥';
-            return _strBaseString + '¥';
+            if (UseDecimal)
+                return Value.ToString(format, GlobalSettings.InvariantCultureInfo) + '¥';
+            return BaseString + '¥';
         }
 
         public string ToString(IFormatProvider formatProvider)
         {
-            if (_blnUseDecimal)
-                return _decValue.ToString(formatProvider) + '¥';
-            return _strBaseString + '¥';
+            if (UseDecimal)
+                return Value.ToString(formatProvider) + '¥';
+            return BaseString + '¥';
         }
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
-            if (_blnUseDecimal)
-                return _decValue.ToString(format, formatProvider) + '¥';
-            return _strBaseString + '¥';
+            if (UseDecimal)
+                return Value.ToString(format, formatProvider) + '¥';
+            return BaseString + '¥';
+        }
+
+        public bool Equals(NuyenString other)
+        {
+            if (UseDecimal != other.UseDecimal)
+                return false;
+            return UseDecimal ? Value == other.Value : BaseString.Equals(other.BaseString, StringComparison.Ordinal);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is NuyenString other && Equals(other);
+        }
+
+        public override int GetHashCode()
+        {
+            return (BaseString, Value, UseDecimal).GetHashCode();
         }
 
         public int CompareTo(object obj)
@@ -67,21 +82,45 @@ namespace Chummer
             return CompareTo((NuyenString)obj);
         }
 
-        public int CompareTo(NuyenString strOther)
+        public int CompareTo(NuyenString other)
         {
-            if (_blnUseDecimal)
-            {
-                if (strOther.UseDecimal)
-                    return _decValue.CompareTo(strOther.Value);
-                else
-                    return -1;
-            }
-            else if (strOther.UseDecimal)
-                return 1;
-            else
-            {
-                return string.Compare(_strBaseString, strOther.BaseString, false, GlobalOptions.CultureInfo);
-            }
+            if (!UseDecimal)
+                return other.UseDecimal
+                    ? 1
+                    : string.Compare(BaseString, other.BaseString, false, GlobalSettings.CultureInfo);
+            if (other.UseDecimal)
+                return Value.CompareTo(other.Value);
+            return -1;
+        }
+
+        public static bool operator ==(NuyenString left, NuyenString right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(NuyenString left, NuyenString right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(NuyenString left, NuyenString right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(NuyenString left, NuyenString right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(NuyenString left, NuyenString right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(NuyenString left, NuyenString right)
+        {
+            return left.CompareTo(right) >= 0;
         }
     }
 }

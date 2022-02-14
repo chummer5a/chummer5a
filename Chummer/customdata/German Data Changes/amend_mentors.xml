@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <mentors>
+    <mentor>
+      <id>168a0db8-0676-4a7d-86ce-99a43bf0f2bc</id> <!-- Raven -->
+      <choices>
+        <choice xpathfilter="starts-with(name, 'Adept:')" amendoperation="remove" />
+        <choice amendoperation="addnode">
+          <name>Adept: Free Traceless Walk</name>
+          <bonus>
+            <specificpower>
+              <name>Traceless Walk</name>
+            </specificpower>
+          </bonus>
+        </choice>
+        <choice amendoperation="addnode">
+          <name>Adept: 1 level of Voice Control</name>
+          <bonus>
+            <specificpower>
+              <name>Voice Control</name>
+              <val>1</val>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+    </mentor>
+    <mentor> <!--Great Mother SASS-->
+      <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
+      <hide />
+    </mentor>
+  </mentors>
+</chummer>

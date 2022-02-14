@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,14 +18,14 @@ namespace ChummerHub
 
         #region snippet_Initialize
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
-        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostingEnvironment env)
+        public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostEnvironment env)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         {
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>(), env))
             {
 
-                if (context.Users.Any())
+                if (await context.Users.AnyAsync())
                 {
                     return;   // DB has been seeded
                 }
@@ -68,7 +69,7 @@ namespace ChummerHub
         /// <param name="username"></param>
         /// <param name="userpwd"></param>
         /// <returns></returns>
-        private static String GetSqlCommandMasterUser(string username, string userpwd)
+        private static string GetSqlCommandMasterUser(string username, string userpwd)
         {
             string sqltext = @"IF NOT EXISTS (SELECT name FROM sys.sql_logins WHERE name='" + username + "') ";
             sqltext += " " + Environment.NewLine + "   BEGIN";
@@ -91,14 +92,15 @@ namespace ChummerHub
             try
             {
                 var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-
+                if (userManager == null)
+                    return Guid.Empty;
                 var u = await userManager.FindByNameAsync(user.UserName);
                 if (u == null)
                 {
                     user.PasswordHash = userManager.PasswordHasher.HashPassword(user, userPW);
                     await userManager.CreateAsync(user);
                 }
-                return u.Id;
+                return u?.Id ?? Guid.Empty;
             }
             catch (Exception e)
             {
@@ -118,13 +120,23 @@ namespace ChummerHub
             try
             {
                 if (roleManager == null)
+                {
                     roleManager = serviceProvider.GetService<RoleManager<ApplicationRole>>();
+                    if (roleManager == null)
+                        return null;
+                }
                 if (!await roleManager.RoleExistsAsync(role))
                 {
                     IR = await roleManager.CreateAsync(new ApplicationRole(role));
                 }
+
                 if (userManager == null)
+                {
                     userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+                    if (userManager == null)
+                        return null;
+                }
+
                 var user = await userManager.FindByIdAsync(uid.ToString());
 
                 IR = await userManager.AddToRoleAsync(user, role);

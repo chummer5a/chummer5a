@@ -16,9 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -50,6 +52,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public LimitModifier(Character objCharacter, string strGuid = "")
         {
             // Create the GUID for the new Skill Limit Modifier.
@@ -78,14 +81,16 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("limitmodifier");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("limit", _strLimit);
-            objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("bonus", _intBonus.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("condition", _strCondition);
-            objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteEndElement();
         }
 
@@ -105,31 +110,37 @@ namespace Chummer
             {
                 _blnCanDelete = _objCharacter.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.LimitModifier || x.ImprovedName != InternalId);
             }
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        /// <param name="objWriter">XmlTextWriter to write with</param>
+        /// <param name="objCulture">Culture in which to print</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("limitmodifier");
-            objWriter.WriteElementString("name", DisplayName);
+            objWriter.WriteElementString("guid", InternalId);
+            objWriter.WriteElementString("name", DisplayName(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("condition", Condition);
-            if (_objCharacter.Options.PrintNotes)
+            objWriter.WriteElementString("condition", _objCharacter.TranslateExtra(Condition, strLanguageToPrint));
+            if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Skill Limit Modifier in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Name.
@@ -158,13 +169,68 @@ namespace Chummer
             set => _strLimit = value;
         }
 
+        private string _strCachedCondition = string.Empty;
+        private string _strCachedDisplayCondition = string.Empty;
+        private string _strCachedDisplayConditionLanguage = string.Empty;
+
         /// <summary>
         /// Condition.
         /// </summary>
         public string Condition
         {
-            get => _strCondition;
-            set => _strCondition = value;
+            get
+            {
+                // If we've already cached a value for this, just return it.
+                // TODO: invalidate cache if active language changes
+                // (Ghetto fix cache culture tag and compare to current?)
+                if (!string.IsNullOrWhiteSpace(_strCachedCondition))
+                {
+                    return _strCachedCondition;
+                }
+
+                // Assume that if the original string contains spaces it's not a
+                // valid language key. Spare checking it against the dictionary.
+                _strCachedCondition = _strCondition.Contains(' ')
+                    ? _strCondition
+                    : LanguageManager.GetString(_strCondition, false);
+                if (string.IsNullOrWhiteSpace(_strCachedCondition))
+                {
+                    _strCachedCondition = _strCondition;
+                }
+
+                return _strCachedCondition;
+            }
+            set
+            {
+                if (value == _strCondition) return;
+                _strCondition = value;
+                _strCachedCondition = string.Empty;
+                _strCachedDisplayCondition = string.Empty;
+                _strCachedDisplayConditionLanguage = string.Empty;
+            }
+        }
+
+        public string DisplayCondition(string strLanguage)
+        {
+            // If we've already cached a value for this, just return it.
+            // (Ghetto fix cache culture tag and compare to current?)
+            if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
+            {
+                return _strCachedDisplayCondition;
+            }
+
+            _strCachedDisplayConditionLanguage = strLanguage;
+            // Assume that if the original string contains spaces it's not a
+            // valid language key. Spare checking it against the dictionary.
+            _strCachedDisplayCondition = _strCondition.Contains(' ')
+                ? _strCondition
+                : LanguageManager.GetString(_strCondition, strLanguage, false);
+            if (string.IsNullOrWhiteSpace(_strCachedDisplayCondition))
+            {
+                _strCachedDisplayCondition = _strCondition;
+            }
+
+            return _strCachedDisplayCondition;
         }
 
         /// <summary>
@@ -196,35 +262,38 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName
-        {
-            get
-            {
-                string strBonus;
-                if (_intBonus > 0)
-                    strBonus = '+' + _intBonus.ToString();
-                else
-                    strBonus = _intBonus.ToString();
+        public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-                string strReturn = DisplayNameShort + LanguageManager.GetString("String_Space", GlobalOptions.Language) + '[' + strBonus + ']';
-                if (!string.IsNullOrEmpty(_strCondition))
-                    strReturn += LanguageManager.GetString("String_Space", GlobalOptions.Language) + '(' + _strCondition + ')';
-                return strReturn;
-            }
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
+        {
+            string strBonus;
+            if (_intBonus > 0)
+                strBonus = '+' + _intBonus.ToString(objCulture);
+            else
+                strBonus = _intBonus.ToString(objCulture);
+
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strReturn = DisplayNameShort + strSpace + '[' + strBonus + ']';
+            string strCondition = DisplayCondition(strLanguage);
+            if (!string.IsNullOrEmpty(strCondition))
+                strReturn += strSpace + '(' + strCondition + ')';
+            return strReturn;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 ContextMenuStrip = cmsLimitModifier,
-                Text = DisplayName,
+                Text = CurrentDisplayName,
                 Tag = this,
                 ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap(100)
+                ToolTipText = Notes.WordWrap()
             };
             return objNode;
         }
@@ -235,32 +304,29 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Color.SaddleBrown;
+                    return !CanDelete
+                        ? ColorManager.GrayHasNotesColor
+                        : ColorManager.HasNotesColor;
                 }
-                if (!CanDelete)
-                {
-                    return SystemColors.GrayText;
-                }
-
-                return SystemColors.WindowText;
+                return !CanDelete
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
             }
         }
-        #endregion
 
-        public bool Remove(Character characterObject, bool blnConfirmDelete = true)
+        #endregion UI Methods
+
+        public bool Remove(bool blnConfirmDelete = true)
         {
-            if (characterObject.LimitModifiers.Any(limitMod => limitMod == this))
+            if (_objCharacter.LimitModifiers.Contains(this) && blnConfirmDelete)
             {
-                if (blnConfirmDelete)
-                {
-                    return characterObject.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier",
-                               GlobalOptions.Language)) && characterObject.LimitModifiers.Remove(this);
-                }
+                return CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier"))
+                       && _objCharacter.LimitModifiers.Remove(this);
             }
 
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
-            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier", GlobalOptions.Language), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier", GlobalOptions.Language), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }
     }

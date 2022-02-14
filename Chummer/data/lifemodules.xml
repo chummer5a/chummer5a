@@ -35,7 +35,7 @@
       <category>LifeModule</category>
       <name>United Canadian American States</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
@@ -7030,8 +7030,8 @@
         </knowledgeskilllevel>
         <nuyenamt>16000</nuyenamt>
         <selectquality>
-          <quality>Biocompatability (Cyberware)</quality>
-          <quality>Biocompatability (Bioware)</quality>
+          <quality>Biocompatibility (Cyberware)</quality>
+          <quality>Biocompatibility (Bioware)</quality>
         </selectquality>
       </bonus>
       <!--todo: Special: 16,000 nuyen in augmentations-->
@@ -7127,7 +7127,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>High Pain Tolerance (Rating 2)</addquality>
+          <addquality rating="2">High Pain Tolerance</addquality>
           <addquality>Quick Healer</addquality>
         </addqualities>
       </bonus>
@@ -7236,7 +7236,7 @@
       <category>LifeModule</category>
       <name>Caribbean League</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>62a71e87-d427-4b96-93f2-33d96c6226f2</id>
@@ -8458,7 +8458,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Hobo with a Shotgun</addquality>
-          <addquality>High Pain Tolerance (Rating 2)</addquality>
+          <addquality rating="2">High Pain Tolerance</addquality>
         </addqualities>
       </bonus>
       <story>A flood is coming that will wash away the filth from the streets, and $real has a message of salvation to deliver. Their mission is paramount, they know it. $real understands that salvation comes from odd angles in these godless times, and that they might have to do unconventional things for the greater good. $real's body is strong, and their resolve is stronger.</story>
@@ -8474,7 +8474,7 @@
       <category>LifeModule</category>
       <name>Amazonian</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>047e3fb2-1d43-480c-baed-2b333472eb7d</id>
@@ -8622,784 +8622,6 @@
       <story>$real was born in eastern South America, in the country now known as Amazonia.</story>
       <source>SFME</source>
       <page>31</page>
-    </module>
-    <!-- End Region -->
-    <!-- Region Run Faster German -->
-    <!-- Region Nationality -->
-    <module>
-      <id>b13f9a0d-dcef-45f4-9462-20bef88267ce</id>
-      <stage>Nationality</stage>
-      <category>LifeModule</category>
-      <name>Allied German States (AGS)</name>
-      <karma>15</karma>
-      <!--<selectable/>-->
-      <versions>
-        <version>
-          <id>4be3aea3-b0f9-4a6c-b963-50bca3b2000e</id>
-          <name>General AGS</name>
-          <story>$real was born somewhere in the AGS.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>LOG</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Etiquette</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>Knowledge: [State of Origin]</name>
-              <group>Street</group>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>[any language]</name>
-              <group>Language</group>
-            </knowledgeskilllevel>
-
-            <pushtext>AGS</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>ed89941c-b0b9-4848-adb1-4c896c4c8aa7</id>
-          <name>Frankfurt</name>
-          <story>$real was born in Frankfurt.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>LOG</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Etiquette</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Con</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>Area Knowledge: Frankfurt</name>
-              <group>Street</group>
-              <val>2</val>
-            </knowledgeskilllevel>
-
-            <pushtext>AGS</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>b136ce6a-e150-4673-ad55-7dfa4b8f71d4</id>
-          <name>Hamburg</name>
-          <story>$real was born in Hamburg.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>CHA</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Etiquette</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Negotiation</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>Area Knowledge: Hamburg</name>
-              <group>Street</group>
-              <val>2</val>
-            </knowledgeskilllevel>
-
-            <pushtext>AGS</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>2619742f-08c9-467e-bf27-edb7ed561f72</id>
-          <name>Rhine-Ruhr Megaplex</name>
-          <story>$real was born in the Rhine-Ruhr Megaplex.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>REA</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Intimidation</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>Area Knowledge: Rhine-Ruhr Megaplex</name>
-              <group>Street</group>
-              <val>2</val>
-            </knowledgeskilllevel>
-
-            <pushtext>AGS</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>bc771dda-dd49-4983-a3ab-bc0b58125593</id>
-          <name>Troll Republic Black Forest</name>
-          <story>$real was born in the Troll Republic Black Forest.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>INT</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Survival</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Perception</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>Awakened Black Forest</name>
-              <group>Interest</group>
-              <val>2</val>
-            </knowledgeskilllevel>
-
-            <pushtext>AGS</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>6806929f-1b40-4604-a986-bff193a44a70</id>
-          <name>SINless</name>
-          <story>$real was born in the AGS without the luxury of a SIN.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>AGI</name>
-            </attributelevel>
-            <knowledgeskilllevel>
-              <name>Area Knowledge: [City]</name>
-              <group>Interest</group>
-              <val>2</val>
-            </knowledgeskilllevel>
-          </bonus>
-        </version>
-      </versions>
-      <bonus>
-        <skilllevel>
-          <name>Computer</name>
-        </skilllevel>
-        <knowledgeskilllevel>
-          <name>AGS</name>
-          <group>Street</group>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>History</name>
-          <group>Academic</group>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>German</name>
-          <group>Language</group>
-          <val>0</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <options>
-            <albanian>Albanian</albanian>
-            <arabic>Arabic</arabic>
-            <bosnian>Bosnian</bosnian>
-            <french>French</french>
-            <italian>Italian</italian>
-            <croatian>Croatian</croatian>
-            <dutch>Dutch</dutch>
-            <polish>Polish</polish>
-            <romanian>Romanian</romanian>
-            <russian>Russian</russian>
-            <serbian>Serbian</serbian>
-            <turkish>Turkish</turkish>
-          </options>
-          <id>a7e9fb3c-bd6b-4a39-bea3-0248d323f0e5</id>
-          <group>Language</group>
-        </knowledgeskilllevel>
-      </bonus>
-      <story />
-      <source>RFG</source>
-      <page>152</page>
-    </module>
-    <module>
-      <id>6d400c83-b914-4d0e-9af6-fc45d6534af9</id>
-      <stage>Nationality</stage>
-      <category>LifeModule</category>
-      <name>Berlin</name>
-      <karma>15</karma>
-      <!--<selectable/>-->
-      <versions>
-        <version>
-          <id>8bb2073b-a4f6-4745-acd9-55d326c57497</id>
-          <name>Corp</name>
-          <story>$real was born in Berlin being part of one of the resident corps.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>LOG</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Computer</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Con</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>AGS</name>
-              <group>Street</group>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>History</name>
-              <group>Street</group>
-            </knowledgeskilllevel>
-            <pushtext>Berlin</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>401603a7-8dc0-4d03-a764-3407121b176a</id>
-          <name>Normal Citizen</name>
-          <story>$real was born in Berlin.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>INT</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Computer</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Negotiation</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>AGS</name>
-              <group>Street</group>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>Berlin</name>
-              <group>Street</group>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>History</name>
-              <group>Street</group>
-            </knowledgeskilllevel>
-
-            <pushtext>Berlin</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>fa2da626-9f24-4099-892d-6c1ae4ee0156</id>
-          <name>Anarchist</name>
-          <story>$real was born in Berlin as part of the anarchist movement inside the city.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>BOD</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Sneaking</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Survival</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Unarmed Combat</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>Anarchy</name>
-              <group>Street</group>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>Berlin</name>
-              <group>Street</group>
-            </knowledgeskilllevel>
-            <pushtext>Policeman</pushtext>
-            <addqualities>
-              <addquality>Distinctive Style</addquality>
-              <addquality>Prejudiced (Common, Biased)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>932a8030-db57-40fc-b113-3105b35b1e42</id>
-          <name>SINless</name>
-          <story>$real was born in the city of Berlin without the luxury of a SIN.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>WIL</name>
-            </attributelevel>
-            <knowledgeskilllevel>
-              <name>Area Knowledge: Berlin</name>
-              <group>Interest</group>
-            </knowledgeskilllevel>
-          </bonus>
-        </version>
-      </versions>
-      <bonus>
-        <skilllevel>
-          <name>Etiquette</name>
-        </skilllevel>
-        <knowledgeskilllevel>
-          <name>Berlin</name>
-          <group>Street</group>
-          <val>2</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>Anarchy</name>
-          <group>Academic</group>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>German</name>
-          <group>Language</group>
-          <val>0</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <options>
-            <albanian>Albanian</albanian>
-            <arabic>Arabic</arabic>
-            <aztlanspanish>Aztlan Spanish</aztlanspanish>
-            <japanese>Japanese</japanese>
-            <polish>Polish</polish>
-            <russian>Russian</russian>
-            <serbian>Serbian</serbian>
-            <sorbic>Sorbic</sorbic>
-            <turkish>Turkish</turkish>
-            <ukrainian>Ukrainian</ukrainian>
-            <vietnamese>Vietnamese</vietnamese>
-          </options>
-          <id>2e564c16-0da6-42eb-9d18-9b4ec432d576</id>
-          <group>Language</group>
-        </knowledgeskilllevel>
-      </bonus>
-      <story />
-      <source>RFG</source>
-      <page>152</page>
-    </module>
-    <module>
-      <id>6f3306c3-ce14-4a9e-8a31-1fddc986b601</id>
-      <stage>Nationality</stage>
-      <category>LifeModule</category>
-      <name>Pomorya</name>
-      <karma>15</karma>
-      <!--<selectable/>-->
-      <versions>
-        <version>
-          <id>7562d2a4-6e86-4d85-a3c3-06ce1172fbc1</id>
-          <name>Elf</name>
-          <story>$real was born an elf in Pomorya the elven nation north east of the AGS.</story>
-          <required>
-            <oneof>
-              <metatype>Elf</metatype>
-            </oneof>
-          </required>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>CHA</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Computer</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>German</name>
-              <group>Language</group>
-              <val>3</val>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>Polish</name>
-              <group>Language</group>
-              <val>2</val>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>Sperethiel</name>
-              <group>Language</group>
-              <val>2</val>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>Environmental Protection</name>
-              <group>Interest</group>
-              <val>1</val>
-            </knowledgeskilllevel>
-
-            <pushtext>Non-Elves</pushtext>
-            <pushtext>Pomorya</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-              <addquality>Prejudiced (Common, Biased)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>df82484e-4736-4520-8254-0a4094b8ab55</id>
-          <name>Other</name>
-          <story>$real was born in Pomorya the elven nation north east of the AGS, but not as an elf.</story>
-          <forbidden>
-            <oneof>
-              <metatype>Elf</metatype>
-            </oneof>
-          </forbidden>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>WIL</name>
-            </attributelevel>
-            <skilllevel>
-              <name>Computer</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>German</name>
-              <group>Language</group>
-              <val>3</val>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>Polish</name>
-              <group>Language</group>
-              <val>3</val>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>Sperethiel</name>
-              <group>Language</group>
-              <val>1</val>
-            </knowledgeskilllevel>
-            <knowledgeskilllevel>
-              <name>Environmental Protection</name>
-              <group>Interest</group>
-              <val>1</val>
-            </knowledgeskilllevel>
-
-            <pushtext>Non-Pomoryans</pushtext>
-            <pushtext>Pomorya</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-              <addquality>Prejudiced (Common, Biased)</addquality>
-            </addqualities>
-          </bonus>
-        </version>
-        <version>
-          <id>61c3a73c-42a3-4b4c-88da-b1b26bc977fa</id>
-          <name>SINless</name>
-          <story>$real was born in Pomorya the elven nation north east of the AGS, without the luxury of a SIN.</story>
-          <bonus>
-            <attributelevel>
-              <!--Defaults to <val>1</val>-->
-              <name>INT</name>
-            </attributelevel>
-            <knowledgeskilllevel>
-              <name>Polish</name>
-              <group>Language</group>
-              <val>1</val>
-            </knowledgeskilllevel>
-          </bonus>
-        </version>
-      </versions>
-      <bonus>
-        <skilllevel>
-          <name>Etiquette</name>
-        </skilllevel>
-        <knowledgeskilllevel>
-          <name>History</name>
-          <group>Academic</group>
-          <val>1</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>Pomorya</name>
-          <group>Street</group>
-          <val>2</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <name>Pomoryan</name>
-          <group>Language</group>
-          <val>0</val>
-        </knowledgeskilllevel>
-        <knowledgeskilllevel>
-          <options>
-            <german>German</german>
-            <estonian>Estonian</estonian>
-            <finnish>Finnish</finnish>
-            <irish>Irish</irish>
-            <latvian>Latvian</latvian>
-            <lithuainian>Lithuanian</lithuainian>
-            <polish>Polish</polish>
-            <russian>Russian</russian>
-            <swedish>Swedish</swedish>
-            <sperethiel>Sperethiel</sperethiel>
-          </options>
-          <id>2e564c16-0da6-42eb-9d18-9b4ec432d576</id>
-          <group>Language</group>
-        </knowledgeskilllevel>
-      </bonus>
-      <story />
-      <source>RFG</source>
-      <page>152</page>
-    </module>
-    <!--End Region -->
-    <!--Region Real Life-->
-    <module>
-      <id>8f5d5b06-6010-40e5-9521-aef5183c5b7b</id>
-      <stage>Real Life</stage>
-      <category>LifeModule</category>
-      <name>Tour of Duty (MET2000)</name>
-      <karma>100</karma>
-      <bonus>
-        <attributelevel>
-          <name>BOD</name>
-        </attributelevel>
-        <attributelevel>
-          <name>REA</name>
-        </attributelevel>
-        <attributelevel>
-          <name>STR</name>
-        </attributelevel>
-        <skillgrouplevel>
-          <name>Firearms</name>
-          <val>1</val>
-        </skillgrouplevel>
-        <skilllevel>
-          <name>Computer</name>
-        </skilllevel>
-        <skilllevel>
-          <name>First Aid</name>
-        </skilllevel>
-        <skilllevel>
-          <name>Navigation</name>
-        </skilllevel>
-        <knowledgeskilllevel>
-          <name>European Armies</name>
-          <group>Professional</group>
-          <val>4</val>
-        </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
-      </bonus>
-      <versions>
-        <version>
-          <id>56265271-2c43-4541-9fc5-f5750b9aadae</id>
-          <name>Air Force</name>
-          <bonus>
-            <skilllevel>
-              <name>Armorer</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Blades</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Gunnery</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Pilot Aircraft</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Survival</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Free-Fall</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Aeronautics Mechanic</name>
-            </skilllevel>
-          </bonus>
-        </version>
-        <version>
-          <id>bcc4bdfc-87bc-4808-8deb-e5f3012bc456</id>
-          <name>Army</name>
-          <bonus>
-            <skilllevel>
-              <name>Armorer</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Blades</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Heavy Weapons</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Pilot Ground Craft</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Survival</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Automotive Mechanic</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Throwing Weapons</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Free-Fall</name>
-            </skilllevel>
-          </bonus>
-        </version>
-        <version>
-          <id>68aeefb4-29d8-42f6-9cfb-3e666517858b</id>
-          <name>Engineering Corps</name>
-          <bonus>
-            <skilllevel>
-              <name>Armorer</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Demolitions</name>
-            </skilllevel>
-            <skillgrouplevel>
-              <name>Engineering</name>
-              <val>1</val>
-            </skillgrouplevel>
-            <skilllevel>
-              <name>Pilot Ground Craft</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Gunnery</name>
-            </skilllevel>
-            <knowledgeskilllevel>
-              <name>Military Vehicles</name>
-              <group>Professional</group>
-              <val>5</val>
-            </knowledgeskilllevel>
-          </bonus>
-        </version>
-        <version>
-          <id>8f8934fb-2dfa-438c-a059-f62cd7d92aac</id>
-          <name>Mage Corps</name>
-          <bonus>
-            <skilllevel>
-              <name>Assensing</name>
-              <val>2</val>
-            </skilllevel>
-            <skillgrouplevel>
-              <name>Conjuring</name>
-              <val>1</val>
-            </skillgrouplevel>
-            <skilllevel>
-              <name>Perception</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Arcana</name>
-            </skilllevel>
-            <skillgrouplevel>
-              <name>Sorcery</name>
-              <val>1</val>
-            </skillgrouplevel>
-          </bonus>
-        </version>
-        <version>
-          <id>32b1e26c-49a0-42d0-9008-4a76382adc39</id>
-          <!--todo: require Nurse or Medicine module from Further Education-->
-          <name>Medical Corps</name>
-          <bonus>
-            <skillgrouplevel>
-              <name>Biotech</name>
-              <val>2</val>
-            </skillgrouplevel>
-            <skilllevel>
-              <name>Survival</name>
-            </skilllevel>
-          </bonus>
-        </version>
-        <version>
-          <id>640085a9-a6a6-486a-85ef-eef950b9601c</id>
-          <name>Navy</name>
-          <bonus>
-            <skilllevel>
-              <name>Armorer</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Blades</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Gunnery</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Pilot Watercraft</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Survival</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Swimming</name>
-            </skilllevel>
-          </bonus>
-        </version>
-        <version>
-          <id>8dde8124-e1a1-40f5-9cfb-e903fb288348</id>
-          <name>Rigger Corps</name>
-          <bonus>
-            <skilllevel>
-              <name>Electronic Warfare</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Gunnery</name>
-              <val>2</val>
-            </skilllevel>
-            <skilllevel>
-              <name>Pilot Aircraft</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Pilot Walker</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Pilot Ground Craft</name>
-            </skilllevel>
-          </bonus>
-        </version>
-        <version>
-          <id>957e7fae-d9ea-4b71-a81d-ccaaddc41ffd</id>
-          <name>Special Forces</name>
-          <bonus>
-            <skilllevel>
-              <name>Armorer</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Blades</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Demolitions</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Electronic Warfare</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Free-Fall</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Perception</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Pilot Ground Craft</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Pilot Watercraft</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Sneaking</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Survival</name>
-            </skilllevel>
-            <skilllevel>
-              <name>Tracking</name>
-            </skilllevel>
-          </bonus>
-        </version>
-      </versions>
-      <story>$real was a soldier in service of the AGS-based MET2000. During their service they probably saw some of Europe and worked with the most modern equipment.</story>
-      <source>RFG</source>
-      <page>164</page>
     </module>
     <!-- End Region -->
     <!-- End Region -->
@@ -9734,7 +8956,7 @@
       <id>f0523ed1-9d9b-48fe-957c-1f64079d4e41</id>
       <stage>Teen Years</stage>
       <category>LifeModule</category>
-      <name>Life by the toxic sea</name>
+      <name>Life by the Toxic Sea</name>
       <karma>50</karma>
       <bonus>
         <attributelevel>
@@ -11672,7 +10894,7 @@
         <addqualities>
           <!-- todo: should have 3 levels of records on file -->
           <addquality>Daredevil</addquality>
-          <addquality>Records On File</addquality>
+          <addquality>Records on File</addquality>
           <addquality>SINner (Corporate Limited)</addquality>
         </addqualities>
         <skilllevel>
@@ -11930,7 +11152,7 @@
           <addquality>Driven</addquality>
           <addquality>Natural Leader</addquality>
           <addquality>Legendary Rep</addquality>
-          <addquality>Stay Out Of My Way</addquality>
+          <addquality>Stay Out of My Way</addquality>
         </addqualities>
         <skilllevel>
           <name>Con</name>
@@ -11980,7 +11202,7 @@
         </attributelevel>
         <addqualities>
           <!-- todo: should have 4 ratings of records on file -->
-          <addquality>Records On File</addquality>
+          <addquality>Records on File</addquality>
           <addquality>Solid Rep</addquality>
           <addquality>Observant</addquality>
           <addquality>SINner (Corporate Limited)</addquality>
@@ -12163,7 +11385,7 @@
           <name>INT</name>
         </attributelevel>
         <addqualities>
-          <addquality>High Pain Tolerance (Rating 2)</addquality>
+          <addquality rating="2">High Pain Tolerance</addquality>
           <addquality>Outdoorsman</addquality>
           <addquality>Will to Live</addquality>
         </addqualities>
@@ -12217,7 +11439,7 @@
         <addqualities>
           <addquality>Adrenaline Surge</addquality>
           <addquality>Battle Hardened</addquality>
-          <addquality>Thousand Yard Stare</addquality>
+          <addquality>Thousand-Yard Stare</addquality>
         </addqualities>
         <skilllevel>
           <name>Blades</name>
@@ -12295,7 +11517,7 @@
         </attributelevel>
         <addqualities>
           <addquality>Battle Hardened</addquality>
-          <addquality>Tough As Nails (Physical)</addquality>
+          <addquality>Tough as Nails (Physical)</addquality>
           <addquality>Impassive</addquality>
           <addquality>Social Stress</addquality>
         </addqualities>
@@ -12413,7 +11635,7 @@
           <name>CHA</name>
         </attributelevel>
         <addqualities>
-          <addquality>Pacifist</addquality>
+          <addquality>Pacifist I</addquality>
           <addquality>Prejudiced (Common, Biased)</addquality>
         </addqualities>
         <skilllevel>
@@ -13097,6 +12319,7 @@
           <r>Renraku</r>
           <s>Saeder-Krupp</s>
           <s2>Shiawase</s2>
+          <s3>Spinrad Global</s3>
           <w>Wuxing</w>
           <aa>a AA corp, such as Monobe International or Docwagon</aa>
           <a>a single A corp, such as The People’s Republic of Vietnam</a>
@@ -13226,6 +12449,7 @@
           <renraku>Renraku</renraku>
           <sk>Saeder-Krupp</sk>
           <shia>Shiawase</shia>
+          <spinrad>Spinrad Global</spinrad>
           <wux>Wuxing</wux>
         </persistent>
       </mega>
@@ -13240,9 +12464,134 @@
           <renraku>Renraku</renraku>
           <sk>Saeder-Krupp</sk>
           <shia>Shiawase</shia>
+          <spinrad>Spinrad Global</spinrad>
           <wux>Wuxing</wux>
         </random>
       </rmega>
+      <megadoublea>
+        <persistent>
+          <agchemieeuropa>AG Chemie Europa</agchemieeuropa>
+          <aerospatiale>Aerospatiale SA</aerospatiale>
+          <chalmerscole>Chalmers and Cole Associates</chalmerscole>
+          <citigroup>Citigroup</citigroup>
+          <colt>Colt Manufacturing</colt>
+          <cordmutual>Cord Mutual Insurance</cordmutual>
+          <docwagon>DocWagon</docwagon>
+          <easterntiger>Eastern Tiger Corporation</easterntiger>
+          <esus>ESUS</esus>
+          <federated-boeing>Federated-Boeing</federated-boeing>
+          <ford>Ford Motor Company, Inc.</ford>
+          <frankfurterbankverein>Frankfurter Bankverein AG</frankfurterbankverein>
+          <gaeatronics>Gaeatronics</gaeatronics>
+          <genesisconsortium>Genesis Consortium</genesisconsortium>
+          <globalstandstorm>Global Standstorm</globalstandstorm>
+          <hildebrandtkleinfortbernal>Hildebrandt-Kleinfort-Bernal</hildebrandtkleinfortbernal>
+          <hyundai>Hyundai</hyundai>
+          <integratedweaponsystems>Integrated Weapon Systems PLC</integratedweaponsystems>
+          <indexaxa>Index-AXA</indexaxa>
+          <korporacjaopatrznoscibozej>Korporacja Opatrznosci Bozej</korporacjaopatrznoscibozej>
+          <kolkota>Kolkota Integrated Talent and Technologies</kolkota>
+          <komatsu>Komatsu Limited</komatsu>
+          <kondorchid>KondOrchid SA</kondorchid>
+          <kwonshan>Kwonshan Industries</kwonshan>
+          <lockheed>Lockheed Corporation</lockheed>
+          <lonestar>Lone Star Security Services</lonestar>
+          <lusiada>Lusiada</lusiada>
+          <maersk>Maersk Incorporated Assets</maersk>
+          <monobe>Monobe International</monobe>
+          <nagato>Nagato Corporation</nagato>
+          <nypdinc>NYPD, Inc.</nypdinc>
+          <phoenix>Phoenix Biotechnologies</phoenix>
+          <prometheus>Prometheus Engineering</prometheus>
+          <proteus>Proteus AG</proteus>
+          <realityinc>Reality, Inc.</realityinc>
+          <regencymegamedia>Regency MegaMedia</regencymegamedia>
+          <regulus>Regulus Joint Industries</regulus>
+          <renaultfiatmeridional>Renault-Fiat-Meridional</renaultfiatmeridional>
+          <samyung>Samyung</samyung>
+          <shibata>Shibata Construction and Engineering</shibata>
+          <shinsiam>ShinSiam</shinsiam>
+          <singaporeinc>Singapore, Inc.</singaporeinc>
+          <sony>Sony Corporation</sony>
+          <spinrad>Spinrad Industries</spinrad>
+          <tablelands>Tablelands Software</tablelands>
+          <tanamyre>Tanamyre Resources</tanamyre>
+          <telestrian>Telestrian Industries Corporation</telestrian>
+          <trans-orbital>Trans-Orbital</trans-orbital>
+          <uol>UOL</uol>
+          <universalomnitech>Universal Omnitech</universalomnitech>
+          <vedacorp>Vedacorp</vedacorp>
+          <virtualrealityinc>Virtual Reality, Inc.</virtualrealityinc>
+          <winter>Winter Systems</winter>
+          <yakashima>Yakashima Technologies</yakashima>
+          <yangsu>Yang Su Enterprises</yangsu>
+          <yokogawa>Yokogawa Corporation</yokogawa>
+          <zetaimpchem>Zeta-ImpChem</zetaimpchem>
+          <zog>Zürich-Orbital Gemeinschaftsbank</zog>
+        </persistent>
+      </megadoublea>
+      <rmegadoublea>
+        <random>
+          <agchemieeuropa>AG Chemie Europa</agchemieeuropa>
+          <aerospatiale>Aerospatiale SA</aerospatiale>
+          <chalmerscole>Chalmers and Cole Associates</chalmerscole>
+          <citigroup>Citigroup</citigroup>
+          <colt>Colt Manufacturing</colt>
+          <cordmutual>Cord Mutual Insurance</cordmutual>
+          <docwagon>DocWagon</docwagon>
+          <easterntiger>Eastern Tiger Corporation</easterntiger>
+          <esus>ESUS</esus>
+          <federated-boeing>Federated-Boeing</federated-boeing>
+          <ford>Ford Motor Company, Inc.</ford>
+          <frankfurterbankverein>Frankfurter Bankverein AG</frankfurterbankverein>
+          <gaeatronics>Gaeatronics</gaeatronics>
+          <genesisconsortium>Genesis Consortium</genesisconsortium>
+          <globalstandstorm>Global Standstorm</globalstandstorm>
+          <hildebrandtkleinfortbernal>Hildebrandt-Kleinfort-Bernal</hildebrandtkleinfortbernal>
+          <hyundai>Hyundai</hyundai>
+          <integratedweaponsystems>Integrated Weapon Systems PLC</integratedweaponsystems>
+          <indexaxa>Index-AXA</indexaxa>
+          <korporacjaopatrznoscibozej>Korporacja Opatrznosci Bozej</korporacjaopatrznoscibozej>
+          <kolkota>Kolkota Integrated Talent and Technologies</kolkota>
+          <komatsu>Komatsu Limited</komatsu>
+          <kondorchid>KondOrchid SA</kondorchid>
+          <kwonshan>Kwonshan Industries</kwonshan>
+          <lockheed>Lockheed Corporation</lockheed>
+          <lonestar>Lone Star Security Services</lonestar>
+          <lusiada>Lusiada</lusiada>
+          <maersk>Maersk Incorporated Assets</maersk>
+          <monobe>Monobe International</monobe>
+          <nagato>Nagato Corporation</nagato>
+          <nypdinc>NYPD, Inc.</nypdinc>
+          <phoenix>Phoenix Biotechnologies</phoenix>
+          <prometheus>Prometheus Engineering</prometheus>
+          <proteus>Proteus AG</proteus>
+          <realityinc>Reality, Inc.</realityinc>
+          <regencymegamedia>Regency MegaMedia</regencymegamedia>
+          <regulus>Regulus Joint Industries</regulus>
+          <renaultfiatmeridional>Renault-Fiat-Meridional</renaultfiatmeridional>
+          <samyung>Samyung</samyung>
+          <shibata>Shibata Construction and Engineering</shibata>
+          <shinsiam>ShinSiam</shinsiam>
+          <singaporeinc>Singapore, Inc.</singaporeinc>
+          <sony>Sony Corporation</sony>
+          <spinrad>Spinrad Industries</spinrad>
+          <tablelands>Tablelands Software</tablelands>
+          <tanamyre>Tanamyre Resources</tanamyre>
+          <telestrian>Telestrian Industries Corporation</telestrian>
+          <trans-orbital>Trans-Orbital</trans-orbital>
+          <uol>UOL</uol>
+          <universalomnitech>Universal Omnitech</universalomnitech>
+          <vedacorp>Vedacorp</vedacorp>
+          <virtualrealityinc>Virtual Reality, Inc.</virtualrealityinc>
+          <winter>Winter Systems</winter>
+          <yakashima>Yakashima Technologies</yakashima>
+          <yangsu>Yang Su Enterprises</yangsu>
+          <yokogawa>Yokogawa Corporation</yokogawa>
+          <zetaimpchem>Zeta-ImpChem</zetaimpchem>
+          <zog>Zürich-Orbital Gemeinschaftsbank</zog>
+        </random>
+      </rmegadoublea>
       <season>
         <random>
           <spring>Spring</spring>

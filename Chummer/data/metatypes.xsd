@@ -6,6 +6,8 @@
     <xs:complexType>
     <xs:sequence>
       <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
     <xs:element name="karma" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="powers" minOccurs="0" maxOccurs="1">
@@ -35,7 +37,7 @@
       </xs:sequence>
       </xs:complexType>
     </xs:element>
-    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
     <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
     </xs:sequence>
@@ -87,9 +89,9 @@
                 <xs:complexType>
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="0" />
-                    <xs:element name="category" type="xs:string" minOccurs="0" />
                     <xs:element name="forcecreature" type="xs:string" minOccurs="0" />
                     <xs:element name="karma" type="xs:string" minOccurs="0" />
                     <xs:element name="category" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -173,7 +175,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element name="powers" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>

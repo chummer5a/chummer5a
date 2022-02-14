@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -24,8 +25,8 @@ using System.Xml;
 
 namespace Chummer
 {
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged
+    [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
+    public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged, IEquatable<CalendarWeek>, IComparable<CalendarWeek>
     {
         private Guid _guiID;
         private int _intYear = 2072;
@@ -35,6 +36,7 @@ namespace Chummer
         public event PropertyChangedEventHandler PropertyChanged;
 
         #region Constructor, Save, Load, and Print Methods
+
         public CalendarWeek()
         {
             // Create the GUID for the new CalendarWeek.
@@ -55,11 +57,13 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         public void Save(XmlTextWriter objWriter)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("week");
-            objWriter.WriteElementString("guid", _guiID.ToString("D"));
-            objWriter.WriteElementString("year", _intYear.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("week", _intWeek.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes);
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("year", _intYear.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("week", _intWeek.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteEndElement();
         }
 
@@ -72,7 +76,7 @@ namespace Chummer
             objNode.TryGetField("guid", Guid.TryParse, out _guiID);
             objNode.TryGetInt32FieldQuickly("year", ref _intYear);
             objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
-            objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
         }
 
         /// <summary>
@@ -83,7 +87,10 @@ namespace Chummer
         /// <param name="blnPrintNotes">Whether to print notes attached to the CalendarWeek.</param>
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
+            if (objWriter == null)
+                return;
             objWriter.WriteStartElement("week");
+            objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("year", Year.ToString(objCulture));
             objWriter.WriteElementString("month", Month.ToString(objCulture));
             objWriter.WriteElementString("week", MonthWeek.ToString(objCulture));
@@ -91,13 +98,15 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Calendar Week in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D");
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Year.
@@ -129,59 +138,70 @@ namespace Chummer
                     case 3:
                     case 4:
                         return 1;
+
                     case 5:
                     case 6:
                     case 7:
                     case 8:
                         return 2;
+
                     case 9:
                     case 10:
                     case 11:
                     case 12:
                     case 13:
                         return 3;
+
                     case 14:
                     case 15:
                     case 16:
                     case 17:
                         return 4;
+
                     case 18:
                     case 19:
                     case 20:
                     case 21:
                         return 5;
+
                     case 22:
                     case 23:
                     case 24:
                     case 25:
                     case 26:
                         return 6;
+
                     case 27:
                     case 28:
                     case 29:
                     case 30:
                         return 7;
+
                     case 31:
                     case 32:
                     case 33:
                     case 34:
                         return 8;
+
                     case 35:
                     case 36:
                     case 37:
                     case 38:
                     case 39:
                         return 9;
+
                     case 40:
                     case 41:
                     case 42:
                     case 43:
                         return 10;
+
                     case 44:
                     case 45:
                     case 46:
                     case 47:
                         return 11;
+
                     default:
                         return 12;
                 }
@@ -210,6 +230,7 @@ namespace Chummer
                     case 44:
                     case 48:
                         return 1;
+
                     case 2:
                     case 6:
                     case 10:
@@ -223,6 +244,7 @@ namespace Chummer
                     case 45:
                     case 49:
                         return 2;
+
                     case 3:
                     case 7:
                     case 11:
@@ -236,6 +258,7 @@ namespace Chummer
                     case 46:
                     case 50:
                         return 3;
+
                     case 4:
                     case 8:
                     case 12:
@@ -249,34 +272,25 @@ namespace Chummer
                     case 47:
                     case 51:
                         return 4;
+
                     default:
                         return 5;
                 }
             }
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
         /// <summary>
         /// Month and Week to display.
         /// </summary>
-        public string DisplayName(string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = string.Format(LanguageManager.GetString("String_WeekDisplay", strLanguage)
-                , Year.ToString()
-                , Month.ToString()
-                , MonthWeek.ToString());
+            string strReturn = string.Format(objCulture, LanguageManager.GetString("String_WeekDisplay", strLanguage)
+                , Year
+                , Month
+                , MonthWeek);
             return strReturn;
-        }
-
-        public int CompareTo(object obj)
-        {
-            if (obj is CalendarWeek objWeek)
-            {
-                int intReturn = Year.CompareTo(objWeek.Year);
-                if (intReturn == 0)
-                    intReturn = Week.CompareTo(objWeek.Week);
-                return intReturn;
-            }
-            return DisplayName(GlobalOptions.Language).CompareTo(obj);
         }
 
         /// <summary>
@@ -310,6 +324,78 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        public int CompareTo(object obj)
+        {
+            if (obj is CalendarWeek objWeek)
+                return CompareTo(objWeek);
+            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalSettings.CultureInfo);
+        }
+
+        public int CompareTo(CalendarWeek other)
+        {
+            int intReturn = Year.CompareTo(other.Year);
+            if (intReturn == 0)
+                intReturn = Week.CompareTo(other.Week);
+            return -intReturn;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+                return true;
+            return obj is CalendarWeek objOther && Equals(objOther);
+        }
+
+        public bool Equals(CalendarWeek other)
+        {
+            if (other is null)
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            return Year == other.Year && Week == other.Week;
+        }
+
+        public override int GetHashCode()
+        {
+            return (InternalId, Year, Week).GetHashCode();
+        }
+
+        public static bool operator ==(CalendarWeek left, CalendarWeek right)
+        {
+            if (left is null)
+            {
+                return right is null;
+            }
+
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(CalendarWeek left, CalendarWeek right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(CalendarWeek left, CalendarWeek right)
+        {
+            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(CalendarWeek left, CalendarWeek right)
+        {
+            return left is null || left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(CalendarWeek left, CalendarWeek right)
+        {
+            return !(left is null) && left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(CalendarWeek left, CalendarWeek right)
+        {
+            return left is null ? right is null : left.CompareTo(right) >= 0;
+        }
+
+        #endregion Properties
     }
 }

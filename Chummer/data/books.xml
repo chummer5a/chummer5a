@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--This file is part of Chummer5a.
-
     Chummer5a is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-
     Chummer5a is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-
     You should have received a copy of the GNU General Public License
     along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
-
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
@@ -26,96 +22,241 @@
       <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
       <name>Assassin's Primer</name>
       <code>AP</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Whether we want to admit it or not,</text>
+          <page>2</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Soweit die Historiker das sagen können,</text>
+          <page>2</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>b68175bc-e10f-4e11-9361-ed62bb371c8d</id>
       <name>Gun Heaven 3</name>
       <code>GH3</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The weapon is designed to be hand loaded</text>
+          <page>3</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Mit dem New Model Revolver kehrt</text>
+          <page>4</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>5d6626a2-2400-44b5-b777-d7dac6cb512f</id>
       <name>Run and Gun</name>
       <code>RG</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The whole run was a setup. It had to be</text>
+          <page>6</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>In seinem Kommandozentrum sah Sicherheitschef</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>f5ec713c-98cd-41f6-a0a4-4a8eaed55b66</id>
       <name>Shadowrun 5th Edition</name>
       <code>SR5</code>
-    </book>
-    <book>
-      <id>b3c5ea18-56dc-42f4-b567-50ead12fab1f</id>
-      <name>Shadowrun 5th Edition (German-exclusive Content)</name>
-      <code>SR5G</code>
+      <permanent />
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Welcome to Shadowrun, Fifth Edition. Welcome to the</text>
+          <page>8</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Die Luft war voller Rauch, durchschnitten</text>
+          <page>8</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>3976dc50-f7db-481d-9372-fc2a5c1178ce</id>
       <name>Street Grimoire</name>
       <code>SG</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Awakened individuals in the Sixth World are coveted</text>
+          <page>5</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>In der Sechsten Welt sind Erwachte Personen</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
-      <id>f4cf7430-4c2d-4f3c-b1d2-fd1e08ad777d</id>
-      <name>Street Grimoire (German-exclusive Content)</name>
-      <code>SGG</code>
+      <id>ee63bbc5-2abd-4543-8371-457044bc7c63</id>
+      <name>Street Grimoire Errata</name>
+      <code>SGE</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>PROTECT VEHICLE SUB-HEADER</text>
+          <page>2</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
       <name>Bullets &amp; Bandages</name>
       <code>BB</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>an average troll to stand in. He was lying among a pile of</text>
+          <page>3</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Kanai erwachte von dem Sirenengeheul in seinen</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>7c37e671-9d0c-48f6-aa61-891a38be18d8</id>
       <name>Sail Away, Sweet Sister</name>
       <code>SASS</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Cut to the damn chase, Eddie</text>
+          <page>2</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>ab9fd70c-6b79-4780-ae3d-dfa5f1624c9d</id>
       <name>Stolen Souls</name>
       <code>SS</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Freedom is a prison all its own</text>
+          <page>4</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>0b2e86c9-98b7-4265-800f-9f1b98ce7f96</id>
       <name>Run Faster</name>
       <code>RF</code>
-    </book>
-    <book>
-      <id>be0638b9-f005-42e3-83e1-97d806f5b070</id>
-      <name>Run Faster (German-exclusive Content)</name>
-      <code>RFG</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Less than a day before</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>01994ce6-832f-4e29-aded-e16c1bf139bd</id>
       <name>Shadow Spells</name>
       <code>SSP</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The subject of magic is broad enough</text>
+          <page>3</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Die nordischen Legenden sind bei den Einwohnern</text>
+          <page>4</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>07bfdff7-1331-4791-9334-6b299548f8f4</id>
       <name>Nothing Personal</name>
       <code>NP</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>I let the warm water trickle down my body</text>
+          <page>2</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>c8358d1c-2eb0-461b-9e2f-b3490ad0011d</id>
       <name>Data Trails</name>
       <code>DT</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The Matrix is the vast, wild, and wooly frontier</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>0b082117-8eb2-42d1-82e3-11454536c480</id>
       <name>Data Trails (Dissonant Echoes)</name>
       <code>DTD</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The Matrix is the vast, wild, and wooly frontier</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>cea24b81-209b-49b2-afe4-62f1286e508e</id>
       <name>Chrome Flesh</name>
       <code>CF</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The tragedy of a shadowrunner</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>B6642AC0-7E72-44C4-B954-3E224EBB2E64</id>
       <name>Hard Targets</name>
       <code>HT</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Shadowrunners will punch you in the face</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>73cbd0f7-9a44-480b-8143-5c93d0b1cdf3</id>
       <name>Bloody Business</name>
       <code>BLB</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The bad times are just more intense</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>bb5c7e4e-431b-404f-89da-e69cf3b75d50</id>
@@ -136,136 +277,352 @@
       <id>a1055d3f-7bc1-4ca3-a005-681c54a046a1</id>
       <name>Rigger 5.0</name>
       <code>R5</code>
-    </book>
-    <book>
-      <id>e3e23ca4-b7b8-11e6-80f5-76304dec7eb7</id>
-      <name>Rigger 5.0 (German-exclusive Content)</name>
-      <code>R5G</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>There are obvious uses for riggers</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>38de6863-2911-4fa6-9a43-70db72ab8a22</id>
       <name>Howling Shadows</name>
       <code>HS</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>In the Sixth World, people usually assume that the thing</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>2fba52dd-bc97-450f-9d07-e1d86885911d</id>
       <name>The Vladivostok Gauntlet</name>
       <code>TVG</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>They grinned like wolves</text>
+          <page>2</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>6b37230a-dd55-4c3f-882d-0a1c6324a457</id>
       <name>Splintered State</name>
       <code>SPS</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Was he on Tempo?</text>
+          <page>4</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>58b3ffae-7320-4b11-8c50-db92b7f0452b</id>
       <name>Shadows In Focus: Butte</name>
       <code>SFB</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>This isn’t a run, this is a high school prank</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>7186ed14-e0b8-456e-b923-f77933f1762e</id>
       <name>Hong Kong Sourcebook</name>
       <code>HKS</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>No place in the world is more densely packed</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>540cfaa8-823f-46c7-b93b-79191a894bd1</id>
       <name>Lockdown</name>
       <code>LCD</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>A breakdown of civilization, new threats, crazy danger, corporate desperation, and secrets</text>
+          <page>8</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>81c02566-af38-45e3-9e46-3b1d083f84f2</id>
       <name>Shadows In Focus: San Francisco Metroplex</name>
       <code>SFM</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Known for the fog rolling in off the water</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>ad384a90-33c2-40bd-b128-37117d02f36c</id>
       <name>Shadows In Focus: Metropole</name>
       <code>SFME</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>And he was ugly</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>40515dbc-fec6-4530-ba79-959cc8c54c61</id>
       <name>Cutting Aces</name>
       <code>CA</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Real con artists know they never have to ask anyone</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
       <name>Shadowrun 2050 (5th Edition)</name>
       <code>2050</code>
+      <!-- Only match to the German one because the English one is 4e -->
     </book>
     <book>
       <id>485cc0ae-8221-4d5e-a527-33df76fd1f21</id>
       <name>Book of the Lost</name>
       <code>BOTL</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Of course there are risks!</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>6e447106-e250-41b1-855a-2dd1d2075f6d</id>
       <name>Forbidden Arcana</name>
       <code>FA</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The world of magic is infinite</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>c6b7136f-e461-457b-b6f7-09e95c2f6313</id>
       <name>State of the Art ADL (German Handbook)</name>
       <code>SAG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>ihre Hauer oftmals etwas einschüchternd auf Norms wirkten</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>c4392cc2-8edd-4ae3-8198-b8c00e693c8b</id>
       <name>The Complete Trog</name>
       <code>TCT</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>That’s why trogs are taking it back.</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>e894804c-2e11-489e-acc8-f9691a79b261</id>
       <name>Shadows In Focus: Sioux Nation: Counting Coup</name>
       <code>SFCC</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Motherfucking dammit, Charlie!</text>
+          <page>3</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>c74e950e-3554-4a44-9060-5a2840302538</id>
       <name>Dark Terrors</name>
       <code>DTR</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Knowing your opponent is a critical part of</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>42d5ed10-66e8-47de-8685-851fdfdcae35</id>
       <name>The Seattle Gambit</name>
       <code>TSG</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Hey, what you got in there, old man?</text>
+          <page>2</page>
+        </match>
+      </matches>
     </book>
-	  <book>
-		  <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
-		  <name>Street Lethal</name>
-		  <code>SL</code>
-	  </book>
+    <book>
+      <id>bfe6c53b-1c68-4d7a-b11d-9d47461df1cd</id>
+      <name>Street Lethal</name>
+      <code>SL</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>There is no better way to get a shadowrunner</text>
+          <page>6</page>
+        </match>
+      </matches>
+    </book>
     <book>
       <id>35f513da-865a-45ce-a8f9-eb0336e47427</id>
       <name>Kill Code</name>
       <code>KC</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>The Matrix is not a place, but it is everywhere</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>6c97c3e8-8f13-43aa-b692-6218983c9396</id>
       <name>Hamburg (German-exclusive)</name>
       <code>HAMG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Willkommen in Hamburg. Willkommen in einem Sprawl voller Gefahren und Möglichkeiten.</text>
+          <page>7</page>
+        </match>
+      </matches>
     </book>
     <book>
-	  <id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
+      <id>612af603-65e6-442c-91b8-8b8cc0c77e4a</id>
       <name>Better Than Bad</name>
       <code>BTB</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>This book is not about them</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
-	  <id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
+      <id>be47e4b5-cc4f-427a-b4cd-cb5c1c8821ce</id>
       <name>Aetherology</name>
       <code>AET</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Once Big D offered all that nuyen for the study of danger</text>
+          <page>3</page>
+        </match>
+        <match>
+          <language>de-de</language>
+          <text>Die Ebene der Feen ist ein endloses Tal, das sich</text>
+          <page>5</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>e65d69fd-8717-4e2b-88b0-73bf7a22bca0</id>
       <name>No Future</name>
       <code>NF</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>There is no future</text>
+          <page>6</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>b20a20e5-e9d4-4f54-9caa-57a001cb904e</id>
       <name>Datapuls SOTA 2080 (German-exclusive)</name>
       <code>SOTG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Laserwaffen stoßen bei der Energieversorgung (noch) an ihre Grenzen</text>
+          <page>4</page>
+        </match>
+      </matches>
     </book>
     <book>
       <id>3ece5592-c3c1-4cf8-97a2-ef773388289d</id>
       <name>Datapuls Verschlusssache (German-exclusive)</name>
       <code>DPVG</code>
+      <matches>
+        <match>
+          <language>de-de</language>
+          <text>Das Verhältnis der Deutschen zu ihren Geheimdiensten ist kompliziert</text>
+          <page>4</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>e997ea2e-916b-4482-a381-bf8c49cb08ff</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
+      <name>Krime Katalog</name>
+      <code>KK</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>KRIME!!!!!!!</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
+      <id>2ca3c7ce-3cdb-4bf2-b430-32ecef09fda1</id>
+      <name>Shadowrun Missions 0803: 10 Block Tango</name>
+      <code>SRM0803</code>
+    </book>
+    <book>
+      <id>9d69b598-4f46-46d0-be44-dd3fd8a915b0</id>
+      <name>Shadowrun Missions 0804: Dirty Laundry</name>
+      <code>SRM0804</code>
+    </book>
+    <book>
+      <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>
+      <name>Grimmes Erwachen (German-exclusive)</name>
+      <code>GE</code>
+    </book>
+    <book>
+      <id>775703af-df57-4ee2-b8e7-c6b829b80539</id>
+      <name>Sprawl Wilds</name>
+      <code>SW</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Gamemastering is more of an art than a science</text>
+          <page>4</page>
+        </match>
+      </matches>
     </book>
   </books>
 </chummer>

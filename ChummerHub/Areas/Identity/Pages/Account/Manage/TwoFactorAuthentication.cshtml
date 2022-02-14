@@ -1,33 +1,41 @@
-﻿@page
+@page
 @model TwoFactorAuthenticationModel
 @{
     ViewData["Title"] = "Two-factor authentication (2FA)";
 }
 
-@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+@await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 <h4>@ViewData["Title"]</h4>
 @if (Model.Is2faEnabled)
 {
-    if (Model.RecoveryCodesLeft == 0)
+    switch (Model.RecoveryCodesLeft)
     {
-        <div class="alert alert-danger">
-            <strong>You have no recovery codes left.</strong>
-            <p>You must <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
-        </div>
-    }
-    else if (Model.RecoveryCodesLeft == 1)
-    {
-        <div class="alert alert-danger">
-            <strong>You have 1 recovery code left.</strong>
-            <p>You can <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
-        </div>
-    }
-    else if (Model.RecoveryCodesLeft <= 3)
-    {
-        <div class="alert alert-warning">
-            <strong>You have @Model.RecoveryCodesLeft recovery codes left.</strong>
-            <p>You should <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
-        </div>
+        case 0:
+        {
+            <div class="alert alert-danger">
+                <strong>You have no recovery codes left.</strong>
+                <p>You must <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a> before you can log in with a recovery code.</p>
+            </div>
+            break;
+        }
+        case 1:
+        {
+            <div class="alert alert-danger">
+                <strong>You have 1 recovery code left.</strong>
+                <p>You can <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+            </div>
+            break;
+        }
+        case 2:
+        case 3:
+        {
+            <div class="alert alert-warning">
+                <strong>You have @Model.RecoveryCodesLeft recovery codes left.</strong>
+                <p>You should <a asp-page="./GenerateRecoveryCodes">generate a new set of recovery codes</a>.</p>
+            </div>
+            break;
+        }
     }
 
     if (Model.IsMachineRemembered)

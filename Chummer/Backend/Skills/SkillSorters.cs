@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 
@@ -98,15 +99,21 @@ namespace Chummer.Backend.Skills
         /// <param name="x">The first object to compare.</param><param name="y">The second object to compare.</param>
         public int Compare(Skill x, Skill y)
         {
+            int intReturn;
             if (x?.SkillGroupObject != null)
+                intReturn = y?.SkillGroupObject?.Rating.CompareTo(x.SkillGroupObject.Rating) ?? -1;
+            else if (y?.SkillGroupObject != null)
+                intReturn = 1;
+            else
+                intReturn = 0;
+            if (intReturn == 0)
             {
-                if (y?.SkillGroupObject != null)
-                {
-                    return y.SkillGroupObject.Rating.CompareTo(x.SkillGroupObject.Rating);
-                }
-                return -1;
+                intReturn = SkillsSection.CompareSkillGroups(x?.SkillGroupObject, y?.SkillGroupObject);
+                if (intReturn == 0)
+                    intReturn = SkillsSection.CompareSkills(x, y);
             }
-            return y?.SkillGroupObject != null ? 1 : 0;
+
+            return intReturn;
         }
     }
 }

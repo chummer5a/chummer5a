@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xs:schema id="NewDataSet" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
@@ -11,6 +11,7 @@
                   <xs:sequence>
                     <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="0" />
                     <xs:element name="ess" type="xs:string" minOccurs="0" />
                     <xs:element name="cost" type="xs:string" minOccurs="0" />
@@ -30,9 +31,9 @@
               <xs:element name="drugcomponent" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="id" type="xs:string"/>
-                    <xs:element name="name" type="xs:string"/>
-                    <xs:element name="category" type="xs:string"/>
+                    <xs:element name="id" type="xs:string" />
+                    <xs:element name="name" type="xs:string" />
+                    <xs:element name="category" type="xs:string" />
                     <xs:element name="effects">
                       <xs:complexType>
                         <xs:sequence>
@@ -52,7 +53,7 @@
                                 <xs:element name="duration" type="xs:int" minOccurs="0" />
                                 <xs:element name="initiativedice" type="xs:int" minOccurs="0" />
                                 <xs:element name="info" type="xs:string" minOccurs="0" />
-                                <xs:element name="limit" minOccurs="0" maxOccurs="unbounded" >
+                                <xs:element name="limit" minOccurs="0" maxOccurs="unbounded">
                                   <xs:complexType>
                                     <xs:sequence>
                                       <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -68,12 +69,12 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="availability" type="xs:string"/>
-                    <xs:element name="cost" type="xs:int"/>
-                    <xs:element name="rating" type="xs:int" minOccurs="0"/>
-                    <xs:element name="threshold" type="xs:int" minOccurs="0"/>
-                    <xs:element name="source" type="xs:string"/>
-                    <xs:element name="page" type="xs:int"/>
+                    <xs:element name="availability" type="xs:string" />
+                    <xs:element name="cost" type="xs:int" />
+                    <xs:element name="rating" type="xs:int" minOccurs="0" />
+                    <xs:element name="threshold" type="xs:int" minOccurs="0" />
+                    <xs:element name="source" type="xs:string" />
+                    <xs:element name="page" type="xs:int" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

@@ -1,11 +1,14 @@
-using ChummerHub.Controllers.V1;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Configuration;
 using ChummerHub.Data;
 using ChummerHub.Services;
 using ChummerHub.Services.Application_Insights;
 using ChummerHub.Services.GoogleDrive;
-using Microsoft.ApplicationInsights.AspNetCore;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.ApplicationInsights.SnapshotCollector;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -22,11 +25,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using Swashbuckle.AspNetCore.Swagger;
-using System;
-using System.IO;
-using System.Reflection;
+using Newtonsoft.Json.Converters;
+using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Hosting;
 
 namespace ChummerHub
 {
@@ -39,7 +43,7 @@ namespace ChummerHub
 
         private readonly ILogger<Startup> _logger;
 
-        private static DriveHandler _gdrive = null;
+        private static DriveHandler _gdrive;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.GDrive'
         public static DriveHandler GDrive
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.GDrive'
@@ -62,35 +66,32 @@ namespace ChummerHub
 
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Startup(ILogger<Startup>, IConfiguration)'
         public Startup(ILogger<Startup> logger, IConfiguration configuration)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Startup(ILogger<Startup>, IConfiguration)'
         {
             _logger = logger;
             Configuration = configuration;
+            AppSettings = System.Configuration.ConfigurationManager.AppSettings;
             if (_gdrive == null)
                 _gdrive = new DriveHandler(logger, configuration);
+           
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'
         public IConfiguration Configuration { get; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configuration'
+        public static System.Collections.Specialized.NameValueCollection AppSettings { get; set; }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
         public IServiceCollection MyServices { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.MyServices'
 
         //readonly string MyAllowAllOrigins = "AllowAllOrigins";
 
         // This method gets called by the runtime. Use this method to add services to the container.
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
         public void ConfigureServices(IServiceCollection services)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.ConfigureServices(IServiceCollection)'
         {
             MyServices = services;
 
             ConnectionStringToMasterSqlDb = Configuration.GetConnectionString("MasterSqlConnection");
             ConnectionStringSinnersDb = Configuration.GetConnectionString("DefaultConnection");
+
+            services.AddApplicationInsightsTelemetry(Configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
             // Use this if MyCustomTelemetryInitializer can be constructed without DI injected parameters
             services.AddSingleton<ITelemetryInitializer>(new MyTelemetryInitializer());
@@ -113,16 +114,27 @@ namespace ChummerHub
             });
 
             // Configure SnapshotCollector from application settings
-            services.Configure<SnapshotCollectorConfiguration>(Configuration.GetSection(nameof(SnapshotCollectorConfiguration)));
+            //services.Configure<SnapshotCollectorConfiguration>(Configuration.GetSection(nameof(SnapshotCollectorConfiguration)));
 
             // Add SnapshotCollector telemetry processor.
-            services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
+            //services.AddSingleton<ITelemetryProcessorFactory>(sp => new SnapshotCollectorTelemetryProcessorFactory(sp));
+            Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions aiOptions
+                = new Microsoft.ApplicationInsights.AspNetCore.Extensions.ApplicationInsightsServiceOptions();
+            // Disables adaptive sampling.
+            aiOptions.EnableAdaptiveSampling = true;
 
-            var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
-            tcbuilder.Use((next) => new GroupNotFoundFilter(next));
+            // Disables QuickPulse (Live Metrics stream).
+            aiOptions.EnableQuickPulseMetricStream = true;
 
-            // If you have more processors:
-            tcbuilder.Use((next) => new ExceptionDataProcessor(next));
+            services.AddApplicationInsightsTelemetry(aiOptions);
+            
+
+
+            //var tcbuilder = TelemetryConfiguration.Active.TelemetryProcessorChainBuilder;
+            //tcbuilder.Use(next => new GroupNotFoundFilter(next));
+
+            //// If you have more processors:
+            //tcbuilder.Use(next => new ExceptionDataProcessor(next));
 
 
 
@@ -173,11 +185,15 @@ namespace ChummerHub
               .AddDefaultTokenProviders()
               .AddSignInManager();
 
-            // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
-
-            services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
+
+            //// Add application services.
+            //services.AddTransient<IEmailSender, EmailSender>();
+
+            ////services.AddSingleton<IEmailSender, EmailSender>();
+            //services.Configure<AuthMessageSenderOptions>(Configuration);
+
 
 
             services.AddMvc(options =>
@@ -187,15 +203,28 @@ namespace ChummerHub
                                  .Build();
                 var filter = new AuthorizeFilter(policy);
                 options.Filters.Add(filter);
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                options.EnableEndpointRouting = false;
+            }).SetCompatibilityVersion(CompatibilityVersion.Latest)
                 .AddRazorPagesOptions(options =>
                 {
-                    options.AllowAreas = true;
+                    //options.AllowAreas = true;
                     //options.Conventions.AuthorizePage("/Home/Contact");
                     options.Conventions.AuthorizeAreaFolder("Identity", "/Account/Manage");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/Logout");
                     options.Conventions.AuthorizeAreaPage("Identity", "/Account/ChummerLogin/Logout");
+                })
+                .AddNewtonsoftJson(x =>
+                {
+                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+                    x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                    x.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    x.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+            
                 });
+            // order is vital, this *must* be called *after* AddNewtonsoftJson()
+            services.AddSwaggerGenNewtonsoftSupport();
+
+
 
 
             services.AddAuthentication(options =>
@@ -204,33 +233,32 @@ namespace ChummerHub
             })
                 //.AddFacebook(facebookOptions =>
                 //{
-                //    facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                //    facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+                //    facebookOptions.AppId = Configuration["Authentication.Facebook.AppId"];
+                //    facebookOptions.AppSecret = Configuration["Authentication.Facebook.AppSecret"];
                 //    facebookOptions.BackchannelHttpHandler = new FacebookBackChannelHandler();
                 //    facebookOptions.UserInformationEndpoint = "https://graph.facebook.com/v2.8/me?fields=id,name,email,first_name,last_name";
                 //})
                 //.AddGoogle(options =>
                 //{
-                //    options.ClientId = Configuration["Authentication:Google:ClientId"];
-                //    options.ClientSecret = Configuration["Authentication:Google:ClientSecret"];
+                //    options.ClientId = Configuration["Authentication.Google.ClientId"];
+                //    options.ClientSecret = Configuration["Authentication.Google.ClientSecret"];
                 //    options.CallbackPath = new PathString("/ExternalLogin");
                 //})
                 .AddCookie("Cookies", options =>
                 {
                     options.LoginPath = new PathString("/Identity/Account/Login");
                     options.AccessDeniedPath = new PathString("/Identity/Account/AccessDenied");
-                    options.LogoutPath = $"/Identity/Account/Logout";
+                    options.LogoutPath = "/Identity/Account/Logout";
                     options.Cookie.Name = "Cookies";
                     options.Cookie.HttpOnly = false;
                     options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
                     options.LoginPath = "/Identity/Account/Login";
-                    // ReturnUrlParameter requires 
+                    // ReturnUrlParameter requires
                     //using Microsoft.AspNetCore.Authentication.Cookies;
                     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                     options.SlidingExpiration = false;
                 })
                 ;
-            ;
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -263,13 +291,13 @@ namespace ChummerHub
             services.ConfigureApplicationCookie(options =>
             {
                 // Cookie settings
-                options.LogoutPath = $"/Identity/Account/Logout";
+                options.LogoutPath = "/Identity/Account/Logout";
                 options.AccessDeniedPath = "/Identity/Account/AccessDenied";
                 options.Cookie.Name = "Cookies";
                 options.Cookie.HttpOnly = false;
                 options.ExpireTimeSpan = TimeSpan.FromDays(5 * 365);
                 options.LoginPath = "/Identity/Account/Login";
-                // ReturnUrlParameter requires 
+                // ReturnUrlParameter requires
                 //using Microsoft.AspNetCore.Authentication.Cookies;
                 options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                 options.SlidingExpiration = false;
@@ -281,13 +309,6 @@ namespace ChummerHub
                 //};
             });
 
-            services.AddMvc(options => { }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(x =>
-                {
-                    x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                    x.SerializerSettings.PreserveReferencesHandling =
-                        Newtonsoft.Json.PreserveReferencesHandling.Objects;
-                });
 
 
             services.AddVersionedApiExplorer(options =>
@@ -298,7 +319,7 @@ namespace ChummerHub
                     options.SubstituteApiVersionInUrl = true;
                 })
                 .AddAuthorization();
-
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;
@@ -309,6 +330,7 @@ namespace ChummerHub
                 //o.Conventions.Controller<Controllers.V2.SINnerController>().HasApiVersion(new ApiVersion(2, 0));
             });
 
+            services.AddSwaggerExamples();
 
             services.AddSwaggerGen(options =>
             {
@@ -324,41 +346,18 @@ namespace ChummerHub
                 //});
                 // resolve the IApiVersionDescriptionProvider service
                 // note: that we have to build a temporary service provider here because one has not been created yet
-                var provider = services.BuildServiceProvider()
-            .GetRequiredService<IApiVersionDescriptionProvider>();
+                options.UseAllOfToExtendReferenceSchemas();
+                
+                AddSwaggerApiVersionDescriptions(services, options);
+                
+                
 
-                // add a swagger document for each discovered API version
-                // note: you might choose to skip or document deprecated API versions differently
-
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerDoc(description.GroupName, new Info
-                    {
-                        Version = description.GroupName,
-                        Title = "ChummerHub",
-                        Description = "Description for API " + description.GroupName + " to store and search Chummer Xml files",
-                        TermsOfService = "None",
-                        Contact = new Contact
-                        {
-                            Name = "Archon Megalon",
-                            Email = "archon.megalon@gmail.com",
-                        },
-                        License = new License
-                        {
-                            Name = "License",
-                            Url = "https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt",
-
-                        }
-
-                    });
-                }
-
-                options.OperationFilter<FileUploadOperation>();
+                //options.OperationFilter<FileUploadOperation>();
 
                 // add a custom operation filter which sets default values
                 //options.OperationFilter<SwaggerDefaultValues>();
 
-                options.DescribeAllEnumsAsStrings();
+                //options.DescribeAllEnumsAsStrings();
 
                 options.ExampleFilters();
 
@@ -370,18 +369,19 @@ namespace ChummerHub
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
 
-                options.MapType<FileResult>(() => new Schema
-                {
-                    Type = "file",
-                });
-                options.MapType<FileStreamResult>(() => new Schema
-                {
-                    Type = "file",
-                });
+                //options.MapType<FileResult>(() => new Schema
+                //{
+                //    Type = "file",
+                //});
+                //options.MapType<FileStreamResult>(() => new Schema
+                //{
+                //    Type = "file",
+                //});
 
             });
+            services.AddAzureAppConfiguration();
 
-            services.AddSwaggerExamples();
+
             //services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
             //services.AddSession();
 
@@ -398,12 +398,41 @@ namespace ChummerHub
 
         }
 
+        private static void AddSwaggerApiVersionDescriptions(IServiceCollection services, Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
+        {
+            var provider = services.BuildServiceProvider()
+                .GetRequiredService<IApiVersionDescriptionProvider>();
+
+            // add a swagger document for each discovered API version
+            // note: you might choose to skip or document deprecated API versions differently
+
+            foreach (var description in provider.ApiVersionDescriptions)
+            {
+                options.SwaggerDoc(description.GroupName, new OpenApiInfo()
+                {
+                    Version = description.GroupName,
+                    Title = "ChummerHub",
+                    Description = "Description for API " + description.GroupName + " to store and search Chummer Xml files",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Archon Megalon",
+                        Email = "archon.megalon@gmail.com",
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "License",
+                        Url = new Uri("https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt"),
+
+                    }
+
+                });
+            }
+        }
+
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'Startup.Configure(IApplicationBuilder, IHostingEnvironment)'
+        public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             //app.UseSession();
             app.UseCors(options => options.AllowAnyOrigin());
@@ -411,7 +440,7 @@ namespace ChummerHub
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
 
             }
             else
@@ -420,11 +449,21 @@ namespace ChummerHub
                 app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
+            try
+            {
+                app.UseAzureAppConfiguration();
+            }
+            catch(Exception e)
+            {
+                _logger?.LogWarning(e, e.Message);
+            }
+            app.UseRouting();
             //app.UseCookiePolicy();
 
             app.UseAuthentication();
+
 
             app.UseMvc(routes =>
             {
@@ -446,11 +485,11 @@ namespace ChummerHub
             // note: that we have to build a temporary service provider here because one has not been created yet
             var provider = MyServices.BuildServiceProvider().GetRequiredService<IApiVersionDescriptionProvider>();
 
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
             // specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(options =>
             {
-
+                //options.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 //c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "V1");
                 // build a swagger endpoint for each discovered API version
                 foreach (var description in provider.ApiVersionDescriptions)
@@ -463,13 +502,24 @@ namespace ChummerHub
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                //dbContext.Database.EnsureDeleted();
-                dbContext.Database.EnsureCreated();
-
+                if (dbContext != null)
+                {
+                    try
+                    {
+                        dbContext.Database.EnsureCreated();
+                    }
+                    catch(SqlException e)
+                    {
+                        if(!e.Message?.Contains("already exists") == true)
+                        {
+                            throw;
+                        }
+                    }
+                    
+                }
             }
 
             Seed(app);
-
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'
@@ -487,19 +537,25 @@ namespace ChummerHub
                 {
                     context.Database.Migrate();
                 }
+                catch(SqlException e)
+                {
+                    if (!e.Message.Contains("already exists") == true)
+                        throw;
+                    logger.LogWarning(e, e.Message);
+                }
                 catch (Exception e)
                 {
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(e);
+                        var tc = new TelemetryClient();
+                        var telemetry = new ExceptionTelemetry(e);
                         tc.TrackException(telemetry);
                     }
                     catch (Exception ex)
                     {
                         logger.LogError(ex.ToString());
                     }
-                    logger.LogError(e.Message, "An error occurred migrating the DB: " + e.ToString());
+                    logger.LogError(e.Message, "An error occurred migrating the DB: " + e);
                     context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
                 }
@@ -510,22 +566,22 @@ namespace ChummerHub
                 var testUserPw = config["SeedUserPW"];
                 try
                 {
-                    var env = services.GetService<IHostingEnvironment>();
+                    var env = services.GetService<IHostEnvironment>();
                     SeedData.Initialize(services, testUserPw, env).Wait();
                 }
                 catch (Exception ex)
                 {
                     try
                     {
-                        var tc = new Microsoft.ApplicationInsights.TelemetryClient();
-                        var telemetry = new Microsoft.ApplicationInsights.DataContracts.ExceptionTelemetry(ex);
+                        var tc = new TelemetryClient();
+                        var telemetry = new ExceptionTelemetry(ex);
                         tc.TrackException(telemetry);
                     }
                     catch (Exception e1)
                     {
                         logger.LogError(e1.ToString());
                     }
-                    logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex.ToString());
+                    logger.LogError(ex.Message, "An error occurred seeding the DB: " + ex);
                 }
             }
 

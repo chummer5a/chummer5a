@@ -34,7 +34,7 @@
       <useskill>Heavy Weapons</useskill>
       <spec>Assault Cannons</spec>
     </weapon>
-    <weapon xpathfilter="category = 'Assault Rifles'">
+    <weapon xpathfilter="category = 'Assault Rifles' or category = 'Carbines'">
       <useskill>Longarms</useskill>
       <spec>Automatic Rifles</spec>
     </weapon>
@@ -59,7 +59,7 @@
       <spec>Machine Guns</spec>
     </weapon>
     <weapon xpathfilter="category = 'Grenade Launchers' or ammocategory = 'Grenade Launchers' or (category = 'Gear' and (contains(spec,'Grenade Launcher') or contains(range,'Grenade Launcher')))">
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
       <spec>Grenade Launchers</spec>
     </weapon>
     <weapon xpathfilter="category = 'Bows'">
@@ -77,6 +77,12 @@
     <weapon xpathfilter="category = 'Blades'">
       <useskill>Edged Weapons</useskill>
     </weapon>
+    <weapon xpathfilter="category = 'Blades' and spec = 'Knives'">
+      <spec>Small Blades</spec>
+    </weapon>
+    <weapon xpathfilter="category = 'Blades' and spec = 'Swords'">
+      <spec>Large Blades</spec>
+    </weapon>
     <weapon xpathfilter="category = 'Clubs'">
       <useskill>Blunt Weapons</useskill>
     </weapon>
@@ -86,7 +92,7 @@
     </weapon>
     <weapon xpathfilter="category = 'Unarmed' or category = 'Bio-Weapon' or category = 'Quality'">
       <useskill>Unarmed Combat</useskill>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
     </weapon>
     <weapon xpathfilter="category = 'Holdouts' or category = 'Light Pistols'">
       <useskill>Handguns</useskill>
@@ -100,8 +106,8 @@
       <spec2>Revolvers</spec2>
     </weapon>
     <weapon xpathfilter="category = 'Missile Launchers' or (category = 'Gear' and (starts-with(name,'Missile') or starts-with(name,'Rocket')))">
-      <spec>Missile/Rocket Launchers</spec>
-      <useskill>Launcher Weapons</useskill>
+      <spec>Rocket/Missile Launchers</spec>
+      <useskill>Gunnery</useskill>
     </weapon>
     <weapon xpathfilter="category = 'Gear' and starts-with(name,'Grenade')">
       <spec>Grenades</spec>
@@ -138,12 +144,12 @@
     </weapon>
     <weapon>
       <name>Hand Razors</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
       <name>Retractable Climbing Claws</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -228,7 +234,7 @@
     <weapon>
       <name>Aquadyne Shark-XS Harpoon Gun</name>
       <spec>Harpoon Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>Ares Giantslayer Slingshot</name>
@@ -239,7 +245,7 @@
     <weapon>
       <name>Standard Harpoon Gun</name>
       <spec>Harpoon Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>Ballistic Shield</name>
@@ -334,14 +340,14 @@
     </weapon>
     <weapon>
       <name>Stimtouch Hosiery</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
       <spec2>Stunning</spec2>
     </weapon>
     <weapon>
       <name>Grapple Gun</name>
       <category>Grapple Guns</category>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
       <spec>Grapple Guns</spec>
     </weapon>
     <weapon>
@@ -351,7 +357,7 @@
     </weapon>
     <weapon>
       <name>Micro Flare Launcher</name>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
       <spec>Flare Launchers</spec>
     </weapon>
     <weapon>
@@ -524,13 +530,13 @@
       <name>SA Retarius Net Gun</name>
       <category>Net Guns</category>
       <spec>Net Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>SA Retarius Net Gun XL</name>
       <category>Net Guns</category>
       <spec>Net Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>Tiffani Elegance Shooting Bracers</name>
@@ -575,28 +581,28 @@
     </weapon>
     <weapon>
       <name>Cyberfangs</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
       <name>Extreme Cyberimplant</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
       <name>Junkyard Jaw</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
       <name>Raptor Foot</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
       <name>Grapple Fist</name>
       <spec>Grapple Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <!-- End Region -->
     <!--Region Chrome Flesh Bio-Weapons -->
@@ -610,7 +616,7 @@
     <weapon>
       <name>Tactical Grapple Gun</name>
       <spec>Grapple Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>Sapphire Knife</name>
@@ -726,12 +732,12 @@
     <!-- SR5 2050 -->
     <weapon>
       <name>Hand Razors (fixed) (2050)</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
       <name>Hand Razors (retractable) (2050)</name>
-      <spec>Striking</spec>
+      <spec>Striking/Attacking</spec>
       <useskill>Unarmed Combat</useskill>
     </weapon>
     <weapon>
@@ -755,6 +761,189 @@
     <weapon>
       <name>Osmium Mace</name>
       <spec>Large Clubs/Maces</spec>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Street Lethal -->
+    <weapon>
+      <name>Krime Bill</name>
+      <spec>Polearms</spec>
+    </weapon>
+    <weapon>
+      <name>Krime Reaver Axe</name>
+      <spec>Axes</spec>
+    </weapon>
+    <weapon>
+      <name>Krime Reaver Pick</name>
+      <spec>Large Blades</spec>
+    </weapon>
+    <weapon>
+      <name>Krime Reaver Knob</name>
+      <spec>Large Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Krime Shiv</name>
+      <spec>Small Blades</spec>
+    </weapon>
+    <weapon>
+      <name>Traditional Macuahuitl</name>
+      <spec>Large Blades</spec>
+    </weapon>
+    <weapon>
+      <name>Modern Macuahuitl</name>
+      <spec>Large Blades</spec>
+    </weapon>
+    <weapon>
+      <name>Nodachi</name>
+      <spec>Large Blades</spec>
+    </weapon>
+    <weapon>
+      <name>Fluid-Motion Mace</name>
+      <spec>Large Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Gunstock War Club</name>
+      <spec>Small Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Gunstock War Club (Thrown)</name>
+      <useskill>Throwing Weapons</useskill>
+      <spec>Small Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Nunchaku</name>
+      <spec>Flexible Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Tonfa</name>
+      <spec>Small Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Krime Gloves</name>
+      <spec>Striking/Attacking</spec>
+      <spec2>Stunning</spec2>
+      <useskill>Unarmed Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Krime Gloves: Stun Pad</name>
+      <spec>Stunning</spec>
+      <useskill>Unarmed Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Krime Stun Lance</name>
+      <spec>Staves</spec>
+      <spec2>Stun Guns</spec2>
+    </weapon>
+    <weapon>
+      <name>Krime Trollbow Horns</name>
+      <spec>Large Blades</spec>
+    </weapon>
+    <weapon>
+      <name>Narcoject One</name>
+      <useskill>Handguns</useskill>
+      <spec>Compressed Air Pistols</spec>
+    </weapon>
+    <weapon>
+      <name>Krime Whammy (Melee)</name>
+      <spec>Large Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Narcoject Gas Gun</name>
+      <useskill>Handguns</useskill>
+      <spec>Compressed Air Pistols</spec>
+    </weapon>
+    <weapon>
+      <name>Narcoject PEP</name>
+      <useskill>Handguns</useskill>
+      <spec>Large Pistols</spec>
+    </weapon>
+    <weapon>
+      <name>Narcoject Trackstopper</name>
+      <useskill>Handguns</useskill>
+      <spec>Compressed Air Pistols</spec>
+    </weapon>
+    <weapon>
+      <name>Krime Stun-O-Net</name>
+      <spec>Large Clubs/Maces</spec>
+      <spec2>Stun Guns</spec2>
+    </weapon>
+    <weapon>
+      <name>Horizon-Flynn Defense-Com Commlink Knife</name>
+      <spec>Small Blades</spec>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Hamburg -->
+    <weapon>
+      <name>Elektro-Angel</name>
+      <useskill>Blunt Weapons</useskill>
+      <spec>Large Clubs/Maces</spec>
+      <spec2>Stun Guns</spec2>
+    </weapon>
+    <weapon>
+      <name>Elektro-Netz</name>
+      <spec>Flexible Weapons</spec>
+      <useskill>Throwing Weapons</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region No Future -->
+    <weapon>
+      <name>Hardened Yo-Yo</name>
+      <category>Flexible Weapons</category>
+      <useskill>Blunt Weapons</useskill>
+      <spec>Flexible Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Bladed Yo-Yo</name>
+      <category>Flexible Weapons</category>
+      <useskill>Blunt Weapons</useskill>
+      <spec>Flexible Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Monofilament Yo-Yo</name>
+      <category>Flexible Weapons</category>
+      <useskill>Edged Weapons</useskill>
+      <spec>Monofilament Flexible Weapons</spec>
+    </weapon>
+    <weapon>
+      <name>Hardened Skateboard</name>
+      <useskill>Blunt Weapons</useskill>
+      <spec>Large Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Bladed Skateboard</name>
+      <useskill>Blunt Weapons</useskill>
+      <spec>Large Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Rolling Blades</name>
+      <spec>Striking/Attacking</spec>
+      <useskill>Unarmed Combat</useskill>
+    </weapon>
+    <weapon>
+      <name>Torch</name>
+      <spec>Large Clubs/Maces</spec>
+    </weapon>
+    <weapon>
+      <name>Pitchfork</name>
+      <category>Blades</category>
+      <spec>Polearms</spec>
+      <useskill>Edged Weapons</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Datapuls Sota 2080 -->
+    <weapon>
+      <name>Krupp Munitions 3E Firefighting Cannon</name>
+      <spec>Flamethrower</spec>
+      <useskill>Heavy Weapons</useskill>
+    </weapon>
+    <!-- End Region -->
+    <!-- Region Krime Katalog -->
+    <weapon>
+      <name>Krime Saint Nicholas</name>
+      <spec>Precision Rifles</spec>
+    </weapon>
+    <weapon>
+      <name>Krime Junior</name>
+      <spec>Precision Rifles</spec>
     </weapon>
     <!-- End Region -->
   </weapons>

@@ -16,20 +16,22 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.XPath;
 
 namespace Chummer.Backend.Equipment
 {
     /// <summary>
     /// Grade of Cyberware or Bioware.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Grade : IHasName, IHasInternalId, IHasXmlNode
+    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
+    public class Grade : IHasName, IHasInternalId, IHasXmlDataNode
     {
+        private readonly Character _objCharacter;
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = "Standard";
@@ -38,12 +40,14 @@ namespace Chummer.Backend.Equipment
         private int _intAvail;
         private string _strSource = "SR5";
         private int _intDeviceRating = 2;
-	    private int _intAddictionThreshold;
-		private readonly Improvement.ImprovementSource _eSource;
+        private int _intAddictionThreshold;
+        private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
-        public Grade(Improvement.ImprovementSource eSource)
+
+        public Grade(Character objCharacter, Improvement.ImprovementSource eSource)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _guiID = Guid.NewGuid();
             _eSource = eSource;
         }
@@ -60,58 +64,84 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                var xmlDataNode = XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware
-                        ? "bioware.xml"
-                        : _eSource == Improvement.ImprovementSource.Drug
-                            ? "drugcomponents.xml"
-                            : "cyberware.xml", GlobalOptions.Language)
-                    .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + "]");
+                XPathNavigator xmlDataNode = _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource))
+                    .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + ']');
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
             }
-            objNode.TryGetDecFieldQuickly("ess", ref _decEss);
             objNode.TryGetDecFieldQuickly("cost", ref _decCost);
             objNode.TryGetInt32FieldQuickly("avail", ref _intAvail);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objNode.TryGetField("addictionthreshold", out _intAddictionThreshold);
-			if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+            if (_eSource == Improvement.ImprovementSource.Drug)
+                objNode.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold);
+            else
             {
-                if (Name.Contains("Alphaware"))
-                    _intDeviceRating = 3;
-                else if (Name.Contains("Betaware"))
-                    _intDeviceRating = 4;
-                else if (Name.Contains("Deltaware"))
-                    _intDeviceRating = 5;
-                else if (Name.Contains("Gammaware"))
-                    _intDeviceRating = 6;
-                else
-                    _intDeviceRating = 2;
+                objNode.TryGetDecFieldQuickly("ess", ref _decEss);
+                if (!objNode.TryGetInt32FieldQuickly("devicerating", ref _intDeviceRating))
+                {
+                    if (Name.Contains("Alphaware"))
+                        _intDeviceRating = 3;
+                    else if (Name.Contains("Betaware"))
+                        _intDeviceRating = 4;
+                    else if (Name.Contains("Deltaware"))
+                        _intDeviceRating = 5;
+                    else if (Name.Contains("Gammaware"))
+                        _intDeviceRating = 6;
+                    else
+                        _intDeviceRating = 2;
+                }
             }
         }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
-            return GetNode(GlobalOptions.Language);
-        }
-
-        public XmlNode GetNode(string strLanguage)
-        {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData) return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = SourceId == Guid.Empty
-                ? XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[name = \"{Name}\"]")
-                : XmlManager.Load(_eSource == Improvement.ImprovementSource.Bioware ? "bioware.xml" : _eSource == Improvement.ImprovementSource.Drug ? "drugcomponents.xml" : "cyberware.xml", strLanguage).SelectSingleNode($"/chummer/grades/grade[id = \"{SourceId}\"]");
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
+                    : await _objCharacter.LoadDataAsync(GetDataFileNameFromImprovementSource(_eSource), strLanguage))
+                .SelectSingleNode(SourceId == Guid.Empty
+                                      ? "/chummer/grades/grade[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/grades/grade[id = "
+                                        + SourceIDString.CleanXPath() + ']');
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource),
+                                                             strLanguage))
+                .SelectSingleNode(SourceId == Guid.Empty
+                                      ? "/chummer/grades/grade[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/grades/grade[id = "
+                                        + SourceIDString.CleanXPath() + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
+        }
+
+        #endregion Constructor and Load Methods
 
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to a Grade.
         /// </summary>
@@ -122,22 +152,47 @@ namespace Chummer.Backend.Equipment
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            IList<Grade> lstGrades = objCharacter.GetGradeList(objSource, true);
-            foreach (Grade objGrade in lstGrades)
+            Grade objStandardGrade = null;
+            foreach (Grade objGrade in objCharacter.GetGradeList(objSource, true))
             {
                 if (objGrade.Name == strValue)
                     return objGrade;
+                if (objGrade.Name == "Standard")
+                    objStandardGrade = objGrade;
             }
 
-            return lstGrades.FirstOrDefault(x => x.Name == "Standard");
+            return objStandardGrade;
         }
-        #endregion
+
+        /// <summary>
+        /// Gets the name of the data file to use that corresponds to a particular Improvement Source denoting the type of object being used.
+        /// </summary>
+        /// <param name="eSource">Type of object being looked at that has grades. Should be either drug, bioware, or cyberware.</param>
+        /// <returns>A full file name that can be used with LoadData() or LoadXData() methods.</returns>
+        public static string GetDataFileNameFromImprovementSource(Improvement.ImprovementSource eSource)
+        {
+            switch (eSource)
+            {
+                case Improvement.ImprovementSource.Drug:
+                    return "drugcomponents.xml";
+                case Improvement.ImprovementSource.Bioware:
+                    return "bioware.xml";
+                case Improvement.ImprovementSource.Cyberware:
+                    return "cyberware.xml";
+                default:
+                    Utils.BreakIfDebug();
+                    return "cyberware.xml";
+            }
+        }
+
+        #endregion Helper Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this grade.
         /// </summary>
-        public string InternalId => _guiID == Guid.Empty ? string.Empty : _guiID.ToString("D");
+        public string InternalId => _guiID == Guid.Empty ? string.Empty : _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -145,9 +200,9 @@ namespace Chummer.Backend.Equipment
         public Guid SourceId => _guiSourceID;
 
         /// <summary>
-        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
+        /// String-formatted identifier of the <inheritdoc cref="SourceId"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D");
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// The English name of the Grade.
@@ -163,11 +218,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
+
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         /// <summary>
         /// The Grade's Essence cost multiplier.
@@ -217,6 +274,7 @@ namespace Chummer.Backend.Equipment
             get => _intAddictionThreshold;
             set => _intAddictionThreshold = value;
         }
-		#endregion
-	}
+
+        #endregion Properties
+    }
 }

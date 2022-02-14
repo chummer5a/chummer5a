@@ -16,16 +16,17 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Globalization;
 
 namespace Chummer
 {
-    public struct AvailabilityValue : IComparable
+    public readonly struct AvailabilityValue : IComparable, IEquatable<AvailabilityValue>
     {
         public bool AddToParent { get; }
         public bool IncludedInParent { get; }
-        public int Value { get; set; }
+        public int Value { get; }
 
         public char Suffix { get; }
 
@@ -40,6 +41,7 @@ namespace Chummer
                 case 'R':
                     Suffix = chrSuffix;
                     break;
+
                 default:
                     Suffix = 'Z';
                     break;
@@ -48,19 +50,29 @@ namespace Chummer
 
         public AvailabilityValue(int intRating, string strInput, int intBonus = 0, bool blnIncludedInParent = false)
         {
-            string strAvailExpr = strInput;
-            if (strAvailExpr.StartsWith("FixedValues("))
+            if (!string.IsNullOrEmpty(strInput))
             {
-                string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',');
-                strAvailExpr = strValues[(int)Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
-            }
+                string strAvailExpr = strInput;
+                if (strAvailExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strAvailExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strAvailExpr = strValues[Math.Max(Math.Min(intRating, strValues.Length) - 1, 0)];
+                }
 
-            Suffix = strAvailExpr[strAvailExpr.Length - 1];
-            AddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
+                Suffix = strAvailExpr[strAvailExpr.Length - 1];
+                AddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
+                if (Suffix == 'F' || Suffix == 'R')
+                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                Value = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+            }
+            else
+            {
+                Value = 0;
+                Suffix = 'Z';
+                AddToParent = false;
+            }
             IncludedInParent = blnIncludedInParent;
-            if (Suffix == 'F' || Suffix == 'R') strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-            object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-            Value = blnIsSuccess ? Convert.ToInt32(objProcess) : 0;
             Value += intBonus;
             if (Value < 0)
                 Value = 0;
@@ -68,7 +80,7 @@ namespace Chummer
 
         public override string ToString()
         {
-            return ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            return ToString(GlobalSettings.CultureInfo, GlobalSettings.Language);
         }
 
         public string ToString(CultureInfo objCulture, string strLanguage)
@@ -80,6 +92,7 @@ namespace Chummer
             {
                 case 'F':
                     return strBaseAvail + LanguageManager.GetString("String_AvailForbidden", strLanguage);
+
                 case 'R':
                     return strBaseAvail + LanguageManager.GetString("String_AvailRestricted", strLanguage);
             }
@@ -103,6 +116,55 @@ namespace Chummer
                 }
             }
             return intCompareResult;
+        }
+
+        public bool Equals(AvailabilityValue other)
+        {
+            return Value.Equals(other.Value) && Suffix.Equals(other.Suffix) && AddToParent.Equals(other.AddToParent);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is AvailabilityValue objOther)
+            {
+                return Equals(objOther);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return (Value, Suffix, AddToParent, IncludedInParent).GetHashCode();
+        }
+
+        public static bool operator ==(AvailabilityValue left, AvailabilityValue right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(AvailabilityValue left, AvailabilityValue right)
+        {
+            return !(left == right);
+        }
+
+        public static bool operator <(AvailabilityValue left, AvailabilityValue right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(AvailabilityValue left, AvailabilityValue right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(AvailabilityValue left, AvailabilityValue right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(AvailabilityValue left, AvailabilityValue right)
+        {
+            return left.CompareTo(right) >= 0;
         }
     }
 }

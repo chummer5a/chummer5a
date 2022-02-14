@@ -33,7 +33,7 @@
           <attack>1</attack>
         </livingpersona>
       </bonus>
-      <limit>False</limit>
+      <limit>2</limit>
     </echo>
     <echo>
       <id>cd2e640c-06b7-4638-9eb4-bf75c28452a2</id>
@@ -45,7 +45,7 @@
           <dataprocessing>1</dataprocessing>
         </livingpersona>
       </bonus>
-      <limit>False</limit>
+      <limit>2</limit>
     </echo>
     <echo>
       <id>4550fe9d-e5da-4b01-8115-14f7a0dfab1c</id>
@@ -57,14 +57,14 @@
           <firewall>1</firewall>
         </livingpersona>
       </bonus>
-      <limit>False</limit>
+      <limit>2</limit>
     </echo>
     <echo>
       <id>13c9f18c-a5f6-40e3-97c1-39265e1d70c2</id>
       <name>Mind Over Machine</name>
       <source>SR5</source>
       <page>258</page>
-      <limit>False</limit>
+      <limit>3</limit>
     </echo>
     <echo>
       <id>0adbc66d-6b29-4427-b652-0a93a87804b2</id>
@@ -72,7 +72,7 @@
       <source>SR5</source>
       <page>258</page>
       <bonus />
-      <limit>False</limit>
+      <limit>2</limit>
     </echo>
     <echo>
       <id>61055141-71f5-400e-9e67-cef650ce4801</id>
@@ -95,7 +95,7 @@
       <source>SR5</source>
       <page>258</page>
       <bonus>
-        <selecttext />
+        <selecttext xml="programs.xml" xpath="/chummer/programs/program" />
       </bonus>
       <limit>False</limit>
     </echo>
@@ -109,7 +109,7 @@
           <sleaze>1</sleaze>
         </livingpersona>
       </bonus>
-      <limit>False</limit>
+      <limit>2</limit>
     </echo>
     <!-- End Region -->
     <!-- Region Data Trails -->
@@ -118,77 +118,74 @@
       <name>Fight or Flight Filter</name>
       <source>DT</source>
       <page>58</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>e7dc7a5a-89dc-42e4-8332-8225bbff3c45</id>
       <name>Mathemagics</name>
       <source>DT</source>
       <page>58</page>
-      <limit>False</limit>
+      <bonus>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>2</value>
+          <condition>LimitCondition_SkillsKnowledgeScientificTechnical</condition>
+        </limitmodifier>
+      </bonus>
     </echo>
     <echo>
       <id>262dd3e2-5433-4b9a-b637-c5f5a3af5510</id>
       <name>MMRI</name>
       <source>DT</source>
       <page>59</page>
-      <limit>False</limit>
+      <limit>3</limit>
     </echo>
     <echo>
       <id>032d5d7f-41b9-47f5-8bd0-b7e2cf2c3adf</id>
       <name>Quiet</name>
       <source>DT</source>
       <page>59</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>0408da17-8327-4e8c-a64f-48431bba8e58</id>
       <name>Resonance Riding</name>
       <source>DT</source>
       <page>59</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>e6f66ec1-af07-4008-abbe-e4d31cc82358</id>
       <name>Resonance Scream</name>
       <source>DT</source>
       <page>59</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>45ed755c-cf0e-4f57-95d2-2c01b4eda760</id>
       <name>Skinlink</name>
       <source>DT</source>
       <page>59</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>228b8261-deca-4723-b072-0a5135ddef3f</id>
       <name>Sleepwalker</name>
       <source>DT</source>
       <page>59</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>cee8e3bc-447b-4a67-9752-15e3e104e57d</id>
       <name>Contaminate</name>
       <source>DTD</source>
       <page>165</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>a0966081-2534-4fc4-a2e6-504b4ecf9756</id>
       <name>Siphon</name>
       <source>DTD</source>
       <page>165</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>2fe27536-4de7-49c1-a933-8d9a65604533</id>
       <name>Pryon</name>
       <source>DTD</source>
       <page>165</page>
-      <limit>False</limit>
     </echo>
     <!-- End Region -->
     <!-- Region Dark Terrors -->
@@ -197,7 +194,6 @@
       <name>Defrag</name>
       <source>DTR</source>
       <page>85</page>
-      <limit>False</limit>
     </echo>
     <!-- End Region -->
     <!-- Region Kill Code-->
@@ -231,7 +227,9 @@
       <name>Predictive Analytics</name>
       <source>KC</source>
       <page>101</page>
-      <!-- TODO: Matrix AR Initiative bonus -->
+      <bonus>
+        <initiativepass>1</initiativepass>
+      </bonus>
       <limit>4</limit>
     </echo>
     <echo>
@@ -239,14 +237,12 @@
       <name>Resonance Resistance</name>
       <source>KC</source>
       <page>102</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>1e0405f3-3872-4a53-afd7-bd643899e7d9</id>
       <name>The Van der Waals Effect</name>
       <source>KC</source>
       <page>102</page>
-      <limit>False</limit>
     </echo>
     <echo>
       <id>6cb9bc65-7b64-44dd-ba9a-f96f3c09c741</id>
@@ -262,13 +258,17 @@
       <limit>3</limit>
     </echo>
     <echo>
-      <id>f7bd6993-efa4-494c-8c58-e9f0950af7b9</id>
-      <name>Daemon: Cyberadept</name>
+      <id>08848a07-a013-4c45-b103-f5600f1e7171</id>
+      <name>Sourcerer Daemon</name>
       <source>KC</source>
-      <page>90</page>
+      <page>91</page>
       <bonus>
-          <cyberadeptdaemon>Rating</cyberadeptdaemon>
+        <penaltyfreesustain>
+          <!-- Reducing Submersion Grade by 1 makes sure we end up rounding down for this bonus -->
+          <count>(Rating - 1) / 2</count>
+        </penaltyfreesustain>
       </bonus>
+      <hide />
     </echo>
     <!-- End Region -->
   </echoes>

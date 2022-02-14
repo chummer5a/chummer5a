@@ -26,13 +26,14 @@
               <xs:element name="complexform" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
                   <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
-					<xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="target" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="duration" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="fv" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1"  maxOccurs="1" />
                     <xs:element name="page" type="xs:string" minOccurs="1"  maxOccurs="1" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />

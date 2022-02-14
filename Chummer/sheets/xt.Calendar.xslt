@@ -10,26 +10,25 @@
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
         </xsl:if>
         <td>
-          <xsl:value-of select="year"/>
+          <xsl:value-of select="year" />
           <xsl:text>, </xsl:text>
-          <xsl:value-of select="$lang.Month"/>
+          <xsl:value-of select="$lang.Month" />
           <xsl:text> </xsl:text>
-          <xsl:value-of select="month"/>
+          <xsl:value-of select="month" />
           <xsl:text>, </xsl:text>
-          <xsl:value-of select="$lang.Week"/>
+          <xsl:value-of select="$lang.Week" />
           <xsl:text> </xsl:text>
-          <xsl:value-of select="week"/>
+          <xsl:value-of select="week" />
         </td>
         <td>
           <xsl:call-template name="PreserveLineBreaks">
-            <xsl:with-param name="text" select="notes"/>
+            <xsl:with-param name="text" select="notes" />
           </xsl:call-template>
         </td>
       </tr>
       <xsl:call-template name="Xline">
-        <xsl:with-param name="cntl" select="last()-position()"/>
+        <xsl:with-param name="cntl" select="last()-position()" />
       </xsl:call-template>
     </xsl:for-each>
-
   </xsl:template>
 </xsl:stylesheet>

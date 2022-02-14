@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <vehicles>
+    <vehicle>
+      <name>Horizon Noizquito (Microdrone)</name>
+      <hide />
+    </vehicle>
+	<vehicle>
+      <name>Holo-Conference Drone (Small)</name>
+      <cost>9000</cost>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '1' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '1'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '2' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '2'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '3' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '3'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+            <gear select="Front-Facing">Camera</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '4' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '4'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+            <gear select="Front-Facing">Camera</gear>
+            <gear select="Front-Facing">Laser Range Finder</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '5' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '5'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+            <gear select="Front-Facing">Camera</gear>
+            <gear select="Front-Facing">Laser Range Finder</gear>
+            <gear select="Rear-Facing">Laser Range Finder</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+    <vehicle xpathfilter="gears/gear[name = 'Sensor Array' and rating = '6' and not(gears)]">
+      <gears>
+        <gear xpathfilter="name = 'Sensor Array' and rating = '6'">
+          <gears>
+            <gear>Atmosphere Sensor</gear>
+            <gear select="Rear-Facing">Camera</gear>
+            <gear select="Front-Facing">Camera</gear>
+            <gear select="Front-Facing">Laser Range Finder</gear>
+            <gear select="Rear-Facing">Laser Range Finder</gear>
+          </gears>
+        </gear>
+      </gears>
+    </vehicle>
+  </vehicles>
+</chummer>

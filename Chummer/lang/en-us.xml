@@ -23,16 +23,40 @@
   <strings>
     <!-- Region Meta Strings -->
     <string>
+      <key>Message_InvalidTextFound_Title</key>
+      <text>XML Exception: Invalid characters found</text>
+    </string>
+    <string>
+      <key>Message_InvalidTextFound</key>
+      <text>Invalid characters found in XML. It should be safe to load this character, but you may wish to make a backup copy of this file before saving it. Would you like to continue loading the character?</text>
+    </string>
+    <string>
       <key>Message_Insufficient_Permissions_Warning</key>
       <text>Chummer5 is currently not being run with proper permissions! If you are not running Chummer5 as an administrator, please move it to a folder owned by your user.</text>
+    </string>
+    <string>
+      <key>Message_Insufficient_Permissions_Warning_Registry</key>
+      <text>Chummer5 is currently not being run with permissions to modify registry values. Please make sure Chummer5 is being run by a user with appropriate access</text>
+    </string>
+    <string>
+      <key>Message_Load_Error_Warning</key>
+      <text>Chummer5 encountered an error while loading the character.</text>
     </string>
     <string>
       <key>Message_Save_Error_Warning</key>
       <text>Chummer5 encountered an error while saving the character.</text>
     </string>
     <string>
+      <key>Message_Prompt_Delete_Existing_File</key>
+      <text>Chummer5 has detected that the following file already exists at this location that is outside of the Chummer base directory:\n{0}\n\nAre you sure you wish to remove the old file?</text>
+    </string>
+    <string>
       <key>Message_File_Cannot_Be_Accessed</key>
-      <text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
+      <text>Chummer5 cannot access the following file for writing:\n{0}\n\nPlease make sure it has permission to write to the location and that the file is not currently in use.</text>
+    </string>
+    <string>
+      <key>Message_File_Cannot_Be_Read_Accessed</key>
+      <text>Chummer5 cannot access the following file:\n{0}\n\nPlease make sure that the file exists and that Chummer5 has permission to read from the location.</text>
     </string>
     <string>
       <key>Message_Files_Cannot_Be_Removed</key>
@@ -65,11 +89,23 @@
       <text>JSON Files (*.json)|*.json</text>
     </string>
     <string>
+      <key>DialogFilter_HeroLab</key>
+      <text>Hero Lab Files (*.por)|*.por</text>
+    </string>
+    <string>
+      <key>DialogFilter_ImagesPrefix</key>
+      <text>All Image Files </text> <!-- Prefix only, actual file extensions depend on what codecs the user's computer supports -->
+    </string>
+    <string>
       <key>DialogFilter_All</key>
       <text>All Files (*.*)|*.*</text>
     </string>
     <!-- End Region -->
     <!-- Region Common Strings -->
+    <string>
+      <key>String_Chummer5a</key>
+      <text>Chummer5a</text>
+    </string>
     <string>
       <key>String_NotApplicable</key>
       <text>N/A</text>
@@ -467,6 +503,10 @@
       <text>Total Rating</text>
     </string>
     <string>
+      <key>String_UpgradedRating</key>
+      <text>Upgraded Rating</text>
+    </string>
+    <string>
       <key>String_System</key>
       <text>System</text>
     </string>
@@ -485,10 +525,6 @@
     <string>
       <key>String_UnnamedCharacter</key>
       <text>Unnamed Character</text>
-    </string>
-    <string>
-      <key>String_Break</key>
-      <text>Break</text>
     </string>
     <string>
       <key>Checkbox_Free</key>
@@ -616,7 +652,7 @@
     </string>
     <string>
       <key>Label_Dodge</key>
-      <text>Dodge:</text>
+      <text>Defense Test:</text>
     </string>
     <string>
       <key>Label_Seats</key>
@@ -887,7 +923,7 @@
       <text>Location:</text>
     </string>
     <string>
-      <key>Label_Archtype</key>
+      <key>Label_Archetype</key>
       <text>Archetype:</text>
     </string>
     <string>
@@ -963,6 +999,10 @@
       <text>hours</text>
     </string>
     <string>
+      <key>String_Encumbrance</key>
+      <text>Encumbrance</text>
+    </string>
+    <string>
       <key>String_ArmorEncumbrance</key>
       <text>Armor Encumbrance</text>
     </string>
@@ -1025,6 +1065,62 @@
     <string>
       <key>String_Weapon</key>
       <text>Weapon</text>
+    </string>
+    <string>
+      <key>String_Automatic</key>
+      <text>Automatic</text>
+    </string>
+    <string>
+      <key>String_Light</key>
+      <text>Light</text>
+    </string>
+    <string>
+      <key>String_Dark</key>
+      <text>Dark</text>
+    </string>
+    <string>
+      <key>String_Zoom</key>
+      <text>Zoom</text>
+    </string>
+    <string>
+      <key>String_Rescale</key>
+      <text>Rescale</text>
+    </string>
+    <string>
+      <key>String_SmartZoom</key>
+      <text>Smart Zoom</text>
+    </string>
+    <string>
+      <key>String_ContactPoints</key>
+      <text>Contact Points</text>
+    </string>
+    <string>
+      <key>String_KnowledgePoints</key>
+      <text>Knowledge Points</text>
+    </string>
+    <string>
+      <key>String_Skull</key>
+      <text>Skull</text>
+    </string>
+    <string>
+      <key>String_Torso</key>
+      <text>Torso</text>
+    </string>
+    <string>
+      <key>String_Arms</key>
+      <text>Arms</text>
+    </string>
+    <string>
+      <key>String_Legs</key>
+      <text>Legs</text>
+    </string>
+    <string>
+      <key>String_NaturalAttribute</key>
+      <text>Natural {0}</text>
+    </string>
+    <string>
+      <key>String_BaseAttribute</key>
+      <text>Base {0}</text>
     </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
@@ -1095,6 +1191,14 @@
       <text>File Not Found</text>
     </string>
     <string>
+      <key>Message_CharacterCustomDataWarning</key>
+      <text>This version of the Nightly releases dramatically changes the way character settings/options are handled compared to older versions. While this version of Chummer can handle saves and settings from older versions, the reverse is absolutely not the case. Settings and characters saved with this version of Chummer will not work properly when opened in an older version of Chummer, including older stable releases.\n\nAre you sure you want to continue using this Nightly? This warning will not appear again if you do.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterCustomDataWarning</key>
+      <text>Warning! This Nightly Is Special!</text>
+    </string>
+    <string>
       <key>Message_RemoveCharacterAssociation</key>
       <text>Are you sure you want to remove this Character association?\nThe save file will NOT be deleted.</text>
     </string>
@@ -1104,7 +1208,19 @@
     </string>
     <string>
       <key>Message_OutdatedChummerSave</key>
-      <text>This save file was created in a later version of Chummer ({0}) than your current version of Chummer ({1}). \nThis file may not load properly, and it is strongly suggested you update to the latest version of Chummer.\nAre you sure you want to continue loading this character?</text>
+      <text>This save file was created in a later version of Chummer ({0}) than your current version of Chummer ({1}).\nThis file may not load properly, and it is strongly suggested you update to the latest version of Chummer.\nAre you sure you want to continue loading this character?</text>
+    </string>
+    <string>
+      <key>MessageTitle_OutdatedChummerSave</key>
+      <text>Attempting to Load with Older Version of Chummer</text>
+    </string>
+    <string>
+      <key>Message_OlderThanChummerSaveMinimumVersion</key>
+      <text>Due to significant changes in a newer version of Chummer, this save file requires a later version of Chummer ({0}) than your current version of Chummer ({1}).\nThis file will not load properly in your current version of Chummer.\nChummer will now abort loading this character.</text>
+    </string>
+    <string>
+      <key>MessageTitle_OlderThanChummerSaveMinimumVersion</key>
+      <text>Current Version of Chummer Too Old for This Save</text>
     </string>
     <string>
       <key>Message_IncorrectGameVersion_SR4</key>
@@ -1117,6 +1233,30 @@
     <string>
       <key>MessageTitle_IncorrectGameVersion</key>
       <text>Incorrect Game Version</text>
+    </string>
+    <string>
+      <key>Message_NoLinkedPDF</key>
+      <text>No linked PDF file for {0} was found. Do you wish to open Global Settings to link a PDF file?</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoLinkedPDF</key>
+      <text>No PDF File Found</text>
+    </string>
+    <string>
+      <key>Message_NoPDFProgramSet</key>
+      <text>No program for reading PDFs has been set up in Chummer's Global Settings. Do you wish to open Global Settings to link a program?</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoPDFProgramSet</key>
+      <text>No PDF Reader Found</text>
+    </string>
+    <string>
+      <key>Message_TooManyHandlesWarning</key>
+      <text>Because Chummer is built on a very old foundation, it has problems with handling too many characters open at once. The program has detected that it is nearing that threshold and could potentially silently crash if it opens {0}.\n\nDo you wish to continue?</text>
+    </string>
+    <string>
+      <key>MessageTitle_TooManyHandlesWarning</key>
+      <text>Potential Silent Crash Possible</text>
     </string>
     <!-- End Region -->
     <!-- Region Attributes -->
@@ -1287,7 +1427,7 @@
       <text>&amp;Help</text>
     </string>
     <string>
-      <key>Menu_Main_NewCharater</key>
+      <key>Menu_Main_NewCharacter</key>
       <text>&amp;New Character</text>
     </string>
     <string>
@@ -1312,15 +1452,19 @@
     </string>
     <string>
       <key>Menu_Main_Options</key>
-      <text>&amp;Options</text>
+      <text>&amp;Global Settings</text>
+    </string>
+    <string>
+      <key>Menu_Main_Character_Options</key>
+      <text>&amp;Character Settings</text>
     </string>
     <string>
       <key>Menu_Main_Update</key>
-      <text>Check for Updates</text>
+      <text>Check for &amp;Updates</text>
     </string>
     <string>
-      <key>Menu_Main_Omae</key>
-      <text>Omae</text>
+      <key>Menu_Main_Restart</key>
+      <text>&amp;Restart Chummer</text>
     </string>
     <string>
       <key>Menu_Main_NewWindow</key>
@@ -1332,11 +1476,11 @@
     </string>
     <string>
       <key>Menu_Main_ChummerWiki</key>
-      <text>Chummer Wiki</text>
+      <text>Chummer &amp;Wiki</text>
     </string>
     <string>
       <key>Menu_Main_ChummerDiscord</key>
-      <text>Chummer Discord</text>
+      <text>Chummer &amp;Discord</text>
     </string>
     <string>
       <key>Menu_Main_RevisionHistory</key>
@@ -1344,7 +1488,7 @@
     </string>
     <string>
       <key>Menu_Main_DumpshockThread</key>
-      <text>&amp;Dumpshock Thread</text>
+      <text>D&amp;umpshock Thread</text>
     </string>
     <string>
       <key>Menu_Main_About</key>
@@ -1352,25 +1496,39 @@
     </string>
     <string>
       <key>Menu_Main_Translator</key>
-      <text>Translator</text>
+      <text>&amp;Translator</text>
     </string>
     <string>
       <key>Menu_Main_HeroLabImporter</key>
-      <text>Hero Lab Importer</text>
+      <text>&amp;Hero Lab Importer</text>
+    </string>
+    <string>
+      <key>String_MetatypeLoadError</key>
+      <text>Error with Loading Metatype!</text>
+    </string>
+    <!-- End Region -->
+    <!-- Region Master Index -->
+    <string>
+      <key>Title_MasterIndex</key>
+      <text>Master Index</text>
+    </string>
+    <string>
+      <key>Label_MasterIndex_SourceClickReminder</key>
+      <text>&lt;- Click to Open Linked PDF</text>
     </string>
     <!-- End Region -->
     <!-- Region About -->
     <string>
       <key>About_Description_Text</key>
-      <text>Character generator for Shadowrun 5th Edition\n\r\n\rThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\r\n\rBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
+      <text>Character generator for Shadowrun 5th Edition\n\nThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\nBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
     </string>
     <string>
       <key>About_Company_Text</key>
-      <text>Original Chummer for 4th edition by Keith Rudolph.\n\rChummer5 update by Adam Schmidt: srchummer5@gmail.com\n\rChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\rAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com</text>
+      <text>Original Chummer for 4th edition by Keith Rudolph.\nChummer5 update by Adam Schmidt: srchummer5@gmail.com\nChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\nAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com\nAdditional 5a updates by Delnar_Ersike: delnar.ersike@gmail.com</text>
     </string>
     <string>
       <key>About_Copyright_Text</key>
-      <text>Copyright © Keith Rudolph 2013</text>
+      <text>Copyright © Keith Rudolph 2013, Licensed GNU GPLv3</text>
     </string>
     <string>
       <key>About_Label_Contributors</key>
@@ -1382,7 +1540,7 @@
     </string>
     <string>
       <key>About_Label_Disclaimer_Text</key>
-      <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummer uses icons from the Silk icon set made by Mark James which is available at www.famfamfam.com.</text>
+      <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\nUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\nBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\nChummer uses icons from the FatCow Icon Set available at https://www.fatcow.com/free-icons.</text>
     </string>
     <!-- End Region -->
     <!-- Region Character Roster -->
@@ -1457,12 +1615,20 @@
       <text>Save &amp;As</text>
     </string>
     <string>
+      <key>String_Save</key>
+      <text>Save</text>
+    </string>
+    <string>
+      <key>String_SaveAs</key>
+      <text>Save As...</text>
+    </string>
+    <string>
       <key>Menu_FileSaveAsCreated</key>
-      <text>Save As &amp;Created</text>
+      <text>Save As C&amp;reated</text>
     </string>
     <string>
       <key>Menu_FileExport</key>
-      <text>Export</text>
+      <text>&amp;Export</text>
     </string>
     <string>
       <key>Menu_FilePrint</key>
@@ -1474,7 +1640,7 @@
     </string>
     <string>
       <key>Menu_FileClose</key>
-      <text>Close</text>
+      <text>&amp;Close</text>
     </string>
     <string>
       <key>Menu_SpecialAddCyberwareSuite</key>
@@ -1510,7 +1676,7 @@
     </string>
     <string>
       <key>Menu_SpecialChangeOptions</key>
-      <text>Change &amp;Options File</text>
+      <text>Change &amp;Settings File</text>
     </string>
     <string>
       <key>Menu_SpecialConvertToMutantCritter</key>
@@ -1521,7 +1687,7 @@
       <text>Convert to Toxic Critter</text>
     </string>
     <string>
-      <key>Menu_SpecialConverToCyberzombie</key>
+      <key>Menu_SpecialConvertToCyberzombie</key>
       <text>Convert to Cyberzombie</text>
     </string>
     <string>
@@ -1605,15 +1771,11 @@
       <text>A&amp;dd Gear</text>
     </string>
     <string>
-      <key>Menu_AddNexus</key>
-      <text>Add &amp;Nexus</text>
-    </string>
-    <string>
       <key>Menu_AddWeapon</key>
       <text>Add &amp;Weapon</text>
     </string>
     <string>
-      <key>Menu_AddAdvantage</key>
+      <key>Menu_AddTechnique</key>
       <text>&amp;Add Technique</text>
     </string>
     <string>
@@ -1698,7 +1860,7 @@
     </string>
     <string>
       <key>Tab_Magician</key>
-      <text>Spells and Spirits</text>
+      <text>Spells &amp;&amp; Spirits</text>
     </string>
     <string>
       <key>Tab_Adept</key>
@@ -1706,7 +1868,7 @@
     </string>
     <string>
       <key>Tab_Technomancer</key>
-      <text>Complex Forms and Sprites</text>
+      <text>Complex Forms &amp;&amp; Sprites</text>
     </string>
     <string>
       <key>Tab_Critter</key>
@@ -1722,10 +1884,10 @@
     </string>
     <string>
       <key>Tab_Cyberware</key>
-      <text>Cyberware and Bioware</text>
+      <text>Cyberware &amp;&amp; Bioware</text>
     </string>
     <string>
-      <key>Tab_StreeGear</key>
+      <key>Tab_StreetGear</key>
       <text>Street Gear</text>
     </string>
     <string>
@@ -1738,7 +1900,7 @@
     </string>
     <string>
       <key>Tab_Karma</key>
-      <text>Karma and Nuyen</text>
+      <text>Karma &amp;&amp; Nuyen</text>
     </string>
     <string>
       <key>Tab_Improvements</key>
@@ -1766,11 +1928,11 @@
     </string>
     <string>
       <key>Tab_Lifestyle</key>
-      <text>Lifestyle</text>
+      <text>Lifestyles</text>
     </string>
     <string>
       <key>Tab_Armor</key>
-      <text>Clothing and Armor</text>
+      <text>Clothing &amp;&amp; Armor</text>
     </string>
     <string>
       <key>Tab_Weapons</key>
@@ -1782,7 +1944,7 @@
     </string>
     <string>
       <key>Tab_Pets</key>
-      <text>Pets and Cohorts</text>
+      <text>Pets &amp;&amp; Cohorts</text>
     </string>
     <string>
       <key>Tab_ConditionMonitor</key>
@@ -1835,6 +1997,14 @@
     <string>
       <key>Message_NoValidWeaponMount</key>
       <text>The selected vehicle does not have any valid weapon mounts to add this weapon to.</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoValidModularMount</key>
+      <text>No Valid Modular Mount Found</text>
+    </string>
+    <string>
+      <key>Message_NoValidModularMount</key>
+      <text>Couldn't find a valid modular connector to attach this cyberware to.</text>
     </string>
     <string>
       <key>Message_CyberzombieConfirm</key>
@@ -1913,6 +2083,10 @@
       <text>Are you sure you want to delete this Spirit?</text>
     </string>
     <string>
+      <key>Message_DeleteSustainedSpell</key>
+      <text>Are you sure you want to no longer sustain {0}?</text>
+    </string>
+    <string>
       <key>Message_DeleteSprite</key>
       <text>Are you sure you want to delete this Sprite?</text>
     </string>
@@ -1970,7 +2144,11 @@
     </string>
     <string>
       <key>Message_DeleteVehicle</key>
-      <text>Are you sure you want to delete this Vehicle/Plugin?</text>
+      <text>Are you sure you want to delete this Vehicle?</text>
+    </string>
+    <string>
+      <key>Message_DeleteVehicleMod</key>
+      <text>Are you sure you want to delete this Vehicle Modification?</text>
     </string>
     <string>
       <key>Message_DeleteVehicleLocation</key>
@@ -1982,7 +2160,7 @@
     </string>
     <string>
       <key>Message_DeleteMartialArt</key>
-      <text>Are you sure you want to delete this Martial Art/Maneuver?</text>
+      <text>Are you sure you want to delete this Martial Art?</text>
     </string>
     <string>
       <key>Message_DeleteMetamagic</key>
@@ -2015,10 +2193,6 @@
     <string>
       <key>Message_DeleteComplexForm</key>
       <text>Are you sure you want to delete this Complex Form?</text>
-    </string>
-    <string>
-      <key>Message_DeleteComplexFormOption</key>
-      <text>Are you sure you want to delete this Complex Form Option?</text>
     </string>
     <string>
       <key>Message_DeleteQuality</key>
@@ -2109,14 +2283,6 @@
       <text>Cannot Delete</text>
     </string>
     <string>
-      <key>Message_MartialArtManeuverLimit</key>
-      <text>You may only have 2 Maneuvers per Martial Art Rating.</text>
-    </string>
-    <string>
-      <key>MessageTitle_MartialArtManeuverLimit</key>
-      <text>Maximum Number of Maneuvers</text>
-    </string>
-    <string>
       <key>Message_SelectMartialArtTechnique</key>
       <text>You must select a Martial Art to which to add a Technique.</text>
     </string>
@@ -2173,8 +2339,16 @@
       <text>Spell Limit</text>
     </string>
     <string>
+      <key>Message_UnboundSpiritLimit</key>
+      <text>You cannot have more than one unbound Spirit with services at a time.</text>
+    </string>
+    <string>
+      <key>MessageTitle_UnboundSpiritLimit</key>
+      <text>Unbound Spirit Limit</text>
+    </string>
+    <string>
       <key>Message_BoundSpiritLimit</key>
-      <text>Your number of bound Spirits cannot exceed your CHA score.</text>
+      <text>Your number of bound Spirits cannot exceed {0} ({1}).</text>
     </string>
     <string>
       <key>MessageTitle_BoundSpiritLimit</key>
@@ -2182,7 +2356,7 @@
     </string>
     <string>
       <key>Message_UnregisteredSpriteLimit</key>
-      <text>You cannot have more than one unregistered Sprite at a time.</text>
+      <text>You cannot have more than one unregistered Sprite with services at a time.</text>
     </string>
     <string>
       <key>MessageTitle_UnregisteredSpriteLimit</key>
@@ -2190,11 +2364,63 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Your number of registered Sprites cannot exceed your LOG score.</text>
+      <text>Your number of registered Sprites cannot exceed {0} ({1}).</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>
       <text>Registered Sprite Limit</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_BoundSpiritLimit</key>
+      <text>Bound Spirit Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_RegisteredSpriteLimit</key>
+      <text>Registered Sprite Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_WeightDecimalPlaces</key>
+      <text>Number of decimal places to show for weight:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_LiftLimit</key>
+      <text>Lift Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_CarryLimit</key>
+      <text>Carry Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbranceIntervalLeft</key>
+      <text>Increase encumbrance penalty every</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbranceIntervalRight</key>
+      <text>kg over Carry Limit</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbrancePenaltiesHeader</key>
+      <text>Each encumbrance penalty tick does the following:</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyPhysicalLimit</key>
+      <text>Lower Physical Limit by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyMovementSpeed</key>
+      <text>Lower Movement Speeds by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyAgility</key>
+      <text>Lower Agility by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyReaction</key>
+      <text>Lower Reaction by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyWoundModifier</key>
+      <text>Apply an additional Wound Modifier of</text>
     </string>
     <string>
       <key>Message_CannotRemoveCyberware</key>
@@ -2205,8 +2431,16 @@
       <text>Cannot Remove Cyberware</text>
     </string>
     <string>
+      <key>MessageTitle_FoundPDFsInFolder</key>
+      <text>Scan finished</text>
+    </string>
+    <string>
+      <key>Message_FoundPDFsInFolder</key>
+      <text>Chummer found PDF files for {0} sourcebooks in the folder {1}.</text>
+    </string>
+    <string>
       <key>Message_ComplexFormLimit</key>
-      <text>You cannot have more complex forms than twice your RES score. Ref: Page 98, SR5 Core (Errata'd).</text>
+      <text>You cannot have more complex forms than twice your RES score. Ref: Page 98, SR5 Core (Errata).</text>
     </string>
     <string>
       <key>Message_PriorityComplexFormLimit</key>
@@ -2425,6 +2659,10 @@
       <text>Select Vehicle</text>
     </string>
     <string>
+      <key>Message_WeaponMountFull</key>
+      <text>The selected weapon mount is full and cannot be equipped with any more weapons.</text>
+    </string>
+    <string>
       <key>Message_CannotAddWeapon</key>
       <text>Weapons can only be added to Weapon Mounts.</text>
     </string>
@@ -2481,18 +2719,6 @@
       <text>Select Complex Form</text>
     </string>
     <string>
-      <key>Message_CannotAddComplexFormOption</key>
-      <text>This Complex Form does not allow Options.</text>
-    </string>
-    <string>
-      <key>Message_ConntAddComplexFormOptionLimit</key>
-      <text>This Complex Form cannot have more than {0} Options because of its Rating.</text>
-    </string>
-    <string>
-      <key>MessageTitle_CannotAddComplexFormOption</key>
-      <text>Cannot Add Option</text>
-    </string>
-    <string>
       <key>Message_FocusMaximumForce</key>
       <text>The total Force of all bonded Foci may not exceed five times your MAG score.</text>
     </string>
@@ -2514,7 +2740,7 @@
     </string>
     <string>
       <key>Message_AttributeMaximum</key>
-      <text>You cannot have more than one Attribute at its maximum value during character creation.</text>
+      <text>You cannot have more than {0} Attribute(s) at its/their maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_AttributeBuildPoints</key>
@@ -2539,6 +2765,10 @@
     <string>
       <key>Message_InvalidBeginning</key>
       <text>This character is not valid and breaks the following rules:</text>
+    </string>
+    <string>
+      <key>Message_TooManyAttributesAtMax</key>
+      <text>{0} Attribute(s) is/are at their metatype maximum when only {1} is/are allowed.</text>
     </string>
     <string>
       <key>Message_InvalidAttributeExcess</key>
@@ -2590,11 +2820,11 @@
     </string>
     <string>
       <key>Message_InvalidAvail</key>
-      <text>{0} more items with Avail higher than {1} than allowed</text>
+      <text>{0} item(s) with Avail higher than the allowed availability of {1}:</text>
     </string>
     <string>
       <key>Message_RestrictedGearUsed</key>
-      <text>Restricted Gear was used on:\n{0}</text>
+      <text>Restricted Gear was used on:{0}</text>
     </string>
     <string>
       <key>Message_InvalidCyberwareGrades</key>
@@ -2663,6 +2893,10 @@
     <string>
       <key>Message_OverLanguageLimit</key>
       <text>Too many Language Knowledge Skills listed as Native. Current: {0} Maximum: {1}</text>
+    </string>
+    <string>
+      <key>Message_UnderLanguageLimit</key>
+      <text>Too few Language Knowledge Skills listed as Native. Current: {0} Minimum: {1}</text>
     </string>
     <string>
       <key>Message_OverPositiveMetagenicQualities</key>
@@ -2825,6 +3059,10 @@
       <text>Essence Loss (Character Generation)</text>
     </string>
     <string>
+      <key>String_BurnedEdge</key>
+      <text>Burned Edge</text>
+    </string>
+    <string>
       <key>String_SpiritFettering</key>
       <text>Spirit Fettering</text>
     </string>
@@ -2859,10 +3097,6 @@
     <string>
       <key>Message_ConfirmKarmaExpenseLowerLevel</key>
       <text>Are you sure you want to spend {1} Karma on removing a level from {0}?</text>
-    </string>
-    <string>
-      <key>Message_ConfirmKarmaExpenseComplexFormOption</key>
-      <text>Are you sure you want to add this Complex Form Option for {0} Karma?</text>
     </string>
     <string>
       <key>Message_ConfirmKarmaExpenseFocus</key>
@@ -2930,7 +3164,7 @@
     </string>
     <string>
       <key>Message_OutOfAmmoType</key>
-      <text>You do not have any {0} Ammunition remaining!</text>
+      <text>You do not have any Ammunition for {0} remaining!</text>
     </string>
     <string>
       <key>MessageTitle_OutOfAmmo</key>
@@ -2979,6 +3213,14 @@
     <string>
       <key>MessageTitle_NotHighestGrade</key>
       <text>Cannot Undo This Entry</text>
+    </string>
+    <string>
+      <key>Message_UndoBrokenSkillGroup</key>
+      <text>{0} is a broken skill group, either because one of the skills in it has a specialization or at least one skill in the group is a different level from the others. Chummer cannot undo increases to ratings of broken skill groups.</text>
+    </string>
+    <string>
+      <key>MessageTitle_UndoBrokenSkillGroup</key>
+      <text>Cannot Undo This Skill Group Increase</text>
     </string>
     <string>
       <key>Message_UndoExpense</key>
@@ -3178,7 +3420,7 @@
     </string>
     <string>
       <key>String_SkillFilterNoSkillGroup</key>
-      <text>Show ungrouped Active Skills</text>
+      <text>Show un-grouped Active Skills</text>
     </string>
     <string>
       <key>String_SkillFilterBrokenSkillGroup</key>
@@ -3260,14 +3502,6 @@
     <string>
       <key>String_ExpenseComplexForm</key>
       <text>Complex Form</text>
-    </string>
-    <string>
-      <key>String_ExpenseAddComplexFormOption</key>
-      <text>Added Complex Form Option</text>
-    </string>
-    <string>
-      <key>String_ExpenseComplexFormOption</key>
-      <text>Complex Form Option</text>
     </string>
     <string>
       <key>String_ExpenseLearnProgram</key>
@@ -3422,10 +3656,6 @@
       <text>Learned Martial Art</text>
     </string>
     <string>
-      <key>String_ExpenseLearnManeuver</key>
-      <text>Learned Maneuver</text>
-    </string>
-    <string>
       <key>String_ExpenseLearnMetamagic</key>
       <text>Learned Metamagic</text>
     </string>
@@ -3462,12 +3692,12 @@
       <text>Sold Bioware</text>
     </string>
     <string>
-      <key>String_ExpensePurchaseCyberwearGear</key>
-      <text>Purchased Cyberwear Gear</text>
+      <key>String_ExpensePurchaseCyberwareGear</key>
+      <text>Purchased Cyberware Gear</text>
     </string>
     <string>
       <key>String_ExpenseSoldCyberwareGear</key>
-      <text>Sold Cyberwear Gear</text>
+      <text>Sold Cyberware Gear</text>
     </string>
     <string>
       <key>String_ExpenseAddPositiveQuality</key>
@@ -3515,7 +3745,7 @@
     </string>
     <string>
       <key>String_ExpenseJoinNetwork</key>
-      <text>Joined a Network</text>
+      <text>Joined a Submersion Group</text>
     </string>
     <string>
       <key>String_ExpenseLeaveNetwork</key>
@@ -4061,6 +4291,22 @@
       <key>String_DamageResistance</key>
       <text>Damage Resistance</text>
     </string>
+    <string>
+      <key>String_AstralReputation</key>
+      <text>Astral Reputation</text>
+    </string>
+    <string>
+      <key>String_WildReputation</key>
+      <text>Wild Reputation</text>
+    </string>
+    <string>
+      <key>Message_MergeIdentical</key>
+      <text>A gear entry identical to the current one ({0}) was found in the same location. Do you wish to increase the quantity of the existing gear entry instead of adding a new one?</text>
+    </string>
+    <string>
+      <key>MessageTitle_MergeIdentical</key>
+      <text>Identical Gear Found</text>
+    </string>
     <!-- End Region -->
     <!-- Region Common Tab -->
     <string>
@@ -4080,12 +4326,20 @@
       <text>Nuyen (Stolen):</text>
     </string>
     <string>
+      <key>Label_CarriedWeight</key>
+      <text>Carried Weight:</text>
+    </string>
+    <string>
       <key>Node_SelectedQualities</key>
       <text>Selected Qualities</text>
     </string>
     <string>
       <key>Label_Contacts</key>
       <text>Contacts</text>
+    </string>
+    <string>
+      <key>Label_GroupContacts</key>
+      <text>Group Contacts</text>
     </string>
     <string>
       <key>Label_Enemies</key>
@@ -4216,7 +4470,7 @@
     </string>
     <string>
       <key>Tip_CommonNuyen</key>
-      <text>The amount of Nuyen your character has to purchase equipment. 1 Karma = {0}¥.</text>
+      <text>The amount of Nuyen your character has to purchase equipment. {0}.</text>
     </string>
     <string>
       <key>Tip_CommonAIRating</key>
@@ -4277,6 +4531,14 @@
       <text>Broken</text>
     </string>
     <string>
+      <key>Label_SkillGroup_Disabled</key>
+      <text>Disabled</text>
+    </string>
+    <string>
+      <key>Label_SkillGroup_DisabledBy</key>
+      <text>Disabled by:</text>
+    </string>
+    <string>
       <key>Label_ActiveSkills</key>
       <text>Active Skills</text>
     </string>
@@ -4287,6 +4549,10 @@
     <string>
       <key>Label_FreeKnowledgeSkills</key>
       <text>Free Knowledge Skill Points Remaining:</text>
+    </string>
+    <string>
+      <key>String_PlusSkillPointsSpent</key>
+      <text>, Plus {0} Skill Point(s) Spent</text>
     </string>
     <string>
       <key>Label_CustomKnowledgeSkillsReminder</key>
@@ -4313,6 +4579,10 @@
       <text>Add Exotic Skill</text>
     </string>
     <string>
+      <key>Button_ResetAll</key>
+      <text>Reset Add</text>
+    </string>
+    <string>
       <key>Tip_SkillsSkillGroups</key>
       <text>Skill Groups cost {0} Karma per new rating.</text>
     </string>
@@ -4322,7 +4592,7 @@
     </string>
     <string>
       <key>Tip_SkillsKnowledgeSkills</key>
-      <text>Characters receive (INT + LOG) × {0} free points to spend on general Knowledge Skills including Languages. Additional Knowledge Skills cost {1} Karma per new rating. A Language with a Rating of 0 is considered to be your Native Language.</text>
+      <text>Characters receive some free points (amount depends on the gameplay option chosen) to spend on general Knowledge Skills, including Languages. Additional Knowledge Skills cost {0} Karma per new rating  and {1} Karma for a Specialization. A Language with a Rating of 0 is considered to be your Native Language.</text>
     </string>
     <string>
       <key>Skill_SortAlphabetical</key>
@@ -4364,6 +4634,14 @@
       <key>Skill_NativeLanguageShort</key>
       <text>N</text>
     </string>
+    <string>
+      <key>Skill_NativeLanguageLong</key>
+      <text>Native</text>
+    </string>
+    <string>
+      <key>Message_NewNativeLanguageSkill</key>
+      <text>This character has room for {0} more Native Language skill(s). Do you wish to set the {1} skill as a Native Language skill?</text>
+    </string>
     <!-- End Region -->
     <!-- Region  Martial Arts Tab -->
     <string>
@@ -4371,16 +4649,8 @@
       <text>&amp;Add Martial Art</text>
     </string>
     <string>
-      <key>Button_AddManeuver</key>
-      <text>A&amp;dd Maneuver</text>
-    </string>
-    <string>
       <key>Node_SelectedMartialArts</key>
       <text>Martial Arts</text>
-    </string>
-    <string>
-      <key>Node_SelectedManeuvers</key>
-      <text>Selected Maneuvers</text>
     </string>
     <string>
       <key>Label_SelectMartialArt_IncludedTechniques</key>
@@ -4480,7 +4750,30 @@
       <key>Tip_SpellsSpirits</key>
       <text>Each Service a Spirit owes costs {0} Karma.</text>
     </string>
-    <!-- End Region -->
+    <string>
+      <key>Button_Sustain</key>
+      <text>Sustain</text>
+    </string>
+    <string>
+      <key>Label_PsycheActive</key>
+      <text>Psyche</text>
+    </string>
+
+    <!--End Region-->
+    <!--Region Sustained Spell Control-->
+    <string>
+      <key>Label_SustainedSelf</key>
+      <text>Self \n Sustained</text>
+    </string>
+    <string>
+      <key>Label_SustainedForce</key>
+      <text>Force:</text>
+    </string>
+    <string>
+      <key>Label_NetHits</key>
+      <text>Net Hits:</text>
+    </string>
+    <!--End Region-->
     <!-- Region Adept Tab -->
     <string>
       <key>Label_PowerPoints</key>
@@ -4703,24 +4996,24 @@
       <text>New Submersion Type</text>
     </string>
     <string>
-      <key>Checkbox_GroupInitiation</key>
-      <text>Group Initiation (-10%)</text>
+      <key>Checkbox_InitiationGroup</key>
+      <text>Group Initiation (-{0})</text>
     </string>
     <string>
       <key>Checkbox_InitiationOrdeal</key>
-      <text>Initiation Ordeal (-10%)</text>
+      <text>Initiation Ordeal (-{0})</text>
     </string>
     <string>
       <key>Checkbox_InitiationSchooling</key>
-      <text>Schooling (-10%)</text>
+      <text>Schooling (-{0})</text>
     </string>
     <string>
       <key>Checkbox_NetworkSubmersion</key>
-      <text>Network Submersion (-20%)</text>
+      <text>Group Submersion (-{0}) (KC 106)</text>
     </string>
     <string>
       <key>Checkbox_SubmersionTask</key>
-      <text>Submersion Task (-20%)</text>
+      <text>Submersion Task (-{0}) (DT 164)</text>
     </string>
     <string>
       <key>Checkbox_JoinedGroup</key>
@@ -4728,7 +5021,7 @@
     </string>
     <string>
       <key>Checkbox_JoinedNetwork</key>
-      <text>Joined Network</text>
+      <text>Joined Submersion Group</text>
     </string>
     <string>
       <key>Button_AddInitiateGrade</key>
@@ -4837,6 +5130,18 @@
     <string>
       <key>String_Roommates</key>
       <text>roommates</text>
+    </string>
+    <string>
+      <key>Label_LifestyleCity</key>
+      <text>City:</text>
+    </string>
+    <string>
+      <key>Label_LifestyleDistrict</key>
+      <text>District:</text>
+    </string>
+    <string>
+      <key>Label_LifestyleBorough</key>
+      <text>Borough:</text>
     </string>
     <!-- End Region-->
     <!-- Region Street Gear/Armor Tab -->
@@ -4957,10 +5262,6 @@
     <string>
       <key>Node_SelectedWeapons</key>
       <text>Selected Weapons</text>
-    </string>
-    <string>
-      <key>Tip_WeaponInstalled</key>
-      <text>Installed Weapon Accessories and Mods count towards a Weapon's stats.</text>
     </string>
     <string>
       <key>String_WeaponAccessory</key>
@@ -5200,15 +5501,15 @@
       <key>Label_FiringMode</key>
       <text>Firing Mode:</text>
     </string>
-    <!-- Region Firing Mode Enums-->
     <!-- End Region -->
+    <!-- Region Firing Mode Enums-->
     <string>
       <key>Enum_Skill</key>
       <text>Character Skill</text>
     </string>
     <string>
       <key>Enum_GunneryCommandDevice</key>
-      <text>Command Device - Gunnery[AGI]</text>
+      <text>Control Device - Gunnery[AGI]</text>
     </string>
     <string>
       <key>Enum_RemoteOperated</key>
@@ -5227,6 +5528,10 @@
     <string>
       <key>Label_Sex</key>
       <text>Sex:</text>
+    </string>
+    <string>
+      <key>Label_Gender</key>
+      <text>Gender:</text>
     </string>
     <string>
       <key>Label_Age</key>
@@ -5291,6 +5596,14 @@
     <string>
       <key>Label_PublicAwareness</key>
       <text>Public Aware:</text>
+    </string>
+    <string>
+      <key>Label_AstralReputation</key>
+      <text>Astral Reputation:</text>
+    </string>
+    <string>
+      <key>Label_WildReputation</key>
+      <text>Wild Reputation:</text>
     </string>
     <string>
       <key>Label_Handedness</key>
@@ -5386,6 +5699,10 @@
       <key>Checkbox_ShowFreeEntries</key>
       <text>Show Free Entries</text>
     </string>
+    <string>
+      <key>Checkbox_ShowChart</key>
+      <text>Show Chart</text>
+    </string>
     <!-- End Region-->
     <!-- Region Calendar Tab -->
     <string>
@@ -5411,7 +5728,7 @@
     <!-- End Region-->
     <!-- Region Improvements Tab -->
     <string>
-      <key>Button_AddImproevment</key>
+      <key>Button_AddImprovement</key>
       <text>&amp;Add Improvement</text>
     </string>
     <string>
@@ -5539,12 +5856,24 @@
       <text>Characters may select up to 25 Karma worth of Positive Qualities. Qualities in dark red do not count towards the 25 Karma limit.</text>
     </string>
     <string>
-      <key>Checkbox_Options_AllowHoverIncrement</key>
-      <text>Allow incrementing values of numericupdown controls by hovering over the control</text>
+      <key>Checkbox_Options_CustomTimeFormat</key>
+      <text>Custom Time Format</text>
     </string>
     <string>
-      <key>Checkbox_Options_OmaeEnabled</key>
-      <text>Enable Omae character exchange</text>
+      <key>Label_Options_DicePenaltySustaining</key>
+      <text>Dice Penalty for each sustained spell or complex form:</text>
+    </string>
+    <string>
+      <key>Label_Options_DateFormat</key>
+      <text>Date Format</text>
+    </string>
+    <string>
+      <key>Label_Options_TimeFormat</key>
+      <text>Time Format</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_AllowHoverIncrement</key>
+      <text>Allow incrementing values of NumericUpDown controls by hovering over the control</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLifeModule</key>
@@ -5576,7 +5905,7 @@
     </string>
     <string>
       <key>Checkbox_Options_PreferNightlyBuilds</key>
-      <text>Prefer Nightly Builds</text>
+      <text>Prefer Nightly builds when updating</text>
     </string>
     <string>
       <key>Checkbox_Option_HideItemsOverAvailLimit</key>
@@ -5595,12 +5924,28 @@
       <text>Compensate for higher karma costs when raising the rating of the last skill in a skill group</text>
     </string>
     <string>
+      <key>Label_CharacterOptions_4eAdaptations</key>
+      <text>4th Edition Adaptations</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_Enable4eStyleEnemyTracking</key>
+      <text>Use 4th Edition Rules for Enemies as a Contact type</text>
+    </string>
+    <string>
+      <key>Label_Options_KarmaGainedFromEnemies</key>
+      <text>Karma gain from Enemies</text>
+    </string>
+    <string>
       <key>Checkbox_Options_EnemyKarmaQualityLimit</key>
-      <text>Karma spent on enemies counts towards negative Quality limit in create mode</text>
+      <text>Karma gained from Enemies counts towards Negative Quality limit in Create mode</text>
     </string>
     <string>
       <key>Checkbox_Options_EnablePlugins</key>
       <text>Enable Plugins (experimental)</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_HideMasterIndex</key>
+      <text>Hide the Master Index</text>
     </string>
     <string>
       <key>Checkbox_Options_HideCharacterRoster</key>
@@ -5615,10 +5960,6 @@
       <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
     </string>
     <string>
-      <key>Checkbox_Options_HideCharts</key>
-      <text>Hide charts that cause issues with Wine</text>
-    </string>
-    <string>
       <key>String_SelectBP_LifeModuleSummary</key>
       <text>Enter the maximum availability and karma you are allowed to create your character with (Default {0})</text>
     </string>
@@ -5631,12 +5972,28 @@
       <text>Characters may select up to -25 Karma worth of Negative Qualities. Qualities in dark red do not count towards the -25 Karma limit.</text>
     </string>
     <string>
-      <key>Tip_Omae_Warning</key>
-      <text>Omae is outside the current developers control and contain old characters that may not work or crash the current version of chummer. Proceed at your own risk.\nDo you want to continue?</text>
-    </string>
-    <string>
       <key>Tip_LifeModule_Warning</key>
       <text>Life Modules are currently an experimental system with limited features; it is present exclusively for testing purposes. See https://github.com/chummer5a/chummer5a/issues/2000 for details about the existing issues. Proceed at your own risk.\nDo you want to continue?</text>
+    </string>
+    <string> <!-- Note: worded to be as close to a GDPR privacy notice as possible, just in case -->
+      <key>Message_Options_ConfirmTelemetry</key>
+      <text>If this option is enabled, your Chummer logs and usage metrics will be sent to the Chummer Dev-Team. These contain data that help give us insight on what needs to be improved and how things should be fixed, with more detailed levels giving us more information.\nWe also always collect information about what operating system you use and in what municipality you are located; the former helps with crashes and performance data, while the latter gives us insight into what locales should be supported and/or added to the program.\nThese and all other data are anonymized before collection, will be securely stored on a Microsoft Azure server for a period of up to 2 years, and will not be shared with any parties outside of a few, core Chummer contributors. Data will be uploaded whenever you start Chummer, exit Chummer, or load in a new character.\n\nYou have full rights to any data you send to us. If you wish to request all data the Chummer development team has on you or have your data permanently removed, please contact the current administrator of this service, MegalonArchon (archon.megalon@gmail.com), and they will try to fulfill your request as soon as possible.\n\nDo you wish to proceed and enable telemetry?</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_ConfirmTelemetry</key>
+      <text>Confirm Enable Telemetry</text>
+    </string>
+    <string>
+      <key>Message_Options_ConfirmDetailedTelemetry</key>
+      <text>We greatly appreciate people sending us highly detailed logging information because it lets us really find places to improve the program that otherwise would have been overlooked. However, such highly detailed logging makes your data significantly less anonymous, and for those on metered internet connections who use the program a lot, it may end causing non-insignificant amounts of interent traffic.\n\nDo you wish to proceed and enable highly detailed telemetry?</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_ConfirmDetailedTelemetry</key>
+      <text>Confirm Detailed Telemetry</text>
+    </string>
+    <string>
+      <key>Tip_Options_TelemetryId</key>
+      <text>Installation: {0}</text>
     </string>
     <!-- End Region-->
     <!-- Region Other Info Tab -->
@@ -5753,6 +6110,18 @@
       <text>Memory:</text>
     </string>
     <string>
+      <key>Label_OtherLiftAndCarryLimits</key>
+      <text>Lift/Carry Limits:</text>
+    </string>
+    <string>
+      <key>Label_OtherLiftAndCarryLimitsFormat</key>
+      <text>{0}/{1} kg</text>
+    </string>
+    <string>
+      <key>Label_OtherLiftAndCarryHits</key>
+      <text>Active Lift/Carry Test Hits:</text>
+    </string>
+    <string>
       <key>Tip_OtherCMPhysical</key>
       <text>Physical CM is calculated as 8 + (BOD / 2).</text>
     </string>
@@ -5809,6 +6178,10 @@
       <text>Character's flying speed in meters.</text>
     </string>
     <string>
+      <key>Tip_OtherLiftAndCarryLimits</key>
+      <text>Character's baseline lift/carry weight limit in kilograms.</text>
+    </string>
+    <string>
       <key>Tip_OtherComposure</key>
       <text>Composure is calculated as WIL + CHA.</text>
     </string>
@@ -5831,7 +6204,7 @@
     <string>
       <key>Tip_OtherCareerKarma</key>
       <text>The amount of Karma the character has accumulated over their career.</text>
-    </string>s
+    </string>
     <!-- End Region-->
     <!-- Region Condition Monitor Tab -->
     <string>
@@ -5855,11 +6228,15 @@
       <text>Stun</text>
     </string>
     <string>
+      <key>Label_CMRecovery</key>
+      <text>Recovery:</text>
+    </string>
+    <string>
       <key>Label_CMEdge</key>
       <text>Regain/Spend Edge</text>
     </string>
     <string>
-      <key>Tip_CMCMPenalty</key>
+      <key>Tip_CMPenalty</key>
       <text>Dice pool penalty from Condition Monitor damage.</text>
     </string>
     <string>
@@ -5874,8 +6251,12 @@
       <key>Tip_CMSpendEdge</key>
       <text>Spend a point of Edge</text>
     </string>
+    <string>
+      <key>String_CMDown</key>
+      <text>D</text>
+    </string>
     <!-- End Region-->
-    <!-- Region Spell Defence Tab-->
+    <!-- Region Spell Defense Tab-->
     <string>
       <key>String_SpellDefense</key>
       <text>Spell Defense</text>
@@ -5889,86 +6270,94 @@
       <text>Counterspelling Dice</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIndirectDodge</key>
-      <text>Indirect Dodge</text>
+      <key>Label_SpellDefenseIndirectDodge</key>
+      <text>Indirect Defense Test</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIndirect</key>
+      <key>Label_SpellDefenseIndirect</key>
       <text>Indirect Soak</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDirectSoakMana</key>
+      <key>Label_SpellDefenseDirectSoakMana</key>
       <text>Direct Soak - Mana</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDirectSoakPhysical</key>
+      <key>Label_SpellDefenseDirectSoakPhysical</key>
       <text>Direct Soak - Physical</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDetection</key>
+      <key>Label_SpellDefenseDetection</key>
       <text>Detection Spells</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttBOD</key>
+      <key>Label_SpellDefenseDecAttBOD</key>
       <text>Decrease Attribute (BOD)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttSTR</key>
+      <key>Label_SpellDefenseDecAttSTR</key>
       <text>Decrease Attribute (STR)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttAGI</key>
+      <key>Label_SpellDefenseDecAttAGI</key>
       <text>Decrease Attribute (AGI)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttREA</key>
+      <key>Label_SpellDefenseDecAttREA</key>
       <text>Decrease Attribute (REA)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttLOG</key>
+      <key>Label_SpellDefenseDecAttLOG</key>
       <text>Decrease Attribute (LOG)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttWIL</key>
+      <key>Label_SpellDefenseDecAttWIL</key>
       <text>Decrease Attribute (WIL)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttINT</key>
+      <key>Label_SpellDefenseDecAttINT</key>
       <text>Decrease Attribute (INT)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceDecAttCHA</key>
+      <key>Label_SpellDefenseDecAttCHA</key>
       <text>Decrease Attribute (CHA)</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIllusionMana</key>
+      <key>Label_SpellDefenseIllusionMana</key>
       <text>Illusion - Mana</text>
     </string>
     <string>
-      <key>Label_SpellDefenceIllusionPhysical</key>
+      <key>Label_SpellDefenseIllusionPhysical</key>
       <text>Illusion - Physical</text>
     </string>
     <string>
-      <key>Label_SpellDefenceManipMental</key>
+      <key>Label_SpellDefenseManipMental</key>
       <text>Manipulation - Mental</text>
     </string>
     <string>
-      <key>Label_SpellDefenceManipPhysical</key>
+      <key>Label_SpellDefenseManipPhysical</key>
       <text>Manipulation - Physical</text>
     </string>
     <!-- End Region -->
     <!-- Region ToolTips -->
     <string>
+      <key>Tip_SpellDrain</key>
+      <text>Drain for</text>
+    </string>
+    <string>
       <key>Tip_SpellDrainBase</key>
-      <text>Base Drain for</text>
+      <text>Base Drain</text>
     </string>
     <string>
       <key>Tip_SpellDrainSeeDescription</key>
       <text>See Spell Description</text>
     </string>
     <string>
+      <key>Tip_ComplexFormFading</key>
+      <text>Fading for</text>
+    </string>
+    <string>
       <key>Tip_ComplexFormFadingBase</key>
-      <text>Base Fading for</text>
+      <text>Base Fading</text>
     </string>
     <string>
       <key>Tip_ComplexFormFadingSeeDescription</key>
@@ -6001,10 +6390,6 @@
     <string>
       <key>Tip_Armor</key>
       <text>Armor</text>
-    </string>
-    <string>
-      <key>Tip_LiftAndCarry</key>
-      <text>Lift: {0} kg, Carry: {1} kg</text>
     </string>
     <string>
       <key>Tip_DiceRoller</key>
@@ -6152,28 +6537,6 @@
       <text>&amp;Expand/Collapse All</text>
     </string>
     <!-- End Region-->
-    <!-- Region Omae -->
-    <string>
-      <key>Omae_NoDescription</key>
-      <text>No description.</text>
-    </string>
-    <string>
-      <key>Omae_UpdatedDate</key>
-      <text>Updated</text>
-    </string>
-    <string>
-      <key>Omae_DownloadCount</key>
-      <text>Downloaded {0} times</text>
-    </string>
-    <string>
-      <key>Omae_Download</key>
-      <text>Download</text>
-    </string>
-    <string>
-      <key>Omae_PostUpdate</key>
-      <text>Post Update</text>
-    </string>
-    <!-- End Region-->
     <!-- Region Adept Powers -->
     <string>
       <key>String_Power</key>
@@ -6250,6 +6613,10 @@
       <text>Wounds</text>
     </string>
     <string>
+      <key>Tip_Skill_Sustain</key>
+      <text>Sustaining Penalties</text>
+    </string>
+    <string>
       <key>Tip_Skill_OffHand</key>
       <text>Off Hand</text>
     </string>
@@ -6261,6 +6628,10 @@
       <key>Tip_SkillGroup_Skills</key>
       <text>Skills in this Group:</text>
     </string>
+    <string>
+      <key>Tip_Skill_Zero_Attribute</key>
+      <text>Attribute ({0}) is zero.</text>
+    </string>
     <!-- End Region-->
     <!-- Region Spirits/Sprites -->
     <string>
@@ -6270,6 +6641,10 @@
     <string>
       <key>Label_Spirit_ServicesOwed</key>
       <text>Services Owed:</text>
+    </string>
+    <string>
+      <key>Label_Sprite_TasksOwed</key>
+      <text>Tasks Owed:</text>
     </string>
     <string>
       <key>Checkbox_Spirit_Bound</key>
@@ -6540,6 +6915,14 @@
       <text>Only for Glitching:</text>
     </string>
     <string>
+      <key>String_NoDiceLeft_Title</key>
+      <text>No dice to re-roll</text>
+    </string>
+    <string>
+      <key>String_NoDiceLeft_Text</key>
+      <text>There is nothing left that can be re-rolled</text>
+    </string>
+    <string>
       <key>Label_DiceRoller_Result</key>
       <text>Result:</text>
     </string>
@@ -6626,6 +7009,10 @@
       <text>Refund (does not count towards Total Career Nuyen)</text>
     </string>
     <string>
+      <key>Checkbox_Expense_ForceCareerVisible</key>
+      <text>Show in Career Karma/Nuyen</text>
+    </string>
+    <string>
       <key>String_WorkingForTheMan</key>
       <text>Working for the Man</text>
     </string>
@@ -6660,6 +7047,10 @@
     <string>
       <key>Label_LifestyleNuyen_ResultOf</key>
       <text>Result of {0}D6: (</text>
+    </string>
+    <string>
+      <key>Label_LifestyleNuyen_SelectLifestyle</key>
+      <text>Lifestyle to Use:</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Metatype Window -->
@@ -6713,437 +7104,15 @@
       <key>Title_Notes</key>
       <text>Notes</text>
     </string>
-    <!-- End Region-->
-    <!-- Region Omae Window -->
     <string>
-      <key>Title_Omae</key>
-      <text>Chummer: Omae Character Exchange</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotConnection</key>
-      <text>Could not connect to Omae. Please make sure that your computer is connected to the Matrix. If the problem persists, the Omae site may be inaccessible at the moment.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CannotConnection</key>
-      <text>Could Not Connect to Omae</text>
-    </string>
-    <string>
-      <key>Message_Omae_FileExists</key>
-      <text>A file called "{0}" already exists in your Omae save directory.\nDo you want to overwrite this file by downloading the selected file?</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_FileExists</key>
-      <text>Character Already Exists</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotFindCharacter</key>
-      <text>Could not locate the uploaded information for this character.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CannotFindCharacter</key>
-      <text>Cannot Find Character</text>
-    </string>
-    <string>
-      <key>Message_Omae_CharacterDownloaded</key>
-      <text>Character downloaded. Would you like to open it now?</text>
-    </string>
-    <string>
-      <key>Message_Omae_NPCPackDownloaded</key>
-      <text>NPC Pack downloaded.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CharacterDownloaded</key>
-      <text>Character Downloaded</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_DeleteCharacter</key>
-      <text>Delete Character</text>
-    </string>
-    <string>
-      <key>Message_Omae_ConfirmDelete</key>
-      <text>Deleting this character will remove all of the character's information from Omae. Are you sure you want to delete this character?</text>
-    </string>
-    <string>
-      <key>Message_Omae_CharacterDeleted</key>
-      <text>Character deleted.</text>
-    </string>
-    <string>
-      <key>Message_Omae_CharacterDeleteError</key>
-      <text>There was an error deleting this character. Please try again later.</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotFindData</key>
-      <text>Could not locate the uploaded information for this data file.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CannotFindData</key>
-      <text>Cannot Find Data File</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_DeleteData</key>
-      <text>Delete Data</text>
-    </string>
-    <string>
-      <key>Message_Omae_ConfirmData</key>
-      <text>Deleting this data will remove all of its information from Omae. Are you sure you want to delete this data?</text>
-    </string>
-    <string>
-      <key>Message_Omae_DataDeleted</key>
-      <text>Data deleted.</text>
-    </string>
-    <string>
-      <key>Message_Omae_DataDeleteError</key>
-      <text>There was an error deleting this data. Please try again later.</text>
-    </string>
-    <string>
-      <key>Message_Omae_DataDownloaded</key>
-      <text>Data file downloaded. You will need to restart Chummer if you downloaded an override files in order for their changes to take effect.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_DataDownloaded</key>
-      <text>Data File Downloaded</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotFindSheet</key>
-      <text>Could not locate the uploaded information for this character sheet.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_CannotFindSheet</key>
-      <text>Cannot Find Character Sheet</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_DeleteSheet</key>
-      <text>Delete Character Sheet</text>
-    </string>
-    <string>
-      <key>Message_Omae_ConfirmSheet</key>
-      <text>Deleting this character sheet will remove all of its information from Omae. Are you sure you want to delete this character sheet?</text>
-    </string>
-    <string>
-      <key>Message_Omae_SheetDeleted</key>
-      <text>Character sheet deleted.</text>
-    </string>
-    <string>
-      <key>Message_Omae_SheetDeleteError</key>
-      <text>There was an error deleting this character sheet. Please try again later.</text>
-    </string>
-    <string>
-      <key>Message_Omae_SheetDownloaded</key>
-      <text>Character sheet downloaded.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_SheetDownloaded</key>
-      <text>Character Sheet Downloaded</text>
-    </string>
-    <string>
-      <key>Message_Omae_ChooseUsername</key>
-      <text>Please choose a user name.</text>
-    </string>
-    <string>
-      <key>Message_Omae_EnterUsername</key>
-      <text>Please enter your user name.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_ChooseUsername</key>
-      <text>User Name Required</text>
-    </string>
-    <string>
-      <key>Message_Omae_ChoosePassword</key>
-      <text>Please choose a password.</text>
-    </string>
-    <string>
-      <key>Message_Omae_EnterPassword</key>
-      <text>Please enter your password.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_ChoosePassword</key>
-      <text>Password Required</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_Registration</key>
-      <text>Omae Registration</text>
-    </string>
-    <string>
-      <key>Message_Omae_AccountCreated</key>
-      <text>Your Omae account has been created!</text>
-    </string>
-    <string>
-      <key>Message_Omae_AccountExists</key>
-      <text>An account with that username already exists.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_OmaeLogin</key>
-      <text>Omae Login</text>
-    </string>
-    <string>
-      <key>Message_Omae_CannotLogin</key>
-      <text>Could not log into Omae. Please make sure your username and password are correct.</text>
-    </string>
-    <string>
-      <key>Message_Omae_MustLogin</key>
-      <text>You must be logged into Omae in order to upload a character. Please login with your account, or register your account to upload your character.</text>
-    </string>
-    <string>
-      <key>MessageTitle_Omae_PasswordReset</key>
-      <text>Password Reset</text>
-    </string>
-    <string>
-      <key>Message_Omae_PasswordNoEmail</key>
-      <text>Your password could not be reset because you do not have an email address attached to your account.</text>
-    </string>
-    <string>
-      <key>Message_Omae_PasswordReset</key>
-      <text>Your password has been reset. An email has been sent with your new password.</text>
-    </string>
-    <string>
-      <key>Message_Omae_InfoRequiresLogin</key>
-      <text>You must be logged into Omae to retrieve your account information.</text>
-    </string>
-    <string>
-      <key>String_Omae_NoCharacters</key>
-      <text>No characters found.</text>
-    </string>
-    <string>
-      <key>String_Omae_NoData</key>
-      <text>No data files found.</text>
-    </string>
-    <string>
-      <key>String_Omae_NoSheets</key>
-      <text>No character sheets found.</text>
-    </string>
-    <string>
-      <key>Checkbox_Omae_AutoLogin</key>
-      <text>Login Automatically</text>
-    </string>
-    <string>
-      <key>Button_Omae_ClearFilter</key>
-      <text>Clear Filter</text>
-    </string>
-    <string>
-      <key>Button_Omae_ShowFilter</key>
-      <text>Show Filter</text>
-    </string>
-    <string>
-      <key>Button_Omae_HideFilter</key>
-      <text>Hide Filter</text>
-    </string>
-    <string>
-      <key>Button_Omae_Login</key>
-      <text>Login</text>
-    </string>
-    <string>
-      <key>Button_Omae_MyAccount</key>
-      <text>My Account</text>
-    </string>
-    <string>
-      <key>Button_Omae_PasswordReset</key>
-      <text>PW Reset</text>
-    </string>
-    <string>
-      <key>Button_Omae_Register</key>
-      <text>Register</text>
-    </string>
-    <string>
-      <key>Button_Omae_Search</key>
-      <text>&amp;Search</text>
-    </string>
-    <string>
-      <key>Button_Omae_Upload</key>
-      <text>&amp;Upload a Character</text>
-    </string>
-    <string>
-      <key>Button_Omae_UploadData</key>
-      <text>&amp;Upload Files</text>
-    </string>
-    <string>
-      <key>Label_Omae_Username</key>
-      <text>Username:</text>
-    </string>
-    <string>
-      <key>Label_Omae_Password</key>
-      <text>Password:</text>
-    </string>
-    <string>
-      <key>Label_Omae_SearchFor</key>
-      <text>Search for</text>
-    </string>
-    <string>
-      <key>Label_Omae_Filtering</key>
-      <text>Filtering:</text>
-    </string>
-    <string>
-      <key>Label_Omae_CurrentMode</key>
-      <text>Current Mode:</text>
-    </string>
-    <string>
-      <key>Label_Omae_Quality</key>
-      <text>Quality:</text>
-    </string>
-    <string>
-      <key>Label_Omae_OrQuality</key>
-      <text>or Quality:</text>
-    </string>
-    <string>
-      <key>Label_Omae_Creator</key>
-      <text>Creator:</text>
-    </string>
-    <string>
-      <key>Label_Omae_LoggedInAs</key>
-      <text>Logged in as {0}</text>
-    </string>
-    <string>
-      <key>Label_Omae_SortedBy</key>
-      <text>sorted by</text>
-    </string>
-    <!--End Region-->
-    <!-- Region Omae Account Window -->
-    <string>
-      <key>Title_OmaeAccount</key>
-      <text>My Omae Account</text>
-    </string>
-    <string>
-      <key>Label_OmaeAccount_EmailAddress</key>
-      <text>Email Address:</text>
-    </string>
-    <!--End Region-->
-    <!-- Region Omae Upload Window -->
-    <string>
-      <key>Title_OmaeUpload</key>
-      <text>Upload Character to Omae</text>
-    </string>
-    <string>
-      <key>Title_OmaeUploadData</key>
-      <text>Upload Custom Data to Omae</text>
-    </string>
-    <string>
-      <key>Title_OmaeUploadSheet</key>
-      <text>Upload Character Sheet to Omae</text>
-    </string>
-    <string>
-      <key>Label_OmaeUpload_FileName</key>
-      <text>File to Upload:</text>
-    </string>
-    <string>
-      <key>Label_OmaeUpload_CharacterName</key>
-      <text>Character Name:</text>
-    </string>
-    <string>
-      <key>Label_OmaeUpload_CharacterType</key>
-      <text>Character Type:</text>
-    </string>
-    <string>
-      <key>Label_OmaeUpload_Description</key>
-      <text>Description:</text>
-    </string>
-    <string>
-      <key>Button_OmaeUpload_Upload</key>
-      <text>Upload</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_CannotUploadFile</key>
-      <text>Only Chummer character files may be uploaded.</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_CannotUploadSheet</key>
-      <text>Only XSL and XSLT files may be uploaded.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_CannotUploadFile</key>
-      <text>Cannot Upload File</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_UnnamedCharacter</key>
-      <text>You cannot upload an unnamed character.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_UnnamedCharacter</key>
-      <text>Cannot Upload Character</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_SelectFile</key>
-      <text>You must select a file to upload.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_SelectFile</key>
-      <text>Select File to Upload</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_CharacterDescription</key>
-      <text>Please provide a short description of the character so other users have some idea about this character.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_CharacterDescription</key>
-      <text>Character Description</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_FileTooLarge</key>
-      <text>This character file is too large to submit to Omae. If this file has a mugshot, you may need to crop or remove the mugshot before attempting to submit this again.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_FileTooLarge</key>
-      <text>File Too Large</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_UploadFailed</key>
-      <text>Could not upload file.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_UploadFailed</key>
-      <text>Upload Failed</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_UploadComplete</key>
-      <text>File uploaded. Thanks for your submission!</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_UploadComplete</key>
-      <text>File Uploaded</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_DataName</key>
-      <text>You must enter a name for this data file.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_DataName</key>
-      <text>Data File Name</text>
-    </string>
-    <string>
-      <key>Message_OameUpload_DataDescription</key>
-      <text>Please provide a short description of what this data file contains.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_DataDescription</key>
-      <text>Data File Description</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_DataSelectFiles</key>
-      <text>You must include at least 1 file in your data file upload.</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_SheetName</key>
-      <text>You must enter a name for this character sheet.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_SheetName</key>
-      <text>Character Sheet Name</text>
-    </string>
-    <string>
-      <key>Message_OameUpload_SheetDescription</key>
-      <text>Please provide a short description of what this character sheet contains.</text>
-    </string>
-    <string>
-      <key>MessageTitle_OmaeUpload_SheetDescription</key>
-      <text>Character Sheet Description</text>
-    </string>
-    <string>
-      <key>Message_OmaeUpload_SheetSelectFiles</key>
-      <text>You must include at least 1 file in your character sheet upload.</text>
+      <key>Button_ChooseCustomColor</key>
+      <text>Choose Color</text>
     </string>
     <!-- End Region-->
     <!-- Region Options Window -->
     <string>
       <key>Title_Options</key>
-      <text>Options</text>
+      <text>Global Settings</text>
     </string>
     <string>
       <key>Label_Options_SettingsFile</key>
@@ -7178,16 +7147,20 @@
       <text>Optional Rules</text>
     </string>
     <string>
+      <key>Tab_Options_CustomData</key>
+      <text>Custom Data</text>
+    </string>
+    <string>
       <key>Tab_Options_HouseRules</key>
       <text>House Rules</text>
     </string>
     <string>
       <key>Tab_Options_Global</key>
-      <text>Global Options</text>
+      <text>Global Settings</text>
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>Character Options</text>
+      <text>Character Settings</text>
     </string>
     <string>
       <key>Tab_Options_GitHubIssues</key>
@@ -7200,6 +7173,14 @@
     <string>
       <key>Tab_Options_Plugins</key>
       <text>Plugins</text>
+    </string>
+    <string>
+      <key>Tab_Options_CustomDataDirectories</key>
+      <text>Custom Data Directories</text>
+    </string>
+    <string>
+      <key>Tab_Options_Basic</key>
+      <text>Basic Options</text>
     </string>
     <string>
       <key>Label_Options_EditSourcebookInfo</key>
@@ -7215,7 +7196,7 @@
     </string>
     <string>
       <key>Label_Options_CustomDataDirectories</key>
-      <text>Custom Data Directories to Use (Changes Are Only Applied After a Restart)</text>
+      <text>Custom Data Directory Entries (Changes Are Only Applied After a Restart)</text>
     </string>
     <string>
       <key>Button_Options_UploadPastebin</key>
@@ -7230,28 +7211,16 @@
       <text>Limb Count for Cyberlimbs:</text>
     </string>
     <string>
-      <key>Label_Options_NuyenPerBP</key>
-      <text>Nuyen per Karma</text>
+      <key>Label_Options_DpiScalingMode</key>
+      <text>Display Scaling Mode:</text>
     </string>
     <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
-      <text>May buy Qualities (RC 40)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_KnowledgeMultiplier</key>
-      <text>Override Knowledge Points (INT + LOG) Multiplier</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactMultiplier</key>
-      <text>Override Contact Points Charisma Multiplier</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactPoints</key>
-      <text>Contact points instead of fixed Contacts (RC 40)</text>
+      <key>Label_Options_ColorMode</key>
+      <text>Color Mode:</text>
     </string>
     <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
-      <text>Automatic Updates</text>
+      <text>Automatically download updates</text>
     </string>
     <string>
       <key>Checkbox_Options_Live_CustomData</key>
@@ -7259,7 +7228,7 @@
     </string>
     <string>
       <key>Checkbox_Options_LiveUpdateCleanCharacterFiles</key>
-      <text>Automatically load changes from open characters' save files if there are no pending changes to be saved</text>
+      <text>Automatically load changes from open characters' save\nfiles if there are no pending changes to be saved</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLogging</key>
@@ -7306,6 +7275,14 @@
       <text>Print Free Karma and Nuyen Expenses</text>
     </string>
     <string>
+      <key>Label_Options_DefaultMasterIndexSetting</key>
+      <text>Default Setting for Master Index:</text>
+    </string>
+    <string>
+      <key>Label_Options_DefaultCharacterOption</key>
+      <text>Default Setting for New Characters:</text>
+    </string>
+    <string>
       <key>Label_Options_BPAttribute</key>
       <text>Attribute</text>
     </string>
@@ -7319,11 +7296,7 @@
     </string>
     <string>
       <key>Label_Options_BPMartialArt</key>
-      <text>Martial Art Rating</text>
-    </string>
-    <string>
-      <key>Label_Options_BPMartialArtManeuver</key>
-      <text>Martial Art Maneuver</text>
+      <text>Martial Art</text>
     </string>
     <string>
       <key>Label_Options_BPSkillGroup</key>
@@ -7355,11 +7328,7 @@
     </string>
     <string>
       <key>Label_Options_BPComplexForm</key>
-      <text>Complex Form Rating</text>
-    </string>
-    <string>
-      <key>Label_Options_BPComplexFormOption</key>
-      <text>Complex Form Option Rating</text>
+      <text>Complex Form</text>
     </string>
     <string>
       <key>Label_Options_NewSpecialization</key>
@@ -7410,6 +7379,14 @@
       <text>per Karma</text>
     </string>
     <string>
+      <key>Label_Options_PerKarmaSpent</key>
+      <text>per Karma Spent</text>
+    </string>
+    <string>
+      <key>Label_Options_PerKarmaGained</key>
+      <text>per Karma Gained</text>
+    </string>
+    <string>
       <key>Label_Options_ConnectionLoyalty</key>
       <text> × (Connection + Loyalty)</text>
     </string>
@@ -7446,28 +7423,28 @@
       <text>New Complex Form</text>
     </string>
     <string>
-      <key>Label_Options_ImproveComplexForm</key>
-      <text>Improve Complex Form by 1</text>
-    </string>
-    <string>
-      <key>Label_Options_ComplexFormOptions</key>
-      <text>Complex Form Options</text>
-    </string>
-    <string>
-      <key>Label_Options_ComplexFormSkillsoft</key>
-      <text>Complex Form Skillsoft</text>
-    </string>
-    <string>
       <key>Label_Options_Spirit</key>
       <text>Spirit</text>
     </string>
     <string>
-      <key>Label_Options_CombatManeuver</key>
-      <text>Combat Maneuver</text>
+      <key>Label_Options_SpiritFettering</key>
+      <text>Spirit Fettering</text>
+    </string>
+    <string>
+      <key>Label_Options_MartialArtTechnique</key>
+      <text>Martial Art Technique</text>
     </string>
     <string>
       <key>Label_Options_Nuyen</key>
       <text>Nuyen</text>
+    </string>
+    <string>
+      <key>Label_Options_WftM_Nuyen</key>
+      <text>Working for the Man Nuyen Gained</text>
+    </string>
+    <string>
+      <key>Label_Options_WftP_Nuyen</key>
+      <text>Working for the People Nuyen Spent</text>
     </string>
     <string>
       <key>Label_Options_Contacts</key>
@@ -7867,7 +7844,7 @@
     </string>
     <string>
       <key>Label_Options_BrowserVersion</key>
-      <text>Preview uses Internet Explorer version</text>
+      <text>Preview uses Internet Explorer version:</text>
     </string>
     <string>
       <key>Label_Options_EssenceDecimals</key>
@@ -7891,7 +7868,7 @@
     </string>
     <string>
       <key>Checkbox_Options_DroneArmorMultiplier</key>
-      <text>Limit Drone Armor Enhance ment to Drone Armor</text>
+      <text>Limit Drone Armor Enhancement to base Armor</text>
     </string>
     <string>
       <key>Message_Options_Restart</key>
@@ -7899,7 +7876,7 @@
     </string>
     <string>
       <key>Message_Options_CloseForms</key>
-      <text>Options are only enumerated on character load. Should we restart the application?</text>
+      <text>Settings are only enumerated on startup, so changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
     </string>
     <string>
       <key>Message_Options_SaveForms</key>
@@ -7934,6 +7911,14 @@
       <text>Restore Defaults</text>
     </string>
     <string>
+      <key>Message_Options_FileIsNotPDF</key>
+      <text>The selected file ({0}) could not be processed as a PDF file. Only PDF files are allowed to be linked to sourcebooks.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Options_FileIsNotPDF</key>
+      <text>File Is Not a PDF</text>
+    </string>
+    <string>
       <key>Label_Options_PDFApplicationPath</key>
       <text>Location of PDF application:</text>
     </string>
@@ -7955,7 +7940,11 @@
     </string>
     <string>
       <key>Button_Options_PDFTest</key>
-      <text>Test - Open to Page 5</text>
+      <text>Test - Open to Page 3</text>
+    </string>
+    <string>
+      <key>Button_Options_PDFFolderScan</key>
+      <text>Scan a Folder for PDF Files</text>
     </string>
     <string>
       <key>Checkbox_Options_OpenPDFsAsURLs</key>
@@ -7971,7 +7960,15 @@
     </string>
     <string>
       <key>Checkbox_Options_AllowTechnomancerSchooling</key>
-      <text>Technomancer: Allow \'Schooling\' Initiation discounts</text>
+      <text>Technomancer: Allow 'Schooling' as a possible Initiation discount</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
+      <text>Maximum bonus to Strength or Agility that cyberlimbs can have (still subject to Augmented Maximum)</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_UnclampAttributeMinimum</key>
+      <text>Attribute values are allowed to go below 0 due to Essence Loss</text>
     </string>
     <string>
       <key>Button_ToggleSourcebooks</key>
@@ -7993,7 +7990,209 @@
       <key>String_AvailablePlugins</key>
       <text>Available Plugins</text>
     </string>
+    <string>
+      <key>Label_Options_MugshotCompression</key>
+      <text>Mugshot Storage Format:</text>
+    </string>
+    <string>
+      <key>Label_Options_ImageQuality</key>
+      <text>Image Quality:</text>
+    </string>
+    <string>
+      <key>String_Lossless_Compression_Option</key>
+      <text>Lossless (PNG)</text>
+    </string>
+    <string>
+      <key>String_Lossy_Automatic_Compression_Option</key>
+      <text>Lossy (JPG, Automatic)</text>
+    </string>
+    <string>
+      <key>String_Lossy_Manual_Compression_Option</key>
+      <text>Lossy (JPG, Manual)</text>
+    </string>
     <!-- End Region-->
+    <!-- Region Character Options -->
+    <string>
+      <key>Title_CharacterOptions</key>
+      <text>Character Settings</text>
+    </string>
+    <string>
+      <key>String_Rename</key>
+      <text>Rename</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_CharacterCreationSettings</key>
+      <text>Character Creation Settings</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Printing</key>
+      <text>Printing</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_OptionsOfficialRules</key>
+      <text>Options for Official Rules</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Cyberlimbs</key>
+      <text>Cyberlimbs</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_DecimalsAndRounding</key>
+      <text>Decimals and Rounding</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_CustomData</key>
+      <text>Custom Data Directories to Use</text>
+    </string>
+    <string>
+      <key>Button_ChangeCustomDataEntries</key>
+      <text>Change Entries</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_Combat</key>
+      <text>Combat</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MagicAndResonance</key>
+      <text>Magic and Resonance</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_PriorityTable</key>
+      <text>Priority Table</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_NuyenExpression</key>
+      <text>Nuyen Expression</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxNumberMaxAttributes</key>
+      <text>Max Number of Attributes at Max</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxSkillRating</key>
+      <text>Max Skill Rating</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxKnowledgeSkillRating</key>
+      <text>Max Knowledge Skill Rating</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_AllowedCyberwareGrades</key>
+      <text>Allowed Cyberware Grades</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_RedlinerLimbs</key>
+      <text>Limbs Considered by Redliner:</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_UnsavedDirty</key>
+      <text>You currently have unsaved changes in your currently selected setting. Are you sure you want to lose your changes?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_UnsavedDirty</key>
+      <text>Unsaved Changes</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_ConfirmDelete</key>
+      <text>This action will permanently delete the setting {0}. Are you sure that you wish to proceed?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_ConfirmDelete</key>
+      <text>Confirm Delete</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SettingRename</key>
+      <text>Enter a new name for your setting.</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_DuplicateSettingName</key>
+      <text>A setting with a name of {0} already exists. Saving a new setting with the same name will not override the existing setting, instead it will create two settings with the same name.\nDo you wish to create two settings with the same name?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_DuplicateSettingName</key>
+      <text>Setting Name Already Exists</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SelectSettingName</key>
+      <text>Enter a name for your setting.</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SelectSettingFileName</key>
+      <text>Enter a file name for your setting.</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_SettingFileNameTooLongError</key>
+      <text>Chummer has encountered an issue trying to save this setting because there are too many existing settings with similar file names to the name you have given.\nThis is an issue that is too rare and too complicated for Chummer to work around automatically. Please give this setting a different name and then rename it after it has saved.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_SettingFileNameTooLongError</key>
+      <text>No Valid Settings Name Possible</text>
+    </string>
+    <string>
+      <key>Tooltip_CharacterOptions_ManifestMissing</key>
+      <text>There is no or an inaccessible manifest.xml present for this Custom Data Directory.</text>
+    </string>
+    <string>
+      <key>Tooltip_CharacterOptions_LanguageSpecificManifestMissing</key>
+      <text>There was no description present in your language.</text>
+    </string>
+    <string>
+      <key>Tooltip_CharacterOptions_ManifestDescriptionMissing</key>
+      <text>The manifest.xml for this custom data directory is missing a description!</text>
+    </string>
+    <string>
+      <key>Title_CustomDataDirectoryInfo</key>
+      <text>Custom Data Directory Infos</text>
+    </string>
+    <string>
+      <key>Label_DirectoryName</key>
+      <text>Name:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryPath</key>
+      <text>Path:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryAuthors</key>
+      <text>Authors</text>
+    </string>
+    <string>
+      <key>Label_DirectoryVersion</key>
+      <text>Version:</text>
+    </string>
+    <string>
+      <key>Title_DirectoryDependencies</key>
+      <text>Dependencies</text>
+    </string>
+    <string>
+      <key>Title_DirectoryIncompatibilities</key>
+      <text>Incompatibilities</text>
+    </string>
+    <string>
+      <key>Tooltip_Dependency_Missing</key>
+      <text>Missing Dependencies:</text>
+    </string>
+    <string>
+      <key>Tooltip_Incompatibility_Present</key>
+      <text>Present Incompatibilities:</text>
+    </string>
+    <string>
+      <key>Tooltip_Dependency_VersionMismatch</key>
+      <text>{0} version does not meet the required version range of {1}</text>
+    </string>
+    <string>
+      <key>Tooltip_Dependency_BadLoadOrder</key>
+      <text>{0} is below {1} in its load order and so cannot satisfy the latter's dependency</text>
+    </string>
+    <string>
+      <key>Tooltip_Incompatibility_VersionMismatch</key>
+      <text>{0} is incompatible with {1}</text>
+    </string>
+    <string>
+      <key>String_IsMainAuthor</key>
+      <text>{0} (Main)</text>
+    </string>
+    <!-- End Region -->
     <!-- Region Print Multiple Window -->
     <string>
       <key>Title_PrintMultiple</key>
@@ -8116,6 +8315,12 @@
       <text>Mystic Adept Power Point</text>
     </string>
     <!-- End Region-->
+    <!-- Region Generic Selection Window -->
+    <string>
+      <key>String_RestrictedItemsHidden</key>
+      <text>* {0} item(s) are hidden by Cost or Availability limits *</text>
+    </string>
+    <!-- End Region -->
     <!-- Region Select Armor Window -->
     <string>
       <key>Title_SelectArmor</key>
@@ -8144,6 +8349,14 @@
       <text>Select Build Method</text>
     </string>
     <string>
+      <key>Label_SelectBP_UseSetting</key>
+      <text>Use Setting:</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_BuildMethod</key>
+      <text>Build Method</text>
+    </string>
+    <string>
       <key>Label_SelectBP_MaxAvail</key>
       <text>Maximum Availability</text>
     </string>
@@ -8152,32 +8365,48 @@
       <text>Starting Karma</text>
     </string>
     <string>
+      <key>Label_SelectBP_Priorities</key>
+      <text>Priorities</text>
+    </string>
+    <string>
       <key>Label_SelectBP_SumToX</key>
       <text>Sum to Ten</text>
     </string>
     <string>
       <key>Label_SelectBP_MaxNuyen</key>
-      <text>Nuyen Karma Max</text>
+      <text>Max Nuyen Karma</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_QualityKarmaLimit</key>
+      <text>Quality Karma Limit</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_EnabledBooks</key>
+      <text>Enabled Books</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_CustomData</key>
+      <text>Custom Data</text>
     </string>
     <string>
       <key>Checkbox_SelectBP_IgnoreRules</key>
       <text>Ignore Character Creation Rules</text>
     </string>
     <string>
-      <key>String_SelectBP_BPSummary</key>
-      <text>Enter the amount of Build Points with which you are allowed to create your character (Default {0}).</text>
-    </string>
-    <string>
-      <key>String_SelectBP_KarmaSummary</key>
-      <text>Enter the amount of Karma with which you are allowed to create your character (Default {0}).</text>
-    </string>
-    <string>
-      <key>String_SelectBP_PrioritySummary</key>
-      <text>Enter the maximum availability with which you are allowed to create your character.</text>
+      <key>String_SelectBP_Summary</key>
+      <text>Brief Summary of Selected Gameplay Option:</text>
     </string>
     <string>
       <key>Tip_SelectKarma_IgnoreRules</key>
       <text>When checked, all Karma and Attribute/Skill maximum rules will be ignored. Intended for Game Master/NPC use only.</text>
+    </string>
+    <string>
+      <key>Message_SelectBP_SwitchBuildMethods</key>
+      <text>The selected build method ({0}) is different from the existing build method of the character ({1}). Do you wish to switch build methods?</text>
+    </string>
+    <string>
+      <key>MessageTitle_SelectBP_SwitchBuildMethods</key>
+      <text>Switch Build Method?</text>
     </string>
     <!-- End Region-->
     <!-- Region Advanced Contact Options Window -->
@@ -8418,6 +8647,18 @@
       <key>Label_SelectLifestyle_Roommates</key>
       <text>Roommates:</text>
     </string>
+    <string>
+      <key>Label_SelectLifestyle_City</key>
+      <text>City:</text>
+    </string>
+    <string>
+      <key>Label_SelectLifestyle_District</key>
+      <text>District:</text>
+    </string>
+    <string>
+      <key>Label_SelectLifestyle_Borough</key>
+      <text>Borough:</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Martial Art Window -->
     <string>
@@ -8429,12 +8670,6 @@
     <string>
       <key>Title_SelectMartialArtTechnique</key>
       <text>Select a Technique</text>
-    </string>
-    <!-- End Region-->
-    <!-- Region Select Martial Art Maneuver Window -->
-    <string>
-      <key>Title_SelectMartialArtManeuver</key>
-      <text>Select a Maneuver</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Mentor Spirit Window -->
@@ -8457,6 +8692,10 @@
     <string>
       <key>Label_SelectMentor_ChooseOne</key>
       <text>Choose One:</text>
+    </string>
+    <string>
+      <key>Label_SelectMentor_Bonus</key>
+      <text>Bonus:</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Generic -->
@@ -8505,36 +8744,14 @@
       <text>You cannot select this {0} because your character has not been created yet.</text>
     </string>
     <!-- End Region-->
-    <!-- Region Select Nexus Window -->
-    <string>
-      <key>Title_SelectNexus</key>
-      <text>Build Nexus</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_Nexus</key>
-      <text>Nexus</text>
-    </string>
-    <string>
-      <key>Label_SelectNexus_Processor</key>
-      <text>Processor:</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_Processor</key>
-      <text>Processor</text>
-    </string>
-    <string>
-      <key>Label_SelectNexus_PersonaLimit</key>
-      <text>Persona Limit:</text>
-    </string>
-    <string>
-      <key>String_SelectNexus_PersonaLimit</key>
-      <text>Persona Limit</text>
-    </string>
-    <!-- End Region-->
     <!-- Region Select Number Window -->
     <string>
       <key>Title_SelectNumber</key>
       <text>Select a Number</text>
+    </string>
+    <string>
+      <key>Message_SelectNumberOfCharges</key>
+      <text>Select the new number of charges/ammo that {0} should have.</text>
     </string>
     <!-- End Region-->
     <!-- Region Select PACKS Kit Window -->
@@ -9039,6 +9256,10 @@
       <text>Already Up-to-Date</text>
     </string>
     <string>
+      <key>Button_Reconnect</key>
+      <text>Reconnect</text>
+    </string>
+    <string>
       <key>Button_Install_Restart</key>
       <text>Install and Restart</text>
     </string>
@@ -9092,7 +9313,7 @@
     </string>
     <string>
       <key>Message_Update_CloseForms</key>
-      <text>A newer version of Chummer5a has been automatically downloaded. Should we apply it and restart the application?</text>
+      <text>A newer version of Chummer5a has been automatically downloaded. Should it be applied and the application restarted?</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Viewer Window -->
@@ -9127,6 +9348,18 @@
     <string>
       <key>String_Generating_Sheet</key>
       <text>Generating Sheet...</text>
+    </string>
+    <string>
+      <key>MessageTitle_Viewer_FoundPDFPrinter</key>
+      <text>Use Print to PDF Instead?</text>
+    </string>
+    <string>
+      <key>Message_Viewer_FoundPDFPrinter</key>
+      <text>The printer "{0}" was found installed on this system. This printer can "print" character sheets directly into a PDF file in a way that is more advanced than the PDF saver that comes with Chummer5a.\n\nDo you wish to open a Print dialog to print with "{0}" instead?</text>
+    </string>
+    <string>
+      <key>Message_Viewer_PDFPrinterError</key>
+      <text>An error was encountered while attempting to open up the printing dialog for "{0}". Chummer5a will now proceed with its built-in PDF file saving system.</text>
     </string>
     <!-- End Region-->
     <!-- Region Create Improvement Window -->
@@ -9209,6 +9442,10 @@
     <string>
       <key>Button_Export_SaveJsonAs</key>
       <text>Save JSON as</text>
+    </string>
+    <string>
+      <key>String_Generating_Data</key>
+      <text>Generating Data...</text>
     </string>
     <!-- End Region-->
     <!-- Region Create Spell Window -->
@@ -9479,16 +9716,16 @@
     <!-- End Region-->
     <!-- Region CharacterOptions Messages -->
     <string>
-      <key>Message_CharacterOptions_OpenOptions</key>
-      <text>This seems to be the first time loading Chummer, as no settings file is present. Would you like to open the Options menu now?</text>
+      <key>Message_CharacterOptions_DesyncBuildMethod</key>
+      <text>The settings file present that matches with the character's settings file ({0}) has a different build method ({1}) than what the character was saved with ({2}).\n\nChummer will prompt you to confirm the setting this character is meant to use. Do you wish to continue loading this character?</text>
     </string>
     <string>
-      <key>MessageTitle_CharacterOptions_OpenOptions</key>
-      <text>No Settings File Found</text>
+      <key>MessageTitle_CharacterOptions_DesyncBuildMethod</key>
+      <text>Loaded Settings File Has Different Build Method</text>
     </string>
     <string>
       <key>Message_CharacterOptions_CannotLoadSetting</key>
-      <text>The character's settings file ({0}) could not be found. Use default settings instead?</text>
+      <text>The character's settings file ({0}) could not be found.\n\nSelect an existing settings file instead?</text>
     </string>
     <string>
       <key>MessageTitle_CharacterOptions_CannotLoadSetting</key>
@@ -9501,6 +9738,22 @@
     <string>
       <key>MessageText_CharacterOptions_CannotLoadCharacter</key>
       <text>Cannot Load Character</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_DesyncBooksOrCustomData</key>
+      <text>This character was saved in an older version of Chummer5a, and the settings file present that matches with the character's settings file ({0}) has a different set of enabled sourcebooks and/or custom data directories.\n\nModify the settings file that this character will use?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_DesyncBooksOrCustomData</key>
+      <text>Loaded Settings File Has Different Books and/or Custom Data Directories</text>
+    </string>
+    <string>
+      <key>Message_CharacterOptions_OpenCharacterOnBuildMethodChange</key>
+      <text>Due to technical limitations, Chummer cannot change the build method of an existing setting that is being used by an open character in Create mode. Please save your changes as a new setting or close the following characters first:\n\n</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange</key>
+      <text>Cannot Change Build Method for Open Characters in Create Mode</text>
     </string>
     <!-- End Region-->
     <!-- Region Karma Value Strings -->
@@ -9522,7 +9775,7 @@
     </string>
     <string>
       <key>String_TotalComparisonWithPointBuy</key>
-      <text>Total (For Comparison with Point Buy)</text>
+      <text>Karma Required to Create in Point Buy</text>
     </string>
     <string>
       <key>String_FreeSpells</key>
@@ -9640,11 +9893,27 @@
     </string>
     <string>
       <key>Message_Duplicate_CustomDataDirectoryName</key>
-      <text>Custom data directory of this name already exists.</text>
+      <text>There is already a custom data directory called {0}. Having multiple custom data directories with the same name and no manifest can cause problems. Do you wish to continue?</text>
     </string>
     <string>
-      <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
       <text>Duplicate Custom Data Directory Name</text>
+    </string>
+    <string>
+      <key>Message_Duplicate_CustomDataDirectoryPath</key>
+      <text>There is already a custom data directory added for the path used for {0}. Please select a new </text>
+    </string>
+    <string>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryPath</key>
+      <text>Duplicate Custom Data Directory Path</text>
+    </string>
+    <string>
+      <key>Message_Duplicate_CustomDataDirectory</key>
+      <text>The custom data directory {0} has a name and manifest contents that make it identical to those of the directory {1}. Please edit either data directory's manifest to make sure they are different directories, like giving them different Guids.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Duplicate_CustomDataDirectory</key>
+      <text>Duplicate Custom Data Directory</text>
     </string>
     <string>
       <key>Label_CustomDataDirectories</key>
@@ -9667,8 +9936,16 @@
       <text>Increase Load Order</text>
     </string>
     <string>
+      <key>String_ToTop</key>
+      <text>To Top</text>
+    </string>
+    <string>
       <key>Button_DecreaseCustomDirectoryLoadOrder</key>
       <text>Decrease Load Order</text>
+    </string>
+    <string>
+      <key>String_ToBottom</key>
+      <text>To Bottom</text>
     </string>
     <string>
       <key>String_ShowAll</key>
@@ -9690,6 +9967,64 @@
       <key>String_MetersPerHit</key>
       <text>m/ hit</text>
     </string>
+    <string>
+      <key>String_SuppressedBy</key>
+      <text>Suppressed by {0}</text>
+    </string>
+    <!-- End Region -->
+    <!-- Region Text Editor -->
+    <string>
+      <key>String_Bold</key>
+      <text>Bold</text>
+    </string>
+    <string>
+      <key>String_Italic</key>
+      <text>Italic</text>
+    </string>
+    <string>
+      <key>String_Underline</key>
+      <text>Underline</text>
+    </string>
+    <string>
+      <key>String_Strikethrough</key>
+      <text>Strikethrough</text>
+    </string>
+    <string>
+      <key>String_Font</key>
+      <text>Font</text>
+    </string>
+    <string>
+      <key>String_ForeColor</key>
+      <text>Foreground Color</text>
+    </string>
+    <string>
+      <key>String_BackColor</key>
+      <text>Background Color</text>
+    </string>
+    <string>
+      <key>String_AlignLeft</key>
+      <text>Align Left</text>
+    </string>
+    <string>
+      <key>String_AlignCenter</key>
+      <text>Align Center</text>
+    </string>
+    <string>
+      <key>String_AlignRight</key>
+      <text>Align Right</text>
+    </string>
+    <string>
+      <key>String_UnorderedList</key>
+      <text>Toggle List</text>
+    </string>
+    <string>
+      <key>String_IncreaseIndent</key>
+      <text>Increase Indent</text>
+    </string>
+    <string>
+      <key>String_DecreaseIndent</key>
+      <text>Decrease Indent</text>
+    </string>
     <!-- End Region -->
     <!-- Region Loading Form -->
     <string>
@@ -9701,8 +10036,28 @@
       <text>Loading {0}...</text>
     </string>
     <string>
+      <key>String_Saving</key>
+      <text>Saving...</text>
+    </string>
+    <string>
+      <key>String_Saving_Pattern</key>
+      <text>Saving {0}...</text>
+    </string>
+    <string>
+      <key>String_Scanning</key>
+      <text>Scanning...</text>
+    </string>
+    <string>
+      <key>String_Scanning_Pattern</key>
+      <text>Scanning {0}...</text>
+    </string>
+    <string>
       <key>String_Initializing</key>
       <text>Initializing...</text>
+    </string>
+    <string>
+      <key>String_Initializing_Pattern</key>
+      <text>Initializing {0}...</text>
     </string>
     <string>
       <key>String_Settings</key>
@@ -9751,6 +10106,18 @@
     <string>
       <key>MessageTitle_OrphanedImprovements</key>
       <text>Orphaned Improvements Found</text>
+    </string>
+    <string>
+      <key>Message_AutosaveFound</key>
+      <text>An autosave for the file {0} was found that was saved more recently ({1}) than the current file being loaded ({2}).\n\nDo you wish to load the autosave instead? If you do, the original {0} will not be altered until you manually save.</text>
+    </string>
+    <string>
+      <key>Message_PossibleCrashAutosaveFound</key>
+      <text>An autosave for the file {0} was found saved on {1} that may have been for an unsaved character lost during an unclean exit.\n\nDo you wish to load this autosave?</text>
+    </string>
+    <string>
+      <key>MessageTitle_AutosaveFound</key>
+      <text>Autosave Found</text>
     </string>
     <!-- End Region -->
     <!-- Region HeroLab Importer -->
@@ -9831,6 +10198,10 @@
       <text>let chummer decide</text>
     </string>
     <string>
+      <key>String_Chummy</key>
+      <text>Chummy</text>
+    </string>
+    <string>
       <key>Chummy_Intro</key>
       <text>Hi! I'm Chummy, the Chummer AI Assistant! I've got plenty of helpful tips and advice about your characters!</text>
     </string>
@@ -9843,6 +10214,10 @@
       <text>Archetypes</text>
     </string>
     <string>
+      <key>Menu_Tools_NeonJungleLCCheckFlags</key>
+      <text>Check Flags count</text>
+    </string>
+    <string>
       <key>Menu_Tools_SINnerSearch</key>
       <text>SINner search</text>
     </string>
@@ -9853,6 +10228,10 @@
     <string>
       <key>Menu_ShowMySINners</key>
       <text>Show all my data</text>
+    </string>
+    <string>
+      <key>Menu_SINnersCreateGroup</key>
+      <text>Create a group</text>
     </string>
     <string>
       <key>Menu_RemovePinnedChummer</key>
@@ -9963,6 +10342,260 @@
       <key>String_Reach</key>
       <text>Reach</text>
     </string>
+    <string>
+      <key>String_Concealability</key>
+      <text>Concealability</text>
+    </string>
     <!-- End Region -->
+    <!-- Region Limit Condition Translations -->
+    <string>
+      <key>LimitCondition_ExcludeIntimidation</key>
+      <text>Does not include Intimidation</text>
+    </string>
+    <string>
+      <key>LimitCondition_ExcludeFansGangers</key>
+      <text>Except for Urban Brawl Fans and Gangers</text>
+    </string>
+    <string>
+      <key>LimitCondition_SportsFans</key>
+      <text>Fans of Sports Team</text>
+    </string>
+    <string>
+      <key>LimitCondition_ShieldPhysicalPenalty</key>
+      <text>For actions where Shield might get in the way.</text>
+    </string>
+    <string>
+      <key>LimitCondition_ExcludeIntimidationVisible</key>
+      <text>For all tests except Intimidation, Must be visible.</text>
+    </string>
+    <string>
+      <key>LimitCondition_ClimbingTests</key>
+      <text>For climbing only</text>
+    </string>
+    <string>
+      <key>LimitCondition_GangVisible</key>
+      <text>Gang members only, Must be visible.</text>
+    </string>
+    <string>
+      <key>LimitCondition_PublicVisible</key>
+      <text>General public only, Must be visible.</text>
+    </string>
+    <string>
+      <key>LimitCondition_Megacorp</key>
+      <text>Limited to Single Megacorp</text>
+    </string>
+    <string>
+      <key>LimitCondition_Sprawl</key>
+      <text>Limited to Single Sprawl</text>
+    </string>
+    <string>
+      <key>LimitCondition_Visible</key>
+      <text>Must be visible</text>
+    </string>
+    <string>
+      <key>LimitCondition_NationalLanguageRanks</key>
+      <text>Must have 4+ Ranks in National Language</text>
+    </string>
+    <string>
+      <key>LimitCondition_BunkerGearVisible</key>
+      <text>Only during emergency situations, Must be visible</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestAttribAGI</key>
+      <text>Only for Agility-linked Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsKnowledgeAcademic</key>
+      <text>Only for Academic Knowledge Skills</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveContortion</key>
+      <text>Only for Contortion</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveDisguiseImpersonation</key>
+      <text>Only for Disguise and Impersonation</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveEscapeArtistGrappleLoose</key>
+      <text>Only for Escape Artist and Grappling, Must be loosened</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveEscapeArtist</key>
+      <text>Only for Escape Artist</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveFirstAidMedicine</key>
+      <text>Only for First Aid and Medicine</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareBalanceTail</key>
+      <text>Only for Gymnastics (Climbing), Gymnastics (Jumping), Running, and knockdown resist</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveGymnasticsClimbing</key>
+      <text>Only for Gymnastics (Climbing)</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareHydraulicJacks</key>
+      <text>Only for Gymnastics (Jumping) and Running (Sprinting)</text>
+    </string>
+    <string>
+      <key>LimitCondition_IntimidationVisible</key>
+      <text>Only for Intimidation, Must be visible.</text>
+    </string>
+    <string>
+      <key>LimitCondition_Intimidation</key>
+      <text>Only for Intimidation</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveNavigation</key>
+      <text>Only for Navigation</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionHearing</key>
+      <text>Only for Perception (Hearing)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionVisual</key>
+      <text>Only for Perception (Visual)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerceptionSpatialRecognizer</key>
+      <text>Only for Perception to find the source of a sound</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerception</key>
+      <text>Only for Perception</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerformanceSinging</key>
+      <text>Only for Performance (Singing)</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerformanceSynthtrument</key>
+      <text>Only for Performance, Must use linked synthtrument</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActivePerformance</key>
+      <text>Only for Performance</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsKnowledgeScientificTechnical</key>
+      <text>Only for Scientific or Technical Knowledge Skills</text>
+    </string>
+    <string>
+      <key>LimitCondition_Skillwires</key>
+      <text>Only for Skillwires</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestSneakingThermal</key>
+      <text>Only for Sneaking against Thermographic Vision or thermal sensors.</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveSneaking</key>
+      <text>Only for Sneaking against Thermographic Vision or thermal sensors.</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveSneakingNaked</key>
+      <text>Only for Sneaking, Must be completely naked</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveSneakingVisible</key>
+      <text>Only for Sneaking, Must be visible</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillGroupStealthNaked</key>
+      <text>Only for Stealth group, Must be completely naked</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillGroupStealth</key>
+      <text>Only for Stealth group</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveSwimming</key>
+      <text>Only for Swimming</text>
+    </string>
+    <string>
+      <key>LimitCondition_KnockdownResistanceFootAnchor</key>
+      <text>Only for knockdown resist, Must be engaged.</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareCyberfins</key>
+      <text>Only for making repairs, typing, dancing etc., Must be engaged</text>
+    </string>
+    <string>
+      <key>LimitCondition_GearAutopicker</key>
+      <text>Only for picking mechanical locks</text>
+    </string>
+    <string>
+      <key>LimitCondition_QualityTrustworthy</key>
+      <text>Only for situations involving trust.</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestSpeech</key>
+      <text>Only for test involving speaking</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestsEndurance</key>
+      <text>Only for tests involving endurance, Must be tightened</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareRaptorFoot</key>
+      <text>Only when attacking with the legs</text>
+    </string>
+    <string>
+      <key>LimitCondition_QualityChatty</key>
+      <text>Only when communicating via AR or VR.</text>
+    </string>
+    <string>
+      <key>LimitCondition_InUse</key>
+      <text>Only when in use</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareMonkeyFoot</key>
+      <text>Only when used as hand</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestAttribINT</key>
+      <text>Only with Intuition Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_AttribSkillINT</key>
+      <text>Only with Intuition-linked skills</text>
+    </string>
+    <string>
+      <key>LimitCondition_TestAttribLOG</key>
+      <text>Only with Logic Tests</text>
+    </string>
+    <string>
+      <key>LimitCondition_AttribSkillLOG</key>
+      <text>Only with Logic-linked skills</text>
+    </string>
+    <string>
+      <key>LimitCondition_CorporationVisible</key>
+      <text>Only with appropriate corp, Must be visible</text>
+    </string>
+    <string>
+      <key>LimitCondition_CyberwareSnakeFingers</key>
+      <text>Only with manual dexterity</text>
+    </string>
+    <string>
+      <key>LimitCondition_SportsRivals</key>
+      <text>Rivals of Sports Team</text>
+    </string>
+    <!-- End Region -->
+    <string>
+      <key>String_CapacityRemaining</key>
+      <text>{0} ({1} remaining)</text>
+    </string>
+    <string>
+      <key>Error_Message_PDF_IndexOutOfBounds</key>
+      <text>The PDF File has a wrong page offset value set in the global options.</text>
+    </string>
+    <string>
+      <key>String_GameplayOption</key>
+      <text>Missing Gameplay Option</text>
+    </string>
   </strings>
 </chummer>

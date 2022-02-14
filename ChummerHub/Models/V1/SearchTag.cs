@@ -26,22 +26,22 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum'
         {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.bigger'
-            @bigger,
+            bigger,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.bigger'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.smaller'
-            @smaller,
+            smaller,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.smaller'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.equal'
-            @equal,
+            equal,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.equal'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.contains'
-            @contains,
+            contains,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.contains'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.notnull'
-            @notnull,
+            notnull,
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.notnull'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.exists'
-            @exists
+            exists
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SearchTag.TagOperatorEnum.exists'
         }
 

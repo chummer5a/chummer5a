@@ -29,23 +29,25 @@ namespace Translator
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
+            if (string.IsNullOrEmpty(strSearch))
+                return "\"\"";
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
                 return '\"' + strSearch + '\"';
             }
-
-            StringBuilder objReturn = new StringBuilder("concat(\"");
-            for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"'))
+            
+            StringBuilder sbdReturn = new StringBuilder("concat(\"");
+            int intSubStringStart = 0;
+            for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"', intSubStringStart))
             {
-                string strSubstring = strSearch.Substring(0, intQuotePos);
-                objReturn.Append(strSubstring);
-                objReturn.Append("\", '\"', \"");
-                strSearch = strSearch.Substring(intQuotePos + 1);
+                sbdReturn.Append(strSearch, intSubStringStart, intQuotePos - intSubStringStart)
+                         .Append("\", '\"', \"");
+                intSubStringStart = intQuotePos + 1;
             }
-            objReturn.Append(strSearch);
-            objReturn.Append("\")");
-            return objReturn.ToString();
+
+            return sbdReturn.Append(strSearch, intSubStringStart, strSearch.Length - intSubStringStart)
+                            .Append("\")").ToString();
         }
     }
 }

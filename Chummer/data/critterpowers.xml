@@ -259,7 +259,7 @@
       <range>LOS</range>
       <duration>Instant</duration>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/*" allowedit="True" />
       </bonus>
       <source>SR5</source>
       <page>396</page>
@@ -350,7 +350,7 @@
       <range>Self</range>
       <duration>Always</duration>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/elements/element | /chummer/immunities/immunity" allowedit="True" />
       </bonus>
       <source>SR5</source>
       <page>397</page>
@@ -386,6 +386,9 @@
       <range>Per Spell</range>
       <duration>Per Spell</duration>
       <bonus>
+        <enabletab>
+          <name>magician</name>
+        </enabletab>
         <selectspell />
       </bonus>
       <source>SR5</source>
@@ -401,6 +404,17 @@
       <duration>Sustained</duration>
       <source>SR5</source>
       <page>398</page>
+    </power>
+    <power>
+      <id>c5ecc4fa-3f9d-49da-ad63-3ee35843ca17</id>
+      <name>Manifest</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Self</range>
+      <duration>Special</duration>
+      <source>SR5</source>
+      <page>314</page>
     </power>
     <power>
       <id>153bc9aa-1a5e-41ac-877d-751470624bc7</id>
@@ -749,8 +763,8 @@
       <action>Auto</action>
       <range>Self</range>
       <duration>Special</duration>
-      <source>RF</source>
-      <page>215</page>
+      <source>SG</source>
+      <page>198</page>
     </power>
     <power>
       <id>c9045794-c7f7-4517-9156-b74438a2d5f1</id>
@@ -1676,7 +1690,7 @@
         </oneof>
       </required>
       <source>RF</source>
-      <page>102</page>
+      <page>123</page>
     </power>
     <power>
       <id>14d33e71-88c5-4fdb-8456-0b61ab70e8f4</id>
@@ -2296,7 +2310,7 @@
           <stun>-20</stun>
         </conditionmonitor>
       </bonus>
-      <source>RF</source>
+      <source>HS</source>
       <page>191</page>
     </power>
     <power>
@@ -2341,7 +2355,7 @@
       <range>As ritual</range>
       <duration>As ritual</duration>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = Rituals]" />
       </bonus>
       <source>HS</source>
       <page>193</page>
@@ -3433,6 +3447,7 @@
     </power>
     <power>
       <id>6cbf07be-1491-46c1-ab67-d5f1dd4aa709</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>Digitigrade Legs</name>
       <category>Paranormal/Infected</category>
       <type>P</type>

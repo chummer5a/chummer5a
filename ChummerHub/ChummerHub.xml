@@ -30,7 +30,7 @@
             <summary>
             Returns the Chummer-Save-File
             </summary>
-            <param name="id"></param>
+            <param name="sinnerid"></param>
             <returns></returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.PutSIN(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
@@ -53,7 +53,7 @@
             <summary>
             Store the MetaData for chummerfiles (to get a Id).
             This Id can be used to store the actual file with PUT afterwards.
-            Alternativly, the DownloadUrl can be set directly from the Client.
+            Alternatively, the DownloadUrl can be set directly from the Client.
             </summary>
             <param name="uploadInfo"></param>
             <returns></returns>

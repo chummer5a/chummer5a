@@ -6,7 +6,7 @@ namespace ChummerHub.Models.V1.Examples
 {
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchExample'
-    public class SINnerSearchExample : IExamplesProvider
+    public class SINnerSearchExample : IExamplesProvider<object>
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchExample'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerSearchExample.SINnerSearchExample()'

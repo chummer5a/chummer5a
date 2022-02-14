@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!-- Rigger 5 Weapon Mounts - Allow Sporting Rifles
+     R5 excludes Sporting Rifles from the list of accessible weapon mounts. This customdata adds that weapon category to the Standard and Heavy weapon mounts. -->
+<chummer>
+  <mods>
+    <!--Heavy Weapon Mount (R5)-->
+    <mod>
+      <id>4eecb2ee-ad33-4bc2-b8b3-d35e0df40836</id>
+      <weaponmountcategories amendoperation="append">,Sporting Rifles</weaponmountcategories>
+    </mod>
+    <!--Standard Weapon Mount (R5)-->
+    <mod>
+      <id>86741661-11c2-4781-b365-b02dbb9fd7c0</id>
+      <weaponmountcategories amendoperation="append">,Sporting Rifles</weaponmountcategories>
+    </mod>
+  </mods>
+  <weaponmounts>
+    <!--Standard Weapon Mount (R5)-->
+    <weaponmount>
+      <id>4e9da56b-622c-439f-9718-98ac3a792351</id>
+      <weaponcategories amendoperation="append">,Sporting Rifles</weaponcategories>
+    </weaponmount>
+    <!--Heavy Weapon Mount (R5)-->
+    <mod>
+      <id>73f6f721-9732-4773-8ce6-0e3f5222a49f</id>
+      <weaponcategories amendoperation="append">,Sporting Rifles</weaponcategories>
+    </mod>
+  </weaponmounts>
+</chummer>

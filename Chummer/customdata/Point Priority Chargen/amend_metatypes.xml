@@ -50,7 +50,7 @@
         <limitmodifier amendoperation="addnode">
           <limit>Physical</limit>
           <value>1</value>
-          <condition>Only for AGI tests</condition>
+          <condition>LimitCondition_AttribAGI</condition>
         </limitmodifier>
       </bonus>
       <metavariants>
@@ -67,7 +67,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -78,7 +78,7 @@
           <edgaug>7</edgaug>
           <qualities>
             <negative>
-              <quality xpathfilter="text() = 'Allergy (Common, Mild)'" amendoperation="remove" />
+              <quality xpathfilter=". = 'Allergy (Common, Mild)'" amendoperation="remove" />
             </negative>
           </qualities>
           <bonus>
@@ -89,7 +89,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -108,7 +108,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -124,7 +124,7 @@
             <limitmodifier amendoperation="addnode">
               <limit>Physical</limit>
               <value>1</value>
-              <condition>Only for AGI tests</condition>
+              <condition>LimitCondition_AttribAGI</condition>
             </limitmodifier>
           </bonus>
         </metavariant>
@@ -166,7 +166,7 @@
           <bodaug>12</bodaug>
           <qualities>
             <positive>
-              <quality xpathfilter="text() = 'Resistance to Pathogens'" amendoperation="remove" />
+              <quality xpathfilter=". = 'Resistance to Pathogens'" amendoperation="remove" />
               <quality amendoperation="addnode">Resistance to Pathogens/Toxins</quality>
               <quality amendoperation="addnode">Dermal Alteration (Blubber)</quality>
             </positive>

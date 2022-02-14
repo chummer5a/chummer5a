@@ -38,7 +38,7 @@
       <duration>S</duration>
       <fv>L-2</fv>
       <bonus>
-        <selecttext />
+         <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*" />
       </bonus>
       <source>SR5</source>
       <page>252</page>
@@ -59,7 +59,7 @@
       <duration>S</duration>
       <fv>L-2</fv>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*" />
       </bonus>
       <source>SR5</source>
       <page>252</page>
@@ -275,7 +275,7 @@
       <page>133</page>
       <required>
         <oneof>
-          <quality>Dissonant Stream: Apophenians</quality>
+          <quality>Dissonant Stream: Apophenian</quality>
         </oneof>
       </required>
     </complexform>
@@ -289,7 +289,7 @@
       <page>134</page>
       <required>
         <oneof>
-          <quality>Dissonant Stream: Erisians</quality>
+          <quality>Dissonant Stream: Erisian</quality>
         </oneof>
       </required>
     </complexform>

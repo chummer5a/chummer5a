@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <weapons>
+    <weapon>
+      <id>91c6deff-233b-448c-8b22-466b03056748</id>
+      <name>Sorokin Predator</name>
+      <category>Heavy Pistols</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>8P</damage>
+      <ap>-1</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>15(c)</ammo>
+      <avail>2R</avail>
+      <cost>200</cost>
+      <source>HTN-CB</source>
+      <page>2</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+    </weapon>
+    <weapon>
+      <id>5effd561-99f1-461b-9144-5a087b047b59</id>
+      <name>Altmayr White Star</name>
+      <category>Heavy Pistols</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>8P</damage>
+      <ap>-1</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>12(c)</ammo>
+      <avail>3R</avail>
+      <cost>250</cost>
+      <source>HTN-CB</source>
+      <page>2</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
+    </weapon>
+    <weapon>
+      <id>a76e589c-9d7a-421a-82db-d2947e489f16</id>
+      <name>HaKa Skorpion</name>
+      <category>Machine Pistols</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>7P</damage>
+      <ap>-</ap>
+      <mode>SA/BF</mode>
+      <rc>0</rc>
+      <ammo>30(c)</ammo>
+      <avail>3R</avail>
+      <cost>220</cost>
+      <source>HTN-CB</source>
+      <page>2</page>
+      <accessories>
+        <accessory>
+          <name>Folding Stock</name>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
+    </weapon>
+    <weapon>
+      <id>d5743c6b-6a34-4687-9f37-41a91ac1dd88</id>
+      <name>HaKa MP2</name>
+      <category>Machine Pistols</category>
+      <type>Ranged</type>
+      <conceal>0</conceal>
+      <accuracy>3</accuracy>
+      <reach>0</reach>
+      <damage>7P</damage>
+      <ap>-</ap>
+      <mode>BF</mode>
+      <rc>0</rc>
+      <ammo>24(c)</ammo>
+      <avail>2R</avail>
+      <cost>375</cost>
+      <source>HTN-CB</source>
+      <page>2</page>
+      <accessories>
+        <accessory>
+          <name>Folding Stock</name>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+      </accessorymounts>
+      <spec>Semi-Automatics</spec>
+    </weapon>
+    <weapon>
+      <id>a985c802-5172-49d5-b4b4-69846928c8da</id>
+      <name>Altmayr SP</name>
+      <category>Shotguns</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>9P</damage>
+      <ap>-1</ap>
+      <mode>SS/BF</mode>
+      <rc>0</rc>
+      <ammo>8(c)</ammo>
+      <avail>4R</avail>
+      <cost>375</cost>
+      <source>HTN-CB</source>
+      <page>2</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+    </weapon>
+    <weapon>
+      <id>e20cdeed-b391-4cd0-9531-1ea27c8ce435</id>
+      <name>Barazani AK-47M1</name>
+      <category>Assault Rifles</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>10P</damage>
+      <ap>-2</ap>
+      <mode>SA/BF/FA</mode>
+      <rc>0</rc>
+      <ammo>30(c)</ammo>
+      <avail>2R</avail>
+      <cost>750</cost>
+      <source>HTN-CB</source>
+      <page>2</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+    </weapon>
+    <weapon>
+      <id>05cdb957-21fc-4925-a676-355dc8f88387</id>
+      <name>Samopal vz/88V</name>
+      <category>Assault Rifles</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>5</accuracy>
+      <reach>0</reach>
+      <damage>9P</damage>
+      <ap>-2</ap>
+      <mode>SA/BF/FA</mode>
+      <rc>0</rc>
+      <ammo>30(c)</ammo>
+      <avail>4R</avail>
+      <cost>650</cost>
+      <source>HTN-CB</source>
+      <page>2</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+    </weapon>
+    <weapon>
+      <id>529e935b-297e-43a7-b96b-be8b2e4d184c</id>
+      <name>Sorokin G9</name>
+      <category>Assault Rifles</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>9P</damage>
+      <ap>-2</ap>
+      <mode>SA/BF/FA</mode>
+      <rc>0</rc>
+      <ammo>30(c)</ammo>
+      <avail>3R</avail>
+      <cost>600</cost>
+      <source>HTN-CB</source>
+      <page>2</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+    </weapon>
+  </weapons>
+</chummer>

@@ -67,7 +67,7 @@
     <category>Magical Supplies</category>
     <category>Metatype-Specific</category>
     <category>Miscellany</category>
-    <category>Musical Intruments</category>
+    <category>Musical Instruments</category>
     <category>Nanogear</category>
     <category>Paydata</category>
     <category blackmarket="Electronics">PI-Tac</category>
@@ -118,6 +118,7 @@
       <avail>12F</avail>
       <cost>45</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>39042c0a-4b22-4762-8d56-623033860178</id>
@@ -132,6 +133,7 @@
       <weaponbonus>
         <ap>-2</ap>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>0198f16e-8bb2-4618-ab2a-f010abe0a1c6</id>
@@ -147,6 +149,7 @@
         <ap>-5</ap>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>adef0fa4-67b7-41e1-b534-f15308c9c8c1</id>
@@ -159,8 +162,9 @@
       <cost>250</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <ap>+2</ap>
+        <ap>2</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>60b7ad79-55b7-4803-8d1f-9145218eaf5b</id>
@@ -173,9 +177,10 @@
       <cost>10</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <ap>+4</ap>
+        <ap>4</ap>
         <damage>-4</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>b286a62d-c7cb-472a-bea8-0f41a300bb9c</id>
@@ -187,6 +192,7 @@
       <avail>10F</avail>
       <cost>150</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>c429fc81-d11b-434b-b98b-5fbdda9db905</id>
@@ -201,6 +207,7 @@
       <weaponbonus>
         <damage>-1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>75ccb148-e774-429c-b854-a27816439626</id>
@@ -254,6 +261,7 @@
       <weaponbonus>
         <ap>-4</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>0bf4113c-dedb-411d-8981-7b6af169f056</id>
@@ -265,6 +273,7 @@
       <avail>12F</avail>
       <cost>400</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>cannon</ammoforweapontype>
     </gear>
     <gear>
       <id>1315cecd-1c13-4d69-9828-a3ea535675da</id>
@@ -280,6 +289,7 @@
         <ap>-1</ap>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>95bff6e2-d788-407b-9069-093250f89fcb</id>
@@ -296,6 +306,11 @@
         <damage>2</damage>
         <damagetype>P(f)</damagetype>
       </weaponbonus>
+      <isflechetteammo>True</isflechetteammo>
+      <flechetteweaponbonus>
+        <damagetype>P(f)</damagetype>
+      </flechetteweaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>0dbcca24-c152-47c5-bae2-8feadff22321</id>
@@ -310,6 +325,13 @@
       <weaponbonus>
         <damagetype>S(e)</damagetype>
       </weaponbonus>
+      <isflechetteammo>True</isflechetteammo>
+      <flechetteweaponbonus>
+        <ap>-5</ap>
+        <damage>-2</damage>
+        <damagetype>S(e)</damagetype>
+      </flechetteweaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>0c8d16cb-6e96-4d95-8454-104a36091cf9</id>
@@ -325,6 +347,7 @@
         <ap>1</ap>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>f486f414-ee2c-46db-92ea-c682861d8fe0</id>
@@ -340,6 +363,7 @@
         <ap>2</ap>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>638c81a2-328b-4e22-8fb0-ee37c5e2f6c9</id>
@@ -354,6 +378,7 @@
       <addoncategory>Custom</addoncategory>
       <cost>75</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>dartgun</ammoforweapontype>
     </gear>
     <gear>
       <id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
@@ -370,6 +395,7 @@
         <damagereplace>7P</damagereplace>
         <modereplace>SS</modereplace>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>d27dfc89-095d-440c-ad1c-c7f888df2824</id>
@@ -380,6 +406,7 @@
       <page>22</page>
       <avail>0</avail>
       <cost>0</cost>
+      <ammoforweapontype>energy</ammoforweapontype>
     </gear>
     <gear>
       <id>b2a0b340-c793-4322-8422-8b03d18a6fae</id>
@@ -391,6 +418,7 @@
       <avail>2R</avail>
       <cost>20</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>d9f69780-93eb-41ff-9a9c-893f8c52794e</id>
@@ -407,6 +435,7 @@
         <damage>-2</damage>
         <damagetype>S(e)</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>e0d7aea7-52ac-4670-bac3-b13ce144257c</id>
@@ -418,6 +447,7 @@
       <avail>6R</avail>
       <cost>60</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>8afe5065-5815-4a98-b047-2a7fed85db55</id>
@@ -429,6 +459,7 @@
       <avail>3</avail>
       <cost>50</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>taser</ammoforweapontype>
     </gear>
     <gear>
       <id>96eb3f57-26e0-40c5-8dac-62cf8a0bc52f</id>
@@ -444,6 +475,7 @@
         <ap>-1</ap>
         <damage>2</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>ecc8aafc-f8a3-408b-9b47-6f85a473de13</id>
@@ -459,6 +491,7 @@
         <ap>4</ap>
         <damage>-1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>506dd9c6-ea57-4ae2-8887-81ce93e5a7b2</id>
@@ -471,9 +504,10 @@
       <cost>20</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <ap>+2</ap>
+        <ap>2</ap>
         <damage>-2</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>f29f0642-65a5-4461-bca1-396907dbf82e</id>
@@ -485,6 +519,7 @@
       <avail>8R</avail>
       <cost>150</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>4b844ac3-20e8-4982-8711-20579b5295a8</id>
@@ -496,6 +531,7 @@
       <avail>8R</avail>
       <cost>150</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>4257a39e-41eb-45ee-976e-41c3c0bf960c</id>
@@ -515,13 +551,14 @@
         <damage>-4</damage>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>9bb893c0-2cab-4f7f-a0cf-bdacc940254b</id>
       <name>Ammo: DMSO Rounds</name>
       <category>Ammunition</category>
       <rating>0</rating>
-      <source>SR5G</source>
+      <source>SR5</source>
       <page>436</page>
       <avail>2R</avail>
       <addoncategory>Drugs</addoncategory>
@@ -529,6 +566,34 @@
       <addoncategory>Custom</addoncategory>
       <cost>20</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>squirtgun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>6fbc580a-50f8-481b-99b0-84243e53fc12</id>
+      <name>Ammo: Narcoject Gas Gun Canisters</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>43</page>
+      <avail>2R</avail>
+      <addoncategory>Drugs</addoncategory>
+      <addoncategory>Toxins</addoncategory>
+      <addoncategory>Custom</addoncategory>
+      <cost>20</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype>gasgun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>ff6aa1f8-d0a5-4d24-af56-2bc2d75bfdd5</id>
+      <name>Ammo: Narcoject Trackstopper Foam</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SL</source>
+      <page>44</page>
+      <avail>15R</avail>
+      <cost>500</cost>
+      <costfor>6</costfor>
+      <ammoforweapontype>trackstopper</ammoforweapontype>
     </gear>
     <gear>
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
@@ -540,6 +605,7 @@
       <avail>Rating</avail>
       <cost>Rating * 2</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>775d2fed-57ab-4e63-b2e4-638ccf4a21d0</id>
@@ -551,6 +617,7 @@
       <avail>(Rating + 2)R</avail>
       <cost>Rating * 20</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>c3c2fa27-36a7-4296-aadd-627078e6e052</id>
@@ -562,6 +629,7 @@
       <avail>2</avail>
       <cost>5</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>7d697849-0a11-4a38-8f07-2e5becf8efe0</id>
@@ -573,6 +641,7 @@
       <avail>8R</avail>
       <cost>50</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>d9bf2003-1911-4e65-b6a1-8babb761dd85</id>
@@ -599,6 +668,18 @@
       <costfor>1</costfor>
     </gear>
     <gear>
+      <id>13b3f7fb-87c1-41d1-9c98-54484b0d557c</id>
+      <name>Elektro-Netz</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>HAMG</source>
+      <page>172</page>
+      <avail>6</avail>
+      <cost>600</cost>
+      <addweapon>Elektro-Netz</addweapon>
+      <costfor>1</costfor>
+    </gear>
+    <gear>
       <id>dd6e4f80-8200-47fa-8f78-9204e9c0f70d</id>
       <name>Arrow: Barbed Head</name>
       <category>Ammunition</category>
@@ -611,6 +692,7 @@
       <weaponbonus>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>d09f3ebd-28fb-4375-ad0f-49fd1b521c12</id>
@@ -627,6 +709,7 @@
         <ap>-1</ap>
         <damage>2</damage>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>8fb09c1d-f890-444b-bb2b-cf1a5e6825b8</id>
@@ -643,6 +726,7 @@
         <damage>1</damage>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>f245f0d0-22ba-4367-97ee-6762df9137bc</id>
@@ -657,6 +741,7 @@
       <weaponbonus>
         <accuracy>-1</accuracy>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>1cdea5f7-df85-4ebe-bc32-f8dbfa27dad3</id>
@@ -672,7 +757,9 @@
         <ap>6</ap>
         <damage>-2</damage>
         <damagetype>S</damagetype>
+        <accuracy>-2</accuracy>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>4ddbecdf-fc04-4b1d-851b-63d5e9e57dbb</id>
@@ -688,6 +775,7 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>258049dc-6f94-4d41-be97-cadeba20ff36</id>
@@ -703,6 +791,7 @@
         <ap>-5</ap>
         <damagereplace>12S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>9517a1df-5e00-46e5-92f7-4669b8b72380</id>
@@ -717,6 +806,7 @@
       <weaponbonus>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>945c0c98-9996-44ca-bc70-013389434d25</id>
@@ -733,6 +823,7 @@
         <ap>-1</ap>
         <damage>2</damage>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>7057d386-6398-4e7f-8f14-1f74bddc7dba</id>
@@ -749,6 +840,7 @@
         <damage>1</damage>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>5acb7b20-ffe5-49fa-8ff7-372a59999fb6</id>
@@ -763,6 +855,7 @@
       <weaponbonus>
         <accuracy>-1</accuracy>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>8939b519-657a-4081-920f-3a4021eb6704</id>
@@ -779,6 +872,7 @@
         <damage>-2</damage>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>aa378f89-8f73-4f05-b920-fe7e35b7b3bd</id>
@@ -794,6 +888,7 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>c4fecc98-0cf7-4e81-adde-bbed821850d6</id>
@@ -809,6 +904,7 @@
         <ap>-5</ap>
         <damagereplace>12S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>crossbow</ammoforweapontype>
     </gear>
     <gear>
       <id>c1df71d5-845b-46c9-ab8d-9166c5cbac70</id>
@@ -845,6 +941,7 @@
       <addweapon>Harpoon</addweapon>
       <cost>125</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>harpoongun</ammoforweapontype>
     </gear>
     <gear>
       <id>42404ae5-f203-4780-a575-a644d6443d20</id>
@@ -884,6 +981,7 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <ammoforweapontype>netgun</ammoforweapontype>
     </gear>
     <gear>
       <id>5200ce56-c541-4a7a-8db2-ed4385f0d94f</id>
@@ -899,6 +997,8 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <!-- ReSharper disable once MarkupTextTypo -->
+      <ammoforweapontype>netgunxl</ammoforweapontype>
     </gear>
     <gear>
       <id>608324BB-E4CE-40B7-AC76-FF3F67B2C8E0</id>
@@ -910,6 +1010,7 @@
       <avail>16F</avail>
       <cost>40</cost>
       <costfor>4</costfor>
+      <ammoforweapontype>flame</ammoforweapontype>
     </gear>
     <gear>
       <id>8C9AE7B4-EF1F-4983-9008-795D3592B417</id>
@@ -924,6 +1025,7 @@
       <weaponbonus>
         <ap>-1</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>911BB20E-E325-4399-8F7A-82FDCE13AE51</id>
@@ -931,14 +1033,15 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>RG</source>
-      <page>28</page>
-      <avail>15</avail>
+      <page>27</page>
+      <avail>14R</avail>
       <cost>160</cost>
       <costfor>10</costfor>
       <weaponbonus>
         <ap>-5</ap>
         <damage>-2S(e)</damage>
       </weaponbonus>
+      <ammoforweapontype>gyrojet</ammoforweapontype>
     </gear>
     <gear>
       <id>FE737992-B03B-484C-8F5C-B3BD554B9381</id>
@@ -950,6 +1053,7 @@
       <avail>18F</avail>
       <cost>400</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>cannon</ammoforweapontype>
     </gear>
     <gear>
       <id>784dfff3-7c0e-4166-8687-e3012ef3b434</id>
@@ -961,6 +1065,7 @@
       <avail>9</avail>
       <cost>350</cost>
       <costfor>4</costfor>
+      <ammoforweapontype>netgun</ammoforweapontype>
     </gear>
     <gear>
       <id>6ac1a45c-d8cc-42fd-9306-63ec3f4618e2</id>
@@ -972,6 +1077,8 @@
       <avail>9</avail>
       <cost>400</cost>
       <costfor>2</costfor>
+      <!-- ReSharper disable once MarkupTextTypo -->
+      <ammoforweapontype>netgunxl</ammoforweapontype>
     </gear>
     <gear>
       <id>48c4b8ed-80cd-4744-83b8-06842fd917aa</id>
@@ -996,6 +1103,7 @@
       <addweapon>Bola</addweapon>
       <cost>75</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>bola</ammoforweapontype>
     </gear>
     <gear>
       <id>f7b819d7-9f6a-446e-b916-82b5973883d6</id>
@@ -1008,6 +1116,7 @@
       <addweapon>Monofilament Bola</addweapon>
       <cost>4000</cost>
       <costfor>1</costfor>
+      <ammoforweapontype>bola</ammoforweapontype>
     </gear>
     <gear>
       <id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
@@ -1100,6 +1209,7 @@
       <avail>6R</avail>
       <addweapon>Minigrenade: Flash-Bang</addweapon>
       <cost>100</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>7c00891f-6554-497d-9726-058d7c4a598e</id>
@@ -1111,6 +1221,7 @@
       <avail>4</avail>
       <addweapon>Minigrenade: Flash-Pak</addweapon>
       <cost>125</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>8e1583bf-4cc5-4498-a800-36cb61d3fb27</id>
@@ -1122,6 +1233,7 @@
       <avail>11F</avail>
       <addweapon>Minigrenade: Fragmentation</addweapon>
       <cost>100</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>daecdfc8-15d5-4864-9e20-13e4a0dca88e</id>
@@ -1133,6 +1245,7 @@
       <avail>11F</avail>
       <addweapon>Minigrenade: High Explosive</addweapon>
       <cost>100</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>74284124-57a0-479b-9ab1-3433bdb9e3b7</id>
@@ -1147,6 +1260,7 @@
       <addoncategory>Custom</addoncategory>
       <addweapon>Minigrenade: Gas</addweapon>
       <cost>40</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>b6381691-1a96-4299-b9df-129ffee64c45</id>
@@ -1158,6 +1272,7 @@
       <avail>4R</avail>
       <addweapon>Minigrenade: Smoke</addweapon>
       <cost>40</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>e2252b3c-1bae-496e-adbb-f1c3d6e0b32b</id>
@@ -1169,6 +1284,7 @@
       <avail>6R</avail>
       <addweapon>Minigrenade: Thermal Smoke</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>50e68547-da12-4d87-9e05-8fefb9ccf723</id>
@@ -1305,6 +1421,7 @@
       <avail>18F</avail>
       <addweapon>Rocket: Anti-Vehicle</addweapon>
       <cost>2800</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>4c5be084-c975-42d2-962c-dc2add203b6b</id>
@@ -1327,6 +1444,7 @@
       <avail>18F</avail>
       <addweapon>Rocket: High Explosive</addweapon>
       <cost>2100</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>413366b8-0ef5-4998-bfce-9ba29db761a9</id>
@@ -1334,10 +1452,11 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>TSG</source>
-      <page>19</page>
+      <page>29</page>
       <avail>12F</avail>
       <addweapon>Rocket: Incendiary</addweapon>
       <cost>1900</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>a42b7377-5a2e-456d-b729-8783873465f0</id>
@@ -1346,9 +1465,10 @@
       <rating>0</rating>
       <source>SR5</source>
       <page>436</page>
-      <avail>18F</avail>
+      <avail>22F</avail>
       <addweapon>Missile: Anti-Vehicle</addweapon>
       <cost>2800</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>bb40694a-59de-4fb8-9cee-697f37377a55</id>
@@ -1357,9 +1477,10 @@
       <rating>0</rating>
       <source>SR5</source>
       <page>436</page>
-      <avail>12F</avail>
+      <avail>16F</avail>
       <addweapon>Missile: Fragmentation</addweapon>
       <cost>2000</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>838a308e-a638-433e-b5bc-54222fb645c9</id>
@@ -1368,9 +1489,10 @@
       <rating>0</rating>
       <source>SR5</source>
       <page>436</page>
-      <avail>18F</avail>
+      <avail>22F</avail>
       <addweapon>Missile: High Explosive</addweapon>
       <cost>2100</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>9ff4b57d-4aaf-482f-ab67-66e10ed58e13</id>
@@ -1382,6 +1504,33 @@
       <avail>16F</avail>
       <cost>20</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>supermach</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>78babb62-e0f1-4561-9e2d-05b0b5fbb2ad</id>
+      <name>Ammo: Water</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>16</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <ammoforweapontype>firefighting cannons</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>767ecc1c-1f47-4684-b36f-0bbe0868ceac</id>
+      <name>Ammo: Fire Extinguishant</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>16</page>
+      <avail>6R</avail>
+      <cost>500</cost>
+      <costfor>50</costfor>
+      <weaponbonus>
+        <damage>-1</damage>
+      </weaponbonus>
+      <ammoforweapontype>firefighting cannons</ammoforweapontype>
     </gear>
     <!-- Region Kill Code-->
 
@@ -1398,6 +1547,7 @@
       <weaponbonus>
         <damagetype>(M)</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>b8ad4fef-4092-42ac-87ad-518dd8b60fb7</id>
@@ -1405,13 +1555,14 @@
       <category>Ammunition</category>
       <rating>6</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>49</page>
       <avail>FixedValues(7R,8R,9R,10R,11R,12R)</avail>
       <cost>FixedValues(20,30,40,50,100,200)</cost>
       <costfor>10</costfor>
       <weaponbonus>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>c40a91b0-7896-4ad1-b1e6-f39c9c93bf1b</id>
@@ -1419,13 +1570,14 @@
       <category>Ammunition</category>
       <rating>2</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>50</page>
       <avail>FixedValues(10R,12R)</avail>
       <cost>FixedValues(30,50)</cost>
       <costfor>10</costfor>
       <weaponbonus>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>efa87c80-d712-41d8-813e-768a2f4ffcf7</id>
@@ -1433,7 +1585,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>50</cost>
       <costfor>10</costfor>
@@ -1441,6 +1593,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>f4be287a-2ed8-4e7b-8244-32243905fe84</id>
@@ -1448,7 +1601,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>60</cost>
       <bonus>
@@ -1459,6 +1612,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>8ddf2080-2444-4d9a-a601-5be4147b183d</id>
@@ -1466,17 +1620,18 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
       </bonus>
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>bf9001db-6484-47ab-9449-5f068f5fe04b</id>
@@ -1484,7 +1639,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>50</cost>
       <costfor>10</costfor>
@@ -1492,6 +1647,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>d1e0807b-6c6e-44bb-a230-c6f328ee26a5</id>
@@ -1499,7 +1655,7 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>60</cost>
       <bonus>
@@ -1510,6 +1666,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>b580d8fc-9987-403a-9be5-760b1d88f926</id>
@@ -1517,11 +1674,11 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>51</page>
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
-        <selecttext />
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
       </bonus>
       <costfor>10</costfor>
       <weaponbonus>
@@ -1530,6 +1687,7 @@
         <damagetype>(M)</damagetype>
         <userange>Light Pistol</userange>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>05a9f4e2-b7c0-4bf8-8614-33b1ee0f406d</id>
@@ -1537,9 +1695,10 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>6R</avail>
       <cost>25</cost>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>2d3b26aa-a2c1-4514-915e-62aa08203456</id>
@@ -1547,9 +1706,10 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>8R</avail>
       <cost>75</cost>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>74906d00-018e-4d1a-8a9c-4b77918de761</id>
@@ -1557,9 +1717,10 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>10R</avail>
       <cost>200</cost>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>65a853d4-52d6-44c7-a867-10ea1beaece3</id>
@@ -1567,9 +1728,10 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>52</page>
       <avail>12R</avail>
       <cost>400</cost>
+      <ammoforweapontype>bow</ammoforweapontype>
     </gear>
     <gear>
       <id>051ceea6-65c2-4058-95bd-f63d86a45984</id>
@@ -1577,11 +1739,10 @@
       <category>Ammunition</category>
       <rating>20</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>53</page>
       <avail>10R</avail>
       <cost>Rating*20</cost>
-      <!-- TODO: Grenade weapons
-      <addweapon>Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
     </gear>
     <gear>
       <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
@@ -1589,11 +1750,10 @@
       <category>Ammunition</category>
       <rating>0</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>54</page>
       <avail>10R</avail>
       <cost>500</cost>
-      <!-- TODO: Grenade weapons
-      <addweapon>Grenade: COS</addweapon>-->
+      <addweapon>Grenade: COS</addweapon>
     </gear>
     <gear>
       <id>0c98750a-4286-4ec5-9035-b76f36c03ce4</id>
@@ -1601,11 +1761,10 @@
       <category>Ammunition</category>
       <rating>10</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>55</page>
       <avail>Rating*2F</avail>
       <cost>Rating*50</cost>
-      <!-- TODO: Grenade weapons
-    <addweapon>Grenade: Douser</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Douser</addweapon>
     </gear>
     <gear>
       <id>965ccb60-f9e2-4a44-8a11-05e6c5bd4457</id>
@@ -1613,11 +1772,167 @@
       <category>Ammunition</category>
       <rating>10</rating>
       <source>KC</source>
-      <page>48</page>
+      <page>56</page>
       <avail>Rating*2R</avail>
       <cost>Rating*50</cost>
-      <!-- TODO: Grenade weapons
-    <addweapon>Grenade: DumDum</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: DumDum</addweapon>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Krime Katalog -->
+    <gear>
+      <id>9d4cd46c-1fb9-4182-8a82-0479cf2adaae</id>
+      <name>Ammo: Krime Power Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>3R</avail>
+      <cost>75</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>6ffa3fc7-e390-43b5-b27e-3d01baecec92</id>
+      <name>Ammo: Krime Penetrator Buckshot Shells</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>16F</avail>
+      <cost>250</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <ap>-2</ap>
+      </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>959b02ff-b3b3-4027-8ada-799f31a7a323</id>
+      <name>Ammo: Krime Crackle Fin-Stabilized HEAT Slugs</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>20F</avail>
+      <cost>300</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>2</damage>
+        <ap>-3</ap>
+      </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>97febd7d-6385-472e-87af-29313f9224ae</id>
+      <name>Ammo: Krime Laser Bullets</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>6R</avail>
+      <cost>125</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype>gun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>c18eed96-2697-4b95-9be7-be9313504a2f</id>
+      <name>Ammo: Krime Punisher Assault Cannon Rounds</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>8F</avail>
+      <cost>200</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>-3</damage>
+        <ap>-3</ap>
+      </weaponbonus>
+      <ammoforweapontype>cannon</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>17136c4b-af3b-44a4-b5cf-2eedf7e9d217</id>
+      <name>Ammo: Krime Splash Self-Defense Ammunition</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>24</page>
+      <avail>4R</avail>
+      <cost>100</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagetype>(S)</damagetype>
+        <ap>1</ap>
+      </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>f2300388-1d51-41bf-b333-fae00776a375</id>
+      <name>Grenade: Krime Cleaner</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>27</page>
+      <avail>10F</avail>
+      <cost>200</cost>
+      <addweapon>Grenade: Krime Cleaner</addweapon>
+    </gear>
+    <gear>
+      <id>16c588e4-9961-4ddd-b5f1-e95ed100159f</id>
+      <name>Grenade: Krime Party</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>27</page>
+      <avail>14F</avail>
+      <cost>190</cost>
+      <addweapon>Grenade: Krime Party</addweapon>
+    </gear>
+    <gear>
+      <id>b654b65a-b9e4-4be2-ac96-53044f5d9b40</id>
+      <name>Grenade: Krime Cocktail</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>28</page>
+      <avail>14F</avail>
+      <cost>100</cost>
+      <addweapon>Grenade: Krime Cocktail</addweapon>
+    </gear>
+    <gear>
+      <id>9964cf3d-c608-4ab5-ba8a-5ea7c96f29fb</id>
+      <name>Grenade: Krime Stinger</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>29</page>
+      <avail>8R</avail>
+      <cost>125</cost>
+      <addweapon>Grenade: Krime Stinger</addweapon>
+    </gear>
+    <gear>
+      <id>5768d347-cd1e-454c-b5f7-012266c185a4</id>
+      <name>Micro-Torpedo: Chemical</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>18F</avail>
+      <addweapon>Micro-Torpedo: Chemical</addweapon>
+      <cost>3000</cost>
+      <ammoforweapontype>microtorpedo</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>0e1ec849-e332-4683-aabb-a94e46512c22</id>
+      <name>Micro-Torpedo: Explosive</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>18F</avail>
+      <addweapon>Micro-Torpedo: Explosive</addweapon>
+      <cost>2500</cost>
+      <ammoforweapontype>microtorpedo</ammoforweapontype>
     </gear>
     <!-- End Region -->
     <!-- End Region -->
@@ -2863,8 +3178,26 @@
       <required>
         <geardetails>
           <OR>
-            <name>Fuchi Cyber-N</name>
             <name>Fuchi Cyber-Ex</name>
+          </OR>
+        </geardetails>
+      </required>
+    </gear>
+    <gear>
+      <id>e89a1f81-d2f8-499e-9ebc-8e7230a0e4e8</id>
+      <name>[Custom Cyberdeck] Firewall</name>
+      <category>Custom Cyberdeck Attributes</category>
+      <rating>{Parent Rating}</rating>
+      <source>KC</source>
+      <page>60</page>
+      <avail>0</avail>
+      <armorcapacity>[2]</armorcapacity>
+      <cost>(Rating*Rating*Rating)*500</cost>
+      <modfirewall>{Rating}</modfirewall>
+      <required>
+        <geardetails>
+          <OR>
+            <name>Fuchi Cyber-N</name>
           </OR>
         </geardetails>
       </required>
@@ -3302,6 +3635,13 @@
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
+      <requireparent />
+      <required>
+        <parentdetails>
+          <name>Cyberdeck</name>
+          <category>Headware</category>
+        </parentdetails>
+      </required>
     </gear>
     <gear>
       <id>b00002dd-2aed-47d7-9ecf-88c7fafb4746</id>
@@ -4884,6 +5224,7 @@
     </gear>
     <gear>
       <id>f35d6a78-de2c-4b99-9509-2c87c5e382b4</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>CompuForce TaskMaster</name>
       <category>Rigger Command Consoles</category>
       <rating>0</rating>
@@ -5039,6 +5380,7 @@
     </gear>
     <gear>
       <id>fe9d2aa1-f914-4e3b-b1ec-29cc97312c34</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>Triox UberMensch</name>
       <category>Rigger Command Consoles</category>
       <rating>0</rating>
@@ -5814,7 +6156,7 @@
       <page>269</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5827,7 +6169,7 @@
       <page>269</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5840,7 +6182,7 @@
       <page>270</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5853,7 +6195,7 @@
       <page>270</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Ranged']" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5888,7 +6230,20 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selectskill limittoskill="First Aid,Hardware,Instruction,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic,Navigation,Performance" />
+      </bonus>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>7A1C4240-0F4F-46E1-90F8-CE4DA136E927</id>
+      <name>Skill Autosoft (Knowledge)</name>
+      <category>Autosofts</category>
+      <rating>6</rating>
+      <source>R5</source>
+      <page>127</page>
+      <avail>Rating * 2</avail>
+      <bonus>
+        <selectskill knowledgeskills="True" skillcategory="Academic,Language,Professional" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5901,7 +6256,7 @@
       <page>127</page>
       <avail>(Rating * 2)R</avail>
       <bonus>
-        <selectskill />
+        <selectskill limittoskill="Chemistry,Demolitions,Electronic Warfare,Lockpicking,Medicine" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -5914,7 +6269,7 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Melee']" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6082,7 +6437,7 @@
         <limitmodifier>
           <limit>Social</limit>
           <value>1</value>
-          <condition>Only for Intimidation</condition>
+          <condition>LimitCondition_Intimidation</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
@@ -6105,7 +6460,7 @@
       <category>Electronics Accessories</category>
       <rating>0</rating>
       <source>CA</source>
-      <page>138</page>
+      <page>139</page>
       <avail>2</avail>
       <armorcapacity>[0]</armorcapacity>
       <cost>200</cost>
@@ -6539,17 +6894,6 @@
       <requireparent />
     </gear>
     <gear>
-      <id>863a5600-1e4f-4f33-9fca-b2715857dee4</id>
-      <name>Euro (€)</name>
-      <category>Currency</category>
-      <rating>0</rating>
-      <source>SR5G</source>
-      <page>442</page>
-      <avail>0</avail>
-      <cost>1</cost>
-      <capacity>[1]</capacity>
-    </gear>
-    <gear>
       <id>ee174974-ff69-4dee-9803-034d809a0344</id>
       <name>UCAS Dollar ($)</name>
       <category>Currency</category>
@@ -6706,6 +7050,7 @@
       <cost>5</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>4f5b4fbc-78c4-4aa4-a5c2-7739f12e9b39</id>
@@ -6719,6 +7064,7 @@
       <cost>20</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>697ef5f4-8cde-434d-aca6-1bddd4d526d3</id>
@@ -6732,6 +7078,7 @@
       <cost>100</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>a19055f0-02ab-4bc2-ab43-0ef82e1b9100</id>
@@ -6745,6 +7092,7 @@
       <cost>500</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>fd2c8afe-7c0f-4b98-ae93-a6108531b236</id>
@@ -6758,6 +7106,7 @@
       <cost>1000</cost>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>8a16bbb2-8028-4c74-b22b-7aad9d001073</id>
@@ -7094,7 +7443,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Visual)</condition>
+          <condition>LimitCondition_SkillsActivePerceptionVisual</condition>
         </limitmodifier>
       </bonus>
       <capacity>[Rating]</capacity>
@@ -7219,7 +7568,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for Perception (Hearing)</condition>
+          <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </limitmodifier>
       </bonus>
       <capacity>[Rating]</capacity>
@@ -7252,7 +7601,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>2</value>
-          <condition>Only for Perception to find the source of a sound</condition>
+          <condition>LimitCondition_SkillsActivePerceptionSpatialRecognizer</condition>
         </limitmodifier>
       </bonus>
       <capacity>[2]</capacity>
@@ -7270,7 +7619,7 @@
       <category>Audio Enhancements</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>229</page>
+      <page>247</page>
       <avail>0</avail>
       <armorcapacity>[1]</armorcapacity>
       <capacity>[1]</capacity>
@@ -7318,6 +7667,7 @@
         </geardetails>
       </required>
       <cost>0</cost>
+      <hide />
     </gear>
     <gear>
       <id>49bbc9d3-860d-47db-b4bc-8417f5b6ab65</id>
@@ -7678,6 +8028,27 @@
       <cost>0</cost>
     </gear>
     <gear>
+      <id>5f83726b-237c-4628-9a67-f80e91ca0181</id>
+      <name>Radar Scanner</name>
+      <category>Sensor Functions</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>20</page>
+      <avail>0</avail>
+      <armorcapacity>[1]</armorcapacity>
+      <capacity>[1]</capacity>
+      <required>
+        <geardetails>
+          <OR>
+            <category>Sensors</category>
+            <category>Custom</category>
+          </OR>
+        </geardetails>
+      </required>
+      <cost>0</cost>
+      <hide />
+    </gear>
+    <gear>
       <id>295350cc-692d-49d8-aa85-d61ff0badcfc</id>
       <name>Chem Detect Nail Polish</name>
       <category>Sensors</category>
@@ -7698,6 +8069,33 @@
       <avail>Rating * 3</avail>
       <capacity>0</capacity>
       <cost>Rating * 250</cost>
+    </gear>
+    <gear>
+      <id>ba8385ca-e355-4e96-a1f7-7398a360ca5c</id>
+      <name>Krime Ripper Sensor Array</name>
+      <category>Sensors</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>20</page>
+      <avail>0</avail>
+      <hide />
+      <gears>
+        <usegear>
+          <name>Motion Sensor</name>
+          <category>Sensor Functions</category>
+          <rating>3</rating>
+        </usegear>
+        <usegear>
+          <name>Radar Scanner</name>
+          <category>Sensor Functions</category>
+          <rating>3</rating>
+        </usegear>
+        <usegear>
+          <name>Thermographic Vision</name>
+          <category>Vision Enhancements</category>
+        </usegear>
+      </gears>
+      <cost>0</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Tools of the Trade-->
@@ -8030,7 +8428,7 @@
         <limitmodifier>
           <limit>Physical</limit>
           <value>Rating</value>
-          <condition>Only for picking mechanical locks</condition>
+          <condition>LimitCondition_GearAutopicker</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 500</cost>
@@ -8393,10 +8791,11 @@
       <page>449</page>
       <avail>0</avail>
       <cost>25</cost>
+      <ammoforweapontype>flaregun</ammoforweapontype>
     </gear>
     <gear>
       <id>2bb6956f-c00e-452c-ab99-6b4613d7bb3e</id>
-      <name>Rapelling Gloves</name>
+      <name>Rappelling Gloves</name>
       <category>Survival Gear</category>
       <rating>0</rating>
       <source>SR5</source>
@@ -8727,6 +9126,7 @@
       <page>449</page>
       <avail>4</avail>
       <cost>50</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>14243f3e-8d05-480d-8e74-b90ee615e6ff</id>
@@ -8737,6 +9137,7 @@
       <page>449</page>
       <avail>10</avail>
       <cost>200</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>8adaecd5-0c24-4982-8803-e4459e16589f</id>
@@ -8747,6 +9148,7 @@
       <page>449</page>
       <avail>0</avail>
       <cost>50</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>76890101-9f90-41db-a6f0-6f5fd4802896</id>
@@ -8757,6 +9159,7 @@
       <page>449</page>
       <avail>8F</avail>
       <cost>85</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>24299462-b0d1-470e-b520-64fb755421db</id>
@@ -8767,6 +9170,7 @@
       <page>185</page>
       <avail>8</avail>
       <cost>100</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>54fc44f0-fc74-4efb-a323-1bd47c8ca5e1</id>
@@ -8777,6 +9181,7 @@
       <page>185</page>
       <avail>2</avail>
       <cost>100</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>3a9dc42d-6fb8-42f2-93c3-554d67a7eb6a</id>
@@ -8787,6 +9192,7 @@
       <page>185</page>
       <avail>12F</avail>
       <cost>170</cost>
+      <ammoforweapontype>grapplegun</ammoforweapontype>
     </gear>
     <gear>
       <id>6976ac65-f8aa-482a-bc32-2986beae4c76</id>
@@ -8854,6 +9260,7 @@
     </gear>
     <gear>
       <id>a0076e1e-66ad-4c1b-88eb-09c15c608d68</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>HemostatiX Dressing</name>
       <category>Biotech</category>
       <rating>0</rating>
@@ -8885,7 +9292,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>Rating</value>
-          <condition>Only for First Aid and Medicine</condition>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </limitmodifier>
       </bonus>
       <cost>Rating * 250</cost>
@@ -9392,8 +9799,8 @@
       <page>319</page>
       <avail>(Rating * 4)R</avail>
       <bonus>
-        <skillattribute>
-          <name precedence="0">MAG</name>
+        <skillattribute precedence="0">
+          <name>MAG</name>
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />
@@ -9709,7 +10116,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -9722,7 +10129,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -9735,7 +10142,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 4000</cost>
     </gear>
@@ -9750,6 +10157,1080 @@
       <bonus>
         <weaponspecificdice type="Melee">Rating</weaponspecificdice>
       </bonus>
+      <cost>Rating * 7000</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Individualized Foci (SG 230) -->
+
+    <!-- Region Foci -->
+    <gear>
+      <id>7576D46D-87F3-47C3-A2A4-1D8E75EBA0AA</id>
+      <name>Alchemical Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <specificskill>
+          <name>Alchemy</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 5000</cost>
+    </gear>
+    <gear>
+      <id>28B75B07-9C52-4B91-B703-5B8056155ECF</id>
+      <name>Disenchanting Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <specificskill>
+          <name>Disenchanting</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 5000</cost>
+    </gear>
+    <gear>
+      <id>43B96B66-7EEA-4329-99FB-D1B235427F77</id>
+      <name>Centering Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>20537E69-CF47-42CC-95FA-697D4328580C</id>
+      <name>Flexible Signature Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>E4E9BC30-3381-40CC-981D-EE911B3701A8</id>
+      <name>Masking Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>FF0D4D9C-1286-4E08-908B-6D74D3E5F64F</id>
+      <name>Spell Shaping Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>9A36D4CB-2766-429D-ACE8-39B6615E5A25</id>
+      <name>Power Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 4)R</avail>
+      <bonus>
+        <skillattribute precedence="0">
+          <name>MAG</name>
+          <bonus>Rating</bonus>
+        </skillattribute>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 18000</cost>
+    </gear>
+    <gear>
+      <id>A4E9723D-0EF6-4A9E-8DDB-FC088780C52F</id>
+      <name>Qi Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selectpowers>
+          <selectpower>
+            <ignorerating>True</ignorerating>
+            <val>Rating</val>
+            <limit>Rating</limit>
+            <pointsperlevel>0.25</pointsperlevel>
+          </selectpower>
+        </selectpowers>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 3000</cost>
+    </gear>
+    <gear>
+      <id>584AAC51-6E93-4B42-868B-183EC26727C7</id>
+      <name>Counterspelling Focus, Combat, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>DB4E9091-929E-4004-AA1E-57030BAF557F</id>
+      <name>Ritual Spellcasting Focus, Combat, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>A6747F35-5806-4162-8646-52249123D74B</id>
+      <name>Spellcasting Focus, Combat, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Combat</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>1215E656-51F6-4963-86A2-47A68A3C129F</id>
+      <name>Sustaining Focus, Combat, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>A11827B3-187F-4D50-96F4-34FE066B19A8</id>
+      <name>Counterspelling Focus, Detection, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>8A24D83C-34B1-41FA-9F76-413FBC935848</id>
+      <name>Ritual Spellcasting Focus, Detection, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>C00F7A3B-7329-4808-86FE-99E147613F03</id>
+      <name>Spellcasting Focus, Detection, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Detection</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>ED3B94D3-ABE1-4038-BE1F-84ACEC230750</id>
+      <name>Sustaining Focus, Detection, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>9C07DBC7-FCD2-42AD-B916-8036046B21C4</id>
+      <name>Counterspelling Focus, Health, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>7E1C7451-46E4-43C9-A2C1-F2146D5DC0D6</id>
+      <name>Ritual Spellcasting Focus, Health, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>50220493-C055-44D5-BAB0-84C689EB666B</id>
+      <name>Spellcasting Focus, Health, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Health</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>402C3ABD-6AF7-491B-BCA0-85D3F13F14F7</id>
+      <name>Sustaining Focus, Health, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>95407529-4089-4E0D-BBF2-8D22EA7F4609</id>
+      <name>Counterspelling Focus, Illusion, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>346AA42D-452D-4BB7-A318-620F9E2A4547</id>
+      <name>Ritual Spellcasting Focus, Illusion, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>0B34228E-05EB-40FB-B330-90AE54966292</id>
+      <name>Spellcasting Focus, Illusion, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Illusion</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>49E16F6A-2054-4FFA-A3A0-CD58D1CA46A3</id>
+      <name>Sustaining Focus, Illusion, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>1FEDF8B4-11C1-4BE9-B32D-70056B80DD50</id>
+      <name>Counterspelling Focus, Manipulation, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>DE2FDF51-DE6C-4315-B3F1-B266DAA06169</id>
+      <name>Ritual Spellcasting Focus, Manipulation, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>16D3B0D0-363F-4DF4-9AA1-42146168DA96</id>
+      <name>Spellcasting Focus, Manipulation, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Manipulation</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>2EEB0C3A-790A-4FB5-A4D6-26D42739E168</id>
+      <name>Sustaining Focus, Manipulation, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>A4DCE79A-AF2D-4AC1-9CBB-F5A54B143C15</id>
+      <name>Summoning Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>ABA82B09-FC70-443A-9DC7-0B56446AABCE</id>
+      <name>Banishing Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>D329D94D-9649-4B0B-8C7C-8299A288822A</id>
+      <name>Binding Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>CC2DFA43-6185-45AF-88A4-E6AF89C18D6D</id>
+      <name>Weapon Focus, Individualized, Partial</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 4)R</avail>
+      <bonus>
+        <weaponspecificdice type="Melee">Rating</weaponspecificdice>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
+      <cost>Rating * 7000</cost>
+    </gear>
+    <gear>
+      <id>5F4DC485-31FB-4CE1-9B5A-463ADD1E3C58</id>
+      <name>Alchemical Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <specificskill>
+          <name>Alchemy</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 5000</cost>
+    </gear>
+    <gear>
+      <id>CD7A43BA-6B74-4DFF-AB74-ADD8B2633E2D</id>
+      <name>Disenchanting Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <specificskill>
+          <name>Disenchanting</name>
+          <bonus>Rating</bonus>
+        </specificskill>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 5000</cost>
+    </gear>
+    <gear>
+      <id>5CB38A41-A296-4AA2-B2A4-3E0D68C7EB7B</id>
+      <name>Centering Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>52009B1B-A82D-4162-B598-21584DE66799</id>
+      <name>Flexible Signature Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>33B0643C-B9F3-4792-93EA-64F27A533C9E</id>
+      <name>Masking Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>9777864F-B693-4B6C-ADEF-AA5068C20F89</id>
+      <name>Spell Shaping Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 9000</cost>
+    </gear>
+    <gear>
+      <id>9998AB1B-8C0A-4F71-9459-D2D231E07419</id>
+      <name>Power Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 4)R</avail>
+      <bonus>
+        <skillattribute precedence="0">
+          <name>MAG</name>
+          <bonus>Rating</bonus>
+        </skillattribute>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 18000</cost>
+    </gear>
+    <gear>
+      <id>C758A074-D7FE-4152-B029-3DADCC4AD8A0</id>
+      <name>Qi Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selectpowers>
+          <selectpower>
+            <ignorerating>True</ignorerating>
+            <val>Rating</val>
+            <limit>Rating</limit>
+            <pointsperlevel>0.25</pointsperlevel>
+          </selectpower>
+        </selectpowers>
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 3000</cost>
+    </gear>
+    <gear>
+      <id>20D409B4-2F9E-40C0-9421-E5DCDE4890E3</id>
+      <name>Counterspelling Focus, Combat, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>54A5D681-0C23-4DC5-8ED2-019755F83D2E</id>
+      <name>Ritual Spellcasting Focus, Combat, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>F5FCBE07-9D7B-4AEA-99C6-171754F0751A</id>
+      <name>Spellcasting Focus, Combat, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Combat</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>068631C4-1834-4812-8121-DA4A07EF5D6D</id>
+      <name>Sustaining Focus, Combat, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>4BC6A78F-0824-4EE3-AA9C-411771518301</id>
+      <name>Counterspelling Focus, Detection, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>BBC2DF76-248B-446F-B9D8-0D4B0BEDA4D8</id>
+      <name>Ritual Spellcasting Focus, Detection, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>984273A0-B31B-4ADD-9446-8399930EE158</id>
+      <name>Spellcasting Focus, Detection, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Detection</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>5BBB0D19-882D-4CBA-A28B-CC9FE41808EB</id>
+      <name>Sustaining Focus, Detection, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>8ED17B61-C4A2-4922-9DC9-8A7B1B416476</id>
+      <name>Counterspelling Focus, Health, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>17343042-B2F3-4B38-A502-A7755B215AFD</id>
+      <name>Ritual Spellcasting Focus, Health, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>0581EC22-F018-40C7-9BEF-20EC3BBC3BF0</id>
+      <name>Spellcasting Focus, Health, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Health</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>BA54CD71-5750-4060-859C-8589DF2A88DD</id>
+      <name>Sustaining Focus, Health, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>924E1822-AFDE-4B5B-9F08-628CFDF0C5EA</id>
+      <name>Counterspelling Focus, Illusion, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>2A2E2C5F-20A5-44A1-A043-2610A4B1633C</id>
+      <name>Ritual Spellcasting Focus, Illusion, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>F64A3EDC-35B8-427D-A94E-29EE098A41F3</id>
+      <name>Spellcasting Focus, Illusion, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Illusion</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>2813520C-748B-4281-92B3-55DF561FB62C</id>
+      <name>Sustaining Focus, Illusion, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>306D9A36-F344-4D8D-A3A9-40778996D5AB</id>
+      <name>Counterspelling Focus, Manipulation, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>F9DD1033-C78F-4E7D-8CDD-AE7B03F1CF4F</id>
+      <name>Ritual Spellcasting Focus, Manipulation, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>5BF36F32-579A-4278-BC8B-0E2AEF12090A</id>
+      <name>Spellcasting Focus, Manipulation, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <spellcategory>
+          <name>Manipulation</name>
+          <val>Rating</val>
+        </spellcategory>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>B2872926-18E3-4AF7-9CB8-BEEA78ECFC0C</id>
+      <name>Sustaining Focus, Manipulation, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttradition />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>7E63B243-6AB9-40AA-8FD3-429C6A85F3FB</id>
+      <name>Summoning Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>DA4BC317-B29D-4990-BEDD-B607EE0B5D75</id>
+      <name>Banishing Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>A50A38E7-C46A-4EA9-A0DA-F6FFA11090BF</id>
+      <name>Binding Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 3)R</avail>
+      <bonus>
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      <cost>Rating * 4000</cost>
+    </gear>
+    <gear>
+      <id>2C40882C-E5CD-452A-8F55-CEB60507240B</id>
+      <name>Weapon Focus, Individualized, Complete</name>
+      <category>Foci</category>
+      <rating>18</rating>
+      <source>SG</source>
+      <page>230</page>
+      <avail>(Rating * 4)R</avail>
+      <bonus>
+        <weaponspecificdice type="Melee">Rating</weaponspecificdice>
+      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
       <cost>Rating * 7000</cost>
     </gear>
     <!-- End Region -->
@@ -10127,7 +11608,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 1000</cost>
       <allowrename>True</allowrename>
@@ -10141,7 +11622,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 1000</cost>
       <allowrename>True</allowrename>
@@ -10155,7 +11636,7 @@
       <page>320</page>
       <avail>(Rating * 3)R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
       </bonus>
       <cost>Rating * 1000</cost>
       <allowrename>True</allowrename>
@@ -10183,7 +11664,7 @@
       <page>326</page>
       <avail>8R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Combat']" allowedit="True" />
       </bonus>
       <cost>2000</cost>
       <allowrename>True</allowrename>
@@ -10197,7 +11678,7 @@
       <page>326</page>
       <avail>4R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Detection']" allowedit="True" />
       </bonus>
       <cost>500</cost>
       <allowrename>True</allowrename>
@@ -10211,7 +11692,7 @@
       <page>326</page>
       <avail>4R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Health']" allowedit="True" />
       </bonus>
       <cost>500</cost>
       <allowrename>True</allowrename>
@@ -10225,7 +11706,7 @@
       <page>326</page>
       <avail>8R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Illusion']" allowedit="True" />
       </bonus>
       <cost>1000</cost>
       <allowrename>True</allowrename>
@@ -10239,7 +11720,7 @@
       <page>326</page>
       <avail>8R</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell[category = 'Manipulation']" allowedit="True" />
       </bonus>
       <cost>1500</cost>
       <allowrename>True</allowrename>
@@ -10265,6 +11746,19 @@
       <page>326</page>
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
+      <bonus>
+        <selecttradition />
+      </bonus>
+    </gear>
+    <gear>
+      <id>09C5BE79-090E-461A-87C7-4A8BDBEB0B98</id>
+      <name>Sacred Circle Materials</name>
+      <category>Magical Supplies</category>
+      <rating>20</rating>
+      <source>FA</source>
+      <page>65</page>
+      <avail>Rating * 2</avail>
+      <cost>Rating * 1500</cost>
       <bonus>
         <selecttradition />
       </bonus>
@@ -10432,7 +11926,7 @@
       <rating>0</rating>
       <source>FA</source>
       <page>187</page>
-      <avail>6E</avail>
+      <avail>6R</avail>
       <cost>50</cost>
       <bonus>
         <selecttradition />
@@ -10471,8 +11965,8 @@
       <rating>0</rating>
       <source>FA</source>
       <page>187</page>
-      <avail>60</avail>
-      <cost>14R</cost>
+      <avail>14R</avail>
+      <cost>60</cost>
       <bonus>
         <selecttradition />
       </bonus>
@@ -10484,7 +11978,7 @@
       <rating>0</rating>
       <source>FA</source>
       <page>187</page>
-      <avail>18E</avail>
+      <avail>18R</avail>
       <cost>300</cost>
       <bonus>
         <selecttradition />
@@ -10561,7 +12055,7 @@
       <page>212</page>
       <avail>4</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="spells.xml" xpath="/chummer/spells/spell" />
       </bonus>
       <cost>2000</cost>
     </gear>
@@ -10634,7 +12128,7 @@
       <page>213</page>
       <avail>(Rating * Rating)R</avail>
       <bonus>
-        <selecttext />
+        <selectskill skillcategory="Physical Active" />
       </bonus>
       <cost>Rating * 1500</cost>
     </gear>
@@ -10771,7 +12265,7 @@
       <page>143</page>
       <avail>9</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="traditions.xml" xpath="/chummer/spirits/spirit/name" />
       </bonus>
       <cost>1000</cost>
       <allowrename>True</allowrename>
@@ -10919,6 +12413,7 @@
       <page>409</page>
       <avail>4R</avail>
       <cost>20</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>e90016cf-cf44-4cd2-9343-c0f2a58e1aa2</id>
@@ -10949,6 +12444,7 @@
       <page>410</page>
       <avail>6R</avail>
       <cost>25</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>24e87c73-22be-480d-bb79-978277672a1d</id>
@@ -10959,6 +12455,7 @@
       <page>410</page>
       <avail>12R</avail>
       <cost>60</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>f81d9a2e-5c2d-49ad-93b4-1a7a71439bf3</id>
@@ -10969,6 +12466,7 @@
       <page>410</page>
       <avail>13R</avail>
       <cost>60</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>4ad3f9ea-4ee0-45f8-a57b-ed40c660d0b0</id>
@@ -10979,6 +12477,7 @@
       <page>410</page>
       <avail>14R</avail>
       <cost>100</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>a79225da-7507-4b40-8cc1-867213a3c7d8</id>
@@ -10989,6 +12488,8 @@
       <page>410</page>
       <avail>0</avail>
       <cost>5</cost>
+      <!-- ReSharper disable once MarkupTextTypo -->
+      <ammoforweapontype>pepperpunch,spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>189c3bb8-357b-412a-afc4-ce931ea8871d</id>
@@ -10999,6 +12500,7 @@
       <page>410</page>
       <avail>20F</avail>
       <cost>1000</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>0a2194c5-1bfa-4c6a-b84b-c828f0e8fea5</id>
@@ -11029,6 +12531,7 @@
       <page>20</page>
       <avail>10F</avail>
       <cost>500</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>2b8ff345-7f72-4a42-a8b1-0acd54c4db9a</id>
@@ -11049,6 +12552,29 @@
       <page>21</page>
       <avail>16R</avail>
       <cost>5000</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>4235dd3f-1865-4f7b-b2e5-e43fdcbd94de</id>
+      <name>KEV Ammunition</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>SRM0803</source>
+      <page>8</page>
+      <avail>10</avail>
+      <cost>20</cost>
+    </gear>
+    <!-- A hacky way of making sure people who are only using one of the two SRM books still get access to KEV.
+    Also lines up with how the compound has different names in those two books (yay, CGL quality control!). -->
+    <gear>
+      <id>8be8c24a-57d6-4341-bc49-550a0c937c2e</id>
+      <name>KE-V</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>SRM0804</source>
+      <page>11</page>
+      <avail>10</avail>
+      <cost>20</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Drugs -->
@@ -11061,6 +12587,7 @@
       <page>411</page>
       <avail>3F</avail>
       <cost>15</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>8dc829b9-8b94-4510-ab1a-2305cbad69c9</id>
@@ -11071,6 +12598,7 @@
       <page>411</page>
       <avail>2R</avail>
       <cost>10</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>5f5bc907-ce31-4f34-b7cf-a48d9d5d10b3</id>
@@ -11081,6 +12609,7 @@
       <page>411</page>
       <avail>8F</avail>
       <cost>400</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>929c4835-1754-4999-9215-9859e8ec5384</id>
@@ -11091,6 +12620,7 @@
       <page>411</page>
       <avail>2R</avail>
       <cost>75</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>098bf489-bea9-4f17-b3d9-aead979fdc32</id>
@@ -11101,6 +12631,7 @@
       <page>412</page>
       <avail>4R</avail>
       <cost>100</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>d4cf626d-0af1-41f7-bec0-e53b4dba2eb1</id>
@@ -11121,6 +12652,7 @@
       <page>412</page>
       <avail>2R</avail>
       <cost>50</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>836f54d5-1e11-49ea-b115-34c14ed843c9</id>
@@ -11131,6 +12663,7 @@
       <page>412</page>
       <avail>2R</avail>
       <cost>10</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>778eefae-94ad-4f8c-ad03-8b9039b5c48e</id>
@@ -11151,6 +12684,7 @@
       <page>412</page>
       <avail>4R</avail>
       <cost>5</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>35309aeb-0cbc-4b64-a809-34de50812564</id>
@@ -11174,6 +12708,7 @@
     </gear>
     <gear>
       <id>5929d3b9-451b-4be8-a292-8b6509d0aeb9</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>HemoSynth</name>
       <category>Drugs</category>
       <rating>0</rating>
@@ -11204,7 +12739,7 @@
     </gear>
     <gear>
       <id>1135e850-8371-4827-b2fe-94f5659583d4</id>
-      <name>Ondanstron</name>
+      <name>Ondansetron</name>
       <category>Drugs</category>
       <rating>0</rating>
       <source>BB</source>
@@ -11242,6 +12777,7 @@
       <page>205</page>
       <avail>6R</avail>
       <cost>200</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>ee783a4e-331f-4e03-bf47-7ecb93341919</id>
@@ -11252,6 +12788,7 @@
       <page>204</page>
       <avail>6R</avail>
       <cost>100</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>31f51b7e-d2eb-4274-aead-72710b198c13</id>
@@ -11272,6 +12809,7 @@
       <page>204</page>
       <avail>6R</avail>
       <cost>75</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>8cb8086b-3171-4a60-bee4-2996e29d5156</id>
@@ -11352,6 +12890,7 @@
       <page>180</page>
       <avail>5F</avail>
       <cost>30</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>67436993-439d-4e6b-b64a-3f506f44721a</id>
@@ -11442,6 +12981,7 @@
       <page>181</page>
       <avail>8R</avail>
       <cost>60</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>df660e33-ce77-46e4-8c13-a92e3b5f37e8</id>
@@ -11512,6 +13052,7 @@
       <page>187</page>
       <avail>12F</avail>
       <cost>1800</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>65122a92-ae48-4e94-8c68-69c1bdc7d46a</id>
@@ -11552,6 +13093,7 @@
       <page>186</page>
       <avail>6F</avail>
       <cost>1250</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>aa22ff52-1615-48cb-9e55-e63539ede39a</id>
@@ -11562,10 +13104,11 @@
       <page>186</page>
       <avail>10F</avail>
       <cost>800</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>7fdde8cd-95f8-4316-9ca4-2ad06f77cb15</id>
-      <name>Oxygenated Flurocarbons</name>
+      <name>Oxygenated Fluorocarbons</name>
       <category>Drugs</category>
       <rating>0</rating>
       <source>CF</source>
@@ -11582,6 +13125,7 @@
       <page>186</page>
       <avail>8F</avail>
       <cost>800</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>9c3ae30d-dd3e-49da-a30b-acbe06b444ac</id>
@@ -11652,10 +13196,21 @@
       <page>187</page>
       <avail>6R</avail>
       <cost>1000</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>62d633d1-0e3a-4ea6-a4ba-f88ccdf72cf9</id>
       <name>Slab</name>
+      <category>Drugs</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>183</page>
+      <avail>8R</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>447827BE-96A4-471F-929F-CB4BFF4CCBB4</id>
+      <name>Reaper</name>
       <category>Drugs</category>
       <rating>0</rating>
       <source>CF</source>
@@ -11672,6 +13227,7 @@
       <page>183</page>
       <avail>1R</avail>
       <cost>10</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>6c030daa-7dc0-4d7e-86a8-d36f4b15e13f</id>
@@ -11702,6 +13258,7 @@
       <page>186</page>
       <avail>10F</avail>
       <cost>1100</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>8a01190e-f484-4fc6-981e-3e954ce17107</id>
@@ -11722,6 +13279,7 @@
       <page>187</page>
       <avail>12F</avail>
       <cost>2350</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>2d35de28-3b3d-4009-8ced-de5fd3869069</id>
@@ -11802,6 +13360,7 @@
       <page>188</page>
       <avail>4R</avail>
       <cost>75</cost>
+      <ammoforweapontype>spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>691af444-8ffc-406b-9999-4ff2058eff1f</id>
@@ -11916,7 +13475,7 @@
     </gear>
     <gear>
       <id>6f0212e2-e656-4e97-ab10-f2521c38189c</id>
-      <name>Berserkr BTL</name>
+      <name>Berserker BTL</name>
       <category>BTLs</category>
       <rating>0</rating>
       <source>CF</source>
@@ -12097,7 +13656,7 @@
         </geardetails>
       </required>
     </gear>
-	<gear>
+    <gear>
       <id>a1c9f8ee-d58d-4583-8ff3-12517dbf76f5</id>
       <name>Personal Drone Rack</name>
       <category>Armor Enhancements</category>
@@ -12107,11 +13666,11 @@
       <cost>500</cost>
       <source>KC</source>
       <page>73</page>
-	  <required>
-		<parentdetails>
-		  <name>Micro-Hardpoint</name>
-		</parentdetails>
-	  </required>
+      <required>
+        <parentdetails>
+          <name>Micro-Hardpoint</name>
+        </parentdetails>
+      </required>
     </gear>
     <!-- End Region -->
     <!-- Region Commlink Accessories -->
@@ -12420,7 +13979,7 @@
       <cost>900</cost>
       <devicerating>0</devicerating>
       <bonus>
-        <selecttext />
+        <selecttext xml="programs.xml" xpath="/chummer/programs/program" />
       </bonus>
       <allowrename>True</allowrename>
     </gear>
@@ -14412,7 +15971,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>0</avail>
       <cost>20</cost>
     </gear>
@@ -14422,7 +15981,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>0</avail>
       <cost>100</cost>
     </gear>
@@ -14432,7 +15991,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>0</avail>
       <cost>2000</cost>
     </gear>
@@ -14442,7 +16001,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>2</avail>
       <cost>20</cost>
     </gear>
@@ -14452,7 +16011,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>4</avail>
       <cost>100</cost>
     </gear>
@@ -14462,7 +16021,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>8</avail>
       <cost>500</cost>
     </gear>
@@ -14472,7 +16031,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>0</avail>
       <cost>8</cost>
     </gear>
@@ -14482,7 +16041,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>4</avail>
       <cost>20</cost>
     </gear>
@@ -14492,7 +16051,7 @@
       <category>Services</category>
       <rating>0</rating>
       <source>RF</source>
-      <page>25</page>
+      <page>254</page>
       <avail>8</avail>
       <cost>50</cost>
     </gear>
@@ -15376,7 +16935,7 @@
     <gear>
       <id>3b97b2ad-0e63-454e-b5de-60896e423bc9</id>
       <name>Musical Instrument (Cheap)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
@@ -15386,7 +16945,7 @@
     <gear>
       <id>83747c8f-9d39-46c4-bdb6-3f2fb59fae4f</id>
       <name>Musical Instrument (Good)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
@@ -15396,12 +16955,42 @@
     <gear>
       <id>942c3fcb-c099-4f38-abae-87eb679ac08e</id>
       <name>Musical Instrument (Nice)</name>
-      <category>Miscellany</category>
+      <category>Musical Instruments</category>
       <rating>0</rating>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
       <cost>500</cost>
+    </gear>
+    <gear>
+      <id>9B0A4676-BC13-467A-8398-F0E40B261335</id>
+      <name>Synthstrument (Cheap)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>40</cost>
+    </gear>
+    <gear>
+      <id>BF1DD7CE-A966-46AD-9561-143E2EF3210E</id>
+      <name>Synthstrument (Good)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>200</cost>
+    </gear>
+    <gear>
+      <id>E3FB93D8-CAD9-4982-8F43-91D52BAF20B5</id>
+      <name>Synthstrument (Nice)</name>
+      <category>Miscellany</category>
+      <rating>0</rating>
+      <source>CF</source>
+      <page>81</page>
+      <avail>0</avail>
+      <cost>1000</cost>
     </gear>
     <gear>
       <id>53a62c92-cb9c-4780-8f42-08c0dbb4c499</id>
@@ -15534,7 +17123,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>1</value>
-          <condition>Only for Disguise and Impersonation</condition>
+          <condition>LimitCondition_SkillsActiveDisguiseImpersonation</condition>
         </limitmodifier>
       </bonus>
       <cost>+250</cost>
@@ -15583,7 +17172,7 @@
       <page>149</page>
       <avail>8F</avail>
       <bonus>
-        <selecttext />
+        <selecttext xml="gear.xml" xpath="/chummer/gears/gear[category = 'Toxins']" allowedit="True" />
       </bonus>
       <cost>Rating * 1500</cost>
       <allowrename>True</allowrename>
@@ -15654,7 +17243,7 @@
       <category>Nanogear</category>
       <rating>0</rating>
       <source>CF</source>
-      <page>152</page>
+      <page>154</page>
       <avail>6</avail>
       <cost>2000</cost>
     </gear>
@@ -16029,7 +17618,7 @@
     <!-- Region Metatype-Specific -->
     <gear>
       <id>e6d5c030-9aa7-46da-a9cb-7db33bbfd23f</id>
-      <name>Folding Metachair, basic</name>
+      <name>Folding Metachair, Basic</name>
       <category>Metatype-Specific</category>
       <rating>0</rating>
       <source>TCT</source>
@@ -16039,7 +17628,7 @@
     </gear>
     <gear>
       <id>0007e417-d83b-4066-ba77-c3ea4c1aa4b6</id>
-      <name>Folding Metachair, self-assembly</name>
+      <name>Folding Metachair, Self-Assembly</name>
       <category>Metatype-Specific</category>
       <rating>0</rating>
       <source>TCT</source>
@@ -16049,7 +17638,7 @@
     </gear>
     <gear>
       <id>30e2f962-3ced-4fc8-a46c-41c26db2332b</id>
-      <name>Folding MaxiMetachair, basic</name>
+      <name>Folding MaxiMetachair, Basic</name>
       <category>Metatype-Specific</category>
       <rating>0</rating>
       <source>TCT</source>
@@ -16059,7 +17648,7 @@
     </gear>
     <gear>
       <id>6d55b4d0-ea27-42d6-be1b-83ccdcac65e7</id>
-      <name>Folding MaxiMetachair, self-assembly</name>
+      <name>Folding MaxiMetachair, Self-Assembly</name>
       <category>Metatype-Specific</category>
       <rating>0</rating>
       <source>TCT</source>
@@ -16306,6 +17895,7 @@
       <avail>12F</avail>
       <addweapon>Missile: Anti-Vehicle (2050)</addweapon>
       <cost>2000+(Rating * 500)</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>d27371aa-248d-4a04-b78e-4eccaddd3f9d</id>
@@ -16317,6 +17907,7 @@
       <avail>12F</avail>
       <addweapon>Missile: Anti-Personnel (2050)</addweapon>
       <cost>1000+(Rating * 500)</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>25177977-8f28-4966-ba61-63627bed8af7</id>
@@ -16328,6 +17919,7 @@
       <avail>12F</avail>
       <addweapon>Missile: High Explosive (2050)</addweapon>
       <cost>1500+(Rating * 500)</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <!-- Rocket -->
     <gear>
@@ -16340,6 +17932,7 @@
       <avail>8F</avail>
       <addweapon>Rocket: High Explosive (2050)</addweapon>
       <cost>1500</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>370767a9-5c8d-4ee3-ad2a-78b30b5f53fc</id>
@@ -16351,6 +17944,7 @@
       <avail>8F</avail>
       <addweapon>Rocket: Anti-Vehicle (2050)</addweapon>
       <cost>2000</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>c9405bce-6ad0-42d5-9b35-6ce4c892b2ff</id>
@@ -16362,6 +17956,7 @@
       <avail>8F</avail>
       <addweapon>Rocket: Anti-Personnel (2050)</addweapon>
       <cost>1000</cost>
+      <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
     </gear>
     <!-- Grenade -->
     <gear>
@@ -16396,6 +17991,7 @@
       <avail>8F</avail>
       <addweapon>Minigrenade: Smoke (2050)</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>c89bfb86-ac08-4020-92e4-6ef84209b165</id>
@@ -16429,6 +18025,7 @@
       <avail>4F</avail>
       <addweapon>Minigrenade: Offensive (2050)</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>e014dc28-a2e0-466e-9a38-4aa5cde8d556</id>
@@ -16462,6 +18059,7 @@
       <avail>4F</avail>
       <addweapon>Minigrenade: Defensive (2050)</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>eb395ddc-d8d2-4dbc-8dad-089221a1db5a</id>
@@ -16497,6 +18095,7 @@
       <avail>8F</avail>
       <addweapon>Minigrenade: Shock (2050)</addweapon>
       <cost>60</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <gear>
       <id>adc950ba-cfda-4bc7-aa05-71671ffdc5cf</id>
@@ -16531,6 +18130,7 @@
       <avail>6R</avail>
       <cost>50</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>taser</ammoforweapontype>
     </gear>
     <gear>
       <id>998586de-fd3f-4589-af53-676767f1b1b5</id>
@@ -16542,6 +18142,7 @@
       <avail>10F</avail>
       <cost>450</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>cannon</ammoforweapontype>
     </gear>
     <gear>
       <id>83bf8f55-47a6-4780-9223-7b14eddcd5e9</id>
@@ -16555,6 +18156,7 @@
       <addoncategory>Toxins</addoncategory>
       <cost>200</cost>
       <costfor>10</costfor>
+      <ammoforweapontype>dartgun</ammoforweapontype>
     </gear>
     <gear>
       <id>186d9840-4a40-4b80-ba8f-58377a06e180</id>
@@ -16570,6 +18172,7 @@
         <ap>1</ap>
         <damagetype>S</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>86fc55db-c032-47d5-a981-9a7bc3a85ee4</id>
@@ -16586,6 +18189,7 @@
         <damage>2</damage>
         <damagetype>P(f)</damagetype>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>0003acf4-25ff-470e-990c-6ea8c056f5b2</id>
@@ -16601,6 +18205,7 @@
         <ap>-1</ap>
         <damage>1</damage>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <gear>
       <id>9c241ebd-fabf-4fc4-a3f7-15653af3082a</id>
@@ -16615,6 +18220,7 @@
       <weaponbonus>
         <ap>-4</ap>
       </weaponbonus>
+      <ammoforweapontype>gun</ammoforweapontype>
     </gear>
     <!-- Wapon Gear -->
     <gear>
@@ -16876,7 +18482,7 @@
     </gear>
     <gear>
       <id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
-      <name>Zauberspruchfocus, Wahrnehmung</name>
+      <name>Spellcasting Focus, Detection (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
       <source>2050</source>
@@ -17418,6 +19024,7 @@
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>d363dda7-4b9f-4323-b652-77a9ee037356</id>
@@ -17435,6 +19042,7 @@
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>104549ed-d60b-4d57-bde4-8b8a92cc7408</id>
@@ -17452,6 +19060,7 @@
       <addoncategory>ID/Credsticks</addoncategory>
       <addoncategory>Currency</addoncategory>
       <addoncategory>Custom</addoncategory>
+      <devicerating>5</devicerating>
     </gear>
     <gear>
       <id>58b5730c-b8e4-4152-a1b3-31329d8a52fb</id>
@@ -17576,7 +19185,7 @@
     </gear>
     <gear>
       <id>7d84b4c0-ee21-4afb-88e0-b592668e432b</id>
-      <name>Identifcation Scanner, Thumbprint (2050)</name>
+      <name>Identification Scanner, Thumbprint (2050)</name>
       <category>Security Devices</category>
       <rating>6</rating>
       <source>2050</source>
@@ -17586,7 +19195,7 @@
     </gear>
     <gear>
       <id>d2451f12-5148-4153-bcdd-85fed8ea7c7a</id>
-      <name>Identifcation Scanner, Palm Print (2050)</name>
+      <name>Identification Scanner, Palm Print (2050)</name>
       <category>Security Devices</category>
       <rating>6</rating>
       <source>2050</source>
@@ -17596,7 +19205,7 @@
     </gear>
     <gear>
       <id>f14a3b31-48bc-4a2c-86be-6e232339c11f</id>
-      <name>Identifcation Scanner, Retinal (2050)</name>
+      <name>Identification Scanner, Retinal (2050)</name>
       <category>Security Devices</category>
       <rating>6</rating>
       <source>2050</source>
@@ -17666,7 +19275,7 @@
     </gear>
     <gear>
       <id>2e00f743-c10a-4ab9-8548-26666c91f411</id>
-      <name>Tracking Signa (2050)</name>
+      <name>Tracking Signal (2050)</name>
       <category>Communications and Countermeasures</category>
       <rating>6</rating>
       <source>2050</source>
@@ -17696,7 +19305,7 @@
     </gear>
     <gear>
       <id>890fdcd5-f65f-41ed-8b96-9475e5ff7592</id>
-      <name>Voice Identifer (2050)</name>
+      <name>Voice Identifier (2050)</name>
       <category>Communications and Countermeasures</category>
       <rating>6</rating>
       <source>2050</source>
@@ -17932,7 +19541,7 @@
     </gear>
     <gear>
       <id>acb8e080-2230-4dd0-aadc-2bce088bde93</id>
-      <name>DocWagon Contract, Resuscication Service (2050)</name>
+      <name>DocWagon Contract, Resuscitation Service (2050)</name>
       <category>Contracts/Upkeep</category>
       <rating>0</rating>
       <source>2050</source>
@@ -17953,7 +19562,7 @@
         <limitmodifier>
           <limit>Mental</limit>
           <value>3</value>
-          <condition>Only for First Aid and Medicine</condition>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
         </limitmodifier>
       </bonus>
       <cost>200</cost>
@@ -18208,6 +19817,7 @@
       <avail>16F</avail>
       <addweapon>Minigrenade: MCT/Winchester-Howe Hornet Direct-Fire</addweapon>
       <cost>400</cost>
+      <ammoforweapontype noextra="True">glauncher</ammoforweapontype>
     </gear>
     <!-- End Region -->
     <!-- Region Kill Code -->
@@ -18268,7 +19878,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>0</avail>
       <bonus>
         <selecttext />
@@ -18285,7 +19895,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>0</avail>
       <bonus>
         <selecttext />
@@ -18302,7 +19912,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>6</avail>
       <bonus>
         <selecttext />
@@ -18319,7 +19929,7 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>12</avail>
       <bonus>
         <selecttext />
@@ -18336,13 +19946,10 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>+4</avail>
-      <bonus>
-        <selecttext />
-      </bonus>
       <requireparent />
-      <cost>{Parent Cost}x2</cost>
+      <cost>{Parent Cost}*2</cost>
     </gear>
     <gear>
       <id>357d77f6-0e9e-4e5f-87f2-9c4b5422d23c</id>
@@ -18350,11 +19957,8 @@
       <category>Musical Instruments</category>
       <rating>0</rating>
       <source>NF</source>
-      <page>171</page>
+      <page>170</page>
       <avail>4</avail>
-      <bonus>
-        <selecttext />
-      </bonus>
       <requireparent />
       <cost>2000</cost>
     </gear>
@@ -18458,7 +20062,7 @@
       <page>175</page>
       <avail>8</avail>
       <bonus />
-      <cost>{Parent Cost}x2</cost>
+      <cost>{Parent Cost}*2</cost>
       <requireparent />
       <required>
         <geardetails>
@@ -18532,6 +20136,18 @@
       <cost>20</cost>
     </gear>
     <!-- End Region -->
+    <!-- End Region -->
+    <!-- Region Krime Katalog -->
+    <gear>
+      <id>75551931-6886-49ac-8119-26dd2c584212</id>
+      <name>Krime Explosive Securing Tripod Replacement Pitons</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>KK</source>
+      <page>23</page>
+      <avail>12R</avail>
+      <cost>300</cost>
+    </gear>
     <!-- End Region -->
   </gears>
 </chummer>

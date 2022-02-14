@@ -1,11 +1,12 @@
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Xml.Serialization;
+using Newtonsoft.Json;
 
 namespace ChummerHub.Models.V1
 {
@@ -23,8 +24,8 @@ namespace ChummerHub.Models.V1
         [MaxLength(64)]
         public string TagValue { get; set; }
 
-        
-        public Single? TagValueFloat { get; set; }
+
+        public float? TagValueFloat { get; set; }
 
         /// <summary>
         /// This has NO FUNCTION and is only here for Debugging reasons.
@@ -51,18 +52,19 @@ namespace ChummerHub.Models.V1
 
         public enum TagValueEnum
         {
-            @list,
+            list,
             @bool,
             @int,
-            @Guid,
+            Guid,
             @string,
             @double,
-            @binary,
+            binary,
             @enum,
-            @other,
-            @unknown
+            other,
+            unknown
         }
 
+        [JsonConstructor]
         public Tag()
         {
             TagConstructor(null, null);
@@ -76,16 +78,16 @@ namespace ChummerHub.Models.V1
         private Tag TagConstructor(SINner sinner, Tag parent)
         {
             if (sinner != null)
-                this.SINnerId = sinner.Id;
-            this.ParentTag = parent;
-            this.TagName = "";
-            this.TagValue = "";
-            this.TagValueFloat = null;
-            this.ParentTagId = Guid.Empty;
+                SINnerId = sinner.Id;
+            ParentTag = parent;
+            TagName = string.Empty;
+            TagValue = string.Empty;
+            TagValueFloat = null;
+            ParentTagId = Guid.Empty;
             if (parent != null)
-                this.ParentTagId = parent.Id;
-            this.Tags = new List<Tag>();
-            this.TagType = TagValueEnum.unknown;
+                ParentTagId = parent.Id;
+            Tags = new List<Tag>();
+            TagType = TagValueEnum.unknown;
             IsUserGenerated = false;
             return this;
         }
@@ -98,27 +100,27 @@ namespace ChummerHub.Models.V1
         {
             get
             {
-                string str = "";
+                StringBuilder sbdReturn = new StringBuilder();
                 Tag tempParent = this;
                 while (tempParent != null)
                 {
                     string tempstr = tempParent.TagName;
-                    if (!String.IsNullOrEmpty(tempParent.TagValue))
+                    if (!string.IsNullOrEmpty(tempParent.TagValue))
                         tempstr += ": " + tempParent.TagValue;
-                    if (!String.IsNullOrEmpty(str))
-                        tempstr += " -> " + str;
-                    str = tempstr;
+                    if (sbdReturn.Length > 0)
+                        tempstr += " -> ";
+                    sbdReturn.Insert(0, tempstr);
                     tempParent = tempParent.ParentTag;
                 }
-                return str;
+                return sbdReturn.ToString();
             }
 
         }
 
         internal void SetSinnerIdRecursive(Guid? id)
         {
-            this.SINnerId = id;
-            foreach (var child in this.Tags)
+            SINnerId = id;
+            foreach (var child in Tags)
                 child.SetSinnerIdRecursive(id);
         }
     }

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <qualities>
+    <quality>
+      <id>657f859f-1632-46c8-8c19-f6d6ae77e830</id>
+      <name>Lives Below Means</name>
+      <karma>1</karma>
+      <category>Positive</category>
+      <bonus>
+        <lifestylecost>-10</lifestylecost>
+      </bonus>
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>b72f3ea1-4ac0-418d-92ed-8dafb2c919b3</id>
+      <name>Handy</name>
+      <karma>1</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>e2475bf3-8c18-4acd-b0db-0aa8542cef69</id>
+      <name>Hey, This Is Easy!</name>
+      <karma>1</karma>
+      <category>Positive</category>
+      <bonus />
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>0a3443d9-3abc-4b05-857e-dbc5023a1262</id>
+      <name>Heat Adjusted</name>
+      <karma>1</karma>
+      <limit>2</limit>
+      <category>Positive</category>
+      <bonus />
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>a0dffb16-5822-4020-83db-a20bfeb9a2d5</id>
+      <name>Cold Adjusted</name>
+      <karma>1</karma>
+      <limit>2</limit>
+      <category>Positive</category>
+      <bonus />
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>f9bc19e8-ef71-4c05-bb46-a57e81178475</id>
+      <name>Radiation Adjusted</name>
+      <karma>1</karma>
+      <limit>2</limit>
+      <category>Positive</category>
+      <bonus />
+      <forbidden>
+        <oneof>
+          <quality>Rad-Tolerant</quality>
+          <quality>Radiation Sponge</quality>
+        </oneof>
+      </forbidden>
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>72395939-8154-4953-9516-c4fff6850353</id>
+      <name>Pollution Adjusted</name>
+      <karma>1</karma>
+      <limit>2</limit>
+      <category>Positive</category>
+      <bonus />
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>60dcf3b1-8b34-4c4f-a2f5-0131bd5dc13b</id>
+      <name>Sharper Knife</name>
+      <karma>1</karma>
+      <category>Positive</category>
+      <bonus>
+        <allowskilldefaulting>Aeronautics Mechanic</allowskilldefaulting>
+        <allowskilldefaulting>Arcana</allowskilldefaulting>
+        <allowskilldefaulting>Automotive Mechanic</allowskilldefaulting>
+        <allowskilldefaulting>Biotechnology</allowskilldefaulting>
+        <allowskilldefaulting>Chemistry</allowskilldefaulting>
+        <allowskilldefaulting>Cybertechnology</allowskilldefaulting>
+        <allowskilldefaulting>Electronic Warfare</allowskilldefaulting>
+        <allowskilldefaulting>Hardware</allowskilldefaulting>
+        <allowskilldefaulting>Industrial Mechanic</allowskilldefaulting>
+        <allowskilldefaulting>Medicine</allowskilldefaulting>
+        <allowskilldefaulting>Nautical Mechanic</allowskilldefaulting>
+        <allowskilldefaulting>Software</allowskilldefaulting>
+      </bonus>
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>38ab25b7-e66d-452f-95eb-87307a2a003c</id>
+      <name>Prejudiced (Specific, Leaning)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>D1KQ</source>
+      <page>1</page>
+    </quality>
+    <quality>
+      <id>b536ab59-f7fa-4af7-8493-0fdb0418b2fd</id>
+      <name>Favored (Specific, Leaning)</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>D1KQ</source>
+      <page>2</page>
+    </quality>
+    <quality>
+      <id>7d4afc2b-6326-4095-9b7d-7c7d5d70cc6b</id>
+      <name>Time-Consuming Habit</name>
+      <karma>-1</karma>
+      <category>Negative</category>
+      <limit>False</limit>
+      <bonus>
+        <selecttext />
+      </bonus>
+      <source>D1KQ</source>
+      <page>2</page>
+    </quality>
+  </qualities>
+</chummer>

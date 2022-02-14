@@ -148,7 +148,7 @@
       <freegrids>
         <freegrid select="Public Grid">Grid Subscription</freegrid>
       </freegrids>
-      <lp>3</lp>
+      <lp>4</lp>
       <multiplier>0</multiplier>
       <source>RF</source>
       <page>216</page>
@@ -204,7 +204,7 @@
     <comfort>
       <name>Bolt Hole</name>
       <minimum>1</minimum>
-      <limit>3</limit>
+      <limit>2</limit>
     </comfort>
     <comfort>
       <name>Street</name>
@@ -535,6 +535,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -578,47 +579,63 @@
     </quality>
     <quality>
       <id>c63bcf5f-fcb7-4193-bdae-2b32cdf50032</id>
-      <name>Merchandise: Goods (Avail 3)</name>
+      <name>Merchandise: Goods (Specific Item) (Avail 3)</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>544760af-1c45-4de7-a198-f9f7f86ec4b2</id>
-      <name>Merchandise: Goods (Avail 5)</name>
+      <name>Merchandise: Goods (Specific Item) (Avail 5)</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>5a7f93eb-7297-49a0-904e-466be3f3f454</id>
-      <name>Merchandise: Goods (Avail 7)</name>
+      <name>Merchandise: Goods (Specific Item) (Avail 7)</name>
       <category>Entertainment - Asset</category>
       <lp>3</lp>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>1ab883f5-3392-41c6-b4e3-b26dfc4b8aba</id>
-      <name>Merchandise: Goods (Avail 9)</name>
+      <name>Merchandise: Goods (Specific Item) (Avail 9)</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
+	  <bonus>
+        <selecttext />
+      </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
     </quality>
     <quality>
       <id>35d712d8-ea04-4853-8b1f-89e079e043ce</id>
-      <name>Merchandise: Pawn Shop</name>
+      <name>Merchandise: Pawn Shop/Thrift Store</name>
       <category>Entertainment - Service</category>
       <lp>2</lp>
       <allowed>Commercial</allowed>
@@ -628,13 +645,14 @@
     </quality>
     <quality>
       <id>b8c84dbb-b59e-43e1-a07f-fa03802fe5af</id>
-      <name>Merchandise: Used Goods</name>
+      <name>Merchandise: Used Goods (Specific Item)</name>
       <category>Entertainment - Service</category>
       <lp>2</lp>
       <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
@@ -658,6 +676,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>100</cost>
       <page>223</page>
@@ -671,6 +690,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>200</cost>
       <page>223</page>
@@ -684,6 +704,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>75</cost>
       <page>223</page>
@@ -697,6 +718,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>100</cost>
       <page>223</page>
@@ -720,6 +742,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>50</cost>
       <page>223</page>
@@ -733,6 +756,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>75</cost>
       <page>222</page>
@@ -766,6 +790,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>High,Luxury</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>300</cost>
       <page>224</page>
@@ -796,6 +821,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <bonus>
         <selectskill />
       </bonus>
@@ -812,6 +838,7 @@
         <selectskill />
       </bonus>
       <allowed>Commercial</allowed>
+	  <allowmultiple />
       <source>RF</source>
       <cost>2250</cost>
       <page>224</page>
@@ -822,9 +849,10 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
+      <allowmultiple />
       <source>RF</source>
       <cost>50</cost>
-      <page>222</page>
+      <page>224</page>
     </quality>
     <quality>
       <id>03092f1a-4018-413b-a11f-144383472c18</id>
@@ -834,7 +862,7 @@
       <allowed>Medium,High,Luxury</allowed>
       <source>RF</source>
       <cost>100</cost>
-      <page>222</page>
+      <page>224</page>
     </quality>
     <quality>
       <id>cc3abead-ab2a-4023-8a63-d64536ccf5e5</id>
@@ -903,7 +931,7 @@
       <category>Negative</category>
       <multiplier>-20</multiplier>
       <source>SR5</source>
-      <page>374</page>
+      <page>370</page>
     </quality>
     <quality>
       <id>8cc2d931-becd-40d7-a0bd-705412037f38</id>
@@ -931,7 +959,7 @@
       <name>Not a Home</name>
       <category>Negative</category>
       <lp>-1</lp>
-      <comforts>-1</comforts>
+      <comfortsmaximum>-1</comfortsmaximum>
       <source>RF</source>
       <page>226</page>
     </quality>
@@ -948,7 +976,7 @@
         </oneof>
       </forbidden>
       <source>SR5</source>
-      <page>374</page>
+      <page>370</page>
     </quality>
     <quality>
       <id>a808bcae-68c5-4e96-8bfc-f432ea63cc11</id>
@@ -999,6 +1027,10 @@
       <id>24c33e2d-bb97-4f82-a68d-dfa7c89a69d7</id>
       <name>Special Work Area</name>
       <category>Positive</category>
+      <allowmultiple />
+      <bonus>
+        <selecttext />
+      </bonus>
       <lp>0</lp>
       <cost>1000</cost>
       <source>SR5</source>
@@ -1149,6 +1181,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
+	  <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -1162,6 +1195,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>High,Luxury</allowed>
+	  <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -1171,7 +1205,7 @@
       <id>9ad9decb-b52d-4993-9ef6-4768727c3d75</id>
     </quality>
     <quality>
-      <name>Subsistance Hunting/Gathering I</name>
+      <name>Subsistence Hunting/Gathering I</name>
       <category>Entertainment - Outing</category>
       <lp>1</lp>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
@@ -1181,7 +1215,7 @@
       <id>cb265e4e-b13a-487b-8c0f-b2b855138a66</id>
     </quality>
     <quality>
-      <name>Subsistance Hunting/Gathering II</name>
+      <name>Subsistence Hunting/Gathering II</name>
       <category>Entertainment - Outing</category>
       <lp>2</lp>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
@@ -1191,7 +1225,7 @@
       <id>c0051319-9565-49f1-b59d-ee1f835cf1df</id>
     </quality>
     <quality>
-      <name>Subsistance Hunting/Gathering III</name>
+      <name>Subsistence Hunting/Gathering III</name>
       <category>Entertainment - Outing</category>
       <lp>3</lp>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
@@ -1201,7 +1235,7 @@
       <id>3aca0284-8e7f-4329-83e7-9819bf73a13e</id>
     </quality>
     <quality>
-      <name>Subsistance Hunting/Gathering IV</name>
+      <name>Subsistence Hunting/Gathering IV</name>
       <category>Entertainment - Outing</category>
       <lp>4</lp>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
@@ -1389,6 +1423,7 @@
       <name>Haunted</name>
       <category>Negative</category>
       <lp>0</lp>
+      <multiplier>-20</multiplier>
       <source>SFB</source>
       <page>20</page>
     </quality>
@@ -1495,4 +1530,393 @@
     </quality>
     <!-- End Region -->
   </qualities>
+  <cities>
+    <!--One empty City at the start to make the default selection empty-->
+    <city>
+      <name> </name>
+      <district>
+        <name> </name>
+        <borough>
+          <name> </name>
+        </borough>
+      </district>
+    </city>
+    <city>
+      <name>Seattle</name>
+      <district>
+        <name>Auburn</name>
+        <borough>
+          <name>Black Diamond</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Bolse</name>
+          <secRating>D</secRating>
+        </borough>
+        <borough>
+          <name>Algona</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Berrydale</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Pacifica</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Covington</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Georgetown</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Maple Valley</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Sumner</name>
+          <secRating>B/C</secRating>
+        </borough>
+        <borough>
+          <name>Timberlane</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Auburn</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Lake Wilderness</name>
+          <secRating>AA</secRating>
+        </borough>
+      </district>
+
+      <district>
+        <name>Bellevue</name>
+        <borough>
+          <name>Beaux Arts</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Hunt Point</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Rosemont Beach</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Inglewood</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Juanita</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Medina</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Regency Park</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Yarrow Point</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Bellevue</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Cyde Hill</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Kirkland</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Newport</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Bothell</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Coalfield</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>East Gate</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>May Creek</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Newcastle</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Redmond</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+
+      <district>
+        <name>Downtown</name>
+        <borough>
+          <name>Matthews Beach</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Iverness</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>North Beach</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Richmond Highlands</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Aurora Village</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Central</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Columbia</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Tukwila</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Everett</name>
+        <borough>
+          <name>Maedowdale</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Edmonds</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Darlington</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Lynnwood</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Fairmount</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Pinehurst</name>
+          <secRating>D</secRating>
+        </borough>
+      </district>
+
+      <district>
+        <name>Fort Lewis</name>
+        <borough>
+          <name>Parkland (non military housing)</name>
+          <secRating>A</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Puyallup</name>
+        <borough>
+          <name>Puyallup City</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Graham Cracker City</name>
+          <secRating>E</secRating>
+        </borough>
+        <borough>
+          <name>Hell's Kitchen</name>
+          <secRating>Z</secRating>
+        </borough>
+        <borough>
+          <name>The Neon Killing</name>
+          <secRating>Z</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Redmond</name>
+        <borough>
+          <name>Touristville</name>
+          <secRating>C</secRating>
+        </borough>
+        <borough>
+          <name>Barrens</name>
+          <secRating>Z</secRating>
+        </borough>
+        <borough>
+          <name>Plastic Jungle</name>
+          <secRating>E</secRating>
+        </borough>
+        <borough>
+          <name>Glow City</name>
+          <secRating>Z</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Renton</name>
+        <borough>
+          <name>Lake Young</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Four Lakes</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Renton</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Issaquath</name>
+          <secRating>A/B</secRating>
+        </borough>
+        <borough>
+          <name>Cristopher</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Snohomish</name>
+        <borough>
+          <name>Bothell</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Mountain Terrace</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Snohomish</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Tuner Corner</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Cathcart</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Tacoma</name>
+        <borough>
+          <name>Rustin</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Dupont</name>
+          <secRating>AA</secRating>
+        </borough>
+        <borough>
+          <name>Fircrest</name>
+          <secRating>A</secRating>
+        </borough>
+        <borough>
+          <name>Kent</name>
+          <secRating>B</secRating>
+        </borough>
+        <borough>
+          <name>Fife</name>
+          <secRating>C</secRating>
+        </borough>
+      </district>
+      <district>
+        <name>Ork Underground</name>
+      </district>
+      <district>
+        <name>Council Island (Unofficial)</name>
+      </district>
+      <district>
+        <name>Outremer (Unofficial)</name>
+      </district>
+    </city>
+    <city>
+      <name>Pretoria-Witwatersrand-Vaal</name>
+      <district>
+        <name>West End</name>
+      </district>
+      <district>
+        <name>Pretoria</name>
+      </district>
+      <district>
+        <name>Johannesburg</name>
+      </district>
+      <district>
+        <name>Ekurhuleni</name>
+      </district>
+      <district>
+        <name>Tshwane</name>
+      </district>
+      <district>
+        <name>Kungwini</name>
+      </district>
+      <district>
+        <name>Lesedi</name>
+      </district>
+      <district>
+        <name>Midvaal</name>
+      </district>
+      <district>
+        <name>Emfuleni</name>
+      </district>
+      <district>
+        <name>Westonaria</name>
+      </district>
+      <district>
+        <name>Randfontein</name>
+      </district>
+      <district>
+        <name>Mogale</name>
+      </district>
+    </city>
+    <city>
+      <name>Denver</name>
+      <district>
+        <name>Pueblo Sector</name>
+      </district>
+      <district>
+        <name>Sioux Sector</name>
+      </district>
+      <district>
+        <name>UCAS Sector</name>
+        <borough>
+          <name>Aurora</name>
+        </borough>
+      </district>
+      <district>
+        <name>Aztlan Sector</name>
+      </district>
+      <district>
+        <name>CAS Sector</name>
+      </district>
+    </city>
+  </cities>
 </chummer>

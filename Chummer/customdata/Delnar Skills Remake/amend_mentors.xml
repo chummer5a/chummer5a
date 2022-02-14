@@ -24,10 +24,10 @@
       <name>Cat</name>
       <advantage>All: +2 dice to either Acrobatics or Sneaking Tests (choose one).</advantage>
       <choices>
-        <choice xpathfilter="name = '+2 dice on Gymnastics Tests'" >
+        <choice xpathfilter="name = '+2 dice on Gymnastics Tests'">
           <name>+2 dice on Acrobatics Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Gymnastics'" >
+            <specificskill xpathfilter="name = 'Gymnastics'">
               <name>Acrobatics</name>
             </specificskill>
           </bonus>
@@ -38,7 +38,7 @@
       <name>Dog</name>
       <advantage>All: +2 dice for Query tests.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Tracking'" >
+        <specificskill xpathfilter="name = 'Tracking'">
           <name>Query</name>
         </specificskill>
       </bonus>
@@ -54,10 +54,10 @@
       <name>Fire-Bringer</name>
       <advantage>All: +2 dice to Armorer or Alchemy tests.</advantage>
       <choices>
-        <choice xpathfilter="name = '+2 dice on Artisan Tests'" >
+        <choice xpathfilter="name = '+2 dice on Artisan Tests'">
           <name>+2 dice on Armorer Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Artisan'" >
+            <specificskill xpathfilter="name = 'Artisan'">
               <name>Armorer</name>
             </specificskill>
           </bonus>
@@ -68,7 +68,7 @@
       <name>Sea</name>
       <advantage>All:+2 dice for Aquatics Tests.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Swimming'" >
+        <specificskill xpathfilter="name = 'Swimming'">
           <name>Aquatics</name>
         </specificskill>
       </bonus>
@@ -80,7 +80,7 @@
         <specificskill xpathfilter="name = 'Con'" amendoperation="remove" />
       </bonus>
       <choices>
-        <choice xpathfilter="name = 'Adept: 1 free level of Improved Ability for a skill in the Acting or Inﬂuence skill group'">
+        <choice xpathfilter="name = 'Adept: 1 free level of Improved Ability for a skill in the Acting or Influence skill group'">
           <name>Adept: 1 free level of Improved Ability for a Social Active skill.</name>
           <bonus>
             <specificpower>
@@ -100,7 +100,7 @@
       <name>Thunderbird</name>
       <advantage>All: +2 dice for Command Tests.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Intimidation'" >
+        <specificskill xpathfilter="name = 'Intimidation'">
           <name>Command</name>
         </specificskill>
       </bonus>
@@ -112,7 +112,7 @@
         <choice xpathfilter="name = '+2 dice for Leadership skill tests'">
           <name>+2 dice for Command Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Leadership'" >
+            <specificskill xpathfilter="name = 'Leadership'">
               <name>Command</name>
             </specificskill>
           </bonus>
@@ -120,7 +120,7 @@
         <choice xpathfilter="name = '+2 dice for Instruction skill tests'">
           <name>+2 dice for Small Unit Tactics Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Instruction'" >
+            <specificskill xpathfilter="name = 'Instruction'">
               <name>Small Unit Tactics</name>
             </specificskill>
           </bonus>
@@ -131,7 +131,7 @@
       <name>Wolf</name>
       <advantage>All: +2 dice to Query Tests.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Tracking'" >
+        <specificskill xpathfilter="name = 'Tracking'">
           <name>Query</name>
         </specificskill>
       </bonus>
@@ -140,7 +140,7 @@
       <name>Peacemaker</name>
       <advantage>All: +2 dice pool modifier for Persuade Tests</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Negotiation'" >
+        <specificskill xpathfilter="name = 'Negotiation'">
           <name>Persuade</name>
         </specificskill>
       </bonus>
@@ -149,7 +149,7 @@
       <name>Alligator</name>
       <advantage>All: +2 dice to Command Tests.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Intimidation'" >
+        <specificskill xpathfilter="name = 'Intimidation'">
           <name>Command</name>
         </specificskill>
       </bonus>
@@ -158,7 +158,7 @@
       <name>Bat</name>
       <advantage>All: +2 dice to Query Tests.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Navigation'" >
+        <specificskill xpathfilter="name = 'Navigation'">
           <name>Query</name>
         </specificskill>
       </bonus>
@@ -198,7 +198,7 @@
       <name>Dachshund</name>
       <advantage>All: +2 dice to Query.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Tracking'" >
+        <specificskill xpathfilter="name = 'Tracking'">
           <name>Query</name>
         </specificskill>
       </bonus>
@@ -246,10 +246,10 @@
       <name>Dolphin</name>
       <advantage>All: +2 dice to Aquatics or Pilot Watercraft Tests (choose one).</advantage>
       <choices>
-        <choice xpathfilter="name = '+2 dice on Artisan tests'" >
+        <choice xpathfilter="name = '+2 dice on Artisan tests'">
           <name>+2 dice on Aquatics Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Artisan'" >
+            <specificskill xpathfilter="name = 'Artisan'">
               <name>Aquatics</name>
             </specificskill>
           </bonus>
@@ -260,10 +260,10 @@
       <name>Whale</name>
       <advantage>All: +2 dice to Aquatics or Pilot Watercraft Tests (choose one).</advantage>
       <choices>
-        <choice xpathfilter="name = '+2 dice on Swimming tests'" >
+        <choice xpathfilter="name = '+2 dice on Swimming tests'">
           <name>+2 dice on Aquatics Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Swimming'" >
+            <specificskill xpathfilter="name = 'Swimming'">
               <name>Aquatics</name>
             </specificskill>
           </bonus>
@@ -274,18 +274,18 @@
       <name>Horse</name>
       <advantage>All: +2 dice to Athletics or Pilot Groundcraft Tests (choose one).</advantage>
       <choices>
-        <choice xpathfilter="name = '+2 dice on Running tests'" >
+        <choice xpathfilter="name = '+2 dice on Running tests'">
           <name>+2 dice on Athletics Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Running'" >
+            <specificskill xpathfilter="name = 'Running'">
               <name>Athletics</name>
             </specificskill>
           </bonus>
         </choice>
-        <choice xpathfilter="name = '+2 on Pilot Ground Craft Tests'" >
+        <choice xpathfilter="name = '+2 on Pilot Ground Craft Tests'">
           <name>+2 dice on Pilot Groundcraft Tests</name>
           <bonus>
-            <specificskill xpathfilter="name = 'Pilot Ground Craft'" >
+            <specificskill xpathfilter="name = 'Pilot Ground Craft'">
               <name>Pilot Groundcraft</name>
             </specificskill>
           </bonus>
@@ -316,6 +316,25 @@
       <bonus>
         <specificskill xpathfilter="name = 'Instruction'">
           <name>Command</name>
+        </specificskill>
+      </bonus>
+      <choices>
+        <choice xpathfilter="name = 'Magician: +2 dice for Ritual Spellcasting Tests'">
+          <name>Magician: +2 dice for Ceremony Tests</name>
+          <bonus>
+            <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+              <name>Ceremony</name>
+            </specificskill>
+          </bonus>
+        </choice>
+      </choices>
+    </mentor>
+    <mentor>
+      <name>Tide</name>
+      <advantage>All: +2 dice pool modifier for tests using the Ceremony skill.</advantage>
+      <bonus>
+        <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+          <name>Ceremony</name>
         </specificskill>
       </bonus>
     </mentor>
@@ -425,7 +444,7 @@
       <name>Squirrel</name>
       <advantage>All: +2 dice pool modifier for tests using the Acrobatics skill.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Gymnastics'" >
+        <specificskill xpathfilter="name = 'Gymnastics'">
           <name>Acrobatics</name>
         </specificskill>
       </bonus>
@@ -467,7 +486,7 @@
       <bonus>
         <specificskill xpathfilter="name = 'Perception'" amendoperation="remove" />
         <physicalillusionresist>1</physicalillusionresist>
-        <specificskill xpathfilter="name = 'Etiquette'" >
+        <specificskill xpathfilter="name = 'Etiquette'">
           <name>Socialize</name>
         </specificskill>
       </bonus>
@@ -476,7 +495,7 @@
       <name>Pig</name>
       <advantage>All: +2 dice to Socialize Tests.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Con'" >
+        <specificskill xpathfilter="name = 'Con'">
           <name>Socialize</name>
         </specificskill>
       </bonus>
@@ -501,7 +520,7 @@
       <name>Capricorn</name>
       <advantage>All: +2 dice pool modifier for tests using the Acrobatics skill.</advantage>
       <bonus>
-        <specificskill xpathfilter="name = 'Gymnastics'" >
+        <specificskill xpathfilter="name = 'Gymnastics'">
           <name>Acrobatics</name>
         </specificskill>
       </bonus>
@@ -510,7 +529,7 @@
       <name>Wild Hunt</name>
       <advantage>All: +2 dice pool modifier for tests using the Pilot Groundcraft or Command skill.</advantage>
       <choices>
-        <choice xpathfilter="name = '+2 dice on Pilot Ground Craft Tests'" amendoperation="replace" >
+        <choice xpathfilter="name = '+2 dice on Pilot Ground Craft Tests'" amendoperation="replace">
           <name>+2 dice on Pilot Groundcraft Tests</name>
           <bonus>
             <specificskill>
@@ -519,7 +538,7 @@
             </specificskill>
           </bonus>
         </choice>
-        <choice xpathfilter="name = '+2 dice on Intimidation Tests'" amendoperation="replace" >
+        <choice xpathfilter="name = '+2 dice on Intimidation Tests'" amendoperation="replace">
           <name>+2 dice on Intimidation Tests</name>
           <bonus>
             <specificskill>

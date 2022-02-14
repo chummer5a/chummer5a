@@ -1,16 +1,16 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace ChummerHub.Areas.Identity.Pages.Account.Manage
 {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'IndexModel'
-    public partial class IndexModel : PageModel
+    public class IndexModel : PageModel
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'IndexModel'
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -155,7 +155,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
             var callbackUrl = Url.Page(
                 "/Account/ConfirmEmail",
                 pageHandler: null,
-                values: new { userId = userId, code = code },
+                values: new {userId, code },
                 protocol: Request.Scheme);
             await _emailSender.SendEmailAsync(
                 email,

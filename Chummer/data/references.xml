@@ -1,0 +1,5550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<rules>
+		<rule>
+			<id>72B79189-AB4F-4D90-A701-0F35606DE541</id>
+			<name>Another Night, Another Run</name>
+			<source>SR5</source>
+			<page>8</page>
+		</rule>
+		<rule>
+			<id>2BA1D635-A856-48F0-B533-A6792B3BF094</id>
+			<name>Introduction</name>
+			<source>SR5</source>
+			<page>14</page>
+		</rule>
+		<rule>
+			<id>7ED94B84-A981-45B1-B029-180098151271</id>
+			<name>The Battle Fought</name>
+			<source>SR5</source>
+			<page>16</page>
+		</rule>
+		<rule>
+			<id>AB2A54DC-0A32-4AAB-9A5F-DC857A514B48</id>
+			<name>Life in the Sixth World</name>
+			<source>SR5</source>
+			<page>20</page>
+		</rule>
+		<rule>
+			<id>BF86ADB5-BC54-45CB-8555-8800604B47D6</id>
+			<name>Everything Has a Price</name>
+			<source>SR5</source>
+			<page>20</page>
+		</rule>
+		<rule>
+			<id>34E5866F-D057-436A-9F63-44BFF4B211B3</id>
+			<name>Magic: Paying with Your Mind</name>
+			<source>SR5</source>
+			<page>20</page>
+		</rule>
+		<rule>
+			<id>B98C4B7D-F5FB-4DD8-9D77-8603C70FBBA7</id>
+			<name>Megacorps: Paying with Your Self</name>
+			<source>SR5</source>
+			<page>21</page>
+		</rule>
+		<rule>
+			<id>38CA1CE0-1BF8-490F-AFFD-354361FFEF49</id>
+			<name>‘Wares: Paying with Your Soul</name>
+			<source>SR5</source>
+			<page>23</page>
+		</rule>
+		<rule>
+			<id>BE6E6A5D-0434-4769-A78C-AD3CC11BD0BE</id>
+			<name>Shadows: Paying with Your Blood</name>
+			<source>SR5</source>
+			<page>23</page>
+		</rule>
+		<rule>
+			<id>C29E9EAF-331D-4696-90A4-99B0DA2AB4B9</id>
+			<name>Where to Run</name>
+			<source>SR5</source>
+			<page>24</page>
+		</rule>
+		<rule>
+			<id>F958BE23-E5FF-4C11-A0DC-141C7CF458E3</id>
+			<name>North America</name>
+			<source>SR5</source>
+			<page>24</page>
+		</rule>
+		<rule>
+			<id>FF3458B5-C1E8-446B-A996-6EF18FA4DA2F</id>
+			<name>Central America</name>
+			<source>SR5</source>
+			<page>26</page>
+		</rule>
+		<rule>
+			<id>C9CA607C-FD8A-4841-B770-935A8EE5EDFB</id>
+			<name>South America</name>
+			<source>SR5</source>
+			<page>26</page>
+		</rule>
+		<rule>
+			<id>BA4F0B58-36B1-41FA-AE6D-A104BC23675D</id>
+			<name>Asia</name>
+			<source>SR5</source>
+			<page>26</page>
+		</rule>
+		<rule>
+			<id>E71DD1C7-67FE-4CCB-9D7E-B4D005AE6658</id>
+			<name>Europe</name>
+			<source>SR5</source>
+			<page>27</page>
+		</rule>
+		<rule>
+			<id>4F55DEA0-562E-4AD1-A759-3DC602FDBBC6</id>
+			<name>Africa</name>
+			<source>SR5</source>
+			<page>27</page>
+		</rule>
+		<rule>
+			<id>445C37EB-E1A0-44F3-B14A-35602BB0AF69</id>
+			<name>Australia and Oceania</name>
+			<source>SR5</source>
+			<page>27</page>
+		</rule>
+		<rule>
+			<id>7633D9CF-B54B-4B98-BE5A-FD000E7AF9E5</id>
+			<name>A Day in Your Life</name>
+			<source>SR5</source>
+			<page>27</page>
+		</rule>
+		<rule>
+			<id>D45776CE-853E-4000-A256-F0F7FD1CCEED</id>
+			<name>People You Know</name>
+			<source>SR5</source>
+			<page>27</page>
+		</rule>
+		<rule>
+			<id>EE8A3313-A083-4B02-8F1A-356056E334CE</id>
+			<name>Doing the Dirty Work</name>
+			<source>SR5</source>
+			<page>28</page>
+		</rule>
+		<rule>
+			<id>453F0A75-8A39-441D-BE35-54E7FC32259D</id>
+			<name>The Meet</name>
+			<source>SR5</source>
+			<page>28</page>
+		</rule>
+		<rule>
+			<id>B00505CD-C220-4487-BD34-106DD010AFF5</id>
+			<name>Legwork</name>
+			<source>SR5</source>
+			<page>29</page>
+		</rule>
+		<rule>
+			<id>1613F33E-0A1C-4879-B43C-8A0AE0C6452D</id>
+			<name>The Plan</name>
+			<source>SR5</source>
+			<page>29</page>
+		</rule>
+		<rule>
+			<id>570CDEED-52FE-4CA1-813F-AB25EE1D9DF3</id>
+			<name>Do It</name>
+			<source>SR5</source>
+			<page>29</page>
+		</rule>
+		<rule>
+			<id>686AEC7E-AFC0-415D-BB19-23A3E98B7E18</id>
+			<name>Wrap It Up</name>
+			<source>SR5</source>
+			<page>29</page>
+		</rule>
+		<rule>
+			<id>8924475A-AEDB-4577-9EFC-868BD8F6E57C</id>
+			<name>What You Might Be Doing</name>
+			<source>SR5</source>
+			<page>29</page>
+		</rule>
+		<rule>
+			<id>67567320-FFEE-40E4-8A50-F6BDD0D3FDE6</id>
+			<name>The Opposition</name>
+			<source>SR5</source>
+			<page>30</page>
+		</rule>
+		<rule>
+			<id>030BF6D3-B2CD-4E45-B2CE-3DEA6B3E535B</id>
+			<name>The Corps</name>
+			<source>SR5</source>
+			<page>30</page>
+		</rule>
+		<rule>
+			<id>A636B13F-38A7-4F18-83C6-B581C76D242D</id>
+			<name>The Big Ten</name>
+			<source>SR5</source>
+			<page>31</page>
+		</rule>
+		<rule>
+			<id>2FF405B2-9646-40E6-9158-DEAEA96EE31D</id>
+			<name>Organized Crime</name>
+			<source>SR5</source>
+			<page>33</page>
+		</rule>
+		<rule>
+			<id>FA6A4DB7-A497-45C8-A279-4E521C49D73E</id>
+			<name>Gangs</name>
+			<source>SR5</source>
+			<page>34</page>
+		</rule>
+		<rule>
+			<id>C9CA076E-E53A-4F3D-B352-081F0391D8A5</id>
+			<name>Academics</name>
+			<source>SR5</source>
+			<page>35</page>
+		</rule>
+		<rule>
+			<id>62C4AAA3-645F-4FF0-AF7F-2ECAEAA22443</id>
+			<name>Mana Chasers</name>
+			<source>SR5</source>
+			<page>35</page>
+		</rule>
+		<rule>
+			<id>75F719BB-B8FF-4CA6-99DA-8384A05BF761</id>
+			<name>Politicos</name>
+			<source>SR5</source>
+			<page>36</page>
+		</rule>
+		<rule>
+			<id>BAFDF2B3-9006-465E-BB6F-C4E4DF7DD211</id>
+			<name>The Law</name>
+			<source>SR5</source>
+			<page>38</page>
+		</rule>
+		<rule>
+			<id>C23375C7-4050-42FD-9D88-4444D2705A68</id>
+			<name>Beneath the Surface</name>
+			<source>SR5</source>
+			<page>38</page>
+		</rule>
+		<rule>
+			<id>A2FB1AAA-C508-4A74-9492-A18A8D56CD82</id>
+			<name>Off the Job</name>
+			<source>SR5</source>
+			<page>39</page>
+		</rule>
+		<rule>
+			<id>B65BAA45-71BC-41CD-9976-B4E6C9E0584D</id>
+			<name>Money</name>
+			<source>SR5</source>
+			<page>39</page>
+		</rule>
+		<rule>
+			<id>16F5B500-117E-4F6F-ADDE-44E849CCF966</id>
+			<name>The Matrix</name>
+			<source>SR5</source>
+			<page>39</page>
+		</rule>
+		<rule>
+			<id>37B58A34-3F02-466C-96DB-FD73ADDBF932</id>
+			<name>Music</name>
+			<source>SR5</source>
+			<page>39</page>
+		</rule>
+		<rule>
+			<id>986B1EC3-970C-4A3E-9B62-A01AD280313B</id>
+			<name>Trideo</name>
+			<source>SR5</source>
+			<page>40</page>
+		</rule>
+		<rule>
+			<id>5E7B8F00-1637-44EC-8AEE-5BC9E777CA84</id>
+			<name>Sports</name>
+			<source>SR5</source>
+			<page>40</page>
+		</rule>
+		<rule>
+			<id>ADB39177-700B-4961-AB7C-A5C713917C96</id>
+			<name>Food</name>
+			<source>SR5</source>
+			<page>41</page>
+		</rule>
+		<rule>
+			<id>AF9FAAF8-0736-41F2-B4B9-197BAF778809</id>
+			<name>Sex</name>
+			<source>SR5</source>
+			<page>41</page>
+		</rule>
+		<rule>
+			<id>8067DF12-F5A1-4FB8-8ABB-542B4C0279B1</id>
+			<name>Staying Healthy</name>
+			<source>SR5</source>
+			<page>42</page>
+		</rule>
+		<rule>
+			<id>49CC892D-699B-4B6D-ACF8-82FB2871C959</id>
+			<name>Getting Around</name>
+			<source>SR5</source>
+			<page>43</page>
+		</rule>
+		<rule>
+			<id>646658C4-D8E6-43B4-9CBA-A5CC56018A91</id>
+			<name>Shadowrun Concepts</name>
+			<source>SR5</source>
+			<page>44</page>
+		</rule>
+		<rule>
+			<id>1A12816F-29A8-4CD6-9D3A-D1AC296B3E9A</id>
+			<name>The Game &amp; You</name>
+			<source>SR5</source>
+			<page>44</page>
+		</rule>
+		<rule>
+			<id>FF69D8FA-57DC-42B6-A820-206E63D2259D</id>
+			<name>The Gamemaster &amp; You</name>
+			<source>SR5</source>
+			<page>44</page>
+		</rule>
+		<rule>
+			<id>F59AC2CB-21B1-4C10-8041-02A91A3126EC</id>
+			<name>How to Make Things Happen</name>
+			<source>SR5</source>
+			<page>44</page>
+		</rule>
+		<rule>
+			<id>6786B750-C157-4714-8E9A-5CCFC559959F</id>
+			<name>Hits &amp; Thresholds</name>
+			<source>SR5</source>
+			<page>44</page>
+		</rule>
+		<rule>
+			<id>F1C4515C-EE37-46E1-89DF-E434A140FF37</id>
+			<name>Buying Hits</name>
+			<source>SR5</source>
+			<page>45</page>
+		</rule>
+		<rule>
+			<id>F62541A0-20A2-4410-84F1-76F60F44AFC4</id>
+			<name>Glitches</name>
+			<source>SR5</source>
+			<page>45</page>
+		</rule>
+		<rule>
+			<id>D0142BA4-5F34-4B84-8C33-34AB00A3A9B1</id>
+			<name>Tests and Limits</name>
+			<source>SR5</source>
+			<page>46</page>
+		</rule>
+		<rule>
+			<id>97DDDAF5-6914-4839-B6F3-5399FB9C47A8</id>
+			<name>Success Tests</name>
+			<source>SR5</source>
+			<page>47</page>
+		</rule>
+		<rule>
+			<id>1BC5DD9C-B2FD-4E17-8F06-621CEC4B3CFB</id>
+			<name>Opposed Tests</name>
+			<source>SR5</source>
+			<page>47</page>
+		</rule>
+		<rule>
+			<id>622E657A-9E31-419D-82AA-77FA8796ED5D</id>
+			<name>Extended Tests</name>
+			<source>SR5</source>
+			<page>48</page>
+		</rule>
+		<rule>
+			<id>343FA6D7-07E1-4B45-9327-BD7FB23A3035</id>
+			<name>Extended Tests &amp; Glitches</name>
+			<source>SR5</source>
+			<page>48</page>
+		</rule>
+		<rule>
+			<id>20A15517-155F-4488-923E-E6A819766398</id>
+			<name>Teamwork Tests</name>
+			<source>SR5</source>
+			<page>49</page>
+		</rule>
+		<rule>
+			<id>1079B129-EC8B-48F9-B21B-CC393BC7299A</id>
+			<name>Trying Again</name>
+			<source>SR5</source>
+			<page>49</page>
+		</rule>
+		<rule>
+			<id>4866AC8C-73E9-499E-AB7B-75AA19DB2EA2</id>
+			<name>Time Passing</name>
+			<source>SR5</source>
+			<page>49</page>
+		</rule>
+		<rule>
+			<id>16016CF0-232B-4934-8105-9D3E9361CFBE</id>
+			<name>Combat Turns</name>
+			<source>SR5</source>
+			<page>49</page>
+		</rule>
+		<rule>
+			<id>19D952E1-9125-4604-9832-0B7EF0F835DB</id>
+			<name>Actions</name>
+			<source>SR5</source>
+			<page>49</page>
+		</rule>
+		<rule>
+			<id>04194DCC-D735-41D3-A0C9-848A0AFE8A71</id>
+			<name>Your Character</name>
+			<source>SR5</source>
+			<page>50</page>
+		</rule>
+		<rule>
+			<id>16BFC137-5D7B-43E7-983D-B29A7D2F2925</id>
+			<name>Metatype</name>
+			<source>SR5</source>
+			<page>50</page>
+		</rule>
+		<rule>
+			<id>41CCB9F5-250A-4CEF-B888-727597D321CC</id>
+			<name>Attributes</name>
+			<source>SR5</source>
+			<page>51</page>
+		</rule>
+		<rule>
+			<id>786134E7-8E6B-43AA-9E02-E7781C45FF65</id>
+			<name>Physical Attributes</name>
+			<source>SR5</source>
+			<page>51</page>
+		</rule>
+		<rule>
+			<id>8AC0ABE3-8756-47FF-9A6E-82992C3CCC16</id>
+			<name>Mental Attributes</name>
+			<source>SR5</source>
+			<page>51</page>
+		</rule>
+		<rule>
+			<id>9AFC1E87-01A5-4C07-92CE-B99C9DC8F724</id>
+			<name>Special Attributes</name>
+			<source>SR5</source>
+			<page>52</page>
+		</rule>
+		<rule>
+			<id>5070A280-4351-49B8-87E9-648F607C1641</id>
+			<name>Initiative and Condition Monitors</name>
+			<source>SR5</source>
+			<page>52</page>
+		</rule>
+		<rule>
+			<id>7F43233D-9CE2-4036-B172-24291FA63710</id>
+			<name>Initiative</name>
+			<source>SR5</source>
+			<page>52</page>
+		</rule>
+		<rule>
+			<id>96D2612F-896B-4B92-A9B9-B823370F5ECF</id>
+			<name>Initiative Dice</name>
+			<source>SR5</source>
+			<page>52</page>
+		</rule>
+		<rule>
+			<id>FE2596CE-8E39-42AC-8AE1-279548928AF7</id>
+			<name>Condition Monitors</name>
+			<source>SR5</source>
+			<page>52</page>
+		</rule>
+		<rule>
+			<id>09A5C501-7B40-4965-99BF-B75BE3384B6A</id>
+			<name>Skills</name>
+			<source>SR5</source>
+			<page>52</page>
+		</rule>
+		<rule>
+			<id>F3F54EA1-4143-4F45-9E80-E781A45B3377</id>
+			<name>Qualities</name>
+			<source>SR5</source>
+			<page>53</page>
+		</rule>
+		<rule>
+			<id>E3D15823-DD52-46CE-95F3-2BEBB9C243F4</id>
+			<name>Magic</name>
+			<source>SR5</source>
+			<page>53</page>
+		</rule>
+		<rule>
+			<id>F0232610-42A0-4D0C-9151-F07E1596EEBC</id>
+			<name>Matrix</name>
+			<source>SR5</source>
+			<page>53</page>
+		</rule>
+		<rule>
+			<id>158FDA2E-4587-4A28-8B2F-CB3B9C6150D1</id>
+			<name>Augmented Reality</name>
+			<source>SR5</source>
+			<page>53</page>
+		</rule>
+		<rule>
+			<id>E6040A3F-CE9C-4723-B71E-D6CA33AE7C26</id>
+			<name>Virtual Reality</name>
+			<source>SR5</source>
+			<page>54</page>
+		</rule>
+		<rule>
+			<id>705B67AC-8F30-464B-802F-C4FA5CB2DD62</id>
+			<name>Gear</name>
+			<source>SR5</source>
+			<page>54</page>
+		</rule>
+		<rule>
+			<id>43E12D87-1882-4850-BB3F-FE87224D452D</id>
+			<name>Cyberware</name>
+			<source>SR5</source>
+			<page>54</page>
+		</rule>
+		<rule>
+			<id>C4E15FCA-1F2C-4171-86B3-5B822EC26CE0</id>
+			<name>Bioware</name>
+			<source>SR5</source>
+			<page>55</page>
+		</rule>
+		<rule>
+			<id>7BBEEF0D-57F3-49C4-9123-7FE363E8F380</id>
+			<name>Contacts</name>
+			<source>SR5</source>
+			<page>55</page>
+		</rule>
+		<rule>
+			<id>6736ABC8-0015-4716-A55F-0938C0BC0AFC</id>
+			<name>Lifestyle</name>
+			<source>SR5</source>
+			<page>56</page>
+		</rule>
+		<rule>
+			<id>BD5E7260-2674-483D-B25E-F1880C305287</id>
+			<name>Edge</name>
+			<source>SR5</source>
+			<page>56</page>
+		</rule>
+		<rule>
+			<id>EEF91475-9269-48CC-89EA-38F6C5491845</id>
+			<name>Edge Effects</name>
+			<source>SR5</source>
+			<page>56</page>
+		</rule>
+		<rule>
+			<id>575237D9-0A76-4DA1-B101-BCAA4D99FAF8</id>
+			<name>Regaining Edge</name>
+			<source>SR5</source>
+			<page>56</page>
+		</rule>
+		<rule>
+			<id>3A2005B2-EF1C-451D-B3DD-DB56E4F92A24</id>
+			<name>Burning Edge</name>
+			<source>SR5</source>
+			<page>57</page>
+		</rule>
+		<rule>
+			<id>18A69EAB-C562-4C45-91B0-B82C17914F6C</id>
+			<name>Girls with Guns</name>
+			<source>SR5</source>
+			<page>58</page>
+		</rule>
+		<rule>
+			<id>48FA585A-4157-4C65-9B04-7002CAC7EB21</id>
+			<name>Creating a Shadowrunner</name>
+			<source>SR5</source>
+			<page>62</page>
+		</rule>
+		<rule>
+			<id>52475EA2-2DF9-494F-9E07-55F86131E0E7</id>
+			<name>Metatype &amp; Special Attributes</name>
+			<source>SR5</source>
+			<page>65</page>
+		</rule>
+		<rule>
+			<id>9B10A54E-A33C-494A-8891-206F726A44FD</id>
+			<name>Mental and Physical Attributes</name>
+			<source>SR5</source>
+			<page>66</page>
+		</rule>
+		<rule>
+			<id>393A2708-5FB7-4399-A9F2-AF2FD38B3DEB</id>
+			<name>What the Numbers Mean</name>
+			<source>SR5</source>
+			<page>88</page>
+		</rule>
+		<rule>
+			<id>4504F8E7-C544-42A2-8D10-CF093BE31E57</id>
+			<name>Restricted Skills</name>
+			<source>SR5</source>
+			<page>89</page>
+		</rule>
+		<rule>
+			<id>2C95B22E-E09E-4F60-9BFC-A208A72FFC52</id>
+			<name>Knowledge and Language Skills</name>
+			<source>SR5</source>
+			<page>89</page>
+		</rule>
+		<rule>
+			<id>17A2F05D-67F6-4664-B1D1-1C5FBC279FB1</id>
+			<name>Cyberware and Bioware</name>
+			<source>SR5</source>
+			<page>94</page>
+		</rule>
+		<rule>
+			<id>F916353A-4DE9-4FA9-9A5E-39DEDCA843E6</id>
+			<name>Lifestyle</name>
+			<source>SR5</source>
+			<page>95</page>
+		</rule>
+		<rule>
+			<id>93987756-4270-481E-81D5-4AE8BD60F010</id>
+			<name>Starting Nuyen</name>
+			<source>SR5</source>
+			<page>95</page>
+		</rule>
+		<rule>
+			<id>71A3536A-533A-42C5-B6D7-1E223838730C</id>
+			<name>Contacts</name>
+			<source>SR5</source>
+			<page>98</page>
+		</rule>
+		<rule>
+			<id>70AFAF81-868D-4C5A-B916-726990D85382</id>
+			<name>Step Eight: Final Calculations</name>
+			<source>SR5</source>
+			<page>100</page>
+		</rule>
+		<rule>
+			<id>A6D0C8F6-71DB-4083-8C7C-97DC9D5B52D2</id>
+			<name>Step Nine: Final Touches</name>
+			<source>SR5</source>
+			<page>103</page>
+		</rule>
+		<rule>
+			<id>506FCCE2-03D5-4F56-A75B-101AF47D42D6</id>
+			<name>Character Advancement</name>
+			<source>SR5</source>
+			<page>103</page>
+		</rule>
+		<rule>
+			<id>72C94459-5919-4227-A369-52D3AC829498</id>
+			<name>Attribute and Skill Tables</name>
+			<source>SR5</source>
+			<page>105</page>
+		</rule>
+		<rule>
+			<id>31065080-8449-48CC-8462-EF590F4500D3</id>
+			<name>Learning Complex Forms</name>
+			<source>SR5</source>
+			<page>106</page>
+		</rule>
+		<rule>
+			<id>795E58FE-D683-4C76-8C16-4C8C9348F0F7</id>
+			<name>Learning Magic</name>
+			<source>SR5</source>
+			<page>106</page>
+		</rule>
+		<rule>
+			<id>FBEAA40B-A531-495D-9693-8120B9EBBC33</id>
+			<name>Qualities</name>
+			<source>SR5</source>
+			<page>106</page>
+		</rule>
+		<rule>
+			<id>03141CAF-F169-433F-A64B-0714E351C31A</id>
+			<name>Skills</name>
+			<source>SR5</source>
+			<page>128</page>
+		</rule>
+		<rule>
+			<id>5947C639-D6F0-45EF-B43C-267F09570193</id>
+			<name>Skill Types</name>
+			<source>SR5</source>
+			<page>128</page>
+		</rule>
+		<rule>
+			<id>E6A16838-0295-46F9-B072-4B68DCD98582</id>
+			<name>Active Skills</name>
+			<source>SR5</source>
+			<page>128</page>
+		</rule>
+		<rule>
+			<id>ABD26593-680C-429C-BEE3-6B49F74ACEF0</id>
+			<name>Knowledge Skills</name>
+			<source>SR5</source>
+			<page>128</page>
+		</rule>
+		<rule>
+			<id>19D9DCD4-0624-4602-8DED-429428CB80A3</id>
+			<name>Language Skills</name>
+			<source>SR5</source>
+			<page>128</page>
+		</rule>
+		<rule>
+			<id>7D32C133-D62C-4304-AF0F-9B476A4FA0C4</id>
+			<name>Using Skills</name>
+			<source>SR5</source>
+			<page>128</page>
+		</rule>
+		<rule>
+			<id>4FA1730F-0948-4340-A8A9-D1EAAB694597</id>
+			<name>Skill Groups</name>
+			<source>SR5</source>
+			<page>129</page>
+		</rule>
+		<rule>
+			<id>D350F92B-5C41-4F2C-A56A-9411E0F0A235</id>
+			<name>Skill Ratings</name>
+			<source>SR5</source>
+			<page>129</page>
+		</rule>
+		<rule>
+			<id>B710B0E3-F470-4EA8-8FAC-F5B46D118BBE</id>
+			<name>Specializations</name>
+			<source>SR5</source>
+			<page>129</page>
+		</rule>
+		<rule>
+			<id>99BF6D7E-B481-451A-A4C4-D6DB9126C064</id>
+			<name>Defaulting</name>
+			<source>SR5</source>
+			<page>130</page>
+		</rule>
+		<rule>
+			<id>83834ED4-A09B-4EC9-BC33-450DB757A3F6</id>
+			<name>Combat Active Skills</name>
+			<source>SR5</source>
+			<page>130</page>
+		</rule>
+		<rule>
+			<id>30D63BEC-C1A6-4101-A359-2857EB58FD71</id>
+			<name>Physical Active Skills</name>
+			<source>SR5</source>
+			<page>133</page>
+		</rule>
+		<rule>
+			<id>7F330F80-1584-4EBA-A708-94B4C85119F0</id>
+			<name>Using Gymnastics</name>
+			<source>SR5</source>
+			<page>134</page>
+		</rule>
+		<rule>
+			<id>4FD137B9-F7CF-4724-86ED-71D9562F46E6</id>
+			<name>Climbing</name>
+			<source>SR5</source>
+			<page>134</page>
+		</rule>
+		<rule>
+			<id>1EC5EB2F-8D48-4F1E-90CF-B185D455B9D4</id>
+			<name>Rappelling</name>
+			<source>SR5</source>
+			<page>134</page>
+		</rule>
+		<rule>
+			<id>EB460CFC-95ED-436D-BBA7-9DBA154D9021</id>
+			<name>Climbing Failures and Glitches</name>
+			<source>SR5</source>
+			<page>134</page>
+		</rule>
+		<rule>
+			<id>8CC2E332-F50B-45EB-9B95-97B8485342BE</id>
+			<name>Jumping</name>
+			<source>SR5</source>
+			<page>134</page>
+		</rule>
+		<rule>
+			<id>E29AA100-BBF2-47B0-9655-09B21886DC10</id>
+			<name>Using Escape Artist</name>
+			<source>SR5</source>
+			<page>135</page>
+		</rule>
+		<rule>
+			<id>E0959602-EF25-4329-A559-4AD2922E5B3E</id>
+			<name>Using Perception</name>
+			<source>SR5</source>
+			<page>135</page>
+		</rule>
+		<rule>
+			<id>8F099427-C8F0-4814-8125-75831BFA60D9</id>
+			<name>Using Running</name>
+			<source>SR5</source>
+			<page>136</page>
+		</rule>
+		<rule>
+			<id>73FFE422-43A7-433A-A284-26DA4D7ECDD6</id>
+			<name>Using Stealth Skills</name>
+			<source>SR5</source>
+			<page>136</page>
+		</rule>
+		<rule>
+			<id>D5F90821-8F9C-40BE-9A42-C9763BF1A5EE</id>
+			<name>Using Disguise and Impersonation</name>
+			<source>SR5</source>
+			<page>136</page>
+		</rule>
+		<rule>
+			<id>65C5114E-B6C6-4D91-A5B2-6F35F197D096</id>
+			<name>Using Survival</name>
+			<source>SR5</source>
+			<page>136</page>
+		</rule>
+		<rule>
+			<id>9F60C0AD-B65E-44EF-9E22-8C80D3F18B30</id>
+			<name>Using Swimming</name>
+			<source>SR5</source>
+			<page>137</page>
+		</rule>
+		<rule>
+			<id>5AD9D004-5969-4C15-8C9D-A920FCB23A04</id>
+			<name>Holding Your Breath</name>
+			<source>SR5</source>
+			<page>137</page>
+		</rule>
+		<rule>
+			<id>E4EAB59A-651F-4FAF-A95E-4E56E6599C58</id>
+			<name>Treading Water</name>
+			<source>SR5</source>
+			<page>137</page>
+		</rule>
+		<rule>
+			<id>9001823F-0E66-43BD-94BA-05634E98E9F2</id>
+			<name>Using Tracking</name>
+			<source>SR5</source>
+			<page>137</page>
+		</rule>
+		<rule>
+			<id>540C60BE-4A7C-4E96-AD78-49866D19F2CC</id>
+			<name>Social Skills</name>
+			<source>SR5</source>
+			<page>137</page>
+		</rule>
+		<rule>
+			<id>54A6EB1C-E663-4D15-8F4C-3D865053E5A1</id>
+			<name>Using Social Skills</name>
+			<source>SR5</source>
+			<page>139</page>
+		</rule>
+		<rule>
+			<id>8A17F57E-8D88-40AC-B2F5-AEDBE6895AC2</id>
+			<name>Social Modifiers</name>
+			<source>SR5</source>
+			<page>139</page>
+		</rule>
+		<rule>
+			<id>9681FA66-F70E-4999-A81C-12B5F3DE4EAE</id>
+			<name>Using Social Influence Skills</name>
+			<source>SR5</source>
+			<page>139</page>
+		</rule>
+		<rule>
+			<id>7FE700C5-0928-445A-92C9-02A9296BBAC3</id>
+			<name>Using Performance</name>
+			<source>SR5</source>
+			<page>141</page>
+		</rule>
+		<rule>
+			<id>766E5E37-7AC2-4ACF-8D3C-526FCCC40060</id>
+			<name>Using Etiquette</name>
+			<source>SR5</source>
+			<page>141</page>
+		</rule>
+		<rule>
+			<id>DE6D0D2C-22DB-4C07-A3BA-B7FADF1B0A7A</id>
+			<name>Etiquette &amp; Glitches</name>
+			<source>SR5</source>
+			<page>141</page>
+		</rule>
+		<rule>
+			<id>97038398-4184-4B76-8D8C-7DB67924B4F5</id>
+			<name>Using Instruction</name>
+			<source>SR5</source>
+			<page>141</page>
+		</rule>
+		<rule>
+			<id>73431B7A-314E-4E9A-B86C-3794AE062CA1</id>
+			<name>Using Leadership</name>
+			<source>SR5</source>
+			<page>141</page>
+		</rule>
+		<rule>
+			<id>1763CAE1-591C-4A02-8B35-45854EFCC027</id>
+			<name>Magical Skills</name>
+			<source>SR5</source>
+			<page>142</page>
+		</rule>
+		<rule>
+			<id>7F83E04D-4D8F-465F-8C40-00908AD201F4</id>
+			<name>Resonance Skills</name>
+			<source>SR5</source>
+			<page>143</page>
+		</rule>
+		<rule>
+			<id>A63CDF28-9F65-42C8-BE82-8F0D90BDC1C9</id>
+			<name>Technical Skills</name>
+			<source>SR5</source>
+			<page>143</page>
+		</rule>
+		<rule>
+			<id>2DECE2EE-69BC-4B1D-BA51-4C70A40C06A9</id>
+			<name>Building &amp; Repairing</name>
+			<source>SR5</source>
+			<page>145</page>
+		</rule>
+		<rule>
+			<id>9EC54816-AD1D-4BC3-9530-1C8B4293E807</id>
+			<name>Using Forgery</name>
+			<source>SR5</source>
+			<page>145</page>
+		</rule>
+		<rule>
+			<id>9F79EBC5-6729-4913-AC23-EB7F5D4458B7</id>
+			<name>Using Navigation</name>
+			<source>SR5</source>
+			<page>146</page>
+		</rule>
+		<rule>
+			<id>50566B8F-AB8F-45AB-BCF9-86163CD5FC1A</id>
+			<name>Vehicle Skills</name>
+			<source>SR5</source>
+			<page>146</page>
+		</rule>
+		<rule>
+			<id>8E6BF9DD-564A-43CD-9FCA-3E29F624586B</id>
+			<name>Devising New Active Skills</name>
+			<source>SR5</source>
+			<page>147</page>
+		</rule>
+		<rule>
+			<id>7E0E2BB6-3168-4D62-B368-F072B7C81748</id>
+			<name>Knowledge Skills</name>
+			<source>SR5</source>
+			<page>147</page>
+		</rule>
+		<rule>
+			<id>B5531550-F2F8-45EA-9C65-9FE9044DB0F5</id>
+			<name>Choosing Knowledge Skills</name>
+			<source>SR5</source>
+			<page>147</page>
+		</rule>
+		<rule>
+			<id>0AEE3391-AC6E-4664-B6CA-E13B725BAC66</id>
+			<name>Knowledge Skill Specializations</name>
+			<source>SR5</source>
+			<page>148</page>
+		</rule>
+		<rule>
+			<id>19164EA2-D030-4C10-8E1F-5EAC2E115640</id>
+			<name>Street Knowledge</name>
+			<source>SR5</source>
+			<page>148</page>
+		</rule>
+		<rule>
+			<id>A20FF1DE-848E-4899-8FB1-5D22401BCC49</id>
+			<name>Academic Knowledge</name>
+			<source>SR5</source>
+			<page>148</page>
+		</rule>
+		<rule>
+			<id>B3F6752C-9D42-4C01-9F6F-500DEF322113</id>
+			<name>Professional Knowledge</name>
+			<source>SR5</source>
+			<page>148</page>
+		</rule>
+		<rule>
+			<id>069B0822-1BD9-44F6-B50F-45884FD805CE</id>
+			<name>Interests</name>
+			<source>SR5</source>
+			<page>148</page>
+		</rule>
+		<rule>
+			<id>90F54693-DD38-46AD-B949-7D91B14D14E5</id>
+			<name>Using Knowledge Skills</name>
+			<source>SR5</source>
+			<page>148</page>
+		</rule>
+		<rule>
+			<id>9D528D17-ECD8-4A47-A7DC-B14818C6CEF5</id>
+			<name>Language Skills</name>
+			<source>SR5</source>
+			<page>150</page>
+		</rule>
+		<rule>
+			<id>9785E1BE-D9C1-4173-85EA-92613F7B6D73</id>
+			<name>Language</name>
+			<source>SR5</source>
+			<page>150</page>
+		</rule>
+		<rule>
+			<id>70D93EC9-302D-4213-A47A-ADF9BE3EEEAE</id>
+			<name>Lingos</name>
+			<source>SR5</source>
+			<page>150</page>
+		</rule>
+		<rule>
+			<id>F0830790-7273-4C1C-B6EE-BB31E5FD55B0</id>
+			<name>Using Language Skills</name>
+			<source>SR5</source>
+			<page>150</page>
+		</rule>
+		<rule>
+			<id>F17670B4-071F-47B9-8362-EE16393D2BDB</id>
+			<name>Social Skills and Language</name>
+			<source>SR5</source>
+			<page>151</page>
+		</rule>
+		<rule>
+			<id>441034B8-558A-4BE8-BC4A-D88089C83AE1</id>
+			<name>Using Attributes</name>
+			<source>SR5</source>
+			<page>152</page>
+		</rule>
+		<rule>
+			<id>EF94C907-A29F-4E1D-A63F-A6889D27F534</id>
+			<name>Attribute-Only Tests</name>
+			<source>SR5</source>
+			<page>152</page>
+		</rule>
+		<rule>
+			<id>0B5E5682-F681-48C7-B412-E8637D5BA734</id>
+			<name>Composure</name>
+			<source>SR5</source>
+			<page>152</page>
+		</rule>
+		<rule>
+			<id>410A23CC-5D9C-4EA1-9B9F-0D03CB3E79BE</id>
+			<name>Judge Intentions</name>
+			<source>SR5</source>
+			<page>152</page>
+		</rule>
+		<rule>
+			<id>85386BE7-BE98-4375-ADFB-1B1B7A155EB7</id>
+			<name>Lifting/Carrying</name>
+			<source>SR5</source>
+			<page>152</page>
+		</rule>
+		<rule>
+			<id>5F7F2D93-4636-4665-9F8F-5EB59341649B</id>
+			<name>Memory</name>
+			<source>SR5</source>
+			<page>152</page>
+		</rule>
+		<rule>
+			<id>E20F3137-7F9D-4D98-A8C3-1F149C7DBB54</id>
+			<name>Where There’S Smoke</name>
+			<source>SR5</source>
+			<page>154</page>
+		</rule>
+		<rule>
+			<id>70A8B7C7-50A7-4B32-9ECA-A7CF10AF8C55</id>
+			<name>Combat</name>
+			<source>SR5</source>
+			<page>158</page>
+		</rule>
+		<rule>
+			<id>73210623-AFBF-4FAC-809A-616415E1FAF1</id>
+			<name>The Basics</name>
+			<source>SR5</source>
+			<page>158</page>
+		</rule>
+		<rule>
+			<id>21CCA46A-7E69-40A8-9AE9-EFD153A8F6E9</id>
+			<name>Combat Turn Sequence</name>
+			<source>SR5</source>
+			<page>158</page>
+		</rule>
+		<rule>
+			<id>D83F82ED-57BD-48A1-9C46-CA3D93BDE9F9</id>
+			<name>Initiative</name>
+			<source>SR5</source>
+			<page>159</page>
+		</rule>
+		<rule>
+			<id>93E60166-36D1-49EC-8F20-ECF0B485AB28</id>
+			<name>Initiative Attribute</name>
+			<source>SR5</source>
+			<page>159</page>
+		</rule>
+		<rule>
+			<id>A5D18354-17D4-4102-9295-03E6D125CB67</id>
+			<name>Initiative Score</name>
+			<source>SR5</source>
+			<page>159</page>
+		</rule>
+		<rule>
+			<id>EFEAB27C-2290-46C5-AD1B-0C3D4AD54013</id>
+			<name>Initiative Passes</name>
+			<source>SR5</source>
+			<page>159</page>
+		</rule>
+		<rule>
+			<id>ADA62D45-8080-4145-BA11-FB448B031986</id>
+			<name>Changing Initiative</name>
+			<source>SR5</source>
+			<page>160</page>
+		</rule>
+		<rule>
+			<id>EBC38FF4-B60D-49A4-A852-61ED3E25E78B</id>
+			<name>Initiative and Edge</name>
+			<source>SR5</source>
+			<page>160</page>
+		</rule>
+		<rule>
+			<id>2E4F171A-2B4B-4199-8B84-31A97A5B2547</id>
+			<name>Delaying Actions</name>
+			<source>SR5</source>
+			<page>161</page>
+		</rule>
+		<rule>
+			<id>779BEADF-638B-46D1-A2B8-2AAD25732DF8</id>
+			<name>Timed Items &amp; Initiative</name>
+			<source>SR5</source>
+			<page>161</page>
+		</rule>
+		<rule>
+			<id>B9552DB9-8196-468E-ACE8-FFD8CE790A47</id>
+			<name>Movement</name>
+			<source>SR5</source>
+			<page>161</page>
+		</rule>
+		<rule>
+			<id>3235E87E-6756-4230-AB4C-291E1656F6DE</id>
+			<name>Standard Movement</name>
+			<source>SR5</source>
+			<page>161</page>
+		</rule>
+		<rule>
+			<id>F1221EF4-446D-4177-B72F-3A46055EBBFA</id>
+			<name>Sprinting</name>
+			<source>SR5</source>
+			<page>162</page>
+		</rule>
+		<rule>
+			<id>1A3F6096-B198-4A40-A873-3008ACB262BA</id>
+			<name>Running Modifiers</name>
+			<source>SR5</source>
+			<page>162</page>
+		</rule>
+		<rule>
+			<id>4BC5673F-DB7E-4CDB-9236-B18741A3C276</id>
+			<name>Action Phase</name>
+			<source>SR5</source>
+			<page>163</page>
+		</rule>
+		<rule>
+			<id>E4BA5384-5B92-4505-84B0-90C3101EDB00</id>
+			<name>Matrix Actions</name>
+			<source>SR5</source>
+			<page>163</page>
+		</rule>
+		<rule>
+			<id>A00C7420-4172-4AFF-8B86-67BBE10B01A3</id>
+			<name>Free Actions</name>
+			<source>SR5</source>
+			<page>163</page>
+		</rule>
+		<rule>
+			<id>77E9D956-835E-4059-ACAB-6669A107EFF7</id>
+			<name>Call a Shot</name>
+			<source>SR5</source>
+			<page>163</page>
+		</rule>
+		<rule>
+			<id>40D22890-7B8D-4A2F-8A79-99368FD4D9BC</id>
+			<name>Change Linked Device Mode</name>
+			<source>SR5</source>
+			<page>163</page>
+		</rule>
+		<rule>
+			<id>E0D35E5C-B8A9-413D-8B5F-35D4F49D0D50</id>
+			<name>Drop Object</name>
+			<source>SR5</source>
+			<page>163</page>
+		</rule>
+		<rule>
+			<id>30EC61C0-F6D2-4FFD-A23A-654AABE11F6F</id>
+			<name>Drop Prone</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>5F254309-09F9-4B5A-B47A-1D051616F4DE</id>
+			<name>Eject Smartgun Clip</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>D90FEBC1-5AA8-491B-A7E3-2E577087FFAC</id>
+			<name>Gesture</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>1D36AF99-27C4-4B65-95D2-64FE94A293D6</id>
+			<name>Multiple Attacks</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>D4AABD9E-D4EA-4DE4-85F8-E561B680311E</id>
+			<name>Run</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>CF483F8E-0E08-49CC-8FBC-F2CC7C8F7B20</id>
+			<name>Speak/Text/Transmit Phrase</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>A0F1F084-7036-4093-9382-B6CC1F069525</id>
+			<name>Simple Actions</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>6927B8C3-0186-477F-B7FD-5A671E57DD03</id>
+			<name>Activate Focus</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>705160CC-928F-41D5-8A42-EF7532E8E031</id>
+			<name>Call Spirit</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>47A673E5-07AF-4482-8907-B3186DD19A06</id>
+			<name>Change Device Mode</name>
+			<source>SR5</source>
+			<page>164</page>
+		</rule>
+		<rule>
+			<id>092EA0BA-7EC3-49B8-BB1F-A344A98E9235</id>
+			<name>Change Gun Mode</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>CF9BE23D-5AB3-4C63-8C1D-8BEA0BC3A358</id>
+			<name>Command Spirit</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>47844DBD-DF7B-47C1-A949-D0D7D3FB4893</id>
+			<name>Dismiss Spirit</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>64091251-7952-4DBF-9035-4D81C603BAC7</id>
+			<name>Fire Bow</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>6062144D-4F24-4D1A-8689-4FFDBF825BB0</id>
+			<name>Fire Semi-Auto, Single-Shot, Burst Fire or Full-Auto</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>8D0B825E-EF6D-4C3E-A1BF-2981DC34E96D</id>
+			<name>Insert Clip</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>F7748DC3-14DA-465C-91AA-6932FCB210AE</id>
+			<name>Observe in Detail</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>EA868A34-D152-4C21-ADA4-60CF12808D88</id>
+			<name>Pick Up/Put Down Object</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>EAAA4CC7-AE3A-47F6-BB9E-6C78F5AF2190</id>
+			<name>Quick Draw</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>81E0171E-75CA-436F-9C21-7F8FE1B3FEFF</id>
+			<name>Ready Weapon</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>B504ADC5-F780-4356-B6DA-6B251CA2131F</id>
+			<name>Reckless Spellcasting</name>
+			<source>SR5</source>
+			<page>165</page>
+		</rule>
+		<rule>
+			<id>1193C342-E5BD-4B5F-9618-273747397185</id>
+			<name>Remove Clip</name>
+			<source>SR5</source>
+			<page>166</page>
+		</rule>
+		<rule>
+			<id>FC070C95-119A-4A0E-9DAC-0B38C1EB414D</id>
+			<name>Shift Perception</name>
+			<source>SR5</source>
+			<page>166</page>
+		</rule>
+		<rule>
+			<id>FA626AFD-DB2F-48EF-A1EA-95CD7AE184A4</id>
+			<name>Stand Up</name>
+			<source>SR5</source>
+			<page>166</page>
+		</rule>
+		<rule>
+			<id>41F45CFC-DEEB-4917-B8CC-EC269E00725C</id>
+			<name>Take Aim</name>
+			<source>SR5</source>
+			<page>166</page>
+		</rule>
+		<rule>
+			<id>D6420FF3-8527-4DA4-B63A-1ACDDB21BCBA</id>
+			<name>Take Cover</name>
+			<source>SR5</source>
+			<page>166</page>
+		</rule>
+		<rule>
+			<id>14D79A0B-7A5C-47E7-91D1-3C9C4D2EE2AF</id>
+			<name>Throw Weapon</name>
+			<source>SR5</source>
+			<page>166</page>
+		</rule>
+		<rule>
+			<id>E81FC64E-4CA5-4B11-85E8-5161D7C393B6</id>
+			<name>Use Simple Device</name>
+			<source>SR5</source>
+			<page>166</page>
+		</rule>
+		<rule>
+			<id>0C70B935-EE84-46AA-B9FE-9EE1B9020419</id>
+			<name>Complex Actions</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>D0D6AE76-995A-4309-AB8D-61E14AD6EDF5</id>
+			<name>Astral Projection</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>E13EDFFE-99AF-43B6-8E22-BB9232848909</id>
+			<name>Banish Spirit</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>9E40FFE4-1A08-43F0-90CA-0917A5883242</id>
+			<name>Cast Spell</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>A467EDAA-F8D2-47AA-BD01-605BB60B26AB</id>
+			<name>Fire Full-Auto Weapon</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>203CDD3C-3743-4819-8A12-FE7435E7D2A4</id>
+			<name>Fire Long Burst or Semi-Auto Burst</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>F8386886-5F8C-4162-81F4-DA1A3878F3DE</id>
+			<name>Fire Mounted or Vehicle Weapon</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>6A743F9A-DDFF-4894-B43F-4359F2F573E8</id>
+			<name>Load and Fire Bow</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>7392369D-9A8B-4970-874A-A09B430A34E8</id>
+			<name>Matrix Actions</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>677CFA0A-F21B-40D4-B1E2-C038EB5B24C2</id>
+			<name>Melee Attack</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>BBA80538-7903-41A5-A8F6-D98AF65A6FAE</id>
+			<name>Reload Firearm</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>1067696A-0BE6-4081-AEBF-6A11A70F5979</id>
+			<name>Rigger Jump In</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>2517B3B6-E7AE-4272-9A56-172FC7F49398</id>
+			<name>Sprint</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>95D9BB05-A631-48A7-A774-E880E35CFC25</id>
+			<name>Summoning</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>BC048E34-8B6C-4E0A-881F-A693266A1F71</id>
+			<name>Use Skill</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>E28EAE83-9622-4939-BAE0-E87247058B5F</id>
+			<name>Interrupt Actions</name>
+			<source>SR5</source>
+			<page>167</page>
+		</rule>
+		<rule>
+			<id>A8839096-E0C2-4162-B420-9B9A67D95983</id>
+			<name>Block</name>
+			<source>SR5</source>
+			<page>168</page>
+		</rule>
+		<rule>
+			<id>27D1FFC3-8C48-4DB9-8F9E-1B660AB72F0F</id>
+			<name>Dodge</name>
+			<source>SR5</source>
+			<page>168</page>
+		</rule>
+		<rule>
+			<id>6E878E93-8445-4313-905C-DAF57CE669B5</id>
+			<name>Hit the Dirt</name>
+			<source>SR5</source>
+			<page>168</page>
+		</rule>
+		<rule>
+			<id>6ACCCAC9-7C0D-4C11-971D-42200D3F7EE4</id>
+			<name>Intercept</name>
+			<source>SR5</source>
+			<page>168</page>
+		</rule>
+		<rule>
+			<id>02E03A1F-F090-4766-872F-8B7EC762E29F</id>
+			<name>Parry</name>
+			<source>SR5</source>
+			<page>168</page>
+		</rule>
+		<rule>
+			<id>01562DDC-1BEC-43BD-A977-9B2B971C0C1A</id>
+			<name>Full Defense</name>
+			<source>SR5</source>
+			<page>168</page>
+		</rule>
+		<rule>
+			<id>9ACE3FC0-7952-40EC-B743-F712EF05ECA7</id>
+			<name>Accuracy</name>
+			<source>SR5</source>
+			<page>168</page>
+		</rule>
+		<rule>
+			<id>361A1AEB-3F27-4D55-86BA-65D49610E250</id>
+			<name>Armor</name>
+			<source>SR5</source>
+			<page>168</page>
+		</rule>
+		<rule>
+			<id>C1C20B3B-DD37-4F67-A887-AD32C264A374</id>
+			<name>Armor and Encumbrance</name>
+			<source>SR5</source>
+			<page>169</page>
+		</rule>
+		<rule>
+			<id>0BE9CA05-0633-4E81-88B2-C8B9CB91204A</id>
+			<name>Specialized Protection</name>
+			<source>SR5</source>
+			<page>169</page>
+		</rule>
+		<rule>
+			<id>E1AB358A-2D34-4F93-A918-CADB2C61AA08</id>
+			<name>Armor Penetration</name>
+			<source>SR5</source>
+			<page>169</page>
+		</rule>
+		<rule>
+			<id>156111AC-B3C8-455B-92A3-B6A5B6BB920A</id>
+			<name>Damage</name>
+			<source>SR5</source>
+			<page>169</page>
+		</rule>
+		<rule>
+			<id>F06F86FC-7A32-4DBB-9016-4DE26C97B6C9</id>
+			<name>Types of Injury</name>
+			<source>SR5</source>
+			<page>169</page>
+		</rule>
+		<rule>
+			<id>079DD906-40FE-4DC4-9F08-76EB214A79E9</id>
+			<name>Physical Damage</name>
+			<source>SR5</source>
+			<page>169</page>
+		</rule>
+		<rule>
+			<id>7D707EC9-DC74-46AA-AA1C-E632BD389E4B</id>
+			<name>Stun Damage</name>
+			<source>SR5</source>
+			<page>169</page>
+		</rule>
+		<rule>
+			<id>03B04C9D-0F0D-4B90-A349-FB9367DDC760</id>
+			<name>Wound Modifiers</name>
+			<source>SR5</source>
+			<page>169</page>
+		</rule>
+		<rule>
+			<id>AF350287-32E2-4DA4-B050-2A59B798A89B</id>
+			<name>Exceeding the Condition Monitor</name>
+			<source>SR5</source>
+			<page>170</page>
+		</rule>
+		<rule>
+			<id>7D7B9722-4BD0-4B4D-87E5-BFA41303C1E2</id>
+			<name>Special Damage Types</name>
+			<source>SR5</source>
+			<page>170</page>
+		</rule>
+		<rule>
+			<id>218DEFE5-00CD-4462-ACDE-86FA06D3D74F</id>
+			<name>Elemental Damage</name>
+			<source>SR5</source>
+			<page>170</page>
+		</rule>
+		<rule>
+			<id>78EA89CF-CCC0-492F-84C5-FE0BCF2F54E1</id>
+			<name>Acid Damage</name>
+			<source>SR5</source>
+			<page>170</page>
+		</rule>
+		<rule>
+			<id>ABAD267D-D1D6-47B6-8C88-F3A302668729</id>
+			<name>Cold Damage</name>
+			<source>SR5</source>
+			<page>170</page>
+		</rule>
+		<rule>
+			<id>E3FD0C37-AAB0-477B-BD09-AB06700923A6</id>
+			<name>Electricity Damage</name>
+			<source>SR5</source>
+			<page>170</page>
+		</rule>
+		<rule>
+			<id>DFC0453C-B264-4E66-A590-660E8DE6F692</id>
+			<name>Fire Damage</name>
+			<source>SR5</source>
+			<page>171</page>
+		</rule>
+		<rule>
+			<id>4D32D1AC-7A8E-41C4-A3C8-427C90472807</id>
+			<name>Falling Damage</name>
+			<source>SR5</source>
+			<page>172</page>
+		</rule>
+		<rule>
+			<id>467C79EE-F910-4570-8070-A947212AF399</id>
+			<name>Fatigue Damage</name>
+			<source>SR5</source>
+			<page>172</page>
+		</rule>
+		<rule>
+			<id>0062D88C-8672-445A-84BB-78752A66B93E</id>
+			<name>Fatigue from Running</name>
+			<source>SR5</source>
+			<page>172</page>
+		</rule>
+		<rule>
+			<id>8810D3DB-133F-4752-B80F-3DBDB8C8947E</id>
+			<name>Fatigue from Environments</name>
+			<source>SR5</source>
+			<page>172</page>
+		</rule>
+		<rule>
+			<id>29E41EF9-C7C6-4382-9ADA-6FE5CA7EE92E</id>
+			<name>Hunger, Thirst, and Sleep Deprivation</name>
+			<source>SR5</source>
+			<page>172</page>
+		</rule>
+		<rule>
+			<id>8BAEA4EA-869F-41C4-A280-FE20E55A9DB7</id>
+			<name>Combat Resolution</name>
+			<source>SR5</source>
+			<page>172</page>
+		</rule>
+		<rule>
+			<id>79D4EFDC-7807-402E-9234-37BA6D1CD310</id>
+			<name>Combat Sequence</name>
+			<source>SR5</source>
+			<page>173</page>
+		</rule>
+		<rule>
+			<id>DCBD3AF6-BC34-4D8F-835D-493923247721</id>
+			<name>Grazing Hit</name>
+			<source>SR5</source>
+			<page>173</page>
+		</rule>
+		<rule>
+			<id>D0C0CE33-645B-4055-9F3B-43ADBBA1CCE1</id>
+			<name>Ranged Combat</name>
+			<source>SR5</source>
+			<page>173</page>
+		</rule>
+		<rule>
+			<id>F4472003-5F70-4DB8-BFA7-0F55C4D6BC97</id>
+			<name>Ranged Attack Modifiers</name>
+			<source>SR5</source>
+			<page>173</page>
+		</rule>
+		<rule>
+			<id>6FCF30A9-150B-4722-84B1-F2FBFAB590FC</id>
+			<name>Environmental Modifiers</name>
+			<source>SR5</source>
+			<page>173</page>
+		</rule>
+		<rule>
+			<id>2251E38C-41AC-46BA-BB76-812A026E6E34</id>
+			<name>Compensation</name>
+			<source>SR5</source>
+			<page>173</page>
+		</rule>
+		<rule>
+			<id>7D2D5FA5-4FC7-417B-B5CD-6111A35A27AC</id>
+			<name>Visibility</name>
+			<source>SR5</source>
+			<page>174</page>
+		</rule>
+		<rule>
+			<id>3CF93108-2E9E-4064-928A-3B15B7BEDBD8</id>
+			<name>Light/Glare</name>
+			<source>SR5</source>
+			<page>174</page>
+		</rule>
+		<rule>
+			<id>6CB60E6A-9268-4839-A670-D78DB3500870</id>
+			<name>Wind</name>
+			<source>SR5</source>
+			<page>174</page>
+		</rule>
+		<rule>
+			<id>D6BC5363-4F9F-49D7-9AA9-C8B44B132834</id>
+			<name>Range</name>
+			<source>SR5</source>
+			<page>175</page>
+		</rule>
+		<rule>
+			<id>732A86F5-70C1-4DB6-B8D6-CF555B932C27</id>
+			<name>Recoil</name>
+			<source>SR5</source>
+			<page>175</page>
+		</rule>
+		<rule>
+			<id>FFEBDB04-713E-4ACC-9691-787BDD81A7A3</id>
+			<name>Progressive Recoil</name>
+			<source>SR5</source>
+			<page>175</page>
+		</rule>
+		<rule>
+			<id>673106AE-7A83-4969-A3C4-C50BB5D88922</id>
+			<name>Single Shots</name>
+			<source>SR5</source>
+			<page>176</page>
+		</rule>
+		<rule>
+			<id>6D74632C-5482-4E12-A3C3-16102FBF7AC3</id>
+			<name>Vehicle and Drone Mounted Weapons</name>
+			<source>SR5</source>
+			<page>176</page>
+		</rule>
+		<rule>
+			<id>775167E8-C0E2-468E-BAB9-C9BA823BED8A</id>
+			<name>Situational Modifiers</name>
+			<source>SR5</source>
+			<page>176</page>
+		</rule>
+		<rule>
+			<id>995213F2-387B-456F-A621-866B68A55ADB</id>
+			<name>Attacker Firing from Cover with Imaging Device</name>
+			<source>SR5</source>
+			<page>177</page>
+		</rule>
+		<rule>
+			<id>BFC054DB-E7E4-49C1-AA40-588A9F041E73</id>
+			<name>Attacker Firing from a Moving Vehicle</name>
+			<source>SR5</source>
+			<page>177</page>
+		</rule>
+		<rule>
+			<id>696C7C9A-22B0-4107-BE63-BBCE1B6EF5AB</id>
+			<name>Attacker in Melee Combat</name>
+			<source>SR5</source>
+			<page>177</page>
+		</rule>
+		<rule>
+			<id>D166680C-F1F9-43A0-8E38-5A9F9E170895</id>
+			<name>Attacker Running</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>C39A6BDE-A4CD-45F5-BF69-7EC2472BD79E</id>
+			<name>Attacker Using Image Magnification</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>117A814B-773E-4D2A-964F-58DB8933AAAA</id>
+			<name>Attacker Using Off-Hand Weapon</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>F136C231-F56C-4E0E-9FE8-51A59FA499FD</id>
+			<name>Attacker Wounded</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>6CFB3E09-A230-4107-B3D1-483FB5CD42E5</id>
+			<name>Blind Fire</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>05B0BAA3-51BB-4B63-BF91-4CF017D9B037</id>
+			<name>Called Shot</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>E30D310B-6A30-4E44-A1AB-C37DE48BF7FA</id>
+			<name>Previously Aimed with Take Aim</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>10D3AE70-B8F3-4218-A70F-06D8BE788564</id>
+			<name>Wireless Smartgun</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>B79237D0-6A2C-41BA-B88B-6116084A0AC3</id>
+			<name>Firearms</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>AB8DE1E2-18C1-4914-B044-931E050BF39F</id>
+			<name>Firing Modes</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>3CB7969E-0E19-4D5B-BD85-FF4F19453646</id>
+			<name>Single Shot</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>E389FBEC-9B88-4495-B93F-2EE0071E8C80</id>
+			<name>Semi-Automatic</name>
+			<source>SR5</source>
+			<page>178</page>
+		</rule>
+		<rule>
+			<id>3E650E42-066A-4966-8B6D-A31CE7947B91</id>
+			<name>Semi-Automatic Burst</name>
+			<source>SR5</source>
+			<page>179</page>
+		</rule>
+		<rule>
+			<id>C6981237-D4A7-4A91-BBFD-FCC4CB1088D5</id>
+			<name>Burst Fire</name>
+			<source>SR5</source>
+			<page>179</page>
+		</rule>
+		<rule>
+			<id>DDFB7E88-5E5A-456A-B25F-BF39B589D597</id>
+			<name>Long Burst</name>
+			<source>SR5</source>
+			<page>179</page>
+		</rule>
+		<rule>
+			<id>D1A4275C-A6C1-4A6F-AF1D-E2C0DB1C4625</id>
+			<name>Full-Auto</name>
+			<source>SR5</source>
+			<page>179</page>
+		</rule>
+		<rule>
+			<id>7C49CAB4-BED5-49A4-9D49-C7F0A39AD946</id>
+			<name>Suppressive Fire</name>
+			<source>SR5</source>
+			<page>179</page>
+		</rule>
+		<rule>
+			<id>5E8DCB23-0453-40DE-B20F-EE4E331F247A</id>
+			<name>Shotguns</name>
+			<source>SR5</source>
+			<page>180</page>
+		</rule>
+		<rule>
+			<id>1955469F-E187-49E8-826E-67B29E7F6DC7</id>
+			<name>Choke Settings</name>
+			<source>SR5</source>
+			<page>180</page>
+		</rule>
+		<rule>
+			<id>C489A38F-C03A-4973-987A-50A375AD5C81</id>
+			<name>Projectiles</name>
+			<source>SR5</source>
+			<page>181</page>
+		</rule>
+		<rule>
+			<id>C67E070A-2B18-49AE-85F2-8262A027C26F</id>
+			<name>Thrown Weapons</name>
+			<source>SR5</source>
+			<page>181</page>
+		</rule>
+		<rule>
+			<id>BF73A771-1C90-49A1-AF30-E0541B8A5268</id>
+			<name>Shuriken</name>
+			<source>SR5</source>
+			<page>181</page>
+		</rule>
+		<rule>
+			<id>0CE6F210-392B-4BB4-B997-7CE51EE0DFC4</id>
+			<name>Throwing Knife</name>
+			<source>SR5</source>
+			<page>181</page>
+		</rule>
+		<rule>
+			<id>75E65E7C-D26E-4099-992B-69ECBD6B4760</id>
+			<name>Grenades</name>
+			<source>SR5</source>
+			<page>181</page>
+		</rule>
+		<rule>
+			<id>29C31B51-8FD4-471E-8507-0E70D30E8AC5</id>
+			<name>Grenade Launchers, Rockets, &amp; Missiles</name>
+			<source>SR5</source>
+			<page>181</page>
+		</rule>
+		<rule>
+			<id>7F553DCD-071A-49C2-8A86-F5320389A336</id>
+			<name>Projectile Triggers</name>
+			<source>SR5</source>
+			<page>182</page>
+		</rule>
+		<rule>
+			<id>A8DDB4E3-343C-4ECA-8BAE-103B034AF203</id>
+			<name>Determine Scatter</name>
+			<source>SR5</source>
+			<page>182</page>
+		</rule>
+		<rule>
+			<id>D2556026-97E6-4FEE-B4ED-0C427E2F5876</id>
+			<name>Blast Effects</name>
+			<source>SR5</source>
+			<page>182</page>
+		</rule>
+		<rule>
+			<id>3CA845DD-4326-4E7C-8CD5-7FBC56A58AE4</id>
+			<name>Blasts in a Confined Space</name>
+			<source>SR5</source>
+			<page>183</page>
+		</rule>
+		<rule>
+			<id>08496BFB-DE8E-43B4-9C9B-1C85EBB370CA</id>
+			<name>Multiple Simultaneous Blasts</name>
+			<source>SR5</source>
+			<page>183</page>
+		</rule>
+		<rule>
+			<id>6A5C6CBA-2FB3-4F18-9C79-01291024EE02</id>
+			<name>Bows</name>
+			<source>SR5</source>
+			<page>183</page>
+		</rule>
+		<rule>
+			<id>2E2B12CB-78A3-4B4F-9E2B-764F06934CD6</id>
+			<name>Crossbows</name>
+			<source>SR5</source>
+			<page>183</page>
+		</rule>
+		<rule>
+			<id>8AC6DA10-F8A6-4478-9155-DF211C164F2B</id>
+			<name>Gunnery</name>
+			<source>SR5</source>
+			<page>183</page>
+		</rule>
+		<rule>
+			<id>DB1AF1F5-3900-4855-B397-5684CC769A18</id>
+			<name>Drone Gunnery</name>
+			<source>SR5</source>
+			<page>183</page>
+		</rule>
+		<rule>
+			<id>0B6800B0-0BAA-434A-B9AC-D495857815F2</id>
+			<name>Sensor Attacks</name>
+			<source>SR5</source>
+			<page>184</page>
+		</rule>
+		<rule>
+			<id>5BA9937A-E7C8-4AA4-86D8-92A3752E8CDC</id>
+			<name>Sensor Targeting</name>
+			<source>SR5</source>
+			<page>184</page>
+		</rule>
+		<rule>
+			<id>F992701A-FF5E-42CF-88CA-1A46B4F05062</id>
+			<name>Melee Combat</name>
+			<source>SR5</source>
+			<page>184</page>
+		</rule>
+		<rule>
+			<id>01E40333-CBAB-46D5-8A52-FC758D4FE29F</id>
+			<name>Reach</name>
+			<source>SR5</source>
+			<page>186</page>
+		</rule>
+		<rule>
+			<id>1FF87B4E-1EBB-4EFD-95DC-78062B2C690A</id>
+			<name>Attacker Making Charging Attack</name>
+			<source>SR5</source>
+			<page>186</page>
+		</rule>
+		<rule>
+			<id>66324D6E-B57D-48DA-ABE1-462AE6A77942</id>
+			<name>Attacker Prone</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>46E41DE7-FFFD-44F8-8D66-4A7066C74BF1</id>
+			<name>Called Shot</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>3B359279-4F7F-491A-983C-371E431FE87C</id>
+			<name>Character Has Superior Position</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>7AC66660-6026-4014-A28D-021C6026C0F5</id>
+			<name>Character Using Off-Hand Weapon</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>5E0D54ED-A7B1-4B24-8E25-691ABFABB5E5</id>
+			<name>Environmental Modifiers</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>9411917D-2A19-4F26-B359-009A903437D3</id>
+			<name>Friends in Melee</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>215E1970-388B-4F77-B9EC-74460F9C4B6D</id>
+			<name>Opponent Prone</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>5FAAD9C4-074E-4FB7-8430-4C57DFF00013</id>
+			<name>Touch-Only Attack</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>E1452301-5433-4D10-BD37-1D6E0A5C5AB9</id>
+			<name>Melee Damage</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>4353C6A4-5549-4083-826E-D76DEC7EEFF9</id>
+			<name>Multiple Attackers</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>0846CBDC-5774-4498-9C6F-A91C2CD07A95</id>
+			<name>Simple Bonus</name>
+			<source>SR5</source>
+			<page>187</page>
+		</rule>
+		<rule>
+			<id>B719C640-A62A-4BE4-B79E-1D4CD8F70A79</id>
+			<name>Melee Teamwork</name>
+			<source>SR5</source>
+			<page>188</page>
+		</rule>
+		<rule>
+			<id>9CDBBF49-B6E8-475B-A412-54912D4D5117</id>
+			<name>Defending in Combat</name>
+			<source>SR5</source>
+			<page>188</page>
+		</rule>
+		<rule>
+			<id>51F29BCE-5087-4364-AD82-8C6407FA4126</id>
+			<name>Ranged Defense</name>
+			<source>SR5</source>
+			<page>188</page>
+		</rule>
+		<rule>
+			<id>9E1C6293-A331-4776-A0B6-7C832D7D395A</id>
+			<name>Melee Defense</name>
+			<source>SR5</source>
+			<page>188</page>
+		</rule>
+		<rule>
+			<id>5226A5F7-C086-4C23-B285-AE51A3CDBF93</id>
+			<name>Defender Inside
+A Moving Vehicle</name>
+			<source>SR5</source>
+			<page>188</page>
+		</rule>
+		<rule>
+			<id>8D4A5C3F-E8D5-43D9-A4A1-84A10125EBD3</id>
+			<name>Defender Prone</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>1945A944-8859-4E3B-A5D0-7409337E42D7</id>
+			<name>Defender Unaware of Attack</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>F2269AC6-91D6-4645-ADF9-F63BF26009C1</id>
+			<name>Defender Wounded</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>20B603D7-3283-449B-8428-D2C48E793F8E</id>
+			<name>Attacker Has Longer Reach</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>A9AD4930-8E0B-4C46-9CEC-21237DEEF221</id>
+			<name>Defender Has Longer Reach</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>574EC08F-25F9-45E9-A9DF-10E7F8EF5672</id>
+			<name>Defender Receiving a Charge</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>2357DCC8-B100-42D1-B3FF-D20C5028EDC1</id>
+			<name>Defender Has Defended Against Previous Attacks</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>7ED8CD0A-C951-4BC9-8947-038EFCED527B</id>
+			<name>Firing Flechette on Narrow Spread</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>5DEDF2E3-8668-4384-A332-ED33336AD81A</id>
+			<name>Firing Flechette on Medium Spread</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>E742473D-7BDB-4A9C-8737-C5100403F62F</id>
+			<name>Firing Flechette on Wide Spread</name>
+			<source>SR5</source>
+			<page>189</page>
+		</rule>
+		<rule>
+			<id>57A253FE-C729-46C3-827C-DD41851E9DEC</id>
+			<name>Attacker Firing Full Auto Burst</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>837073A1-4B8F-407B-965F-47F17857EC53</id>
+			<name>Attacker Firing Long Burst or Full-Auto</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>0DE8750C-99A2-4C1B-8945-6E3573708B85</id>
+			<name>Attacker Firing Burst or Semi-Auto Burst</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>451D7CA1-4EED-410D-8402-62DFE68C2D26</id>
+			<name>Defender in Melee Target of Ranged Attack</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>6FE37416-293A-4365-8977-AA15C2B00DF0</id>
+			<name>Defender Running</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>FE8DEA9E-718C-42B8-BCAF-8CE58EC6290D</id>
+			<name>Defender/Target Has Good Cover</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>2D86F762-1BEB-4BB9-AB90-FEE8537A7AE8</id>
+			<name>Defender/Target Has Partial Cover</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>8F513F2C-663F-4DBD-B991-5435DCCE6190</id>
+			<name>Targeted by an Area-Effect Attack</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>EB5E8202-E324-4915-A2E8-BB0BB4B2D07E</id>
+			<name>Cover</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>40F226BA-B6A8-4C4D-B842-57282A4C0353</id>
+			<name>Active Defenses</name>
+			<source>SR5</source>
+			<page>190</page>
+		</rule>
+		<rule>
+			<id>AF45BC7F-1333-4E9F-895F-087159E24542</id>
+			<name>Full Defense</name>
+			<source>SR5</source>
+			<page>191</page>
+		</rule>
+		<rule>
+			<id>F8B2E685-DFC5-4A1A-9139-A3557C5FCEB0</id>
+			<name>Dodge</name>
+			<source>SR5</source>
+			<page>191</page>
+		</rule>
+		<rule>
+			<id>FCEE2C00-2CA1-45A9-8527-B358E372AD39</id>
+			<name>Parry</name>
+			<source>SR5</source>
+			<page>191</page>
+		</rule>
+		<rule>
+			<id>E409EB0C-004A-44EA-A692-BEF5C44E7698</id>
+			<name>Block</name>
+			<source>SR5</source>
+			<page>192</page>
+		</rule>
+		<rule>
+			<id>70505E6A-CB9A-4922-A5AB-AC99713D458E</id>
+			<name>Special Actions</name>
+			<source>SR5</source>
+			<page>192</page>
+		</rule>
+		<rule>
+			<id>66BD0A37-ED89-4B29-B07A-F9A6A7A34208</id>
+			<name>Surprise</name>
+			<source>SR5</source>
+			<page>192</page>
+		</rule>
+		<rule>
+			<id>78BF8368-2DA5-4826-B7A3-9A95C133C1CE</id>
+			<name>Surprise and Perception</name>
+			<source>SR5</source>
+			<page>192</page>
+		</rule>
+		<rule>
+			<id>24603B7C-A4CC-4149-BA81-22B5A8D6A7C9</id>
+			<name>Surprise Tests</name>
+			<source>SR5</source>
+			<page>192</page>
+		</rule>
+		<rule>
+			<id>8E964B68-3F4E-4537-AFC8-1701A0927BEF</id>
+			<name>Ambushing</name>
+			<source>SR5</source>
+			<page>192</page>
+		</rule>
+		<rule>
+			<id>FCFAB085-175C-4914-BD92-088F614A9D8B</id>
+			<name>Surprise in Combat</name>
+			<source>SR5</source>
+			<page>193</page>
+		</rule>
+		<rule>
+			<id>F46DA78C-5E64-43E6-AB22-639B635B868F</id>
+			<name>Effects of Surprise</name>
+			<source>SR5</source>
+			<page>194</page>
+		</rule>
+		<rule>
+			<id>5FECCD36-E6F5-4DF5-B47A-6CFA84AD9C81</id>
+			<name>Interception</name>
+			<source>SR5</source>
+			<page>194</page>
+		</rule>
+		<rule>
+			<id>94FEB10F-5E02-4BB4-B4B5-6716631F7532</id>
+			<name>Knockdown</name>
+			<source>SR5</source>
+			<page>194</page>
+		</rule>
+		<rule>
+			<id>1866714C-A0D5-4F00-943D-9887E2F88B73</id>
+			<name>Subduing</name>
+			<source>SR5</source>
+			<page>195</page>
+		</rule>
+		<rule>
+			<id>EF058870-85A5-4D90-9862-DA79E12831E6</id>
+			<name>Called Shots</name>
+			<source>SR5</source>
+			<page>195</page>
+		</rule>
+		<rule>
+			<id>FC656F7E-79A3-4D8B-8EE4-7D7E612E249C</id>
+			<name>Multiple Attacks</name>
+			<source>SR5</source>
+			<page>196</page>
+		</rule>
+		<rule>
+			<id>F3C6D56A-914E-4DCD-AB75-187670247DAB</id>
+			<name>Dead Man’s Trigger</name>
+			<source>SR5</source>
+			<page>197</page>
+		</rule>
+		<rule>
+			<id>C703C478-EA5D-4BD2-B268-C051718C92C0</id>
+			<name>Barriers</name>
+			<source>SR5</source>
+			<page>197</page>
+		</rule>
+		<rule>
+			<id>4500CCAD-8815-4AF9-B0D1-97D8794BC023</id>
+			<name>Shooting through Barriers</name>
+			<source>SR5</source>
+			<page>197</page>
+		</rule>
+		<rule>
+			<id>D6FF0ACA-AAE1-4915-8956-6F9D5FC2104A</id>
+			<name>Destroying Barriers</name>
+			<source>SR5</source>
+			<page>197</page>
+		</rule>
+		<rule>
+			<id>ECA11B93-755C-4258-9E21-21E633F254C6</id>
+			<name>Penetration Weapons</name>
+			<source>SR5</source>
+			<page>198</page>
+		</rule>
+		<rule>
+			<id>8FFACBA0-6C06-4C0C-8E6A-E0174A83D60C</id>
+			<name>Body Barriers</name>
+			<source>SR5</source>
+			<page>198</page>
+		</rule>
+		<rule>
+			<id>C25F56A4-973E-47AF-B9AD-3FD422F1F0F0</id>
+			<name>Vehicles</name>
+			<source>SR5</source>
+			<page>198</page>
+		</rule>
+		<rule>
+			<id>83710190-FCEC-4226-9E1C-9CD120B7E7C5</id>
+			<name>Vehicle Combat</name>
+			<source>SR5</source>
+			<page>198</page>
+		</rule>
+		<rule>
+			<id>FE389B31-51C7-4DBB-B4D4-EA4E2CA90199</id>
+			<name>Vehicle Stats</name>
+			<source>SR5</source>
+			<page>199</page>
+		</rule>
+		<rule>
+			<id>BAF1C60B-3BF9-4EB6-AC55-E7EC6824BEEF</id>
+			<name>Vehicle Tests</name>
+			<source>SR5</source>
+			<page>199</page>
+		</rule>
+		<rule>
+			<id>70B2C61C-1E5B-46F0-BC52-E2741F86E521</id>
+			<name>Pilot Has Impaired Visibility</name>
+			<source>SR5</source>
+			<page>201</page>
+		</rule>
+		<rule>
+			<id>648F80B2-B358-475F-963A-DCE31F2A5024</id>
+			<name>Piloting in Limited Light Conditions</name>
+			<source>SR5</source>
+			<page>201</page>
+		</rule>
+		<rule>
+			<id>064EAAEE-16C9-459A-BE06-774F93512618</id>
+			<name>Pilot Unaware of Event</name>
+			<source>SR5</source>
+			<page>201</page>
+		</rule>
+		<rule>
+			<id>EAADC6E6-17C8-4EFE-9027-6281D26F62E6</id>
+			<name>Pilot Wounded</name>
+			<source>SR5</source>
+			<page>201</page>
+		</rule>
+		<rule>
+			<id>ED1EE231-DB46-46B7-9E21-4A330F786CFE</id>
+			<name>Piloting a Damaged Vehicle</name>
+			<source>SR5</source>
+			<page>201</page>
+		</rule>
+		<rule>
+			<id>4D3C38EA-2E78-4604-A032-A9526839CE00</id>
+			<name>Piloting Using AR/VR</name>
+			<source>SR5</source>
+			<page>201</page>
+		</rule>
+		<rule>
+			<id>C3500844-8F90-405B-A5F6-7E8D030729C0</id>
+			<name>Crashes</name>
+			<source>SR5</source>
+			<page>201</page>
+		</rule>
+		<rule>
+			<id>9B315307-97F6-4A6A-B3F2-59D49DE76742</id>
+			<name>Vehicle Combat</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>029FA966-D667-4512-85F8-EC17EBB13212</id>
+			<name>Tactical Combat</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>418D470B-00D2-4C0F-A5C5-E99299539F8C</id>
+			<name>Movement Rates</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>A7BDF916-E23D-4552-93E6-5C69AD6BFD4E</id>
+			<name>Actions</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>D17D1CB5-4DB2-4317-9A90-CD6BBECD80A3</id>
+			<name>Free Actions</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>D80773A5-B39B-4432-9C1F-BDF19F3B2FD5</id>
+			<name>Change Linked Device Mode</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>D90710EC-F02A-4201-AA88-BFE5F3BF47EF</id>
+			<name>Simple Actions</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>3B21B44C-9CDB-41A4-BA64-C08386AD03B9</id>
+			<name>Use Sensors</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>FF356183-B985-4BED-ADAB-D3BE2CD07924</id>
+			<name>Use Simple Device</name>
+			<source>SR5</source>
+			<page>202</page>
+		</rule>
+		<rule>
+			<id>7A9F95F0-190D-4E87-BEA7-AD2CD15941E5</id>
+			<name>Complex Actions</name>
+			<source>SR5</source>
+			<page>203</page>
+		</rule>
+		<rule>
+			<id>8EBE7815-0956-418C-BE39-3C8DFD0E66C5</id>
+			<name>Control Vehicle</name>
+			<source>SR5</source>
+			<page>203</page>
+		</rule>
+		<rule>
+			<id>D913A766-46C6-47DE-8162-E98EC0D87349</id>
+			<name>Fire a Vehicle Weapon</name>
+			<source>SR5</source>
+			<page>203</page>
+		</rule>
+		<rule>
+			<id>EDC66E8C-2424-42E5-9B83-7E656FD24397</id>
+			<name>Make Vehicle Test</name>
+			<source>SR5</source>
+			<page>203</page>
+		</rule>
+		<rule>
+			<id>57B3C343-9302-410B-973F-BC85396A5B43</id>
+			<name>Ramming</name>
+			<source>SR5</source>
+			<page>203</page>
+		</rule>
+		<rule>
+			<id>E0F03E91-05AD-4FE7-9C4A-027757749FBE</id>
+			<name>Chase Combat</name>
+			<source>SR5</source>
+			<page>203</page>
+		</rule>
+		<rule>
+			<id>7D3913D7-4BAD-485F-933B-777BF3F46768</id>
+			<name>Chase Ranges</name>
+			<source>SR5</source>
+			<page>203</page>
+		</rule>
+		<rule>
+			<id>60A53E30-E4D0-49E7-98E4-F6A12FE48C1B</id>
+			<name>Determine Chase Environment</name>
+			<source>SR5</source>
+			<page>203</page>
+		</rule>
+		<rule>
+			<id>B3E034BD-80DD-44E0-B071-C5FE98B1E3AA</id>
+			<name>Chase Actions</name>
+			<source>SR5</source>
+			<page>204</page>
+		</rule>
+		<rule>
+			<id>B3003E3A-8D7B-45AE-B71A-FB2B9ED7C8F7</id>
+			<name>Catch-Up/Break Away</name>
+			<source>SR5</source>
+			<page>204</page>
+		</rule>
+		<rule>
+			<id>CBDB0A29-27E4-4664-8D6B-5A308FC85DBA</id>
+			<name>Cut-Off</name>
+			<source>SR5</source>
+			<page>204</page>
+		</rule>
+		<rule>
+			<id>D06E9E0C-32D0-43B6-983A-7A58D5DB6F66</id>
+			<name>Ram</name>
+			<source>SR5</source>
+			<page>204</page>
+		</rule>
+		<rule>
+			<id>5FAD1C8D-5FE7-4327-BD14-72EF7FDB6F8E</id>
+			<name>Stunt</name>
+			<source>SR5</source>
+			<page>204</page>
+		</rule>
+		<rule>
+			<id>BC067D95-B797-4BC2-9E19-26565BFAA5D6</id>
+			<name>Passenger Actions</name>
+			<source>SR5</source>
+			<page>205</page>
+		</rule>
+		<rule>
+			<id>3D05CAF8-404C-4F42-A64C-FBB09ED5AA49</id>
+			<name>Attacks Against Vehicles</name>
+			<source>SR5</source>
+			<page>205</page>
+		</rule>
+		<rule>
+			<id>D97AA565-B3B9-4490-8C1C-E1C52B6C6EF5</id>
+			<name>Vehicle Damage</name>
+			<source>SR5</source>
+			<page>205</page>
+		</rule>
+		<rule>
+			<id>E8496F14-F100-48C9-9BAC-30823EC60352</id>
+			<name>Evasive Driving</name>
+			<source>SR5</source>
+			<page>205</page>
+		</rule>
+		<rule>
+			<id>6AE4539B-DA1B-4242-B741-5EE34C55BF2B</id>
+			<name>Called Shot on Vehicles</name>
+			<source>SR5</source>
+			<page>205</page>
+		</rule>
+		<rule>
+			<id>EA06688D-E6D5-43CE-84E1-AFE9F1C0F151</id>
+			<name>Damage and Passengers</name>
+			<source>SR5</source>
+			<page>205</page>
+		</rule>
+		<rule>
+			<id>2B8C8F9E-29DD-4597-B9E2-5FB77C8462BF</id>
+			<name>Healing</name>
+			<source>SR5</source>
+			<page>205</page>
+		</rule>
+		<rule>
+			<id>2C12E4FB-1ABF-4AD1-8736-7BC9296FCE73</id>
+			<name>First Aid</name>
+			<source>SR5</source>
+			<page>205</page>
+		</rule>
+		<rule>
+			<id>54BC8119-D39E-42D6-93D9-BE7230A36B3E</id>
+			<name>Natural Recovery</name>
+			<source>SR5</source>
+			<page>206</page>
+		</rule>
+		<rule>
+			<id>95B6FA4A-77F9-4AEA-BDB5-855F9C7BB0E7</id>
+			<name>Stun Damage</name>
+			<source>SR5</source>
+			<page>207</page>
+		</rule>
+		<rule>
+			<id>E4AA2797-6AF7-4933-9660-E723CC1EA89A</id>
+			<name>Physical Damage</name>
+			<source>SR5</source>
+			<page>207</page>
+		</rule>
+		<rule>
+			<id>FC877CC8-312C-4E7D-B636-A9A136F45133</id>
+			<name>Glitches &amp; Healing</name>
+			<source>SR5</source>
+			<page>207</page>
+		</rule>
+		<rule>
+			<id>90FC0C0A-28CC-455B-BB99-A79F8ED76635</id>
+			<name>Medicine</name>
+			<source>SR5</source>
+			<page>207</page>
+		</rule>
+		<rule>
+			<id>F229C9D8-04F3-4EF0-9A3C-8968921827C8</id>
+			<name>Medkits and Autodocs</name>
+			<source>SR5</source>
+			<page>208</page>
+		</rule>
+		<rule>
+			<id>3653371C-30ED-453C-9FD5-8EF79F29B863</id>
+			<name>Magical Healing</name>
+			<source>SR5</source>
+			<page>208</page>
+		</rule>
+		<rule>
+			<id>D1F1F42E-CAF7-4006-9378-1B44639243AF</id>
+			<name>Physical Damage Overflow</name>
+			<source>SR5</source>
+			<page>209</page>
+		</rule>
+		<rule>
+			<id>FEF69862-C914-4050-8EAA-5F8127766049</id>
+			<name>Stabilization</name>
+			<source>SR5</source>
+			<page>209</page>
+		</rule>
+		<rule>
+			<id>D536BB3C-1211-42FD-9C44-3B231EE1506C</id>
+			<name>Rooftops &amp; Rainbows</name>
+			<source>SR5</source>
+			<page>210</page>
+		</rule>
+		<rule>
+			<id>CD292C48-CB3B-4D35-A261-85AFBB90F8AD</id>
+			<name>The Matrix</name>
+			<source>SR5</source>
+			<page>214</page>
+		</rule>
+		<rule>
+			<id>002BB52C-6360-439C-A319-9D760738D2D4</id>
+			<name>Wireless World</name>
+			<source>SR5</source>
+			<page>214</page>
+		</rule>
+		<rule>
+			<id>A0FC5734-B176-476B-A8BD-C449F4822EDD</id>
+			<name>Matrix Basics</name>
+			<source>SR5</source>
+			<page>217</page>
+		</rule>
+		<rule>
+			<id>09FA6E31-3EB8-489D-BC71-252DF0FA9C7C</id>
+			<name>Virtual Visions</name>
+			<source>SR5</source>
+			<page>217</page>
+		</rule>
+		<rule>
+			<id>374D0F88-FCA6-4ED5-9ADC-0212614ECAE3</id>
+			<name>The Population of the Matrix</name>
+			<source>SR5</source>
+			<page>218</page>
+		</rule>
+		<rule>
+			<id>C9DF7405-415B-4267-AA6D-9BAC1172994E</id>
+			<name>Personas</name>
+			<source>SR5</source>
+			<page>218</page>
+		</rule>
+		<rule>
+			<id>A08541F1-3643-4F44-A15C-6B3FF07BEC29</id>
+			<name>Devices</name>
+			<source>SR5</source>
+			<page>219</page>
+		</rule>
+		<rule>
+			<id>53315420-B462-45BB-A0E5-9A2542558420</id>
+			<name>Files</name>
+			<source>SR5</source>
+			<page>219</page>
+		</rule>
+		<rule>
+			<id>47E85B98-2189-4A1D-96FE-F7834DAC7D54</id>
+			<name>Hosts</name>
+			<source>SR5</source>
+			<page>219</page>
+		</rule>
+		<rule>
+			<id>FF90AB8E-CE2E-4391-9E4B-8F498FD2AADF</id>
+			<name>Matrix Authentication Recognition Keys</name>
+			<source>SR5</source>
+			<page>219</page>
+		</rule>
+		<rule>
+			<id>8D0C392E-9F6D-4A3C-94F1-88835286DB91</id>
+			<name>The Matrix: For You and Against You</name>
+			<source>SR5</source>
+			<page>219</page>
+		</rule>
+		<rule>
+			<id>63E64073-ED2D-437B-8024-EDA39C2D929D</id>
+			<name>Grids</name>
+			<source>SR5</source>
+			<page>220</page>
+		</rule>
+		<rule>
+			<id>145AF94F-5BE8-4B80-87F2-E9CF050ECAE0</id>
+			<name>Looking Down: Grid Overwatch Division</name>
+			<source>SR5</source>
+			<page>221</page>
+		</rule>
+		<rule>
+			<id>0C96F134-D7B7-4C1C-A15E-71AFC89FB38D</id>
+			<name>Augmented World</name>
+			<source>SR5</source>
+			<page>221</page>
+		</rule>
+		<rule>
+			<id>6D260276-9791-48B1-B1DA-4FF0E7F356DC</id>
+			<name>Life with a Commlink</name>
+			<source>SR5</source>
+			<page>221</page>
+		</rule>
+		<rule>
+			<id>159F1987-C273-475C-85F7-8576368442E1</id>
+			<name>Shadowrunning with a Commlink</name>
+			<source>SR5</source>
+			<page>223</page>
+		</rule>
+		<rule>
+			<id>542C3032-1057-4D8F-8C1A-36C1E935704E</id>
+			<name>The Digital Underground</name>
+			<source>SR5</source>
+			<page>223</page>
+		</rule>
+		<rule>
+			<id>87CF501A-AF75-4510-A1CE-5886623B06C9</id>
+			<name>Deckers</name>
+			<source>SR5</source>
+			<page>223</page>
+		</rule>
+		<rule>
+			<id>1C3FE3A7-B59C-4EE2-A38D-AC453A813684</id>
+			<name>Technomancers</name>
+			<source>SR5</source>
+			<page>223</page>
+		</rule>
+		<rule>
+			<id>E214DF5F-4A88-4F56-9923-571D0E64439E</id>
+			<name>(Mis)Using the Matrix</name>
+			<source>SR5</source>
+			<page>224</page>
+		</rule>
+		<rule>
+			<id>DE489BE9-7F75-422B-90FF-44DA9089A6DB</id>
+			<name>Cracking the Matrix Spine</name>
+			<source>SR5</source>
+			<page>224</page>
+		</rule>
+		<rule>
+			<id>2EB147CC-8AAB-444F-9DAF-00C1982A7168</id>
+			<name>Matrix Skills</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>D7A8F5C7-FCF0-45DC-A529-B298CF14CDF0</id>
+			<name>Using Computer</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>F44F664B-B11C-4523-97D0-CFD04B2AFE40</id>
+			<name>Using Cybercombat</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>D72C9DCB-04FD-4226-AE6D-0A6CFAD6EE0A</id>
+			<name>Using Electronic Warfare</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>CB283278-0D2E-4625-A3A5-7D8D6A3F2E95</id>
+			<name>Using Hacking</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>7796B8A1-CF85-43ED-9F30-9D620A8DDBD0</id>
+			<name>Using Hardware</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>0CA7975B-C0A2-43F5-95D7-47D3AD4B8048</id>
+			<name>Using Software</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>236373FC-749B-4BC9-ADED-FA6D9B7C44DD</id>
+			<name>Using Resonance</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>404E5BE5-CF33-44D8-A3C3-0904745A5831</id>
+			<name>Matrix Attributes</name>
+			<source>SR5</source>
+			<page>226</page>
+		</rule>
+		<rule>
+			<id>7890A491-EF72-413D-9802-17AA596B3F44</id>
+			<name>Attack</name>
+			<source>SR5</source>
+			<page>227</page>
+		</rule>
+		<rule>
+			<id>46D58F52-D815-49A5-887E-715D982E0A21</id>
+			<name>Sleaze</name>
+			<source>SR5</source>
+			<page>227</page>
+		</rule>
+		<rule>
+			<id>7E1FD13A-BB57-463C-A767-DBD0BA05DF23</id>
+			<name>Data Processing</name>
+			<source>SR5</source>
+			<page>227</page>
+		</rule>
+		<rule>
+			<id>D0482692-56CB-423E-9E98-6CEC855D22EB</id>
+			<name>Firewall</name>
+			<source>SR5</source>
+			<page>227</page>
+		</rule>
+		<rule>
+			<id>F00E4BF7-19C4-4C67-942E-B1B54BF34544</id>
+			<name>Files &amp; Matrix Attributes</name>
+			<source>SR5</source>
+			<page>227</page>
+		</rule>
+		<rule>
+			<id>F40579C2-9439-41E1-AD66-0A490C20C5A7</id>
+			<name>Cyberdecks</name>
+			<source>SR5</source>
+			<page>227</page>
+		</rule>
+		<rule>
+			<id>BE099D8A-1B0D-4448-8B46-F3401C0D3D92</id>
+			<name>Deck Configuration</name>
+			<source>SR5</source>
+			<page>227</page>
+		</rule>
+		<rule>
+			<id>EED692E4-3C87-4D85-A522-AA88C04351C5</id>
+			<name>Reconfiguring Your Deck</name>
+			<source>SR5</source>
+			<page>228</page>
+		</rule>
+		<rule>
+			<id>D9BA1865-EDB8-4F4F-B74E-E3A504692F79</id>
+			<name>Matrix Damage</name>
+			<source>SR5</source>
+			<page>228</page>
+		</rule>
+		<rule>
+			<id>A360D0D8-DAB9-4084-B319-0FB0DA06E967</id>
+			<name>Bricking</name>
+			<source>SR5</source>
+			<page>228</page>
+		</rule>
+		<rule>
+			<id>AB2602E4-AD5E-49CF-A4C0-1AA9B2B3CC87</id>
+			<name>Repairing Matrix Damage</name>
+			<source>SR5</source>
+			<page>228</page>
+		</rule>
+		<rule>
+			<id>9116FAB9-DBC2-419D-8B2B-400B27A37A7B</id>
+			<name>Non-Devices and Matrix Damage</name>
+			<source>SR5</source>
+			<page>229</page>
+		</rule>
+		<rule>
+			<id>D7C08008-7268-47E2-AB29-31D02EBAFF8E</id>
+			<name>Biofeedback Damage</name>
+			<source>SR5</source>
+			<page>229</page>
+		</rule>
+		<rule>
+			<id>A82654A2-78A2-479F-B119-EAB2DE48D313</id>
+			<name>Dumpshock &amp; Link-Locking</name>
+			<source>SR5</source>
+			<page>229</page>
+		</rule>
+		<rule>
+			<id>20A7E70E-80BA-4467-8710-0163F2E099CD</id>
+			<name>User Modes</name>
+			<source>SR5</source>
+			<page>229</page>
+		</rule>
+		<rule>
+			<id>0C43CE19-36FF-47F6-AF20-0E72F0D010F8</id>
+			<name>Augmented Reality</name>
+			<source>SR5</source>
+			<page>229</page>
+		</rule>
+		<rule>
+			<id>B1C65820-A451-40F4-9B5F-236C077EBA67</id>
+			<name>Cold-Sim Virtual Reality</name>
+			<source>SR5</source>
+			<page>229</page>
+		</rule>
+		<rule>
+			<id>6FDCA8DF-D2A0-464C-AE5A-1A7E37F3C7F9</id>
+			<name>Hot-Sim Virtual Reality</name>
+			<source>SR5</source>
+			<page>230</page>
+		</rule>
+		<rule>
+			<id>141FE6EC-CD20-47CB-85B8-1424400D3A33</id>
+			<name>Making Connections</name>
+			<source>SR5</source>
+			<page>230</page>
+		</rule>
+		<rule>
+			<id>5F01F3B5-7822-4093-ACE5-18C781431532</id>
+			<name>Noise</name>
+			<source>SR5</source>
+			<page>230</page>
+		</rule>
+		<rule>
+			<id>EC701476-83C3-4FBB-9169-C540CEB79DD9</id>
+			<name>Illegal Actions</name>
+			<source>SR5</source>
+			<page>231</page>
+		</rule>
+		<rule>
+			<id>472A35D1-3B58-458E-87B9-B23DE22D08C3</id>
+			<name>Overwatch Score and Convergence</name>
+			<source>SR5</source>
+			<page>231</page>
+		</rule>
+		<rule>
+			<id>FB64D364-8DCA-46CC-AE55-D45451CE0F1D</id>
+			<name>Direct Connections</name>
+			<source>SR5</source>
+			<page>232</page>
+		</rule>
+		<rule>
+			<id>3A9DA88A-CCBB-4F5C-936B-CD603C77D8AB</id>
+			<name>PANs and WANs</name>
+			<source>SR5</source>
+			<page>233</page>
+		</rule>
+		<rule>
+			<id>71A6BC55-2FFF-43D0-A41F-B69808222F40</id>
+			<name>Grids</name>
+			<source>SR5</source>
+			<page>233</page>
+		</rule>
+		<rule>
+			<id>2A2B3BDF-2949-4505-9C42-4339D501FAA0</id>
+			<name>Grids on a Run</name>
+			<source>SR5</source>
+			<page>233</page>
+		</rule>
+		<rule>
+			<id>D1B3CC53-B673-495A-8327-231B2E7F07DE</id>
+			<name>The Public Grid</name>
+			<source>SR5</source>
+			<page>233</page>
+		</rule>
+		<rule>
+			<id>76A1D009-5E31-4CB0-930A-81338791AFC1</id>
+			<name>Local Grids</name>
+			<source>SR5</source>
+			<page>234</page>
+		</rule>
+		<rule>
+			<id>17442075-E688-49AA-9F83-A7F8924D0F0F</id>
+			<name>Global Grids</name>
+			<source>SR5</source>
+			<page>234</page>
+		</rule>
+		<rule>
+			<id>793723E8-AD53-4D37-A2B6-D455615CDD32</id>
+			<name>Devices and Personas</name>
+			<source>SR5</source>
+			<page>234</page>
+		</rule>
+		<rule>
+			<id>64120F51-4E95-41EF-B697-010CC8EC03A9</id>
+			<name>Devices</name>
+			<source>SR5</source>
+			<page>234</page>
+		</rule>
+		<rule>
+			<id>A9201376-F3F7-42D5-8EFA-0C68A61BED60</id>
+			<name>Persona</name>
+			<source>SR5</source>
+			<page>235</page>
+		</rule>
+		<rule>
+			<id>A50EA44D-471E-46FE-915E-7013FFA998CB</id>
+			<name>Matrix Perception</name>
+			<source>SR5</source>
+			<page>235</page>
+		</rule>
+		<rule>
+			<id>9DAC64B5-8B10-451F-AE91-E07014616503</id>
+			<name>Spotting Duration</name>
+			<source>SR5</source>
+			<page>235</page>
+		</rule>
+		<rule>
+			<id>A491F235-BDAC-495D-9184-380C52277F48</id>
+			<name>Running Silent</name>
+			<source>SR5</source>
+			<page>235</page>
+		</rule>
+		<rule>
+			<id>5A246F91-2E93-45E6-A3FF-6F456F247777</id>
+			<name>Noticing Hackers</name>
+			<source>SR5</source>
+			<page>236</page>
+		</rule>
+		<rule>
+			<id>7FA83909-5A08-4E56-B6A9-9BF37D3B0C67</id>
+			<name>Recognition Keys</name>
+			<source>SR5</source>
+			<page>236</page>
+		</rule>
+		<rule>
+			<id>C8016297-9002-46E3-AFD8-F355433B54CB</id>
+			<name>Owners</name>
+			<source>SR5</source>
+			<page>236</page>
+		</rule>
+		<rule>
+			<id>7A0BDF1E-EDA4-4E70-AACD-950EBF384B91</id>
+			<name>Matrix Actions</name>
+			<source>SR5</source>
+			<page>237</page>
+		</rule>
+		<rule>
+			<id>F57D9EE1-667C-4E60-AF0D-12CF5B1068D3</id>
+			<name>Brute Force</name>
+			<source>SR5</source>
+			<page>238</page>
+		</rule>
+		<rule>
+			<id>96B70C42-8A08-473C-BDE5-339C182BCF66</id>
+			<name>Change Icon</name>
+			<source>SR5</source>
+			<page>238</page>
+		</rule>
+		<rule>
+			<id>7544723F-D637-4F69-942C-0C5E599DDA26</id>
+			<name>Check Overwatch Score</name>
+			<source>SR5</source>
+			<page>238</page>
+		</rule>
+		<rule>
+			<id>18B30113-EB52-41AB-8E23-9683AF8B243C</id>
+			<name>Control Device</name>
+			<source>SR5</source>
+			<page>238</page>
+		</rule>
+		<rule>
+			<id>AC82686E-16EC-4BCE-AF4B-C2C349CEACCB</id>
+			<name>Crack File</name>
+			<source>SR5</source>
+			<page>238</page>
+		</rule>
+		<rule>
+			<id>7E261538-1A94-4DFF-BE5D-7E83CB261AA2</id>
+			<name>Crash Program</name>
+			<source>SR5</source>
+			<page>238</page>
+		</rule>
+		<rule>
+			<id>9E9539F8-2D86-47F7-8FDD-07E7638256D9</id>
+			<name>Data Spike</name>
+			<source>SR5</source>
+			<page>239</page>
+		</rule>
+		<rule>
+			<id>18059CC7-38C5-4F42-93DA-1F12776BD90C</id>
+			<name>Disarm Data Bomb</name>
+			<source>SR5</source>
+			<page>239</page>
+		</rule>
+		<rule>
+			<id>3FA22C0F-02B7-42CD-9CA3-796FEF71D8BD</id>
+			<name>Edit File</name>
+			<source>SR5</source>
+			<page>239</page>
+		</rule>
+		<rule>
+			<id>3BD796AB-3B51-4593-86DB-1510F423AD5A</id>
+			<name>Enter/Exit Host</name>
+			<source>SR5</source>
+			<page>239</page>
+		</rule>
+		<rule>
+			<id>8F2176D6-C98A-4E82-9AFE-E695D09D59BD</id>
+			<name>Erase Mark</name>
+			<source>SR5</source>
+			<page>239</page>
+		</rule>
+		<rule>
+			<id>09705E17-7B16-407A-A566-D0037DD52AF0</id>
+			<name>Erase Matrix Signature</name>
+			<source>SR5</source>
+			<page>239</page>
+		</rule>
+		<rule>
+			<id>D6032A8D-8CFB-4EC0-BAB9-0AC9C25D7A10</id>
+			<name>Format Device</name>
+			<source>SR5</source>
+			<page>239</page>
+		</rule>
+		<rule>
+			<id>0DF89BD2-5950-45E0-8C52-865D2B6EBC8B</id>
+			<name>Full Matrix Defense</name>
+			<source>SR5</source>
+			<page>240</page>
+		</rule>
+		<rule>
+			<id>92BECF3B-DE1E-4F72-AB81-FB2B59DCB482</id>
+			<name>Grid Hop</name>
+			<source>SR5</source>
+			<page>240</page>
+		</rule>
+		<rule>
+			<id>D3D14C87-D9FD-413F-BC06-71C656D2C22D</id>
+			<name>Hack on the Fly</name>
+			<source>SR5</source>
+			<page>240</page>
+		</rule>
+		<rule>
+			<id>992DE429-6210-4E28-A8CA-544996C2460A</id>
+			<name>Hide</name>
+			<source>SR5</source>
+			<page>240</page>
+		</rule>
+		<rule>
+			<id>E5030258-F5FA-4104-B44B-E9C52AEEAC16</id>
+			<name>Invite Mark</name>
+			<source>SR5</source>
+			<page>240</page>
+		</rule>
+		<rule>
+			<id>758A1CAC-C5C4-41B3-816A-60646C2B9493</id>
+			<name>Jack Out</name>
+			<source>SR5</source>
+			<page>240</page>
+		</rule>
+		<rule>
+			<id>768B3AEF-60BC-4C68-9956-B5B6D41C0F4D</id>
+			<name>Jam Signals</name>
+			<source>SR5</source>
+			<page>240</page>
+		</rule>
+		<rule>
+			<id>77D81CA6-3580-4629-9002-7D695077B9C6</id>
+			<name>Jump Into Rigged Device</name>
+			<source>SR5</source>
+			<page>241</page>
+		</rule>
+		<rule>
+			<id>8E9F652D-6D0D-4FAB-84DA-467A31D3F399</id>
+			<name>Matrix Perception</name>
+			<source>SR5</source>
+			<page>241</page>
+		</rule>
+		<rule>
+			<id>F381A0C4-F4CC-41A1-A787-9F40EF5ED0BA</id>
+			<name>Matrix Search</name>
+			<source>SR5</source>
+			<page>241</page>
+		</rule>
+		<rule>
+			<id>D03729A3-A5AC-4E92-BF51-8A48768AFD23</id>
+			<name>Reboot Device</name>
+			<source>SR5</source>
+			<page>242</page>
+		</rule>
+		<rule>
+			<id>D0A8AA88-5528-4A81-AA0A-A15AB711552D</id>
+			<name>Send Message</name>
+			<source>SR5</source>
+			<page>242</page>
+		</rule>
+		<rule>
+			<id>1B755D03-593A-44D9-BF35-67EC33D67767</id>
+			<name>Set Data Bomb</name>
+			<source>SR5</source>
+			<page>242</page>
+		</rule>
+		<rule>
+			<id>DFB5D3CE-654C-4F5F-9D58-85ABA6F2498D</id>
+			<name>Snoop</name>
+			<source>SR5</source>
+			<page>242</page>
+		</rule>
+		<rule>
+			<id>42C20BE7-7F3D-45D2-92EE-F1BBC7951FE4</id>
+			<name>Spoof Command</name>
+			<source>SR5</source>
+			<page>242</page>
+		</rule>
+		<rule>
+			<id>739CB033-E680-4634-9609-E69CBBDC554B</id>
+			<name>Switch Interface Mode</name>
+			<source>SR5</source>
+			<page>243</page>
+		</rule>
+		<rule>
+			<id>D0F5263F-4523-41CD-BD14-5593CF79001D</id>
+			<name>Trace Icon</name>
+			<source>SR5</source>
+			<page>243</page>
+		</rule>
+		<rule>
+			<id>2C8865E9-0251-4BD8-BE95-5CF4BA39A289</id>
+			<name>Programs</name>
+			<source>SR5</source>
+			<page>243</page>
+		</rule>
+		<rule>
+			<id>B3D493D3-1E2D-4958-BB13-BFC97DB2CF9B</id>
+			<name>Program Listing</name>
+			<source>SR5</source>
+			<page>243</page>
+		</rule>
+		<rule>
+			<id>462011B4-A449-4C53-AFA6-D429676945D4</id>
+			<name>Common Programs</name>
+			<source>SR5</source>
+			<page>245</page>
+		</rule>
+		<rule>
+			<id>8A79E90F-E818-413B-AE14-58C41AF979E6</id>
+			<name>Hacking Programs</name>
+			<source>SR5</source>
+			<page>245</page>
+		</rule>
+		<rule>
+			<id>4FB6F996-D50A-4CCE-A7BB-50CFB8CBAF8C</id>
+			<name>Agents</name>
+			<source>SR5</source>
+			<page>246</page>
+		</rule>
+		<rule>
+			<id>7C1EAB35-60A0-46E6-86A6-8D554975C82C</id>
+			<name>Hosts</name>
+			<source>SR5</source>
+			<page>246</page>
+		</rule>
+		<rule>
+			<id>B942430F-D1FF-4E03-BD6A-B4325A9559B8</id>
+			<name>Host Archives</name>
+			<source>SR5</source>
+			<page>247</page>
+		</rule>
+		<rule>
+			<id>43CE1DB2-A9C0-4A17-AA87-CAF6CE54FC2F</id>
+			<name>Host Attributes</name>
+			<source>SR5</source>
+			<page>247</page>
+		</rule>
+		<rule>
+			<id>779CE61A-C873-4C82-9BF5-848248E79B14</id>
+			<name>Host Convergence</name>
+			<source>SR5</source>
+			<page>247</page>
+		</rule>
+		<rule>
+			<id>BD7597A7-EF47-40D1-A208-22A706546501</id>
+			<name>Intrusion Countermeasures</name>
+			<source>SR5</source>
+			<page>247</page>
+		</rule>
+		<rule>
+			<id>337557E4-C041-439A-85E9-B5DB63779ADE</id>
+			<name>Security Response</name>
+			<source>SR5</source>
+			<page>247</page>
+		</rule>
+		<rule>
+			<id>3350C3C7-B95E-4DB5-A8EF-360E68961692</id>
+			<name>Types of Ic</name>
+			<source>SR5</source>
+			<page>247</page>
+		</rule>
+		<rule>
+			<id>8DE3286F-229B-46C7-A86B-9E121DED1F71</id>
+			<name>Acid</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>7DE57143-95E0-438C-AF3C-8D9ED7970097</id>
+			<name>Binder</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>2B4EA7EF-6A27-430D-8D1C-B5BB9DC25E78</id>
+			<name>Black Ic</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>1FB9CAD2-CD1D-453E-9701-CAD4B84D9227</id>
+			<name>Blaster</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>644D8B05-FA2E-4151-9B4C-2EBC2281FACA</id>
+			<name>Crash</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>6DA90CCE-3FD4-4C02-B806-E739E333D1DA</id>
+			<name>Jammer</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>BFBD3C27-4802-4448-B034-95A90D83DA9D</id>
+			<name>Killer</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>BD5B325B-A670-4C05-97CF-55076B23623E</id>
+			<name>Marker</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>38B6DCC3-5C00-4891-9326-D3704DA0BFD6</id>
+			<name>Patrol</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>402B2F6E-18ED-4A52-B4A5-952B80C751A4</id>
+			<name>Probe</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>F312890F-427C-4B07-AC44-8BFCBA696CF7</id>
+			<name>Scramble</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>6AC34AB4-A2D2-4235-9FAA-750D47BE46DC</id>
+			<name>Sparky</name>
+			<source>SR5</source>
+			<page>248</page>
+		</rule>
+		<rule>
+			<id>EC35CA99-0CF1-4304-A155-5CE8D5DA2F0B</id>
+			<name>Tar Baby</name>
+			<source>SR5</source>
+			<page>249</page>
+		</rule>
+		<rule>
+			<id>B068DF17-E3F0-4D4F-AAAD-E62BBAE60715</id>
+			<name>Track</name>
+			<source>SR5</source>
+			<page>249</page>
+		</rule>
+		<rule>
+			<id>53FE67ED-0A0B-4684-B0A2-1709C0EF68B0</id>
+			<name>Technomancers</name>
+			<source>SR5</source>
+			<page>249</page>
+		</rule>
+		<rule>
+			<id>F4D583F0-E658-477A-93D0-FCE2B73300B9</id>
+			<name>Technomancer Life</name>
+			<source>SR5</source>
+			<page>249</page>
+		</rule>
+		<rule>
+			<id>1234799D-C2D1-4D52-8E33-52EBA71A749B</id>
+			<name>Resonance</name>
+			<source>SR5</source>
+			<page>249</page>
+		</rule>
+		<rule>
+			<id>AFF3F859-2A0D-4B98-9C5A-EC1293A49728</id>
+			<name>Resonance Signatures</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>4F8031E2-192E-45A2-838A-55744E5B64B0</id>
+			<name>Resonance Actions</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>4B4C3FC1-0E40-4499-879A-5002245F89AB</id>
+			<name>Call/Dismiss Sprite</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>A219D7CC-7C61-425F-B14A-69F74AEA4E8D</id>
+			<name>Command Sprite</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>2ED6FA50-939A-42CC-814B-8D2BC2CE470E</id>
+			<name>Compile Sprite</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>2D0B17CF-2F62-4411-BD20-F3D302F276DF</id>
+			<name>Decompile Sprite</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>49A5A573-877F-4C0D-B681-A9331F4AC150</id>
+			<name>Kill Complex Form</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>8E919CA0-8D30-4D3B-B229-E024AF1584FB</id>
+			<name>Register Sprite</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>34C41651-89A8-4D7D-97ED-0CA1A71C175E</id>
+			<name>Thread Complex Form</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>213FE351-F2DE-4AC6-85AD-69F23D891F2F</id>
+			<name>Living Persona</name>
+			<source>SR5</source>
+			<page>250</page>
+		</rule>
+		<rule>
+			<id>C11B8CE1-1023-428D-83C7-49DD33BEBCD5</id>
+			<name>Rebooting Your Living Persona</name>
+			<source>SR5</source>
+			<page>251</page>
+		</rule>
+		<rule>
+			<id>5CF3CFE5-7AC5-47CB-B98A-28B4ADAFEA91</id>
+			<name>Using Mundane Electronics</name>
+			<source>SR5</source>
+			<page>251</page>
+		</rule>
+		<rule>
+			<id>4F83B024-180F-47B7-B1A1-D2A579415559</id>
+			<name>Threading</name>
+			<source>SR5</source>
+			<page>251</page>
+		</rule>
+		<rule>
+			<id>53FA3373-DF1F-4B1B-A001-105BC9AE5E3E</id>
+			<name>Killing Complex Forms</name>
+			<source>SR5</source>
+			<page>251</page>
+		</rule>
+		<rule>
+			<id>EF2FD565-6FF5-4EE9-930C-B67F2BEBCBE6</id>
+			<name>Fading</name>
+			<source>SR5</source>
+			<page>251</page>
+		</rule>
+		<rule>
+			<id>F23E9CCC-8C0F-4C7A-86D2-76F9E3ABF776</id>
+			<name>Resonance Library</name>
+			<source>SR5</source>
+			<page>252</page>
+		</rule>
+		<rule>
+			<id>CF249CE7-2CD9-4C84-976E-398C7C690906</id>
+			<name>Sprites</name>
+			<source>SR5</source>
+			<page>254</page>
+		</rule>
+		<rule>
+			<id>75A07AAE-8598-4841-9A2C-902AF0A5465F</id>
+			<name>Compiling a Sprite</name>
+			<source>SR5</source>
+			<page>254</page>
+		</rule>
+		<rule>
+			<id>6AA3BAEE-672E-4855-888F-5C6D7A667955</id>
+			<name>Compiled Sprite Tasks</name>
+			<source>SR5</source>
+			<page>254</page>
+		</rule>
+		<rule>
+			<id>DEE9F9BA-A239-4DD3-B1A9-BFA1605A2790</id>
+			<name>Registering a Sprite</name>
+			<source>SR5</source>
+			<page>254</page>
+		</rule>
+		<rule>
+			<id>49953791-6F14-4C71-9FC6-6F8A305D52CE</id>
+			<name>Registered Sprite Tasks</name>
+			<source>SR5</source>
+			<page>256</page>
+		</rule>
+		<rule>
+			<id>D4351AB5-EB8B-4E70-AD94-C30BD827BBFF</id>
+			<name>Sprite-Technomancer Link</name>
+			<source>SR5</source>
+			<page>256</page>
+		</rule>
+		<rule>
+			<id>CA286A8E-BE57-49F1-8BE4-6930F16DE88F</id>
+			<name>Decompiling Sprites</name>
+			<source>SR5</source>
+			<page>256</page>
+		</rule>
+		<rule>
+			<id>68B316CD-0DB9-423A-A37C-0AEBFF3E43C4</id>
+			<name>Sprite Powers</name>
+			<source>SR5</source>
+			<page>256</page>
+		</rule>
+		<rule>
+			<id>43559A82-DE25-494A-A70F-29C274B46B31</id>
+			<name>Camouflage</name>
+			<source>SR5</source>
+			<page>256</page>
+		</rule>
+		<rule>
+			<id>B9A299F6-D54F-4BEB-A5BF-873C26C8ECA0</id>
+			<name>Cookie</name>
+			<source>SR5</source>
+			<page>256</page>
+		</rule>
+		<rule>
+			<id>E7C93A9A-B6F0-43BD-9167-98BA1D75993E</id>
+			<name>Diagnostics</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>98F98EE0-747B-41E3-A2BF-EAADEF5C4837</id>
+			<name>Electron Storm</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>CBF2420D-646B-40C2-9DBD-F594448155D1</id>
+			<name>Gremlins</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>F3AD8378-77A7-42DE-AF92-54D2DCBB6449</id>
+			<name>Hash</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>9778B065-2BE4-4007-9272-2C062F2DFB04</id>
+			<name>Stability</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>B7490F05-1520-4A53-A76B-FE53F0818708</id>
+			<name>Suppression</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>EDFDA026-851C-4CAA-99F9-33CFFC82A8B5</id>
+			<name>Watermark</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>AB9FA036-FECF-4860-924A-092BD6A3026F</id>
+			<name>Submersion</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>EF73B30C-B5E4-4C94-9833-6A9913E0946D</id>
+			<name>Increased Resonance</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>F9CE46E4-CC9B-4322-8992-55FE56A35A8A</id>
+			<name>Access to the Resonance Realms</name>
+			<source>SR5</source>
+			<page>257</page>
+		</rule>
+		<rule>
+			<id>79C0F94A-999F-4559-9ABE-011D6CCD377F</id>
+			<name>Echoes</name>
+			<source>SR5</source>
+			<page>258</page>
+		</rule>
+		<rule>
+			<id>9054159F-42B4-4786-82E9-62A64D1914FF</id>
+			<name>Sprite Database</name>
+			<source>SR5</source>
+			<page>258</page>
+		</rule>
+		<rule>
+			<id>4BEA34B2-C4C0-43D9-9FB4-B0341EAC4C12</id>
+			<name>Courier Sprite</name>
+			<source>SR5</source>
+			<page>258</page>
+		</rule>
+		<rule>
+			<id>62E7BA8C-B531-4FC2-887B-DCB1B6F6936D</id>
+			<name>Crack Sprite</name>
+			<source>SR5</source>
+			<page>258</page>
+		</rule>
+		<rule>
+			<id>E8E399F6-79BB-43F6-A2F8-5715BCE5D1AF</id>
+			<name>Data Sprite</name>
+			<source>SR5</source>
+			<page>258</page>
+		</rule>
+		<rule>
+			<id>5BE50FD0-A866-4EE3-93FF-80FB13845828</id>
+			<name>Fault Sprite</name>
+			<source>SR5</source>
+			<page>258</page>
+		</rule>
+		<rule>
+			<id>3DD411EB-144B-49F6-A1C5-99E4C0EECB32</id>
+			<name>Machine Sprite</name>
+			<source>SR5</source>
+			<page>258</page>
+		</rule>
+		<rule>
+			<id>22235726-EAA7-45B0-B93D-DB2D90DDB0AF</id>
+			<name>The Danger of Side Jobs</name>
+			<source>SR5</source>
+			<page>260</page>
+		</rule>
+		<rule>
+			<id>A92CA37B-34F5-4F50-A057-83E4F6847533</id>
+			<name>Riggers</name>
+			<source>SR5</source>
+			<page>264</page>
+		</rule>
+		<rule>
+			<id>C6DEEF72-0A7C-45A7-9A0F-2B340639FCE9</id>
+			<name>Free As a Bird</name>
+			<source>SR5</source>
+			<page>264</page>
+		</rule>
+		<rule>
+			<id>48A3F28B-E43C-4794-916F-F811534C5DD9</id>
+			<name>The Game Is Rigged</name>
+			<source>SR5</source>
+			<page>264</page>
+		</rule>
+		<rule>
+			<id>53D08446-F12D-46F7-B4FC-31EAEADAAA60</id>
+			<name>Riggers in the Shadows</name>
+			<source>SR5</source>
+			<page>264</page>
+		</rule>
+		<rule>
+			<id>3407B434-8703-425F-A0E8-2B5D5C511D53</id>
+			<name>Being the Machine</name>
+			<source>SR5</source>
+			<page>265</page>
+		</rule>
+		<rule>
+			<id>A52ACF88-4BB1-4FFF-BC98-7F793E638CE8</id>
+			<name>More Than Metahuman</name>
+			<source>SR5</source>
+			<page>265</page>
+		</rule>
+		<rule>
+			<id>C19375D7-284A-431A-8969-F3A6C0EA8C73</id>
+			<name>The Control Rig</name>
+			<source>SR5</source>
+			<page>265</page>
+		</rule>
+		<rule>
+			<id>5F871860-D923-46EC-95CA-67F007F2BFBA</id>
+			<name>Complete Control</name>
+			<source>SR5</source>
+			<page>265</page>
+		</rule>
+		<rule>
+			<id>6E6F1D40-3E38-4CDA-81A7-D3805D665D03</id>
+			<name>Control Override</name>
+			<source>SR5</source>
+			<page>265</page>
+		</rule>
+		<rule>
+			<id>5F07B5BD-DCE0-495F-8A71-F3CEFBE9619D</id>
+			<name>Rigging Skills</name>
+			<source>SR5</source>
+			<page>265</page>
+		</rule>
+		<rule>
+			<id>3FD300DA-73C8-4C37-B1DD-A120EB82178B</id>
+			<name>Rigging and You</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>6D3A2FAB-D24D-4A84-9CF5-774D3B7A7192</id>
+			<name>Taking the Jump</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>C66A7DA5-A596-4C62-A422-C1296F071294</id>
+			<name>Vr and Rigging</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>16781C1B-05D9-4041-AE59-BFF2ECAD8895</id>
+			<name>Rigging and Limits</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>B2C2F0FA-83B1-4D1B-B2FC-86B8F101CACE</id>
+			<name>Noise and Rigging</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>63C2667E-3956-4FB3-9E92-3458CE001891</id>
+			<name>Physical Damage</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>89C9B773-3F63-4024-86F5-E0BE14C45611</id>
+			<name>Matrix Damage</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>E3D91C67-AC9A-4081-A1A2-A1B0E40FE1CA</id>
+			<name>Jumping Out</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>4D1BA123-2512-47F5-B20C-307053409AF6</id>
+			<name>Riggers and Deckers</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>2216627B-938E-4D93-B1ED-AAC488BB4647</id>
+			<name>Rigger Command Console</name>
+			<source>SR5</source>
+			<page>266</page>
+		</rule>
+		<rule>
+			<id>8DC5E0D0-A60F-4AB3-A70D-F620E2DE79CD</id>
+			<name>Noise Reduction &amp; Sharing</name>
+			<source>SR5</source>
+			<page>267</page>
+		</rule>
+		<rule>
+			<id>1CB0960E-3374-4AB3-9AB0-CBF0D891D4FE</id>
+			<name>Data Processing &amp; Firewall</name>
+			<source>SR5</source>
+			<page>267</page>
+		</rule>
+		<rule>
+			<id>55EDE854-21F1-460C-A655-2A477A1ADDF8</id>
+			<name>Group Command and Jumping Around</name>
+			<source>SR5</source>
+			<page>267</page>
+		</rule>
+		<rule>
+			<id>02C0CCA9-B461-4A6F-BB0D-9A04CD516A83</id>
+			<name>Electronic Warfare For Riggers</name>
+			<source>SR5</source>
+			<page>268</page>
+		</rule>
+		<rule>
+			<id>5F69CB46-ABCC-4A02-AA45-0B3CB41BED28</id>
+			<name>PANs &amp; WANs (Rigger Style)</name>
+			<source>SR5</source>
+			<page>267</page>
+		</rule>
+		<rule>
+			<id>5E74C7DF-89AB-412C-BF63-C5866147F79B</id>
+			<name>Getting Hacked</name>
+			<source>SR5</source>
+			<page>268</page>
+		</rule>
+		<rule>
+			<id>C660AC4B-7BD3-4540-86F3-122E300F9A69</id>
+			<name>Getting Dumped</name>
+			<source>SR5</source>
+			<page>268</page>
+		</rule>
+		<rule>
+			<id>96F5D3EE-89DA-4BC9-A06D-A987FC786778</id>
+			<name>Drones</name>
+			<source>SR5</source>
+			<page>269</page>
+		</rule>
+		<rule>
+			<id>B7819F35-1AF0-45AE-BF6E-A5AF0FFD4B91</id>
+			<name>Drones in the Matrix</name>
+			<source>SR5</source>
+			<page>269</page>
+		</rule>
+		<rule>
+			<id>95D08C65-3CBD-4B9D-B2A1-818AC62E504E</id>
+			<name>Pilot Programs</name>
+			<source>SR5</source>
+			<page>269</page>
+		</rule>
+		<rule>
+			<id>2CDD583E-C42C-4787-856C-917E68B26680</id>
+			<name>Autosofts</name>
+			<source>SR5</source>
+			<page>269</page>
+		</rule>
+		<rule>
+			<id>B2805FED-D1B4-4AB2-AFD7-D233460DAE01</id>
+			<name>Drone Combat</name>
+			<source>SR5</source>
+			<page>270</page>
+		</rule>
+		<rule>
+			<id>F7A807AF-FF08-4981-85CD-18CD2F0E3866</id>
+			<name>Drone Perception</name>
+			<source>SR5</source>
+			<page>270</page>
+		</rule>
+		<rule>
+			<id>4E118937-593D-4EAC-964D-D98B6A2137E4</id>
+			<name>Drone Infiltration</name>
+			<source>SR5</source>
+			<page>270</page>
+		</rule>
+		<rule>
+			<id>768A73CC-00CF-4523-9234-57198B8C6BCB</id>
+			<name>Drone Initiative</name>
+			<source>SR5</source>
+			<page>270</page>
+		</rule>
+		<rule>
+			<id>CFD7B3C6-CD90-44D9-8BED-FF4A81CB48A0</id>
+			<name>Repairing Drones</name>
+			<source>SR5</source>
+			<page>270</page>
+		</rule>
+		<rule>
+			<id>75172D00-F2E5-4572-B90A-DBD8A81AF6FA</id>
+			<name>A Little Shadow Music</name>
+			<source>SR5</source>
+			<page>272</page>
+		</rule>
+		<rule>
+			<id>06A08DEB-64AA-4D9B-9AFE-7AAD51E25CAF</id>
+			<name>Magic</name>
+			<source>SR5</source>
+			<page>276</page>
+		</rule>
+		<rule>
+			<id>9DAABB7E-B5EF-4E22-A5DD-FF4D90D96981</id>
+			<name>Introduction</name>
+			<source>SR5</source>
+			<page>276</page>
+		</rule>
+		<rule>
+			<id>5EDDFCB8-D318-4887-883F-3E9D625B1AB5</id>
+			<name>Magic Basics</name>
+			<source>SR5</source>
+			<page>278</page>
+		</rule>
+		<rule>
+			<id>5D138826-FFAF-4EC6-82D7-2703B528F055</id>
+			<name>Magic</name>
+			<source>SR5</source>
+			<page>278</page>
+		</rule>
+		<rule>
+			<id>E96420D5-2B50-4928-A32F-4E7A04C5696A</id>
+			<name>Magical Skills</name>
+			<source>SR5</source>
+			<page>278</page>
+		</rule>
+		<rule>
+			<id>9B4C42F5-44F7-4F9C-B6D1-199D441FD880</id>
+			<name>Force</name>
+			<source>SR5</source>
+			<page>278</page>
+		</rule>
+		<rule>
+			<id>916BEB8A-D6FC-4CBE-8113-9D469177D5A2</id>
+			<name>Inherent Limit: Astral</name>
+			<source>SR5</source>
+			<page>278</page>
+		</rule>
+		<rule>
+			<id>1F8DF83E-EB12-4272-9F32-128C164AE9BF</id>
+			<name>Drain</name>
+			<source>SR5</source>
+			<page>278</page>
+		</rule>
+		<rule>
+			<id>7F164C92-DCC4-41AD-86DB-C23B758EE746</id>
+			<name>Power Points</name>
+			<source>SR5</source>
+			<page>278</page>
+		</rule>
+		<rule>
+			<id>34889625-57F2-4C49-A894-CC8BDF9887CE</id>
+			<name>Traditions</name>
+			<source>SR5</source>
+			<page>279</page>
+		</rule>
+		<rule>
+			<id>97BCC8DE-2DAB-4926-8843-48FE346670C7</id>
+			<name>Magical Lodges</name>
+			<source>SR5</source>
+			<page>280</page>
+		</rule>
+		<rule>
+			<id>00876F6F-883A-463D-83CC-EE823AB70281</id>
+			<name>Perceiving Magic</name>
+			<source>SR5</source>
+			<page>280</page>
+		</rule>
+		<rule>
+			<id>8C18B76C-CACB-4BBF-86E0-A2D85A5064D3</id>
+			<name>Sorcery</name>
+			<source>SR5</source>
+			<page>281</page>
+		</rule>
+		<rule>
+			<id>9D6E69A6-4DA5-4EBF-8BE2-731B80BD98B9</id>
+			<name>Spellcasting</name>
+			<source>SR5</source>
+			<page>281</page>
+		</rule>
+		<rule>
+			<id>8A0FC904-A38A-4EE0-85E8-9684309951C8</id>
+			<name>Glitches</name>
+			<source>SR5</source>
+			<page>282</page>
+		</rule>
+		<rule>
+			<id>9EA09814-4D54-4C20-9008-D943B2995AB8</id>
+			<name>Spell Characteristics</name>
+			<source>SR5</source>
+			<page>282</page>
+		</rule>
+		<rule>
+			<id>C9A7674F-32EB-4015-BAA4-83E7C9648565</id>
+			<name>Combat Spells</name>
+			<source>SR5</source>
+			<page>283</page>
+		</rule>
+		<rule>
+			<id>E8F55A59-F24D-44B4-9E43-B90173F667BE</id>
+			<name>Detection Spells</name>
+			<source>SR5</source>
+			<page>285</page>
+		</rule>
+		<rule>
+			<id>0ED1B1EC-3A43-41FE-83D3-AC77E3756E07</id>
+			<name>Health Spells</name>
+			<source>SR5</source>
+			<page>287</page>
+		</rule>
+		<rule>
+			<id>DF898D70-84F6-451C-BC7C-83DE63520EB2</id>
+			<name>Illusion Spells</name>
+			<source>SR5</source>
+			<page>289</page>
+		</rule>
+		<rule>
+			<id>68CA9868-E3AF-4942-AB9A-49B6C8460E81</id>
+			<name>Manipulation Spells</name>
+			<source>SR5</source>
+			<page>292</page>
+		</rule>
+		<rule>
+			<id>9848F896-E87E-4003-A0FD-A969A9B676EB</id>
+			<name>Counterspelling</name>
+			<source>SR5</source>
+			<page>294</page>
+		</rule>
+		<rule>
+			<id>3E742694-0B64-4244-8B77-F3CBA7054E4D</id>
+			<name>Spell Defense</name>
+			<source>SR5</source>
+			<page>294</page>
+		</rule>
+		<rule>
+			<id>7A66249C-A694-42D5-9CEE-2F9735AE83EE</id>
+			<name>Dispelling</name>
+			<source>SR5</source>
+			<page>295</page>
+		</rule>
+		<rule>
+			<id>B7A76649-8F0A-4287-9398-BD0ED2A4A877</id>
+			<name>Ritual Spellcasting</name>
+			<source>SR5</source>
+			<page>295</page>
+		</rule>
+		<rule>
+			<id>74983F94-23C7-458A-8045-E80BD9593D87</id>
+			<name>Rituals</name>
+			<source>SR5</source>
+			<page>296</page>
+		</rule>
+		<rule>
+			<id>13A213EE-B259-45DF-B65F-FC98584D7B40</id>
+			<name>Learning Spells</name>
+			<source>SR5</source>
+			<page>299</page>
+		</rule>
+		<rule>
+			<id>7D806FC2-1443-4452-922D-B683C665EDA9</id>
+			<name>Conjuring</name>
+			<source>SR5</source>
+			<page>299</page>
+		</rule>
+		<rule>
+			<id>8DB9D448-267A-40C2-A09F-59AFEB4DB708</id>
+			<name>Binding</name>
+			<source>SR5</source>
+			<page>300</page>
+		</rule>
+		<rule>
+			<id>CBF22536-1B78-4FE2-A688-54EA56251941</id>
+			<name>Banishing</name>
+			<source>SR5</source>
+			<page>301</page>
+		</rule>
+		<rule>
+			<id>013112F4-241D-4E9E-8D8B-EF4E75D80F3F</id>
+			<name>Spirit Basics</name>
+			<source>SR5</source>
+			<page>301</page>
+		</rule>
+		<rule>
+			<id>7FED318C-B0D2-4B55-87E1-5E510876373A</id>
+			<name>Spirit-Summoner Link</name>
+			<source>SR5</source>
+			<page>302</page>
+		</rule>
+		<rule>
+			<id>70FACD27-B113-48E3-9272-1BC2BC999F3B</id>
+			<name>Spirit Range</name>
+			<source>SR5</source>
+			<page>302</page>
+		</rule>
+		<rule>
+			<id>342222B9-01AF-40F8-872B-7CBB96C7B10B</id>
+			<name>Spirit Services</name>
+			<source>SR5</source>
+			<page>302</page>
+		</rule>
+		<rule>
+			<id>7CDEB4F7-91D7-4725-BA51-0AF2F0A21EEF</id>
+			<name>Unbound Spirit Services</name>
+			<source>SR5</source>
+			<page>302</page>
+		</rule>
+		<rule>
+			<id>FB9CB212-3AA0-4A12-8855-0B9589977ACA</id>
+			<name>Bound Spirit Services</name>
+			<source>SR5</source>
+			<page>302</page>
+		</rule>
+		<rule>
+			<id>42E73CA9-D042-445F-A004-BF1F856C1988</id>
+			<name>Spirits and Edge</name>
+			<source>SR5</source>
+			<page>304</page>
+		</rule>
+		<rule>
+			<id>72D6190F-8BBE-4C13-81EA-FB6BF60D6526</id>
+			<name>Enchanting</name>
+			<source>SR5</source>
+			<page>304</page>
+		</rule>
+		<rule>
+			<id>8823901F-7B16-456A-B852-473A18D56A5F</id>
+			<name>Alchemy</name>
+			<source>SR5</source>
+			<page>304</page>
+		</rule>
+		<rule>
+			<id>A49A41FD-21C3-4010-9073-A1E5DBD00BC7</id>
+			<name>Using a Preparation</name>
+			<source>SR5</source>
+			<page>305</page>
+		</rule>
+		<rule>
+			<id>991F3F53-65F3-4ED8-93CF-7B65862B05B6</id>
+			<name>Artificing</name>
+			<source>SR5</source>
+			<page>306</page>
+		</rule>
+		<rule>
+			<id>93FC45A8-48AE-48D3-9236-781863244A7E</id>
+			<name>Artifact Assensing</name>
+			<source>SR5</source>
+			<page>307</page>
+		</rule>
+		<rule>
+			<id>E130A30D-E1B0-4CB4-806B-7D33022077CB</id>
+			<name>Disenchanting</name>
+			<source>SR5</source>
+			<page>307</page>
+		</rule>
+		<rule>
+			<id>7630AA12-D9D0-406C-B46D-0F1944E30EA4</id>
+			<name>Disjoining</name>
+			<source>SR5</source>
+			<page>307</page>
+		</rule>
+		<rule>
+			<id>B1DF019E-4EFB-4206-8267-E5CA18CAEDA4</id>
+			<name>Adepts</name>
+			<source>SR5</source>
+			<page>308</page>
+		</rule>
+		<rule>
+			<id>A25FE701-FC3A-4FB2-A47E-28A4C8FDCEE9</id>
+			<name>Using Powers</name>
+			<source>SR5</source>
+			<page>308</page>
+		</rule>
+		<rule>
+			<id>D5D4381D-DF9C-434A-B054-EB3C8201B0AF</id>
+			<name>Adept Powers</name>
+			<source>SR5</source>
+			<page>308</page>
+		</rule>
+		<rule>
+			<id>672B3ED4-33A9-491C-82BB-EE9CE5D7AC90</id>
+			<name>The Astral World</name>
+			<source>SR5</source>
+			<page>312</page>
+		</rule>
+		<rule>
+			<id>C4FC79CE-DCDF-441D-A47C-AC1096B20111</id>
+			<name>Auras &amp; Astral Forms</name>
+			<source>SR5</source>
+			<page>312</page>
+		</rule>
+		<rule>
+			<id>E0D94ECB-F154-4BA8-B7B6-EEFCD3CFCFF6</id>
+			<name>Astral Signature</name>
+			<source>SR5</source>
+			<page>312</page>
+		</rule>
+		<rule>
+			<id>CFD123E7-A992-4355-AC1B-D75E4797D261</id>
+			<name>Astral Perception</name>
+			<source>SR5</source>
+			<page>312</page>
+		</rule>
+		<rule>
+			<id>87585079-146B-4A8B-A2EA-D98BC02E20D5</id>
+			<name>Astral Projection</name>
+			<source>SR5</source>
+			<page>313</page>
+		</rule>
+		<rule>
+			<id>ABA502E0-B27A-420D-92F7-0A20B1073156</id>
+			<name>Astral Movement</name>
+			<source>SR5</source>
+			<page>313</page>
+		</rule>
+		<rule>
+			<id>21F34EF6-5865-423D-9A0B-853BC961B096</id>
+			<name>Manifesting</name>
+			<source>SR5</source>
+			<page>314</page>
+		</rule>
+		<rule>
+			<id>5F4998FA-D1F2-4CC0-935E-5D4B87B98E57</id>
+			<name>Staying Astral</name>
+			<source>SR5</source>
+			<page>314</page>
+		</rule>
+		<rule>
+			<id>135509E2-3B6A-4D95-A63B-E024EF96A56C</id>
+			<name>Astral Detection</name>
+			<source>SR5</source>
+			<page>314</page>
+		</rule>
+		<rule>
+			<id>48CAC651-37B7-4885-876C-800D1593CABC</id>
+			<name>Astral Combat</name>
+			<source>SR5</source>
+			<page>315</page>
+		</rule>
+		<rule>
+			<id>7CA9A667-28EB-4248-BEEC-47A45485C021</id>
+			<name>Astral Tracking</name>
+			<source>SR5</source>
+			<page>315</page>
+		</rule>
+		<rule>
+			<id>9FA11962-C62D-41BC-A654-5B2BE8418638</id>
+			<name>Mana Barriers</name>
+			<source>SR5</source>
+			<page>315</page>
+		</rule>
+		<rule>
+			<id>D7DFE7F0-B775-4371-A4D6-B9F993844493</id>
+			<name>Getting around Mana Barriers</name>
+			<source>SR5</source>
+			<page>316</page>
+		</rule>
+		<rule>
+			<id>10199166-A0DC-41BF-B541-7178E746AADB</id>
+			<name>Astral Intersections</name>
+			<source>SR5</source>
+			<page>316</page>
+		</rule>
+		<rule>
+			<id>6EC713A8-CBB2-4DFD-93B3-599EB8A20397</id>
+			<name>Reagents</name>
+			<source>SR5</source>
+			<page>316</page>
+		</rule>
+		<rule>
+			<id>38822492-EDEB-4F70-AF8A-009F5C07EAD3</id>
+			<name>Harvesting Reagents</name>
+			<source>SR5</source>
+			<page>317</page>
+		</rule>
+		<rule>
+			<id>E21526B0-ED24-4BEF-8941-1023AF7AB98F</id>
+			<name>Foci</name>
+			<source>SR5</source>
+			<page>318</page>
+		</rule>
+		<rule>
+			<id>726066C0-4017-4C75-8D6E-70162E058CF4</id>
+			<name>Focus Types</name>
+			<source>SR5</source>
+			<page>318</page>
+		</rule>
+		<rule>
+			<id>D7BEB79F-C54F-48FF-9EFC-319BD2CFE54F</id>
+			<name>Enchanting Foci</name>
+			<source>SR5</source>
+			<page>318</page>
+		</rule>
+		<rule>
+			<id>0437295B-72B9-40BD-91DC-CB1CA0641618</id>
+			<name>Metamagic Foci</name>
+			<source>SR5</source>
+			<page>319</page>
+		</rule>
+		<rule>
+			<id>322159ED-1F5E-4314-A52D-B397CA25A524</id>
+			<name>Power Foci</name>
+			<source>SR5</source>
+			<page>319</page>
+		</rule>
+		<rule>
+			<id>711B6CC0-A82A-4871-AF95-384738D78B87</id>
+			<name>Qi Foci</name>
+			<source>SR5</source>
+			<page>319</page>
+		</rule>
+		<rule>
+			<id>C8074996-C962-424A-AEF7-ABFDC7344D16</id>
+			<name>Spell Foci</name>
+			<source>SR5</source>
+			<page>319</page>
+		</rule>
+		<rule>
+			<id>7D56CFF7-8ACE-45DD-B825-0E1843815A33</id>
+			<name>Spirit Foci</name>
+			<source>SR5</source>
+			<page>320</page>
+		</rule>
+		<rule>
+			<id>5AC884F2-7F7A-435E-9137-1649ED6DC5D0</id>
+			<name>Weapon Foci</name>
+			<source>SR5</source>
+			<page>320</page>
+		</rule>
+		<rule>
+			<id>F7113669-85FC-41D9-BE8D-3B3ABF01D6CC</id>
+			<name>Mentor Spirits</name>
+			<source>SR5</source>
+			<page>320</page>
+		</rule>
+		<rule>
+			<id>8894D8CB-792D-47C7-8E82-D3741BBF3FDE</id>
+			<name>Initiation</name>
+			<source>SR5</source>
+			<page>324</page>
+		</rule>
+		<rule>
+			<id>D88388E6-1F1D-494A-B2BD-DD12DF51641B</id>
+			<name>Initiate Powers</name>
+			<source>SR5</source>
+			<page>325</page>
+		</rule>
+		<rule>
+			<id>4F8DCA60-59C6-42AA-A64A-4856D3A2260C</id>
+			<name>Increased Magic</name>
+			<source>SR5</source>
+			<page>325</page>
+		</rule>
+		<rule>
+			<id>D439C583-58B5-4026-8834-8FBA9C2C5211</id>
+			<name>Metaplanar Access</name>
+			<source>SR5</source>
+			<page>325</page>
+		</rule>
+		<rule>
+			<id>B5D2B47C-91C2-4B52-93D5-F43196521893</id>
+			<name>Metamagic</name>
+			<source>SR5</source>
+			<page>325</page>
+		</rule>
+		<rule>
+			<id>5E422C9E-0ABA-4B13-9464-63935277DED4</id>
+			<name>All the Angles</name>
+			<source>SR5</source>
+			<page>328</page>
+		</rule>
+		<rule>
+			<id>38DF10B8-2D33-41A3-9A04-5DD18CDEB2A1</id>
+			<name>Gamemaster Advice</name>
+			<source>SR5</source>
+			<page>332</page>
+		</rule>
+		<rule>
+			<id>25420203-9A95-4473-B2D4-963D583329AB</id>
+			<name>Role of the Gamemaster</name>
+			<source>SR5</source>
+			<page>332</page>
+		</rule>
+		<rule>
+			<id>5987C434-C9ED-4EE9-BD83-D7BA83C73F5B</id>
+			<name>Pre-Game Considerations</name>
+			<source>SR5</source>
+			<page>332</page>
+		</rule>
+		<rule>
+			<id>28D9864B-4F98-4856-BB1F-22633B041CF1</id>
+			<name>Know Your Players</name>
+			<source>SR5</source>
+			<page>332</page>
+		</rule>
+		<rule>
+			<id>886C339F-F909-4839-B5D1-CDE5102D7E29</id>
+			<name>Know Yourself</name>
+			<source>SR5</source>
+			<page>333</page>
+		</rule>
+		<rule>
+			<id>3600CFA1-61D4-4DF8-BCFB-EAA1A80D114C</id>
+			<name>Group Rules and Boundaries</name>
+			<source>SR5</source>
+			<page>333</page>
+		</rule>
+		<rule>
+			<id>439F9989-7374-4450-82F2-283C9DDB55E0</id>
+			<name>Group Template</name>
+			<source>SR5</source>
+			<page>334</page>
+		</rule>
+		<rule>
+			<id>44F1B989-FD96-48AA-AE08-090E19C6E33B</id>
+			<name>Final Thoughts</name>
+			<source>SR5</source>
+			<page>334</page>
+		</rule>
+		<rule>
+			<id>96471514-CD7B-4D2F-AA33-AD913F2E25C3</id>
+			<name>Designing a Run</name>
+			<source>SR5</source>
+			<page>335</page>
+		</rule>
+		<rule>
+			<id>EAF5F19F-E486-439B-A6DB-540CAED58B54</id>
+			<name>The Hook</name>
+			<source>SR5</source>
+			<page>335</page>
+		</rule>
+		<rule>
+			<id>D74572AF-513E-4D5A-85FB-5D9FC1E6C479</id>
+			<name>Background</name>
+			<source>SR5</source>
+			<page>335</page>
+		</rule>
+		<rule>
+			<id>93E89AC9-8626-4553-AFD8-94E7E039B1F8</id>
+			<name>Scenes</name>
+			<source>SR5</source>
+			<page>336</page>
+		</rule>
+		<rule>
+			<id>62D9352F-792E-4573-BA3D-D8C9A89DF560</id>
+			<name>Scene Types</name>
+			<source>SR5</source>
+			<page>336</page>
+		</rule>
+		<rule>
+			<id>774F93F2-CFAC-47CA-82F7-EDC6CFCF5A5D</id>
+			<name>Social</name>
+			<source>SR5</source>
+			<page>336</page>
+		</rule>
+		<rule>
+			<id>4EFDCC6B-F6AF-4C6C-9D38-7EB333798605</id>
+			<name>Investigation</name>
+			<source>SR5</source>
+			<page>336</page>
+		</rule>
+		<rule>
+			<id>28A371B8-3DB4-4A1F-B600-8473B0622FBB</id>
+			<name>Action</name>
+			<source>SR5</source>
+			<page>337</page>
+		</rule>
+		<rule>
+			<id>FA95AEB6-2C09-4D15-8CC7-5F605C41930E</id>
+			<name>Build Backward</name>
+			<source>SR5</source>
+			<page>337</page>
+		</rule>
+		<rule>
+			<id>98FFD2E1-3B8E-48BA-8FEF-2785FCFFDC22</id>
+			<name>Transitions</name>
+			<source>SR5</source>
+			<page>337</page>
+		</rule>
+		<rule>
+			<id>96895B32-9EC6-4603-BF10-286FE619D7AD</id>
+			<name>Write the Background</name>
+			<source>SR5</source>
+			<page>338</page>
+		</rule>
+		<rule>
+			<id>2424DA39-857F-4144-BA1B-22B455E52FC5</id>
+			<name>Opposition</name>
+			<source>SR5</source>
+			<page>338</page>
+		</rule>
+		<rule>
+			<id>7042FC2F-12FA-4E22-AD71-6EC48E43952B</id>
+			<name>Be Appropriate</name>
+			<source>SR5</source>
+			<page>338</page>
+		</rule>
+		<rule>
+			<id>AB3A4950-7C69-4DDB-B8F3-CF5C504CB48B</id>
+			<name>Give Equal Opportunities</name>
+			<source>SR5</source>
+			<page>338</page>
+		</rule>
+		<rule>
+			<id>311E8D3D-9F24-484C-BBFA-8AAE5946DD1A</id>
+			<name>Have Stats For Easy Access</name>
+			<source>SR5</source>
+			<page>338</page>
+		</rule>
+		<rule>
+			<id>AF0FE6BA-1ABF-4B10-AF5E-2DB530EDA859</id>
+			<name>Plot Hole Check</name>
+			<source>SR5</source>
+			<page>339</page>
+		</rule>
+		<rule>
+			<id>2C922D23-2F87-49FE-A66E-F40A330C22BF</id>
+			<name>Game Extras</name>
+			<source>SR5</source>
+			<page>339</page>
+		</rule>
+		<rule>
+			<id>0E2DCE40-24EE-41B0-AD23-8B1796B089F2</id>
+			<name>Document Hand-Outs</name>
+			<source>SR5</source>
+			<page>339</page>
+		</rule>
+		<rule>
+			<id>A3A95FF5-0BC6-43C6-AE9F-172F5B9FF6C2</id>
+			<name>Maps</name>
+			<source>SR5</source>
+			<page>339</page>
+		</rule>
+		<rule>
+			<id>90073E8A-E52F-48E7-B8FD-B7842C2F550E</id>
+			<name>Props</name>
+			<source>SR5</source>
+			<page>339</page>
+		</rule>
+		<rule>
+			<id>BAD7E9B6-3126-454F-9832-9823BB0FE63F</id>
+			<name>Music</name>
+			<source>SR5</source>
+			<page>340</page>
+		</rule>
+		<rule>
+			<id>C1E65E8C-EEF6-40C2-A9A6-A25DB136EC3E</id>
+			<name>Run Templates</name>
+			<source>SR5</source>
+			<page>340</page>
+		</rule>
+		<rule>
+			<id>7AEB4054-BCB9-47AC-A608-294E043F0CB8</id>
+			<name>Datasteal</name>
+			<source>SR5</source>
+			<page>340</page>
+		</rule>
+		<rule>
+			<id>C79F605F-B9B5-40E2-99B5-A2EA9E9318D7</id>
+			<name>Assassination or Destruction</name>
+			<source>SR5</source>
+			<page>340</page>
+		</rule>
+		<rule>
+			<id>CD33ECA6-DE32-40B6-8048-F63127449C82</id>
+			<name>Extraction or Insertion</name>
+			<source>SR5</source>
+			<page>340</page>
+		</rule>
+		<rule>
+			<id>007B6C81-B5FC-424A-85C2-C6070093350E</id>
+			<name>Misdirection</name>
+			<source>SR5</source>
+			<page>341</page>
+		</rule>
+		<rule>
+			<id>14ECBF42-C87F-422A-B121-68B475C3F0ED</id>
+			<name>Protection</name>
+			<source>SR5</source>
+			<page>341</page>
+		</rule>
+		<rule>
+			<id>3AF6442E-846A-422C-9E81-FBA98A6C5F55</id>
+			<name>Delivery</name>
+			<source>SR5</source>
+			<page>342</page>
+		</rule>
+		<rule>
+			<id>17B30E25-179E-4DCF-8C08-5811CD3C14B1</id>
+			<name>Random Run Tables</name>
+			<source>SR5</source>
+			<page>342</page>
+		</rule>
+		<rule>
+			<id>EF8D4BDB-5237-48F0-9EC4-51471E6EC309</id>
+			<name>Job Type</name>
+			<source>SR5</source>
+			<page>342</page>
+		</rule>
+		<rule>
+			<id>0A4F9083-D360-44BD-928A-5EC097E5767C</id>
+			<name>Meet Locations</name>
+			<source>SR5</source>
+			<page>342</page>
+		</rule>
+		<rule>
+			<id>DBF1C0B8-9CC6-4A3A-8E18-6346921EAB76</id>
+			<name>Macguffins</name>
+			<source>SR5</source>
+			<page>343</page>
+		</rule>
+		<rule>
+			<id>700E539A-9CF2-4774-9AE8-9E99B03A0188</id>
+			<name>Employers</name>
+			<source>SR5</source>
+			<page>343</page>
+		</rule>
+		<rule>
+			<id>9E835D8C-CB65-47EB-AD7C-7FBCB3EA98A0</id>
+			<name>Twists</name>
+			<source>SR5</source>
+			<page>343</page>
+		</rule>
+		<rule>
+			<id>A65BA372-02CE-4F98-AE6F-D2D32451E324</id>
+			<name>Non-Player Characters</name>
+			<source>SR5</source>
+			<page>343</page>
+		</rule>
+		<rule>
+			<id>DAB6AC7F-FCD8-4BE3-9BEF-A6F43EEC30D3</id>
+			<name>Description</name>
+			<source>SR5</source>
+			<page>343</page>
+		</rule>
+		<rule>
+			<id>DDD15B73-3837-4340-B54A-DE4820442955</id>
+			<name>Personality</name>
+			<source>SR5</source>
+			<page>344</page>
+		</rule>
+		<rule>
+			<id>31C0F7C9-267C-40B6-986E-1FEA3FE6B8F4</id>
+			<name>Background</name>
+			<source>SR5</source>
+			<page>344</page>
+		</rule>
+		<rule>
+			<id>B329B0D2-CCF8-476E-A2C1-A902D8DDDF30</id>
+			<name>Motivations</name>
+			<source>SR5</source>
+			<page>344</page>
+		</rule>
+		<rule>
+			<id>8B6B77BE-897A-4457-BB46-6A7CC828FF14</id>
+			<name>Stats</name>
+			<source>SR5</source>
+			<page>346</page>
+		</rule>
+		<rule>
+			<id>6D65FA9D-FAFB-4018-B500-92DC86991D86</id>
+			<name>Full Build</name>
+			<source>SR5</source>
+			<page>346</page>
+		</rule>
+		<rule>
+			<id>2455576C-58FF-4682-BB45-20E302C0D4CA</id>
+			<name>Story Build</name>
+			<source>SR5</source>
+			<page>346</page>
+		</rule>
+		<rule>
+			<id>7066E5CD-6971-4D2C-8DFD-646E7B29F585</id>
+			<name>Improvised Build</name>
+			<source>SR5</source>
+			<page>346</page>
+		</rule>
+		<rule>
+			<id>175342AE-8BA2-435F-9851-7C25711C3817</id>
+			<name>Roleplaying the NPC</name>
+			<source>SR5</source>
+			<page>347</page>
+		</rule>
+		<rule>
+			<id>CA63974A-ACB4-4A6C-A2E5-0F23B27BEB8D</id>
+			<name>Know Their Purpose</name>
+			<source>SR5</source>
+			<page>347</page>
+		</rule>
+		<rule>
+			<id>6674B119-2EE1-46E0-8F95-45819652420C</id>
+			<name>Stay Focused on Players</name>
+			<source>SR5</source>
+			<page>347</page>
+		</rule>
+		<rule>
+			<id>C05943E6-C711-4092-BB58-CECC54F4D25A</id>
+			<name>Let Them Go</name>
+			<source>SR5</source>
+			<page>347</page>
+		</rule>
+		<rule>
+			<id>CFF89158-9AF6-4027-9E4A-B3EF93E64470</id>
+			<name>Game Management</name>
+			<source>SR5</source>
+			<page>348</page>
+		</rule>
+		<rule>
+			<id>2914E863-0AD5-4A82-9722-6D9A703A9645</id>
+			<name>Shadowrun’S Three Worlds</name>
+			<source>SR5</source>
+			<page>348</page>
+		</rule>
+		<rule>
+			<id>24A45D49-9BE0-4AA7-8858-4464485FF972</id>
+			<name>Spotlight Time</name>
+			<source>SR5</source>
+			<page>348</page>
+		</rule>
+		<rule>
+			<id>496D9529-E7E2-4356-AA99-BC0D2F66BFEA</id>
+			<name>Character Skills</name>
+			<source>SR5</source>
+			<page>348</page>
+		</rule>
+		<rule>
+			<id>BA257AC8-FAE1-4F9D-9BAB-BD86127A8F7C</id>
+			<name>Player Personality</name>
+			<source>SR5</source>
+			<page>348</page>
+		</rule>
+		<rule>
+			<id>7E778CE9-5AA7-46DF-A7F9-3FB59348B805</id>
+			<name>Step In</name>
+			<source>SR5</source>
+			<page>349</page>
+		</rule>
+		<rule>
+			<id>34DA2D51-1A6C-4A4D-9317-E675C44E48A3</id>
+			<name>Pace</name>
+			<source>SR5</source>
+			<page>349</page>
+		</rule>
+		<rule>
+			<id>04C3B653-7F81-4E55-A2FE-3BE2BFD8C791</id>
+			<name>Handling Surprises</name>
+			<source>SR5</source>
+			<page>349</page>
+		</rule>
+		<rule>
+			<id>97F41AD3-15C8-4E27-8F60-3F82EC02DA9F</id>
+			<name>Relocate</name>
+			<source>SR5</source>
+			<page>350</page>
+		</rule>
+		<rule>
+			<id>B73EB59E-FD2B-4973-A2D8-3D6DD0FFE57C</id>
+			<name>Replace</name>
+			<source>SR5</source>
+			<page>351</page>
+		</rule>
+		<rule>
+			<id>5CB7F996-F1F6-4D1F-A9BC-E35320CECB1A</id>
+			<name>Remove</name>
+			<source>SR5</source>
+			<page>351</page>
+		</rule>
+		<rule>
+			<id>A5D81D4E-4A0F-4A83-8E33-546640748584</id>
+			<name>Running Scenes</name>
+			<source>SR5</source>
+			<page>351</page>
+		</rule>
+		<rule>
+			<id>42106216-6D5F-4AF2-B4EF-FBD846855BD4</id>
+			<name>Investigation</name>
+			<source>SR5</source>
+			<page>351</page>
+		</rule>
+		<rule>
+			<id>991CEAA1-F589-45B5-A9A8-185F868655E0</id>
+			<name>Social</name>
+			<source>SR5</source>
+			<page>352</page>
+		</rule>
+		<rule>
+			<id>92169038-CB31-45E7-BF5F-349D483C4406</id>
+			<name>Action</name>
+			<source>SR5</source>
+			<page>352</page>
+		</rule>
+		<rule>
+			<id>B1DB78BC-82FB-47A7-8979-EADC959D9E24</id>
+			<name>Campaigns</name>
+			<source>SR5</source>
+			<page>353</page>
+		</rule>
+		<rule>
+			<id>A5349F0F-CD7D-47ED-A3B4-1EC1C8DA1015</id>
+			<name>Campaign Plots</name>
+			<source>SR5</source>
+			<page>353</page>
+		</rule>
+		<rule>
+			<id>43BC7B56-BDE0-46B4-8FDC-4C67F0EA3E00</id>
+			<name>Plot Pacing</name>
+			<source>SR5</source>
+			<page>353</page>
+		</rule>
+		<rule>
+			<id>CD30D9F7-915F-46E2-913C-11E44AEFC763</id>
+			<name>Plan to Finish</name>
+			<source>SR5</source>
+			<page>354</page>
+		</rule>
+		<rule>
+			<id>385CF6E5-5631-4DDF-B7DF-E29ED2BE9E42</id>
+			<name>Data Management</name>
+			<source>SR5</source>
+			<page>354</page>
+		</rule>
+		<rule>
+			<id>1F4EEA86-987B-4041-AA70-97F33AC82661</id>
+			<name>Campaign Time and Character Advancement</name>
+			<source>SR5</source>
+			<page>354</page>
+		</rule>
+		<rule>
+			<id>47E556A8-4CB1-4BA5-A9F7-B15FE469BE3D</id>
+			<name>Alternate Campaigns</name>
+			<source>SR5</source>
+			<page>354</page>
+		</rule>
+		<rule>
+			<id>AB61A778-C077-47FA-B1A6-C6D10A129FC2</id>
+			<name>Street Scum</name>
+			<source>SR5</source>
+			<page>354</page>
+		</rule>
+		<rule>
+			<id>3FE713C1-27AA-42D7-9462-BED9F5C05E52</id>
+			<name>High Life</name>
+			<source>SR5</source>
+			<page>354</page>
+		</rule>
+		<rule>
+			<id>0ADFE5B1-5140-4915-ABA2-7E9F90105061</id>
+			<name>Military or Mercenary</name>
+			<source>SR5</source>
+			<page>355</page>
+		</rule>
+		<rule>
+			<id>E973E77F-1948-4164-B85B-C5F3940E04E2</id>
+			<name>Docwagon</name>
+			<source>SR5</source>
+			<page>355</page>
+		</rule>
+		<rule>
+			<id>F0B6876D-52F2-4656-B49A-A4CDD0E9D0DB</id>
+			<name>Criminal Syndicates</name>
+			<source>SR5</source>
+			<page>355</page>
+		</rule>
+		<rule>
+			<id>1C57B381-DFA2-4B9F-8C96-40E2D40F4B26</id>
+			<name>Security in the Sixth World</name>
+			<source>SR5</source>
+			<page>355</page>
+		</rule>
+		<rule>
+			<id>1EB9A217-E8CB-462C-9BED-B950642A861A</id>
+			<name>High Threat Response</name>
+			<source>SR5</source>
+			<page>356</page>
+		</rule>
+		<rule>
+			<id>E127F5F7-6082-436E-8663-341011C44D00</id>
+			<name>HTR Team Response Time</name>
+			<source>SR5</source>
+			<page>356</page>
+		</rule>
+		<rule>
+			<id>8D462210-CD10-4AB5-9C32-47F235B0BAEC</id>
+			<name>Countering Physical Threats</name>
+			<source>SR5</source>
+			<page>356</page>
+		</rule>
+		<rule>
+			<id>981FA0EB-6094-4BD1-A385-478AC312D084</id>
+			<name>Cover</name>
+			<source>SR5</source>
+			<page>356</page>
+		</rule>
+		<rule>
+			<id>92C03D70-9000-47C5-9BBA-580351F93833</id>
+			<name>Suppression</name>
+			<source>SR5</source>
+			<page>357</page>
+		</rule>
+		<rule>
+			<id>33C8695B-8F8A-44A9-B98B-D73C65B87F0F</id>
+			<name>Ambushes</name>
+			<source>SR5</source>
+			<page>357</page>
+		</rule>
+		<rule>
+			<id>2BB1ED3B-1A7B-491B-9882-EA3684110731</id>
+			<name>Traps</name>
+			<source>SR5</source>
+			<page>358</page>
+		</rule>
+		<rule>
+			<id>A401093D-A6F3-48E5-91B5-FA264231139F</id>
+			<name>Countering Matrix Threats</name>
+			<source>SR5</source>
+			<page>358</page>
+		</rule>
+		<rule>
+			<id>600D4925-ADED-4C20-8CCC-784BF025AACA</id>
+			<name>Access Limitation</name>
+			<source>SR5</source>
+			<page>358</page>
+		</rule>
+		<rule>
+			<id>4C12EF63-B23E-4AED-9AEE-5FE40B5B6887</id>
+			<name>PANs and WANs</name>
+			<source>SR5</source>
+			<page>358</page>
+		</rule>
+		<rule>
+			<id>5329A3BA-F4A8-441A-B543-CE83B8E96E1F</id>
+			<name>Hosts and IC</name>
+			<source>SR5</source>
+			<page>359</page>
+		</rule>
+		<rule>
+			<id>877830CB-CEC8-4630-B01E-843ED7AE7D9B</id>
+			<name>Gods and Spiders</name>
+			<source>SR5</source>
+			<page>360</page>
+		</rule>
+		<rule>
+			<id>3E8A4E8A-F236-4292-B9C1-5491261208F3</id>
+			<name>Wired Security</name>
+			<source>SR5</source>
+			<page>360</page>
+		</rule>
+		<rule>
+			<id>25737073-6DCC-4BFA-BECD-74AE78AE0ABA</id>
+			<name>Countering Magic Threats</name>
+			<source>SR5</source>
+			<page>361</page>
+		</rule>
+		<rule>
+			<id>6A69140B-35D7-4952-87C8-F08CAAE83CEB</id>
+			<name>Tactics For Mundanes</name>
+			<source>SR5</source>
+			<page>361</page>
+		</rule>
+		<rule>
+			<id>1B46E9D6-026F-4670-A9C1-7650EE313F5F</id>
+			<name>Contracted Magical Security</name>
+			<source>SR5</source>
+			<page>361</page>
+		</rule>
+		<rule>
+			<id>374F44F2-BB6A-45BA-9FFC-9D41190C8CB4</id>
+			<name>Magical Barriers</name>
+			<source>SR5</source>
+			<page>361</page>
+		</rule>
+		<rule>
+			<id>E4F6524F-08D7-4D58-961F-6AB6E913065E</id>
+			<name>Critters and Spirits</name>
+			<source>SR5</source>
+			<page>361</page>
+		</rule>
+		<rule>
+			<id>8ABD35C9-210E-402D-85A1-9A8910B33AD3</id>
+			<name>Drones</name>
+			<source>SR5</source>
+			<page>362</page>
+		</rule>
+		<rule>
+			<id>C4EFC9E8-6EE0-44E9-9D9B-EB860C3B8992</id>
+			<name>Security Devices</name>
+			<source>SR5</source>
+			<page>362</page>
+		</rule>
+		<rule>
+			<id>59913B74-B2DC-42CD-ABD9-98813AE198F1</id>
+			<name>Landscaping</name>
+			<source>SR5</source>
+			<page>362</page>
+		</rule>
+		<rule>
+			<id>69504B0D-C52D-4978-B868-F95464F1DB0E</id>
+			<name>Barriers</name>
+			<source>SR5</source>
+			<page>362</page>
+		</rule>
+		<rule>
+			<id>FAE19880-929F-404F-9084-D7B637904E8D</id>
+			<name>Doors, Windows, &amp; Locks</name>
+			<source>SR5</source>
+			<page>363</page>
+		</rule>
+		<rule>
+			<id>5D4F2198-788A-4711-90D2-14E304719706</id>
+			<name>Sensors and Scanners</name>
+			<source>SR5</source>
+			<page>364</page>
+		</rule>
+		<rule>
+			<id>BAA3EBD2-DB17-44B4-A9DB-6545DF79B82C</id>
+			<name>Automated Defenses</name>
+			<source>SR5</source>
+			<page>366</page>
+		</rule>
+		<rule>
+			<id>8F91C5AD-9207-46BC-AE27-D616634C1A83</id>
+			<name>Identification</name>
+			<source>SR5</source>
+			<page>366</page>
+		</rule>
+		<rule>
+			<id>3D7952FD-C8CB-4BAB-BD32-FBCC818FC8D4</id>
+			<name>System Identification Number (SIN)</name>
+			<source>SR5</source>
+			<page>366</page>
+		</rule>
+		<rule>
+			<id>00D3BDC9-3480-44C6-B44C-8EAAA6D21827</id>
+			<name>Issuing a SIN</name>
+			<source>SR5</source>
+			<page>367</page>
+		</rule>
+		<rule>
+			<id>65863D89-9D27-4767-8903-3E87F871D589</id>
+			<name>Licenses</name>
+			<source>SR5</source>
+			<page>367</page>
+		</rule>
+		<rule>
+			<id>A0469D90-664C-4930-9E48-6638E46B900B</id>
+			<name>Fake SINs</name>
+			<source>SR5</source>
+			<page>367</page>
+		</rule>
+		<rule>
+			<id>3BA6A021-BD18-431D-B2E0-7679BEC2F241</id>
+			<name>Checking a Fake SIN</name>
+			<source>SR5</source>
+			<page>368</page>
+		</rule>
+		<rule>
+			<id>0F5CD1E4-CE6D-4CBF-AF90-ED6A760ED4AC</id>
+			<name>Burned SINs</name>
+			<source>SR5</source>
+			<page>368</page>
+		</rule>
+		<rule>
+			<id>76990061-A43F-4486-BEA9-7176F6061002</id>
+			<name>Drop-In Locations</name>
+			<source>SR5</source>
+			<page>368</page>
+		</rule>
+		<rule>
+			<id>EB4FD1CE-458C-46E4-890A-27C62B370AE3</id>
+			<name>Hell-Hole Bar</name>
+			<source>SR5</source>
+			<page>368</page>
+		</rule>
+		<rule>
+			<id>B7DE8E7A-9E32-4F2A-8F84-8B12EA53AB53</id>
+			<name>Secret Research Station</name>
+			<source>SR5</source>
+			<page>369</page>
+		</rule>
+		<rule>
+			<id>B0412922-FD0F-47ED-A89A-9BC851CB7D68</id>
+			<name>Nova-Hot Club</name>
+			<source>SR5</source>
+			<page>369</page>
+		</rule>
+		<rule>
+			<id>7DA08589-9B7F-487C-8214-C89690F5C385</id>
+			<name>Mom-And-Pop Shop</name>
+			<source>SR5</source>
+			<page>369</page>
+		</rule>
+		<rule>
+			<id>C32CFDBA-DCF3-463D-BEC8-843AC4C2E9AE</id>
+			<name>No-Tell Motel</name>
+			<source>SR5</source>
+			<page>370</page>
+		</rule>
+		<rule>
+			<id>7D8D3369-7D3B-41ED-85AE-DEEC22B020F2</id>
+			<name>Large Corp Office</name>
+			<source>SR5</source>
+			<page>370</page>
+		</rule>
+		<rule>
+			<id>6F194296-AED9-4499-A452-F05BFCD1CA12</id>
+			<name>Hospital or Clinic</name>
+			<source>SR5</source>
+			<page>370</page>
+		</rule>
+		<rule>
+			<id>EDD8B5F3-DE8E-4F83-ABE2-F6CA3D2137BD</id>
+			<name>High-End Residential</name>
+			<source>SR5</source>
+			<page>371</page>
+		</rule>
+		<rule>
+			<id>FADABEAB-74EC-4D3A-B1B1-2475919CD33D</id>
+			<name>Derelict Building</name>
+			<source>SR5</source>
+			<page>371</page>
+		</rule>
+		<rule>
+			<id>F961C70C-42FF-457C-9F5F-15507F5EA70B</id>
+			<name>Reputation</name>
+			<source>SR5</source>
+			<page>372</page>
+		</rule>
+		<rule>
+			<id>F8D9D179-A9D6-4D17-A504-9C34D09C7DB4</id>
+			<name>Street Cred</name>
+			<source>SR5</source>
+			<page>372</page>
+		</rule>
+		<rule>
+			<id>8B5DDC14-256B-4D0A-BB4F-256EF3A35103</id>
+			<name>Notoriety</name>
+			<source>SR5</source>
+			<page>372</page>
+		</rule>
+		<rule>
+			<id>81F8362B-3FD0-4B0C-A2D4-1111A3BFCAA1</id>
+			<name>Public Awareness</name>
+			<source>SR5</source>
+			<page>372</page>
+		</rule>
+		<rule>
+			<id>5DC0F780-D990-4121-BC44-723584CEC9B8</id>
+			<name>Lifestyles</name>
+			<source>SR5</source>
+			<page>373</page>
+		</rule>
+		<rule>
+			<id>DA6D3191-F924-4886-9CD0-6758BC41EF6B</id>
+			<name>Paying the Bills</name>
+			<source>SR5</source>
+			<page>374</page>
+		</rule>
+		<rule>
+			<id>1FE56033-4503-472D-B37A-D968BF87459C</id>
+			<name>Buying a Lifestyle</name>
+			<source>SR5</source>
+			<page>374</page>
+		</rule>
+		<rule>
+			<id>3B51C689-7528-4A51-A61E-0851BC92AF8D</id>
+			<name>Team Lifestyles</name>
+			<source>SR5</source>
+			<page>375</page>
+		</rule>
+		<rule>
+			<id>E3B55F38-FEE5-4519-B6B9-E3003EC9A151</id>
+			<name>Run Rewards</name>
+			<source>SR5</source>
+			<page>375</page>
+		</rule>
+		<rule>
+			<id>4EC3EA4B-A92A-4C65-9F4E-7118439FEED4</id>
+			<name>Cash</name>
+			<source>SR5</source>
+			<page>375</page>
+		</rule>
+		<rule>
+			<id>EB0A2F49-E752-4E61-9ED1-8798C3C58797</id>
+			<name>Sample Run Cost Calculations</name>
+			<source>SR5</source>
+			<page>375</page>
+		</rule>
+		<rule>
+			<id>39D3A3C0-9FEE-4F5A-8CDA-D3732E10C422</id>
+			<name>Karma</name>
+			<source>SR5</source>
+			<page>376</page>
+		</rule>
+		<rule>
+			<id>ED3FFD1C-9F0B-4B32-9C51-7E06FE974AE2</id>
+			<name>Helps and Hindrances</name>
+			<source>SR5</source>
+			<page>378</page>
+		</rule>
+		<rule>
+			<id>69CB3207-98B5-4144-BA5F-E805C1FBE012</id>
+			<name>Non-Player Characters</name>
+			<source>SR5</source>
+			<page>378</page>
+		</rule>
+		<rule>
+			<id>1E4F9C12-513A-4CB8-87D4-41DF1A697A61</id>
+			<name>Grunts</name>
+			<source>SR5</source>
+			<page>378</page>
+		</rule>
+		<rule>
+			<id>CA0B3DD1-9AF5-429B-BC87-9C3A27C4C448</id>
+			<name>Condition Monitors</name>
+			<source>SR5</source>
+			<page>379</page>
+		</rule>
+		<rule>
+			<id>D240D9BF-6F24-44AF-8016-8D9C70A8DC1F</id>
+			<name>Professional Rating</name>
+			<source>SR5</source>
+			<page>379</page>
+		</rule>
+		<rule>
+			<id>A6B29784-C761-4890-A5C8-A9E5CBDAC46B</id>
+			<name>Group Edge</name>
+			<source>SR5</source>
+			<page>380</page>
+		</rule>
+		<rule>
+			<id>B7C2BA25-833C-487D-B2E2-ED63005F12A1</id>
+			<name>Lieutenants</name>
+			<source>SR5</source>
+			<page>380</page>
+		</rule>
+		<rule>
+			<id>6D6E4585-F6E8-42B5-A4B5-0FAB9218B8EB</id>
+			<name>Sample Grunts</name>
+			<source>SR5</source>
+			<page>381</page>
+		</rule>
+		<rule>
+			<id>6B875453-33F5-46B5-B516-5A27E305140F</id>
+			<name>Professional Rating 0</name>
+			<source>SR5</source>
+			<page>381</page>
+		</rule>
+		<rule>
+			<id>ACCF556E-93AF-4EEE-A019-B1D923007426</id>
+			<name>Professional Rating 1</name>
+			<source>SR5</source>
+			<page>382</page>
+		</rule>
+		<rule>
+			<id>FFCF2477-30BC-4245-9642-0DFEBB0A5186</id>
+			<name>Professional Rating 2</name>
+			<source>SR5</source>
+			<page>382</page>
+		</rule>
+		<rule>
+			<id>94299FEC-7D45-4429-9A34-489B6E94C749</id>
+			<name>Professional Rating 3</name>
+			<source>SR5</source>
+			<page>383</page>
+		</rule>
+		<rule>
+			<id>64CC878F-57DD-41DF-8A37-7E42BDE26D81</id>
+			<name>Professional Rating 4</name>
+			<source>SR5</source>
+			<page>383</page>
+		</rule>
+		<rule>
+			<id>14017AE0-9B17-4C3A-8D06-A375B74441F1</id>
+			<name>Professional Rating 5</name>
+			<source>SR5</source>
+			<page>384</page>
+		</rule>
+		<rule>
+			<id>55EAD2FB-E38B-4C67-8D5E-E444F07491D4</id>
+			<name>Professional Rating 6</name>
+			<source>SR5</source>
+			<page>384</page>
+		</rule>
+		<rule>
+			<id>8F46F732-4AD8-43F6-8185-56011C9B1BA6</id>
+			<name>Prime Runners</name>
+			<source>SR5</source>
+			<page>385</page>
+		</rule>
+		<rule>
+			<id>B87AF8B0-71E0-4B47-B84B-FB9B77F6BFDD</id>
+			<name>Building Prime Runners</name>
+			<source>SR5</source>
+			<page>385</page>
+		</rule>
+		<rule>
+			<id>DF5AA731-C1FF-444C-A169-C695C889DB25</id>
+			<name>The Hand of God</name>
+			<source>SR5</source>
+			<page>386</page>
+		</rule>
+		<rule>
+			<id>F84E7B50-0479-4061-BDC9-7493F068314A</id>
+			<name>Contacts</name>
+			<source>SR5</source>
+			<page>386</page>
+		</rule>
+		<rule>
+			<id>AA517FDE-6AA5-40E1-9511-AC1BC229E2FD</id>
+			<name>Contacts by the Numbers</name>
+			<source>SR5</source>
+			<page>386</page>
+		</rule>
+		<rule>
+			<id>C724BA54-4C4A-4862-895E-AA90F5A64E07</id>
+			<name>Using Contacts</name>
+			<source>SR5</source>
+			<page>387</page>
+		</rule>
+		<rule>
+			<id>BC26DE45-082E-45AE-96DA-79BD35A94D92</id>
+			<name>Glitches</name>
+			<source>SR5</source>
+			<page>389</page>
+		</rule>
+		<rule>
+			<id>3B95D96D-7851-42B5-ADC5-C3512BF0B066</id>
+			<name>Favor For a Friend</name>
+			<source>SR5</source>
+			<page>389</page>
+		</rule>
+		<rule>
+			<id>909BEF0D-01E0-469C-A0C2-A8FF37B4A12B</id>
+			<name>Sample Contacts</name>
+			<source>SR5</source>
+			<page>390</page>
+		</rule>
+		<rule>
+			<id>A9FE9D49-7FF2-47A0-9C6E-80970FE88AE0</id>
+			<name>Critters</name>
+			<source>SR5</source>
+			<page>392</page>
+		</rule>
+		<rule>
+			<id>2909743E-A4C5-472C-97F6-3E6207E4695A</id>
+			<name>Attributes and Skills</name>
+			<source>SR5</source>
+			<page>393</page>
+		</rule>
+		<rule>
+			<id>60A259EF-7408-4800-AEE8-980D82B29ED4</id>
+			<name>Movement</name>
+			<source>SR5</source>
+			<page>393</page>
+		</rule>
+		<rule>
+			<id>CDA715C8-7BCA-43A4-90B8-0D93F1A048BA</id>
+			<name>Powers</name>
+			<source>SR5</source>
+			<page>394</page>
+		</rule>
+		<rule>
+			<id>2CBBBB32-361A-4AEC-AC8D-99966E838D1E</id>
+			<name>Critter Combat</name>
+			<source>SR5</source>
+			<page>402</page>
+		</rule>
+		<rule>
+			<id>3BA6C5E6-4B89-4A67-B8F8-E3F325490956</id>
+			<name>Toxins, Drugs, and BTLs</name>
+			<source>SR5</source>
+			<page>408</page>
+		</rule>
+		<rule>
+			<id>8DCE6270-5F12-4FEA-8E96-5C933D6ECD4A</id>
+			<name>Toxins</name>
+			<source>SR5</source>
+			<page>408</page>
+		</rule>
+		<rule>
+			<id>B112324F-B88B-40A1-A2FC-A0942584D867</id>
+			<name>Using Toxins</name>
+			<source>SR5</source>
+			<page>409</page>
+		</rule>
+		<rule>
+			<id>6E2CB194-C162-47C6-A841-6FFA8C91F764</id>
+			<name>Concentration</name>
+			<source>SR5</source>
+			<page>409</page>
+		</rule>
+		<rule>
+			<id>57DD7A7E-C85D-4B39-8B6D-1FB0F8DA6F01</id>
+			<name>Antidotes</name>
+			<source>SR5</source>
+			<page>409</page>
+		</rule>
+		<rule>
+			<id>8703AD1D-90FD-4ED9-98D0-3271C0370C6F</id>
+			<name>Substance Abuse and Addiction</name>
+			<source>SR5</source>
+			<page>413</page>
+		</rule>
+		<rule>
+			<id>3EE1B1D5-5C98-4806-BC7D-0B5464912BD4</id>
+			<name>Addiction Tests</name>
+			<source>SR5</source>
+			<page>414</page>
+		</rule>
+		<rule>
+			<id>8846E3F2-EF16-472F-9A7B-C6DDE520B082</id>
+			<name>Role-Playing Addiction</name>
+			<source>SR5</source>
+			<page>414</page>
+		</rule>
+		<rule>
+			<id>5EF95F61-E512-4063-BE4E-2EE6F17B98C7</id>
+			<name>Getting a Fix</name>
+			<source>SR5</source>
+			<page>415</page>
+		</rule>
+		<rule>
+			<id>397A7425-C896-4B75-98E1-6266E80026B6</id>
+			<name>Withdrawal and Staying Clean</name>
+			<source>SR5</source>
+			<page>415</page>
+		</rule>
+		<rule>
+			<id>C4A02F62-5C39-4D45-83D0-99D332349B77</id>
+			<name>Overdosing</name>
+			<source>SR5</source>
+			<page>415</page>
+		</rule>
+		<rule>
+			<id>C57EA8E2-0FAD-40DC-A25B-BCB94BE1EE79</id>
+			<name>Street Gear</name>
+			<source>SR5</source>
+			<page>416</page>
+		</rule>
+		<rule>
+			<id>71D15DE9-D0AC-4F23-B9D7-BF28954C890E</id>
+			<name>Gear Ratings</name>
+			<source>SR5</source>
+			<page>416</page>
+		</rule>
+		<rule>
+			<id>FE652C09-67B6-4997-A0EA-0EDDA0088B7C</id>
+			<name>Buying Gear</name>
+			<source>SR5</source>
+			<page>416</page>
+		</rule>
+		<rule>
+			<id>A8E8441B-0485-48DE-BDD6-325AE8671A65</id>
+			<name>Standard Goods</name>
+			<source>SR5</source>
+			<page>416</page>
+		</rule>
+		<rule>
+			<id>87CA53DA-0D41-46DA-9C38-CED48882762A</id>
+			<name>Starting Gear</name>
+			<source>SR5</source>
+			<page>418</page>
+		</rule>
+		<rule>
+			<id>21009749-9D90-4254-ABD5-D22C98C96F5A</id>
+			<name>Black Market Goods</name>
+			<source>SR5</source>
+			<page>418</page>
+		</rule>
+		<rule>
+			<id>F95DF6F8-B913-4E6B-8010-2350A59532A4</id>
+			<name>Contacts and Availability</name>
+			<source>SR5</source>
+			<page>418</page>
+		</rule>
+		<rule>
+			<id>CA1A97DA-F81E-44BB-B03C-F22C8B3C30E2</id>
+			<name>Fencing Gear</name>
+			<source>SR5</source>
+			<page>418</page>
+		</rule>
+		<rule>
+			<id>57BA27B4-35E5-4B05-A491-8A373E0B6E6D</id>
+			<name>Contacts and Fencing</name>
+			<source>SR5</source>
+			<page>419</page>
+		</rule>
+		<rule>
+			<id>41D9766F-EF02-43C5-8EE7-64101262F301</id>
+			<name>(Il)Legality</name>
+			<source>SR5</source>
+			<page>419</page>
+		</rule>
+		<rule>
+			<id>A2B72C06-0EA6-4195-B2C4-A6E65036BC76</id>
+			<name>Jurisdiction</name>
+			<source>SR5</source>
+			<page>419</page>
+		</rule>
+		<rule>
+			<id>06797C4F-D764-4FEE-AEC3-102E8EC16C15</id>
+			<name>Concealing Gear</name>
+			<source>SR5</source>
+			<page>419</page>
+		</rule>
+		<rule>
+			<id>49A4F4A8-20B6-4749-A538-8C84BEAC08E4</id>
+			<name>Noticing Hidden Gear</name>
+			<source>SR5</source>
+			<page>419</page>
+		</rule>
+		<rule>
+			<id>00C1471A-B186-4767-80DA-FBC0F2DC386B</id>
+			<name>Actively Hiding Gear</name>
+			<source>SR5</source>
+			<page>419</page>
+		</rule>
+		<rule>
+			<id>60B98EB1-CFB1-4D51-AABA-365A5184251A</id>
+			<name>Carrying Gear</name>
+			<source>SR5</source>
+			<page>420</page>
+		</rule>
+		<rule>
+			<id>27387D9B-5FE7-40B9-A00A-3E9B5FE82E04</id>
+			<name>Carrying Capacity</name>
+			<source>SR5</source>
+			<page>420</page>
+		</rule>
+		<rule>
+			<id>04E84E64-7AB8-42CE-8B63-08E207FB157B</id>
+			<name>Encumbrance</name>
+			<source>SR5</source>
+			<page>420</page>
+		</rule>
+		<rule>
+			<id>09A8C455-3E8D-4327-A6FC-41A91B4C5E58</id>
+			<name>Size Costs</name>
+			<source>SR5</source>
+			<page>420</page>
+		</rule>
+		<rule>
+			<id>2EB408E7-255C-4002-9B07-8A358ED54FBB</id>
+			<name>Using Unadapted Gear</name>
+			<source>SR5</source>
+			<page>420</page>
+		</rule>
+		<rule>
+			<id>0837FAE0-7B19-47AC-AD1A-046B36D8468F</id>
+			<name>Wireless Functionality</name>
+			<source>SR5</source>
+			<page>420</page>
+		</rule>
+		<rule>
+			<id>4B90E654-D53B-44AE-B28E-D835F1B59D09</id>
+			<name>Wireless Bonuses</name>
+			<source>SR5</source>
+			<page>421</page>
+		</rule>
+		<rule>
+			<id>EB2ACD40-8B52-4759-8294-1F65CD400EBB</id>
+			<name>Turning It Off</name>
+			<source>SR5</source>
+			<page>421</page>
+		</rule>
+		<rule>
+			<id>3A44F3BB-EF2C-46CD-A647-63DD5498CFEE</id>
+			<name>Throwbacks</name>
+			<source>SR5</source>
+			<page>421</page>
+		</rule>
+		<rule>
+			<id>8AA591F8-52EA-4262-B903-132902A93BAF</id>
+			<name>Incompatibility</name>
+			<source>SR5</source>
+			<page>421</page>
+		</rule>
+		<rule>
+			<id>E4F256E5-8923-47ED-98D6-C6DB5B47808D</id>
+			<name>Random Run Generator</name>
+			<source>SR5</source>
+			<page>478</page>
+		</rule>
+		<rule>
+			<id>13FD14B1-7EAF-49C1-9C36-3E65FD47F3CF</id>
+			<name>Record Sheets</name>
+			<source>SR5</source>
+			<page>479</page>
+		</rule>
+	</rules>
+</chummer>

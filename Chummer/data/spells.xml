@@ -104,7 +104,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -195,7 +195,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -1288,39 +1288,39 @@
       <bonus>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Fragile)</spirit>
+          <spirit>Homunculus (Fragile)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Cheap Material)</spirit>
+          <spirit>Homunculus (Cheap Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Average Material)</spirit>
+          <spirit>Homunculus (Average Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Heavy Material)</spirit>
+          <spirit>Homunculus (Heavy Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Reinforced Material)</spirit>
+          <spirit>Homunculus (Reinforced Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Structural Material)</spirit>
+          <spirit>Homunculus (Structural Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Heavy Structural Material)</spirit>
+          <spirit>Homunculus (Heavy Structural Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Armored Material)</spirit>
+          <spirit>Homunculus (Armored Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Hardened Material)</spirit>
+          <spirit>Homunculus (Hardened Material)</spirit>
         </addspirit>
       </bonus>
     </spell>
@@ -1333,7 +1333,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Indirect, Touch, Elemental</descriptor>
+      <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-5</dv>
       <range>T</range>
@@ -1497,7 +1497,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -1545,7 +1545,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-5</dv>
       <range>T</range>
@@ -1619,7 +1619,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Indirect, Area, Elemental</descriptor>
+      <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
       <range>LOS</range>
@@ -1645,7 +1645,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
       <range>T</range>
@@ -2848,19 +2848,6 @@
       <range>LOS</range>
       <type>P</type>
     </spell>
-	<spell>
-      <id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
-      <name>Convince</name>
-      <page>132</page>
-      <source>SGG</source>
-      <category>Manipulation</category>
-      <damage>0</damage>
-      <descriptor />
-      <duration>S</duration>
-      <dv>F-2</dv>
-      <range>LOS</range>
-      <type>P</type>
-    </spell>
     <spell>
       <id>ae2bddcc-9899-4549-b0ff-1dc7c1bb291a</id>
       <name>Aspect Mana Line</name>
@@ -2979,9 +2966,6 @@
         <selecttext />
       </bonus>
       <required>
-        <allof>
-          <metamagicart>Advanced Ritual Casting</metamagicart>
-        </allof>
         <oneof>
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
@@ -3188,11 +3172,8 @@
           <spell>Attune Animal</spell>
         </allof>
         <oneof>
-          <group>
-            <quality>Adept</quality>
-            <quality>Mystic Adept</quality>
-          </group>
-          <metamagicart>Advanced Ritual Casting</metamagicart>
+          <quality>Adept</quality>
+          <quality>Mystic Adept</quality>
         </oneof>
       </required>
     </spell>
@@ -3240,10 +3221,8 @@
       <range>Special</range>
       <type>M</type>
       <required>
-        <allof>
-          <metamagicart>Advanced Ritual Casting</metamagicart>
-        </allof>
         <oneof>
+          <metamagicart>Advanced Ritual Casting</metamagicart>
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
         </oneof>
@@ -3565,6 +3544,11 @@
       <dv>Special</dv>
       <range>Special</range>
       <type>M</type>
+      <required>
+        <allof>
+          <metamagicart>Necromancy</metamagicart>
+        </allof>
+      </required>
     </spell>
     <spell>
       <id>3fc55119-a6c3-4b0c-91eb-de107fbdea98</id>
@@ -3590,19 +3574,6 @@
       <duration>S</duration>
       <dv>F-2</dv>
       <range>T</range>
-      <type>P</type>
-    </spell>
-    <spell>
-      <id>2c7be069-208e-41e4-b3cf-97c9fc480fbc</id>
-      <name>Hemorrhage</name>
-      <page>91</page>
-      <source>SG</source>
-      <category>Rituals</category>
-      <damage>0</damage>
-      <descriptor />
-      <duration>I</duration>
-      <dv>Special</dv>
-      <range>Special</range>
       <type>P</type>
     </spell>
     <spell>
@@ -3807,7 +3778,7 @@
       <source>SSP</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Area</descriptor>
       <duration>I</duration>
       <dv>F+1</dv>
       <range>LOS (A)</range>
@@ -4709,7 +4680,7 @@
       <category>Combat</category>
       <damage>0</damage>
       <descriptor>Direct</descriptor>
-      <duration>S</duration>
+      <duration>I</duration>
       <dv>F-3</dv>
       <range>LOS</range>
       <type>M</type>

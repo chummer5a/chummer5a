@@ -14,9 +14,9 @@
 -->
 
   <xsl:template name="RowSummary">
-      <xsl:param name="text" select="''"/>
-      <xsl:param name="blockname" select="''"/>
-      <xsl:param name="buttons" select="'Y'"/>
+      <xsl:param name="text" select="''" />
+      <xsl:param name="blockname" select="''" />
+      <xsl:param name="buttons" select="'Y'" />
 
     <style type="text/css">
       .rowsummary {
@@ -79,7 +79,7 @@
       <xsl:text>
         function zalomit(what,idx,Yes,No,lit)
         {
-          var elem = document.getElementById(idx); 
+          var elem = document.getElementById(idx);
           if (elem.style.pageBreakAfter == 'always') {
             txt = No;
             elem.style.pageBreakAfter = 'auto';
@@ -92,7 +92,7 @@
         }
         function showhide(what,idx,Yes,No,lit)
         {
-          var elem = document.getElementById(idx); 
+          var elem = document.getElementById(idx);
           if (elem.className != 'sectionhide') {
             txt = No;
             elem.className = 'sectionhide';
@@ -107,14 +107,14 @@
     </script>
 
     <xsl:variable name="txt">
-      <xsl:variable name="t1" select="translate($text,'&#160;&#x9;&#xD;&#xA;&#8239;','&#x20;')"/>
-      <xsl:variable name="t2" select="normalize-space($t1)"/>
+      <xsl:variable name="t1" select="string(translate($text,'&#160;&#x9;&#xD;&#xA;&#8239;','&#x20;'))" />
+      <xsl:variable name="t2" select="string(normalize-space($t1))" />
       <xsl:choose>
         <xsl:when test="$t2 != ''">
-          <xsl:value-of select="$t2"/>
+          <xsl:value-of select="$t2" />
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="$lang.Unknown"/>
+          <xsl:value-of select="$lang.Unknown" />
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
@@ -122,41 +122,30 @@
     <table class="rowsummary">
     <tr>
       <td width="30%" class="upper" style="text-align: left">
-        <xsl:value-of select="$txt"/>
+        <xsl:value-of select="$txt" />
       </td>
       <xsl:if test="$buttons != 'N'">
         <xsl:variable name="blk">
           <xsl:choose>
             <xsl:when test="$blockname != ''">
-              <xsl:value-of select="$blockname"/>
+              <xsl:value-of select="$blockname" />
             </xsl:when>
             <xsl:otherwise>
-              <xsl:variable name="b1" select="translate($txt,'&#x20;&#160;&#x9;&#xD;&#xA;&#8239;&amp;/','')"/>
-              <xsl:value-of select="concat($b1,'Block')"/>
+              <xsl:variable name="b1" select="string(translate($txt,'&#x20;&#160;&#x9;&#xD;&#xA;&#8239;&amp;/',''))" />
+              <xsl:value-of select="string(concat($b1,'Block'))" />
             </xsl:otherwise>
           </xsl:choose>
         </xsl:variable>
         <td width="30%" class="rowsummarybutton" style="text-align: left">
-          <xsl:attribute name="onClick">
-            showhide(this,'<xsl:value-of select="$blk"/>',
-                    '<xsl:value-of select="$lang.Yes"/>',
-                    '<xsl:value-of select="$lang.No"/>',
-                    '<xsl:value-of select="$lang.Show"/>');
-          </xsl:attribute>
-          <xsl:value-of select="concat($lang.Show,$lang.Yes)"/>
+          <xsl:attribute name="onClick">showhide(this,'<xsl:value-of select="$blk" />','<xsl:value-of select="$lang.Yes" />','<xsl:value-of select="$lang.No" />','<xsl:value-of select="$lang.Show" />');</xsl:attribute>
+          <xsl:value-of select="concat($lang.Show,$lang.Yes)" />
         </td>
         <td width="40%" class="rowsummarybutton" style="text-align: left">
-          <xsl:attribute name="onClick">
-            zalomit(this,'<xsl:value-of select="$blk"/>',
-                    '<xsl:value-of select="$lang.Yes"/>',
-                    '<xsl:value-of select="$lang.No"/>',
-                    '<xsl:value-of select="$lang.PageBreak"/>');
-          </xsl:attribute>
-          <xsl:value-of select="concat($lang.PageBreak,$lang.No)"/>
+          <xsl:attribute name="onClick">zalomit(this,'<xsl:value-of select="$blk" />','<xsl:value-of select="$lang.Yes" />','<xsl:value-of select="$lang.No" />','<xsl:value-of select="$lang.PageBreak" />');</xsl:attribute>
+          <xsl:value-of select="concat($lang.PageBreak,$lang.No)" />
         </td>
       </xsl:if>
     </tr>
     </table>
-
   </xsl:template>
 </xsl:stylesheet>

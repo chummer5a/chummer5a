@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<chummer>
-  <gears>
-    <gear  xpathfilter="category = 'Ammunition' and (starts-with(name,'Rocket:') or starts-with(name,'Missile:') or starts-with(name,'Grenade:'))">
-      <avail amendoperation="regexreplace" regexpattern="([0-9]+)([FR]*)">4+$1F</avail>
-    </gear>
-  </gears>
-</chummer>

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 
@@ -42,9 +43,11 @@ namespace Chummer
 
         public void AddRange(IEnumerable<Tuple<T, T>> range)
         {
-            foreach (Tuple<T, T> tuple in range)
+            if (range == null)
+                return;
+            foreach ((T item1, T item2) in range)
             {
-                Add(tuple.Item1, tuple.Item2);
+                Add(item1, item2);
             }
         }
 
@@ -52,33 +55,29 @@ namespace Chummer
         {
             //TODO: should probably make sure Language don't change before restart
             //I feel that stuff could break in other cases
-            if (_strLanguage == GlobalOptions.DefaultLanguage)
+            if (_strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 return orginal;
             }
-            else
+
+            if (translated != null)
+                return translated;
+
+            if (orginal != null && _translate.TryGetValue(orginal, out translated))
             {
-                if(translated != null) return translated;
-
-                if (orginal != null && _translate.TryGetValue(orginal, out translated))
-                {
-                    return translated;
-                }
-
-                return orginal;
+                return translated;
             }
+
+            return orginal;
         }
 
         public void Write(T value, ref T orginal, ref T translated)
         {
-            if (_strLanguage == GlobalOptions.DefaultLanguage)
+            if (_strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                if (orginal != null && value != null)
+                if (orginal != null && value != null && _translate.TryGetValue(orginal, out T objTmp) && objTmp == translated)
                 {
-                    if (_translate.TryGetValue(orginal, out T objTmp) && objTmp == translated)
-                    {
-                        _translate.TryGetValue(value, out translated);
-                    }
+                    _translate.TryGetValue(value, out translated);
                 }
                 orginal = value;
             }
@@ -90,6 +89,5 @@ namespace Chummer
                 translated = value;
             }
         }
-
     }
 }

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <powers>
+    <power>
+      <id>1fde7231-e5cc-4fa3-a1fe-b80b00212417</id> <!-- Improved Potential (Social) -->
+      <levels>True</levels>
+    </power>
+    <power>
+      <id>2a7abc86-aa01-4127-b4b1-f73b49a2b5db</id> <!-- Improved Potential (Mental) -->
+      <levels>True</levels>
+    </power>
+    <power>
+      <id>d9b811f4-aa64-46fb-b67d-2995134eda4e</id> <!-- Improved Potential (Physical) -->
+      <levels>True</levels>
+    </power>
+    <!-- Authoritative Tone (SG 170) and Commanding Voice (SS 191) are different powers according to English source books. -->
+    <!-- According to German rules both spells are identical (named 'Gebieterischer Ton'), but differ from the English attributes. -->
+    <!-- Begin Street Grimoire: Authoritative Tone, in German: 'Gebieterischer Ton' -->
+    <power>
+      <id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
+      <points>0.25</points>
+    </power>
+    <!-- End Street Grimoire: Authoritative Tone -->
+    <!-- Begin Stolen Souls: Commanding Voice, in German: 'Gebieterischer Ton' -->
+    <power>
+      <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
+      <points>0.25</points>
+      <levels>True</levels>
+      <action amendoperation="remove" />
+      <maxlevels amendoperation="addnode">3</maxlevels>
+      <adeptway>0.25</adeptway>
+    </power>
+    <!-- End Stolen Souls: Commanding Voice -->
+    <power>
+      <id>df257b19-9ef7-4f0b-9aaa-4dbc43372431</id> <!-- Heightened Concentration -->
+      <levels>True</levels>
+    </power>
+  </powers>
+</chummer>

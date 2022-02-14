@@ -1,13 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using ChummerHub.API;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-
 
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
@@ -21,9 +21,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.RegisterModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, ILogger<RegisterModel>, IEmailSender)'
         public RegisterModel(
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.RegisterModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, ILogger<RegisterModel>, IEmailSender)'
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
@@ -36,17 +34,11 @@ namespace ChummerHub.Areas.Identity.Pages.Account
         }
 
         [BindProperty]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.Input'
         public InputModel Input { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.Input'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.ReturnUrl'
         public string ReturnUrl { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.ReturnUrl'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel'
         public class InputModel
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel'
         {
             [Required]
             [EmailAddress]
@@ -78,9 +70,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnPostAsync(string)'
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnPostAsync(string)'
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             if (ModelState.IsValid)
@@ -91,13 +81,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var result1 = await _userManager.AddToRoleAsync(user, ChummerHub.API.Authorizarion.Constants.UserRoleRegistered);
+                    var result1 = await _userManager.AddToRoleAsync(user, Authorizarion.Constants.UserRoleRegistered);
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId = user.Id, code = code },
+                        values: new { userId = user.Id, code },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",

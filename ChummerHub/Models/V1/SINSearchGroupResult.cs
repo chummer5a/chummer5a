@@ -2,13 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ChummerHub.Models.V1
 {
     public class SINSearchGroupResult
     {
-        public List<String> Roles { get; set; }
+        public List<string> Roles { get; set; }
 
         public ChummerHubVersion Version { get; set; }
 
@@ -33,36 +32,30 @@ namespace ChummerHub.Models.V1
         public SINnerSearchGroup()
         {
             MyMembers = new List<SINnerSearchGroupMember>();
-            this.MyGroups = new List<SINnerGroup>();
+            MyGroups = new List<SINnerGroup>();
             MySINSearchGroups = new List<SINnerSearchGroup>();
         }
         public SINnerSearchGroup(SINnerGroup groupbyname, ApplicationUser user)
         {
-            
-            this.MyParentGroupId = groupbyname?.MyParentGroupId;
-            this.Id = groupbyname?.Id;
+            MyParentGroupId = groupbyname?.MyParentGroupId;
+            Id = groupbyname?.Id;
             if (groupbyname != null)
-                this.IsPublic = groupbyname.IsPublic;
-            this.Groupname = groupbyname?.Groupname;
+                IsPublic = groupbyname.IsPublic;
+            Groupname = groupbyname?.Groupname;
             MyMembers = new List<SINnerSearchGroupMember>();
-            this.MyGroups = new List<SINnerGroup>();
+            MyGroups = new List<SINnerGroup>();
             MySINSearchGroups = new List<SINnerSearchGroup>();
-            this.MyAdminIdentityRole = groupbyname?.MyAdminIdentityRole;
-            this.Language = groupbyname?.Language;
-            this.PasswordHash = groupbyname?.PasswordHash;
-            this.MySettings = groupbyname?.MySettings;
-            this.HasPassword = this.PasswordHash?.Any() == true;
+            MyAdminIdentityRole = groupbyname?.MyAdminIdentityRole;
+            Language = groupbyname?.Language;
+            PasswordHash = groupbyname?.PasswordHash;
+            MySettings = groupbyname?.MySettings;
+            HasPassword = PasswordHash?.Length > 0;
             IsFavorite = false;
             if (user != null)
             {
-
-                if (user.FavoriteGroups.Any() == false)
-                    user.FavoriteGroups =
-                        user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
-                if (user.FavoriteGroups.Any(a => a.FavoriteGuid == this.Id))
-                    IsFavorite = true;
-                else
-                    IsFavorite = false;
+                if (user.FavoriteGroups.Count > 0)
+                    user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
+                IsFavorite = user.FavoriteGroups.Any(a => a.FavoriteGuid == Id);
             }
         }
 
@@ -76,16 +69,15 @@ namespace ChummerHub.Models.V1
 
         public SINnerSearchGroupMember(ApplicationUser user, SINner member)
         {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-            Username = user.UserName;
+            //if (user == null)
+            //    throw new ArgumentNullException(nameof(user));
+            Username = user?.UserName;
             MySINner = member ?? throw new ArgumentNullException(nameof(member));
-            if (user.FavoriteGroups.Any() == false)
+            if (user  != null && user.FavoriteGroups?.Count > 0)
+            {
                 user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
-            if (user.FavoriteGroups.Any(a => a.FavoriteGuid == MySINner.Id))
-                IsFavorite = true;
-            else
-                IsFavorite = false;
+                IsFavorite = user.FavoriteGroups.Any(a => a.FavoriteGuid == MySINner.Id);
+            }
         }
         public SINnerSearchGroupMember()
         {

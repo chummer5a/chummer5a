@@ -1,0 +1,818 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<qualities>
+		<quality>
+			<name>Amnesia (Neural Deletion)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Amnesia (Surface Loss)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Apt Pupil</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Better to be Feared Than Loved</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Black Market Pipeline</name>
+			<chargenonly amendoperation="remove" />
+		</quality>
+		<quality>
+			<name>Borrowed Time</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Carrier (HMHVV Strain II)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Carrier (HMHVV Strain III)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Consummate Professional</name>
+			<karma>3</karma>
+			<category>Positive</category>
+		</quality>
+		<quality>
+			<name>Dead Emotion</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Dead SIN</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Dracoform (Eastern Drake)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Dracoform (Feathered Drake)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Dracoform (Sea Drake)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Dracoform (Western Drake)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Earther</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Echo Chamber</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Friends in High Places</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Groveler</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Hung Out to Dry</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>In Debt</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Banshee</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Dzoo-Noo-Qua</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Fomoraig</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Ghoul (Elf)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Ghoul (Dwarf)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Ghoul (Human)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Ghoul (Ork)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Ghoul (Troll)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Gnawer</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Goblin</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Grendel</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Harvester</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Loup-Garou</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Mutaqua</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Nosferatu</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Sukuyan (Human)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Sukuyan (Non-Human)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Vampire (Human)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Vampire (Non-Human)</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Infected: Wendigo</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Information Auctioneer</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Latent Dracomorphosis</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Made Man</name>
+			<bonus>
+				<addcontact amendoperation="remove" />
+			</bonus>
+			<notes operation="addnode">Manually add a free Group Contact with Connection between 1 and 3 to represent the relevant gang or syndicate.</notes>
+		</quality>
+		<quality>
+			<name>Massive Network</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>One of Them</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Pregnant</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Prime Datahaven Membership</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Prototype Materials</name>
+			<required amendoperation="replace">
+				<oneof>
+					<quality>Special Modifications</quality>
+					<quality>Special Modifications I</quality>
+					<quality>Special Modifications II</quality>
+				</oneof>
+			</required>
+		</quality>
+		<quality>
+			<name>Puppet Master</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Revels in Murder</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Sensei</name>
+			<bonus>
+				<selectcontact amendoperation="remove" />
+				<selecttext xml="skills.xml" xpath="/chummer/skillgroups/name | /chummer/skills/skill[not(skillgroup) or skillgroup = '']/name" allowedit="True" />
+			</bonus>
+		</quality>
+		<quality>
+			<name>Special Modifications</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Stay Out of My Way</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Stolen Gear</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Taboo Transformer</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Team Player</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>This Is Your Last Chance</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Tough and Targeted</name>
+			<hide />
+		</quality>
+		<quality>
+			<name>Trust Fund I</name>
+			<required amendoperation="replace">
+				<oneof>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+				</oneof>
+			</required>
+		</quality>
+		<quality>
+			<name>Trust Fund II</name>
+			<required amendoperation="replace">
+				<oneof>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+				</oneof>
+			</required>
+		</quality>
+		<quality>
+			<name>Trust Fund III</name>
+			<required amendoperation="replace">
+				<oneof>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+				</oneof>
+			</required>
+		</quality>
+		<quality>
+			<name>Trust Fund IV</name>
+			<required amendoperation="replace">
+				<oneof>
+					<quality>SINner (National)</quality>
+					<quality>SINner (Corporate)</quality>
+					<quality>SINner (Corporate Limited)</quality>
+				</oneof>
+			</required>
+		</quality>
+		<quality>
+			<name>Brilliant Heuristics</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Code of Honor: Black Hat</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Data Hog</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Hold the Door</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Lone Wolf</name>
+			<required />
+		</quality>
+		<quality>
+			<name>On the Wagon</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Trust Data, Not Lore</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Trust Lore, Not Data</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Unique Avatar</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Wired User</name>
+			<required />
+		</quality>
+		<quality>
+			<name>Illusionist</name>
+			<limit>1</limit>
+		</quality>
+		<quality>
+			<name>Mystic Foreman</name>
+			<required amendoperation="replace">
+				<allof>
+					<attribute>
+						<name>MAG</name>
+						<total>1</total>
+					</attribute>
+					<skill>
+						<name>Mechanic</name>
+						<val>4</val>
+					</skill>
+					<skill>
+						<name>Chemistry</name>
+						<val>4</val>
+						<type>Knowledge</type>
+					</skill>
+				</allof>
+				<oneof>
+					<skill>
+						<name>Spellcasting</name>
+						<val>4</val>
+						<spec>Manipulation</spec>
+					</skill>
+					<skill>
+						<name>Spellcasting</name>
+						<val>6</val>
+					</skill>
+				</oneof>
+			</required>
+			<hide />
+		</quality>
+		<quality>
+			<name>Potion Maker</name>
+			<required amendoperation="replace">
+				<allof>
+					<attribute>
+						<name>MAG</name>
+						<total>1</total>
+					</attribute>
+					<skill>
+						<name>Alchemy</name>
+						<val>4</val>
+					</skill>
+					<skill>
+						<name>Chemistry</name>
+						<val>4</val>
+						<type>Knowledge</type>
+					</skill>
+				</allof>
+			</required>
+		</quality>
+		<quality>
+			<name>The Artisan's Way</name>
+			<bonus amendoperation="replace">
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Animal Handling)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Armorer)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Artisan)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Computer)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Cybercombat)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Demolitions)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Electronic Warfare)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (First Aid)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Forgery)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Gunnery)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Hacking)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Hardware)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Locksmith)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Mechanic)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Medicine)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Navigation)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<!-- This deliberately does not have closing parentheses so that all exotic vehicle skills are processed -->
+					<extracontains>Improved Ability (skill) (Pilot Exotic Vehicle</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Pilot Aerospace)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Pilot Aircraft)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Pilot Ground Craft)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Pilot Walker)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Pilot Watercraft)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Software)</extracontains>
+				</focusbindingkarmacost>
+			</bonus>
+		</quality>
+		<quality>
+			<name>The Invisible Way</name>
+			<bonus amendoperation="replace">
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Disguise)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Diving)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Escape Artist)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Flight)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Gymnastics)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Palming)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Perception)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Running)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Sneaking)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Survival)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Swimming)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Tracking)</extracontains>
+				</focusbindingkarmacost>
+			</bonus>
+		</quality>
+		<quality>
+			<name>The Speaker's Way</name>
+			<bonus amendoperation="replace">
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Con)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Etiquette)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Impersonation)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Intimidation)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Leadership)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Negotiation)</extracontains>
+				</focusbindingkarmacost>
+				<focusbindingkarmacost>
+					<name>Qi Focus</name>
+					<val>-2</val>
+					<extracontains>Improved Ability (skill) (Performance)</extracontains>
+				</focusbindingkarmacost>
+			</bonus>
+		</quality>
+		<quality>
+			<name>Allergy (Uncommon, Mild)</name>
+			<karma>0</karma>
+		</quality>
+		<quality>
+			<name>Allergy (Uncommon, Moderate)</name>
+			<karma>0</karma>
+		</quality>
+		<quality>
+			<name>Allergy (Uncommon, Severe)</name>
+			<karma>0</karma>
+		</quality>
+		<quality>
+			<name>Allergy (Uncommon, Extreme)</name>
+			<karma>0</karma>
+		</quality>
+		<quality>
+			<name>Allergy (Common, Mild)</name>
+			<karma>0</karma>
+		</quality>
+		<quality>
+			<name>Allergy (Common, Moderate)</name>
+			<karma>0</karma>
+		</quality>
+		<quality>
+			<name>Allergy (Common, Severe)</name>
+			<karma>0</karma>
+		</quality>
+		<quality>
+			<name>Allergy (Common, Extreme)</name>
+			<karma>0</karma>
+		</quality>
+		<quality>
+			<name>Restricted Gear</name>
+			<bonus amendoperation="replace">
+				<selecttext />
+				<restrictedgear>24</restrictedgear>
+			</bonus>
+		</quality>
+		<quality>
+			<name>Cyber-snob</name>
+			<bonus amendoperation="replace">
+				<disablebiowaregrade>Standard</disablebiowaregrade>
+				<disablebiowaregrade>Standard (Burnout's Way)</disablebiowaregrade>
+				<disablebiowaregrade>Used</disablebiowaregrade>
+				<disablecyberwaregrade>Standard</disablecyberwaregrade>
+				<disablecyberwaregrade>Standard (Burnout's Way)</disablecyberwaregrade>
+				<disablecyberwaregrade>Used</disablecyberwaregrade>
+				<disablecyberwaregrade>Standard (Adapsin)</disablecyberwaregrade>
+				<disablecyberwaregrade>Standard (Burnout's Way) (Adapsin)</disablecyberwaregrade>
+				<disablecyberwaregrade>Used (Adapsin)</disablecyberwaregrade>
+			</bonus>
+			<required amendoperation="replace">
+				<oneof>
+					<ess grade="Alphaware,Betaware,Deltaware,Greyware">1</ess>
+				</oneof>
+			</required>
+		</quality>
+		<quality>
+			<name>Superhuman Psychosis</name>
+			<bonus>
+				<specificskill amendoperation="addnode">
+					<name>Atypical Melee</name>
+					<bonus>1</bonus>
+				</specificskill>
+				<specificskill amendoperation="addnode">
+					<name>Flexile Melee</name>
+					<bonus>1</bonus>
+				</specificskill>
+			</bonus>
+		</quality>
+		<quality>
+			<name>Natural Venom (Exhaled, Mild)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Exhaled, Moderate)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Exhaled, Serious)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Exhaled, Deadly)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Spat, Mild)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Spat, Moderate)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Spat, Serious)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Spat, Deadly)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Injected, Mild)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Injected, Moderate)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Injected, Serious)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+		<quality>
+			<name>Natural Venom (Injected, Deadly)</name>
+			<forbidden>
+				<oneof>
+					<quality>Changeling (Class I SURGE)</quality>
+					<quality>Changeling (Class II SURGE)</quality>
+				</oneof>
+			</forbidden>
+		</quality>
+	</qualities>
+</chummer>

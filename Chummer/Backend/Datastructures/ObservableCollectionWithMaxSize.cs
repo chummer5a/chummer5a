@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Chummer
 {
-    public class ObservableCollectionWithMaxSize<T> : ObservableCollection<T>
+    public class ObservableCollectionWithMaxSize<T> : EnhancedObservableCollection<T>
     {
         private readonly int _intMaxSize;
 
@@ -44,27 +45,32 @@ namespace Chummer
                 RemoveAt(Count - 1);
         }
 
-        public new virtual void Add(T item)
-        {
-            if (Count <= _intMaxSize)
-                base.Add(item);
-        }
+        private bool _blnSkipCollectionChanged;
 
-        protected override void InsertItem(int index, T item)
+        /// <inheritdoc />
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (index < _intMaxSize)
+            if (_blnSkipCollectionChanged)
+                return;
+            if (e.Action == NotifyCollectionChangedAction.Reset)
             {
-                base.InsertItem(index, item);
+                _blnSkipCollectionChanged = true;
+                // Remove all entries greater than the allowed size
                 while (Count > _intMaxSize)
                     RemoveAt(Count - 1);
+                _blnSkipCollectionChanged = false;
             }
+            base.OnCollectionChanged(e);
         }
 
-        protected override void MoveItem(int oldIndex, int newIndex)
+        /// <inheritdoc />
+        protected override void InsertItem(int index, T item)
         {
-            if (newIndex >= _intMaxSize)
-                newIndex = _intMaxSize;
-            base.MoveItem(oldIndex, newIndex);
+            if (index >= _intMaxSize)
+                return;
+            base.InsertItem(index, item);
+            while (Count > _intMaxSize)
+                RemoveAt(Count - 1);
         }
     }
 }
