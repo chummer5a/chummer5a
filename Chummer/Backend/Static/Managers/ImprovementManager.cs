@@ -199,7 +199,7 @@ namespace Chummer
                                                               new Tuple<decimal, List<Improvement>>(
                                                                   decimal.MinValue, new List<Improvement>())))
                 {
-                    List<Improvement> lstTemp = s_DictionaryCachedValues[objCheckKey].Item2;
+                    List<Improvement> lstTemp = s_DictionaryCachedAugmentedValues[objCheckKey].Item2;
                     lstTemp.Clear();
                     s_DictionaryCachedAugmentedValues[objCheckKey]
                         = new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp);
@@ -221,7 +221,7 @@ namespace Chummer
                              .Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType)
                              .ToList())
                 {
-                    List<Improvement> lstTemp = s_DictionaryCachedValues[objCheckKey].Item2;
+                    List<Improvement> lstTemp = s_DictionaryCachedAugmentedValues[objCheckKey].Item2;
                     lstTemp.Clear();
                     s_DictionaryCachedAugmentedValues[objCheckKey]
                         = new Tuple<decimal, List<Improvement>>(decimal.MinValue, lstTemp);
