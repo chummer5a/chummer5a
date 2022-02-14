@@ -84,8 +84,7 @@ namespace Chummer
                     // +1 compared to normal because this Grade's effect has not been processed yet.
                     : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
                 ImprovementManager.CreateImprovement(_objCharacter, "RESBase", Improvement.ImprovementSource.CyberadeptDaemon,
-                    _guiID.ToString("D", GlobalSettings.InvariantCultureInfo),
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
+                    InternalId, Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
                 ImprovementManager.Commit(_objCharacter);
             }
         }
@@ -373,7 +372,7 @@ namespace Chummer
                 if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
                     return false;
 
-                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, InternalId);
             }
             else
                 return false;

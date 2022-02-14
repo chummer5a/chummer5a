@@ -17644,11 +17644,28 @@ namespace Chummer
                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CyberadeptDaemon);
                     if (intMaxReduction != 0)
                     {
-                        int intCyberadeptDaemonBonus = 0;
-                        if (TechnomancerEnabled && SubmersionGrade > 0 && ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyberadeptDaemon).Count > 0)
-                            intCyberadeptDaemonBonus = Math.Min(SubmersionGrade.DivAwayFromZero(2), (int) Math.Ceiling(CyberwareEssence));
-                        ImprovementManager.CreateImprovement(this, "RES", eEssenceLossSource, string.Empty,
-                            Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, Math.Min(0, intCyberadeptDaemonBonus - intMaxReduction));
+                        int intRESReduction = intMaxReduction;
+                        if (TechnomancerEnabled && SubmersionGrade > 0 && ImprovementManager
+                                .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyberadeptDaemon)
+                                .Count > 0)
+                        {
+                            decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
+                            int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
+                                ? (int)Math.Ceiling(CyberwareEssence)
+                                : (int)Math.Floor(CyberwareEssence);
+                            int intCyberadeptDaemonBonus = 0;
+                            for (int i = 1; i <= SubmersionGrade; ++i)
+                            {
+                                intCyberadeptDaemonBonus += i.DivAwayFromZero(2);
+                            }
+                            intRESReduction -= Math.Min(intCyberadeptDaemonBonus, intMaxCyberadeptDaemonBonus);
+                            if (intRESReduction < 0)
+                                intRESReduction = 0;
+                        }
+
+                        if (intRESReduction != 0)
+                            ImprovementManager.CreateImprovement(this, "RES", eEssenceLossSource, string.Empty,
+                                Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intRESReduction);
                         ImprovementManager.CreateImprovement(this, "DEP", eEssenceLossSource, string.Empty,
                             Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -intMaxReduction);
                     }

@@ -22,6 +22,7 @@ Application Changes:
 - Fixed a crash that would happen when selecting irremovable weapons on characters with Black Market Discount.
 - Fixed Adapsin grades showing up for characters without Adapsin.
 - Deleting qualities with levels no longer causes Chummer to crash.
+- The Cyberadept Stream's Daemon now negates the proper amount of Resonance reduction from Essence lost to cyberware under the setting where Essence loss does not affect the karma cost for increasing special attributes.
 
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
