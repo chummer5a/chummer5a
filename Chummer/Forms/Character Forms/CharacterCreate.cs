@@ -6585,6 +6585,11 @@ namespace Chummer
 
         private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            RefreshSelectedQuality();
+        }
+
+        private void RefreshSelectedQuality()
+        {
             // Locate the selected Quality.
             Quality objQuality = treQualities.SelectedNode?.Tag as Quality;
 
@@ -6610,7 +6615,11 @@ namespace Chummer
 
         private void UpdateQualityLevelValue(Quality objSelectedQuality = null)
         {
-            if (objSelectedQuality == null || objSelectedQuality.OriginSource == QualitySource.Improvement || objSelectedQuality.OriginSource == QualitySource.Metatype || objSelectedQuality.OriginSource == QualitySource.Heritage)
+            if (objSelectedQuality == null
+                || objSelectedQuality.OriginSource == QualitySource.Improvement
+                || objSelectedQuality.OriginSource == QualitySource.Metatype
+                || objSelectedQuality.OriginSource == QualitySource.Heritage
+                || objSelectedQuality.Levels == 0)
             {
                 nudQualityLevel.Value = 1;
                 nudQualityLevel.Enabled = false;
@@ -9654,8 +9663,8 @@ namespace Chummer
                 }
 
                 UpdateInitiationCost();
-                UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
 
+                RefreshSelectedQuality();
                 RefreshSelectedCyberware();
                 RefreshSelectedArmor();
                 RefreshSelectedGear();
