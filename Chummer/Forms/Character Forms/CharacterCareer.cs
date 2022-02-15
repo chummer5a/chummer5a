@@ -912,7 +912,7 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Directly calling here so that we can properly unset the dirty flag after the update
-                        UpdateCharacterInfo();
+                        DoUpdateCharacterInfo();
 
                         // Now we can start checking for character updates
                         Application.Idle += UpdateCharacterInfo;
@@ -2833,7 +2833,7 @@ namespace Chummer
 
                     IsCharacterUpdateRequested = true;
                     // Immediately call character update because it re-applies essence loss improvements
-                    UpdateCharacterInfo();
+                    DoUpdateCharacterInfo();
 
                     if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                     {
@@ -2848,10 +2848,10 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void mnuSpecialPossess_Click(object sender, EventArgs e)
+        private async ValueTask mnuSpecialPossess_Click(object sender, EventArgs e)
         {
             // Make sure the Spirit has been saved first.
-            if (IsDirty && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_PossessionSave"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (IsDirty && Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_PossessionSave"), await LanguageManager.GetStringAsync("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             if (Utils.IsUnitTest)
@@ -2864,8 +2864,8 @@ namespace Chummer
             // Prompt the user to select a save file to possess.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
                    {
-                       Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|'
-                           + LanguageManager.GetString("DialogFilter_All")
+                       Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                           + await LanguageManager.GetStringAsync("DialogFilter_All")
                    })
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
@@ -2882,12 +2882,12 @@ namespace Chummer
                     {
                         using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
                         {
-                            bool blnSuccess = objVessel.Load(frmLoadingForm);
+                            bool blnSuccess = await objVessel.LoadAsync(frmLoadingForm);
                             if (!blnSuccess)
                             {
                                 Program.MainForm.ShowMessageBox(this,
-                                    LanguageManager.GetString("Message_Load_Error_Warning"),
-                                    LanguageManager.GetString("String_Error"), MessageBoxButtons.OK,
+                                    await LanguageManager.GetStringAsync("Message_Load_Error_Warning"),
+                                    await LanguageManager.GetStringAsync("String_Error"), MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
                                 return;
                             }
@@ -2895,25 +2895,25 @@ namespace Chummer
                             if (!objVessel.Created)
                             {
                                 Program.MainForm.ShowMessageBox(this,
-                                    LanguageManager.GetString("Message_VesselInCareerMode"),
-                                    LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.OK,
+                                    await LanguageManager.GetStringAsync("Message_VesselInCareerMode"),
+                                    await LanguageManager.GetStringAsync("MessageTitle_Possession"), MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
                                 return;
                             }
 
                             // Load the Spirit's save file into a new Merge character.
                             frmLoadingForm.CharacterFile = objMerge.FileName;
-                            blnSuccess = objMerge.Load(frmLoadingForm);
+                            blnSuccess = await objMerge.LoadAsync(frmLoadingForm);
                             if (!blnSuccess)
                             {
                                 Program.MainForm.ShowMessageBox(this,
-                                    LanguageManager.GetString("Message_Load_Error_Warning"),
-                                    LanguageManager.GetString("String_Error"), MessageBoxButtons.OK,
+                                    await LanguageManager.GetStringAsync("Message_Load_Error_Warning"),
+                                    await LanguageManager.GetStringAsync("String_Error"), MessageBoxButtons.OK,
                                     MessageBoxIcon.Error);
                                 return;
                             }
                             objMerge.Possessed = true;
-                            objMerge.Alias = objVessel.CharacterName + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+                            objMerge.Alias = objVessel.CharacterName + await LanguageManager.GetStringAsync("String_Space") + '(' + await LanguageManager.GetStringAsync("String_Possessed") + ')';
 
                             // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
                             bool blnHasImmunity = false;
@@ -2928,7 +2928,7 @@ namespace Chummer
 
                             if (!blnHasImmunity)
                             {
-                                XmlDocument objPowerDoc = CharacterObject.LoadData("critterpowers.xml");
+                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml");
                                 XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
@@ -2949,12 +2949,12 @@ namespace Chummer
                             objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
                             */
 
-                            frmLoadingForm.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
+                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
                             // Copy any Lifestyles the Vessel has.
                             foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
                                 objMerge.Lifestyles.Add(objLifestyle);
 
-                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Armor"));
+                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Armor"));
                             // Copy any Armor the Vessel has.
                             foreach (Armor objArmor in objVessel.Armor)
                             {
@@ -2962,7 +2962,7 @@ namespace Chummer
                                 CopyArmorImprovements(objVessel, objMerge, objArmor);
                             }
 
-                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Gear"));
+                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Gear"));
                             // Copy any Gear the Vessel has.
                             foreach (Gear objGear in objVessel.Gear)
                             {
@@ -2970,7 +2970,7 @@ namespace Chummer
                                 CopyGearImprovements(objVessel, objMerge, objGear);
                             }
 
-                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
+                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Cyberware"));
                             // Copy any Cyberware/Bioware the Vessel has.
                             foreach (Cyberware objCyberware in objVessel.Cyberware)
                             {
@@ -2978,17 +2978,17 @@ namespace Chummer
                                 CopyCyberwareImprovements(objVessel, objMerge, objCyberware);
                             }
 
-                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Weapons"));
                             // Copy any Weapons the Vessel has.
                             foreach (Weapon objWeapon in objVessel.Weapons)
                                 objMerge.Weapons.Add(objWeapon);
 
-                            frmLoadingForm.PerformStep(LanguageManager.GetString("Tab_Vehicles"));
+                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("Tab_Vehicles"));
                             // Copy and Vehicles the Vessel has.
                             foreach (Vehicle objVehicle in objVessel.Vehicles)
                                 objMerge.Vehicles.Add(objVehicle);
 
-                            frmLoadingForm.PerformStep(LanguageManager.GetString("String_Settings"));
+                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_Settings"));
                             // Copy the character info.
                             objMerge.Gender = objVessel.Gender;
                             objMerge.Age = objVessel.Age;
@@ -3010,12 +3010,12 @@ namespace Chummer
                     string strShowFileName = Path.GetFileName(objMerge.FileName);
                     if (string.IsNullOrEmpty(strShowFileName))
                         strShowFileName = objMerge.CharacterName;
-                    strShowFileName = strShowFileName.TrimEndOnce(".chum5") + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
+                    strShowFileName = strShowFileName.TrimEndOnce(".chum5") + await LanguageManager.GetStringAsync("String_Space") + '(' + await LanguageManager.GetStringAsync("String_Possessed") + ')';
 
                     // Now that everything is done, save the merged character and open them.
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
                     {
-                        Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All"),
+                        Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All"),
                         FileName = strShowFileName
                     })
                     {
@@ -3025,7 +3025,7 @@ namespace Chummer
                         {
                             frmProgressBar.PerformStep(objMerge.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
-                            if (objMerge.Save())
+                            if (await objMerge.SaveAsync())
                             {
                                 // Get the name of the file and destroy the references to the Vessel and the merged character.
                                 strOpenFile = objMerge.FileName;
@@ -3039,7 +3039,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacterAsync(strOpenFile);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
@@ -3193,7 +3193,7 @@ namespace Chummer
                         {
                             frmProgressBar.PerformStep(objMerge.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
-                            if (objMerge.Save())
+                            if (await objMerge.SaveAsync())
                             {
                                 // Get the name of the file and destroy the references to the Vessel and the merged character.
                                 strOpenFile = objMerge.FileName;
@@ -12848,7 +12848,7 @@ namespace Chummer
             flpDrugs.ResumeLayout();
         }
 
-        private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
+        private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
             if (IsDirty || !GlobalSettings.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
@@ -12867,30 +12867,51 @@ namespace Chummer
             {
                 using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
-                    CharacterObject.Load(frmLoadingForm);
-                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                    await CharacterObject.LoadAsync(frmLoadingForm);
+                    frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
 
                     IsCharacterUpdateRequested = true;
                     _blnSkipUpdate = false;
                     // Immediately call character update because we know it's necessary
-                    UpdateCharacterInfo();
+                    await DoUpdateCharacterInfoAsync();
 
                     IsDirty = false;
                 }
             }
 
-            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
-                LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest && Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
+                await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
                 DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                 CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
             }
         }
 
+        private async void UpdateCharacterInfo(object sender, EventArgs e)
+        {
+            await DoUpdateCharacterInfoAsync();
+        }
+
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private void UpdateCharacterInfo(object sender = null, EventArgs e = null)
+        private void DoUpdateCharacterInfo()
+        {
+            DoUpdateCharacterInfoCoreAsync(true).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Update the Character information.
+        /// </summary>
+        private Task DoUpdateCharacterInfoAsync()
+        {
+            return DoUpdateCharacterInfoCoreAsync(false);
+        }
+
+        /// <summary>
+        /// Update the Character information.
+        /// </summary>
+        private async Task DoUpdateCharacterInfoCoreAsync(bool blnSync)
         {
             if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
@@ -12935,7 +12956,11 @@ namespace Chummer
 
                 if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                 {
-                    AutoSaveCharacter();
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        AutoSaveCharacter();
+                    else
+                        await AutoSaveCharacterAsync();
                 }
             }
 

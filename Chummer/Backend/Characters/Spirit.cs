@@ -65,7 +65,7 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private Character _objLinkedCharacter;
 
-        private readonly List<Image> _lstMugshots = new List<Image>(1);
+        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(1);
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods
@@ -1047,7 +1047,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public List<Image> Mugshots => LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
+        public ThreadSafeList<Image> Mugshots => LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -1224,6 +1224,7 @@ namespace Chummer
                 Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
             foreach (Image imgMugshot in _lstMugshots)
                 imgMugshot.Dispose();
+            _lstMugshots.Dispose();
         }
 
         #endregion IHasMugshots

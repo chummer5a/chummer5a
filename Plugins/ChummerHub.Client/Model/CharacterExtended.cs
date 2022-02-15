@@ -660,19 +660,27 @@ namespace ChummerHub.Client.Sinners
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
 
-            bool readCallback = MyCharacter.DoOnSaveCompleted.Remove(PluginHandler.MyOnSaveUpload);
+            bool readCallback = MyCharacter.DoOnSaveCompletedAsync.Remove(PluginHandler.MyOnSaveUpload);
 
             if (!File.Exists(MyCharacter.FileName))
             {
                 string path2 = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
                 CreateDirectoryRecursively(path2);
-                MyCharacter.Save(MyCharacter.FileName, false, false);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    MyCharacter.Save(MyCharacter.FileName, false, false);
+                else
+                    await MyCharacter.SaveAsync(MyCharacter.FileName, false, false);
             }
 
-            MyCharacter.Save(tempfile, false, false);
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                MyCharacter.Save(tempfile, false, false);
+            else
+                await MyCharacter.SaveAsync(tempfile, false, false);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (readCallback)
-                MyCharacter.DoOnSaveCompleted.Add(PluginHandler.MyOnSaveUpload);
+                MyCharacter.DoOnSaveCompletedAsync.Add(PluginHandler.MyOnSaveUpload);
 
             if (File.Exists(zipPath))
             {

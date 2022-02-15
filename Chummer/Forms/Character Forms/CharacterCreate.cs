@@ -874,7 +874,7 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Directly calling here so that we can properly unset the dirty flag after the update
-                        UpdateCharacterInfo();
+                        DoUpdateCharacterInfo();
 
                         // Now we can start checking for character updates
                         Application.Idle += UpdateCharacterInfo;
@@ -2678,7 +2678,7 @@ namespace Chummer
 
                     IsCharacterUpdateRequested = true;
                     // Immediately call character update because it re-applies essence loss improvements
-                    UpdateCharacterInfo();
+                    DoUpdateCharacterInfo();
 
                     if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                     {
@@ -9571,7 +9571,7 @@ namespace Chummer
             lblSkillGroupsBP.Text = strTemp;
         }
 
-        private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
+        private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
             if (IsDirty || !GlobalSettings.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
@@ -9590,8 +9590,8 @@ namespace Chummer
             {
                 using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
-                    CharacterObject.Load(frmLoadingForm);
-                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                    await CharacterObject.LoadAsync(frmLoadingForm);
+                    frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
 
                     // Select the Magician's Tradition.
                     if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -9608,25 +9608,46 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
                     _blnSkipUpdate = false;
                     // Immediately call character update because we know it's necessary
-                    UpdateCharacterInfo();
+                    await DoUpdateCharacterInfoAsync();
 
                     IsDirty = false;
                 }
             }
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest
-                && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
-                    LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                && Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
+                    await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
                 DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                 CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
             }
         }
+        
+        private async void UpdateCharacterInfo(object sender, EventArgs e)
+        {
+            await DoUpdateCharacterInfoAsync();
+        }
 
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private void UpdateCharacterInfo(object sender = null, EventArgs e = null)
+        private void DoUpdateCharacterInfo()
+        {
+            DoUpdateCharacterInfoCoreAsync(true).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Update the Character information.
+        /// </summary>
+        private Task DoUpdateCharacterInfoAsync()
+        {
+            return DoUpdateCharacterInfoCoreAsync(false);
+        }
+
+        /// <summary>
+        /// Update the Character information.
+        /// </summary>
+        private async Task DoUpdateCharacterInfoCoreAsync(bool blnSync)
         {
             if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
@@ -9677,7 +9698,11 @@ namespace Chummer
 
                 if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                 {
-                    AutoSaveCharacter();
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        AutoSaveCharacter();
+                    else
+                        await AutoSaveCharacterAsync();
                 }
             }
 
@@ -11206,7 +11231,7 @@ namespace Chummer
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        public override bool SaveCharacterAsCreated()
+        public override async Task<bool> SaveCharacterAsCreated()
         {
             using (new CursorWait(this))
             {
@@ -11214,7 +11239,7 @@ namespace Chummer
                 if (CharacterObject.Karma > 0)
                 {
                     ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
-                    objKarma.Create(CharacterObject.Karma, LanguageManager.GetString("Label_SelectBP_StartingKarma"), ExpenseType.Karma, DateTime.Now);
+                    objKarma.Create(CharacterObject.Karma, await LanguageManager.GetStringAsync("Label_SelectBP_StartingKarma"), ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objKarma);
 
                     // Create an Undo entry so that the starting Karma amount can be modified if needed.
@@ -11227,7 +11252,7 @@ namespace Chummer
                 if (CharacterObject.MetatypeCategory == "Shapeshifter")
                 {
                     lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
-                    XmlDocument xmlDoc = CharacterObject.LoadData("metatypes.xml");
+                    XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml");
                     string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
                                                  + CharacterObject.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
                                                  + "]/metavariants/metavariant[id = "
@@ -11249,7 +11274,7 @@ namespace Chummer
 
                 // Create an Expense Entry for Starting Nuyen.
                 ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
-                objNuyen.Create(CharacterObject.Nuyen, LanguageManager.GetString("Title_LifestyleNuyen"), ExpenseType.Nuyen, DateTime.Now);
+                objNuyen.Create(CharacterObject.Nuyen, await LanguageManager.GetStringAsync("Title_LifestyleNuyen"), ExpenseType.Nuyen, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objNuyen);
 
                 // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
@@ -11262,7 +11287,7 @@ namespace Chummer
                 using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
                 {
                     frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                    if (!CharacterObject.Save())
+                    if (!await CharacterObject.SaveAsync())
                     {
                         CharacterObject.ExpenseEntries.Clear();
                         if (lstAttributesToAdd != null)
@@ -13875,7 +13900,7 @@ namespace Chummer
                         using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
                         {
                             frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                            if (!CharacterObject.Save(strNewName))
+                            if (!await CharacterObject.SaveAsync(strNewName))
                                 return false;
                         }
                     }

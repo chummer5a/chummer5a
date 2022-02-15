@@ -1393,9 +1393,9 @@ namespace Chummer
                             {
                                 LimitSelection = _strForcedValue;
                             }
-                            else if (objCharacter?.Pushtext.Count != 0)
+                            else if (objCharacter?.PushText.Count != 0)
                             {
-                                LimitSelection = objCharacter?.Pushtext.Pop();
+                                LimitSelection = objCharacter?.PushText.Pop();
                             }
 
                             sbdTrace.Append("SelectedValue = ").AppendLine(SelectedValue);

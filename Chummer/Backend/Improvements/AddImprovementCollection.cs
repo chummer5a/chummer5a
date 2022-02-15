@@ -2274,7 +2274,7 @@ namespace Chummer
             string strPush = bonusNode.InnerText;
             if (!string.IsNullOrWhiteSpace(strPush))
             {
-                _objCharacter.Pushtext.Push(strPush);
+                _objCharacter.PushText.Push(strPush);
             }
         }
 
@@ -5895,9 +5895,9 @@ namespace Chummer
                     {
                         frmSelect.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
 
-                        if (_objCharacter.Pushtext.Count > 0)
+                        if (_objCharacter.PushText.Count > 0)
                         {
-                            frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
+                            frmSelect.ForceItem(_objCharacter.PushText.Pop());
                         }
 
                         if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)

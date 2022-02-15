@@ -38,6 +38,13 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public EnterWriteLock(IHasLockObject rwlMyLock)
+        {
+            _rwlMyLock = rwlMyLock.LockObject;
+            _rwlMyLock.EnterWriteLock();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
             _rwlMyLock.ExitWriteLock();

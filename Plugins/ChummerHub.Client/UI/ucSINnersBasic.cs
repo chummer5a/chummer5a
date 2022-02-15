@@ -351,7 +351,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private void BGenerateNewId_Click(object sender, EventArgs e)
+        private async void BGenerateNewId_Click(object sender, EventArgs e)
         {
             Guid? oldId = myUC.MyCE.MySINnerFile.Id;
             myUC.MyCE.MySINnerFile.Id = Guid.NewGuid();
@@ -367,7 +367,7 @@ namespace ChummerHub.Client.UI
             {
                 myUC.CharacterObject.FileName =  myUC.CharacterObject.FileName.Replace(oldId.ToString(), myUC.MyCE.MySINnerFile.Id.ToString());
             }
-            myUC.CharacterObject.Save(myUC.MyCE.MySINnerFile.Id + ".chum5", false);
+            await myUC.CharacterObject.SaveAsync(myUC.MyCE.MySINnerFile.Id + ".chum5", false);
             tbID.Text = myUC.MyCE.MySINnerFile.Id.ToString();
         }
 

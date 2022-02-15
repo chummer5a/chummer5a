@@ -240,7 +240,7 @@ namespace Chummer.Backend.Equipment
                         string strPush = xmlNode.SelectSingleNode("@select")?.Value;
                         if (!string.IsNullOrWhiteSpace(strPush))
                         {
-                            _objCharacter.Pushtext.Push(strPush);
+                            _objCharacter.PushText.Push(strPush);
                         }
 
                         objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
