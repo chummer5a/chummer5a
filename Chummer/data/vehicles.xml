@@ -10228,7 +10228,7 @@
       <name>Krime Big Bazoo Redline</name>
       <page>31</page>
       <source>KK</source>
-      <accel>5</accel>
+      <accel>2</accel>
       <armor>6</armor>
       <avail>5</avail>
       <body>9</body>
@@ -10238,7 +10238,7 @@
       <pilot>1</pilot>
       <seats>4</seats>
       <sensor>1</sensor>
-      <speed>3</speed>
+      <speed>5</speed>
       <gears>
         <gear>
           <name>Sensor Array</name>
@@ -10267,7 +10267,7 @@
       <pilot>1</pilot>
       <seats>4</seats>
       <sensor>1</sensor>
-      <speed>3</speed>
+      <speed>5</speed>
       <gears>
         <gear>
           <name>Sensor Array</name>
