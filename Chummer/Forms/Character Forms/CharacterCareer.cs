@@ -5545,12 +5545,13 @@ namespace Chummer
 
             if (objWeek == null)
                 return;
-            using (EditNotes frmItemNotes = new EditNotes(objWeek.Notes))
+            using (EditNotes frmItemNotes = new EditNotes(objWeek.Notes, objWeek.NotesColor))
             {
                 await frmItemNotes.ShowDialogSafeAsync(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 objWeek.Notes = frmItemNotes.Notes;
+                objWeek.NotesColor = frmItemNotes.NotesColor;
                 IsDirty = true;
             }
         }

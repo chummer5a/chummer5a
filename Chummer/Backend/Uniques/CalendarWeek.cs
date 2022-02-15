@@ -18,22 +18,41 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Xml;
+using Chummer.Annotations;
 
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged, IEquatable<CalendarWeek>, IComparable<CalendarWeek>
+    public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyMultiplePropertyChanged, IEquatable<CalendarWeek>, IComparable<CalendarWeek>, IHasNotes
     {
         private Guid _guiID;
         private int _intYear = 2072;
         private int _intWeek = 1;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        [NotifyPropertyChangedInvocator]
+        public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
+        {
+            this.OnMultiplePropertyChanged(strPropertyName);
+        }
+
+        public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
+        {
+            foreach (string strPropertyToChange in lstPropertyNames)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+            }
+        }
 
         #region Constructor, Save, Load, and Print Methods
 
@@ -64,6 +83,7 @@ namespace Chummer
             objWriter.WriteElementString("year", _intYear.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("week", _intWeek.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }
 
@@ -77,6 +97,9 @@ namespace Chummer
             objNode.TryGetInt32FieldQuickly("year", ref _intYear);
             objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -119,7 +142,7 @@ namespace Chummer
                 if (_intYear != value)
                 {
                     _intYear = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Year)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -131,7 +154,7 @@ namespace Chummer
         {
             get
             {
-                switch (_intWeek)
+                switch (Week)
                 {
                     case 1:
                     case 2:
@@ -215,7 +238,7 @@ namespace Chummer
         {
             get
             {
-                switch (_intWeek)
+                switch (Week)
                 {
                     case 1:
                     case 5:
@@ -304,7 +327,7 @@ namespace Chummer
                 if (_intWeek != value)
                 {
                     _intWeek = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Week)));
+                    OnPropertyChanged();
                 }
             }
         }
@@ -320,10 +343,31 @@ namespace Chummer
                 if (_strNotes != value)
                 {
                     _strNotes = value;
-                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Notes)));
+                    OnPropertyChanged();
                 }
             }
         }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set
+            {
+                if (_colNotes != value)
+                {
+                    _colNotes = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public Color PreferredColor =>
+            !string.IsNullOrEmpty(Notes)
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
+                : ColorManager.WindowText;
 
         public int CompareTo(object obj)
         {

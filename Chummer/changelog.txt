@@ -24,6 +24,7 @@ Application Changes:
 - Deleting qualities with levels no longer causes Chummer to crash.
 - The Cyberadept Stream's Daemon now negates the proper amount of Resonance reduction from Essence lost to cyberware under the setting where Essence loss does not affect the karma cost for increasing special attributes.
 - Fixed various crashes when adding or removing certain types of cyberware, bioware, adept powers, or qualities that interacted with augmented attributes.
+- The calendar tab now properly support colored entries.
 
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
