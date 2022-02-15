@@ -49,9 +49,9 @@ namespace ChummerHub.Client.UI
         }
 
 
-        private void cmdPrepareModel_Click(object sender, EventArgs e)
+        private async void cmdPrepareModel_Click(object sender, EventArgs e)
         {
-            MySINnersUsercontrol.MyCE.PrepareModel();
+            await MySINnersUsercontrol.MyCE.PrepareModelAsync();
         }
 
         private async void cmdPostSINnerMetaData_Click(object sender, EventArgs e)

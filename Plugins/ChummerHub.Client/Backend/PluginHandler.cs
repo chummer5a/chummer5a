@@ -360,36 +360,42 @@ namespace Chummer.Plugins
 
         public IEnumerable<TabPage> GetTabPages(CharacterCareer input)
         {
-            foreach (TabPage tabPage in GetTabPagesCommon(input))
-                yield return tabPage;
+            if (!Settings.Default.UserModeRegistered)
+                yield break;
+            TabPage objReturn = Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
+            if (objReturn == null)
+                yield break;
+            yield return objReturn;
         }
 
         public IEnumerable<TabPage> GetTabPages(CharacterCreate input)
         {
-            foreach (TabPage tabPage in GetTabPagesCommon(input))
-                yield return tabPage;
-        }
-
-        private IEnumerable<TabPage> GetTabPagesCommon(CharacterShared input)
-        {
             if (!Settings.Default.UserModeRegistered)
                 yield break;
+            TabPage objReturn = Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
+            if (objReturn == null)
+                yield break;
+            yield return objReturn;
+        }
+
+        private static async Task<TabPage> GetTabPagesCommon(CharacterShared input)
+        {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             try
             {
-                uc.SetCharacterFrom(input);
+                await uc.SetCharacterFrom(input);
             }
             catch (Exception e)
             {
                 ChummerHub.Client.Backend.Utils.HandleError(e);
-                yield break;
+                return null;
             }
             TabPage page = new TabPage("SINners")
             {
                 Name = "SINners"
             };
             page.Controls.Add(uc);
-            yield return page;
+            return page;
         }
 
         public static SINner MySINnerLoading { get; internal set; }
@@ -1373,7 +1379,7 @@ namespace Chummer.Plugins
                             case CharacterCache objCache:
                             {
                                 object sinidob = null;
-                                if (objCache.MyPluginDataDic?.TryGetValue("SINnerId", out sinidob) == true)
+                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out sinidob))
                                 {
                                     mySiNnerId = (Guid?) sinidob;
                                 }

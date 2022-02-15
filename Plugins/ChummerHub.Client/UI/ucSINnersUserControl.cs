@@ -23,12 +23,12 @@ namespace ChummerHub.Client.UI
 
         public Character CharacterObject => MySINner.CharacterObject;
 
-        public CharacterExtended SetCharacterFrom(CharacterShared mySINner)
+        public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner)
         {
             InitializeComponent();
             _mySINner = mySINner ?? throw new ArgumentNullException(nameof(mySINner));
             MyCE = new CharacterExtended(mySINner.CharacterObject, PluginHandler.MySINnerLoading);
-            MyCE.ZipFilePath = MyCE.PrepareModel();
+            MyCE.ZipFilePath = await MyCE.PrepareModelAsync();
 
             TabSINnersBasic = new ucSINnersBasic(this)
             {

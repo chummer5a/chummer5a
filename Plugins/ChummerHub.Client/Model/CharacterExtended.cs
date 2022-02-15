@@ -337,7 +337,7 @@ namespace ChummerHub.Client.Sinners
                                     "Uploading File", op_uploadChummer,
                                     CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                                 {
-                                    ResultSINnerPut uploadres = Utils.UploadChummerFileAsync(this).Result;
+                                    ResultSINnerPut uploadres = await Utils.UploadChummerFileAsync(this);
                                     if (uploadres.CallSuccess)
                                     {
                                         if (myState != null)
@@ -457,7 +457,7 @@ namespace ChummerHub.Client.Sinners
                 MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
             }
             object sinidob = null;
-            if (MyCharacterCache?.MyPluginDataDic?.TryGetValue("SINnerId", out sinidob) == true)
+            if (MyCharacterCache?.MyPluginDataDic.TryGetValue("SINnerId", out sinidob) == true)
             {
                 MySINnerFile.Id = (Guid)sinidob;
             }
@@ -490,11 +490,8 @@ namespace ChummerHub.Client.Sinners
                             {
                                 Task<ResultSinnerGetOwnedSINByAlias> objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
                                 if (objSearchTask.Status == TaskStatus.Created)
-                                    objSearchTask.Start();
-                                if (objSearchTask.Wait(TimeSpan.FromSeconds(30)))
-                                    res = objSearchTask.Result;
-                                else
-                                    res = null;
+                                    objSearchTask.RunSynchronously();
+                                res = objSearchTask.Result;
                             }
                             else
                                 res =  await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
