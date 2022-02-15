@@ -23,6 +23,16 @@ namespace ChummerHub.Models.V1
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerPostSIN.ResultSinnerPostSIN(List<SINner>)'
         {
             MySINners = list;
+            if (list != null)
+            {
+                foreach(var sinner in list)
+                {
+                    if (sinner.MyGroup == null)
+                    {
+                        sinner.MyGroup = new SINnerGroup();
+                    }
+                }
+            }
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResultSinnerPostSIN.ResultSinnerPostSIN(Exception)'

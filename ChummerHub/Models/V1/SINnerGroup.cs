@@ -66,6 +66,7 @@ namespace ChummerHub.Models.V1
             MyGroups = new List<SINnerGroup>();
             MySettings = new SINnerGroupSetting();
             HasPassword = PasswordHash?.Length > 0;
+            this.Id = Guid.Empty;
         }
 
         public async Task<List<SINner>> GetGroupMembers(ApplicationDbContext context, bool addTags)

@@ -62,7 +62,7 @@ namespace ChummerHub.Models.V1
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
         [DataMember(EmitDefaultValue = false)]
-        public SINnerGroup MyGroup { get; set; }
+        public SINnerGroup? MyGroup { get; set; }
 
         [MaxLength(64)]
         public string Alias { get; set; }

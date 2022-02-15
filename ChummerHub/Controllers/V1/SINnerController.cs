@@ -887,6 +887,7 @@ namespace ChummerHub.Controllers.V1
                     if (user != null)
                         user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
+
                     try
                     {
                         await _context.SaveChangesAsync();
