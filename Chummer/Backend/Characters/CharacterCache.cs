@@ -38,7 +38,7 @@ namespace Chummer
     /// Caches a subset of a full character's properties for loading purposes.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class CharacterCache : IDisposable, IHasLockObject
+    public sealed class CharacterCache : IHasLockObject
     {
         public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 

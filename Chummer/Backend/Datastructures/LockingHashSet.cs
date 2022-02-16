@@ -26,7 +26,7 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IDisposable, IProducerConsumerCollection<T>, IHasLockObject
+    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IProducerConsumerCollection<T>, IHasLockObject
     {
         private readonly HashSet<T> _setData;
         public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);

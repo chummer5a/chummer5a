@@ -5073,16 +5073,19 @@ namespace Chummer
                     {
                         ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                         {
-                            Text = objWeek.Notes
+                            Text = objWeek.Notes,
+                            ForeColor = objWeek.PreferredColor
                         };
                         ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
                         {
-                            Text = objWeek.InternalId
+                            Text = objWeek.InternalId,
+                            ForeColor = objWeek.PreferredColor
                         };
 
                         ListViewItem objItem = new ListViewItem
                         {
-                            Text = objWeek.CurrentDisplayName
+                            Text = objWeek.CurrentDisplayName,
+                            ForeColor = objWeek.PreferredColor
                         };
                         objItem.SubItems.Add(objNoteItem);
                         objItem.SubItems.Add(objInternalIdItem);
@@ -5103,16 +5106,19 @@ namespace Chummer
 
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.Notes
+                                    Text = objWeek.Notes,
+                                    ForeColor = objWeek.PreferredColor
                                 };
                                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.InternalId
+                                    Text = objWeek.InternalId,
+                                    ForeColor = objWeek.PreferredColor
                                 };
 
                                 ListViewItem objItem = new ListViewItem
                                 {
-                                    Text = objWeek.CurrentDisplayName
+                                    Text = objWeek.CurrentDisplayName,
+                                    ForeColor = objWeek.PreferredColor
                                 };
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
@@ -5135,16 +5141,19 @@ namespace Chummer
 
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.Notes
+                                    Text = objWeek.Notes,
+                                    ForeColor = objWeek.PreferredColor
                                 };
                                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.InternalId
+                                    Text = objWeek.InternalId,
+                                    ForeColor = objWeek.PreferredColor
                                 };
 
                                 ListViewItem objItem = new ListViewItem
                                 {
-                                    Text = objWeek.CurrentDisplayName
+                                    Text = objWeek.CurrentDisplayName,
+                                    ForeColor = objWeek.PreferredColor
                                 };
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);
@@ -5161,16 +5170,19 @@ namespace Chummer
 
                                 ListViewItem.ListViewSubItem objNoteItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.Notes
+                                    Text = objWeek.Notes,
+                                    ForeColor = objWeek.PreferredColor
                                 };
                                 ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
                                 {
-                                    Text = objWeek.InternalId
+                                    Text = objWeek.InternalId,
+                                    ForeColor = objWeek.PreferredColor
                                 };
 
                                 ListViewItem objItem = new ListViewItem
                                 {
-                                    Text = objWeek.CurrentDisplayName
+                                    Text = objWeek.CurrentDisplayName,
+                                    ForeColor = objWeek.PreferredColor
                                 };
                                 objItem.SubItems.Add(objNoteItem);
                                 objItem.SubItems.Add(objInternalIdItem);

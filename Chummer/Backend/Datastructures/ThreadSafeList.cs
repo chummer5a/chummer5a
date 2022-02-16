@@ -26,7 +26,7 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : List<T>, IList<T>, IList, IDisposable, IProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeList<T> : List<T>, IList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject
     {
         public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 

@@ -26,7 +26,7 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IDisposable, IProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IProducerConsumerCollection<T>, IHasLockObject
     {
         public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
