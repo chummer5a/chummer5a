@@ -28,6 +28,9 @@ namespace Chummer
     {
         private readonly Stack<T> _stkData;
 
+        /// <inheritdoc />
+        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
         public ThreadSafeStack()
         {
             _stkData = new Stack<T>();
@@ -119,7 +122,14 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.Count" />
-        public int Count => _stkData.Count;
+        public int Count
+        {
+            get
+            {
+                using (new EnterReadLock(LockObject))
+                    return _stkData.Count;
+            }
+        }
 
         /// <inheritdoc />
         public object SyncRoot => LockObject;
@@ -132,7 +142,5 @@ namespace Chummer
         {
             LockObject.Dispose();
         }
-
-        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
     }
 }
