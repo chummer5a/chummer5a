@@ -46,9 +46,9 @@ namespace Chummer
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
         private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument {XmlResolver = null};
 
-        private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
+        private static readonly object s_ObjXPathNavigatorDocumentLock = new object();
 
-        private static readonly object s_ObjXPathNavigatorLock = new object();
+        private static readonly ThreadSafeStack<XPathNavigator> s_StkXPathNavigatorPool = new ThreadSafeStack<XPathNavigator>(1);
 
         private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
             new LockingDictionary<string, Tuple<bool, object>>();
@@ -84,9 +84,21 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                lock (s_ObjXPathNavigatorLock)
-                    objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
-                blnIsSuccess = true;
+                XPathNavigator objEvaluator = s_StkXPathNavigatorPool.Pop();
+                if (objEvaluator == null)
+                {
+                    lock (s_ObjXPathNavigatorDocumentLock)
+                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                }
+                try
+                {
+                    objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                }
+                finally
+                {
+                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                }
+                blnIsSuccess = objReturn != null;
             }
             catch (ArgumentException)
             {
@@ -136,9 +148,21 @@ namespace Chummer
             object objReturn;
             try
             {
-                lock (s_ObjXPathNavigatorLock)
-                    objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
-                blnIsSuccess = true;
+                XPathNavigator objEvaluator = s_StkXPathNavigatorPool.Pop();
+                if (objEvaluator == null)
+                {
+                    lock (s_ObjXPathNavigatorDocumentLock)
+                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                }
+                try
+                {
+                    objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                }
+                finally
+                {
+                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                }
+                blnIsSuccess = objReturn != null;
             }
             catch (ArgumentException)
             {
@@ -174,9 +198,21 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                lock (s_ObjXPathNavigatorLock)
-                    objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
-                blnIsSuccess = true;
+                XPathNavigator objEvaluator = s_StkXPathNavigatorPool.Pop();
+                if (objEvaluator == null)
+                {
+                    lock (s_ObjXPathNavigatorDocumentLock)
+                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                }
+                try
+                {
+                    objReturn = objEvaluator?.Evaluate(objXPath);
+                }
+                finally
+                {
+                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                }
+                blnIsSuccess = objReturn != null;
             }
             catch (ArgumentException)
             {
@@ -213,9 +249,21 @@ namespace Chummer
             object objReturn;
             try
             {
-                lock (s_ObjXPathNavigatorLock)
-                    objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
-                blnIsSuccess = true;
+                XPathNavigator objEvaluator = s_StkXPathNavigatorPool.Pop();
+                if (objEvaluator == null)
+                {
+                    lock (s_ObjXPathNavigatorDocumentLock)
+                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                }
+                try
+                {
+                    objReturn = objEvaluator?.Evaluate(objXPath);
+                }
+                finally
+                {
+                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                }
+                blnIsSuccess = objReturn != null;
             }
             catch (ArgumentException)
             {
