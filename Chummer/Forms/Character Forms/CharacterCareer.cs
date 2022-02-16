@@ -2420,6 +2420,20 @@ namespace Chummer
                                     }
                                 }
                             }
+
+                            objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                            if (objQuality.NaturalWeaponsNode != null)
+                            {
+                                ImprovementManager.ForcedValue = strSelected;
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.NaturalWeaponsNode, 1, objQuality.DisplayNameShort(GlobalSettings.Language));
+                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                {
+                                    objQuality.Extra = ImprovementManager.SelectedValue;
+                                    TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
+                                    if (objTreeNode != null)
+                                        objTreeNode.Text = objQuality.CurrentDisplayName;
+                                }
+                            }
                         }
                         else
                         {

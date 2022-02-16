@@ -4243,6 +4243,20 @@ namespace Chummer
                                                             }
                                                         }
                                                     }
+
+                                                    objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                                                    if (objQuality.NaturalWeaponsNode != null)
+                                                    {
+                                                        ImprovementManager.ForcedValue = objQuality.Extra;
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
+                                                            objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                        {
+                                                            objQuality.Extra = ImprovementManager.SelectedValue;
+                                                        }
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -5208,6 +5222,20 @@ namespace Chummer
                                                 {
                                                     objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
                                                 }
+                                            }
+                                        }
+
+                                        objLivingPersonaQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                                        if (objLivingPersonaQuality.NaturalWeaponsNode != null)
+                                        {
+                                            ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                                            ImprovementManager.CreateImprovements(this,
+                                                Improvement.ImprovementSource.Quality,
+                                                objLivingPersonaQuality.InternalId, objLivingPersonaQuality.NaturalWeaponsNode, 1,
+                                                objLivingPersonaQuality.DisplayNameShort(GlobalSettings.Language));
+                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            {
+                                                objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
                                             }
                                         }
                                     }

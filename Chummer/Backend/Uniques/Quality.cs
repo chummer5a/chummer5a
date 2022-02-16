@@ -106,6 +106,7 @@ namespace Chummer
         private string _strSourceName = string.Empty;
         private XmlNode _nodBonus;
         private XmlNode _nodFirstLevelBonus;
+        private XmlNode _nodNaturalWeaponsNode;
         private XPathNavigator _nodDiscounts;
         private readonly Character _objCharacter;
         private Guid _guiWeaponID;
@@ -276,41 +277,6 @@ namespace Chummer
                 }
             }
 
-            using (XmlNodeList xmlNaturalWeaponList = objXmlQuality.SelectNodes("naturalweapons/naturalweapon"))
-            {
-                if (xmlNaturalWeaponList?.Count > 0)
-                    foreach (XmlNode objXmlNaturalWeapon in xmlNaturalWeaponList)
-                    {
-                        Weapon objWeapon = new Weapon(_objCharacter);
-                        if (objXmlNaturalWeapon["name"] != null)
-                            objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
-                        objWeapon.Category = LanguageManager.GetString("Tab_Critter");
-                        objWeapon.RangeType = "Melee";
-                        int intDummy = 0;
-                        if (objXmlNaturalWeapon.TryGetInt32FieldQuickly("reach", ref intDummy))
-                            objWeapon.Reach = intDummy;
-                        if (objXmlNaturalWeapon["accuracy"] != null)
-                            objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
-                        if (objXmlNaturalWeapon["damage"] != null)
-                            objWeapon.Damage = objXmlNaturalWeapon["damage"].InnerText;
-                        if (objXmlNaturalWeapon["ap"] != null)
-                            objWeapon.AP = objXmlNaturalWeapon["ap"].InnerText;
-                        objWeapon.Mode = "0";
-                        objWeapon.RC = "0";
-                        objWeapon.Concealability = 0;
-                        objWeapon.Avail = "0";
-                        objWeapon.Cost = "0";
-                        if (objXmlNaturalWeapon["useskill"] != null)
-                            objWeapon.UseSkill = objXmlNaturalWeapon["useskill"].InnerText;
-                        if (objXmlNaturalWeapon["source"] != null)
-                            objWeapon.Source = objXmlNaturalWeapon["source"].InnerText;
-                        if (objXmlNaturalWeapon["page"] != null)
-                            objWeapon.Page = objXmlNaturalWeapon["page"].InnerText;
-
-                        _objCharacter.Weapons.Add(objWeapon);
-                    }
-            }
-
             _nodDiscounts = objXmlQuality["costdiscount"]?.CreateNavigator();
             // If the item grants a bonus, pass the information to the Improvement Manager.
             _nodBonus = objXmlQuality["bonus"];
@@ -336,6 +302,17 @@ namespace Chummer
             {
                 ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
                 if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, _nodFirstLevelBonus, 1, DisplayNameShort(GlobalSettings.Language)))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+            }
+            _nodNaturalWeaponsNode = objXmlQuality["naturalweapons"];
+            // Hacky to handle the naturalweapons node as another bonus node, but it will suffice because bonus nodes can have naturalweapon nodes
+            if (_nodNaturalWeaponsNode?.ChildNodes.Count > 0)
+            {
+                ImprovementManager.ForcedValue = string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue;
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId, _nodNaturalWeaponsNode, 1, DisplayNameShort(GlobalSettings.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -401,6 +378,10 @@ namespace Chummer
                 objWriter.WriteRaw("<firstlevelbonus>" + _nodFirstLevelBonus.InnerXml + "</firstlevelbonus>");
             else
                 objWriter.WriteElementString("firstlevelbonus", string.Empty);
+            if (!string.IsNullOrEmpty(_nodNaturalWeaponsNode?.InnerXml))
+                objWriter.WriteRaw("<naturalweapons>" + _nodNaturalWeaponsNode.InnerXml + "</firstlevelbonus>");
+            else
+                objWriter.WriteElementString("naturalweapons", string.Empty);
             if (_guiWeaponID != Guid.Empty)
                 objWriter.WriteElementString("weaponguid", _guiWeaponID.ToString("D", GlobalSettings.InvariantCultureInfo));
             if (_nodDiscounts != null)
@@ -465,6 +446,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("sourcename", ref _strSourceName);
             _nodBonus = objNode["bonus"];
             _nodFirstLevelBonus = objNode["firstlevelbonus"] ?? objMyNode.Value?["firstlevelbonus"];
+            _nodNaturalWeaponsNode = objNode["naturalweapons"] ?? objMyNode.Value?["naturalweapons"];
             _nodDiscounts = objNode["costdiscount"]?.CreateNavigator();
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
@@ -481,6 +463,7 @@ namespace Chummer
             {
                 case QualitySource.Selected when string.IsNullOrEmpty(_nodBonus?.InnerText)
                                                  && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText)
+                                                 && string.IsNullOrEmpty(_nodNaturalWeaponsNode?.InnerText)
                                                  && (_eQualityType == QualityType.Positive || _eQualityType == QualityType.Negative)
                                                  && objMyNode.Value != null
                                                  && ConvertToQualityType(objMyNode.Value["category"]?.InnerText) != _eQualityType:
@@ -703,6 +686,21 @@ namespace Chummer
                 if (_nodFirstLevelBonus == value)
                     return;
                 _nodFirstLevelBonus = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Bonus node from the XML file that exists purely for legacy reasons to support the older way of adding natural weapons.
+        /// </summary>
+        public XmlNode NaturalWeaponsNode
+        {
+            get => _nodNaturalWeaponsNode;
+            set
+            {
+                if (_nodNaturalWeaponsNode == value)
+                    return;
+                _nodNaturalWeaponsNode = value;
                 OnPropertyChanged();
             }
         }
