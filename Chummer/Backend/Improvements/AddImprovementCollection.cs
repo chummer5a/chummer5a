@@ -62,24 +62,24 @@ namespace Chummer
         private readonly string _strFriendlyName;
         private readonly int _intRating;
 
-        private void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
+        private Improvement CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
             string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
             decimal decValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, decimal decAugmented = 0,
             int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "", string strCondition = "")
         {
-            ImprovementManager.CreateImprovement(_objCharacter, strImprovedName, objImprovementSource,
+            return ImprovementManager.CreateImprovement(_objCharacter, strImprovedName, objImprovementSource,
                 strSourceName, objImprovementType, strUnique,
                 decValue, intRating, intMinimum, intMaximum, decAugmented,
                 intAugmentedMaximum, strExclude, blnAddToRating, strTarget, strCondition);
         }
 
-        private void CreateImprovement(string selectedValue, Improvement.ImprovementType improvementType)
+        private Improvement CreateImprovement(string selectedValue, Improvement.ImprovementType improvementType)
         {
             if (string.IsNullOrEmpty(SelectedValue))
                 SelectedValue = selectedValue;
             else
                 SelectedValue += ", " + selectedValue;
-            CreateImprovement(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique);
+            return CreateImprovement(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique);
         }
 
         #region Improvement Methods
@@ -1836,16 +1836,16 @@ namespace Chummer
                 + "_strForcedValue = " + ForcedValue + Environment.NewLine
                 + "_strLimitSelection = " + LimitSelection + Environment.NewLine
                 + "Adding Weapon");
-
+            
             Weapon objWeapon = new Weapon(_objCharacter)
             {
-                Name = bonusNode["name"]?.InnerText,
+                Name = bonusNode["name"]?.InnerText ?? _strFriendlyName,
                 Category = LanguageManager.GetString("Tab_Critter"),
                 RangeType = "Melee",
                 Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText, GlobalSettings.InvariantCultureInfo),
-                Accuracy = bonusNode["accuracy"]?.InnerText,
-                Damage = bonusNode["damage"]?.InnerText,
-                AP = bonusNode["ap"]?.InnerText,
+                Accuracy = bonusNode["accuracy"]?.InnerText ?? string.Empty,
+                Damage = bonusNode["damage"]?.InnerText ?? string.Empty,
+                AP = bonusNode["ap"]?.InnerText ?? string.Empty,
                 Mode = "0",
                 RC = "0",
                 Concealability = 0,
@@ -1858,7 +1858,7 @@ namespace Chummer
             };
 
             _objCharacter.Weapons.Add(objWeapon);
-            
+
             CreateImprovement(objWeapon.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.Weapon,
                 _strUnique);

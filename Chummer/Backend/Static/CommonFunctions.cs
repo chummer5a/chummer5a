@@ -84,8 +84,7 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                XPathNavigator objEvaluator = s_StkXPathNavigatorPool.Pop();
-                if (objEvaluator == null)
+                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
                 {
                     lock (s_ObjXPathNavigatorDocumentLock)
                         objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
@@ -148,8 +147,7 @@ namespace Chummer
             object objReturn;
             try
             {
-                XPathNavigator objEvaluator = s_StkXPathNavigatorPool.Pop();
-                if (objEvaluator == null)
+                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
                 {
                     lock (s_ObjXPathNavigatorDocumentLock)
                         objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
@@ -198,8 +196,7 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                XPathNavigator objEvaluator = s_StkXPathNavigatorPool.Pop();
-                if (objEvaluator == null)
+                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
                 {
                     lock (s_ObjXPathNavigatorDocumentLock)
                         objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
@@ -249,8 +246,7 @@ namespace Chummer
             object objReturn;
             try
             {
-                XPathNavigator objEvaluator = s_StkXPathNavigatorPool.Pop();
-                if (objEvaluator == null)
+                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
                 {
                     lock (s_ObjXPathNavigatorDocumentLock)
                         objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();

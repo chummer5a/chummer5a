@@ -4628,6 +4628,20 @@ namespace Chummer
                                                         _lstInternalIdsNeedingReapplyImprovements
                                                             .Add(objQuality.InternalId);
                                                     }
+
+                                                    objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                                                    if (objQuality.NaturalWeaponsNode != null)
+                                                    {
+                                                        ImprovementManager.ForcedValue = objQuality.Extra;
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
+                                                            objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                        {
+                                                            objQuality.Extra = ImprovementManager.SelectedValue;
+                                                        }
+                                                    }
                                                 }
 
                                                 if (LastSavedVersion <= new Version(5, 200, 0)
@@ -5615,6 +5629,20 @@ namespace Chummer
                                             // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
                                             _lstInternalIdsNeedingReapplyImprovements.Add(
                                                 objLivingPersonaQuality.InternalId);
+                                        }
+
+                                        objLivingPersonaQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                                        if (objLivingPersonaQuality.NaturalWeaponsNode != null)
+                                        {
+                                            ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
+                                            ImprovementManager.CreateImprovements(this,
+                                                Improvement.ImprovementSource.Quality,
+                                                objLivingPersonaQuality.InternalId, objLivingPersonaQuality.NaturalWeaponsNode, 1,
+                                                objLivingPersonaQuality.DisplayNameShort(GlobalSettings.Language));
+                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            {
+                                                objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
+                                            }
                                         }
                                     }
 

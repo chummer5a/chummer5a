@@ -2983,7 +2983,7 @@ namespace Chummer
         /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
         /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
         /// <param name="strCondition">Condition for when the bonus is applied.</param>
-        public static void CreateImprovement(Character objCharacter, string strImprovedName,
+        public static Improvement CreateImprovement(Character objCharacter, string strImprovedName,
                                              Improvement.ImprovementSource objImprovementSource,
                                              string strSourceName, Improvement.ImprovementType objImprovementType,
                                              string strUnique,
@@ -3013,13 +3013,15 @@ namespace Chummer
                 Log.Trace(sbdTrace.ToString);
             }
 
+            Improvement objImprovement = null;
+
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
             if (objCharacter != null)
             {
                 using (new EnterWriteLock(objCharacter.LockObject))
                 {
                     // Record the improvement.
-                    Improvement objImprovement = new Improvement(objCharacter)
+                    objImprovement = new Improvement(objCharacter)
                     {
                         ImprovedName = strImprovedName,
                         ImproveSource = objImprovementSource,
@@ -3057,6 +3059,7 @@ namespace Chummer
             }
 
             Log.Debug("CreateImprovement exit");
+            return objImprovement;
         }
 
         /// <summary>
