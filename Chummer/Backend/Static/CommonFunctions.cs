@@ -48,6 +48,8 @@ namespace Chummer
 
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
+        private static readonly object s_ObjXPathNavigatorLock = new object();
+
         private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
             new LockingDictionary<string, Tuple<bool, object>>();
 
@@ -82,7 +84,8 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
+                lock (s_ObjXPathNavigatorLock)
+                    objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
                 blnIsSuccess = true;
             }
             catch (ArgumentException)
@@ -133,7 +136,8 @@ namespace Chummer
             object objReturn;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
+                lock (s_ObjXPathNavigatorLock)
+                    objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
                 blnIsSuccess = true;
             }
             catch (ArgumentException)
@@ -170,7 +174,8 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
+                lock (s_ObjXPathNavigatorLock)
+                    objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
                 blnIsSuccess = true;
             }
             catch (ArgumentException)
@@ -208,7 +213,8 @@ namespace Chummer
             object objReturn;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
+                lock (s_ObjXPathNavigatorLock)
+                    objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
                 blnIsSuccess = true;
             }
             catch (ArgumentException)
@@ -840,8 +846,10 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
-            XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                                                       .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            XPathNavigator xmlOriginalCode = objCharacter != null
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+            xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
 
         }
@@ -856,8 +864,10 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
-            XPathNavigator xmlOriginalCode = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
-                .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            XPathNavigator xmlOriginalCode = objCharacter != null
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage);
+            xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
 
         }
@@ -872,8 +882,10 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                                                  .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            XPathNavigator xmlAltCode = objCharacter != null
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+            xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
 
         }
@@ -888,8 +900,10 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlAltCode = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
-                                                  .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            XPathNavigator xmlAltCode = objCharacter != null
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage);
+            xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
         }
 
@@ -903,8 +917,10 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                                               .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            XPathNavigator xmlBook = objCharacter != null
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+            xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
                 string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
@@ -925,8 +941,10 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlBook = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
-                                               .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            XPathNavigator xmlBook = objCharacter != null
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage);
+            xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
                 string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
