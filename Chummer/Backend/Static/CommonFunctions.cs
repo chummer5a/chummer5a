@@ -1180,7 +1180,8 @@ namespace Chummer
 
                 foreach (Character objCharacter in lstCharacters)
                 {
-                    await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
+                    using (new EnterReadLock(objCharacter.LockObject))
+                        await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
                     if (objToken.IsCancellationRequested)
                         return objReturn;
                 }
