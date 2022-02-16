@@ -50,8 +50,6 @@ namespace Chummer
 
         private static readonly ThreadSafeStack<XPathNavigator> s_StkXPathNavigatorPool = new ThreadSafeStack<XPathNavigator>(1);
 
-        private static readonly object s_ObjXPathNavigatorLock = new object();
-
         private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
             new LockingDictionary<string, Tuple<bool, object>>();
 
@@ -905,7 +903,6 @@ namespace Chummer
                 : XmlManager.LoadXPath("books.xml", null, strLanguage);
             xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
-
         }
 
         /// <summary>
@@ -923,7 +920,6 @@ namespace Chummer
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage);
             xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
-
         }
 
         /// <summary>
@@ -941,7 +937,6 @@ namespace Chummer
                 : XmlManager.LoadXPath("books.xml", null, strLanguage);
             xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
-
         }
 
         /// <summary>
