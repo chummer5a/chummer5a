@@ -1,11 +1,12 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeBindingList<T> : CachedBindingList<T>, IHasLockObject
+    public class ThreadSafeBindingList<T> : CachedBindingList<T>, IHasLockObject, IProducerConsumerCollection<T>
     {
         /// <inheritdoc />
         public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
@@ -299,6 +300,44 @@ namespace Chummer
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <inheritdoc />
+        public bool TryAdd(T item)
+        {
+            Add(item);
+            return true;
+        }
+
+        /// <inheritdoc />
+        public bool TryTake(out T item)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (new EnterWriteLock(LockObject))
+            {
+                if (base.Count > 0)
+                {
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    item = base[0];
+                    RemoveAt(0);
+                    return true;
+                }
+            }
+
+            item = default;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public T[] ToArray()
+        {
+            using (new EnterReadLock(LockObject))
+            {
+                T[] aobjReturn = new T[base.Count];
+                for (int i = 0; i < aobjReturn.Length; ++i)
+                    aobjReturn[i] = base[i];
+                return aobjReturn;
+            }
         }
     }
 }

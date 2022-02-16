@@ -1418,12 +1418,11 @@ namespace Chummer
                             }
                             else if (objCharacter != null)
                             {
-                                using (new EnterUpgradeableReadLock(objCharacter.LockObject))
+                                using (new EnterWriteLock(objCharacter.LockObject))
                                 {
-                                    if (objCharacter.PushText.Count != 0)
+                                    if (objCharacter.PushText.TryTake(out string strText))
                                     {
-                                        using (new EnterWriteLock(objCharacter.LockObject))
-                                            LimitSelection = objCharacter.PushText.Pop();
+                                        LimitSelection = strText;
                                     }
                                 }
                             }

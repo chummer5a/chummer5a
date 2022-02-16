@@ -5895,9 +5895,9 @@ namespace Chummer
                     {
                         frmSelect.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
 
-                        if (_objCharacter.PushText.Count > 0)
+                        if (_objCharacter.PushText.TryTake(out string strText))
                         {
-                            frmSelect.ForceItem(_objCharacter.PushText.Pop());
+                            frmSelect.ForceItem(strText);
                         }
 
                         if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
