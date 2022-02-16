@@ -1085,7 +1085,7 @@ namespace Chummer.Backend.Skills
         
         private bool _blnSkillsInitialized;
         private readonly CachedBindingList<Skill> _lstSkills = new CachedBindingList<Skill>();
-        private readonly Dictionary<string, Skill> _dicSkills = new Dictionary<string, Skill>();
+        private readonly LockingDictionary<string, Skill> _dicSkills = new LockingDictionary<string, Skill>();
 
         /// <summary>
         /// Active Skills
@@ -1743,6 +1743,7 @@ namespace Chummer.Backend.Skills
                 objSkill.Dispose();
             foreach (KnowledgeSkill objSkill in KnowledgeSkills)
                 objSkill.Dispose();
+            _dicSkills.Dispose();
             if (_lstDefaultKnowledgeSkills != null)
                 Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);
             if (_lstKnowledgeTypes != null)

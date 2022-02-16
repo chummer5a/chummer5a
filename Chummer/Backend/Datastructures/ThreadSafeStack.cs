@@ -137,10 +137,21 @@ namespace Chummer
         /// <inheritdoc cref="ICollection.IsSynchronized" />
         public bool IsSynchronized => true;
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
+                    Utils.SafeSleep();
+                LockObject.Dispose();
+            }
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {
-            LockObject.Dispose();
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

@@ -26,6 +26,7 @@ namespace Chummer
     {
         public event EventHandler<RemovingOldEventArgs> BeforeRemove;
 
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
             if (RaiseListChangedEvents)
@@ -34,6 +35,7 @@ namespace Chummer
             base.RemoveItem(index);
         }
 
+        /// <inheritdoc />
         protected override void ClearItems()
         {
             if (RaiseListChangedEvents)
@@ -47,6 +49,7 @@ namespace Chummer
             base.ClearItems();
         }
 
+        /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
             if (RaiseListChangedEvents)
