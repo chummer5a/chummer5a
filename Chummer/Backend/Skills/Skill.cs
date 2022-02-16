@@ -1498,7 +1498,7 @@ namespace Chummer.Backend.Skills
 
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
         //Or just ignore support for multiple specializations even if the rules say it is possible?
-        public CachedBindingList<SkillSpecialization> Specializations { get; } = new CachedBindingList<SkillSpecialization>();
+        public ThreadSafeBindingList<SkillSpecialization> Specializations { get; } = new ThreadSafeBindingList<SkillSpecialization>();
 
         public string TopMostDisplaySpecialization
         {
@@ -3113,6 +3113,7 @@ namespace Chummer.Backend.Skills
             if (disposing)
             {
                 UnbindSkill();
+                Specializations.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(_lstCachedSuggestedSpecializations);
             }

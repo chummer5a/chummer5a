@@ -1084,13 +1084,13 @@ namespace Chummer.Backend.Skills
         public int MaxSkillRating { get; set; } = 0;
         
         private bool _blnSkillsInitialized;
-        private readonly CachedBindingList<Skill> _lstSkills = new CachedBindingList<Skill>();
+        private readonly ThreadSafeBindingList<Skill> _lstSkills = new ThreadSafeBindingList<Skill>();
         private readonly LockingDictionary<string, Skill> _dicSkills = new LockingDictionary<string, Skill>();
 
         /// <summary>
         /// Active Skills
         /// </summary>
-        public CachedBindingList<Skill> Skills
+        public ThreadSafeBindingList<Skill> Skills
         {
             get
             {
@@ -1190,17 +1190,17 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public CachedBindingList<KnowledgeSkill> KnowledgeSkills { get; } = new CachedBindingList<KnowledgeSkill>();
+        public ThreadSafeBindingList<KnowledgeSkill> KnowledgeSkills { get; } = new ThreadSafeBindingList<KnowledgeSkill>();
 
         /// <summary>
         /// KnowsoftSkills.
         /// </summary>
-        public CachedBindingList<KnowledgeSkill> KnowsoftSkills { get; } = new CachedBindingList<KnowledgeSkill>();
+        public ThreadSafeBindingList<KnowledgeSkill> KnowsoftSkills { get; } = new ThreadSafeBindingList<KnowledgeSkill>();
 
         /// <summary>
         /// Skill Groups.
         /// </summary>
-        public CachedBindingList<SkillGroup> SkillGroups { get; } = new CachedBindingList<SkillGroup>();
+        public ThreadSafeBindingList<SkillGroup> SkillGroups { get; } = new ThreadSafeBindingList<SkillGroup>();
 
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
 
@@ -1741,8 +1741,14 @@ namespace Chummer.Backend.Skills
             UnbindSkillsSection();
             foreach (Skill objSkill in Skills)
                 objSkill.Dispose();
+            Skills.Dispose();
             foreach (KnowledgeSkill objSkill in KnowledgeSkills)
                 objSkill.Dispose();
+            KnowledgeSkills.Dispose();
+            KnowsoftSkills.Clear();
+            KnowsoftSkills.Dispose();
+            SkillGroups.Clear();
+            SkillGroups.Dispose();
             _dicSkills.Dispose();
             if (_lstDefaultKnowledgeSkills != null)
                 Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);

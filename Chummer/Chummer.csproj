@@ -310,6 +310,7 @@
     <Compile Include="Backend\Datastructures\LockingOrderedSet.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\PropertyDependencyGraph.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeBindingList.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />

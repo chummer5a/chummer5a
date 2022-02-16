@@ -207,7 +207,7 @@ namespace Chummer
 
         private readonly ThreadSafeList<Focus> _lstFoci = new ThreadSafeList<Focus>(5);
         private readonly ThreadSafeList<StackedFocus> _lstStackedFoci = new ThreadSafeList<StackedFocus>(5);
-        private readonly CachedBindingList<Power> _lstPowers = new CachedBindingList<Power>();
+        private readonly ThreadSafeBindingList<Power> _lstPowers = new ThreadSafeBindingList<Power>();
         private readonly ThreadSafeObservableCollection<ComplexForm> _lstComplexForms = new ThreadSafeObservableCollection<ComplexForm>();
         private readonly ThreadSafeObservableCollection<AIProgram> _lstAIPrograms = new ThreadSafeObservableCollection<AIProgram>();
         private readonly ThreadSafeObservableCollection<MartialArt> _lstMartialArts = new ThreadSafeObservableCollection<MartialArt>();
@@ -244,7 +244,7 @@ namespace Chummer
 
         private readonly ThreadSafeObservableCollection<Location> _lstWeaponLocations = new ThreadSafeObservableCollection<Location>();
         private readonly ThreadSafeObservableCollection<string> _lstImprovementGroups = new ThreadSafeObservableCollection<string>();
-        private readonly BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
+        private readonly ThreadSafeBindingList<CalendarWeek> _lstCalendar = new ThreadSafeBindingList<CalendarWeek>();
 
         private readonly ThreadSafeObservableCollection<Drug> _lstDrugs = new ThreadSafeObservableCollection<Drug>();
 
@@ -7098,6 +7098,7 @@ namespace Chummer
                 _lstMartialArts.Dispose();
                 _lstComplexForms.Dispose();
                 _lstAIPrograms.Dispose();
+                _lstPowers.Dispose();
                 _lstCritterPowers.Dispose();
                 _lstFoci.Dispose();
                 _lstStackedFoci.Dispose();
@@ -7107,6 +7108,7 @@ namespace Chummer
                 _lstImprovements.Dispose();
                 _lstInitiationGrades.Dispose();
                 _lstInternalIdsNeedingReapplyImprovements.Dispose();
+                _lstCalendar.Dispose();
                 _lstDrugs.Dispose();
                 _lstExpenseLog.Dispose();
                 _lstArmorLocations.Dispose();
@@ -14628,7 +14630,7 @@ namespace Chummer
         /// Adept Powers.
         /// </summary>
         [HubTag(true)]
-        public CachedBindingList<Power> Powers
+        public ThreadSafeBindingList<Power> Powers
         {
             get
             {
@@ -14924,7 +14926,7 @@ namespace Chummer
         /// <summary>
         /// Calendar.
         /// </summary>
-        public BindingList<CalendarWeek> Calendar
+        public ThreadSafeBindingList<CalendarWeek> Calendar
         {
             get
             {
