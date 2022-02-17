@@ -21,7 +21,7 @@ using System;
 
 namespace Chummer
 {
-    internal static class MathExtensions
+    public static class MathExtensions
     {
         public static int Min(params int[] aintValues)
         {
