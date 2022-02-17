@@ -430,7 +430,6 @@
     <Compile Include="Backend\Uniques\Expenses.cs" />
     <Compile Include="Backend\Static\Managers\LanguageManager.cs" />
     <Compile Include="Backend\Datastructures\ListItem.cs" />
-    <Compile Include="Backend\Static\Log.cs" />
     <Compile Include="Backend\Static\GlobalSettings.cs" />
     <Compile Include="Backend\Helpers\ParameterAttribute.cs" />
     <Compile Include="Backend\Stories\StoryBuilder.cs" />
