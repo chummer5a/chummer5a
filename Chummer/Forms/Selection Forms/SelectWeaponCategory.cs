@@ -54,7 +54,7 @@ namespace Chummer
                                                       + _strForceCategory.CleanXPath() + ']')
                              : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
-                    if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
+                    if (!string.IsNullOrEmpty(WeaponType) && objXmlCategory.Value != "Exotic Ranged Weapons")
                     {
                         string strType = objXmlCategory.SelectSingleNodeAndCacheExpression("@type")?.Value;
                         if (string.IsNullOrEmpty(strType) || strType != WeaponType)
