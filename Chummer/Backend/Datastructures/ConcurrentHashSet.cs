@@ -25,9 +25,7 @@ using System.Linq;
 
 namespace Chummer
 {
-    public class ConcurrentHashSet<T> :
-        ISet<T>,
-        IReadOnlyCollection<T>
+    public class ConcurrentHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IProducerConsumerCollection<T>
     {
         protected ConcurrentDictionary<T, bool> DicInternal { get; }
 
@@ -64,27 +62,52 @@ namespace Chummer
             DicInternal = new ConcurrentDictionary<T, bool>(concurrencyLevel, capacity, comparer);
         }
 
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             return DicInternal.Keys.GetEnumerator();
         }
 
+        /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <inheritdoc />
         public bool TryAdd(T item)
         {
             return item != null && DicInternal.TryAdd(item, false);
         }
 
+        /// <inheritdoc />
+        public bool TryTake(out T item)
+        {
+            if (DicInternal.Count > 0)
+            {
+                // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                item = DicInternal.Keys.First();
+                if (DicInternal.TryRemove(item, out bool _))
+                    return true;
+            }
+            item = default;
+            return false;
+        }
+
+        /// <inheritdoc />
+        public T[] ToArray()
+        {
+            return DicInternal.Keys.ToArray();
+        }
+
+        /// <inheritdoc />
         void ICollection<T>.Add(T item)
         {
             if (item != null)
                 DicInternal.TryAdd(item, false);
         }
 
+        /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
             foreach (T item in other)
@@ -93,6 +116,7 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
         public virtual void IntersectWith(IEnumerable<T> other)
         {
             HashSet<T> setOther = new HashSet<T>(other);
@@ -103,6 +127,7 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
         public void ExceptWith(IEnumerable<T> other)
         {
             foreach (T item in other)
@@ -111,6 +136,7 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
             foreach (T item in other)
@@ -120,16 +146,19 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
         public bool IsSubsetOf(IEnumerable<T> other)
         {
             return other.Count(item => DicInternal.ContainsKey(item)) == DicInternal.Count;
         }
 
+        /// <inheritdoc />
         public bool IsSupersetOf(IEnumerable<T> other)
         {
             return other.All(item => DicInternal.ContainsKey(item));
         }
 
+        /// <inheritdoc />
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
             int count = 0;
@@ -142,6 +171,7 @@ namespace Chummer
             return count < DicInternal.Count;
         }
 
+        /// <inheritdoc />
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
             int count = 0;
@@ -156,11 +186,13 @@ namespace Chummer
             return count == DicInternal.Count && !equals;
         }
 
+        /// <inheritdoc />
         public bool Overlaps(IEnumerable<T> other)
         {
             return other.Any(item => DicInternal.ContainsKey(item));
         }
 
+        /// <inheritdoc />
         public bool SetEquals(IEnumerable<T> other)
         {
             int count = 0;
@@ -173,21 +205,25 @@ namespace Chummer
             return count == DicInternal.Count;
         }
 
+        /// <inheritdoc />
         bool ISet<T>.Add(T item)
         {
             return DicInternal.TryAdd(item, false);
         }
 
+        /// <inheritdoc />
         public void Clear()
         {
             DicInternal.Clear();
         }
 
+        /// <inheritdoc />
         public bool Contains(T item)
         {
             return item != null && DicInternal.ContainsKey(item);
         }
 
+        /// <inheritdoc cref="ISet{T}.CopyTo" />
         public void CopyTo(T[] array, int arrayIndex)
         {
             if (arrayIndex + DicInternal.Count > array.Length)
@@ -199,15 +235,34 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
         public bool Remove(T item)
         {
             return item != null && DicInternal.TryRemove(item, out bool _);
         }
 
-        int ICollection<T>.Count => DicInternal.Count;
+        /// <inheritdoc />
+        public void CopyTo(Array array, int index)
+        {
+            if (index + DicInternal.Count > array.Length)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            for (int i = 0; i < DicInternal.Count; ++i)
+            {
+                array.SetValue(DicInternal.Keys.ElementAt(i), index);
+                ++index;
+            }
+        }
 
+        /// <inheritdoc cref="ISet{T}.Count" />
+        public int Count => DicInternal.Count;
+
+        /// <inheritdoc />
+        public object SyncRoot => throw new NotSupportedException();
+
+        /// <inheritdoc />
+        public bool IsSynchronized => false;
+
+        /// <inheritdoc />
         public bool IsReadOnly => false;
-
-        int IReadOnlyCollection<T>.Count => DicInternal.Count;
     }
 }
