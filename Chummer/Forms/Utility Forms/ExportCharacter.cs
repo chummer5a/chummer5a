@@ -311,7 +311,7 @@ namespace Chummer
                     XslCompiledTransform objXslTransform;
                     try
                     {
-                        objXslTransform = XslManager.GetTransformForFile(exportSheetPath); // Use the path for the export sheet.
+                        objXslTransform = await XslManager.GetTransformForFileAsync(exportSheetPath); // Use the path for the export sheet.
                     }
                     catch (ArgumentException)
                     {

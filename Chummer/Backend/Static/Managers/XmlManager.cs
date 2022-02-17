@@ -38,7 +38,7 @@ namespace Chummer
         /// </summary>
         private sealed class XmlReference
         {
-            private readonly object _loadingLock = new object();
+            private readonly object _objLoadingLock = new object();
 
             /// <summary>
             /// Whether or not the XML content has been successfully checked for duplicate guids.
@@ -55,7 +55,7 @@ namespace Chummer
                 get => _xmlContent;
                 set
                 {
-                    lock (_loadingLock)
+                    lock (_objLoadingLock)
                     {
                         if (value == _xmlContent)
                             return;

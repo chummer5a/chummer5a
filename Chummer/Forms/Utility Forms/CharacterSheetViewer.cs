@@ -529,7 +529,7 @@ namespace Chummer
                 XslCompiledTransform objXslTransform;
                 try
                 {
-                    objXslTransform = XslManager.GetTransformForFile(strXslPath);
+                    objXslTransform = await XslManager.GetTransformForFileAsync(strXslPath);
                 }
                 catch (ArgumentException)
                 {

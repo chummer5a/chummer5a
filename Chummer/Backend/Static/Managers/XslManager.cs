@@ -19,6 +19,7 @@
 
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml.Xsl;
 
 namespace Chummer
@@ -40,6 +41,31 @@ namespace Chummer
         /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
         public static XslCompiledTransform GetTransformForFile(string strXslFilePath)
         {
+            return GetTransformForFileCoreAsync(true, strXslFilePath).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Get the compiled Xsl Transform of an Xsl file. Will throw exceptions if anything goes awry.
+        /// If we've already compiled the same Xsl Transform before, we'll fetch the cached version of that transform instead of repeating it.
+        /// </summary>
+        /// <param name="strXslFilePath">Absolute path to the Xsl file to be transformed.</param>
+        /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
+        public static Task<XslCompiledTransform> GetTransformForFileAsync(string strXslFilePath)
+        {
+            return GetTransformForFileCoreAsync(false, strXslFilePath);
+        }
+
+        /// <summary>
+        /// Get the compiled Xsl Transform of an Xsl file. Will throw exceptions if anything goes awry.
+        /// If we've already compiled the same Xsl Transform before, we'll fetch the cached version of that transform instead of repeating it.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strXslFilePath">Absolute path to the Xsl file to be transformed.</param>
+        /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
+        private static async Task<XslCompiledTransform> GetTransformForFileCoreAsync(bool blnSync, string strXslFilePath)
+        {
             if (!File.Exists(strXslFilePath))
                 throw new FileNotFoundException(nameof(strXslFilePath));
 
@@ -56,7 +82,10 @@ namespace Chummer
 #else
                 objReturn = new XslCompiledTransform();
 #endif
-                objReturn.Load(strXslFilePath);
+                if (blnSync)
+                    objReturn.Load(strXslFilePath);
+                else
+                    await Task.Run(() => objReturn.Load(strXslFilePath));
 
                 s_dicCompiledTransforms.Remove(strXslFilePath);
                 s_dicCompiledTransforms.TryAdd(
