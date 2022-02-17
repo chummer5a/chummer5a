@@ -429,6 +429,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Overload for standard GetString method, using GlobalSettings.Language as default string, but explicitly defining if an error is returned or not.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<string> GetStringAsync(string strKey, bool blnReturnError)
+        {
+            return GetStringAsync(strKey, GlobalSettings.Language, blnReturnError);
+        }
+
+        /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>

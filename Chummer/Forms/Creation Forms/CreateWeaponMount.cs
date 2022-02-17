@@ -1055,7 +1055,7 @@ namespace Chummer
 
         private async void lblSource_Click(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
     }
 }
