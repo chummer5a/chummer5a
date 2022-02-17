@@ -49,9 +49,9 @@ namespace Chummer
             // Build a list of Weapon Categories found in the Weapons file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
-                foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
+                foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(OnlyCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
-                                                      + _strForceCategory.CleanXPath() + ']')
+                                                      + OnlyCategory.CleanXPath() + ']')
                              : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
                     if (!string.IsNullOrEmpty(WeaponType) && objXmlCategory.Value != "Exotic Ranged Weapons")
@@ -68,7 +68,7 @@ namespace Chummer
                 }
 
                 // Add the Cyberware Category.
-                if ( /*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
+                if (lstCategory.Count == 0 && (OnlyCategory == "Cyberware" || OnlyCategory == "Cyberweapon"))
                 {
                     lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware")));
                 }
@@ -132,12 +132,8 @@ namespace Chummer
         /// </summary>
         public string OnlyCategory
         {
-            set
-            {
-                _strForceCategory = value;
-                if (value == "Cyberware")
-                    _strForceCategory = "Cyberweapon";
-            }
+            get => _strForceCategory;
+            set => _strForceCategory = value == "Cyberware" ? "Cyberweapon" : value;
         }
 
         #endregion Properties
