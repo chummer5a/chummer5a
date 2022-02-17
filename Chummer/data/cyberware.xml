@@ -986,9 +986,9 @@
       <id>60485c4e-042f-44f6-ad89-324003223f73</id>
       <name>Skillwires</name>
       <category>Bodyware</category>
-      <ess>Rating * 0.2</ess>
+      <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
-      <avail>(Rating * 3)</avail>
+      <avail>(Rating * 4)</avail>
       <cost>Rating * 20000</cost>
       <source>SR5</source>
       <page>455</page>

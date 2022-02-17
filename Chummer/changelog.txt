@@ -32,6 +32,7 @@ Data Changes:
 - Barehanded Adept no longer shows "T, T (A)" after its name after it is added.
 - Vehicle and drone mods that rely on a vehicle stat to calculate costs now properly use a value of 0.5 in place of that stat for vehicles and drones with a stat of 0 (e.g. Body 0 drones).
 - Fixed the Speed and Acceleration of the Big Bazoo Redline and Big Bazoo Chrome.
+- Updated the Essence cost and Availability of Skillwires to the latest printing of the core rulebook.
 
 Changed/New Strings:
 - Tip_SpellDrain
