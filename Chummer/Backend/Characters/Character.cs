@@ -20041,6 +20041,7 @@ namespace Chummer
                             using (ZipArchive zipArchive = ZipFile.Open(strPorFile, ZipArchiveMode.Read,
                                 Encoding.GetEncoding(850)))
                             {
+                                // NOTE: Cannot parallelize because ZipFile.Open creates one handle on the entire zip file that gets messed up if we try to get it to read multiple files at once
                                 foreach (ZipArchiveEntry entry in zipArchive.Entries)
                                 {
                                     string strEntryFullName = entry.FullName;

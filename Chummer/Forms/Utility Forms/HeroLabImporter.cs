@@ -42,21 +42,22 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void cmdSelectFile_Click(object sender, EventArgs e)
+        private async void cmdSelectFile_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to possess.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = LanguageManager.GetString("DialogFilter_HeroLab") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                Multiselect = false
-            })
+                   {
+                       Filter = await LanguageManager.GetStringAsync("DialogFilter_HeroLab") + '|'
+                           + await LanguageManager.GetStringAsync("DialogFilter_All"),
+                       Multiselect = false
+                   })
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
                 using (new CursorWait(this))
                 {
                     string strSelectedFile = openFileDialog.FileName;
-                    TreeNode objNode = CacheCharacters(strSelectedFile);
+                    TreeNode objNode = await CacheCharacters(strSelectedFile);
                     if (objNode != null)
                     {
                         treCharacterList.Nodes.Clear();
@@ -71,14 +72,14 @@ namespace Chummer
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        private TreeNode CacheCharacters(string strFile)
+        private async Task<TreeNode> CacheCharacters(string strFile)
         {
             if (!File.Exists(strFile))
             {
                 Program.MainForm.ShowMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
-                                  LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strFile));
+                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
                 return null;
             }
 
@@ -89,7 +90,8 @@ namespace Chummer
                     using (ZipArchive zipArchive
                         = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                     {
-                        Parallel.ForEach(zipArchive.Entries, entry =>
+                        // NOTE: Cannot parallelize because ZipFile.Open creates one handle on the entire zip file that gets messed up if we try to get it to read multiple files at once
+                        foreach (ZipArchiveEntry entry in zipArchive.Entries)
                         {
                             string strEntryFullName = entry.FullName;
                             if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)
@@ -98,14 +100,18 @@ namespace Chummer
                                 // If we run into any problems loading the character cache, fail out early.
                                 try
                                 {
-                                    XPathDocument xmlSourceDoc;
                                     using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                    using (XmlReader objXmlReader
-                                        = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                        xmlSourceDoc = new XPathDocument(objXmlReader);
-                                    XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    lstCharacterXmlStatblocks.Add(objToAdd);
+                                    {
+                                        await Task.Run(() =>
+                                        {
+                                            XPathDocument xmlSourceDoc;
+                                            using (XmlReader objXmlReader
+                                                   = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                                xmlSourceDoc = new XPathDocument(objXmlReader);
+                                            XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
+                                            lstCharacterXmlStatblocks.Add(objToAdd);
+                                        });
+                                    }
                                 }
                                 // If we run into any problems loading the character cache, fail out early.
                                 catch (IOException)
@@ -133,7 +139,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                        });
+                        }
                     }
                 }
                 catch (IOException)
@@ -141,7 +147,7 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strFile));
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
                     return null;
                 }
                 catch (NotSupportedException)
@@ -149,25 +155,25 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      LanguageManager.GetString("Message_File_Cannot_Be_Accessed"), strFile));
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
                     return null;
                 }
                 catch (UnauthorizedAccessException)
                 {
                     Program.MainForm.ShowMessageBox(
-                        this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                     return null;
                 }
 
                 string strFileText
-                    = strFile.CheapReplace(Utils.GetStartupPath, () => '<' + Application.ProductName + '>');
+                    = await strFile.CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>');
                 TreeNode nodRootNode = new TreeNode
                 {
                     Text = strFileText,
                     ToolTipText = strFileText
                 };
 
-                XPathNavigator xmlMetatypesDocument = XmlManager.LoadXPath("metatypes.xml");
+                XPathNavigator xmlMetatypesDocument = await XmlManager.LoadXPathAsync("metatypes.xml");
                 foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
                 {
                     XPathNavigator xmlBaseCharacterNode
@@ -260,9 +266,9 @@ namespace Chummer
                         objCache.FilePath = strFile;
                         TreeNode objNode = new TreeNode
                         {
-                            Text = CalculatedName(objCache),
-                            ToolTipText = strFile.CheapReplace(Utils.GetStartupPath,
-                                                               () => '<' + Application.ProductName + '>')
+                            Text = await CalculatedName(objCache),
+                            ToolTipText = await strFile.CheapReplaceAsync(Utils.GetStartupPath,
+                                                                          () => '<' + Application.ProductName + '>')
                         };
                         nodRootNode.Nodes.Add(objNode);
 
@@ -305,21 +311,21 @@ namespace Chummer
         /// </summary>
         /// <param name="objCache"></param>
         /// <returns></returns>
-        private static string CalculatedName(HeroLabCharacterCache objCache)
+        private static async Task<string> CalculatedName(HeroLabCharacterCache objCache)
         {
             string strName = objCache.CharacterAlias;
             if (string.IsNullOrEmpty(strName))
             {
                 strName = objCache.CharacterName;
                 if (string.IsNullOrEmpty(strName))
-                    strName = LanguageManager.GetString("String_UnnamedCharacter");
+                    strName = await LanguageManager.GetStringAsync("String_UnnamedCharacter");
             }
-            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, false);
+            string strBuildMethod = await LanguageManager.GetStringAsync("String_" + objCache.BuildMethod, false);
             if (string.IsNullOrEmpty(strBuildMethod))
-                strBuildMethod = LanguageManager.GetString("String_Unknown");
-            string strSpace = LanguageManager.GetString("String_Space");
+                strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             strName += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                       + LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
+                       + await LanguageManager.GetStringAsync(objCache.Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
             return strName;
         }
 
@@ -327,13 +333,13 @@ namespace Chummer
         /// Update the labels and images based on the selected treenode.
         /// </summary>
         /// <param name="objCache"></param>
-        private void UpdateCharacter(HeroLabCharacterCache objCache)
+        private async Task UpdateCharacter(HeroLabCharacterCache objCache)
         {
             if (objCache != null)
             {
                 txtCharacterBio.Text = objCache.Description;
 
-                string strUnknown = LanguageManager.GetString("String_Unknown");
+                string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
 
                 lblCharacterName.Text = objCache.CharacterName;
                 if (string.IsNullOrEmpty(lblCharacterName.Text))
@@ -355,7 +361,7 @@ namespace Chummer
 
                 lblCareerKarma.Text = objCache.Karma;
                 if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
-                    lblCareerKarma.Text = LanguageManager.GetString("String_None");
+                    lblCareerKarma.Text = await LanguageManager.GetStringAsync("String_None");
                 lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
                 lblCareerKarma.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
 
@@ -368,11 +374,11 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
+                XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
                 XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 if (objMetatypeNode == null)
                 {
-                    objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
+                    objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml");
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 }
 
@@ -418,7 +424,7 @@ namespace Chummer
 
         #region Form Methods
 
-        private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
             HeroLabCharacterCache objCache = null;
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
@@ -428,18 +434,13 @@ namespace Chummer
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
                     objCache = _lstCharacterCache[intIndex];
             }
-            UpdateCharacter(objCache);
+            await UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
 
-        private void treCharacterList_DoubleClick(object sender, EventArgs e)
+        private async void cmdImport_Click(object sender, EventArgs e)
         {
-            DoImport();
-        }
-
-        private void cmdImport_Click(object sender, EventArgs e)
-        {
-            DoImport();
+            await DoImport();
         }
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
@@ -460,7 +461,7 @@ namespace Chummer
 
         #endregion Form Methods
 
-        private void DoImport()
+        private async Task DoImport()
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
@@ -479,7 +480,7 @@ namespace Chummer
                 Character objCharacter = new Character();
                 Program.MainForm.OpenCharacters.Add(objCharacter);
                 //Timekeeper.Start("load_file");
-                bool blnLoaded = objCharacter.LoadFromHeroLabFile(strFile, strCharacterId);
+                bool blnLoaded = await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId);
                 //Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {

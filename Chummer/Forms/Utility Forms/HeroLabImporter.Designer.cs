@@ -86,7 +86,7 @@ namespace Chummer
             this.treCharacterList.Size = new System.Drawing.Size(300, 508);
             this.treCharacterList.TabIndex = 0;
             this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
-            this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
+            this.treCharacterList.DoubleClick += new System.EventHandler(this.cmdImport_Click);
             // 
             // cmdSelectFile
             // 
