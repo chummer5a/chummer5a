@@ -221,7 +221,7 @@ namespace Chummer
             }
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -236,7 +236,7 @@ namespace Chummer
             Grade objForcedGrade = _objForcedGrade ?? (string.IsNullOrEmpty(strForceGrade) ? null : _lstGrades.Find(x => x.SourceIDString == strForceGrade));
             PopulateGrades(!string.IsNullOrEmpty(_strSelectedCategory) && !cboGrade.Enabled && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
             _blnLoading = false;
-            RefreshList(_strSelectedCategory);
+            await RefreshList(_strSelectedCategory);
         }
 
         private async void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
@@ -1224,7 +1224,7 @@ namespace Chummer
                                 continue;
                             }
                         }
-                        
+
                         lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNodeAndCacheExpression("id")?.Value,
                                                        xmlCyberware.SelectSingleNodeAndCacheExpression("translate")
                                                                    ?.Value ?? xmlCyberware

@@ -322,7 +322,7 @@ namespace Chummer
                             tssItem.UpdateLightDarkMode();
                             tssItem.TranslateToolStripItemsRecursively();
                         }
-                        
+
                         if (objCharacterLoadingTask?.IsCompleted == false)
                             await objCharacterLoadingTask;
                         if (lstCharactersToLoad.Count > 0)

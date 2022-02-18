@@ -32,7 +32,7 @@ namespace Chummer.UI.Attributes
     public partial class AttributeControl : UserControl
     {
         public event EventHandler ValueChanged;
-        
+
         private readonly string _strAttributeName;
         private int _oldBase;
         private int _oldKarma;

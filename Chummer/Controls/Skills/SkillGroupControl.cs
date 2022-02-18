@@ -50,7 +50,7 @@ namespace Chummer.UI.Skills
             {
                 lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
                 lblName.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
-                
+
                 // Creating these controls outside of the designer saves on handles
                 if (skillGroup.CharacterObject.Created)
                 {

@@ -361,7 +361,7 @@ namespace Chummer.UI.Powers
                 ValueGetter = p => p.DiscountedAdeptWay,
                 ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
                 VisibleExtractor = p => p.AdeptWayDiscountEnabled,
-                EnabledExtractor = p => (p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay),
+                EnabledExtractor = p => p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay,
                 Alignment = Alignment.Center
             })
             {
@@ -432,11 +432,11 @@ namespace Chummer.UI.Powers
                     {
                         string strExtra = p.Extra;
                         string strImprovementSourceName = ImprovementManager.GetCachedImprovementListForValueOf(p.CharacterObject, Improvement.ImprovementType.AdeptPowerFreePoints, p.Name)
-                                                           .FirstOrDefault(x => x.UniqueName == strExtra)?.SourceName;
+                                                           .Find(x => x.UniqueName == strExtra)?.SourceName;
                         if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
                         {
                             Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
-                            if (objGear != null && objGear.Bonded)
+                            if (objGear?.Bonded == true)
                             {
                                 objGear.Equipped = false;
                                 objGear.Extra = string.Empty;
