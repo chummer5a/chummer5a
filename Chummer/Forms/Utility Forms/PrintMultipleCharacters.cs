@@ -40,7 +40,12 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All");
+        }
+
+        private async void PrintMultipleCharacters_Load(object sender, EventArgs e)
+        {
+            dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                 await LanguageManager.GetStringAsync("DialogFilter_All");
         }
 
         private void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)

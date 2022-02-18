@@ -74,8 +74,6 @@ namespace Chummer
                     cboCharacterSetting.SelectedIndex = 0;
                 cboCharacterSetting.EndUpdate();
             }
-
-            chkIgnoreRules.SetToolTip(LanguageManager.GetString("Tip_SelectKarma_IgnoreRules"));
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -154,6 +152,7 @@ namespace Chummer
 
         private async void SelectBuildMethod_Load(object sender, EventArgs e)
         {
+            chkIgnoreRules.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
             await ProcessGameplayIndexChanged();
             _blnLoading = false;
         }

@@ -168,10 +168,10 @@ namespace Chummer
                     : null;
                 using (new CursorWait(this))
                 {
-                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    if (objOpenCharacter == null || !await Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
                         objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName);
-                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                        await Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
             }
@@ -573,7 +573,7 @@ namespace Chummer
                     cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                    Program.MainForm.OpenCharacter(objCharacter);
+                    await Program.MainForm.OpenCharacter(objCharacter);
                 }
             }
         }

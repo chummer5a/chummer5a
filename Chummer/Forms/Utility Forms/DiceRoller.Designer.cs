@@ -440,7 +440,7 @@ namespace Chummer
             this.columnHeader1.Text = "Results";
             this.columnHeader1.Width = 70;
             // 
-            // frmDiceRoller
+            // DiceRoller
             // 
             this.AcceptButton = this.cmdRollDice;
             this.AutoSize = true;
@@ -457,6 +457,7 @@ namespace Chummer
             this.Tag = "Title_DiceRoller";
             this.Text = "Dice Roller";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DiceRoller_FormClosing);
+            this.Load += new System.EventHandler(this.DiceRoller_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

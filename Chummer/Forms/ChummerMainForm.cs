@@ -322,11 +322,11 @@ namespace Chummer
                             tssItem.UpdateLightDarkMode();
                             tssItem.TranslateToolStripItemsRecursively();
                         }
-
+                        
                         if (objCharacterLoadingTask?.IsCompleted == false)
                             await objCharacterLoadingTask;
                         if (lstCharactersToLoad.Count > 0)
-                            OpenCharacterList(lstCharactersToLoad);
+                            await OpenCharacterList(lstCharactersToLoad);
                     }
                 }
                 catch (Exception ex)
@@ -719,18 +719,18 @@ namespace Chummer
                             return;
                     }
 
-                    OpenCharacter(objCharacter, false);
+                    await OpenCharacter(objCharacter, false);
                 }
             }
         }
 
-        private void mnuMRU_Click(object sender, EventArgs e)
+        private async void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
             using (new CursorWait(this))
-                OpenCharacter(LoadCharacter(strFileName));
+                await OpenCharacter(await LoadCharacterAsync(strFileName));
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -834,7 +834,7 @@ namespace Chummer
             (tabForms.SelectedTab?.Tag as Form)?.Select();
         }
 
-        public bool SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMru)
+        public async ValueTask<bool> SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMru)
         {
             if (objCharacter == null)
                 return false;
@@ -855,7 +855,7 @@ namespace Chummer
             if (!OpenCharacters.Contains(objCharacter))
                 return false;
             using (new CursorWait(this))
-                OpenCharacter(objCharacter, blnIncludeInMru);
+                await OpenCharacter(objCharacter, blnIncludeInMru);
             return true;
         }
 
@@ -958,7 +958,7 @@ namespace Chummer
                 Character[] lstCharacters = new Character[s.Length];
                 await Task.WhenAll(dicIndexedStrings.Select(x =>
                     Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
-                OpenCharacterList(lstCharacters);
+                await OpenCharacterList(lstCharacters);
             }
         }
 
@@ -1260,7 +1260,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                         if (objLoopCharacter != null)
-                            SwitchToOpenCharacter(objLoopCharacter, true);
+                            await SwitchToOpenCharacter(objLoopCharacter, true);
                         else
                             lstFilesToOpen.Add(strFile);
                     }
@@ -1284,7 +1284,7 @@ namespace Chummer
                     await Task.WhenAll(dicIndexedStrings.Select(x =>
                         Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
                 }
-                OpenCharacterList(lstCharacters);
+                await OpenCharacterList(lstCharacters);
             }
 
             //Timekeeper.Finish("load_sum");
@@ -1294,9 +1294,9 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character (not thread-safe).
         /// </summary>
-        public void OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
+        public ValueTask OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
         {
-            OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
+            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
         }
 
         /// <summary>
@@ -1304,7 +1304,7 @@ namespace Chummer
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
-        public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
+        public async ValueTask OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
         {
             if (lstCharacters == null)
                 return;
@@ -1316,9 +1316,9 @@ namespace Chummer
                 ? FormWindowState.Maximized
                 : FormWindowState.Normal;
             List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>(lstNewCharacters.Count);
-            string strUI = LanguageManager.GetString("String_UI");
-            string strSpace = LanguageManager.GetString("String_Space");
-            using (_frmProgressBar = CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
+            string strUI = await LanguageManager.GetStringAsync("String_UI");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            using (_frmProgressBar = await CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
             {
                 foreach (Character objCharacter in lstNewCharacters)
                 {
@@ -1326,8 +1326,8 @@ namespace Chummer
                     if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                         continue;
                     if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500) && ShowMessageBox(
-                        string.Format(LanguageManager.GetString("Message_TooManyHandlesWarning"), objCharacter.CharacterName),
-                        LanguageManager.GetString("MessageTitle_TooManyHandlesWarning"),
+                        string.Format(await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning"), objCharacter.CharacterName),
+                        await LanguageManager.GetStringAsync("MessageTitle_TooManyHandlesWarning"),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                     {
                         if (OpenCharacters.All(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
@@ -1336,7 +1336,7 @@ namespace Chummer
                     }
                     //Timekeeper.Start("load_event_time");
                     // Show the character forms.
-                    this.DoThreadSafe(() =>
+                    await this.DoThreadSafeAsync(() =>
                     {
                         CharacterShared frmNewCharacter = objCharacter.Created
                             ? (CharacterShared)new CharacterCareer(objCharacter)
@@ -1535,7 +1535,7 @@ namespace Chummer
         /// <summary>
         /// Populate the MRU items.
         /// </summary>
-        public void PopulateMruToolstripMenu(object sender, TextEventArgs e)
+        public async void PopulateMruToolstripMenu(object sender, TextEventArgs e)
         {
             SuspendLayout();
             mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
@@ -1616,7 +1616,7 @@ namespace Chummer
             mnuMRU8.Visible = false;
             mnuMRU9.Visible = false;
 
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             int i2 = 0;
             for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
             {
@@ -1832,7 +1832,7 @@ namespace Chummer
                         await objCharacterLoadingTask;
                     if (lstCharactersToLoad.Count > 0)
                         // ReSharper disable once AccessToDisposedClosure
-                        await this.DoThreadSafeAsync(() => OpenCharacterList(lstCharactersToLoad));
+                        await this.DoThreadSafeFunc(() => OpenCharacterList(lstCharactersToLoad));
                     lstCharactersToLoad.Dispose();
                 });
             }

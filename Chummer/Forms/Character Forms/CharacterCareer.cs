@@ -2291,7 +2291,7 @@ namespace Chummer
                 await Task.Run(() => Parallel.For(0, intClones,
                     i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName,
                         CharacterObject.Alias + strSpace + i.ToString(GlobalSettings.CultureInfo), true)));
-                Program.MainForm.OpenCharacterList(lstClones, false);
+                await Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }
 
@@ -3054,7 +3054,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     Character objOpenCharacter = await Program.MainForm.LoadCharacterAsync(strOpenFile);
-                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                    await Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
         }
@@ -3222,7 +3222,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     Character objOpenCharacter = await Program.MainForm.LoadCharacterAsync(strOpenFile);
-                    Program.MainForm.OpenCharacter(objOpenCharacter);
+                    await Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
         }

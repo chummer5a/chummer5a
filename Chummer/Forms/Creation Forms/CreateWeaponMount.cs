@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -61,9 +62,9 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void CreateWeaponMount_Load(object sender, EventArgs e)
+        private async void CreateWeaponMount_Load(object sender, EventArgs e)
         {
-            XPathNavigator xmlVehicleNode = _objVehicle.GetNodeXPath();
+            XPathNavigator xmlVehicleNode = await _objVehicle.GetNodeXPathAsync();
             // Populate the Weapon Mount Category list.
             string strSizeFilter = "category = \"Size\" and " + _objCharacter.Settings.BookXPath();
             if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
@@ -98,7 +99,7 @@ namespace Chummer
                                         strId,
                                         xmlSizeNode.SelectSingleNodeAndCacheExpression("translate")?.Value
                                         ?? xmlSizeNode.SelectSingleNodeAndCacheExpression("name")?.Value
-                                        ?? LanguageManager.GetString("String_Unknown")));
+                                        ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }
 
@@ -113,7 +114,7 @@ namespace Chummer
                 TreeNode objModsParentNode = new TreeNode
                 {
                     Tag = "Node_AdditionalMods",
-                    Text = LanguageManager.GetString("Node_AdditionalMods")
+                    Text = await LanguageManager.GetStringAsync("Node_AdditionalMods")
                 };
                 treMods.Nodes.Add(objModsParentNode);
                 objModsParentNode.Expand();
@@ -133,7 +134,7 @@ namespace Chummer
                     cboSize.SelectedIndex = 0;
             }
             else
-                RefreshComboBoxes();
+                await RefreshComboBoxes();
 
             nudMarkup.Visible = AllowDiscounts || _objMount?.Markup != 0;
             nudMarkup.Enabled = AllowDiscounts;
@@ -164,10 +165,10 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             _blnLoading = false;
-            UpdateInfo();
+            await UpdateInfo();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             //TODO: THIS IS UGLY AS SHIT, FIX BETTER
 
@@ -396,8 +397,8 @@ namespace Chummer
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"),
-                                                        LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
                         {
@@ -435,8 +436,8 @@ namespace Chummer
 
                     if (blnOverCapacity)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"),
-                                                        LanguageManager.GetString("MessageTitle_CapacityReached"),
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
+                                                        await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
                         {
@@ -468,27 +469,27 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void cboSize_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RefreshComboBoxes();
+            await RefreshComboBoxes();
             treMods.SelectedNode = null;
-            UpdateInfo();
+            await UpdateInfo();
         }
 
-        private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private async void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             treMods.SelectedNode = null;
-            UpdateInfo();
+            await UpdateInfo();
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateInfo();
+            await UpdateInfo();
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateInfo();
+            await UpdateInfo();
         }
 
         public bool FreeCost => chkFreeItem.Checked;
@@ -497,12 +498,12 @@ namespace Chummer
 
         public bool AllowDiscounts { get; set; }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            UpdateInfo();
+            await UpdateInfo();
         }
 
-        private void UpdateInfo()
+        private async ValueTask UpdateInfo()
         {
             if (_blnLoading)
                 return;
@@ -708,11 +709,11 @@ namespace Chummer
             switch (chrAvailSuffix)
             {
                 case 'F':
-                    strAvailText += LanguageManager.GetString("String_AvailForbidden");
+                    strAvailText += await LanguageManager.GetStringAsync("String_AvailForbidden");
                     break;
 
                 case 'R':
-                    strAvailText += LanguageManager.GetString("String_AvailRestricted");
+                    strAvailText += await LanguageManager.GetStringAsync("String_AvailRestricted");
                     break;
             }
 
@@ -725,8 +726,8 @@ namespace Chummer
             lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
             lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
 
-            string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
+            string strSource = xmlSelectedMount["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
             SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -835,12 +836,12 @@ namespace Chummer
             }
         }
 
-        private void treMods_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treMods_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            UpdateInfo();
+            await UpdateInfo();
         }
 
-        private void RefreshComboBoxes()
+        private async ValueTask RefreshComboBoxes()
         {
             XPathNavigator xmlRequiredNode = null;
             XPathNavigator xmlForbiddenNode = null;
@@ -855,7 +856,7 @@ namespace Chummer
                 }
             }
 
-            XPathNavigator xmlVehicleNode = _objVehicle.GetNodeXPath();
+            XPathNavigator xmlVehicleNode = await _objVehicle.GetNodeXPathAsync();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstVisibility))
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFlexibility))
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstControl))
@@ -889,7 +890,7 @@ namespace Chummer
                         }
 
                         string strName = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("name")?.Value
-                                         ?? LanguageManager.GetString("String_Unknown");
+                                         ?? await LanguageManager.GetStringAsync("String_Unknown");
                         bool blnAddItem = true;
                         switch (xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("category")?.Value)
                         {

@@ -80,7 +80,10 @@ namespace Chummer
                 cboXSLT.SelectedIndex = 0;
             cboXSLT.EndUpdate();
             _blnLoading = false;
-            await Task.WhenAll(this.DoThreadSafeAsync(() => Text = Text + LanguageManager.GetString("String_Space") + _objCharacter?.Name), DoLanguageUpdate().AsTask());
+            await Task.WhenAll(
+                this.DoThreadSafeAsync(async () =>
+                    Text = Text + await LanguageManager.GetStringAsync("String_Space") + _objCharacter?.Name),
+                DoLanguageUpdate().AsTask());
         }
 
         private void ExportCharacter_FormClosing(object sender, FormClosingEventArgs e)
@@ -162,7 +165,7 @@ namespace Chummer
                         using (new CursorWait(this))
                         {
                             await txtText.DoThreadSafeAsync(
-                                () => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
+                                async () => txtText.Text = await LanguageManager.GetStringAsync("String_Generating_Data"));
                             if (_dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
                                                       out Tuple<string, string> strBoxText))
                             {
@@ -243,8 +246,8 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false),
-                    txtText.DoThreadSafeAsync(() =>
-                        txtText.Text = LanguageManager.GetString("String_Generating_Data")));
+                    txtText.DoThreadSafeAsync(async () =>
+                        txtText.Text = await LanguageManager.GetStringAsync("String_Generating_Data")));
                 _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                          _objCharacterXmlGeneratorCancellationTokenSource
                                                                              .Token);

@@ -490,7 +490,7 @@ namespace Chummer
                     return;
                 }
 
-                Program.MainForm.OpenCharacter(objCharacter);
+                await Program.MainForm.OpenCharacter(objCharacter);
             }
 
             Close();

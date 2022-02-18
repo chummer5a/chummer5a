@@ -172,14 +172,14 @@ namespace Chummer
         [IgnoreDataMember]
         public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown { get; set; }
 
-        public void OnDefaultDoubleClick(object sender, EventArgs e)
+        public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
             Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == FileName);
 
-            if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+            if (objOpenCharacter == null || !await Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
             {
-                objOpenCharacter = Program.MainForm.LoadCharacter(FilePath);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
+                objOpenCharacter = await Program.MainForm.LoadCharacterAsync(FilePath);
+                await Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
 

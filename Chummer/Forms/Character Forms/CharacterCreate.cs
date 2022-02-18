@@ -1055,9 +1055,9 @@ namespace Chummer
             ToolStripManager.Merge(tsMain, "toolStrip");
         }
 
-        private void ReopenCharacter(object sender, FormClosedEventArgs e)
+        private async void ReopenCharacter(object sender, FormClosedEventArgs e)
         {
-            Program.MainForm.OpenCharacter(CharacterObject);
+            await Program.MainForm.OpenCharacter(CharacterObject);
             FormClosed -= ReopenCharacter;
         }
 
