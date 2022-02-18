@@ -1416,7 +1416,7 @@ namespace Chummer
                                     continue;
                                 if (_objCharacter.AdapsinEnabled)
                                 {
-                                    if (!objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
+                                    if (!objWareGrade.Adapsin && _lstGrades.Any(x => x.Adapsin && objWareGrade.Name.Contains(x.Name)))
                                         continue;
                                 }
                                 else if (objWareGrade.Adapsin)
