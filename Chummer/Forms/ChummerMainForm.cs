@@ -1831,7 +1831,8 @@ namespace Chummer
                     if (objCharacterLoadingTask?.IsCompleted == false)
                         await objCharacterLoadingTask;
                     if (lstCharactersToLoad.Count > 0)
-                        OpenCharacterList(lstCharactersToLoad);
+                        // ReSharper disable once AccessToDisposedClosure
+                        await this.DoThreadSafeAsync(() => OpenCharacterList(lstCharactersToLoad));
                     lstCharactersToLoad.Dispose();
                 });
             }
