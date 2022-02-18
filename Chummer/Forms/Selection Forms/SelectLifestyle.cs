@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -52,7 +53,7 @@ namespace Chummer
             _objXmlDocument = objCharacter.LoadData("lifestyles.xml");
         }
 
-        private void SelectLifestyle_Load(object sender, EventArgs e)
+        private async void SelectLifestyle_Load(object sender, EventArgs e)
         {
             string strSelectedId = string.Empty;
             // Populate the Lifestyle ComboBoxes.
@@ -71,7 +72,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strLifeStyleId) && !strLifeStyleId.IsEmptyGuid())
                             {
                                 string strName = objXmlLifestyle["name"]?.InnerText
-                                                 ?? LanguageManager.GetString("String_Unknown");
+                                                 ?? await LanguageManager.GetStringAsync("String_Unknown");
                                 if (strName == _objSourceLifestyle?.BaseLifestyle)
                                     strSelectedId = strLifeStyleId;
                                 lstLifestyle.Add(new ListItem(strLifeStyleId,
@@ -102,7 +103,7 @@ namespace Chummer
                         foreach (XmlNode objXmlCity in xmlCityList)
                         {
                             string strName = objXmlCity["name"]?.InnerText
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
                             lstCity.Add(new ListItem(strName, objXmlCity["translate"]?.InnerText ?? strName));
                         }
                     }
@@ -114,10 +115,10 @@ namespace Chummer
             }
 
             //Populate District and Borough ComboBox for the first time
-            RefreshDistrictList();
-            RefreshBoroughList();
+            await RefreshDistrictList();
+            await RefreshBoroughList();
 
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             // Fill the Options list.
             using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"SR5\" or category = \"Contracts\") and (" + _objCharacter.Settings.BookXPath() + ")]"))
             {
@@ -133,7 +134,7 @@ namespace Chummer
                         if (nodMultiplier == null)
                         {
                             nodMultiplier = objXmlOption["multiplierbaseonly"];
-                            strBaseString = strSpace + LanguageManager.GetString("Label_Base");
+                            strBaseString = strSpace + await LanguageManager.GetStringAsync("Label_Base");
                         }
                         TreeNode nodOption = new TreeNode
                         {
@@ -183,14 +184,14 @@ namespace Chummer
             }
 
             _blnSkipRefresh = false;
-            CalculateValues();
+            await CalculateValues();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             _blnAddAgain = false;
@@ -208,21 +209,21 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void treQualities_AfterCheck(object sender, TreeViewEventArgs e)
+        private async void treQualities_AfterCheck(object sender, TreeViewEventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-            CalculateValues();
+            await CalculateValues();
         }
 
-        private void RefreshValues(object sender, EventArgs e)
+        private async void RefreshValues(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-            CalculateValues();
+            await CalculateValues();
         }
 
-        private void nudRoommates_ValueChanged(object sender, EventArgs e)
+        private async void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
             if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
             {
@@ -233,10 +234,10 @@ namespace Chummer
 
             if (_blnSkipRefresh)
                 return;
-            CalculateValues();
+            await CalculateValues();
         }
 
-        private void chkTrustFund_CheckedChanged(object sender, EventArgs e)
+        private async void chkTrustFund_CheckedChanged(object sender, EventArgs e)
         {
             if (chkTrustFund.Checked)
             {
@@ -247,7 +248,7 @@ namespace Chummer
 
             if (_blnSkipRefresh)
                 return;
-            CalculateValues();
+            await CalculateValues();
         }
 
         private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
@@ -281,18 +282,18 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
-        private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCity_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-            RefreshDistrictList();
+            await RefreshDistrictList();
         }
 
-        private void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-            RefreshBoroughList();
+            await RefreshBoroughList();
         }
 
         #endregion Control Events
@@ -371,7 +372,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the LP value for the selected items.
         /// </summary>
-        private void CalculateValues(bool blnIncludePercentage = true)
+        private async ValueTask CalculateValues(bool blnIncludePercentage = true)
         {
             if (_blnSkipRefresh)
                 return;
@@ -403,8 +404,8 @@ namespace Chummer
                     }
                     else
                     {
-                        lblSource.Text = LanguageManager.GetString("String_Unknown");
-                        lblSource.SetToolTip(LanguageManager.GetString("String_Unknown"));
+                        lblSource.Text = await LanguageManager.GetStringAsync("String_Unknown");
+                        lblSource.SetToolTip(await LanguageManager.GetStringAsync("String_Unknown"));
                     }
 
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -465,7 +466,7 @@ namespace Chummer
                     decDiscount /= nudRoommates.Value;
                 }
 
-                lblCost.Text += LanguageManager.GetString("String_Space") + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥)";
+                lblCost.Text += await LanguageManager.GetStringAsync("String_Space") + '(' + decDiscount.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥)";
             }
 
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
@@ -516,7 +517,7 @@ namespace Chummer
         /// <summary>
         /// Populates The District list after a City was selected
         /// </summary>
-        private void RefreshDistrictList()
+        private async ValueTask RefreshDistrictList()
         {
             string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -531,7 +532,7 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlDistrictList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
                             lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }
@@ -546,7 +547,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the BoroughList based on the selected District to generate a cascading dropdown menu
         /// </summary>
-        private void RefreshBoroughList()
+        private async ValueTask RefreshBoroughList()
         {
             string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
             string strSelectedDistrictRefresh = cboDistrict.SelectedValue?.ToString() ?? string.Empty;
@@ -562,7 +563,7 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlBoroughList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
                             lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }

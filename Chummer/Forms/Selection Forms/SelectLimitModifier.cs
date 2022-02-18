@@ -29,22 +29,29 @@ namespace Chummer
         private int _intBonus = 1;
         private string _strCondition = string.Empty;
         private string _strLimitType = string.Empty;
+        private readonly LimitModifier _objLimitModifier;
+        private readonly string[] _lstLimits;
 
         #region Control Events
 
         public SelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
         {
+            _objLimitModifier = objLimitModifier;
+            _lstLimits = lstLimits;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+        }
 
+        private async void SelectLimitModifier_Load(object sender, EventArgs e)
+        {
             // Build the list of Limits.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
             {
-                foreach (string strLimit in lstLimits)
+                foreach (string strLimit in _lstLimits)
                 {
                     lstLimitItems.Add(
-                        new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short")));
+                        new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short")));
                 }
 
                 cboLimit.BeginUpdate();
@@ -56,12 +63,12 @@ namespace Chummer
                 cboLimit.EndUpdate();
             }
 
-            if (objLimitModifier != null)
+            if (_objLimitModifier != null)
             {
-                cboLimit.SelectedValue = objLimitModifier.Limit;
-                txtName.Text = objLimitModifier.Name;
-                _intBonus = objLimitModifier.Bonus;
-                txtCondition.Text = objLimitModifier.Condition;
+                cboLimit.SelectedValue = _objLimitModifier.Limit;
+                txtName.Text = _objLimitModifier.Name;
+                _intBonus = _objLimitModifier.Bonus;
+                txtCondition.Text = _objLimitModifier.Condition;
             }
         }
 

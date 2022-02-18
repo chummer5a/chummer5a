@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -59,7 +60,7 @@ namespace Chummer
                 _xmlMetatypeDataNode = xmlMetavariantNode;
         }
 
-        private void SelectCritterPower_Load(object sender, EventArgs e)
+        private async void SelectCritterPower_Load(object sender, EventArgs e)
         {
             // Populate the Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseCritterPowerDataNode.SelectAndCacheExpression("categories/category"))
@@ -95,7 +96,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -125,7 +126,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void trePowers_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void trePowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
             lblPowerPoints.Visible = false;
             lblPowerPointsLabel.Visible = false;
@@ -140,11 +141,11 @@ namespace Chummer
                     switch (objXmlPower.SelectSingleNodeAndCacheExpression("type")?.Value)
                     {
                         case "M":
-                            lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana");
+                            lblCritterPowerType.Text = await LanguageManager.GetStringAsync("String_SpellTypeMana");
                             break;
 
                         case "P":
-                            lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical");
+                            lblCritterPowerType.Text = await LanguageManager.GetStringAsync("String_SpellTypePhysical");
                             break;
 
                         default:
@@ -155,23 +156,23 @@ namespace Chummer
                     switch (objXmlPower.SelectSingleNode("action")?.Value)
                     {
                         case "Auto":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic");
+                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_ActionAutomatic");
                             break;
 
                         case "Free":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree");
+                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_ActionFree");
                             break;
 
                         case "Simple":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple");
+                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_ActionSimple");
                             break;
 
                         case "Complex":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex");
+                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_ActionComplex");
                             break;
 
                         case "Special":
-                            lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial");
+                            lblCritterPowerAction.Text = await LanguageManager.GetStringAsync("String_SpellDurationSpecial");
                             break;
 
                         default:
@@ -182,14 +183,22 @@ namespace Chummer
                     string strRange = objXmlPower.SelectSingleNode("range")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strRange))
                     {
-                        strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"))
-                            .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial"))
-                            .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"))
-                            .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"))
-                            .CheapReplace("Touch", () => LanguageManager.GetString("String_SpellRangeTouchLong"))
-                            .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"))
-                            .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea") + ')')
-                            .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
+                        strRange = await strRange.CheapReplaceAsync("Self",
+                                () => LanguageManager.GetStringAsync("String_SpellRangeSelf"))
+                            .CheapReplaceAsync("Special",
+                                () => LanguageManager.GetStringAsync("String_SpellDurationSpecial"))
+                            .CheapReplaceAsync("LOS", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight"))
+                            .CheapReplaceAsync("LOI",
+                                () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"))
+                            .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong"))
+                            .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch"))
+                            .CheapReplaceAsync("(A)", GetTranslatedSpellRange)
+                            .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort"));
+
+                        async ValueTask<string> GetTranslatedSpellRange()
+                        {
+                            return '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea") + ')';
+                        }
                     }
                     lblCritterPowerRange.Text = strRange;
 
@@ -197,19 +206,19 @@ namespace Chummer
                     switch (strDuration)
                     {
                         case "Instant":
-                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong");
+                            lblCritterPowerDuration.Text = await LanguageManager.GetStringAsync("String_SpellDurationInstantLong");
                             break;
 
                         case "Sustained":
-                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
+                            lblCritterPowerDuration.Text = await LanguageManager.GetStringAsync("String_SpellDurationSustained");
                             break;
 
                         case "Always":
-                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways");
+                            lblCritterPowerDuration.Text = await LanguageManager.GetStringAsync("String_SpellDurationAlways");
                             break;
 
                         case "Special":
-                            lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
+                            lblCritterPowerDuration.Text = await LanguageManager.GetStringAsync("String_SpellDurationSpecial");
                             break;
 
                         default:
@@ -217,8 +226,8 @@ namespace Chummer
                             break;
                     }
 
-                    string strSource = objXmlPower.SelectSingleNodeAndCacheExpression("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNodeAndCacheExpression("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    string strSource = objXmlPower.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     lblCritterPowerSource.Text = objSource.ToString();
@@ -254,7 +263,12 @@ namespace Chummer
             }
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await RefreshCategory();
+        }
+
+        private async ValueTask RefreshCategory()
         {
             trePowers.Nodes.Clear();
 
@@ -377,7 +391,7 @@ namespace Chummer
 
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))
             {
-                string strPowerName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strPowerName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0)
                     continue;
                 if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
@@ -397,9 +411,9 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            cboCategory_SelectedIndexChanged(sender, e);
+            await RefreshCategory();
         }
 
         #endregion Control Events

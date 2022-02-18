@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -97,7 +98,7 @@ namespace Chummer
             }
         }
 
-        private void SelectGear_Load(object sender, EventArgs e)
+        private async void SelectGear_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -140,7 +141,7 @@ namespace Chummer
                 {
                     continue;
                 }
-                if (_lstCategory.All(x => x.Value.ToString() != strCategory) && AnyItemInList(strCategory))
+                if (_lstCategory.All(x => x.Value.ToString() != strCategory) && await AnyItemInList(strCategory))
                 {
                     _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strCategory));
                 }
@@ -149,7 +150,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -171,15 +172,15 @@ namespace Chummer
             if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
                 cboCategory.SelectedIndex = 0;
             else
-                RefreshList();
+                await RefreshList();
 
             if (!string.IsNullOrEmpty(_strSelectedGear))
                 lstGear.SelectedValue = _strSelectedGear;
             // Make sure right-side controls are properly updated depending on how the selections above worked out
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -193,10 +194,10 @@ namespace Chummer
                 chkDoItYourself.Checked = false;
             }
 
-            RefreshList();
+            await RefreshList();
         }
 
-        private void lstGear_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstGear_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -204,7 +205,7 @@ namespace Chummer
             string strSelectedId = lstGear.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                // Retireve the information for the selected piece of Gear.
+                // Retrieve the information for the selected piece of Gear.
                 XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
 
                 if (objXmlGear != null)
@@ -260,9 +261,9 @@ namespace Chummer
 
                     string strRatingLabel = objXmlGear.SelectSingleNode("ratinglabel")?.Value;
                     lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
-                            LanguageManager.GetString(strRatingLabel))
-                        : LanguageManager.GetString("Label_Rating");
+                        ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
+                            await LanguageManager.GetStringAsync(strRatingLabel))
+                        : await LanguageManager.GetStringAsync("Label_Rating");
                 }
                 else
                 {
@@ -282,17 +283,17 @@ namespace Chummer
                 chkStack.Visible = false;
             }
 
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void nudRating_ValueChanged(object sender, EventArgs e)
         {
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -306,9 +307,9 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -317,41 +318,41 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void nudGearQty_ValueChanged(object sender, EventArgs e)
+        private async void nudGearQty_ValueChanged(object sender, EventArgs e)
         {
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void chkDoItYourself_CheckedChanged(object sender, EventArgs e)
+        private async void chkDoItYourself_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -534,7 +535,7 @@ namespace Chummer
         /// <summary>
         /// Update the Gear's information based on the Gear selected and current Rating.
         /// </summary>
-        private void UpdateGearInfo()
+        private async ValueTask UpdateGearInfo()
         {
             if (_blnLoading)
             {
@@ -564,8 +565,8 @@ namespace Chummer
             lblGearDeviceRating.Text = strDeviceRating;
             lblGearDeviceRatingLabel.Visible = !string.IsNullOrEmpty(strDeviceRating);
 
-            string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlGear.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strPage = objXmlGear.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
@@ -682,7 +683,7 @@ namespace Chummer
                             lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+";
                         else
                         {
-                            string strSpace = LanguageManager.GetString("String_Space");
+                            string strSpace = await LanguageManager.GetStringAsync("String_Space");
                             lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                            + strSpace + '-' + strSpace
                                            + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
@@ -839,10 +840,10 @@ namespace Chummer
                         sbdValue.Append(strExpression);
                         sbdValue.Replace(
                             "{Rating}", nudRating.ValueAsInt.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Parent Rating}",
-                                              () => (_objGearParent as IHasRating)?.Rating.ToString(
-                                                        GlobalSettings.InvariantCultureInfo)
-                                                    ?? int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                            () => (_objGearParent as IHasRating)?.Rating.ToString(
+                                      GlobalSettings.InvariantCultureInfo)
+                                  ?? int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
                         _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -879,9 +880,9 @@ namespace Chummer
                                 sbdValue.Append(strExpression);
                                 sbdValue.Replace(
                                     "{Rating}", nudRating.ValueAsInt.ToString(GlobalSettings.InvariantCultureInfo));
-                                sbdValue.CheapReplace(strExpression, "{Parent Rating}",
-                                                      () => (_objGearParent as IHasRating)?.Rating.ToString(
-                                                          GlobalSettings.InvariantCultureInfo) ?? "0");
+                                await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                                    () => (_objGearParent as IHasRating)?.Rating.ToString(
+                                        GlobalSettings.InvariantCultureInfo) ?? "0");
                                 _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
@@ -943,20 +944,19 @@ namespace Chummer
             ResumeLayout();
         }
 
-        private bool AnyItemInList(string strCategory = "")
+        private ValueTask<bool> AnyItemInList(string strCategory = "")
         {
-            RefreshList(out bool blnReturn, strCategory, false);
-            return blnReturn;
+            return RefreshList(strCategory, false);
         }
 
-        private void RefreshList(string strCategory = "")
+        private ValueTask<bool> RefreshList(string strCategory = "")
         {
-            RefreshList(out bool _, strCategory, true);
+            return RefreshList(strCategory, true);
         }
 
-        private void RefreshList(out bool blnAnyItem, string strCategory, bool blnDoUIUpdate)
+        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate)
         {
-            blnAnyItem = false;
+            bool blnAnyItem = false;
             if (string.IsNullOrEmpty(strCategory))
                 strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = string.Empty;
@@ -1083,7 +1083,7 @@ namespace Chummer
                         blnAnyItem = true;
                         string strDisplayName = objXmlGear.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                 ?? objXmlGear.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                ?? LanguageManager.GetString("String_Unknown");
+                                                ?? await LanguageManager.GetStringAsync("String_Unknown");
                         lstGears.Add(new ListItem(
                                          objXmlGear.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
                                          strDisplayName));
@@ -1122,7 +1122,7 @@ namespace Chummer
 
                                 if (setDuplicateNames.Count > 0)
                                 {
-                                    string strSpace = LanguageManager.GetString("String_Space");
+                                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
                                     for (int i = 0; i < lstGears.Count; ++i)
                                     {
                                         ListItem objLoopItem = lstGears[i];
@@ -1158,7 +1158,7 @@ namespace Chummer
                         // Add after sort so that it's always at the end
                         lstGears.Add(new ListItem(string.Empty,
                                                   string.Format(GlobalSettings.CultureInfo,
-                                                                LanguageManager.GetString(
+                                                                await LanguageManager.GetStringAsync(
                                                                     "String_RestrictedItemsHidden"),
                                                                 intOverLimit)));
                     }
@@ -1181,6 +1181,8 @@ namespace Chummer
                 if (lstGears != null)
                     Utils.ListItemListPool.Return(lstGears);
             }
+
+            return blnAnyItem;
         }
 
         /// <summary>

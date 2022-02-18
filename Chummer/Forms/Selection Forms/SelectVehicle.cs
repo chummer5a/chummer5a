@@ -23,6 +23,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -75,7 +76,7 @@ namespace Chummer
             }
         }
 
-        private void SelectVehicle_Load(object sender, EventArgs e)
+        private async void SelectVehicle_Load(object sender, EventArgs e)
         {
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
             {
@@ -110,7 +111,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -133,15 +134,15 @@ namespace Chummer
             RefreshList();
         }
 
-        private void lstVehicle_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstVehicle_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSelectedVehicle();
+            await UpdateSelectedVehicle();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             _blnAddAgain = false;
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -149,15 +150,15 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void ProcessVehicleCostsChanged(object sender, EventArgs e)
@@ -264,7 +265,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the selected Vehicle.
         /// </summary>
-        private void UpdateSelectedVehicle()
+        private async ValueTask UpdateSelectedVehicle()
         {
             if (_blnLoading)
                 return;
@@ -317,8 +318,8 @@ namespace Chummer
 
             UpdateSelectedVehicleCost();
 
-            string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlVehicle.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strPage = objXmlVehicle.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
@@ -380,7 +381,7 @@ namespace Chummer
             }
         }
 
-        private void RefreshList()
+        private ValueTask RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = string.Empty;
@@ -416,10 +417,10 @@ namespace Chummer
                 if (sbdFilter.Length > 0)
                     strFilter = '[' + sbdFilter.ToString() + ']';
             }
-            BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter));
+            return BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter));
         }
 
-        private void BuildVehicleList(XPathNodeIterator objXmlVehicleList)
+        private async ValueTask BuildVehicleList(XPathNodeIterator objXmlVehicleList)
         {
             SuspendLayout();
             int intOverLimit = 0;
@@ -561,7 +562,7 @@ namespace Chummer
             }
             else
             {
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstVehicles))
                 {
                     foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
@@ -597,7 +598,7 @@ namespace Chummer
 
                         string strDisplayname = objXmlVehicle.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                 ?? objXmlVehicle.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                ?? LanguageManager.GetString("String_Unknown");
+                                                ?? await LanguageManager.GetStringAsync("String_Unknown");
 
                         if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
                         {
@@ -624,7 +625,7 @@ namespace Chummer
                         // Add after sort so that it's always at the end
                         lstVehicles.Add(new ListItem(string.Empty,
                             string.Format(GlobalSettings.CultureInfo,
-                                LanguageManager.GetString(
+                                await LanguageManager.GetStringAsync(
                                     "String_RestrictedItemsHidden"),
                                 intOverLimit)));
                     }
@@ -646,7 +647,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             XPathNavigator xmlVehicle = null;
             switch (tabViews.SelectedIndex)
@@ -703,7 +704,7 @@ namespace Chummer
                 decCost *= 1 - (nudUsedVehicleDiscount.Value / 100.0m);
 
                 _blnUsedVehicle = true;
-                _strUsedAvail = lblVehicleAvail.Text.Replace(LanguageManager.GetString("String_AvailRestricted"), "R").Replace(LanguageManager.GetString("String_AvailForbidden"), "F");
+                _strUsedAvail = lblVehicleAvail.Text.Replace(await LanguageManager.GetStringAsync("String_AvailRestricted"), "R").Replace(await LanguageManager.GetStringAsync("String_AvailForbidden"), "F");
                 _decUsedCost = decCost;
             }
 

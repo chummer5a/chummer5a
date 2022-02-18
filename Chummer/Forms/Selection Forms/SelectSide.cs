@@ -34,17 +34,6 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            // Create a list for the sides.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
-            {
-                lstSides.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
-                lstSides.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
-
-                cboSide.BeginUpdate();
-                cboSide.PopulateWithListItems(lstSides);
-                cboSide.EndUpdate();
-            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -53,8 +42,19 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void SelectSide_Load(object sender, EventArgs e)
+        private async void SelectSide_Load(object sender, EventArgs e)
         {
+            // Create a list for the sides.
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
+            {
+                lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
+                lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
+
+                cboSide.BeginUpdate();
+                cboSide.PopulateWithListItems(lstSides);
+                cboSide.EndUpdate();
+            }
+
             // Select the first item in the list.
             cboSide.SelectedIndex = 0;
         }
@@ -86,7 +86,7 @@ namespace Chummer
         {
             cboSide.SelectedValue = strSide;
             cboSide.Text = strSide;
-            cmdOK_Click(this, null);
+            cmdOK_Click(this, EventArgs.Empty);
         }
 
         #endregion Methods

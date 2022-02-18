@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -52,7 +53,7 @@ namespace Chummer
             _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/techniques");
         }
 
-        private void SelectMartialArt_Load(object sender, EventArgs e)
+        private async void SelectMartialArt_Load(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(_strForcedValue))
             {
@@ -67,7 +68,7 @@ namespace Chummer
 
             _blnLoading = false;
 
-            RefreshArtList();
+            await RefreshArtList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -86,7 +87,7 @@ namespace Chummer
             cmdOK_Click(sender, e);
         }
 
-        private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -135,8 +136,8 @@ namespace Chummer
 
                     gpbIncludedTechniques.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
 
-                    string strSource = objXmlArt.SelectSingleNodeAndCacheExpression("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strPage = objXmlArt.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlArt.SelectSingleNodeAndCacheExpression("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    string strSource = objXmlArt.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strPage = objXmlArt.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlArt.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -161,9 +162,9 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshArtList();
+            await RefreshArtList();
         }
 
         #endregion Control Events
@@ -218,7 +219,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts list.
         /// </summary>
-        private void RefreshArtList()
+        private async ValueTask RefreshArtList()
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (ShowQualities)
@@ -241,7 +242,7 @@ namespace Chummer
                                               strId,
                                               objXmlArt.SelectSingleNodeAndCacheExpression("translate")?.Value
                                               ?? objXmlArt.SelectSingleNodeAndCacheExpression("name")?.Value
-                                              ?? LanguageManager.GetString("String_Unknown")));
+                                              ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }
 

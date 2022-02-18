@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -84,14 +85,14 @@ namespace Chummer
             }
         }
 
-        private void SelectArt_Load(object sender, EventArgs e)
+        private async void SelectArt_Load(object sender, EventArgs e)
         {
-            Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strLocalName);
-            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strLocalName);
+            Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Title_SelectGeneric"), _strLocalName);
+            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Checkbox_SelectGeneric_LimitList"), _strLocalName);
 
             _blnLoading = false;
 
-            BuildList();
+            await BuildList();
         }
 
         private void lstArt_SelectedIndexChanged(object sender, EventArgs e)
@@ -139,14 +140,14 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            BuildList();
+            await BuildList();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildList();
+            await BuildList();
         }
 
         #region Properties
@@ -163,7 +164,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Arts.
         /// </summary>
-        private void BuildList()
+        private async ValueTask BuildList()
         {
             if (_blnLoading)
                 return;
@@ -184,7 +185,7 @@ namespace Chummer
                         lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value,
                                                  objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                  ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                 ?? LanguageManager.GetString("String_Unknown")));
+                                                 ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }
 

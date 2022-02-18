@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -58,6 +59,49 @@ namespace Chummer
                 intLoopResult = objRandom.Next();
             }
             while (intLoopResult >= intModuloCheck);
+
+            return intLoopResult % maxValue;
+        }
+
+        /// <summary>
+        /// Special version of NextModuloBiasRemoved(minValue, maxValue) built specifically for a 1D6 roll. The modulo bias to check is calculated at compile time, so the code should run faster.
+        /// </summary>
+        /// <param name="objRandom">Instance of Random to use.</param>
+        public static async ValueTask<int> NextD6ModuloBiasRemovedAsync(this Random objRandom)
+        {
+            if (objRandom == null)
+                throw new ArgumentNullException(nameof(objRandom));
+            const int intModuloCheck = int.MaxValue - 1;  // Faster Modulo bias removal for 1d6
+            int intLoopResult = 0;
+            await Task.Run(() =>
+            {
+                do
+                {
+                    intLoopResult = objRandom.Next();
+                } while (intLoopResult >= intModuloCheck);
+            });
+
+            return 1 + intLoopResult % 6;
+        }
+
+        /// <summary>
+        /// Wraps Random::Next(maxValue) around code that eliminates modulo bias (i.e. the fact that certain results will be more common based on the remainder when dividing int.MaxValue by them)
+        /// </summary>
+        /// <param name="objRandom">Instance of Random to use.</param>
+        /// <param name="maxValue">Maximum value (exclusive) to generate.</param>
+        public static async ValueTask<int> NextModuloBiasRemovedAsync(this Random objRandom, int maxValue)
+        {
+            if (objRandom == null)
+                throw new ArgumentNullException(nameof(objRandom));
+            int intModuloCheck = int.MaxValue - int.MaxValue % maxValue;
+            int intLoopResult = 0;
+            await Task.Run(() =>
+            {
+                do
+                {
+                    intLoopResult = objRandom.Next();
+                } while (intLoopResult >= intModuloCheck);
+            });
 
             return intLoopResult % maxValue;
         }

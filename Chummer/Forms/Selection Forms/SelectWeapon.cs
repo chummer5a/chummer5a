@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -66,7 +67,7 @@ namespace Chummer
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
-        private void SelectWeapon_Load(object sender, EventArgs e)
+        private async void SelectWeapon_Load(object sender, EventArgs e)
         {
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
             {
@@ -98,7 +99,7 @@ namespace Chummer
                     {
                         string strInnerText = objXmlCategory.InnerText;
                         if ((_setLimitToCategories.Count == 0 || _setLimitToCategories.Contains(strInnerText))
-                            && BuildWeaponList(_objXmlDocument.SelectNodes(strFilterPrefix + strInnerText.CleanXPath() + ']'), true))
+                            && await BuildWeaponList(_objXmlDocument.SelectNodes(strFilterPrefix + strInnerText.CleanXPath() + ']'), true))
                             _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
                 }
@@ -106,7 +107,7 @@ namespace Chummer
 
             _lstCategory.Sort(CompareListItems.CompareNames);
 
-            _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+            _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
 
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
@@ -124,15 +125,15 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             _blnLoading = false;
-            RefreshList();
+            await RefreshList();
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
-        private void lstWeapon_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstWeapon_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading || _blnSkipUpdate)
                 return;
@@ -156,10 +157,10 @@ namespace Chummer
                 _objSelectedWeapon = null;
             }
 
-            UpdateWeaponInfo();
+            await UpdateWeaponInfo();
         }
 
-        private void UpdateWeaponInfo()
+        private async ValueTask UpdateWeaponInfo()
         {
             if (_blnLoading || _blnSkipUpdate)
                 return;
@@ -231,7 +232,7 @@ namespace Chummer
                         sbdAccessories.Length -= Environment.NewLine.Length;
 
                     lblIncludedAccessories.Text = sbdAccessories.Length == 0
-                        ? LanguageManager.GetString("String_None")
+                        ? await LanguageManager.GetStringAsync("String_None")
                         : sbdAccessories.ToString();
                 }
 
@@ -248,7 +249,7 @@ namespace Chummer
             _blnSkipUpdate = false;
         }
 
-        private bool BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false)
+        private async ValueTask<bool> BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false)
         {
             SuspendLayout();
             if (tabControl.SelectedIndex == 1 && !blnForCategories)
@@ -474,7 +475,7 @@ namespace Chummer
                         // Add after sort so that it's always at the end
                         lstWeapons.Add(new ListItem(string.Empty,
                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString(
+                                                                  await LanguageManager.GetStringAsync(
                                                                       "String_RestrictedItemsHidden"),
                                                                   intOverLimit)));
                     }
@@ -517,22 +518,22 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
-            UpdateWeaponInfo();
+            await UpdateWeaponInfo();
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
-            UpdateWeaponInfo();
+            await UpdateWeaponInfo();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -590,9 +591,9 @@ namespace Chummer
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateWeaponInfo();
+            await UpdateWeaponInfo();
         }
 
         #endregion Control Events
@@ -646,7 +647,7 @@ namespace Chummer
 
         #region Methods
 
-        private void RefreshList()
+        private ValueTask<bool> RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             string strFilter = string.Empty;
@@ -692,7 +693,7 @@ namespace Chummer
             }
 
             XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon" + strFilter);
-            BuildWeaponList(objXmlWeaponList);
+            return BuildWeaponList(objXmlWeaponList);
         }
 
         /// <summary>

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -64,7 +65,7 @@ namespace Chummer
                                                          .SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
-        private void SelectArmor_Load(object sender, EventArgs e)
+        private async void SelectArmor_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -110,7 +111,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -126,7 +127,7 @@ namespace Chummer
 
             _blnLoading = false;
 
-            RefreshList();
+            await RefreshList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -140,7 +141,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void lstArmor_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstArmor_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -201,9 +202,9 @@ namespace Chummer
 
                 string strRatingLabel = xmlArmor.SelectSingleNode("ratinglabel")?.Value;
                 lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
-                        LanguageManager.GetString(strRatingLabel))
-                    : LanguageManager.GetString("Label_Rating");
+                    ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
+                        await LanguageManager.GetStringAsync(strRatingLabel))
+                    : await LanguageManager.GetStringAsync("Label_Rating");
             }
             else
             {
@@ -220,9 +221,9 @@ namespace Chummer
             UpdateArmorInfo();
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -231,16 +232,16 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
             UpdateArmorInfo();
         }
@@ -255,11 +256,11 @@ namespace Chummer
             UpdateArmorInfo();
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
             UpdateArmorInfo();
         }
@@ -303,12 +304,12 @@ namespace Chummer
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
 
-        private void tmrSearch_Tick(object sender, EventArgs e)
+        private async void tmrSearch_Tick(object sender, EventArgs e)
         {
             tmrSearch.Stop();
             tmrSearch.Enabled = false;
 
-            RefreshList();
+            await RefreshList();
         }
 
         private void dgvArmor_DoubleClick(object sender, EventArgs e)
@@ -357,7 +358,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the displayed lists
         /// </summary>
-        private void RefreshList()
+        private async ValueTask RefreshList()
         {
             if (_blnLoading)
                 return;
@@ -393,7 +394,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(txtSearch.Text))
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-                BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'));
+                await BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'));
             }
         }
 
@@ -401,7 +402,7 @@ namespace Chummer
         /// Builds the list of Armors to render in the active tab.
         /// </summary>
         /// <param name="objXmlArmorList">XmlNodeList of Armors to render.</param>
-        private void BuildArmorList(XmlNodeList objXmlArmorList)
+        private async ValueTask BuildArmorList(XmlNodeList objXmlArmorList)
         {
             switch (tabControl.SelectedIndex)
             {
@@ -484,7 +485,7 @@ namespace Chummer
                                                                    out List<ListItem> lstArmors))
                     {
                         int intOverLimit = 0;
-                        string strSpace = LanguageManager.GetString("String_Space");
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
                         foreach (XmlNode objXmlArmor in objXmlArmorList)
                         {
                             decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
@@ -527,7 +528,7 @@ namespace Chummer
                             // Add after sort so that it's always at the end
                             lstArmors.Add(new ListItem(string.Empty,
                                                        string.Format(GlobalSettings.CultureInfo,
-                                                                     LanguageManager.GetString(
+                                                                     await LanguageManager.GetStringAsync(
                                                                          "String_RestrictedItemsHidden"),
                                                                      intOverLimit)));
                         }

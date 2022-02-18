@@ -59,7 +59,7 @@ namespace Chummer
             _objXmlDocument = _objCharacter.LoadDataXPath("skills.xml");
         }
 
-        private void SelectSkill_Load(object sender, EventArgs e)
+        private async void SelectSkill_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
@@ -229,7 +229,7 @@ namespace Chummer
                             lstSkills.Add(new ListItem(objExoticSkill.DictionaryKey,
                                                        (objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                         ?? objExoticSkill.CurrentDisplayName)
-                                                       + LanguageManager.GetString("String_Space") + '('
+                                                       + await LanguageManager.GetStringAsync("String_Space") + '('
                                                        + objExoticSkill.CurrentDisplaySpecialization + ')'));
                         }
                     }
@@ -240,7 +240,7 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"),
+                                      await LanguageManager.GetStringAsync("Message_Improvement_EmptySelectionListNamed"),
                                       _strSourceName));
                     DialogResult = DialogResult.Cancel;
                     return;

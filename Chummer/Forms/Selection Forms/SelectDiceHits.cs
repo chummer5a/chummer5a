@@ -33,11 +33,11 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void SelectDiceHits_Load(object sender, EventArgs e)
+        private async void SelectDiceHits_Load(object sender, EventArgs e)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + strSpace + Dice.ToString(GlobalSettings.CultureInfo)
-                           + LanguageManager.GetString("String_D6") + LanguageManager.GetString("String_Colon") + strSpace;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            lblDice.Text = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn") + strSpace + Dice.ToString(GlobalSettings.CultureInfo)
+                           + await LanguageManager.GetStringAsync("String_D6") + await LanguageManager.GetStringAsync("String_Colon") + strSpace;
             nudDiceResult.Maximum = Dice * 6;
             nudDiceResult.Minimum = 6;
         }
@@ -52,14 +52,14 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void cmdRoll_Click(object sender, EventArgs e)
+        private async void cmdRoll_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             {
                 int intResult = 0;
                 for (int i = 0; i < Dice; ++i)
                 {
-                    intResult += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 }
                 nudDiceResult.ValueAsInt = intResult;
             }

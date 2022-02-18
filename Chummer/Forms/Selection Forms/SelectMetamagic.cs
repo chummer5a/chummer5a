@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -75,13 +76,13 @@ namespace Chummer
             }
         }
 
-        private void SelectMetamagic_Load(object sender, EventArgs e)
+        private async void SelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strType);
-            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strType);
+            Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Title_SelectGeneric"), _strType);
+            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Checkbox_SelectGeneric_LimitList"), _strType);
 
             _blnLoading = false;
-            BuildMetamagicList();
+            await BuildMetamagicList();
         }
 
         private void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
@@ -130,14 +131,14 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            BuildMetamagicList();
+            await BuildMetamagicList();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildMetamagicList();
+            await BuildMetamagicList();
         }
 
         #endregion Control Events
@@ -156,7 +157,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Metamagics.
         /// </summary>
-        private void BuildMetamagicList()
+        private async ValueTask BuildMetamagicList()
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
@@ -200,7 +201,7 @@ namespace Chummer
                                                        objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")
                                                                       ?.Value ?? objXmlMetamagic
                                                            .SelectSingleNodeAndCacheExpression("name")?.Value ??
-                                                       LanguageManager.GetString("String_Unknown")));
+                                                       await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }
 

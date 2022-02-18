@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -54,18 +55,18 @@ namespace Chummer
             _objLifestyle.FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
         }
 
-        private void LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Move:
                     return;
                 case NotifyCollectionChangedAction.Reset:
-                    ResetLifestyleQualitiesTree();
+                    await ResetLifestyleQualitiesTree();
                     return;
                 default:
                 {
-                    TreeNode nodPositiveQualityRoot
+                        TreeNode nodPositiveQualityRoot
                         = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_PositiveQualities", false);
                     TreeNode nodNegativeQualityRoot
                         = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_NegativeQualities", false);
@@ -78,7 +79,7 @@ namespace Chummer
                         {
                             foreach (LifestyleQuality objQuality in e.NewItems)
                             {
-                                AddToTree(objQuality);
+                                await AddToTree(objQuality);
                             }
 
                             break;
@@ -115,7 +116,7 @@ namespace Chummer
 
                             foreach (LifestyleQuality objQuality in e.NewItems)
                             {
-                                AddToTree(objQuality);
+                                await AddToTree(objQuality);
                             }
 
                             foreach (TreeNode objOldParent in lstOldParents)
@@ -130,7 +131,7 @@ namespace Chummer
 
                     break;
 
-                    void AddToTree(LifestyleQuality objQuality)
+                    async ValueTask AddToTree(LifestyleQuality objQuality)
                     {
                         TreeNode objNode = objQuality.CreateTreeNode();
                         if (objNode == null)
@@ -144,9 +145,10 @@ namespace Chummer
                                     nodPositiveQualityRoot = new TreeNode
                                     {
                                         Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                        Text = LanguageManager.GetString(
+                                        Text = await LanguageManager.GetStringAsync(
                                             "Node_SelectAdvancedLifestyle_PositiveQualities")
                                     };
+                                    // ReSharper disable once AssignNullToNotNullAttribute
                                     treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
                                     nodPositiveQualityRoot.Expand();
                                 }
@@ -160,9 +162,10 @@ namespace Chummer
                                     nodNegativeQualityRoot = new TreeNode
                                     {
                                         Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                        Text = LanguageManager.GetString(
+                                        Text = await LanguageManager.GetStringAsync(
                                             "Node_SelectAdvancedLifestyle_NegativeQualities")
                                     };
+                                    // ReSharper disable once AssignNullToNotNullAttribute
                                     treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1,
                                                                        nodNegativeQualityRoot);
                                     nodNegativeQualityRoot.Expand();
@@ -177,10 +180,11 @@ namespace Chummer
                                     nodEntertainmentsRoot = new TreeNode
                                     {
                                         Tag = "Node_SelectAdvancedLifestyle_Entertainments",
-                                        Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_Entertainments")
+                                        Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_Entertainments")
                                     };
                                     treLifestyleQualities.Nodes.Insert(
                                         (nodPositiveQualityRoot == null ? 0 : 1)
+                                        // ReSharper disable once AssignNullToNotNullAttribute
                                         + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
                                     nodEntertainmentsRoot.Expand();
                                 }
@@ -207,14 +211,14 @@ namespace Chummer
             }
         }
 
-        private void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Move:
                     return;
                 case NotifyCollectionChangedAction.Reset:
-                    ResetLifestyleQualitiesTree();
+                    await ResetLifestyleQualitiesTree();
                     return;
                 default:
                     TreeNode nodFreeGridsRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_FreeMatrixGrids", false);
@@ -232,7 +236,7 @@ namespace Chummer
                                         nodFreeGridsRoot = new TreeNode
                                         {
                                             Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                            Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
+                                            Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
                                         };
                                         treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
                                         nodFreeGridsRoot.Expand();
@@ -292,7 +296,7 @@ namespace Chummer
                                         nodFreeGridsRoot = new TreeNode
                                         {
                                             Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                            Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
+                                            Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
                                         };
                                         treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
                                         nodFreeGridsRoot.Expand();
@@ -325,7 +329,7 @@ namespace Chummer
             }
         }
 
-        private void ResetLifestyleQualitiesTree()
+        private async ValueTask ResetLifestyleQualitiesTree()
         {
             TreeNode nodPositiveQualityRoot = null;
             TreeNode nodNegativeQualityRoot = null;
@@ -349,7 +353,7 @@ namespace Chummer
                             nodPositiveQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_PositiveQualities")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities")
                             };
                             treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
                             nodPositiveQualityRoot.Expand();
@@ -363,7 +367,7 @@ namespace Chummer
                             nodNegativeQualityRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_NegativeQualities")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_NegativeQualities")
                             };
                             treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1, nodNegativeQualityRoot);
                             nodNegativeQualityRoot.Expand();
@@ -377,7 +381,7 @@ namespace Chummer
                             nodEntertainmentsRoot = new TreeNode
                             {
                                 Tag = "Node_SelectAdvancedLifestyle_Entertainments",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_Entertainments")
+                                Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_Entertainments")
                             };
                             treLifestyleQualities.Nodes.Insert((nodPositiveQualityRoot == null ? 0 : 1) + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
                             nodEntertainmentsRoot.Expand();
@@ -397,7 +401,7 @@ namespace Chummer
                     nodFreeGridsRoot = new TreeNode
                     {
                         Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                        Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
+                        Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
                     };
                     treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
                     nodFreeGridsRoot.Expand();
@@ -442,7 +446,7 @@ namespace Chummer
 
                 chkBonusLPRandomize.DoNegatableDataBinding("Checked", _objLifestyle, nameof(Lifestyle.AllowBonusLP));
                 nudBonusLP.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BonusLP));
-                ResetLifestyleQualitiesTree();
+                await ResetLifestyleQualitiesTree();
                 cboBaseLifestyle.BeginUpdate();
                 cboBaseLifestyle.PopulateWithListItems(lstLifestyles);
                 cboBaseLifestyle.EndUpdate();
@@ -499,17 +503,17 @@ namespace Chummer
             }
 
             //Populate District and Borough ComboBox for the first time
-            RefreshDistrictList();
-            RefreshBoroughList();
+            await RefreshDistrictList();
+            await RefreshBoroughList();
 
             _blnSkipRefresh = false;
-            RefreshSelectedLifestyle();
+            await RefreshSelectedLifestyle();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -530,31 +534,31 @@ namespace Chummer
             nudRoommates.Enabled = !chkTrustFund.Checked;
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            AcceptForm();
+            await AcceptForm();
         }
 
-        private void cboBaseLifestyle_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboBaseLifestyle_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-            RefreshSelectedLifestyle();
+            await RefreshSelectedLifestyle();
         }
 
-        private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCity_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-            RefreshDistrictList();
+            await RefreshDistrictList();
         }
 
-        private void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-            RefreshBoroughList();
+            await RefreshBoroughList();
             _objLifestyle.District = cboDistrict.SelectedValue?.ToString() ?? string.Empty;
         }
 
@@ -694,16 +698,16 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             if (string.IsNullOrEmpty(txtLifestyleName.Text))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (_objLifestyle.TotalLP < 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_OverLPLimit"), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_OverLPLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -733,14 +737,14 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void RefreshSelectedLifestyle()
+        private async ValueTask RefreshSelectedLifestyle()
         {
             if (_blnSkipRefresh)
                 return;
 
             string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString() ?? string.Empty;
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
-            XPathNavigator xmlAspect = _objLifestyle.GetNodeXPath();
+            XPathNavigator xmlAspect = await _objLifestyle.GetNodeXPathAsync();
             if (xmlAspect != null)
             {
                 string strSource = xmlAspect.SelectSingleNode("source")?.Value ?? string.Empty;
@@ -788,7 +792,7 @@ namespace Chummer
                 {
                     nudBonusLP.Enabled = false;
                     _blnSkipRefresh = true;
-                    nudBonusLP.Value = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                    nudBonusLP.Value = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                     _blnSkipRefresh = false;
                 }
                 else
@@ -813,7 +817,7 @@ namespace Chummer
         /// <summary>
         /// Populates The District list after a City was selected
         /// </summary>
-        private void RefreshDistrictList()
+        private async ValueTask RefreshDistrictList()
         {
             string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDistrict))
@@ -827,7 +831,7 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlDistrictList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
                             lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }
@@ -842,7 +846,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the BoroughList based on the selected District to generate a cascading dropdown menu
         /// </summary>
-        private void RefreshBoroughList()
+        private async ValueTask RefreshBoroughList()
         {
             string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
             string strSelectedDistrictRefresh = cboDistrict.SelectedValue?.ToString() ?? string.Empty;
@@ -857,7 +861,7 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlBoroughList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
                             lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }

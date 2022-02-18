@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -77,7 +78,7 @@ namespace Chummer
             _xmlMartialArtsBaseChummerNode = _objCharacter.LoadDataXPath("martialarts.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private void SelectPACKSKit_Load(object sender, EventArgs e)
+        private async void SelectPACKSKit_Load(object sender, EventArgs e)
         {
             // Populate the PACKS Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.SelectAndCacheExpression("categories/category[not(hide)]"))
@@ -89,7 +90,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -103,6 +104,11 @@ namespace Chummer
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            RefreshCategories();
+        }
+
+        private void RefreshCategories()
         {
             // Update the list of Kits based on the selected Category.
 
@@ -566,11 +572,11 @@ namespace Chummer
                                     Text = strInnerText
                                 };
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.SelectAndCacheExpression("gears/gear"))
-                                    WriteGear(objXmlGearNode, objChildChild);
+                                    await WriteGear(objXmlGearNode, objChildChild);
                                 objChild.Nodes.Add(objChildChild);
                             }
                             foreach (XPathNavigator objXmlGearNode in objXmlCyberware.SelectAndCacheExpression("gears/gear"))
-                                WriteGear(objXmlGearNode, objChild);
+                                await WriteGear(objXmlGearNode, objChild);
                             objParent.Nodes.Add(objChild);
                         }
                         break;
@@ -615,11 +621,11 @@ namespace Chummer
                                     Text = strInnerText
                                 };
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.SelectAndCacheExpression("gears/gear"))
-                                    WriteGear(objXmlGearNode, objChildChild);
+                                    await WriteGear(objXmlGearNode, objChildChild);
                                 objChild.Nodes.Add(objChildChild);
                             }
                             foreach (XPathNavigator objXmlGearNode in objXmlBioware.SelectAndCacheExpression("gears/gear"))
-                                WriteGear(objXmlGearNode, objChild);
+                                await WriteGear(objXmlGearNode, objChild);
                             objParent.Nodes.Add(objChild);
                         }
                         break;
@@ -657,11 +663,11 @@ namespace Chummer
                                     Text = strText
                                 };
                                 foreach (XPathNavigator objXmlGearNode in objXmlChild.SelectAndCacheExpression("gears/gear"))
-                                    WriteGear(objXmlGearNode, objChildChild);
+                                    await WriteGear(objXmlGearNode, objChildChild);
                                 objChild.Nodes.Add(objChildChild);
                             }
                             foreach (XPathNavigator objXmlGearNode in objXmlArmor.SelectAndCacheExpression("gears/gear"))
-                                WriteGear(objXmlGearNode, objChild);
+                                await WriteGear(objXmlGearNode, objChild);
                             objParent.Nodes.Add(objChild);
                         }
                         break;
@@ -699,7 +705,7 @@ namespace Chummer
                                     Text = strText
                                 };
                                 foreach (XPathNavigator objXmlGearNode in objXmlAccessory.SelectAndCacheExpression("gears/gear"))
-                                    WriteGear(objXmlGearNode, objChildChild);
+                                    await WriteGear(objXmlGearNode, objChildChild);
                                 objChild.Nodes.Add(objChildChild);
                             }
                             strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("underbarrel")?.Value;
@@ -728,7 +734,7 @@ namespace Chummer
                         {
                             if (objXmlGear.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
-                            WriteGear(objXmlGear, objParent);
+                            await WriteGear(objXmlGear, objParent);
                         }
                         break;
 
@@ -771,7 +777,7 @@ namespace Chummer
                             {
                                 if (objXmlChild.SelectSingleNodeAndCacheExpression("hide") != null)
                                     continue;
-                                WriteGear(objXmlChild, objChild);
+                                await WriteGear(objXmlChild, objChild);
                             }
                             // Check for children.
                             foreach (XPathNavigator objXmlWeapon in objXmlVehicle.SelectAndCacheExpression("weapons/weapon"))
@@ -814,14 +820,14 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object sender, EventArgs e)
         {
             string strSelectedKit = lstKits.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_DeletePACKSKit"), strSelectedKit),
-                    LanguageManager.GetString("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
+            if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DeletePACKSKit"), strSelectedKit),
+                    await LanguageManager.GetStringAsync("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return;
 
             // Delete the selected custom PACKS Kit.
@@ -893,8 +899,8 @@ namespace Chummer
             }
 
             // Reload the PACKS files since they have changed.
-            _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            cboCategory_SelectedIndexChanged(sender, e);
+            _xmlBaseChummerNode = (await _objCharacter.LoadDataXPathAsync("packs.xml")).SelectSingleNodeAndCacheExpression("/chummer");
+            RefreshCategories();
         }
 
         #endregion Control Events
@@ -934,7 +940,7 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
+        private async ValueTask WriteGear(XPathNavigator objXmlGear, TreeNode objParent)
         {
             XPathNavigator xmlNameNode = objXmlGear.SelectSingleNode("name");
             string strName = xmlNameNode?.Value ?? string.Empty;
@@ -950,14 +956,14 @@ namespace Chummer
                     Text = objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName
                 };
 
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
 
                 string strExtra = xmlNameNode?.SelectSingleNodeAndCacheExpression("@select")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
                     objChild.Text += strSpace + '(' + strExtra + ')';
                 strExtra = objXmlGear.SelectSingleNodeAndCacheExpression("rating")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
-                    objChild.Text += strSpace + LanguageManager.GetString("String_Rating") + strSpace + strExtra;
+                    objChild.Text += strSpace + await LanguageManager.GetStringAsync("String_Rating") + strSpace + strExtra;
                 strExtra = objXmlGear.SelectSingleNodeAndCacheExpression("qty")?.Value;
                 if (!string.IsNullOrEmpty(strExtra))
                     objChild.Text += strSpace + 'x' + strExtra;
@@ -967,7 +973,7 @@ namespace Chummer
                 // Check for children.
                 foreach (XPathNavigator objXmlChild in objXmlGear.SelectAndCacheExpression("gears/gear"))
                 {
-                    WriteGear(objXmlChild, objChild);
+                    await WriteGear(objXmlChild, objChild);
                 }
 
                 objChild.Expand();

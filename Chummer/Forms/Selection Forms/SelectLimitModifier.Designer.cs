@@ -222,7 +222,7 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(112, 28);
             this.tlpButtons.TabIndex = 16;
             // 
-            // frmSelectLimitModifier
+            // SelectLimitModifier
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -238,6 +238,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "String_EnterLimitModifier";
             this.Text = "Enter a Limit Modifier";
+            this.Load += new System.EventHandler(this.SelectLimitModifier_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudBonus)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
