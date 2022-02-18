@@ -133,13 +133,13 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Character.PowerPointsTotal) || e.PropertyName == nameof(Character.PowerPointsUsed))
-                CalculatePowerPoints();
+                await CalculatePowerPoints();
         }
 
-        private void OnPowersListChanged(object sender, ListChangedEventArgs e)
+        private async void OnPowersListChanged(object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
             {
@@ -149,14 +149,14 @@ namespace Chummer.UI.Powers
                         if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                         {
                             // recalculation of power points on rating/free levels change
-                            CalculatePowerPoints();
+                            await CalculatePowerPoints();
                         }
                         break;
                     }
                 case ListChangedType.Reset:
                 case ListChangedType.ItemAdded:
                 case ListChangedType.ItemDeleted:
-                    CalculatePowerPoints();
+                    await CalculatePowerPoints();
                     break;
             }
         }
@@ -250,12 +250,12 @@ namespace Chummer.UI.Powers
         /// <summary>
         /// Calculate the number of Adept Power Points used.
         /// </summary>
-        public void CalculatePowerPoints()
+        public async ValueTask CalculatePowerPoints()
         {
             decimal decPowerPointsTotal = _objCharacter.PowerPointsTotal;
             decimal decPowerPointsRemaining = decPowerPointsTotal - _objCharacter.PowerPointsUsed;
             lblPowerPoints.Text = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                LanguageManager.GetString("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, LanguageManager.GetString("String_Remaining"));
+                await LanguageManager.GetStringAsync("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, await LanguageManager.GetStringAsync("String_Remaining"));
         }
 
         private void InitializeTable()
