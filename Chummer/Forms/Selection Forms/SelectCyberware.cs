@@ -1259,7 +1259,7 @@ namespace Chummer
                     lstCyberware.EndUpdate();
                 }
 
-                return lstCyberwares.Count > 0;
+                return lstCyberwares?.Count > 0;
             }
             finally
             {
