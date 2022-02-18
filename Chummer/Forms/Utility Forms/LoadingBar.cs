@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -74,6 +75,23 @@ namespace Chummer
                 pgbLoadingProgress.Value = 0;
                 pgbLoadingProgress.Maximum = intMaxProgressBarValue + 1;
             });
+        }
+
+        /// <summary>
+        /// Resets the ProgressBar
+        /// </summary>
+        /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
+        public async ValueTask ResetAsync(int intMaxProgressBarValue = 100)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            string strNewText = await LanguageManager.GetStringAsync("String_Initializing");
+            await Task.WhenAll(lblLoadingInfo.DoThreadSafeAsync(() => lblLoadingInfo.Text = strNewText),
+                               pgbLoadingProgress.DoThreadSafeAsync(() =>
+                               {
+                                   pgbLoadingProgress.Value = 0;
+                                   pgbLoadingProgress.Maximum = intMaxProgressBarValue + 1;
+                               }));
         }
 
         /// <summary>

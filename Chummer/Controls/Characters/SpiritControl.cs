@@ -562,7 +562,7 @@ namespace Chummer
 
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText, string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
-                    using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
+                    using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
                     {
                         frmProgressBar.PerformStep(objCharacter.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!objCharacter.Save())

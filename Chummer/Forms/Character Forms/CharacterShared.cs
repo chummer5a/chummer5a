@@ -6968,7 +6968,7 @@ namespace Chummer
 
                 using (new CursorWait(this))
                 {
-                    using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
+                    using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
                     {
                         frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!CharacterObject.Save())

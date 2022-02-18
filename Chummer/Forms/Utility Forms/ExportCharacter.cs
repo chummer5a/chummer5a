@@ -94,7 +94,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(_strXslt))
                 return;
@@ -103,11 +103,11 @@ namespace Chummer
             {
                 if (_strXslt == "Export JSON")
                 {
-                    ExportJson();
+                    await ExportJson();
                 }
                 else
                 {
-                    ExportNormal();
+                    await ExportNormal();
                 }
             }
         }
@@ -257,7 +257,7 @@ namespace Chummer
 
         #region XML
 
-        private void ExportNormal(string destination = null)
+        private async ValueTask ExportNormal(string destination = null)
         {
             string strSaveFile = destination;
             if (string.IsNullOrEmpty(destination))
@@ -268,7 +268,7 @@ namespace Chummer
                 using (StreamReader objFile = new StreamReader(exportSheetPath, Encoding.UTF8, true))
                 {
                     string strLine;
-                    while ((strLine = objFile.ReadLine()) != null)
+                    while ((strLine = await objFile.ReadLineAsync()) != null)
                     {
                         if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
                             strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->").Trim();
@@ -276,14 +276,14 @@ namespace Chummer
                 }
 
                 if (strExtension.Equals("XML", StringComparison.OrdinalIgnoreCase))
-                    SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Xml");
+                    SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml");
                 else if (strExtension.Equals("JSON", StringComparison.OrdinalIgnoreCase))
-                    SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json");
+                    SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json");
                 else if (strExtension.Equals("HTM", StringComparison.OrdinalIgnoreCase) || strExtension.Equals("HTML", StringComparison.OrdinalIgnoreCase))
-                    SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Html");
+                    SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html");
                 else
                     SaveFileDialog1.Filter = strExtension.ToUpper(GlobalSettings.CultureInfo) + "|*." + strExtension.ToLowerInvariant();
-                SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsHtml");
+                SaveFileDialog1.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml");
                 SaveFileDialog1.ShowDialog();
                 strSaveFile = SaveFileDialog1.FileName;
             }
@@ -413,15 +413,15 @@ namespace Chummer
 
         #region JSON
 
-        private void ExportJson(string destination = null)
+        private async ValueTask ExportJson(string destination = null)
         {
             string strSaveFile = destination;
             if (string.IsNullOrEmpty(strSaveFile))
             {
                 SaveFileDialog1.AddExtension = true;
                 SaveFileDialog1.DefaultExt = "json";
-                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Json") + '|' + LanguageManager.GetString("DialogFilter_All");
-                SaveFileDialog1.Title = LanguageManager.GetString("Button_Export_SaveJsonAs");
+                SaveFileDialog1.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All");
+                SaveFileDialog1.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs");
                 SaveFileDialog1.ShowDialog();
                 strSaveFile = SaveFileDialog1.FileName;
             }

@@ -144,7 +144,7 @@ namespace Chummer
                     using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1))
                     {
                         Task<ParallelLoopResult> objCharacterLoadingTask = null;
-                        using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + Utils.BasicDataFileNames.Count))
+                        using (_frmProgressBar = await CreateAndShowProgressBarAsync(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + Utils.BasicDataFileNames.Count))
                         {
                             // Attempt to cache all XML files that are used the most.
                             using (_ = Timekeeper.StartSyncron("cache_load", opFrmChummerMain))
@@ -1163,6 +1163,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for creating and displaying a frmLoading screen with specific text and progress bar size.
+        /// </summary>
+        /// <param name="strFile"></param>
+        /// <param name="intCount"></param>
+        /// <returns></returns>
+        public static async ValueTask<LoadingBar> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1)
+        {
+            LoadingBar frmReturn = new LoadingBar { CharacterFile = strFile };
+            if (intCount > 0)
+                await frmReturn.ResetAsync(intCount);
+            frmReturn.Show();
+            return frmReturn;
+        }
+
+        /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>
         private async void ShowNewForm(object sender, EventArgs e)
@@ -1255,9 +1270,9 @@ namespace Chummer
                     return;
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                using (_frmProgressBar = CreateAndShowProgressBar(
-                    string.Join(',' + await LanguageManager.GetStringAsync("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
-                    lstFilesToOpen.Count * Character.NumLoadingSections))
+                using (_frmProgressBar = await CreateAndShowProgressBarAsync(
+                           string.Join(',' + await LanguageManager.GetStringAsync("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
+                           lstFilesToOpen.Count * Character.NumLoadingSections))
                 {
                     Dictionary<int, string> dicIndexedStrings =
                         new Dictionary<int, string>(lstFilesToOpen.Count);
@@ -1452,7 +1467,7 @@ namespace Chummer
                 }
                 if (blnShowProgressBar && _frmProgressBar.IsNullOrDisposed())
                 {
-                    using (_frmProgressBar = CreateAndShowProgressBar(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
+                    using (_frmProgressBar = await CreateAndShowProgressBarAsync(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
                     {
                         OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");
