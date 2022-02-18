@@ -25,7 +25,7 @@ using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeStack<T> : ICollection, IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>
+    public class ThreadSafeStack<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>
     {
         private readonly Stack<T> _stkData;
 
