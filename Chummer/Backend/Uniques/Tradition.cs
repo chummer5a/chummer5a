@@ -964,7 +964,7 @@ namespace Chummer.Backend.Uniques
                 case TraditionType.RES:
                     objDoc = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage)
+                        ? _objCharacter.LoadDataXPath("streams.xml", strLanguage)
                         : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage);
                     break;
             }

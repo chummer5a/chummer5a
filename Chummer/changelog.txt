@@ -29,6 +29,7 @@ Application Changes:
 - The Hero Lab Importer tool no longer crashes after selecting a .por file. Fixes #4701.
 - Fixed some instances of re-applying improvements from old saves not working properly.
 - The Hero Lab Importer tool now prompts the user to select a settings file for an imported character instead of choosing one automatically. Fixes #4704.
+- Fixed an issue where technomancer Fading dice were not determined correctly.
 
 Data Changes:
 - The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
