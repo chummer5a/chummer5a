@@ -2244,34 +2244,34 @@ namespace Chummer
                                                                       objMartialArt.DisplayNameShort(
                                                                           GlobalSettings.Language));
                             }
-
-                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(
-                                         x => lstInternalIdFilter?.Contains(x.InternalId) != true))
-                            {
-                                XmlNode objNode = objTechnique.GetNode();
-                                if (objNode != null)
-                                {
-                                    if (objNode["bonus"] != null)
-                                        ImprovementManager.CreateImprovements(
-                                            CharacterObject, Improvement.ImprovementSource.MartialArtTechnique,
-                                            objTechnique.InternalId, objNode["bonus"], 1,
-                                            objTechnique.CurrentDisplayName);
-                                }
-                                else
-                                {
-                                    sbdOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
-                                }
-                            }
                         }
                         else
                         {
                             sbdOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
                         }
+
+                        foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(
+                                     x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                        {
+                            XmlNode objNode = objTechnique.GetNode();
+                            if (objNode != null)
+                            {
+                                if (objNode["bonus"] != null)
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.MartialArtTechnique,
+                                        objTechnique.InternalId, objNode["bonus"], 1,
+                                        objTechnique.CurrentDisplayName);
+                            }
+                            else
+                            {
+                                sbdOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
+                            }
+                        }
                     }
 
                     // Refresh Spells.
                     foreach (Spell objSpell in CharacterObject.Spells.Where(
-                                 x => lstInternalIdFilter?.Contains(x.InternalId) != true))
+                                 x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
                         XmlNode objNode = objSpell.GetNode();
                         if (objNode != null)
@@ -2301,7 +2301,7 @@ namespace Chummer
 
                     // Refresh Adept Powers.
                     foreach (Power objPower in CharacterObject.Powers.Where(
-                                 x => lstInternalIdFilter?.Contains(x.InternalId) != true))
+                                 x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
                         XmlNode objNode = objPower.GetNode();
                         if (objNode != null)
@@ -2326,7 +2326,7 @@ namespace Chummer
 
                     // Refresh Complex Forms.
                     foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(
-                                 x => lstInternalIdFilter?.Contains(x.InternalId) != true))
+                                 x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
                         XmlNode objNode = objComplexForm.GetNode();
                         if (objNode != null)
@@ -2356,7 +2356,7 @@ namespace Chummer
 
                     // Refresh AI Programs and Advanced Programs
                     foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(
-                                 x => lstInternalIdFilter?.Contains(x.InternalId) != true))
+                                 x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
                         XmlNode objNode = objProgram.GetNode();
                         if (objNode != null)
@@ -2386,7 +2386,7 @@ namespace Chummer
 
                     // Refresh Critter Powers.
                     foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(
-                                 x => lstInternalIdFilter?.Contains(x.InternalId) != true))
+                                 x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
                         XmlNode objNode = objPower.GetNode();
                         if (objNode != null)
