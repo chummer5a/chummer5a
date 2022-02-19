@@ -6689,28 +6689,18 @@ namespace Chummer
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
             _intAIAdvancedProgramLimit = 0;
-            _intCachedAllowSpriteFettering = int.MinValue;
-            _intCachedAmbidextrous = int.MinValue;
-            _intCachedBlackMarketDiscount = int.MinValue;
             _intCachedCareerKarma = int.MinValue;
             _intCachedContactPoints = int.MinValue;
             _decCachedBaseCarryLimit = decimal.MinValue;
             _decCachedBaseLiftLimit = decimal.MinValue;
             _decCachedTotalCarriedWeight = decimal.MinValue;
             _decCachedEncumbranceInterval = decimal.MinValue;
-            _intCachedDealerConnectionDiscount = int.MinValue;
             _intCachedEnemyKarma = int.MinValue;
-            _intCachedErased = int.MinValue;
-            _intCachedExCon = int.MinValue;
-            _intCachedFame = int.MinValue;
-            _intCachedFriendsInHighPlaces = int.MinValue;
             _intCachedInitiationEnabled = int.MinValue;
-            _intCachedMadeMan = int.MinValue;
             _intCachedMetagenicNegativeQualities = int.MinValue;
             _intCachedMetagenicPositiveQualities = int.MinValue;
             _intCachedNegativeQualities = int.MinValue;
             _intCachedNegativeQualityLimitKarma = int.MinValue;
-            _intCachedOverclocker = int.MinValue;
             _intCachedPositiveQualities = int.MinValue;
             _intCachedPositiveQualitiesTotal = int.MinValue;
             _intCachedRedlinerBonus = int.MinValue;
@@ -10305,25 +10295,11 @@ namespace Chummer
                 return Math.Max(decReturn.StandardRound(), 0);
             }
         }
+        
 
-        private int _intCachedAmbidextrous = int.MinValue;
-
-        public bool Ambidextrous
-        {
-            get
-            {
-                if(_intCachedAmbidextrous < 0)
-                {
-                    _intCachedAmbidextrous = ImprovementManager
-                                             .GetCachedImprovementListForValueOf(
-                                                 this, Improvement.ImprovementType.Ambidextrous).Count > 0
-                        ? 1
-                        : 0;
-                }
-
-                return _intCachedAmbidextrous > 0;
-            }
-        }
+        public bool Ambidextrous => ImprovementManager
+                                    .GetCachedImprovementListForValueOf(
+                                        this, Improvement.ImprovementType.Ambidextrous).Count > 0;
 
         #endregion
 
@@ -16039,10 +16015,10 @@ namespace Chummer
             get => _blnCritterEnabled;
             set
             {
-                if(_blnCritterEnabled != value)
+                if (_blnCritterEnabled != value)
                 {
                     _blnCritterEnabled = value;
-                    if(!value)
+                    if (!value)
                     {
                         ClearCritterPowers();
                     }
@@ -16052,26 +16028,12 @@ namespace Chummer
             }
         }
 
-        private int _intCachedDealerConnectionDiscount = int.MinValue;
-
         /// <summary>
         /// Whether or not Black Market Discount is enabled.
         /// </summary>
-        public bool DealerConnectionDiscount
-        {
-            get
-            {
-                if (_intCachedDealerConnectionDiscount < 0)
-                    _intCachedDealerConnectionDiscount = ImprovementManager
-                                                         .GetCachedImprovementListForValueOf(
-                                                             this, Improvement.ImprovementType.DealerConnection).Count
-                                                         > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedDealerConnectionDiscount > 0;
-            }
-        }
+        public bool DealerConnectionDiscount => ImprovementManager
+                                                .GetCachedImprovementListForValueOf(
+                                                    this, Improvement.ImprovementType.DealerConnection).Count > 0;
 
         public void RefreshDealerConnectionDiscounts()
         {
@@ -16103,26 +16065,13 @@ namespace Chummer
             }
         }
 
-        private int _intCachedBlackMarketDiscount = int.MinValue;
-
         /// <summary>
         /// Whether or not Black Market Discount is enabled.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                if (_intCachedBlackMarketDiscount < 0)
-                    _intCachedBlackMarketDiscount = ImprovementManager
-                                                    .GetCachedImprovementListForValueOf(
-                                                        this, Improvement.ImprovementType.BlackMarketDiscount).Count
-                                                    > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedBlackMarketDiscount > 0;
-            }
-        }
+        public bool BlackMarketDiscount => ImprovementManager
+                                           .GetCachedImprovementListForValueOf(
+                                               this, Improvement.ImprovementType.BlackMarketDiscount).Count
+                                           > 0;
 
         public void RefreshBlackMarketDiscounts()
         {
@@ -16419,46 +16368,18 @@ namespace Chummer
 
         public bool IsPrototypeTranshuman => PrototypeTranshuman > 0;
 
-        private int _intCachedFriendsInHighPlaces = int.MinValue;
-
         /// <summary>
         /// Whether or not Friends in High Places is enabled.
         /// </summary>
-        public bool FriendsInHighPlaces
-        {
-            get
-            {
-                if (_intCachedFriendsInHighPlaces < 0)
-                    _intCachedFriendsInHighPlaces = ImprovementManager
-                                                    .GetCachedImprovementListForValueOf(
-                                                        this, Improvement.ImprovementType.FriendsInHighPlaces).Count
-                                                    > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedFriendsInHighPlaces > 0;
-            }
-        }
-
-        private int _intCachedExCon = int.MinValue;
+        public bool FriendsInHighPlaces => ImprovementManager
+                                           .GetCachedImprovementListForValueOf(
+                                               this, Improvement.ImprovementType.FriendsInHighPlaces).Count > 0;
 
         /// <summary>
         /// Whether or not ExCon is enabled.
         /// </summary>
-        public bool ExCon
-        {
-            get
-            {
-                if (_intCachedExCon < 0)
-                    _intCachedExCon = ImprovementManager
-                                      .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.ExCon).Count
-                                      > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedExCon > 0;
-            }
-        }
+        public bool ExCon => ImprovementManager
+                             .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.ExCon).Count > 0;
 
         private int _intCachedTrustFund = int.MinValue;
 
@@ -16502,104 +16423,40 @@ namespace Chummer
             }
         }
 
-        private int _intCachedOverclocker = int.MinValue;
-
         /// <summary>
         /// Whether or not Overclocker is enabled.
         /// </summary>
-        public bool Overclocker
-        {
-            get
-            {
-                if (_intCachedOverclocker < 0)
-                    _intCachedOverclocker = ImprovementManager
-                                            .GetCachedImprovementListForValueOf(
-                                                this, Improvement.ImprovementType.Overclocker).Count > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedOverclocker > 0;
-            }
-        }
-
-        private int _intCachedMadeMan = int.MinValue;
+        public bool Overclocker => ImprovementManager
+                                   .GetCachedImprovementListForValueOf(
+                                       this, Improvement.ImprovementType.Overclocker).Count > 0;
 
         /// <summary>
         /// Whether or not MadeMan is enabled.
         /// </summary>
-        public bool MadeMan
-        {
-            get
-            {
-                if (_intCachedMadeMan < 0)
-                    _intCachedMadeMan
-                        = ImprovementManager
-                          .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.MadeMan).Count > 0
-                            ? 1
-                            : 0;
-
-                return _intCachedMadeMan > 0;
-            }
-        }
-
-        private int _intCachedFame = int.MinValue;
+        public bool MadeMan => ImprovementManager
+                               .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.MadeMan).Count > 0;
 
         /// <summary>
         /// Whether or not Fame is enabled.
         /// </summary>
-        public bool Fame
-        {
-            get
-            {
-                if (_intCachedFame < 0)
-                    _intCachedFame = ImprovementManager
-                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Fame).Count
-                                     > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedFame > 0;
-            }
-        }
-
-        private int _intCachedErased = int.MinValue;
+        public bool Fame => ImprovementManager
+                            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Fame).Count
+                            > 0;
 
         /// <summary>
         /// Whether or not Erased is enabled.
         /// </summary>
-        public bool Erased
-        {
-            get
-            {
-                if(_intCachedErased < 0)
-                    _intCachedErased = ImprovementManager
-                                       .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Erased).Count
-                                       > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedErased > 0;
-            }
-        }
-
-        private int _intCachedAllowSpriteFettering = int.MinValue;
+        public bool Erased => ImprovementManager
+                              .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Erased).Count
+                              > 0;
 
         /// <summary>
         /// Whether or not the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
         /// </summary>
-        public bool AllowSpriteFettering
-        {
-            get
-            {
-                if (_intCachedAllowSpriteFettering < 0)
-                    _intCachedAllowSpriteFettering = ImprovementManager
-                                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.AllowSpriteFettering).Count
-                                                     > 0
-                        ? 1
-                        : 0;
-                return _intCachedAllowSpriteFettering > 0;
-            }
-        }
+        public bool AllowSpriteFettering => ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                this, Improvement.ImprovementType.AllowSpriteFettering).Count
+                                            > 0;
 
         /// <summary>
         /// Extended Availability Test information for an item based on the character's Negotiate Skill.
@@ -19764,46 +19621,6 @@ namespace Chummer
                     _intCachedRestrictedGear = int.MinValue;
                 }
 
-                if (setNamesOfChangedProperties.Contains(nameof(FriendsInHighPlaces)))
-                {
-                    _intCachedFriendsInHighPlaces = int.MinValue;
-                }
-
-                if (setNamesOfChangedProperties.Contains(nameof(ExCon)))
-                {
-                    _intCachedExCon = int.MinValue;
-                }
-
-                if (setNamesOfChangedProperties.Contains(nameof(MadeMan)))
-                {
-                    _intCachedMadeMan = int.MinValue;
-                }
-
-                if (setNamesOfChangedProperties.Contains(nameof(Fame)))
-                {
-                    _intCachedFame = int.MinValue;
-                }
-
-                if (setNamesOfChangedProperties.Contains(nameof(Erased)))
-                {
-                    _intCachedErased = int.MinValue;
-                }
-
-                if (setNamesOfChangedProperties.Contains(nameof(AllowSpriteFettering)))
-                {
-                    _intCachedAllowSpriteFettering = int.MinValue;
-                }
-
-                if (setNamesOfChangedProperties.Contains(nameof(Overclocker)))
-                {
-                    _intCachedOverclocker = int.MinValue;
-                }
-
-                if (setNamesOfChangedProperties.Contains(nameof(Ambidextrous)))
-                {
-                    _intCachedAmbidextrous = int.MinValue;
-                }
-
                 if (setNamesOfChangedProperties.Contains(nameof(TotalCarriedWeight)))
                 {
                     _decCachedTotalCarriedWeight = decimal.MinValue;
@@ -19811,13 +19628,11 @@ namespace Chummer
 
                 if (setNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
                 {
-                    _intCachedDealerConnectionDiscount = int.MinValue;
                     RefreshDealerConnectionDiscounts();
                 }
 
                 if (setNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
                 {
-                    _intCachedBlackMarketDiscount = int.MinValue;
                     RefreshBlackMarketDiscounts();
                 }
 
