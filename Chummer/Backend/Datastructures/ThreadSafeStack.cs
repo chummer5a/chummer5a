@@ -135,10 +135,10 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
-        public void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(T[] array, int index)
         {
             using (new EnterReadLock(LockObject))
-                _stkData.CopyTo(array, arrayIndex);
+                _stkData.CopyTo(array, index);
         }
 
         /// <inheritdoc />

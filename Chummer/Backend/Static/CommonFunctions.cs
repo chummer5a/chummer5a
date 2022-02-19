@@ -1269,10 +1269,10 @@ namespace Chummer
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="sender">Control from which this method was called.</param>
-        public static Task OpenPdfFromControl(object sender)
+        public static async ValueTask OpenPdfFromControl(object sender)
         {
             if (!(sender is Control objControl))
-                return Task.CompletedTask;
+                return;
             Control objLoopControl = objControl;
             Character objCharacter = null;
             while (objLoopControl != null)
@@ -1287,7 +1287,7 @@ namespace Chummer
             }
 
             using (new CursorWait(objControl.FindForm() ?? objControl))
-                return OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
+                await OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
         }
 
         /// <summary>
@@ -1298,7 +1298,7 @@ namespace Chummer
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalSettings.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalSettings.PdfAppPath.</param>
         /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
-        public static async Task OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
+        public static async ValueTask OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;

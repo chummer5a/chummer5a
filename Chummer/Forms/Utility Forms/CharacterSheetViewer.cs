@@ -745,10 +745,10 @@ namespace Chummer
         /// <summary>
         /// Set the XSL sheet that will be selected by default.
         /// </summary>
-        public async ValueTask SetSelectedSheet(string strSheet)
+        public ValueTask SetSelectedSheet(string strSheet)
         {
             _strSelectedSheet = strSheet;
-            await RefreshSheet();
+            return RefreshSheet();
         }
 
         /// <summary>

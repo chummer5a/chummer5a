@@ -83,7 +83,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryTake(out T item)
         {
-            if (DicInternal.Count > 0)
+            if (!DicInternal.IsEmpty)
             {
                 // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                 item = DicInternal.Keys.First();

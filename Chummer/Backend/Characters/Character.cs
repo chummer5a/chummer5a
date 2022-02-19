@@ -8655,7 +8655,7 @@ namespace Chummer
                                                           this,
                                                           Improvement.ImprovementType.SpecialTab,
                                                           "Cyberware")
-                                                      .FirstOrDefault(x => x.UniqueName == "disabletab");
+                                                      .Find(x => x.UniqueName == "disabletab");
                 if (objDisablingImprovement != null)
                 {
                     strDisabledSource = LanguageManager.GetString("String_Space") +

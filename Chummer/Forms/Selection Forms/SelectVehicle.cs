@@ -129,9 +129,9 @@ namespace Chummer
             cboCategory.EndUpdate();
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         private async void lstVehicle_SelectedIndexChanged(object sender, EventArgs e)
@@ -161,17 +161,17 @@ namespace Chummer
             await AcceptForm();
         }
 
-        private void ProcessVehicleCostsChanged(object sender, EventArgs e)
+        private async void ProcessVehicleCostsChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
-                RefreshList();
+                await RefreshList();
             UpdateSelectedVehicleCost();
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
-                RefreshList();
+                await RefreshList();
             UpdateSelectedVehicleCost();
         }
 

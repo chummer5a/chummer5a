@@ -353,32 +353,32 @@ namespace Chummer
                         {
                             case "magician":
                                 _objCharacter.MagicianEnabled = true;
-                                Log.Trace("enabletab " + " magician");
+                                Log.Trace("enabletab magician");
                                 CreateImprovement("Magician", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
                             case "adept":
                                 _objCharacter.AdeptEnabled = true;
-                                Log.Trace("enabletab " + " adept");
+                                Log.Trace("enabletab adept");
                                 CreateImprovement("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab",
                                     0, 0);
                                 break;
                             case "technomancer":
                                 _objCharacter.TechnomancerEnabled = true;
-                                Log.Trace("enabletab " + " technomancer");
+                                Log.Trace("enabletab technomancer");
                                 CreateImprovement("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
                             case "advanced programs":
                                 _objCharacter.AdvancedProgramsEnabled = true;
-                                Log.Trace("enabletab " + " advanced programs");
+                                Log.Trace("enabletab advanced programs");
                                 CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
                             case "critter":
                                 _objCharacter.CritterEnabled = true;
-                                Log.Trace("enabletab " + " critter");
+                                Log.Trace("enabletab critter");
                                 CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;

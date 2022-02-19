@@ -507,9 +507,9 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -756,12 +756,12 @@ namespace Chummer
             await CommonFunctions.OpenPdfFromControl(sender);
         }
 
-        private void tmrSearch_Tick(object sender, EventArgs e)
+        private async void tmrSearch_Tick(object sender, EventArgs e)
         {
             tmrSearch.Stop();
             tmrSearch.Enabled = false;
 
-            RefreshList();
+            await RefreshList();
         }
 
         #endregion Methods
