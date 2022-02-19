@@ -19808,23 +19808,23 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName = "")
+        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
-            return LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsName).GetAwaiter().GetResult();
+            return LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey).GetAwaiter().GetResult();
         }
 
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public Task<bool> LoadFromHeroLabFileAsync(string strPorFile, string strCharacterId, string strSettingsName = "")
+        public Task<bool> LoadFromHeroLabFileAsync(string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
-            return LoadFromHeroLabFileCoreAsync(false, strPorFile, strCharacterId, strSettingsName);
+            return LoadFromHeroLabFileCoreAsync(false, strPorFile, strCharacterId, strSettingsKey);
         }
 
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public async Task<bool> LoadFromHeroLabFileCoreAsync(bool blnSync, string strPorFile, string strCharacterId, string strSettingsName = "")
+        public async Task<bool> LoadFromHeroLabFileCoreAsync(bool blnSync, string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
             if(!File.Exists(strPorFile))
                 return false;
@@ -20099,12 +20099,12 @@ namespace Chummer
                                 ResetCharacter();
 
                                 // Get the name of the settings file in use if possible.
-                                if (!string.IsNullOrEmpty(strSettingsName))
+                                if (!string.IsNullOrEmpty(strSettingsKey))
                                 {
-                                    if (!SettingsManager.LoadedCharacterSettings.ContainsKey(strSettingsName))
+                                    if (!SettingsManager.LoadedCharacterSettings.ContainsKey(strSettingsKey))
                                         return false;
 
-                                    SettingsKey = strSettingsName;
+                                    SettingsKey = strSettingsKey;
                                 }
 
                                 // Metatype information.
@@ -20222,7 +20222,7 @@ namespace Chummer
                                 if (_lstMugshots.Count > 0)
                                     _intMainMugshotIndex = 0;
 
-                                if (string.IsNullOrEmpty(strSettingsName))
+                                if (string.IsNullOrEmpty(strSettingsKey))
                                 {
                                     string strSettingsSummary =
                                         xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.Value;
@@ -20230,152 +20230,89 @@ namespace Chummer
                                     {
                                         int intCharCreationSystemsIndex =
                                             strSettingsSummary.IndexOf("Character Creation Systems:",
-                                                StringComparison.Ordinal);
-                                        int intSemicolonIndex = strSettingsSummary.IndexOf(';');
-                                        if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex &&
-                                            intCharCreationSystemsIndex != -1)
+                                                                       StringComparison.OrdinalIgnoreCase);
+                                        if (intCharCreationSystemsIndex != -1)
                                         {
-                                            string strHeroLabSettingsName = strSettingsSummary.Substring(
-                                                    intCharCreationSystemsIndex + 28,
-                                                    strSettingsSummary.IndexOf(';') - 28 - intCharCreationSystemsIndex)
-                                                .Trim();
-                                            if (strHeroLabSettingsName == "Established Runners")
-                                                strHeroLabSettingsName = "Standard";
-                                            KeyValuePair<string, CharacterSettings> kvpHeroLabSettings =
-                                                SettingsManager.LoadedCharacterSettings.FirstOrDefault(x =>
-                                                    x.Value.Name == strHeroLabSettingsName);
-                                            if (kvpHeroLabSettings.Value != null)
+                                            int intSemicolonIndex = strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex);
+                                            if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex)
                                             {
-                                                SettingsKey = kvpHeroLabSettings.Key;
-                                                strSettingsName = kvpHeroLabSettings.Key;
+                                                string strHeroLabSettingsName = strSettingsSummary.Substring(
+                                                        intCharCreationSystemsIndex + 28,
+                                                        strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex) - 28 - intCharCreationSystemsIndex)
+                                                    .Trim();
+                                                if (strHeroLabSettingsName == "Established Runners")
+                                                    strHeroLabSettingsName = "Standard";
+
+                                                if (strHeroLabSettingsName == "Standard")
+                                                {
+                                                    bool blnDoFullHouse = false;
+                                                    int intSourcebooksIndex
+                                                        = strSettingsSummary.IndexOf("Core Rulebooks:", StringComparison.OrdinalIgnoreCase);
+                                                    if (intSourcebooksIndex != -1)
+                                                    {
+                                                        intSemicolonIndex = strSettingsSummary.IndexOf(';', intSourcebooksIndex);
+                                                        if (intSourcebooksIndex + 16 < intSemicolonIndex)
+                                                        {
+                                                            blnDoFullHouse = true; // We probably have multiple books enabled, so use Full House instead
+                                                        }
+                                                    }
+
+                                                    bool blnIsKarmaBased = xmlStatBlockBaseNode
+                                                                           .SelectSingleNode("creation/bp/@total")
+                                                                           ?.ValueAsInt > 100;
+                                                    if (blnDoFullHouse)
+                                                    {
+                                                        strHeroLabSettingsName = blnIsKarmaBased
+                                                            ? "Full House (Point Buy)"
+                                                            : "Full House";
+                                                    }
+                                                    else if (blnIsKarmaBased)
+                                                        strHeroLabSettingsName = "Point Buy";
+                                                }
+
+                                                CharacterSettings objHeroLabSettings =
+                                                    SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                                                        x => x.Name == strHeroLabSettingsName);
+                                                if (objHeroLabSettings != null)
+                                                {
+                                                    strSettingsKey = SettingsKey = objHeroLabSettings.DictionaryKey;
+                                                }
                                             }
                                         }
                                     }
-                                }
 
-                                if (string.IsNullOrEmpty(strSettingsName))
-                                {
-                                    int intKarma =
-                                        xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.ValueAsInt ?? 0;
-
-                                    if (intKarma >= 100)
+                                    if (string.IsNullOrEmpty(strSettingsKey))
                                     {
-                                        KeyValuePair<string, CharacterSettings> kvpHeroLabSettings =
-                                            SettingsManager.LoadedCharacterSettings.FirstOrDefault(x =>
-                                                x.Value.BuiltInOption
-                                                && x.Value.BuildMethod == CharacterBuildMethod.Karma);
-                                        if (kvpHeroLabSettings.Value != null)
+                                        if (Program.MainForm.ShowMessageBox(
+                                                string.Format(GlobalSettings.CultureInfo,
+                                                              blnSync
+                                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                                  ? LanguageManager.GetString(
+                                                                      "Message_MissingGameplayOption")
+                                                                  : await LanguageManager.GetStringAsync(
+                                                                      "Message_MissingGameplayOption"),
+                                                              SettingsKey),
+                                                blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? LanguageManager.GetString("Message_MissingGameplayOption_Title")
+                                                    : await LanguageManager.GetStringAsync(
+                                                        "Message_MissingGameplayOption_Title"),
+                                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
                                         {
-                                            SettingsKey = kvpHeroLabSettings.Key;
-                                            strSettingsName = kvpHeroLabSettings.Key;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode
-                                            .SelectSingleNode(
-                                                "container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")
-                                            ?.Value);
-                                        _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode
-                                            .SelectSingleNode(
-                                                "container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")
-                                            ?.Value);
-                                        _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode
-                                            .SelectSingleNode(
-                                                "container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")
-                                            ?.Value);
-                                        _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode
-                                            .SelectSingleNode(
-                                                "container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")
-                                            ?.Value);
-                                        _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode
-                                            .SelectSingleNode(
-                                                "container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")
-                                            ?.Value);
-
-                                        string ConvertPriorityString(string strInput)
-                                        {
-                                            switch (strInput)
+                                            using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
                                             {
-                                                case "1.":
-                                                    return "A";
-                                                case "2.":
-                                                    return "B";
-                                                case "3.":
-                                                    return "C";
-                                                case "4.":
-                                                    return "D";
-                                                case "5.":
-                                                    return "E";
-                                                default:
-                                                    return string.Empty;
-                                            }
-                                        }
-
-                                        if (_strPriorityAttributes == _strPrioritySpecial ||
-                                            _strPriorityAttributes == _strPriorityMetatype ||
-                                            _strPriorityAttributes == _strPriorityResources ||
-                                            _strPriorityAttributes == _strPrioritySkills ||
-                                            _strPrioritySpecial == _strPrioritySkills ||
-                                            _strPrioritySpecial == _strPriorityMetatype ||
-                                            _strPrioritySpecial == _strPriorityResources ||
-                                            _strPriorityMetatype == _strPriorityResources ||
-                                            _strPriorityMetatype == _strPrioritySpecial ||
-                                            _strPriorityResources == _strPrioritySkills)
-                                        {
-                                            KeyValuePair<string, CharacterSettings> kvpHeroLabSettings =
-                                                SettingsManager.LoadedCharacterSettings.FirstOrDefault(x =>
-                                                    x.Value.BuiltInOption
-                                                    && x.Value.BuildMethod == CharacterBuildMethod.SumtoTen);
-                                            if (kvpHeroLabSettings.Value != null)
-                                            {
-                                                SettingsKey = kvpHeroLabSettings.Key;
-                                                strSettingsName = kvpHeroLabSettings.Key;
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    frmPickBP.ShowDialogSafe(this);
+                                                else
+                                                    await frmPickBP.ShowDialogSafeAsync(this);
+                                                if (frmPickBP.DialogResult != DialogResult.OK)
+                                                    return false;
                                             }
                                         }
                                         else
-                                        {
-                                            KeyValuePair<string, CharacterSettings> kvpHeroLabSettings =
-                                                SettingsManager.LoadedCharacterSettings.FirstOrDefault(x =>
-                                                    x.Value.BuiltInOption
-                                                    && x.Value.BuildMethod == CharacterBuildMethod.Priority);
-                                            if (kvpHeroLabSettings.Value != null)
-                                            {
-                                                SettingsKey = kvpHeroLabSettings.Key;
-                                                strSettingsName = kvpHeroLabSettings.Key;
-                                            }
-                                        }
+                                            return false;
                                     }
-                                }
-
-                                if (string.IsNullOrEmpty(strSettingsName))
-                                {
-                                    if (Program.MainForm.ShowMessageBox(
-                                        string.Format(GlobalSettings.CultureInfo,
-                                                      blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString("Message_MissingGameplayOption")
-                                                          : await LanguageManager.GetStringAsync("Message_MissingGameplayOption"),
-                                            SettingsKey),
-                                        blnSync
-                                            // ReSharper disable once MethodHasAsyncOverload
-                                            ? LanguageManager.GetString("Message_MissingGameplayOption_Title")
-                                            : await LanguageManager.GetStringAsync("Message_MissingGameplayOption_Title"),
-                                        MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
-                                    {
-                                        using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
-                                        {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                frmPickBP.ShowDialogSafe(this);
-                                            else
-                                                await frmPickBP.ShowDialogSafeAsync(this);
-                                            if (frmPickBP.DialogResult != DialogResult.OK)
-                                                return false;
-                                        }
-                                    }
-                                    else
-                                        return false;
                                 }
 
                                 if (EffectiveBuildMethodUsesPriorityTables)

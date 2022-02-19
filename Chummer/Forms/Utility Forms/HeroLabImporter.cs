@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -237,9 +238,60 @@ namespace Chummer
                         objCache.Essence = xmlBaseCharacterNode
                                            .SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.Value;
                         objCache.BuildMethod
-                            = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.Value == "25"
-                                ? nameof(CharacterBuildMethod.Priority)
-                                : nameof(CharacterBuildMethod.Karma);
+                            = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.ValueAsInt <= 100
+                                ? CharacterBuildMethod.Priority
+                                : CharacterBuildMethod.Karma;
+
+                        string strSettingsSummary =
+                            xmlBaseCharacterNode.SelectSingleNode("settings/@summary")?.Value;
+                        if (!string.IsNullOrEmpty(strSettingsSummary))
+                        {
+                            int intSemicolonIndex;
+                            bool blnDoFullHouse = false;
+                            int intSourcebooksIndex
+                                = strSettingsSummary.IndexOf("Core Rulebooks:", StringComparison.OrdinalIgnoreCase);
+                            if (intSourcebooksIndex != -1)
+                            {
+                                intSemicolonIndex = strSettingsSummary.IndexOf(';', intSourcebooksIndex);
+                                if (intSourcebooksIndex + 16 < intSemicolonIndex)
+                                {
+                                    blnDoFullHouse = true; // We probably have multiple books enabled, so use Full House instead
+                                }
+                            }
+
+                            string strHeroLabSettingsName = "Standard";
+
+                            int intCharCreationSystemsIndex =
+                                strSettingsSummary.IndexOf("Character Creation Systems:",
+                                                           StringComparison.OrdinalIgnoreCase);
+                            if (intCharCreationSystemsIndex != -1)
+                            {
+                                intSemicolonIndex = strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex);
+                                if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex)
+                                {
+                                    strHeroLabSettingsName = strSettingsSummary.Substring(
+                                            intCharCreationSystemsIndex + 28,
+                                            strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex) - 28 - intCharCreationSystemsIndex)
+                                        .Trim();
+                                    if (strHeroLabSettingsName == "Established Runners")
+                                        strHeroLabSettingsName = "Standard";
+                                }
+                            }
+
+                            if (strHeroLabSettingsName == "Standard")
+                            {
+                                if (blnDoFullHouse)
+                                {
+                                    strHeroLabSettingsName = objCache.BuildMethod == CharacterBuildMethod.Karma
+                                        ? "Full House (Point Buy)"
+                                        : "Full House";
+                                }
+                                else if (objCache.BuildMethod == CharacterBuildMethod.Karma)
+                                    strHeroLabSettingsName = "Point Buy";
+                            }
+
+                            objCache.SettingsName = strHeroLabSettingsName;
+                        }
 
                         objCache.Created = objCache.Karma != "0";
                         if (!objCache.Created)
@@ -298,7 +350,8 @@ namespace Chummer
             internal string CharacterId { get; set; }
             internal string CharacterName { get; set; }
             internal string CharacterAlias { get; set; }
-            internal string BuildMethod { get; set; }
+            internal CharacterBuildMethod BuildMethod { get; set; }
+            internal string SettingsName { get; set; }
             internal string Essence { get; set; }
             internal Image Mugshot { get; set; }
             internal bool Created { get; set; }
@@ -469,28 +522,72 @@ namespace Chummer
             int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
             if (intIndex < 0 || intIndex >= _lstCharacterCache.Count)
                 return;
-            string strFile = _lstCharacterCache[intIndex]?.FilePath;
-            string strCharacterId = _lstCharacterCache[intIndex]?.CharacterId;
+            HeroLabCharacterCache objCache = _lstCharacterCache[intIndex];
+            if (objCache == null)
+                return;
+            string strFile = objCache.FilePath;
+            string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
             using (new CursorWait(this))
             {
-                cmdImport.Enabled = false;
-                cmdSelectFile.Enabled = false;
+                bool blnLoaded = false;
                 Character objCharacter = new Character();
-                Program.MainForm.OpenCharacters.Add(objCharacter);
-                //Timekeeper.Start("load_file");
-                bool blnLoaded = await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId);
-                //Timekeeper.Finish("load_file");
-                if (!blnLoaded)
+                try
                 {
-                    Program.MainForm.OpenCharacters.Remove(objCharacter);
+                    Program.MainForm.OpenCharacters.Add(objCharacter);
+
+                    CharacterSettings objHeroLabSettings =
+                        SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
+                    if (objHeroLabSettings != null)
+                    {
+                        objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
+                    }
+                    else
+                    {
+                        objHeroLabSettings = SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.Name.Contains(objCache.SettingsName) && x.BuildMethod == objCache.BuildMethod);
+                        if (objHeroLabSettings != null)
+                        {
+                            objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
+                        }
+                        else if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out CharacterSettings objDefaultCharacterSettings)
+                            && objCache.BuildMethod.UsesPriorityTables() == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
+                        {
+                            objCharacter.SettingsKey = objDefaultCharacterSettings.DictionaryKey;
+                        }
+                        else
+                        {
+                            objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.BuiltInOption && x.BuildMethod == objCache.BuildMethod)?.DictionaryKey
+                                                       ?? SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.BuiltInOption && x.BuildMethod.UsesPriorityTables() == objCache.BuildMethod.UsesPriorityTables())?.DictionaryKey
+                                                       ?? GlobalSettings.DefaultCharacterSetting;
+                        }
+                    }
+
+                    DialogResult ePickBPResult = await this.DoThreadSafeFunc(ShowBPAsync);
+                    async ValueTask<DialogResult> ShowBPAsync()
+                    {
+                        using (SelectBuildMethod frmPickBP = new SelectBuildMethod(objCharacter, true))
+                        {
+                            await frmPickBP.ShowDialogSafeAsync(this);
+                            return frmPickBP.DialogResult;
+                        }
+                    }
+                    if (ePickBPResult != DialogResult.OK)
+                        return;
+                    //Timekeeper.Start("load_file");
+                    if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, objCharacter.SettingsKey))
+                        return;
+                    blnLoaded = true;
+                    //Timekeeper.Finish("load_file");
+                    await Program.MainForm.OpenCharacter(objCharacter);
+                }
+                finally
+                {
                     cmdImport.Enabled = true;
                     cmdSelectFile.Enabled = true;
-                    return;
+                    if (!blnLoaded)
+                        Program.MainForm.OpenCharacters.Remove(objCharacter);
                 }
-
-                await Program.MainForm.OpenCharacter(objCharacter);
             }
 
             Close();
