@@ -5,6 +5,10 @@ Application Changes:
 - Disabling the setting that allows skills to be regrouped now properly makes skill groups remain broken after character creation if they are broken at least once.
 - Fixed issues where setting a character to ignore character creation rules still did not allow them to spend skill points and karma as freely as they should have.
 - The house rule to compensate the karma cost for raising the last skill in a broken skill group is no longer overwritten by bonuses that set a minimum karma cost for learning skills.
+- Added a house rule that allows specializations to no longer break skill groups.
+
+Changed/New Strings:
+- Checkbox_Options_SpecializationsBreakSkillGroups
 
 Build 222
 Application Changes:

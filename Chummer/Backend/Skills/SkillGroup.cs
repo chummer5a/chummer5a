@@ -246,7 +246,8 @@ namespace Chummer.Backend.Skills
                         Skill objFirstEnabledSkill = SkillList.Find(x => x.Enabled);
                         if (objFirstEnabledSkill == null || SkillList.All(x => x == objFirstEnabledSkill || !x.Enabled))
                             _intCachedHasAnyBreakingSkills = 0;
-                        else if (objFirstEnabledSkill.Specializations.Count > 0)
+                        else if (_objCharacter.Settings.SpecializationsBreakSkillGroups && SkillList.Any(x => x.Specializations.Count != 0
+                                     && x.Enabled))
                         {
                             _intCachedHasAnyBreakingSkills = 1;
                         }
@@ -254,9 +255,8 @@ namespace Chummer.Backend.Skills
                         {
                             int intFirstSkillTotalBaseRating = objFirstEnabledSkill.TotalBaseRating;
                             _intCachedHasAnyBreakingSkills = SkillList.Any(x => x != objFirstEnabledSkill
-                                                                               && (x.Specializations.Count != 0
-                                                                                   || x.TotalBaseRating
-                                                                                   != intFirstSkillTotalBaseRating)
+                                                                               && x.TotalBaseRating
+                                                                               != intFirstSkillTotalBaseRating
                                                                                && x.Enabled)
                                 ? 1
                                 : 0;
@@ -501,7 +501,8 @@ namespace Chummer.Backend.Skills
                     break;
 
                 case nameof(Skill.Specializations):
-                    OnPropertyChanged(nameof(HasAnyBreakingSkills));
+                    if (CharacterObject.Settings.SpecializationsBreakSkillGroups)
+                        OnPropertyChanged(nameof(HasAnyBreakingSkills));
                     break;
 
                 case nameof(Skill.TotalBaseRating):
@@ -774,6 +775,10 @@ namespace Chummer.Backend.Skills
 
                 case nameof(CharacterSettings.AllowSkillRegrouping):
                     UpdateIsBroken();
+                    break;
+
+                case nameof(CharacterSettings.SpecializationsBreakSkillGroups):
+                    OnPropertyChanged(nameof(HasAnyBreakingSkills));
                     break;
 
                 case nameof(CharacterSettings.MaxSkillRating):

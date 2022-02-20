@@ -7603,6 +7603,10 @@
       <text>Use Skill Points on broken groups</text>
     </string>
     <string>
+      <key>Checkbox_Options_SpecializationsBreakSkillGroups</key>
+      <text>Specializations break skill groups</text>
+    </string>
+    <string>
       <key>Checkbox_Options_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>

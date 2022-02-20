@@ -146,10 +146,14 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None", strLanguageToPrint));
             objWriter.WriteElementString("skillcategory", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
-            if (CharacterObject.Created)
-                objWriter.WriteElementString("grouped", (SkillGroupObject == null || (!SkillGroupObject.IsBroken && SkillGroupObject.Rating > 0)).ToString(GlobalSettings.InvariantCultureInfo));
-            else
-                objWriter.WriteElementString("grouped", (SkillGroupObject == null || (!SkillGroupObject.HasAnyBreakingSkills && SkillGroupObject.Rating > 0)).ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString(
+                "grouped",
+                CharacterObject.Created
+                    ? (SkillGroupObject == null || (!SkillGroupObject.IsBroken && SkillGroupObject.Rating > 0))
+                    .ToString(GlobalSettings.InvariantCultureInfo)
+                    : (SkillGroupObject == null
+                       || (!SkillGroupObject.HasAnyBreakingSkills && SkillGroupObject.Rating > 0))
+                    .ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("default", Default.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("requiresgroundmovement", RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("requiresswimmovement", RequiresSwimMovement.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3050,9 +3054,10 @@ namespace Chummer.Backend.Skills
                                                    && ((KarmaPoints > 0
                                                         && BasePoints + FreeBase == 0
                                                         && !CharacterObject.Settings
-                                                            .AllowPointBuySpecializationsOnKarmaSkills)
-                                                       || SkillGroupObject?.Karma > 0
-                                                       || SkillGroupObject?.Base > 0)
+                                                                           .AllowPointBuySpecializationsOnKarmaSkills)
+                                                       || (CharacterObject.Settings.SpecializationsBreakSkillGroups
+                                                           && (SkillGroupObject?.Karma > 0
+                                                               || SkillGroupObject?.Base > 0)))
                         ? 1
                         : 0;
                 }

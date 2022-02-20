@@ -72,6 +72,12 @@ namespace Chummer
             this.txtNuyenExpression = new System.Windows.Forms.TextBox();
             this.lblContactPoints = new Chummer.LabelWithToolTip();
             this.txtContactPoints = new System.Windows.Forms.TextBox();
+            this.lblMaxNumberMaxAttributes = new Chummer.LabelWithToolTip();
+            this.nudMaxNumberMaxAttributes = new Chummer.NumericUpDownEx();
+            this.lblMaxSkillRatingCreate = new Chummer.LabelWithToolTip();
+            this.nudMaxSkillRatingCreate = new Chummer.NumericUpDownEx();
+            this.lblMaxKnowledgeSkillRatingCreate = new Chummer.LabelWithToolTip();
+            this.nudMaxKnowledgeSkillRatingCreate = new Chummer.NumericUpDownEx();
             this.gpbBasicOptionsOfficialRules = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsOfficialRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkAllowFreeGrids = new Chummer.ColorableCheckBox(this.components);
@@ -318,6 +324,11 @@ namespace Chummer
             this.chkUnclampAttributeMinimum = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesSkills = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesSkills = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpMaxSkillRating = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblMaxSkillRating = new System.Windows.Forms.Label();
+            this.nudMaxSkillRating = new Chummer.NumericUpDownEx();
+            this.lblMaxKnowledgeSkillRating = new System.Windows.Forms.Label();
+            this.nudMaxKnowledgeSkillRating = new Chummer.NumericUpDownEx();
             this.chkCompensateSkillGroupKarmaDifference = new Chummer.ColorableCheckBox(this.components);
             this.chkAllowSkillRegrouping = new Chummer.ColorableCheckBox(this.components);
             this.chkFreeMartialArtSpecialization = new Chummer.ColorableCheckBox(this.components);
@@ -359,17 +370,7 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.lblMaxSkillRatingCreate = new Chummer.LabelWithToolTip();
-            this.nudMaxSkillRatingCreate = new Chummer.NumericUpDownEx();
-            this.lblMaxNumberMaxAttributes = new Chummer.LabelWithToolTip();
-            this.nudMaxNumberMaxAttributes = new Chummer.NumericUpDownEx();
-            this.lblMaxKnowledgeSkillRatingCreate = new Chummer.LabelWithToolTip();
-            this.nudMaxKnowledgeSkillRatingCreate = new Chummer.NumericUpDownEx();
-            this.flpMaxSkillRating = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblMaxSkillRating = new System.Windows.Forms.Label();
-            this.nudMaxSkillRating = new Chummer.NumericUpDownEx();
-            this.lblMaxKnowledgeSkillRating = new System.Windows.Forms.Label();
-            this.nudMaxKnowledgeSkillRating = new Chummer.NumericUpDownEx();
+            this.chkSpecializationsBreakSkillGroups = new Chummer.ColorableCheckBox(this.components);
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -383,6 +384,9 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNumberMaxAttributes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRatingCreate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRatingCreate)).BeginInit();
             this.gpbBasicOptionsOfficialRules.SuspendLayout();
             this.tlpBasicOptionsOfficialRules.SuspendLayout();
             this.gpbBasicOptionsEncumbrance.SuspendLayout();
@@ -484,6 +488,9 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
             this.gpbHouseRulesSkills.SuspendLayout();
             this.tlpHouseRulesSkills.SuspendLayout();
+            this.flpMaxSkillRating.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRating)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRating)).BeginInit();
             this.gpbHouseRulesCombat.SuspendLayout();
             this.tlpHouseRulesCombat.SuspendLayout();
             this.gpbHouseRulesMagicResonance.SuspendLayout();
@@ -493,12 +500,6 @@ namespace Chummer
             this.flpKarmaGainedFromEnemies.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).BeginInit();
             this.tlpButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRatingCreate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNumberMaxAttributes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRatingCreate)).BeginInit();
-            this.flpMaxSkillRating.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRating)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRating)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -1049,6 +1050,105 @@ namespace Chummer
             this.txtContactPoints.TabIndex = 2;
             this.txtContactPoints.Text = "{CHAUnaug} * 3";
             this.txtContactPoints.TextChanged += new System.EventHandler(this.txtContactPoints_TextChanged);
+            // 
+            // lblMaxNumberMaxAttributes
+            // 
+            this.lblMaxNumberMaxAttributes.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxNumberMaxAttributes.AutoSize = true;
+            this.lblMaxNumberMaxAttributes.Location = new System.Drawing.Point(3, 137);
+            this.lblMaxNumberMaxAttributes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxNumberMaxAttributes.Name = "lblMaxNumberMaxAttributes";
+            this.lblMaxNumberMaxAttributes.Size = new System.Drawing.Size(161, 13);
+            this.lblMaxNumberMaxAttributes.TabIndex = 36;
+            this.lblMaxNumberMaxAttributes.Tag = "Label_CharacterOptions_MaxNumberMaxAttributes";
+            this.lblMaxNumberMaxAttributes.Text = "Max Number of Attributes at Max";
+            this.lblMaxNumberMaxAttributes.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMaxNumberMaxAttributes.ToolTipText = "";
+            // 
+            // nudMaxNumberMaxAttributes
+            // 
+            this.nudMaxNumberMaxAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxNumberMaxAttributes.AutoSize = true;
+            this.nudMaxNumberMaxAttributes.Location = new System.Drawing.Point(170, 134);
+            this.nudMaxNumberMaxAttributes.Maximum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.nudMaxNumberMaxAttributes.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxNumberMaxAttributes.Name = "nudMaxNumberMaxAttributes";
+            this.nudMaxNumberMaxAttributes.Size = new System.Drawing.Size(29, 20);
+            this.nudMaxNumberMaxAttributes.TabIndex = 37;
+            // 
+            // lblMaxSkillRatingCreate
+            // 
+            this.lblMaxSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxSkillRatingCreate.AutoSize = true;
+            this.lblMaxSkillRatingCreate.Location = new System.Drawing.Point(226, 137);
+            this.lblMaxSkillRatingCreate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxSkillRatingCreate.Name = "lblMaxSkillRatingCreate";
+            this.lblMaxSkillRatingCreate.Size = new System.Drawing.Size(83, 13);
+            this.lblMaxSkillRatingCreate.TabIndex = 34;
+            this.lblMaxSkillRatingCreate.Tag = "Label_CharacterOptions_MaxSkillRating";
+            this.lblMaxSkillRatingCreate.Text = "Max Skill Rating";
+            this.lblMaxSkillRatingCreate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMaxSkillRatingCreate.ToolTipText = "";
+            // 
+            // nudMaxSkillRatingCreate
+            // 
+            this.nudMaxSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxSkillRatingCreate.AutoSize = true;
+            this.nudMaxSkillRatingCreate.Location = new System.Drawing.Point(315, 134);
+            this.nudMaxSkillRatingCreate.Maximum = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            this.nudMaxSkillRatingCreate.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxSkillRatingCreate.Name = "nudMaxSkillRatingCreate";
+            this.nudMaxSkillRatingCreate.Size = new System.Drawing.Size(35, 20);
+            this.nudMaxSkillRatingCreate.TabIndex = 35;
+            // 
+            // lblMaxKnowledgeSkillRatingCreate
+            // 
+            this.lblMaxKnowledgeSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxKnowledgeSkillRatingCreate.AutoSize = true;
+            this.lblMaxKnowledgeSkillRatingCreate.Location = new System.Drawing.Point(356, 137);
+            this.lblMaxKnowledgeSkillRatingCreate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxKnowledgeSkillRatingCreate.Name = "lblMaxKnowledgeSkillRatingCreate";
+            this.lblMaxKnowledgeSkillRatingCreate.Size = new System.Drawing.Size(139, 13);
+            this.lblMaxKnowledgeSkillRatingCreate.TabIndex = 38;
+            this.lblMaxKnowledgeSkillRatingCreate.Tag = "Label_CharacterOptions_MaxKnowledgeSkillRating";
+            this.lblMaxKnowledgeSkillRatingCreate.Text = "Max Knowledge Skill Rating";
+            this.lblMaxKnowledgeSkillRatingCreate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMaxKnowledgeSkillRatingCreate.ToolTipText = "";
+            // 
+            // nudMaxKnowledgeSkillRatingCreate
+            // 
+            this.nudMaxKnowledgeSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxKnowledgeSkillRatingCreate.AutoSize = true;
+            this.nudMaxKnowledgeSkillRatingCreate.Location = new System.Drawing.Point(501, 134);
+            this.nudMaxKnowledgeSkillRatingCreate.Maximum = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            this.nudMaxKnowledgeSkillRatingCreate.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxKnowledgeSkillRatingCreate.Name = "nudMaxKnowledgeSkillRatingCreate";
+            this.nudMaxKnowledgeSkillRatingCreate.Size = new System.Drawing.Size(35, 20);
+            this.nudMaxKnowledgeSkillRatingCreate.TabIndex = 39;
             // 
             // gpbBasicOptionsOfficialRules
             // 
@@ -5065,7 +5165,7 @@ namespace Chummer
             this.gpbHouseRulesSkills.Controls.Add(this.tlpHouseRulesSkills);
             this.gpbHouseRulesSkills.Location = new System.Drawing.Point(3, 204);
             this.gpbHouseRulesSkills.Name = "gpbHouseRulesSkills";
-            this.gpbHouseRulesSkills.Size = new System.Drawing.Size(452, 145);
+            this.gpbHouseRulesSkills.Size = new System.Drawing.Size(452, 170);
             this.gpbHouseRulesSkills.TabIndex = 2;
             this.gpbHouseRulesSkills.TabStop = false;
             this.gpbHouseRulesSkills.Tag = "Tab_Skills";
@@ -5078,28 +5178,120 @@ namespace Chummer
             this.tlpHouseRulesSkills.ColumnCount = 1;
             this.tlpHouseRulesSkills.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpHouseRulesSkills.Controls.Add(this.flpMaxSkillRating, 0, 0);
-            this.tlpHouseRulesSkills.Controls.Add(this.chkCompensateSkillGroupKarmaDifference, 0, 1);
-            this.tlpHouseRulesSkills.Controls.Add(this.chkAllowSkillRegrouping, 0, 2);
-            this.tlpHouseRulesSkills.Controls.Add(this.chkFreeMartialArtSpecialization, 0, 4);
-            this.tlpHouseRulesSkills.Controls.Add(this.chkUsePointsOnBrokenGroups, 0, 3);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkFreeMartialArtSpecialization, 0, 5);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkUsePointsOnBrokenGroups, 0, 4);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkAllowSkillRegrouping, 0, 3);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkCompensateSkillGroupKarmaDifference, 0, 2);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkSpecializationsBreakSkillGroups, 0, 1);
             this.tlpHouseRulesSkills.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRulesSkills.Location = new System.Drawing.Point(3, 16);
             this.tlpHouseRulesSkills.Name = "tlpHouseRulesSkills";
-            this.tlpHouseRulesSkills.RowCount = 5;
+            this.tlpHouseRulesSkills.RowCount = 6;
             this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpHouseRulesSkills.Size = new System.Drawing.Size(446, 126);
+            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesSkills.Size = new System.Drawing.Size(446, 151);
             this.tlpHouseRulesSkills.TabIndex = 0;
+            // 
+            // flpMaxSkillRating
+            // 
+            this.flpMaxSkillRating.AutoSize = true;
+            this.flpMaxSkillRating.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpMaxSkillRating.Controls.Add(this.lblMaxSkillRating);
+            this.flpMaxSkillRating.Controls.Add(this.nudMaxSkillRating);
+            this.flpMaxSkillRating.Controls.Add(this.lblMaxKnowledgeSkillRating);
+            this.flpMaxSkillRating.Controls.Add(this.nudMaxKnowledgeSkillRating);
+            this.flpMaxSkillRating.Location = new System.Drawing.Point(0, 0);
+            this.flpMaxSkillRating.Margin = new System.Windows.Forms.Padding(0);
+            this.flpMaxSkillRating.Name = "flpMaxSkillRating";
+            this.flpMaxSkillRating.Size = new System.Drawing.Size(328, 26);
+            this.flpMaxSkillRating.TabIndex = 53;
+            // 
+            // lblMaxSkillRating
+            // 
+            this.lblMaxSkillRating.AutoSize = true;
+            this.lblMaxSkillRating.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblMaxSkillRating.Location = new System.Drawing.Point(3, 4);
+            this.lblMaxSkillRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 8);
+            this.lblMaxSkillRating.Name = "lblMaxSkillRating";
+            this.lblMaxSkillRating.Size = new System.Drawing.Size(83, 14);
+            this.lblMaxSkillRating.TabIndex = 27;
+            this.lblMaxSkillRating.Tag = "Label_CharacterOptions_MaxSkillRating";
+            this.lblMaxSkillRating.Text = "Max Skill Rating";
+            this.lblMaxSkillRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxSkillRating
+            // 
+            this.nudMaxSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMaxSkillRating.AutoSize = true;
+            this.nudMaxSkillRating.Enabled = false;
+            this.nudMaxSkillRating.Location = new System.Drawing.Point(92, 3);
+            this.nudMaxSkillRating.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxSkillRating.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudMaxSkillRating.Name = "nudMaxSkillRating";
+            this.nudMaxSkillRating.Size = new System.Drawing.Size(41, 20);
+            this.nudMaxSkillRating.TabIndex = 26;
+            this.nudMaxSkillRating.Value = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            // 
+            // lblMaxKnowledgeSkillRating
+            // 
+            this.lblMaxKnowledgeSkillRating.AutoSize = true;
+            this.lblMaxKnowledgeSkillRating.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblMaxKnowledgeSkillRating.Location = new System.Drawing.Point(139, 4);
+            this.lblMaxKnowledgeSkillRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 8);
+            this.lblMaxKnowledgeSkillRating.Name = "lblMaxKnowledgeSkillRating";
+            this.lblMaxKnowledgeSkillRating.Size = new System.Drawing.Size(139, 14);
+            this.lblMaxKnowledgeSkillRating.TabIndex = 28;
+            this.lblMaxKnowledgeSkillRating.Tag = "Label_CharacterOptions_MaxKnowledgeSkillRating";
+            this.lblMaxKnowledgeSkillRating.Text = "Max Knowledge Skill Rating";
+            this.lblMaxKnowledgeSkillRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxKnowledgeSkillRating
+            // 
+            this.nudMaxKnowledgeSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMaxKnowledgeSkillRating.AutoSize = true;
+            this.nudMaxKnowledgeSkillRating.Enabled = false;
+            this.nudMaxKnowledgeSkillRating.Location = new System.Drawing.Point(284, 3);
+            this.nudMaxKnowledgeSkillRating.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxKnowledgeSkillRating.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudMaxKnowledgeSkillRating.Name = "nudMaxKnowledgeSkillRating";
+            this.nudMaxKnowledgeSkillRating.Size = new System.Drawing.Size(41, 20);
+            this.nudMaxKnowledgeSkillRating.TabIndex = 29;
+            this.nudMaxKnowledgeSkillRating.Value = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
             // 
             // chkCompensateSkillGroupKarmaDifference
             // 
             this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
             this.chkCompensateSkillGroupKarmaDifference.DefaultColorScheme = true;
-            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 30);
+            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 55);
             this.chkCompensateSkillGroupKarmaDifference.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
             this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
@@ -5114,7 +5306,7 @@ namespace Chummer
             this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowSkillRegrouping.AutoSize = true;
             this.chkAllowSkillRegrouping.DefaultColorScheme = true;
-            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(3, 55);
+            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(3, 80);
             this.chkAllowSkillRegrouping.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
             this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
@@ -5128,7 +5320,7 @@ namespace Chummer
             this.chkFreeMartialArtSpecialization.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeMartialArtSpecialization.AutoSize = true;
             this.chkFreeMartialArtSpecialization.DefaultColorScheme = true;
-            this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(3, 105);
+            this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(3, 130);
             this.chkFreeMartialArtSpecialization.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFreeMartialArtSpecialization.Name = "chkFreeMartialArtSpecialization";
             this.chkFreeMartialArtSpecialization.Size = new System.Drawing.Size(281, 17);
@@ -5142,7 +5334,7 @@ namespace Chummer
             this.chkUsePointsOnBrokenGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUsePointsOnBrokenGroups.AutoSize = true;
             this.chkUsePointsOnBrokenGroups.DefaultColorScheme = true;
-            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 80);
+            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 105);
             this.chkUsePointsOnBrokenGroups.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
             this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
@@ -5214,7 +5406,7 @@ namespace Chummer
             this.gpbHouseRulesMagicResonance.AutoSize = true;
             this.gpbHouseRulesMagicResonance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbHouseRulesMagicResonance.Controls.Add(this.tlpHouseRulesMagicResonance);
-            this.gpbHouseRulesMagicResonance.Location = new System.Drawing.Point(3, 355);
+            this.gpbHouseRulesMagicResonance.Location = new System.Drawing.Point(3, 380);
             this.gpbHouseRulesMagicResonance.Name = "gpbHouseRulesMagicResonance";
             this.gpbHouseRulesMagicResonance.Size = new System.Drawing.Size(440, 321);
             this.gpbHouseRulesMagicResonance.TabIndex = 0;
@@ -5466,7 +5658,7 @@ namespace Chummer
             this.gpbHouseRules4eAdaptations.AutoSize = true;
             this.gpbHouseRules4eAdaptations.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbHouseRules4eAdaptations.Controls.Add(this.tlpHouseRules4eAdaptations);
-            this.gpbHouseRules4eAdaptations.Location = new System.Drawing.Point(449, 355);
+            this.gpbHouseRules4eAdaptations.Location = new System.Drawing.Point(449, 380);
             this.gpbHouseRules4eAdaptations.Name = "gpbHouseRules4eAdaptations";
             this.gpbHouseRules4eAdaptations.Size = new System.Drawing.Size(441, 120);
             this.gpbHouseRules4eAdaptations.TabIndex = 5;
@@ -5727,194 +5919,19 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // lblMaxSkillRatingCreate
+            // chkSpecializationsBreakSkillGroups
             // 
-            this.lblMaxSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxSkillRatingCreate.AutoSize = true;
-            this.lblMaxSkillRatingCreate.Location = new System.Drawing.Point(226, 137);
-            this.lblMaxSkillRatingCreate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxSkillRatingCreate.Name = "lblMaxSkillRatingCreate";
-            this.lblMaxSkillRatingCreate.Size = new System.Drawing.Size(83, 13);
-            this.lblMaxSkillRatingCreate.TabIndex = 34;
-            this.lblMaxSkillRatingCreate.Tag = "Label_CharacterOptions_MaxSkillRating";
-            this.lblMaxSkillRatingCreate.Text = "Max Skill Rating";
-            this.lblMaxSkillRatingCreate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblMaxSkillRatingCreate.ToolTipText = "";
-            // 
-            // nudMaxSkillRatingCreate
-            // 
-            this.nudMaxSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxSkillRatingCreate.AutoSize = true;
-            this.nudMaxSkillRatingCreate.Location = new System.Drawing.Point(315, 134);
-            this.nudMaxSkillRatingCreate.Maximum = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            this.nudMaxSkillRatingCreate.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxSkillRatingCreate.Name = "nudMaxSkillRatingCreate";
-            this.nudMaxSkillRatingCreate.Size = new System.Drawing.Size(35, 20);
-            this.nudMaxSkillRatingCreate.TabIndex = 35;
-            // 
-            // lblMaxNumberMaxAttributes
-            // 
-            this.lblMaxNumberMaxAttributes.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxNumberMaxAttributes.AutoSize = true;
-            this.lblMaxNumberMaxAttributes.Location = new System.Drawing.Point(3, 137);
-            this.lblMaxNumberMaxAttributes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxNumberMaxAttributes.Name = "lblMaxNumberMaxAttributes";
-            this.lblMaxNumberMaxAttributes.Size = new System.Drawing.Size(161, 13);
-            this.lblMaxNumberMaxAttributes.TabIndex = 36;
-            this.lblMaxNumberMaxAttributes.Tag = "Label_CharacterOptions_MaxNumberMaxAttributes";
-            this.lblMaxNumberMaxAttributes.Text = "Max Number of Attributes at Max";
-            this.lblMaxNumberMaxAttributes.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblMaxNumberMaxAttributes.ToolTipText = "";
-            // 
-            // nudMaxNumberMaxAttributes
-            // 
-            this.nudMaxNumberMaxAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxNumberMaxAttributes.AutoSize = true;
-            this.nudMaxNumberMaxAttributes.Location = new System.Drawing.Point(170, 134);
-            this.nudMaxNumberMaxAttributes.Maximum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.nudMaxNumberMaxAttributes.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxNumberMaxAttributes.Name = "nudMaxNumberMaxAttributes";
-            this.nudMaxNumberMaxAttributes.Size = new System.Drawing.Size(29, 20);
-            this.nudMaxNumberMaxAttributes.TabIndex = 37;
-            // 
-            // lblMaxKnowledgeSkillRatingCreate
-            // 
-            this.lblMaxKnowledgeSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxKnowledgeSkillRatingCreate.AutoSize = true;
-            this.lblMaxKnowledgeSkillRatingCreate.Location = new System.Drawing.Point(356, 137);
-            this.lblMaxKnowledgeSkillRatingCreate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxKnowledgeSkillRatingCreate.Name = "lblMaxKnowledgeSkillRatingCreate";
-            this.lblMaxKnowledgeSkillRatingCreate.Size = new System.Drawing.Size(139, 13);
-            this.lblMaxKnowledgeSkillRatingCreate.TabIndex = 38;
-            this.lblMaxKnowledgeSkillRatingCreate.Tag = "Label_CharacterOptions_MaxKnowledgeSkillRating";
-            this.lblMaxKnowledgeSkillRatingCreate.Text = "Max Knowledge Skill Rating";
-            this.lblMaxKnowledgeSkillRatingCreate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblMaxKnowledgeSkillRatingCreate.ToolTipText = "";
-            // 
-            // nudMaxKnowledgeSkillRatingCreate
-            // 
-            this.nudMaxKnowledgeSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxKnowledgeSkillRatingCreate.AutoSize = true;
-            this.nudMaxKnowledgeSkillRatingCreate.Location = new System.Drawing.Point(501, 134);
-            this.nudMaxKnowledgeSkillRatingCreate.Maximum = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            this.nudMaxKnowledgeSkillRatingCreate.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxKnowledgeSkillRatingCreate.Name = "nudMaxKnowledgeSkillRatingCreate";
-            this.nudMaxKnowledgeSkillRatingCreate.Size = new System.Drawing.Size(35, 20);
-            this.nudMaxKnowledgeSkillRatingCreate.TabIndex = 39;
-            // 
-            // flpMaxSkillRating
-            // 
-            this.flpMaxSkillRating.AutoSize = true;
-            this.flpMaxSkillRating.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpMaxSkillRating.Controls.Add(this.lblMaxSkillRating);
-            this.flpMaxSkillRating.Controls.Add(this.nudMaxSkillRating);
-            this.flpMaxSkillRating.Controls.Add(this.lblMaxKnowledgeSkillRating);
-            this.flpMaxSkillRating.Controls.Add(this.nudMaxKnowledgeSkillRating);
-            this.flpMaxSkillRating.Location = new System.Drawing.Point(0, 0);
-            this.flpMaxSkillRating.Margin = new System.Windows.Forms.Padding(0);
-            this.flpMaxSkillRating.Name = "flpMaxSkillRating";
-            this.flpMaxSkillRating.Size = new System.Drawing.Size(328, 26);
-            this.flpMaxSkillRating.TabIndex = 53;
-            // 
-            // lblMaxSkillRating
-            // 
-            this.lblMaxSkillRating.AutoSize = true;
-            this.lblMaxSkillRating.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblMaxSkillRating.Location = new System.Drawing.Point(3, 4);
-            this.lblMaxSkillRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 8);
-            this.lblMaxSkillRating.Name = "lblMaxSkillRating";
-            this.lblMaxSkillRating.Size = new System.Drawing.Size(83, 14);
-            this.lblMaxSkillRating.TabIndex = 27;
-            this.lblMaxSkillRating.Tag = "Label_CharacterOptions_MaxSkillRating";
-            this.lblMaxSkillRating.Text = "Max Skill Rating";
-            this.lblMaxSkillRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudMaxSkillRating
-            // 
-            this.nudMaxSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaxSkillRating.AutoSize = true;
-            this.nudMaxSkillRating.Enabled = false;
-            this.nudMaxSkillRating.Location = new System.Drawing.Point(92, 3);
-            this.nudMaxSkillRating.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudMaxSkillRating.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudMaxSkillRating.Name = "nudMaxSkillRating";
-            this.nudMaxSkillRating.Size = new System.Drawing.Size(41, 20);
-            this.nudMaxSkillRating.TabIndex = 26;
-            this.nudMaxSkillRating.Value = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            // 
-            // lblMaxKnowledgeSkillRating
-            // 
-            this.lblMaxKnowledgeSkillRating.AutoSize = true;
-            this.lblMaxKnowledgeSkillRating.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblMaxKnowledgeSkillRating.Location = new System.Drawing.Point(139, 4);
-            this.lblMaxKnowledgeSkillRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 8);
-            this.lblMaxKnowledgeSkillRating.Name = "lblMaxKnowledgeSkillRating";
-            this.lblMaxKnowledgeSkillRating.Size = new System.Drawing.Size(139, 14);
-            this.lblMaxKnowledgeSkillRating.TabIndex = 28;
-            this.lblMaxKnowledgeSkillRating.Tag = "Label_CharacterOptions_MaxKnowledgeSkillRating";
-            this.lblMaxKnowledgeSkillRating.Text = "Max Knowledge Skill Rating";
-            this.lblMaxKnowledgeSkillRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudMaxKnowledgeSkillRating
-            // 
-            this.nudMaxKnowledgeSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaxKnowledgeSkillRating.AutoSize = true;
-            this.nudMaxKnowledgeSkillRating.Enabled = false;
-            this.nudMaxKnowledgeSkillRating.Location = new System.Drawing.Point(284, 3);
-            this.nudMaxKnowledgeSkillRating.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudMaxKnowledgeSkillRating.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudMaxKnowledgeSkillRating.Name = "nudMaxKnowledgeSkillRating";
-            this.nudMaxKnowledgeSkillRating.Size = new System.Drawing.Size(41, 20);
-            this.nudMaxKnowledgeSkillRating.TabIndex = 29;
-            this.nudMaxKnowledgeSkillRating.Value = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
+            this.chkSpecializationsBreakSkillGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSpecializationsBreakSkillGroups.AutoSize = true;
+            this.chkSpecializationsBreakSkillGroups.DefaultColorScheme = true;
+            this.chkSpecializationsBreakSkillGroups.Location = new System.Drawing.Point(3, 30);
+            this.chkSpecializationsBreakSkillGroups.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSpecializationsBreakSkillGroups.Name = "chkSpecializationsBreakSkillGroups";
+            this.chkSpecializationsBreakSkillGroups.Size = new System.Drawing.Size(181, 17);
+            this.chkSpecializationsBreakSkillGroups.TabIndex = 54;
+            this.chkSpecializationsBreakSkillGroups.Tag = "Checkbox_Options_SpecializationsBreakSkillGroups";
+            this.chkSpecializationsBreakSkillGroups.Text = "Specializations break skill groups";
+            this.chkSpecializationsBreakSkillGroups.UseVisualStyleBackColor = true;
             // 
             // EditCharacterSettings
             // 
@@ -5953,6 +5970,9 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNumberMaxAttributes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRatingCreate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRatingCreate)).EndInit();
             this.gpbBasicOptionsOfficialRules.ResumeLayout(false);
             this.gpbBasicOptionsOfficialRules.PerformLayout();
             this.tlpBasicOptionsOfficialRules.ResumeLayout(false);
@@ -6088,6 +6108,10 @@ namespace Chummer
             this.gpbHouseRulesSkills.PerformLayout();
             this.tlpHouseRulesSkills.ResumeLayout(false);
             this.tlpHouseRulesSkills.PerformLayout();
+            this.flpMaxSkillRating.ResumeLayout(false);
+            this.flpMaxSkillRating.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRating)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRating)).EndInit();
             this.gpbHouseRulesCombat.ResumeLayout(false);
             this.gpbHouseRulesCombat.PerformLayout();
             this.tlpHouseRulesCombat.ResumeLayout(false);
@@ -6105,13 +6129,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRatingCreate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNumberMaxAttributes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRatingCreate)).EndInit();
-            this.flpMaxSkillRating.ResumeLayout(false);
-            this.flpMaxSkillRating.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRating)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRating)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6452,5 +6469,6 @@ namespace Chummer
         private NumericUpDownEx nudMaxSkillRating;
         private System.Windows.Forms.Label lblMaxKnowledgeSkillRating;
         private NumericUpDownEx nudMaxKnowledgeSkillRating;
+        private ColorableCheckBox chkSpecializationsBreakSkillGroups;
     }
 }
