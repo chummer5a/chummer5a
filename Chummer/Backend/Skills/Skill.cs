@@ -2670,45 +2670,43 @@ namespace Chummer.Backend.Skills
             else
                 cost = intLevelsModded * CharacterObject.Settings.KarmaImproveActiveSkill;
 
-            if (CharacterObject.Settings.CompensateSkillGroupKarmaDifference)
+            int intSkillGroupCostAdjustment = 0;
+            if (CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
             {
-                SkillGroup objMySkillGroup = SkillGroupObject;
-                if (objMySkillGroup != null)
+                int intSkillGroupUpper = int.MaxValue;
+                foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
                 {
-                    int intSkillGroupUpper = int.MaxValue;
-                    foreach (Skill objSkillGroupMember in objMySkillGroup.SkillList)
+                    if (objSkillGroupMember != this)
                     {
-                        if (objSkillGroupMember != this)
-                        {
-                            int intLoopTotalBaseRating = objSkillGroupMember.TotalBaseRating;
-                            if (intLoopTotalBaseRating < intSkillGroupUpper)
-                                intSkillGroupUpper = intLoopTotalBaseRating;
-                        }
+                        int intLoopTotalBaseRating = objSkillGroupMember.TotalBaseRating;
+                        if (intLoopTotalBaseRating < intSkillGroupUpper)
+                            intSkillGroupUpper = intLoopTotalBaseRating;
                     }
-                    if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > lower)
+                }
+                if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > lower)
+                {
+                    if (intSkillGroupUpper > upper)
+                        intSkillGroupUpper = upper;
+                    int intGroupLevelsModded = intSkillGroupUpper * (intSkillGroupUpper + 1); //cost if nothing else was there
+                    intGroupLevelsModded -= lower * (lower + 1); //remove "karma" costs from base + free
+
+                    intGroupLevelsModded /= 2; //we get square, we need triangle
+
+                    int intGroupCost;
+                    int intNakedSkillCost = SkillGroupObject.SkillList.Count;
+                    if (lower == 0)
                     {
-                        if (intSkillGroupUpper > upper)
-                            intSkillGroupUpper = upper;
-                        int intGroupLevelsModded = intSkillGroupUpper * (intSkillGroupUpper + 1); //cost if nothing else was there
-                        intGroupLevelsModded -= lower * (lower + 1); //remove "karma" costs from base + free
-
-                        intGroupLevelsModded /= 2; //we get square, we need triangle
-
-                        int intGroupCost;
-                        int intNakedSkillCost = objMySkillGroup.SkillList.Count;
-                        if (lower == 0)
-                        {
-                            intGroupCost = (intGroupLevelsModded - 1) * CharacterObject.Settings.KarmaImproveSkillGroup + CharacterObject.Settings.KarmaNewSkillGroup;
-                            intNakedSkillCost *= (intGroupLevelsModded - 1) * CharacterObject.Settings.KarmaImproveActiveSkill + CharacterObject.Settings.KarmaNewActiveSkill;
-                        }
-                        else
-                        {
-                            intGroupCost = intGroupLevelsModded * CharacterObject.Settings.KarmaImproveSkillGroup;
-                            intNakedSkillCost *= intGroupLevelsModded * CharacterObject.Settings.KarmaImproveActiveSkill;
-                        }
-
-                        cost += (intGroupCost - intNakedSkillCost);
+                        intGroupCost = (intGroupLevelsModded - 1) * CharacterObject.Settings.KarmaImproveSkillGroup + CharacterObject.Settings.KarmaNewSkillGroup;
+                        intNakedSkillCost *= (intGroupLevelsModded - 1) * CharacterObject.Settings.KarmaImproveActiveSkill + CharacterObject.Settings.KarmaNewActiveSkill;
                     }
+                    else
+                    {
+                        intGroupCost = intGroupLevelsModded * CharacterObject.Settings.KarmaImproveSkillGroup;
+                        intNakedSkillCost *= intGroupLevelsModded * CharacterObject.Settings.KarmaImproveActiveSkill;
+                    }
+
+                    intSkillGroupCostAdjustment = intGroupCost - intNakedSkillCost;
+                    cost += intSkillGroupCostAdjustment;
                 }
             }
 
@@ -2752,8 +2750,8 @@ namespace Chummer.Backend.Skills
             else
                 cost += decExtra.StandardRound();
 
-            if (cost < 0 && !CharacterObject.Settings.CompensateSkillGroupKarmaDifference)
-                cost = 0;
+            if (cost < intSkillGroupCostAdjustment)
+                cost = intSkillGroupCostAdjustment;
             return cost;
         }
 
@@ -2783,38 +2781,36 @@ namespace Chummer.Backend.Skills
                     upgrade += (intTotalBaseRating + 1) * intOptionsCost;
                 }
 
-                if (CharacterObject.Settings.CompensateSkillGroupKarmaDifference)
+                int intSkillGroupCostAdjustment = 0;
+                if (CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
                 {
-                    SkillGroup objMySkillGroup = SkillGroupObject;
-                    if (objMySkillGroup != null)
+                    int intSkillGroupUpper = int.MaxValue;
+                    foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
                     {
-                        int intSkillGroupUpper = int.MaxValue;
-                        foreach (Skill objSkillGroupMember in objMySkillGroup.SkillList)
+                        if (objSkillGroupMember != this)
                         {
-                            if (objSkillGroupMember != this)
-                            {
-                                int intLoopTotalBaseRating = objSkillGroupMember.TotalBaseRating;
-                                if (intLoopTotalBaseRating < intSkillGroupUpper)
-                                    intSkillGroupUpper = intLoopTotalBaseRating;
-                            }
+                            int intLoopTotalBaseRating = objSkillGroupMember.TotalBaseRating;
+                            if (intLoopTotalBaseRating < intSkillGroupUpper)
+                                intSkillGroupUpper = intLoopTotalBaseRating;
                         }
-                        if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > intTotalBaseRating)
+                    }
+                    if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > intTotalBaseRating)
+                    {
+                        int intGroupCost;
+                        int intNakedSkillCost = SkillGroupObject.SkillList.Count;
+                        if (intTotalBaseRating == 0)
                         {
-                            int intGroupCost;
-                            int intNakedSkillCost = objMySkillGroup.SkillList.Count;
-                            if (intTotalBaseRating == 0)
-                            {
-                                intGroupCost = CharacterObject.Settings.KarmaNewSkillGroup;
-                                intNakedSkillCost *= CharacterObject.Settings.KarmaNewActiveSkill;
-                            }
-                            else
-                            {
-                                intGroupCost = (intTotalBaseRating + 1) * CharacterObject.Settings.KarmaImproveSkillGroup;
-                                intNakedSkillCost *= (intTotalBaseRating + 1) * CharacterObject.Settings.KarmaImproveActiveSkill;
-                            }
+                            intGroupCost = CharacterObject.Settings.KarmaNewSkillGroup;
+                            intNakedSkillCost *= CharacterObject.Settings.KarmaNewActiveSkill;
+                        }
+                        else
+                        {
+                            intGroupCost = (intTotalBaseRating + 1) * CharacterObject.Settings.KarmaImproveSkillGroup;
+                            intNakedSkillCost *= (intTotalBaseRating + 1) * CharacterObject.Settings.KarmaImproveActiveSkill;
+                        }
 
-                            upgrade += (intGroupCost - intNakedSkillCost);
-                        }
+                        intSkillGroupCostAdjustment = intGroupCost - intNakedSkillCost;
+                        upgrade += intSkillGroupCostAdjustment;
                     }
                 }
 
@@ -2859,8 +2855,8 @@ namespace Chummer.Backend.Skills
                     upgrade += decExtra.StandardRound();
 
                 int intMinCost = Math.Min(1, intOptionsCost);
-                if (upgrade < intMinCost && !CharacterObject.Settings.CompensateSkillGroupKarmaDifference)
-                    upgrade = intMinCost;
+                if (upgrade < intMinCost + intSkillGroupCostAdjustment)
+                    upgrade = intMinCost + intSkillGroupCostAdjustment;
                 return upgrade;
             }
         }
