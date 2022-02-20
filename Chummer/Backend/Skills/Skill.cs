@@ -146,7 +146,10 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None", strLanguageToPrint));
             objWriter.WriteElementString("skillcategory", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
-            objWriter.WriteElementString("grouped", (SkillGroupObject?.CareerIncrease == true && SkillGroupObject.Rating > 0).ToString(GlobalSettings.InvariantCultureInfo));
+            if (CharacterObject.Created)
+                objWriter.WriteElementString("grouped", (SkillGroupObject == null || (!SkillGroupObject.IsBroken && SkillGroupObject.Rating > 0)).ToString(GlobalSettings.InvariantCultureInfo));
+            else
+                objWriter.WriteElementString("grouped", (SkillGroupObject == null || (!SkillGroupObject.HasAnyBreakingSkills && SkillGroupObject.Rating > 0)).ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("default", Default.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("requiresgroundmovement", RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("requiresswimmovement", RequiresSwimMovement.ToString(GlobalSettings.InvariantCultureInfo));
