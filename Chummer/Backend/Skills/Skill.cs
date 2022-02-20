@@ -650,7 +650,7 @@ namespace Chummer.Backend.Skills
                                         || SkillGroupObject.Base <= 0
                                         || (CharacterObject.Settings.UsePointsOnBrokenGroups
                                             && (!CharacterObject.Settings.StrictSkillGroupsInCreateMode
-                                                || CharacterObject.Created)));
+                                                || CharacterObject.Created || CharacterObject.IgnoreRules)));
 
         /// <summary>
         /// Is it possible to place points in Karma or is it prevented a stricter interpretation of the rules
@@ -659,7 +659,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created && !CharacterObject.IgnoreRules)
                 {
                     return SkillGroupObject == null || SkillGroupObject.Rating <= 0;
                 }
@@ -678,7 +678,7 @@ namespace Chummer.Backend.Skills
             {
                 if (SkillGroupObject?.Base > 0)
                 {
-                    if ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                    if ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created && !CharacterObject.IgnoreRules)
                         || !CharacterObject.Settings.UsePointsOnBrokenGroups)
                         BasePoints = 0;
                     return Math.Min(SkillGroupObject.Base + BasePoints + FreeBase, RatingMaximum);
@@ -689,7 +689,7 @@ namespace Chummer.Backend.Skills
             set
             {
                 if (SkillGroupObject?.Base > 0
-                    && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                    && ((CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created && !CharacterObject.IgnoreRules)
                         || !CharacterObject.Settings.UsePointsOnBrokenGroups))
                     return;
 
@@ -718,7 +718,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created && SkillGroupObject?.Karma > 0)
+                if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created && !CharacterObject.IgnoreRules && SkillGroupObject?.Karma > 0)
                 {
                     _intKarma = 0;
                     Specializations.RemoveAll(x => !x.Free);
@@ -2441,7 +2441,7 @@ namespace Chummer.Backend.Skills
 
                 case nameof(Skills.SkillGroup.Rating):
                     {
-                        if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        if (CharacterObject.Settings.StrictSkillGroupsInCreateMode && !CharacterObject.Created && !CharacterObject.IgnoreRules)
                         {
                             OnPropertyChanged(nameof(KarmaUnlocked));
                         }
@@ -3049,7 +3049,8 @@ namespace Chummer.Backend.Skills
             {
                 if (_intCachedForcedBuyWithKarma < 0)
                 {
-                    _intCachedForcedBuyWithKarma = Specializations.Any(x => !x.Free)
+                    _intCachedForcedBuyWithKarma = !CharacterObject.IgnoreRules
+                                                   && Specializations.Any(x => !x.Free)
                                                    && ((KarmaPoints > 0
                                                         && BasePoints + FreeBase == 0
                                                         && !CharacterObject.Settings
@@ -3079,6 +3080,7 @@ namespace Chummer.Backend.Skills
                     _intCachedForcedNotBuyWithKarma = TotalBaseRating == 0
                                                       || (CharacterObject.Settings.StrictSkillGroupsInCreateMode
                                                           && !CharacterObject.Created
+                                                          && !CharacterObject.IgnoreRules
                                                           && SkillGroupObject?.Karma > 0)
                         ? 1
                         : 0;

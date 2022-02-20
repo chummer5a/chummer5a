@@ -3,6 +3,7 @@ Application Changes:
 - Changing the rating of a knowsoft or linguasoft after it has been bought no longer causes Chummer to crash. Fixes #4708.
 - Skill group rating maxima now also follow values set in character settings for maximum skill ratings.
 - Disabling the setting that allows skills to be regrouped now properly makes skill groups remain broken after character creation if they are broken at least once.
+- Fixed issues where setting a character to ignore character creation rules still did not allow them to spend skill points and karma as freely as they should have.
 
 Build 222
 Application Changes:
