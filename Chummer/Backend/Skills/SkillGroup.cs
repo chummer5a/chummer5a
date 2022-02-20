@@ -246,6 +246,10 @@ namespace Chummer.Backend.Skills
                         Skill objFirstEnabledSkill = SkillList.Find(x => x.Enabled);
                         if (objFirstEnabledSkill == null || SkillList.All(x => x == objFirstEnabledSkill || !x.Enabled))
                             _intCachedHasAnyBreakingSkills = 0;
+                        else if (objFirstEnabledSkill.Specializations.Count > 0)
+                        {
+                            _intCachedHasAnyBreakingSkills = 1;
+                        }
                         else
                         {
                             int intFirstSkillTotalBaseRating = objFirstEnabledSkill.TotalBaseRating;
