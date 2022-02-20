@@ -75,7 +75,7 @@ namespace Chummer.Backend.Skills
 
         private void KnowsoftSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            KnowledgeSkill objSkill = KnowledgeSkills[e.OldIndex];
+            KnowledgeSkill objSkill = KnowsoftSkills[e.OldIndex];
             if (!_dicSkillBackups.ContainsValue(objSkill) && !KnowledgeSkills.Contains(objSkill))
                 objSkill.Dispose();
         }
