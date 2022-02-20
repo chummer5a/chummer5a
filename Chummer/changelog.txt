@@ -1,6 +1,7 @@
 Future Build 223
 Application Changes:
 - Changing the rating of a knowsoft or linguasoft after it has been bought no longer causes Chummer to crash. Fixes #4708.
+- Skill group rating maxima now also follow values set in character settings for maximum skill ratings.
 
 Build 222
 Application Changes:

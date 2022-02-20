@@ -304,7 +304,9 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public int RatingMaximum => _objCharacter.Created || _objCharacter.IgnoreRules ? 12 : 6;
+        public int RatingMaximum => _objCharacter.Created || _objCharacter.IgnoreRules
+            ? _objCharacter.Settings.MaxSkillRating
+            : _objCharacter.Settings.MaxSkillRatingCreate;
 
         public void Upgrade()
         {
@@ -790,6 +792,16 @@ namespace Chummer.Backend.Skills
                 case nameof(CharacterSettings.KarmaNewSkillGroup):
                 case nameof(CharacterSettings.KarmaImproveSkillGroup):
                     OnPropertyChanged(nameof(CurrentKarmaCost));
+                    break;
+
+                case nameof(CharacterSettings.MaxSkillRating):
+                    if (_objCharacter.Created || _objCharacter.IgnoreRules)
+                        OnPropertyChanged(nameof(RatingMaximum));
+                    break;
+
+                case nameof(CharacterSettings.MaxSkillRatingCreate):
+                    if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
+                        OnPropertyChanged(nameof(RatingMaximum));
                     break;
             }
         }
