@@ -9,6 +9,7 @@ Application Changes:
 - Going under a character's total native language limit at character creation now only gives a warning during character validation instead of preventing export to career mode outright.
 - Fixed a typo that caused Chummer to treat the maximum knowledge skill rating at character creation as the maximum knowledge skill rating overall.
 - Critters can now have karma spent on improving their abilities without having to save and then reload their file.
+- Creating certain improvements no longer causes Chummer to crash.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups
