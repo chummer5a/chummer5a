@@ -228,7 +228,7 @@ namespace Chummer.Backend.Skills
                 return;
             if (!_objCharacter.Settings.AllowSkillRegrouping && IsBroken)
                 return;
-            IsBroken = !HasAnyBreakingSkills;
+            IsBroken = HasAnyBreakingSkills;
         }
 
         private int _intCachedHasAnyBreakingSkills = int.MinValue;
