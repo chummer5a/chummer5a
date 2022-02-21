@@ -3813,7 +3813,7 @@ namespace Chummer
                                 {
                                     // ReSharper disable once MethodHasAsyncOverload
                                     _strMetatype = (blnSync ? GetNodeXPath(true) : await GetNodeXPathAsync(true))
-                                                   .SelectSingleNode("name")?.Value ?? "Human";
+                                                   ?.SelectSingleNode("name")?.Value ?? "Human";
                                 }
 
                                 if (!xmlCharacterNavigator.TryGetGuidFieldQuickly("metavariantid",
@@ -15371,8 +15371,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strMovement))
                 {
-                    _strMovement = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("movement")?.Value
-                                   ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("movement")?.Value
+                    _strMovement = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("movement")?.Value
+                                   ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("movement")?.Value
                                    ?? string.Empty;
                 }
 
@@ -15397,8 +15397,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strRun))
                 {
-                    _strRun = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("run")?.Value
-                              ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("run")?.Value
+                    _strRun = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("run")?.Value
+                              ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("run")?.Value
                               ?? string.Empty;
                 }
 
@@ -15423,8 +15423,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strRunAlt))
                 {
-                    _strRunAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
-                                 ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
+                    _strRunAlt = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
+                                 ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
                                  ?? string.Empty;
                 }
 
@@ -15449,8 +15449,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strWalk))
                 {
-                    _strWalk = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("walk")?.Value
-                               ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("walk")?.Value
+                    _strWalk = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("walk")?.Value
+                               ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("walk")?.Value
                                ?? string.Empty;
                 }
 
@@ -15475,8 +15475,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strWalkAlt))
                 {
-                    _strWalkAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
-                                  ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
+                    _strWalkAlt = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
+                                  ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
                                   ?? string.Empty;
                 }
 
@@ -15501,8 +15501,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strSprint))
                 {
-                    _strSprint = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("sprint")?.Value
-                                 ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("sprint")?.Value
+                    _strSprint = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("sprint")?.Value
+                                 ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("sprint")?.Value
                                  ?? string.Empty;
                 }
 
@@ -15527,8 +15527,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strSprintAlt))
                 {
-                    _strSprintAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
-                                    ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
+                    _strSprintAlt = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
+                                    ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
                                     ?? string.Empty;
                 }
 
