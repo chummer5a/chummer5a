@@ -1077,7 +1077,11 @@ namespace Chummer
 
         #region Methods
 
+#if DEBUG
         private static bool _blnShowDevWarningAboutDebuggingOnlyOnce = true;
+#else
+        private static bool _blnShowDevWarningAboutDebuggingOnlyOnce = false;
+#endif
 
         /// <summary>
         /// This makes sure, that the MessageBox is shown in the UI Thread.
@@ -1109,6 +1113,7 @@ namespace Chummer
 
             if (owner.InvokeRequired)
             {
+#if DEBUG
                 if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
                 {
                     _blnShowDevWarningAboutDebuggingOnlyOnce = false;
@@ -1123,6 +1128,7 @@ namespace Chummer
                     //that setting off.
                     Debugger.Break();
                 }
+#endif
 
                 try
                 {
