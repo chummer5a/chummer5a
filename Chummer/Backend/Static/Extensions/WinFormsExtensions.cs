@@ -56,7 +56,6 @@ namespace Chummer
                 Utils.SafeSleep(true);
             frmForm.Close();
             return frmForm.DialogResult;
-
         }
 
         /// <summary>

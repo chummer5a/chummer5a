@@ -1206,7 +1206,6 @@ namespace Chummer
             }
         }
 
-
         private static string s_strTempPath = string.Empty;
 
         /// <summary>

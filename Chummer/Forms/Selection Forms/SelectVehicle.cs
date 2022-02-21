@@ -554,7 +554,6 @@ namespace Chummer
                 dgvVehicles.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
                 dgvVehicles.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
-
                 DataSet set = new DataSet("vehicles");
                 set.Tables.Add(tabVehicles);
                 dgvVehicles.DataSource = set;

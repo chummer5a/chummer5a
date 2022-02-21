@@ -746,7 +746,6 @@ namespace Chummer
             }
         }
 
-
         /// <summary>
         /// Fetch the first file from a list of custom file paths.
         /// </summary>

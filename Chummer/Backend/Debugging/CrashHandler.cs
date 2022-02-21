@@ -192,8 +192,6 @@ namespace Chummer.Backend
 
         public static void WebMiniDumpHandler(Exception ex)
         {
-            
-
             try
             {
                 using (DumpData dump = new DumpData(ex))
