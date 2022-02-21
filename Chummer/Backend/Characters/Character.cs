@@ -18062,7 +18062,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
@@ -18097,7 +18097,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
@@ -18129,7 +18129,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
@@ -18162,7 +18162,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
@@ -18194,7 +18194,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
@@ -18232,7 +18232,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
@@ -18268,7 +18268,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
@@ -18321,7 +18321,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
@@ -18350,7 +18350,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
@@ -18390,7 +18390,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
@@ -18420,7 +18420,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
@@ -18448,7 +18448,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
@@ -18466,7 +18466,7 @@ namespace Chummer
                 {
                     if (IsAI)
                         EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{DEP}"))
@@ -18475,7 +18475,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
@@ -18495,7 +18495,7 @@ namespace Chummer
                     break;
                 case nameof(CharacterAttrib.TotalValue):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{ESS}"))
@@ -18504,7 +18504,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
