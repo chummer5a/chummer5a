@@ -329,10 +329,11 @@ namespace Chummer
             this.nudMaxSkillRating = new Chummer.NumericUpDownEx();
             this.lblMaxKnowledgeSkillRating = new System.Windows.Forms.Label();
             this.nudMaxKnowledgeSkillRating = new Chummer.NumericUpDownEx();
-            this.chkCompensateSkillGroupKarmaDifference = new Chummer.ColorableCheckBox(this.components);
-            this.chkAllowSkillRegrouping = new Chummer.ColorableCheckBox(this.components);
             this.chkFreeMartialArtSpecialization = new Chummer.ColorableCheckBox(this.components);
             this.chkUsePointsOnBrokenGroups = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowSkillRegrouping = new Chummer.ColorableCheckBox(this.components);
+            this.chkCompensateSkillGroupKarmaDifference = new Chummer.ColorableCheckBox(this.components);
+            this.chkSpecializationsBreakSkillGroups = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesCombat = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesCombat = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkNoArmorEncumbrance = new Chummer.ColorableCheckBox(this.components);
@@ -370,7 +371,6 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.chkSpecializationsBreakSkillGroups = new Chummer.ColorableCheckBox(this.components);
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -1584,7 +1584,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyPhysicalLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyPhysicalLimit.AutoSize = true;
-            this.nudEncumbrancePenaltyPhysicalLimit.Enabled = false;
             this.nudEncumbrancePenaltyPhysicalLimit.Location = new System.Drawing.Point(234, 132);
             this.nudEncumbrancePenaltyPhysicalLimit.Maximum = new decimal(new int[] {
             100,
@@ -1609,7 +1608,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyAgility.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyAgility.AutoSize = true;
-            this.nudEncumbrancePenaltyAgility.Enabled = false;
             this.nudEncumbrancePenaltyAgility.Location = new System.Drawing.Point(234, 184);
             this.nudEncumbrancePenaltyAgility.Maximum = new decimal(new int[] {
             100,
@@ -1634,7 +1632,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyReaction.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyReaction.AutoSize = true;
-            this.nudEncumbrancePenaltyReaction.Enabled = false;
             this.nudEncumbrancePenaltyReaction.Location = new System.Drawing.Point(234, 210);
             this.nudEncumbrancePenaltyReaction.Maximum = new decimal(new int[] {
             100,
@@ -1659,7 +1656,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyWoundModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyWoundModifier.AutoSize = true;
-            this.nudEncumbrancePenaltyWoundModifier.Enabled = false;
             this.nudEncumbrancePenaltyWoundModifier.Location = new System.Drawing.Point(234, 236);
             this.nudEncumbrancePenaltyWoundModifier.Maximum = new decimal(new int[] {
             100,
@@ -1684,7 +1680,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyMovementSpeed.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyMovementSpeed.AutoSize = true;
-            this.nudEncumbrancePenaltyMovementSpeed.Enabled = false;
             this.nudEncumbrancePenaltyMovementSpeed.Location = new System.Drawing.Point(234, 158);
             this.nudEncumbrancePenaltyMovementSpeed.Maximum = new decimal(new int[] {
             100,
@@ -5227,7 +5222,6 @@ namespace Chummer
             // 
             this.nudMaxSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMaxSkillRating.AutoSize = true;
-            this.nudMaxSkillRating.Enabled = false;
             this.nudMaxSkillRating.Location = new System.Drawing.Point(92, 3);
             this.nudMaxSkillRating.Maximum = new decimal(new int[] {
             100,
@@ -5265,7 +5259,6 @@ namespace Chummer
             // 
             this.nudMaxKnowledgeSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMaxKnowledgeSkillRating.AutoSize = true;
-            this.nudMaxKnowledgeSkillRating.Enabled = false;
             this.nudMaxKnowledgeSkillRating.Location = new System.Drawing.Point(284, 3);
             this.nudMaxKnowledgeSkillRating.Maximum = new decimal(new int[] {
             100,
@@ -5285,35 +5278,6 @@ namespace Chummer
             0,
             0,
             0});
-            // 
-            // chkCompensateSkillGroupKarmaDifference
-            // 
-            this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
-            this.chkCompensateSkillGroupKarmaDifference.DefaultColorScheme = true;
-            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 55);
-            this.chkCompensateSkillGroupKarmaDifference.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
-            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
-            this.chkCompensateSkillGroupKarmaDifference.TabIndex = 36;
-            this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
-            this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
-    "skill group";
-            this.chkCompensateSkillGroupKarmaDifference.UseVisualStyleBackColor = true;
-            // 
-            // chkAllowSkillRegrouping
-            // 
-            this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkAllowSkillRegrouping.AutoSize = true;
-            this.chkAllowSkillRegrouping.DefaultColorScheme = true;
-            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(3, 80);
-            this.chkAllowSkillRegrouping.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
-            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
-            this.chkAllowSkillRegrouping.TabIndex = 39;
-            this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
-            this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
-            this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
             // 
             // chkFreeMartialArtSpecialization
             // 
@@ -5342,6 +5306,49 @@ namespace Chummer
             this.chkUsePointsOnBrokenGroups.Tag = "Checkbox_Options_PointsOnBrokenGroups";
             this.chkUsePointsOnBrokenGroups.Text = "Use Skill Points on broken groups";
             this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowSkillRegrouping
+            // 
+            this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAllowSkillRegrouping.AutoSize = true;
+            this.chkAllowSkillRegrouping.DefaultColorScheme = true;
+            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(3, 80);
+            this.chkAllowSkillRegrouping.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
+            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
+            this.chkAllowSkillRegrouping.TabIndex = 39;
+            this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
+            this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
+            this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
+            // 
+            // chkCompensateSkillGroupKarmaDifference
+            // 
+            this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
+            this.chkCompensateSkillGroupKarmaDifference.DefaultColorScheme = true;
+            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 55);
+            this.chkCompensateSkillGroupKarmaDifference.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
+            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
+            this.chkCompensateSkillGroupKarmaDifference.TabIndex = 36;
+            this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
+            this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
+    "skill group";
+            this.chkCompensateSkillGroupKarmaDifference.UseVisualStyleBackColor = true;
+            // 
+            // chkSpecializationsBreakSkillGroups
+            // 
+            this.chkSpecializationsBreakSkillGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSpecializationsBreakSkillGroups.AutoSize = true;
+            this.chkSpecializationsBreakSkillGroups.DefaultColorScheme = true;
+            this.chkSpecializationsBreakSkillGroups.Location = new System.Drawing.Point(3, 30);
+            this.chkSpecializationsBreakSkillGroups.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSpecializationsBreakSkillGroups.Name = "chkSpecializationsBreakSkillGroups";
+            this.chkSpecializationsBreakSkillGroups.Size = new System.Drawing.Size(181, 17);
+            this.chkSpecializationsBreakSkillGroups.TabIndex = 54;
+            this.chkSpecializationsBreakSkillGroups.Tag = "Checkbox_Options_SpecializationsBreakSkillGroups";
+            this.chkSpecializationsBreakSkillGroups.Text = "Specializations break skill groups";
+            this.chkSpecializationsBreakSkillGroups.UseVisualStyleBackColor = true;
             // 
             // gpbHouseRulesCombat
             // 
@@ -5918,20 +5925,6 @@ namespace Chummer
             this.cmdSaveAs.Text = "Save As...";
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
-            // 
-            // chkSpecializationsBreakSkillGroups
-            // 
-            this.chkSpecializationsBreakSkillGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkSpecializationsBreakSkillGroups.AutoSize = true;
-            this.chkSpecializationsBreakSkillGroups.DefaultColorScheme = true;
-            this.chkSpecializationsBreakSkillGroups.Location = new System.Drawing.Point(3, 30);
-            this.chkSpecializationsBreakSkillGroups.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkSpecializationsBreakSkillGroups.Name = "chkSpecializationsBreakSkillGroups";
-            this.chkSpecializationsBreakSkillGroups.Size = new System.Drawing.Size(181, 17);
-            this.chkSpecializationsBreakSkillGroups.TabIndex = 54;
-            this.chkSpecializationsBreakSkillGroups.Tag = "Checkbox_Options_SpecializationsBreakSkillGroups";
-            this.chkSpecializationsBreakSkillGroups.Text = "Specializations break skill groups";
-            this.chkSpecializationsBreakSkillGroups.UseVisualStyleBackColor = true;
             // 
             // EditCharacterSettings
             // 
