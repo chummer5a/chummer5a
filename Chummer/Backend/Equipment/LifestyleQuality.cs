@@ -85,9 +85,7 @@ namespace Chummer.Backend.Equipment
                     return QualityType.Entertainment;
             }
         }
-
-#if DEBUG
-
+        
         /// <summary>
         /// Convert a string to a LifestyleQualitySource.
         /// </summary>
@@ -96,17 +94,15 @@ namespace Chummer.Backend.Equipment
         {
             switch (strValue)
             {
+                case "BuiltIn":
+                    return QualitySource.BuiltIn;
+                case "Heritage":
+                    return QualitySource.Heritage;
+                case "Improvement":
+                    return QualitySource.Improvement;
                 default:
                     return QualitySource.Selected;
             }
-#else
-        /// <summary>
-        /// Convert a string to a LifestyleQualitySource.
-        /// </summary>
-        public QualitySource ConvertToLifestyleQualitySource()
-        {
-            return QualitySource.Selected;
-#endif
         }
 
         #endregion Helper Methods

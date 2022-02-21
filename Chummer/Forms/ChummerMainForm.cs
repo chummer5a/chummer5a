@@ -1079,8 +1079,6 @@ namespace Chummer
 
 #if DEBUG
         private static bool _blnShowDevWarningAboutDebuggingOnlyOnce = true;
-#else
-        private static bool _blnShowDevWarningAboutDebuggingOnlyOnce = false;
 #endif
 
         /// <summary>
