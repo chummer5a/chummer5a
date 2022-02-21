@@ -7,6 +7,7 @@ Application Changes:
 - The house rule to compensate the karma cost for raising the last skill in a broken skill group is no longer overwritten by bonuses that set a minimum karma cost for learning skills.
 - Added a house rule that allows specializations to no longer break skill groups.
 - Going under a character's total native language limit at character creation now only gives a warning during character validation instead of preventing export to career mode outright.
+- Fixed a typo that caused Chummer to treat the maximum knowledge skill rating at character creation as the maximum knowledge skill rating overall.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

@@ -3780,7 +3780,7 @@ namespace Chummer
         /// </summary>
         public int MaxKnowledgeSkillRating
         {
-            get => _intMaxKnowledgeSkillRatingCreate;
+            get => _intMaxKnowledgeSkillRating;
             set
             {
                 if (_intMaxKnowledgeSkillRating != value)
