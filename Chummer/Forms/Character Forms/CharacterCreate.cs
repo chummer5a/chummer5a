@@ -13405,13 +13405,28 @@ namespace Chummer
 
                     if (intLanguages != intLanguageLimit)
                     {
-                        blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
-                                                                              intLanguages > intLanguageLimit
-                                                                                  ? "Message_OverLanguageLimit"
-                                                                                  : "Message_UnderLanguageLimit"),
-                                                                          intLanguages, intLanguageLimit);
+                        if (intLanguages > intLanguageLimit)
+                        {
+                            blnValid = false;
+                            sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
+                                                                              LanguageManager.GetString(
+                                                                                  "Message_OverLanguageLimit"),
+                                                                              intLanguages, intLanguageLimit);
+                        }
+                        else if (Program.MainForm.ShowMessageBox(this,
+                                                                 string.Format(
+                                                                     GlobalSettings.CultureInfo,
+                                                                     LanguageManager.GetString(
+                                                                         "Message_ExtraNativeLanguages")
+                                                                     , (intLanguageLimit - intLanguages).ToString(
+                                                                         GlobalSettings.CultureInfo)),
+                                                                 LanguageManager.GetString(
+                                                                     "MessageTitle_ExtraNativeLanguages"),
+                                                                 MessageBoxButtons.YesNo,
+                                                                 MessageBoxIcon.Warning) == DialogResult.No)
+                        {
+                            blnValid = false;
+                        }
                     }
 
                     // Check the character's equipment and make sure nothing goes over their set Maximum Availability.

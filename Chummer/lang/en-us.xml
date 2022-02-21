@@ -2895,10 +2895,6 @@
       <text>Too many Language Knowledge Skills listed as Native. Current: {0} Maximum: {1}</text>
     </string>
     <string>
-      <key>Message_UnderLanguageLimit</key>
-      <text>Too few Language Knowledge Skills listed as Native. Current: {0} Minimum: {1}</text>
-    </string>
-    <string>
       <key>Message_OverPositiveMetagenicQualities</key>
       <text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
     </string>
@@ -2949,6 +2945,14 @@
     <string>
       <key>Message_NoExtraKarma</key>
       <text>You have {0} Karma remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose this extra Karma?</text>
+    </string>
+    <string>
+      <key>MessageTitle_ExtraNativeLanguages</key>
+      <text>Extra Native Languages</text>
+    </string>
+    <string>
+      <key>Message_ExtraNativeLanguages</key>
+      <text>You have {0} more native languages that you can get for this character.\nAre you sure you want to proceed out of character creation without choosing any more?</text>
     </string>
     <string>
       <key>Message_SumtoTen</key>

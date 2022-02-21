@@ -6,9 +6,15 @@ Application Changes:
 - Fixed issues where setting a character to ignore character creation rules still did not allow them to spend skill points and karma as freely as they should have.
 - The house rule to compensate the karma cost for raising the last skill in a broken skill group is no longer overwritten by bonuses that set a minimum karma cost for learning skills.
 - Added a house rule that allows specializations to no longer break skill groups.
+- Going under a character's total native language limit at character creation now only gives a warning during character validation instead of preventing export to career mode outright.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups
+- MessageTitle_ExtraNativeLanguages
+- Message_ExtraNativeLanguages
+
+Removed Strings:
+- Message_UnderLanguageLimit
 
 Build 222
 Application Changes:
