@@ -3869,6 +3869,11 @@ namespace Chummer
 
         private async void cmdDeleteVehicle_Click(object sender, EventArgs e)
         {
+            await DoDeleteVehicle();
+        }
+
+        private async ValueTask DoDeleteVehicle()
+        {
             if (!cmdDeleteVehicle.Enabled)
                 return;
             // Delete the selected Vehicle.
@@ -5089,6 +5094,11 @@ namespace Chummer
 
         private async void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
+            await DoDeleteQuality();
+        }
+
+        private async ValueTask DoDeleteQuality()
+        {
             // Locate the selected Quality.
             if (!(treQualities.SelectedNode?.Tag is Quality objSelectedQuality))
                 return;
@@ -5620,6 +5630,11 @@ namespace Chummer
 
         private async void cmdAddImprovement_Click(object sender, EventArgs e)
         {
+            await DoAddImprovement();
+        }
+
+        private async ValueTask DoAddImprovement()
+        {
             string location = treImprovements.SelectedNode?.Tag is string strSelectedId && strSelectedId != "Node_SelectedImprovements"
                 ? strSelectedId
                 : string.Empty;
@@ -5744,13 +5759,18 @@ namespace Chummer
 
         private async void cmdEditImprovement_Click(object sender, EventArgs e)
         {
+            await DoEditImprovement();
+        }
+
+        private async ValueTask DoEditImprovement()
+        {
             // Edit the selected Improvement.
             if (!(treImprovements.SelectedNode?.Tag is Improvement objImprovement))
                 return;
             using (CreateImprovement frmPickImprovement = new CreateImprovement(CharacterObject, objImprovement.CustomGroup)
-            {
-                EditImprovementObject = objImprovement
-            })
+                   {
+                       EditImprovementObject = objImprovement
+                   })
             {
                 await frmPickImprovement.ShowDialogSafeAsync(this);
 
@@ -5785,6 +5805,11 @@ namespace Chummer
         }
 
         private async void cmdDeleteImprovement_Click(object sender, EventArgs e)
+        {
+            await DoDeleteImprovement();
+        }
+
+        private async ValueTask DoDeleteImprovement()
         {
             object objSelectedImprovement = treImprovements.SelectedNode?.Tag;
             if (objSelectedImprovement is Improvement objImprovement)
@@ -7669,11 +7694,6 @@ namespace Chummer
                 blnAddAgain = await AddUnderbarrelWeapon(objSelectedWeapon, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon"));
             }
             while (blnAddAgain);
-        }
-
-        private void tsGearButtonAddAccessory_Click(object sender, EventArgs e)
-        {
-            tsGearAddAsPlugin_Click(sender, e);
         }
 
         private async void tsUndoKarmaExpense_Click(object sender, EventArgs e)
@@ -12117,15 +12137,15 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void treImprovements_DoubleClick(object sender, EventArgs e)
+        private async void treImprovements_DoubleClick(object sender, EventArgs e)
         {
             if (treImprovements.SelectedNode?.Tag is Improvement)
             {
-                cmdEditImprovement_Click(sender, e);
+                await DoEditImprovement();
             }
             else
             {
-                cmdAddImprovement_Click(sender, e);
+                await DoAddImprovement();
             }
         }
 
@@ -12244,11 +12264,11 @@ namespace Chummer
 
         #region Tree KeyDown Events
 
-        private void treQualities_KeyDown(object sender, KeyEventArgs e)
+        private async void treQualities_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteQuality_Click(sender, e);
+                await DoDeleteQuality();
             }
         }
 
@@ -12300,11 +12320,11 @@ namespace Chummer
             }
         }
 
-        private void treVehicles_KeyDown(object sender, KeyEventArgs e)
+        private async void treVehicles_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteVehicle_Click(sender, e);
+                await DoDeleteVehicle();
             }
         }
 
@@ -12332,11 +12352,11 @@ namespace Chummer
             }
         }
 
-        private void treImprovements_KeyDown(object sender, KeyEventArgs e)
+        private async void treImprovements_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
             {
-                cmdDeleteImprovement_Click(sender, e);
+                await DoDeleteImprovement();
             }
         }
 

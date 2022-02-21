@@ -133,10 +133,10 @@ namespace Chummer
                     CheckForUpdate();
 #endif
 
-                    GlobalSettings.MruChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMruToolstripMenu(senderInner, eInner));
+                    GlobalSettings.MruChanged += PopulateMruToolstripMenu;
 
                     // Populate the MRU list.
-                    PopulateMruToolstripMenu(this, TextEventArgs.Empty);
+                    await this.DoThreadSafeFunc(() => DoPopulateMruToolstripMenu());
 
                     Program.MainForm = this;
 
@@ -1542,161 +1542,172 @@ namespace Chummer
         /// <summary>
         /// Populate the MRU items.
         /// </summary>
-        public async void PopulateMruToolstripMenu(object sender, TextEventArgs e)
+        private async void PopulateMruToolstripMenu(object sender, TextEventArgs e)
         {
-            SuspendLayout();
-            mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
-                                          || GlobalSettings.MostRecentlyUsedCharacters.Count > 0;
+            await this.DoThreadSafeFunc(() => DoPopulateMruToolstripMenu(e?.Text));
+        }
 
-            if (e?.Text != "mru")
+        private async ValueTask DoPopulateMruToolstripMenu(string strText = "")
+        {
+            menuStrip.SuspendLayout();
+            try
             {
+                mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
+                                              || GlobalSettings.MostRecentlyUsedCharacters.Count > 0;
+
+                if (strText != "mru")
+                {
+                    for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                    {
+                        DpiFriendlyToolStripMenuItem objItem;
+                        switch (i)
+                        {
+                            case 0:
+                                objItem = mnuStickyMRU0;
+                                break;
+
+                            case 1:
+                                objItem = mnuStickyMRU1;
+                                break;
+
+                            case 2:
+                                objItem = mnuStickyMRU2;
+                                break;
+
+                            case 3:
+                                objItem = mnuStickyMRU3;
+                                break;
+
+                            case 4:
+                                objItem = mnuStickyMRU4;
+                                break;
+
+                            case 5:
+                                objItem = mnuStickyMRU5;
+                                break;
+
+                            case 6:
+                                objItem = mnuStickyMRU6;
+                                break;
+
+                            case 7:
+                                objItem = mnuStickyMRU7;
+                                break;
+
+                            case 8:
+                                objItem = mnuStickyMRU8;
+                                break;
+
+                            case 9:
+                                objItem = mnuStickyMRU9;
+                                break;
+
+                            default:
+                                continue;
+                        }
+
+                        if (i < GlobalSettings.FavoriteCharacters.Count)
+                        {
+                            objItem.Text = GlobalSettings.FavoriteCharacters[i];
+                            objItem.Tag = GlobalSettings.FavoriteCharacters[i];
+                            objItem.Visible = true;
+                        }
+                        else
+                        {
+                            objItem.Visible = false;
+                        }
+                    }
+                }
+
+                mnuMRU0.Visible = false;
+                mnuMRU1.Visible = false;
+                mnuMRU2.Visible = false;
+                mnuMRU3.Visible = false;
+                mnuMRU4.Visible = false;
+                mnuMRU5.Visible = false;
+                mnuMRU6.Visible = false;
+                mnuMRU7.Visible = false;
+                mnuMRU8.Visible = false;
+                mnuMRU9.Visible = false;
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                int i2 = 0;
                 for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
                 {
+                    if (i2 >= GlobalSettings.MostRecentlyUsedCharacters.Count ||
+                        i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
+                        continue;
+                    string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
+                    if (GlobalSettings.FavoriteCharacters.Contains(strFile))
+                        continue;
                     DpiFriendlyToolStripMenuItem objItem;
-                    switch (i)
+                    switch (i2)
                     {
                         case 0:
-                            objItem = mnuStickyMRU0;
+                            objItem = mnuMRU0;
                             break;
 
                         case 1:
-                            objItem = mnuStickyMRU1;
+                            objItem = mnuMRU1;
                             break;
 
                         case 2:
-                            objItem = mnuStickyMRU2;
+                            objItem = mnuMRU2;
                             break;
 
                         case 3:
-                            objItem = mnuStickyMRU3;
+                            objItem = mnuMRU3;
                             break;
 
                         case 4:
-                            objItem = mnuStickyMRU4;
+                            objItem = mnuMRU4;
                             break;
 
                         case 5:
-                            objItem = mnuStickyMRU5;
+                            objItem = mnuMRU5;
                             break;
 
                         case 6:
-                            objItem = mnuStickyMRU6;
+                            objItem = mnuMRU6;
                             break;
 
                         case 7:
-                            objItem = mnuStickyMRU7;
+                            objItem = mnuMRU7;
                             break;
 
                         case 8:
-                            objItem = mnuStickyMRU8;
+                            objItem = mnuMRU8;
                             break;
 
                         case 9:
-                            objItem = mnuStickyMRU9;
+                            objItem = mnuMRU9;
                             break;
 
                         default:
                             continue;
                     }
 
-                    if (i < GlobalSettings.FavoriteCharacters.Count)
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    if (i2 <= 9
+                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                        && i2 >= 0)
                     {
-                        objItem.Text = GlobalSettings.FavoriteCharacters[i];
-                        objItem.Tag = GlobalSettings.FavoriteCharacters[i];
-                        objItem.Visible = true;
+                        string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                        objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
                     }
                     else
-                    {
-                        objItem.Visible = false;
-                    }
+                        objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile;
+
+                    objItem.Tag = strFile;
+                    objItem.Visible = true;
+
+                    ++i2;
                 }
             }
-
-            mnuMRU0.Visible = false;
-            mnuMRU1.Visible = false;
-            mnuMRU2.Visible = false;
-            mnuMRU3.Visible = false;
-            mnuMRU4.Visible = false;
-            mnuMRU5.Visible = false;
-            mnuMRU6.Visible = false;
-            mnuMRU7.Visible = false;
-            mnuMRU8.Visible = false;
-            mnuMRU9.Visible = false;
-
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            int i2 = 0;
-            for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+            finally
             {
-                if (i2 >= GlobalSettings.MostRecentlyUsedCharacters.Count ||
-                    i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
-                    continue;
-                string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
-                if (GlobalSettings.FavoriteCharacters.Contains(strFile))
-                    continue;
-                DpiFriendlyToolStripMenuItem objItem;
-                switch (i2)
-                {
-                    case 0:
-                        objItem = mnuMRU0;
-                        break;
-
-                    case 1:
-                        objItem = mnuMRU1;
-                        break;
-
-                    case 2:
-                        objItem = mnuMRU2;
-                        break;
-
-                    case 3:
-                        objItem = mnuMRU3;
-                        break;
-
-                    case 4:
-                        objItem = mnuMRU4;
-                        break;
-
-                    case 5:
-                        objItem = mnuMRU5;
-                        break;
-
-                    case 6:
-                        objItem = mnuMRU6;
-                        break;
-
-                    case 7:
-                        objItem = mnuMRU7;
-                        break;
-
-                    case 8:
-                        objItem = mnuMRU8;
-                        break;
-
-                    case 9:
-                        objItem = mnuMRU9;
-                        break;
-
-                    default:
-                        continue;
-                }
-
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (i2 <= 9
-                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                    && i2 >= 0)
-                {
-                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                    objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
-                }
-                else
-                    objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile;
-                objItem.Tag = strFile;
-                objItem.Visible = true;
-
-                ++i2;
+                menuStrip.ResumeLayout();
             }
-
-            ResumeLayout();
         }
 
         public void OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0)
