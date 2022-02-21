@@ -7577,9 +7577,6 @@ namespace Chummer
                         foreach (LifestyleQuality lifestyleQuality in objLifeStyle.LifestyleQualities)
                             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, lifestyleQuality.InternalId);
 
-                        foreach (LifestyleQuality publicGrid in objLifeStyle.FreeGrids)
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, publicGrid.InternalId);
-
                         return;
                     }
 
@@ -15186,15 +15183,6 @@ namespace Chummer
                                     .Append(LanguageManager.GetString("String_Space")).Append('[')
                                     .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
                                     .Append("%]");
-                    }
-
-                    if (objLifestyle.FreeGrids.Count > 0)
-                    {
-                        if (sbdQualities.Length > 0)
-                            sbdQualities.AppendLine(',');
-
-                        sbdQualities.AppendJoin(',' + Environment.NewLine,
-                                                objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
                     }
 
                     lblLifestyleQualities.Text = sbdQualities.ToString();

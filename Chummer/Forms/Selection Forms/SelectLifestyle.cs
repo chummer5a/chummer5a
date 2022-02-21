@@ -325,48 +325,58 @@ namespace Chummer
         private void AcceptForm()
         {
             string strSelectedId = cboLifestyle.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strSelectedId))
+            if (string.IsNullOrEmpty(strSelectedId))
+                return;
+            XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + ']');
+            if (objXmlLifestyle == null)
+                return;
+
+            _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
+            _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
+            _objLifestyle.Name = txtLifestyleName.Text;
+            _objLifestyle.BaseLifestyle = objXmlLifestyle["name"]?.InnerText;
+            _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : nudRoommates.ValueAsInt;
+            _objLifestyle.Percentage = nudPercentage.Value;
+            _objLifestyle.StyleType = StyleType;
+            _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+            _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
+            _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
+            _objLifestyle.TrustFund = chkTrustFund.Checked;
+            _objLifestyle.City = cboCity.Text;
+            _objLifestyle.District = cboDistrict.Text;
+            _objLifestyle.Borough = cboBorough.Text;
+
+            if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
             {
-                XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + ']');
-                if (objXmlLifestyle == null)
-                    return;
-
-                _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
-                _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
-                _objLifestyle.Name = txtLifestyleName.Text;
-                _objLifestyle.BaseLifestyle = objXmlLifestyle["name"]?.InnerText;
-                _objLifestyle.Cost = Convert.ToDecimal(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-                _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : nudRoommates.ValueAsInt;
-                _objLifestyle.Percentage = nudPercentage.Value;
-                _objLifestyle.LifestyleQualities.Clear();
-                _objLifestyle.StyleType = StyleType;
-                _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-                _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-                _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
-                _objLifestyle.TrustFund = chkTrustFund.Checked;
-                _objLifestyle.City = cboCity.Text;
-                _objLifestyle.District = cboDistrict.Text;
-                _objLifestyle.Borough = cboBorough.Text;
-
-                if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
-                {
-                    _objLifestyle.SourceID = source;
-                }
-                else
-                {
-                    Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
-                    Utils.BreakIfDebug();
-                }
-                foreach (TreeNode objNode in treQualities.Nodes)
-                {
-                    if (!objNode.Checked) continue;
-                    XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + objNode.Tag.ToString().CleanXPath() + ']');
-                    LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                    objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                    _objLifestyle.LifestyleQualities.Add(objQuality);
-                }
-                DialogResult = DialogResult.OK;
+                _objLifestyle.SourceID = source;
             }
+            else
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyle });
+                Utils.BreakIfDebug();
+            }
+
+            HashSet<string> setLifestyleQualityIds = new HashSet<string>();
+            foreach (TreeNode objNode in treQualities.Nodes)
+            {
+                if (!objNode.Checked)
+                    continue;
+                string strLoopId = objNode.Tag.ToString();
+                setLifestyleQualityIds.Add(strLoopId);
+                if (_objLifestyle.LifestyleQualities.Any(x => x.SourceIDString == strLoopId))
+                    continue;
+                XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strLoopId.CleanXPath() + ']');
+                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                _objLifestyle.LifestyleQualities.Add(objQuality);
+            }
+
+            foreach (LifestyleQuality objLifestyleQuality in _objLifestyle.LifestyleQualities.Where(x =>
+                         !setLifestyleQualityIds.Contains(x.SourceIDString)))
+                objLifestyleQuality.Remove(false);
+
+            DialogResult = DialogResult.OK;
         }
 
         /// <summary>

@@ -12002,15 +12002,6 @@ namespace Chummer
                                     .Append("%]");
                     }
 
-                    if (objLifestyle.FreeGrids.Count > 0)
-                    {
-                        if (sbdQualities.Length > 0)
-                            sbdQualities.AppendLine(',');
-
-                        sbdQualities.AppendJoin(',' + Environment.NewLine,
-                                                objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
-                    }
-
                     lblLifestyleQualities.Text = sbdQualities.ToString();
                 }
 

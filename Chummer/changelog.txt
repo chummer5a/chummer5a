@@ -10,6 +10,7 @@ Application Changes:
 - Fixed a typo that caused Chummer to treat the maximum knowledge skill rating at character creation as the maximum knowledge skill rating overall.
 - Critters can now have karma spent on improving their abilities without having to save and then reload their file.
 - Creating certain improvements no longer causes Chummer to crash.
+- Adding and/or removing lifestyle qualities no longer generates orphaned improvements.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

@@ -52,7 +52,6 @@ namespace Chummer
         private void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objLifestyle.LifestyleQualities.CollectionChanged -= LifestyleQualitiesOnCollectionChanged;
-            _objLifestyle.FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
         }
 
         private async void LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -66,12 +65,14 @@ namespace Chummer
                     return;
                 default:
                 {
-                        TreeNode nodPositiveQualityRoot
+                    TreeNode nodPositiveQualityRoot
                         = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_PositiveQualities", false);
                     TreeNode nodNegativeQualityRoot
                         = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_NegativeQualities", false);
                     TreeNode nodEntertainmentsRoot
                         = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_Entertainments", false);
+                    TreeNode nodFreeGridsRoot =
+                        treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_FreeMatrixGrids", false);
 
                     switch (e.Action)
                     {
@@ -137,60 +138,84 @@ namespace Chummer
                         if (objNode == null)
                             return;
                         TreeNode objParentNode;
-                        switch (objQuality.Type)
+                        if (objQuality.IsFreeGrid)
                         {
-                            case QualityType.Positive:
-                                if (nodPositiveQualityRoot == null)
+                            if (nodFreeGridsRoot == null)
+                            {
+                                nodFreeGridsRoot = new TreeNode
                                 {
-                                    nodPositiveQualityRoot = new TreeNode
-                                    {
-                                        Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                        Text = await LanguageManager.GetStringAsync(
-                                            "Node_SelectAdvancedLifestyle_PositiveQualities")
-                                    };
+                                    Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
+                                };
                                     // ReSharper disable once AssignNullToNotNullAttribute
-                                    treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
-                                    nodPositiveQualityRoot.Expand();
-                                }
-
-                                objParentNode = nodPositiveQualityRoot;
-                                break;
-
-                            case QualityType.Negative:
-                                if (nodNegativeQualityRoot == null)
-                                {
-                                    nodNegativeQualityRoot = new TreeNode
-                                    {
-                                        Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                        Text = await LanguageManager.GetStringAsync(
-                                            "Node_SelectAdvancedLifestyle_NegativeQualities")
-                                    };
-                                    // ReSharper disable once AssignNullToNotNullAttribute
-                                    treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1,
-                                                                       nodNegativeQualityRoot);
-                                    nodNegativeQualityRoot.Expand();
-                                }
-
-                                objParentNode = nodNegativeQualityRoot;
-                                break;
-
-                            default:
-                                if (nodEntertainmentsRoot == null)
-                                {
-                                    nodEntertainmentsRoot = new TreeNode
-                                    {
-                                        Tag = "Node_SelectAdvancedLifestyle_Entertainments",
-                                        Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_Entertainments")
-                                    };
                                     treLifestyleQualities.Nodes.Insert(
                                         (nodPositiveQualityRoot == null ? 0 : 1)
+                                        + (nodNegativeQualityRoot == null ? 0 : 1)
                                         // ReSharper disable once AssignNullToNotNullAttribute
-                                        + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
-                                    nodEntertainmentsRoot.Expand();
-                                }
+                                        + (nodEntertainmentsRoot == null ? 0 : 1), nodFreeGridsRoot);
+                                    treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
+                                nodFreeGridsRoot.Expand();
+                            }
+                            objParentNode = nodFreeGridsRoot;
+                        }
+                        else
+                        {
+                            switch (objQuality.Type)
+                            {
+                                case QualityType.Positive:
+                                    if (nodPositiveQualityRoot == null)
+                                    {
+                                        nodPositiveQualityRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
+                                            Text = await LanguageManager.GetStringAsync(
+                                                "Node_SelectAdvancedLifestyle_PositiveQualities")
+                                        };
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
+                                        nodPositiveQualityRoot.Expand();
+                                    }
 
-                                objParentNode = nodEntertainmentsRoot;
-                                break;
+                                    objParentNode = nodPositiveQualityRoot;
+                                    break;
+
+                                case QualityType.Negative:
+                                    if (nodNegativeQualityRoot == null)
+                                    {
+                                        nodNegativeQualityRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
+                                            Text = await LanguageManager.GetStringAsync(
+                                                "Node_SelectAdvancedLifestyle_NegativeQualities")
+                                        };
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1,
+                                            nodNegativeQualityRoot);
+                                        nodNegativeQualityRoot.Expand();
+                                    }
+
+                                    objParentNode = nodNegativeQualityRoot;
+                                    break;
+
+                                default:
+                                    if (nodEntertainmentsRoot == null)
+                                    {
+                                        nodEntertainmentsRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectAdvancedLifestyle_Entertainments",
+                                            Text = await LanguageManager.GetStringAsync(
+                                                "Node_SelectAdvancedLifestyle_Entertainments")
+                                        };
+                                        treLifestyleQualities.Nodes.Insert(
+                                            (nodPositiveQualityRoot == null ? 0 : 1)
+                                            // ReSharper disable once AssignNullToNotNullAttribute
+                                            + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
+                                        nodEntertainmentsRoot.Expand();
+                                    }
+
+                                    objParentNode = nodEntertainmentsRoot;
+                                    break;
+                            }
                         }
 
                         TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -211,124 +236,6 @@ namespace Chummer
             }
         }
 
-        private async void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Move:
-                    return;
-                case NotifyCollectionChangedAction.Reset:
-                    await ResetLifestyleQualitiesTree();
-                    return;
-                default:
-                    TreeNode nodFreeGridsRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_FreeMatrixGrids", false);
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
-                            {
-                                foreach (LifestyleQuality objFreeGrid in e.NewItems)
-                                {
-                                    TreeNode objNode = objFreeGrid.CreateTreeNode();
-                                    if (objNode == null)
-                                        return;
-                                    if (nodFreeGridsRoot == null)
-                                    {
-                                        nodFreeGridsRoot = new TreeNode
-                                        {
-                                            Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                            Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
-                                        };
-                                        treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
-                                        nodFreeGridsRoot.Expand();
-                                    }
-
-                                    TreeNodeCollection lstParentNodeChildren = nodFreeGridsRoot.Nodes;
-                                    int intNodesCount = lstParentNodeChildren.Count;
-                                    int intTargetIndex = 0;
-                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                                    {
-                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                                        {
-                                            break;
-                                        }
-                                    }
-
-                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                    treLifestyleQualities.SelectedNode = objNode;
-                                }
-                                break;
-                            }
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (LifestyleQuality objFreeGrid in e.OldItems)
-                            {
-                                TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);
-                                if (objNode != null)
-                                {
-                                    TreeNode objParent = objNode.Parent;
-                                    objNode.Remove();
-                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                        objParent.Remove();
-                                }
-                            }
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                            {
-                                List<TreeNode> lstOldParents = new List<TreeNode>(e.OldItems.Count);
-                                foreach (LifestyleQuality objFreeGrid in e.OldItems)
-                                {
-                                    TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);
-                                    if (objNode != null)
-                                    {
-                                        if (objNode.Parent != null)
-                                            lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
-                                    }
-                                }
-                                foreach (LifestyleQuality objFreeGrid in e.NewItems)
-                                {
-                                    TreeNode objNode = objFreeGrid.CreateTreeNode();
-                                    if (objNode == null)
-                                        return;
-                                    if (nodFreeGridsRoot == null)
-                                    {
-                                        nodFreeGridsRoot = new TreeNode
-                                        {
-                                            Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                            Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
-                                        };
-                                        treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
-                                        nodFreeGridsRoot.Expand();
-                                    }
-
-                                    TreeNodeCollection lstParentNodeChildren = nodFreeGridsRoot.Nodes;
-                                    int intNodesCount = lstParentNodeChildren.Count;
-                                    int intTargetIndex = 0;
-                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                                    {
-                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                                        {
-                                            break;
-                                        }
-                                    }
-
-                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                    treLifestyleQualities.SelectedNode = objNode;
-                                }
-                                foreach (TreeNode objOldParent in lstOldParents)
-                                {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
-                                break;
-                            }
-                    }
-
-                    break;
-            }
-        }
-
         private async ValueTask ResetLifestyleQualitiesTree()
         {
             TreeNode nodPositiveQualityRoot = null;
@@ -345,68 +252,78 @@ namespace Chummer
                 TreeNode objNode = objQuality.CreateTreeNode();
                 if (objNode == null)
                     continue;
-                switch (objQuality.Type)
+                if (objQuality.IsFreeGrid)
                 {
-                    case QualityType.Positive:
-                        if (nodPositiveQualityRoot == null)
-                        {
-                            nodPositiveQualityRoot = new TreeNode
-                            {
-                                Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities")
-                            };
-                            treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
-                            nodPositiveQualityRoot.Expand();
-                        }
-                        nodPositiveQualityRoot.Nodes.Add(objNode);
-                        break;
-
-                    case QualityType.Negative:
-                        if (nodNegativeQualityRoot == null)
-                        {
-                            nodNegativeQualityRoot = new TreeNode
-                            {
-                                Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_NegativeQualities")
-                            };
-                            treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1, nodNegativeQualityRoot);
-                            nodNegativeQualityRoot.Expand();
-                        }
-                        nodNegativeQualityRoot.Nodes.Add(objNode);
-                        break;
-
-                    default:
-                        if (nodEntertainmentsRoot == null)
-                        {
-                            nodEntertainmentsRoot = new TreeNode
-                            {
-                                Tag = "Node_SelectAdvancedLifestyle_Entertainments",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_Entertainments")
-                            };
-                            treLifestyleQualities.Nodes.Insert((nodPositiveQualityRoot == null ? 0 : 1) + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
-                            nodEntertainmentsRoot.Expand();
-                        }
-                        nodEntertainmentsRoot.Nodes.Add(objNode);
-                        break;
-                }
-            }
-
-            foreach (LifestyleQuality objFreeGrid in _objLifestyle.FreeGrids)
-            {
-                TreeNode objNode = objFreeGrid.CreateTreeNode();
-                if (objNode == null)
-                    return;
-                if (nodFreeGridsRoot == null)
-                {
-                    nodFreeGridsRoot = new TreeNode
+                    if (nodFreeGridsRoot == null)
                     {
-                        Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                        Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
-                    };
-                    treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
-                    nodFreeGridsRoot.Expand();
+                        nodFreeGridsRoot = new TreeNode
+                        {
+                            Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
+                            Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities")
+                        };
+                        treLifestyleQualities.Nodes.Insert(
+                            (nodPositiveQualityRoot == null ? 0 : 1) + (nodNegativeQualityRoot == null ? 0 : 1) + (nodEntertainmentsRoot == null ? 0 : 1),
+                            nodFreeGridsRoot);
+                        nodFreeGridsRoot.Expand();
+                    }
+                    nodFreeGridsRoot.Nodes.Add(objNode);
                 }
-                nodFreeGridsRoot.Nodes.Add(objNode);
+                else
+                {
+                    switch (objQuality.Type)
+                    {
+                        case QualityType.Positive:
+                            if (nodPositiveQualityRoot == null)
+                            {
+                                nodPositiveQualityRoot = new TreeNode
+                                {
+                                    Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
+                                    Text = await LanguageManager.GetStringAsync(
+                                        "Node_SelectAdvancedLifestyle_PositiveQualities")
+                                };
+                                treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
+                                nodPositiveQualityRoot.Expand();
+                            }
+
+                            nodPositiveQualityRoot.Nodes.Add(objNode);
+                            break;
+
+                        case QualityType.Negative:
+                            if (nodNegativeQualityRoot == null)
+                            {
+                                nodNegativeQualityRoot = new TreeNode
+                                {
+                                    Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
+                                    Text = await LanguageManager.GetStringAsync(
+                                        "Node_SelectAdvancedLifestyle_NegativeQualities")
+                                };
+                                treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1,
+                                    nodNegativeQualityRoot);
+                                nodNegativeQualityRoot.Expand();
+                            }
+
+                            nodNegativeQualityRoot.Nodes.Add(objNode);
+                            break;
+
+                        default:
+                            if (nodEntertainmentsRoot == null)
+                            {
+                                nodEntertainmentsRoot = new TreeNode
+                                {
+                                    Tag = "Node_SelectAdvancedLifestyle_Entertainments",
+                                    Text = await LanguageManager.GetStringAsync(
+                                        "Node_SelectAdvancedLifestyle_Entertainments")
+                                };
+                                treLifestyleQualities.Nodes.Insert(
+                                    (nodPositiveQualityRoot == null ? 0 : 1) + (nodNegativeQualityRoot == null ? 0 : 1),
+                                    nodEntertainmentsRoot);
+                                nodEntertainmentsRoot.Expand();
+                            }
+
+                            nodEntertainmentsRoot.Nodes.Add(objNode);
+                            break;
+                    }
+                }
             }
 
             treLifestyleQualities.SortCustomAlphabetically(strSelectedNode);
@@ -478,7 +395,6 @@ namespace Chummer
                 cboBaseLifestyle.SelectedIndex = 0;
 
             _objLifestyle.LifestyleQualities.CollectionChanged += LifestyleQualitiesOnCollectionChanged;
-            _objLifestyle.FreeGrids.CollectionChanged += FreeGridsOnCollectionChanged;
 
             // Populate the City ComboBox
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCity))
@@ -602,6 +518,7 @@ namespace Chummer
                     //objNode.ContextMenuStrip = cmsQuality;
                     if (objQuality.InternalId.IsEmptyGuid())
                     {
+                        objQuality.Remove(false);
                         objQuality.Dispose();
                         continue;
                     }
@@ -623,7 +540,7 @@ namespace Chummer
                 return;
             if (objQuality.OriginSource == QualitySource.BuiltIn)
                 return;
-            _objLifestyle.LifestyleQualities.Remove(objQuality);
+            objQuality.Remove();
         }
 
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
