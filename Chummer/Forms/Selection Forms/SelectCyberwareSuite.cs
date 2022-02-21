@@ -77,37 +77,53 @@ namespace Chummer
             if (_objCharacter.IsAI)
                 return;
 
-            List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource).ToList();
-
-            using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
-                if (xmlSuiteList?.Count > 0)
-                    foreach (XmlNode objXmlSuite in xmlSuiteList)
-                    {
-                        string strName = objXmlSuite["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName))
-                        {
-                            string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                            if (string.IsNullOrEmpty(strGrade))
-                            {
-                                if (lstGrades.All(x => x.Name != strGrade))
-                                    continue;
-                                // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-                                switch (_eSource)
-                                {
-                                    case Improvement.ImprovementSource.Bioware when ImprovementManager
-                                        .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableBiowareGrade)
-                                        .Any(x => strGrade.Contains(x.ImprovedName)):
-                                    case Improvement.ImprovementSource.Cyberware when ImprovementManager
-                                        .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableCyberwareGrade)
-                                        .Any(x => strGrade.Contains(x.ImprovedName)):
-                                        continue;
-                                }
-                            }
-                            lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
-                        }
-                    }
             lstCyberware.ValueMember = nameof(ListItem.Value);
             lstCyberware.DisplayMember = nameof(ListItem.Name);
+
+            using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
+            {
+                if (xmlSuiteList?.Count > 0)
+                {
+                    List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource).ToList();
+
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                               out List<ListItem> lstSuitesToAdd))
+                    {
+                        foreach (XmlNode objXmlSuite in xmlSuiteList)
+                        {
+                            string strName = objXmlSuite["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
+                                if (string.IsNullOrEmpty(strGrade))
+                                {
+                                    if (lstGrades.All(x => x.Name != strGrade))
+                                        continue;
+                                    // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+                                    switch (_eSource)
+                                    {
+                                        case Improvement.ImprovementSource.Bioware when ImprovementManager
+                                            .GetCachedImprovementListForValueOf(_objCharacter,
+                                                Improvement.ImprovementType.DisableBiowareGrade)
+                                            .Any(x => strGrade.Contains(x.ImprovedName)):
+                                        case Improvement.ImprovementSource.Cyberware when ImprovementManager
+                                            .GetCachedImprovementListForValueOf(_objCharacter,
+                                                Improvement.ImprovementType.DisableCyberwareGrade)
+                                            .Any(x => strGrade.Contains(x.ImprovedName)):
+                                            continue;
+                                    }
+                                }
+
+                                lstSuitesToAdd.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, objXmlSuite["translate"]?.InnerText ?? strName));
+                            }
+                        }
+
+                        lstSuitesToAdd.Sort(CompareListItems.CompareNames);
+
+                        lstCyberware.DataSource = lstSuitesToAdd;
+                    }
+                }
+            }
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)

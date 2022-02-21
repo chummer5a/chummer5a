@@ -12,6 +12,7 @@ Application Changes:
 - Creating certain improvements no longer causes Chummer to crash.
 - Adding and/or removing lifestyle qualities no longer generates orphaned improvements.
 - Encumbrance penalties and maximum skill ratings can now properly be modified through the Character Settings window.
+- Fixed a crash when adding cyberware or bioware that requires a specific side to be picked.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

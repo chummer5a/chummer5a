@@ -49,6 +49,7 @@ namespace Chummer
             {
                 lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
                 lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
+                lstSides.Sort(CompareListItems.CompareNames);
 
                 cboSide.BeginUpdate();
                 cboSide.PopulateWithListItems(lstSides);
@@ -84,9 +85,8 @@ namespace Chummer
         /// <param name="strSide">Value to force.</param>
         public void ForceValue(string strSide)
         {
-            cboSide.SelectedValue = strSide;
-            cboSide.Text = strSide;
-            cmdOK_Click(this, EventArgs.Empty);
+            _strSelectedSide = strSide;
+            DialogResult = DialogResult.OK;
         }
 
         #endregion Methods
