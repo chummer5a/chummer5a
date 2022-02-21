@@ -719,6 +719,7 @@ namespace Chummer
                             return;
                     }
 
+                    OpenCharacters.Add(objCharacter);
                     await OpenCharacter(objCharacter, false);
                 }
             }
