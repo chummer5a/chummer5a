@@ -96,24 +96,24 @@ namespace Chummer
         private async void About_Load(object sender, EventArgs e)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            string strReturn = LanguageManager.GetString("Label_About", false);
+            string strReturn = await LanguageManager.GetStringAsync("Label_About", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "About";
             Text = strReturn + strSpace + AssemblyTitle;
             lblProductName.Text = AssemblyProduct;
-            strReturn = LanguageManager.GetString("String_Version", false);
+            strReturn = await LanguageManager.GetStringAsync("String_Version", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "Version";
             lblVersion.Text = strReturn + strSpace + AssemblyVersion;
-            strReturn = LanguageManager.GetString("About_Copyright_Text", false);
+            strReturn = await LanguageManager.GetStringAsync("About_Copyright_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCopyright;
             lblCopyright.Text = strReturn;
-            strReturn = LanguageManager.GetString("About_Company_Text", false);
+            strReturn = await LanguageManager.GetStringAsync("About_Company_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCompany;
             lblCompanyName.Text = strReturn;
-            strReturn = LanguageManager.GetString("About_Description_Text", false);
+            strReturn = await LanguageManager.GetStringAsync("About_Description_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyDescription;
             txtDescription.Text = strReturn;

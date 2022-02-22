@@ -25,7 +25,7 @@ namespace Chummer
     public static class IntegerExtensions
     {
         /// <summary>
-        /// Syntatic sugar for doing integer division that always rounds away from zero instead of towards zero.
+        /// Syntactic sugar for doing integer division that always rounds away from zero instead of towards zero.
         /// </summary>
         /// <param name="intA">Dividend integer.</param>
         /// <param name="intB">Divisor integer.</param>

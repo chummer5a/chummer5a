@@ -84,11 +84,11 @@ namespace Chummer
             await PopulateOptions();
             PopulateLanguageList();
             SetDefaultValueForLanguageList();
-            PopulateSheetLanguageList();
+            await PopulateSheetLanguageList();
             SetDefaultValueForSheetLanguageList();
             await PopulateXsltList();
             SetDefaultValueForXsltList();
-            PopulatePdfParameters();
+            await PopulatePdfParameters();
 
             _blnLoading = false;
 
@@ -901,21 +901,21 @@ namespace Chummer
                 cboSheetLanguage.SelectedValue = _strSelectedLanguage;
             }
 
-            PopulatePdfParameters();
+            await PopulatePdfParameters();
             PopulateCustomDataDirectoryListBox();
             await PopulateApplicationInsightsOptions();
             await PopulateColorModes();
             await PopulateDpiScalingMethods();
         }
 
-        private void RefreshGlobalSourcebookInfosListView()
+        private async ValueTask RefreshGlobalSourcebookInfosListView()
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstSourcebookInfos))
             {
-                foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", null, _strSelectedLanguage)
+                foreach (XPathNavigator objXmlBook in (await XmlManager.LoadXPathAsync("books.xml", null, _strSelectedLanguage))
                                                                 .SelectAndCacheExpression("/chummer/books/book"))
                 {
                     string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code")?.Value;
@@ -994,7 +994,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask PopulateOptions()
         {
-            RefreshGlobalSourcebookInfosListView();
+            await RefreshGlobalSourcebookInfosListView();
             PopulateCustomDataDirectoryListBox();
 
             chkAutomaticUpdate.Checked = GlobalSettings.AutomaticUpdate;
@@ -1247,14 +1247,14 @@ namespace Chummer
             nudMugshotCompressionQuality.Visible = blnShowQualitySelector;
         }
 
-        private void PopulatePdfParameters()
+        private async ValueTask PopulatePdfParameters()
         {
             int intIndex = 0;
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstPdfParameters))
             {
-                foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", null, _strSelectedLanguage)
+                foreach (XPathNavigator objXmlNode in (await XmlManager.LoadXPathAsync("options.xml", null, _strSelectedLanguage))
                                                                 .SelectAndCacheExpression(
                                                                     "/chummer/pdfarguments/pdfargument"))
                 {
@@ -1429,13 +1429,13 @@ namespace Chummer
             }
         }
 
-        private void PopulateSheetLanguageList()
+        private async ValueTask PopulateSheetLanguageList()
         {
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLanguagesWithSheets))
             {
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-                foreach (XPathNavigator xmlSheetLanguage in XmlManager.LoadXPath("sheets.xml")
+                foreach (XPathNavigator xmlSheetLanguage in (await XmlManager.LoadXPathAsync("sheets.xml"))
                                                                       .SelectAndCacheExpression(
                                                                           "/chummer/sheets/@lang"))
                 {
@@ -1666,7 +1666,7 @@ namespace Chummer
                     string[] files = Directory.GetFiles(fbd.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly);
                     XPathNavigator books = await tskLoadBooks;
                     XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = " + _strSelectedLanguage.CleanXPath() + ']');
-                    using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar(fbd.SelectedPath, files.Length))
+                    using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync(fbd.SelectedPath, files.Length))
                     {
                         List<SourcebookInfo> list = null;
                         await Task.Run(() => list = ScanFilesForPDFTexts(files, matches, frmProgressBar).ToList());

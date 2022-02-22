@@ -31,7 +31,7 @@ using NLog;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource, IDisposable
+    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -60,6 +60,7 @@ namespace Chummer.Backend.Equipment
         private readonly HashSet<string> _setAllowedFreeLifestyles = Utils.StringHashSetPool.Get();
         private readonly Character _objCharacter;
         private bool _blnFree;
+        private bool _blnIsFreeGrid;
 
         #region Helper Methods
 
@@ -84,9 +85,7 @@ namespace Chummer.Backend.Equipment
                     return QualityType.Entertainment;
             }
         }
-
-#if DEBUG
-
+        
         /// <summary>
         /// Convert a string to a LifestyleQualitySource.
         /// </summary>
@@ -95,17 +94,15 @@ namespace Chummer.Backend.Equipment
         {
             switch (strValue)
             {
+                case "BuiltIn":
+                    return QualitySource.BuiltIn;
+                case "Heritage":
+                    return QualitySource.Heritage;
+                case "Improvement":
+                    return QualitySource.Improvement;
                 default:
                     return QualitySource.Selected;
             }
-#else
-        /// <summary>
-        /// Convert a string to a LifestyleQualitySource.
-        /// </summary>
-        public QualitySource ConvertToLifestyleQualitySource()
-        {
-            return QualitySource.Selected;
-#endif
         }
 
         #endregion Helper Methods
@@ -293,6 +290,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("print", _blnPrint.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("lifestylequalitytype", Type.ToString());
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
+            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("isfreegrid", _blnIsFreeGrid.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("allowed", _setAllowedFreeLifestyles.Count > 0
@@ -346,14 +345,12 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             if (objNode["lifestylequalitytype"] != null)
                 Type = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
-#if DEBUG
             if (objNode["lifestylequalitysource"] != null)
                 OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
-#else
-            OriginSource = QualitySource.Selected;
-#endif
             if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory) && objMyNode.Value?.TryGetStringFieldQuickly("category", ref _strCategory) != true)
                 _strCategory = string.Empty;
+            objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
+            objNode.TryGetBoolFieldQuickly("isfreegrid", ref _blnIsFreeGrid);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             string strAllowedFreeLifestyles = string.Empty;
@@ -472,6 +469,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
             objWriter.WriteElementString("lifestylequalitytype_english", Type.ToString());
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
+            objWriter.WriteElementString("free", Free.ToString());
+            objWriter.WriteElementString("freebylifestyle", FreeByLifestyle.ToString());
+            objWriter.WriteElementString("isfreegrid", IsFreeGrid.ToString());
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (GlobalSettings.PrintNotes)
@@ -723,6 +723,27 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (!FreeByLifestyle)
                     ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalMonthlyCost), nameof(Lifestyle.CostMultiplier), nameof(Lifestyle.BaseCostMultiplier));
+            }
+        }
+
+        public bool IsFreeGrid
+        {
+            get => _blnIsFreeGrid;
+            set
+            {
+                if (_blnIsFreeGrid == value)
+                    return;
+                _blnIsFreeGrid = value;
+                switch (value)
+                {
+                    case true when OriginSource == QualitySource.Selected:
+                        OriginSource = QualitySource.BuiltIn;
+                        break;
+                    case false when OriginSource == QualitySource.BuiltIn:
+                        OriginSource = QualitySource.Selected;
+                        break;
+                }
+                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.LifestyleQualities));
             }
         }
 
@@ -986,6 +1007,16 @@ namespace Chummer.Backend.Equipment
         public void Dispose()
         {
             Utils.StringHashSetPool.Return(_setAllowedFreeLifestyles);
+        }
+
+        public bool Remove(bool blnConfirmDelete = true)
+        {
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
+                return false;
+
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);
+
+            return ParentLifestyle.LifestyleQualities.Remove(this);
         }
     }
 }

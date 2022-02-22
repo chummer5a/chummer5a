@@ -123,10 +123,10 @@ namespace Chummer
                     : null;
                 using (new CursorWait(this))
                 {
-                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    if (objOpenCharacter == null || !await Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
                         objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
-                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                        await Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
             }

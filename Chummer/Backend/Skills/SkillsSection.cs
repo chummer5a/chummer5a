@@ -87,7 +87,7 @@ namespace Chummer.Backend.Skills
         {
             using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
             {
-                KnowledgeSkill objSkill = KnowledgeSkills[e.OldIndex];
+                KnowledgeSkill objSkill = KnowsoftSkills[e.OldIndex];
                 if (!_dicSkillBackups.ContainsValue(objSkill) && !KnowledgeSkills.Contains(objSkill))
                 {
                     using (new EnterWriteLock(_objCharacter.LockObject))

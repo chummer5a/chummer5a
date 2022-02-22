@@ -532,7 +532,7 @@ namespace Chummer
                     dicWatch.Add(strFile, strNewParent);
                 }
             }
-            bool blnAddWatchNode = dicWatch != null && dicWatch.Count > 0;
+            bool blnAddWatchNode = dicWatch?.Count > 0;
             TreeNode objWatchNode = treCharacterList.FindNode("Watch", false);
             if (blnAddWatchNode)
             {

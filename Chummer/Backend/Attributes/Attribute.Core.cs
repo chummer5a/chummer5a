@@ -1522,7 +1522,7 @@ namespace Chummer.Backend.Attributes
                         if (intBurnedEdge > 0)
                         {
                             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.BurnedEdge);
-                            intBurnedEdge -= 1;
+                            --intBurnedEdge;
                             if (intBurnedEdge > 0)
                             {
                                 ImprovementManager.CreateImprovement(_objCharacter, "EDG",

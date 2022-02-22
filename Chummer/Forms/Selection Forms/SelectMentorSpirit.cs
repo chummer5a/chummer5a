@@ -36,18 +36,17 @@ namespace Chummer
 
         public SelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
         {
-            InitializeComponent();
-
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            // Load the Mentor information.
-            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
+            InitializeComponent();
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            // Load the Mentor information.
+            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -131,18 +130,18 @@ namespace Chummer
                     // Get the information for the selected Mentor.
                     lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
                                         objXmlMentor.SelectSingleNode("advantage")?.Value ??
-                                        LanguageManager.GetString("String_Unknown");
+                                        await LanguageManager.GetStringAsync("String_Unknown");
                     lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
                     lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
                                            objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
-                                           LanguageManager.GetString("String_Unknown");
+                                           await LanguageManager.GetStringAsync("String_Unknown");
                     lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
 
                     string strSource = objXmlMentor.SelectSingleNode("source")?.Value ??
-                                       LanguageManager.GetString("String_Unknown");
+                                       await LanguageManager.GetStringAsync("String_Unknown");
                     string strPage = objXmlMentor.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
                                      objXmlMentor.SelectSingleNode("page")?.Value ??
-                                     LanguageManager.GetString("String_Unknown");
+                                     await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
@@ -185,7 +184,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Mentor list.
         /// </summary>
-        private void RefreshMentorsList(object sender, EventArgs e)
+        private async void RefreshMentorsList(object sender, EventArgs e)
         {
             string strForceId = string.Empty;
 
@@ -200,7 +199,7 @@ namespace Chummer
                     if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
 
                     string strName = objXmlMentor.SelectSingleNodeAndCacheExpression("name")?.Value
-                                     ?? LanguageManager.GetString("String_Unknown");
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown");
                     string strId = objXmlMentor.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty;
                     if (strName == _strForceMentor)
                         strForceId = strId;
@@ -231,7 +230,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

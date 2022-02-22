@@ -43,9 +43,7 @@ namespace Chummer.Backend.Skills
         public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter;
-            _tskNameLoader
-                = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
-                               strName, GlobalSettings.Language, "skills.xml"));
+            _strName = strName; // Shouldn't create tasks in constructors because of potential unexpected behavior
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
             _blnExpertise = blnExpertise;
@@ -184,8 +182,14 @@ namespace Chummer.Backend.Skills
             {
                 if (!_blnNameLoaded)
                 {
-                    _blnNameLoaded = true;
+                    if (_tskNameLoader == null)
+                    {
+                        _tskNameLoader
+                            = Task.Run(() => _objCharacter.ReverseTranslateExtraAsync(
+                                           _strName, GlobalSettings.Language, "skills.xml"));
+                    }
                     _strName = _tskNameLoader.GetAwaiter().GetResult();
+                    _blnNameLoaded = true;
                 }
                 return _strName;
             }

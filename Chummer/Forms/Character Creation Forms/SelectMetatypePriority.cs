@@ -199,8 +199,8 @@ namespace Chummer
 
                 LoadMetatypes();
                 PopulateMetatypes();
-                PopulateMetavariants();
-                PopulateTalents();
+                await PopulateMetavariants();
+                await PopulateTalents();
                 await RefreshSelectedMetatype();
 
                 //Magical/Resonance Type
@@ -273,8 +273,8 @@ namespace Chummer
                 ManagePriorityItems(cboResources, true);
                 LoadMetatypes();
                 PopulateMetatypes();
-                PopulateMetavariants();
-                PopulateTalents();
+                await PopulateMetavariants();
+                await PopulateTalents();
                 await RefreshSelectedMetatype();
                 if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     SumToTen();
@@ -325,9 +325,9 @@ namespace Chummer
             {
                 SumToTen();
             }
-            PopulateMetavariants();
+            await PopulateMetavariants();
             await RefreshSelectedMetatype();
-            PopulateTalents();
+            await PopulateTalents();
             ResumeLayout();
         }
 
@@ -571,7 +571,7 @@ namespace Chummer
                 return;
             SuspendLayout();
             await RefreshSelectedMetatype();
-            PopulateTalents();
+            await PopulateTalents();
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 SumToTen();
@@ -615,12 +615,12 @@ namespace Chummer
             }
             LoadMetatypes();
             PopulateMetatypes();
-            PopulateMetavariants();
+            await PopulateMetavariants();
             await RefreshSelectedMetatype();
             ResumeLayout();
         }
 
-        private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -635,7 +635,7 @@ namespace Chummer
                     SumToTen();
                     break;
             }
-            PopulateTalents();
+            await PopulateTalents();
             ResumeLayout();
         }
 
@@ -903,6 +903,7 @@ namespace Chummer
                             ? objXmlMetatype
                             : objXmlMetavariant ?? objXmlMetatype;
 
+                    int intSpecialAttribPoints = 0;
                     bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
                     if (strOldSpecialPriority != _objCharacter.SpecialPriority || strOldTalentPriority != _objCharacter.SpecialPriority)
                     {
@@ -981,6 +982,9 @@ namespace Chummer
 
                                     blnRemoveFreeSkills = false;
                                     AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
+
+                                    if (int.TryParse(xmlTalentPriorityNode.SelectSingleNodeAndCacheExpression("specialattribpoints")?.Value, out int intTalentSpecialAttribPoints))
+                                        intSpecialAttribPoints += intTalentSpecialAttribPoints;
                                 }
 
                                 break;
@@ -997,7 +1001,29 @@ namespace Chummer
                     }
 
                     // Set Special Attributes
-                    _objCharacter.Special = Convert.ToInt32(lblSpecialAttributes.Text, GlobalSettings.CultureInfo);
+                    
+                    XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
+                        "priorities/priority[category = \"Heritage\" and value = "
+                        + _objCharacter.MetatypePriority.CleanXPath()
+                        + " and (not(prioritytable) or prioritytable = "
+                        + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                    foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
+                    {
+                        if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                        {
+                            XPathNavigator objXmlMetatypePriorityNode
+                                = xmlBaseMetatypePriority.SelectSingleNode(
+                                    "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                            if (!string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
+                                objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode(
+                                    "metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + ']');
+                            if (int.TryParse(objXmlMetatypePriorityNode?.SelectSingleNodeAndCacheExpression("value")?.Value, out int intTemp))
+                                intSpecialAttribPoints += intTemp;
+                            break;
+                        }
+                    }
+
+                    _objCharacter.Special = intSpecialAttribPoints;
                     _objCharacter.TotalSpecial = _objCharacter.Special;
 
                     // Set Attributes
@@ -1674,7 +1700,7 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
-        private void PopulateTalents()
+        private async ValueTask PopulateTalents()
         {
             // Load the Priority information.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTalent))
@@ -1828,7 +1854,7 @@ namespace Chummer
                                               objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("translate")
                                                                   ?.Value ??
                                               objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("name")?.Value ??
-                                              LanguageManager.GetString("String_Unknown")));
+                                              await LanguageManager.GetStringAsync("String_Unknown")));
                         }
 
                         break;
@@ -1853,7 +1879,7 @@ namespace Chummer
             }
         }
 
-        private void PopulateMetavariants()
+        private async ValueTask PopulateMetavariants()
         {
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
 
@@ -1880,13 +1906,13 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMetavariants))
                     {
-                        lstMetavariants.Add(new ListItem(Guid.Empty, LanguageManager.GetString("String_None")));
+                        lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None")));
                         // Retrieve the list of Metavariants for the selected Metatype.
                         foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
                                      "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + ']'))
                         {
                             string strName = objXmlMetavariant.SelectSingleNodeAndCacheExpression("name")?.Value
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
                             if (objXmlMetatypeBP.SelectSingleNode(
                                     "metavariants/metavariant[name = " + strName.CleanXPath() + ']') != null)
                             {
@@ -1925,20 +1951,20 @@ namespace Chummer
                                     --intPos;
                                     lblForceLabel.Text = strEssMax.Substring(intPos, 3)
                                                                   .Replace(
-                                                                      "D6", LanguageManager.GetString("String_D6"));
+                                                                      "D6", await LanguageManager.GetStringAsync("String_D6"));
                                     nudForce.Maximum
                                         = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
                                 }
                                 else
                                 {
                                     lblForceLabel.Text = 1.ToString(GlobalSettings.CultureInfo)
-                                                         + LanguageManager.GetString("String_D6");
+                                                         + await LanguageManager.GetStringAsync("String_D6");
                                     nudForce.Maximum = 6;
                                 }
                             }
                             else
                             {
-                                lblForceLabel.Text = LanguageManager.GetString(
+                                lblForceLabel.Text = await LanguageManager.GetStringAsync(
                                     objXmlMetatype.SelectSingleNodeAndCacheExpression("forceislevels") != null
                                         ? "String_Level"
                                         : "String_Force");
@@ -1958,7 +1984,7 @@ namespace Chummer
                 else
                 {
                     cboMetavariant.BeginUpdate();
-                    cboMetavariant.PopulateWithListItems(new ListItem("None", LanguageManager.GetString("String_None")).Yield());
+                    cboMetavariant.PopulateWithListItems(new ListItem("None", await LanguageManager.GetStringAsync("String_None")).Yield());
                     cboMetavariant.Enabled = false;
                     cboMetavariant.EndUpdate();
 
@@ -1970,7 +1996,7 @@ namespace Chummer
             {
                 // Clear the Metavariant list if nothing is currently selected.
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.PopulateWithListItems(new ListItem("None", LanguageManager.GetString("String_None")).Yield());
+                cboMetavariant.PopulateWithListItems(new ListItem("None", await LanguageManager.GetStringAsync("String_None")).Yield());
                 cboMetavariant.Enabled = false;
                 cboMetavariant.EndUpdate();
 
@@ -2207,7 +2233,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Custom Methods

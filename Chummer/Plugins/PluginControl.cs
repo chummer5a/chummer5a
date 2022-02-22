@@ -310,7 +310,6 @@ namespace Chummer.Plugins
                     {
                         Log.Error(e, "Plugins (at least not all of them) could not be loaded. Please allow logging to upload logs.");
                     }
-
                 }
 
                 if (MyPlugins.Count == 0)

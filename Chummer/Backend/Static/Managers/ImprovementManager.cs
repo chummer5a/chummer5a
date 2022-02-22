@@ -284,7 +284,7 @@ namespace Chummer
         {
             decimal decReturn = MetaValueOf(objCharacter, objImprovementType, out lstUsedImprovements,
                                             x => x.Value,
-                                            s_DictionaryCachedAugmentedValues, blnAddToRating, strImprovedName,
+                                            s_DictionaryCachedValues, blnAddToRating, strImprovedName,
                                             blnUnconditionalOnly,
                                             blnIncludeNonImproved);
             if (decReturn != 0 && lstUsedImprovements.Count == 0)

@@ -1266,7 +1266,7 @@ namespace Chummer.Plugins
                                     await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.MySINner, null);
                                 await StaticUtils.WebCall(callback, 70,
                                     "Character downloaded");
-                                MainFormLoadChar(fileNameToLoad);
+                                await MainFormLoadChar(fileNameToLoad);
                                 await StaticUtils.WebCall(callback, 100,
                                     "Character opened");
                             }
@@ -1292,7 +1292,7 @@ namespace Chummer.Plugins
             }
         }
 
-        private static void MainFormLoadChar(string fileToLoad)
+        private static async ValueTask MainFormLoadChar(string fileToLoad)
         {
             //already open
             Character objCharacter = MainForm.OpenCharacters.FirstOrDefault(a => a.FileName == fileToLoad);
@@ -1302,9 +1302,9 @@ namespace Chummer.Plugins
                 {
                     FileName = fileToLoad
                 };
-                using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = await ChummerMainForm.CreateAndShowProgressBarAsync(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
                 {
-                    if (objCharacter.Load(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening))
+                    if (await objCharacter.LoadAsync(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening))
                         MainForm.OpenCharacters.Add(objCharacter);
                     else
                         return;
@@ -1312,15 +1312,15 @@ namespace Chummer.Plugins
             }
             using (new CursorWait(MainForm))
             {
-                MainForm.DoThreadSafe(() =>
+                await MainForm.DoThreadSafeFunc(async () =>
                 {
                     if (MainForm.OpenCharacterForms.Any(a => a.CharacterObject == objCharacter))
                     {
-                        MainForm.SwitchToOpenCharacter(objCharacter, false);
+                        await MainForm.SwitchToOpenCharacter(objCharacter, false);
                     }
                     else
                     {
-                        MainForm.OpenCharacter(objCharacter, false);
+                        await MainForm.OpenCharacter(objCharacter, false);
                     }
 
                     MainForm.BringToFront();

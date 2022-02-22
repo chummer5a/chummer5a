@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -55,7 +56,7 @@ namespace Chummer
             _xmlMetatypeQualityRestrictionNode = _objCharacter.GetNodeXPath().SelectSingleNode("qualityrestriction");
         }
 
-        private void SelectQuality_Load(object sender, EventArgs e)
+        private async void SelectQuality_Load(object sender, EventArgs e)
         {
             // Populate the Quality Category list.
             foreach (XPathNavigator objXmlCategory in _xmlBaseQualityDataNode.SelectAndCacheExpression("categories/category"))
@@ -66,7 +67,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -87,7 +88,7 @@ namespace Chummer
             if (_objCharacter.MetagenicLimit == 0)
                 chkNotMetagenic.Checked = true;
 
-            lblBPLabel.Text = LanguageManager.GetString("Label_Karma");
+            lblBPLabel.Text = await LanguageManager.GetStringAsync("Label_Karma");
             _blnLoading = false;
             BuildQualityList();
         }
@@ -97,7 +98,7 @@ namespace Chummer
             BuildQualityList();
         }
 
-        private void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -129,10 +130,10 @@ namespace Chummer
                     nudRating.Visible = false;
                 }
 
-                UpdateCostLabel(xmlQuality);
+                await UpdateCostLabel(xmlQuality);
 
-                string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = xmlQuality.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                string strPage = xmlQuality.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
@@ -148,16 +149,16 @@ namespace Chummer
             _blnLoading = false;
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             _blnAddAgain = false;
-            AcceptForm();
+            await AcceptForm();
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -170,7 +171,7 @@ namespace Chummer
             BuildQualityList();
         }
 
-        private void CostControl_Changed(object sender, EventArgs e)
+        private async void CostControl_Changed(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -185,7 +186,7 @@ namespace Chummer
             }
 
             if (xmlQuality != null)
-                UpdateCostLabel(xmlQuality);
+                await UpdateCostLabel(xmlQuality);
 
             _blnLoading = false;
         }
@@ -327,7 +328,7 @@ namespace Chummer
 
         #region Methods
 
-        private void UpdateCostLabel(XPathNavigator xmlQuality)
+        private async ValueTask UpdateCostLabel(XPathNavigator xmlQuality)
         {
             if (xmlQuality != null)
             {
@@ -356,7 +357,7 @@ namespace Chummer
                         lblBP.Text = intMax == int.MaxValue
                             ? intMin.ToString(GlobalSettings.CultureInfo)
                             : string.Format(GlobalSettings.CultureInfo, "{0}{1}-{1}{2}", intMin,
-                                LanguageManager.GetString("String_Space"), intMax);
+                                await LanguageManager.GetStringAsync("String_Space"), intMax);
                     }
                     else
                     {
@@ -406,9 +407,9 @@ namespace Chummer
                             }
 
                             lblBP.Text += string.Format(GlobalSettings.CultureInfo, "{0}/{0}{1}{0}{2}",
-                                LanguageManager.GetString("String_Space"), spellPoints,
-                                LanguageManager.GetString("String_SpellPoints"));
-                            lblBP.ToolTipText = LanguageManager.GetString("Tip_SelectSpell_MasteryQuality");
+                                await LanguageManager.GetStringAsync("String_Space"), spellPoints,
+                                await LanguageManager.GetStringAsync("String_SpellPoints"));
+                            lblBP.ToolTipText = await LanguageManager.GetStringAsync("Tip_SelectSpell_MasteryQuality");
                         }
                         else
                         {
@@ -591,7 +592,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedQuality))
@@ -599,7 +600,7 @@ namespace Chummer
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
 
-            if (objNode?.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality"), IgnoreQuality) != true)
+            if (objNode?.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Quality"), IgnoreQuality) != true)
                 return;
 
             _strSelectedQuality = strSelectedQuality;
@@ -609,7 +610,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

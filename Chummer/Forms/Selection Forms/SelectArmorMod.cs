@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
@@ -56,7 +57,7 @@ namespace Chummer
                         _xmlBaseDataNode.SelectSingleNodeAndCacheExpression("modcategories")));
         }
 
-        private void SelectArmorMod_Load(object sender, EventArgs e)
+        private async void SelectArmorMod_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -76,12 +77,12 @@ namespace Chummer
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             _blnLoading = false;
-            RefreshList();
+            await RefreshList();
         }
 
-        private void lstMod_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMod_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateSelectedArmor();
+            await UpdateSelectedArmor();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -95,9 +96,9 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void nudRating_ValueChanged(object sender, EventArgs e)
         {
-            UpdateSelectedArmor();
+            await UpdateSelectedArmor();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -106,22 +107,22 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
-            UpdateSelectedArmor();
+            await UpdateSelectedArmor();
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
-            UpdateSelectedArmor();
+            await UpdateSelectedArmor();
         }
 
         #endregion Control Events
@@ -196,15 +197,15 @@ namespace Chummer
 
         #region Methods
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateSelectedArmor();
+            await UpdateSelectedArmor();
         }
 
         /// <summary>
         /// Update the information for the selected Armor Mod.
         /// </summary>
-        private void UpdateSelectedArmor()
+        private async ValueTask UpdateSelectedArmor()
         {
             if (_blnLoading)
                 return;
@@ -227,9 +228,9 @@ namespace Chummer
 
             string strRatingLabel = objXmlMod.SelectSingleNode("ratinglabel")?.Value;
             lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
-                    LanguageManager.GetString(strRatingLabel))
-                : LanguageManager.GetString("Label_Rating");
+                ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
+                    await LanguageManager.GetStringAsync(strRatingLabel))
+                : await LanguageManager.GetStringAsync("Label_Rating");
             nudRating.Maximum = Convert.ToDecimal(objXmlMod.SelectSingleNode("maxrating")?.Value, GlobalSettings.InvariantCultureInfo);
             if (chkHideOverAvailLimit.Checked)
             {
@@ -324,15 +325,15 @@ namespace Chummer
                     lblCost.Text = decMax == decimal.MaxValue
                         ? decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+"
                         : decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                          + LanguageManager.GetString("String_Space") + '-' + LanguageManager.GetString("String_Space")
+                          + await LanguageManager.GetStringAsync("String_Space") + '-' + await LanguageManager.GetStringAsync("String_Space")
                           + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
 
                     lblTest.Text = _objCharacter.AvailTest(decMin, lblAvail.Text);
                 }
                 else
                 {
-                    string strCost = strCostElement.CheapReplace("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                        .CheapReplace("Armor Cost", () => _decArmorCost.ToString(GlobalSettings.InvariantCultureInfo));
+                    string strCost = await (await strCostElement.CheapReplaceAsync("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)))
+                        .CheapReplaceAsync("Armor Cost", () => _decArmorCost.ToString(GlobalSettings.InvariantCultureInfo));
 
                     // Apply any markup.
                     objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out blnIsSuccess);
@@ -363,8 +364,8 @@ namespace Chummer
                     strCapacity = strValues[nudRating.ValueAsInt - 1];
                 }
 
-                strCapacity = strCapacity.CheapReplace("Capacity", () => _decArmorCapacity.ToString(GlobalSettings.InvariantCultureInfo))
-                    .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                strCapacity = await (await strCapacity.CheapReplaceAsync("Capacity", () => _decArmorCapacity.ToString(GlobalSettings.InvariantCultureInfo)))
+                    .CheapReplaceAsync("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
                 bool blnSquareBrackets = strCapacity.StartsWith('[');
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
@@ -380,8 +381,8 @@ namespace Chummer
 
             lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
 
-            string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlMod.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+            string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strPage = objXmlMod.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
             SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
@@ -391,15 +392,15 @@ namespace Chummer
             ResumeLayout();
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         /// <summary>
         ///
         /// </summary>
-        private void RefreshList()
+        private async ValueTask RefreshList()
         {
             string strFilter = string.Empty;
             // Populate the Mods list.
@@ -471,7 +472,7 @@ namespace Chummer
                                             strId,
                                             objXmlMod.SelectSingleNodeAndCacheExpression("translate")?.Value
                                             ?? objXmlMod.SelectSingleNodeAndCacheExpression("name")?.Value
-                                            ?? LanguageManager.GetString("String_Unknown")));
+                                            ?? await LanguageManager.GetStringAsync("String_Unknown")));
                         }
                         else
                             ++intOverLimit;
@@ -484,7 +485,7 @@ namespace Chummer
                     // Add after sort so that it's always at the end
                     lstMods.Add(new ListItem(string.Empty,
                                              string.Format(GlobalSettings.CultureInfo,
-                                                           LanguageManager.GetString("String_RestrictedItemsHidden"),
+                                                           await LanguageManager.GetStringAsync("String_RestrictedItemsHidden"),
                                                            intOverLimit)));
                 }
 
@@ -518,7 +519,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

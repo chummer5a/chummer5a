@@ -136,8 +136,8 @@ namespace Chummer
                 cboPossessionMethod.EndUpdate();
             }
 
-            PopulateMetatypes();
-            PopulateMetavariants();
+            await PopulateMetatypes();
+            await PopulateMetavariants();
             await RefreshSelectedMetavariant();
 
             _blnLoading = false;
@@ -147,21 +147,31 @@ namespace Chummer
 
         #region Control Events
 
-        private void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await ProcessMetatypeSelectedChanged();
+        }
+
+        private async ValueTask ProcessMetatypeSelectedChanged()
         {
             if (_blnLoading)
                 return;
             SuspendLayout();
-            PopulateMetavariants();
+            await PopulateMetavariants();
             ResumeLayout();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            MetatypeSelected();
+            await MetatypeSelected();
         }
 
         private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await ProcessMetavariantSelectedChanged();
+        }
+
+        private async ValueTask ProcessMetavariantSelectedChanged()
         {
             if (_blnLoading)
                 return;
@@ -176,12 +186,12 @@ namespace Chummer
             Close();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             SuspendLayout();
-            PopulateMetatypes();
+            await PopulateMetatypes();
             ResumeLayout();
         }
 
@@ -197,7 +207,7 @@ namespace Chummer
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        private void MetatypeSelected()
+        private async ValueTask MetatypeSelected()
         {
             using (new CursorWait(this))
             {
@@ -210,7 +220,7 @@ namespace Chummer
                     XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = " + strSelectedMetatype.CleanXPath() + ']');
                     if (objXmlMetatype == null)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return;
                     }
@@ -242,7 +252,7 @@ namespace Chummer
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovable
                                 || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
                                 continue;
-                            XPathNavigator xmlRestrictionNode = objQuality.GetNodeXPath()?.SelectSingleNode("required");
+                            XPathNavigator xmlRestrictionNode = (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("required");
                             if (xmlRestrictionNode != null &&
                                 (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                             {
@@ -250,7 +260,7 @@ namespace Chummer
                             }
                             else
                             {
-                                xmlRestrictionNode = objQuality.GetNodeXPath()?.SelectSingleNode("forbidden");
+                                xmlRestrictionNode = (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("forbidden");
                                 if (xmlRestrictionNode != null &&
                                     (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                                 {
@@ -264,7 +274,7 @@ namespace Chummer
                             _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode, chkPossessionBased.Checked ? cboPossessionMethod.SelectedValue?.ToString() : string.Empty);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
-                            if (objQuality.GetNodeXPath()?.RequirementsMet(_objCharacter) == false)
+                            if ((await objQuality.GetNodeXPathAsync())?.RequirementsMet(_objCharacter) == false)
                                 objQuality.DeleteQuality();
                         }
                     }
@@ -297,7 +307,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -686,7 +696,7 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
-        private void PopulateMetavariants()
+        private async ValueTask PopulateMetavariants()
         {
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             XPathNavigator objXmlMetatype = null;
@@ -697,7 +707,7 @@ namespace Chummer
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetavariants))
                 {
-                    lstMetavariants.Add(new ListItem(Guid.Empty, LanguageManager.GetString("String_None")));
+                    lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None")));
                     foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
                                  "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + ']'))
                     {
@@ -709,7 +719,7 @@ namespace Chummer
                                                                  .SelectSingleNodeAndCacheExpression("translate")?.Value
                                                              ?? objXmlMetavariant
                                                                 .SelectSingleNodeAndCacheExpression("name")?.Value
-                                                             ?? LanguageManager.GetString("String_Unknown")));
+                                                             ?? await LanguageManager.GetStringAsync("String_Unknown")));
                         }
                     }
 
@@ -727,7 +737,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
                     {
                         if (cboMetavariant.SelectedValue?.ToString() == strOldSelectedValue)
-                            cboMetavariant_SelectedIndexChanged(null, null);
+                            await ProcessMetavariantSelectedChanged();
                         else
                             cboMetavariant.SelectedValue = strOldSelectedValue;
                     }
@@ -748,7 +758,7 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.PopulateWithListItems(new ListItem(Guid.Empty, LanguageManager.GetString("String_None")).Yield());
+                cboMetavariant.PopulateWithListItems(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None")).Yield());
                 cboMetavariant.Enabled = false;
                 _blnLoading = blnOldLoading;
                 cboMetavariant.SelectedIndex = 0;
@@ -762,7 +772,7 @@ namespace Chummer
         /// <summary>
         /// Populate the list of Metatypes.
         /// </summary>
-        private void PopulateMetatypes()
+        private async ValueTask PopulateMetatypes()
         {
             string strSelectedCategory = cboCategory.SelectedValue?.ToString();
             string strSearchText       = txtSearch.Text;
@@ -799,7 +809,7 @@ namespace Chummer
                                                                   ?.Value
                                                               ?? xmlMetatype.SelectSingleNodeAndCacheExpression("name")
                                                                             ?.Value
-                                                              ?? LanguageManager.GetString("String_Unknown")));
+                                                              ?? await LanguageManager.GetStringAsync("String_Unknown")));
                         }
                     }
 
@@ -810,7 +820,7 @@ namespace Chummer
                                             ?? _objCharacter?.MetatypeGuid.ToString(
                                                 "D", GlobalSettings.InvariantCultureInfo);
                     if (strOldSelected == Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo))
-                        strOldSelected = _objCharacter.GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("id")?.Value
+                        strOldSelected = (await _objCharacter.GetNodeXPathAsync(true))?.SelectSingleNodeAndCacheExpression("id")?.Value
                                          ?? string.Empty;
                     _blnLoading = true;
                     lstMetatypes.BeginUpdate();
@@ -820,7 +830,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strOldSelected))
                     {
                         if (lstMetatypes.SelectedValue?.ToString() == strOldSelected)
-                            lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);
+                            await ProcessMetatypeSelectedChanged();
                         else
                             lstMetatypes.SelectedValue = strOldSelected;
                     }
@@ -845,14 +855,14 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Custom Methods
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            PopulateMetatypes();
+            await PopulateMetatypes();
         }
     }
 }

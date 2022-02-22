@@ -133,10 +133,10 @@ namespace Chummer
                     CheckForUpdate();
 #endif
 
-                    GlobalSettings.MruChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMruToolstripMenu(senderInner, eInner));
+                    GlobalSettings.MruChanged += PopulateMruToolstripMenu;
 
                     // Populate the MRU list.
-                    PopulateMruToolstripMenu(this, TextEventArgs.Empty);
+                    await this.DoThreadSafeFunc(() => DoPopulateMruToolstripMenu());
 
                     Program.MainForm = this;
 
@@ -144,7 +144,7 @@ namespace Chummer
                     using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1))
                     {
                         Task<ParallelLoopResult> objCharacterLoadingTask = null;
-                        using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + Utils.BasicDataFileNames.Count))
+                        using (_frmProgressBar = await CreateAndShowProgressBarAsync(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + Utils.BasicDataFileNames.Count))
                         {
                             // Attempt to cache all XML files that are used the most.
                             using (_ = Timekeeper.StartSyncron("cache_load", opFrmChummerMain))
@@ -326,7 +326,7 @@ namespace Chummer
                         if (objCharacterLoadingTask?.IsCompleted == false)
                             await objCharacterLoadingTask;
                         if (lstCharactersToLoad.Count > 0)
-                            OpenCharacterList(lstCharactersToLoad);
+                            await OpenCharacterList(lstCharactersToLoad);
                     }
                 }
                 catch (Exception ex)
@@ -719,18 +719,19 @@ namespace Chummer
                             return;
                     }
 
-                    OpenCharacter(objCharacter, false);
+                    OpenCharacters.Add(objCharacter);
+                    await OpenCharacter(objCharacter, false);
                 }
             }
         }
 
-        private void mnuMRU_Click(object sender, EventArgs e)
+        private async void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
             using (new CursorWait(this))
-                OpenCharacter(LoadCharacter(strFileName));
+                await OpenCharacter(await LoadCharacterAsync(strFileName));
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -834,7 +835,7 @@ namespace Chummer
             (tabForms.SelectedTab?.Tag as Form)?.Select();
         }
 
-        public bool SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMru)
+        public async ValueTask<bool> SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMru)
         {
             if (objCharacter == null)
                 return false;
@@ -855,7 +856,7 @@ namespace Chummer
             if (!OpenCharacters.Contains(objCharacter))
                 return false;
             using (new CursorWait(this))
-                OpenCharacter(objCharacter, blnIncludeInMru);
+                await OpenCharacter(objCharacter, blnIncludeInMru);
             return true;
         }
 
@@ -958,7 +959,7 @@ namespace Chummer
                 Character[] lstCharacters = new Character[s.Length];
                 await Task.WhenAll(dicIndexedStrings.Select(x =>
                     Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
-                OpenCharacterList(lstCharacters);
+                await OpenCharacterList(lstCharacters);
             }
         }
 
@@ -1076,7 +1077,9 @@ namespace Chummer
 
         #region Methods
 
+#if DEBUG
         private static bool _blnShowDevWarningAboutDebuggingOnlyOnce = true;
+#endif
 
         /// <summary>
         /// This makes sure, that the MessageBox is shown in the UI Thread.
@@ -1108,6 +1111,7 @@ namespace Chummer
 
             if (owner.InvokeRequired)
             {
+#if DEBUG
                 if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
                 {
                     _blnShowDevWarningAboutDebuggingOnlyOnce = false;
@@ -1122,6 +1126,7 @@ namespace Chummer
                     //that setting off.
                     Debugger.Break();
                 }
+#endif
 
                 try
                 {
@@ -1158,6 +1163,21 @@ namespace Chummer
             LoadingBar frmReturn = new LoadingBar { CharacterFile = strFile };
             if (intCount > 0)
                 frmReturn.Reset(intCount);
+            frmReturn.Show();
+            return frmReturn;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for creating and displaying a frmLoading screen with specific text and progress bar size.
+        /// </summary>
+        /// <param name="strFile"></param>
+        /// <param name="intCount"></param>
+        /// <returns></returns>
+        public static async ValueTask<LoadingBar> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1)
+        {
+            LoadingBar frmReturn = new LoadingBar { CharacterFile = strFile };
+            if (intCount > 0)
+                await frmReturn.ResetAsync(intCount);
             frmReturn.Show();
             return frmReturn;
         }
@@ -1245,7 +1265,7 @@ namespace Chummer
                     {
                         Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                         if (objLoopCharacter != null)
-                            SwitchToOpenCharacter(objLoopCharacter, true);
+                            await SwitchToOpenCharacter(objLoopCharacter, true);
                         else
                             lstFilesToOpen.Add(strFile);
                     }
@@ -1255,9 +1275,9 @@ namespace Chummer
                     return;
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                using (_frmProgressBar = CreateAndShowProgressBar(
-                    string.Join(',' + await LanguageManager.GetStringAsync("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
-                    lstFilesToOpen.Count * Character.NumLoadingSections))
+                using (_frmProgressBar = await CreateAndShowProgressBarAsync(
+                           string.Join(',' + await LanguageManager.GetStringAsync("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
+                           lstFilesToOpen.Count * Character.NumLoadingSections))
                 {
                     Dictionary<int, string> dicIndexedStrings =
                         new Dictionary<int, string>(lstFilesToOpen.Count);
@@ -1269,7 +1289,7 @@ namespace Chummer
                     await Task.WhenAll(dicIndexedStrings.Select(x =>
                         Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
                 }
-                OpenCharacterList(lstCharacters);
+                await OpenCharacterList(lstCharacters);
             }
 
             //Timekeeper.Finish("load_sum");
@@ -1279,9 +1299,9 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character (not thread-safe).
         /// </summary>
-        public void OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
+        public ValueTask OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
         {
-            OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
+            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
         }
 
         /// <summary>
@@ -1289,7 +1309,7 @@ namespace Chummer
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
-        public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
+        public async ValueTask OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
         {
             if (lstCharacters == null)
                 return;
@@ -1301,9 +1321,9 @@ namespace Chummer
                 ? FormWindowState.Maximized
                 : FormWindowState.Normal;
             List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>(lstNewCharacters.Count);
-            string strUI = LanguageManager.GetString("String_UI");
-            string strSpace = LanguageManager.GetString("String_Space");
-            using (_frmProgressBar = CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
+            string strUI = await LanguageManager.GetStringAsync("String_UI");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            using (_frmProgressBar = await CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
             {
                 foreach (Character objCharacter in lstNewCharacters)
                 {
@@ -1311,8 +1331,8 @@ namespace Chummer
                     if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                         continue;
                     if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500) && ShowMessageBox(
-                        string.Format(LanguageManager.GetString("Message_TooManyHandlesWarning"), objCharacter.CharacterName),
-                        LanguageManager.GetString("MessageTitle_TooManyHandlesWarning"),
+                        string.Format(await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning"), objCharacter.CharacterName),
+                        await LanguageManager.GetStringAsync("MessageTitle_TooManyHandlesWarning"),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                     {
                         if (OpenCharacters.All(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
@@ -1321,7 +1341,7 @@ namespace Chummer
                     }
                     //Timekeeper.Start("load_event_time");
                     // Show the character forms.
-                    this.DoThreadSafe(() =>
+                    await this.DoThreadSafeAsync(() =>
                     {
                         CharacterShared frmNewCharacter = objCharacter.Created
                             ? (CharacterShared)new CharacterCareer(objCharacter)
@@ -1452,7 +1472,7 @@ namespace Chummer
                 }
                 if (blnShowProgressBar && _frmProgressBar.IsNullOrDisposed())
                 {
-                    using (_frmProgressBar = CreateAndShowProgressBar(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
+                    using (_frmProgressBar = await CreateAndShowProgressBarAsync(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
                     {
                         OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");
@@ -1520,161 +1540,172 @@ namespace Chummer
         /// <summary>
         /// Populate the MRU items.
         /// </summary>
-        public void PopulateMruToolstripMenu(object sender, TextEventArgs e)
+        private async void PopulateMruToolstripMenu(object sender, TextEventArgs e)
         {
-            SuspendLayout();
-            mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
-                                          || GlobalSettings.MostRecentlyUsedCharacters.Count > 0;
+            await this.DoThreadSafeFunc(() => DoPopulateMruToolstripMenu(e?.Text));
+        }
 
-            if (e?.Text != "mru")
+        private async ValueTask DoPopulateMruToolstripMenu(string strText = "")
+        {
+            menuStrip.SuspendLayout();
+            try
             {
+                mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
+                                              || GlobalSettings.MostRecentlyUsedCharacters.Count > 0;
+
+                if (strText != "mru")
+                {
+                    for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                    {
+                        DpiFriendlyToolStripMenuItem objItem;
+                        switch (i)
+                        {
+                            case 0:
+                                objItem = mnuStickyMRU0;
+                                break;
+
+                            case 1:
+                                objItem = mnuStickyMRU1;
+                                break;
+
+                            case 2:
+                                objItem = mnuStickyMRU2;
+                                break;
+
+                            case 3:
+                                objItem = mnuStickyMRU3;
+                                break;
+
+                            case 4:
+                                objItem = mnuStickyMRU4;
+                                break;
+
+                            case 5:
+                                objItem = mnuStickyMRU5;
+                                break;
+
+                            case 6:
+                                objItem = mnuStickyMRU6;
+                                break;
+
+                            case 7:
+                                objItem = mnuStickyMRU7;
+                                break;
+
+                            case 8:
+                                objItem = mnuStickyMRU8;
+                                break;
+
+                            case 9:
+                                objItem = mnuStickyMRU9;
+                                break;
+
+                            default:
+                                continue;
+                        }
+
+                        if (i < GlobalSettings.FavoriteCharacters.Count)
+                        {
+                            objItem.Text = GlobalSettings.FavoriteCharacters[i];
+                            objItem.Tag = GlobalSettings.FavoriteCharacters[i];
+                            objItem.Visible = true;
+                        }
+                        else
+                        {
+                            objItem.Visible = false;
+                        }
+                    }
+                }
+
+                mnuMRU0.Visible = false;
+                mnuMRU1.Visible = false;
+                mnuMRU2.Visible = false;
+                mnuMRU3.Visible = false;
+                mnuMRU4.Visible = false;
+                mnuMRU5.Visible = false;
+                mnuMRU6.Visible = false;
+                mnuMRU7.Visible = false;
+                mnuMRU8.Visible = false;
+                mnuMRU9.Visible = false;
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                int i2 = 0;
                 for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
                 {
+                    if (i2 >= GlobalSettings.MostRecentlyUsedCharacters.Count ||
+                        i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
+                        continue;
+                    string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
+                    if (GlobalSettings.FavoriteCharacters.Contains(strFile))
+                        continue;
                     DpiFriendlyToolStripMenuItem objItem;
-                    switch (i)
+                    switch (i2)
                     {
                         case 0:
-                            objItem = mnuStickyMRU0;
+                            objItem = mnuMRU0;
                             break;
 
                         case 1:
-                            objItem = mnuStickyMRU1;
+                            objItem = mnuMRU1;
                             break;
 
                         case 2:
-                            objItem = mnuStickyMRU2;
+                            objItem = mnuMRU2;
                             break;
 
                         case 3:
-                            objItem = mnuStickyMRU3;
+                            objItem = mnuMRU3;
                             break;
 
                         case 4:
-                            objItem = mnuStickyMRU4;
+                            objItem = mnuMRU4;
                             break;
 
                         case 5:
-                            objItem = mnuStickyMRU5;
+                            objItem = mnuMRU5;
                             break;
 
                         case 6:
-                            objItem = mnuStickyMRU6;
+                            objItem = mnuMRU6;
                             break;
 
                         case 7:
-                            objItem = mnuStickyMRU7;
+                            objItem = mnuMRU7;
                             break;
 
                         case 8:
-                            objItem = mnuStickyMRU8;
+                            objItem = mnuMRU8;
                             break;
 
                         case 9:
-                            objItem = mnuStickyMRU9;
+                            objItem = mnuMRU9;
                             break;
 
                         default:
                             continue;
                     }
 
-                    if (i < GlobalSettings.FavoriteCharacters.Count)
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    if (i2 <= 9
+                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                        && i2 >= 0)
                     {
-                        objItem.Text = GlobalSettings.FavoriteCharacters[i];
-                        objItem.Tag = GlobalSettings.FavoriteCharacters[i];
-                        objItem.Visible = true;
+                        string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                        objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
                     }
                     else
-                    {
-                        objItem.Visible = false;
-                    }
+                        objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile;
+
+                    objItem.Tag = strFile;
+                    objItem.Visible = true;
+
+                    ++i2;
                 }
             }
-
-            mnuMRU0.Visible = false;
-            mnuMRU1.Visible = false;
-            mnuMRU2.Visible = false;
-            mnuMRU3.Visible = false;
-            mnuMRU4.Visible = false;
-            mnuMRU5.Visible = false;
-            mnuMRU6.Visible = false;
-            mnuMRU7.Visible = false;
-            mnuMRU8.Visible = false;
-            mnuMRU9.Visible = false;
-
-            string strSpace = LanguageManager.GetString("String_Space");
-            int i2 = 0;
-            for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+            finally
             {
-                if (i2 >= GlobalSettings.MostRecentlyUsedCharacters.Count ||
-                    i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
-                    continue;
-                string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
-                if (GlobalSettings.FavoriteCharacters.Contains(strFile))
-                    continue;
-                DpiFriendlyToolStripMenuItem objItem;
-                switch (i2)
-                {
-                    case 0:
-                        objItem = mnuMRU0;
-                        break;
-
-                    case 1:
-                        objItem = mnuMRU1;
-                        break;
-
-                    case 2:
-                        objItem = mnuMRU2;
-                        break;
-
-                    case 3:
-                        objItem = mnuMRU3;
-                        break;
-
-                    case 4:
-                        objItem = mnuMRU4;
-                        break;
-
-                    case 5:
-                        objItem = mnuMRU5;
-                        break;
-
-                    case 6:
-                        objItem = mnuMRU6;
-                        break;
-
-                    case 7:
-                        objItem = mnuMRU7;
-                        break;
-
-                    case 8:
-                        objItem = mnuMRU8;
-                        break;
-
-                    case 9:
-                        objItem = mnuMRU9;
-                        break;
-
-                    default:
-                        continue;
-                }
-
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (i2 <= 9
-                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                    && i2 >= 0)
-                {
-                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                    objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
-                }
-                else
-                    objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile;
-                objItem.Tag = strFile;
-                objItem.Visible = true;
-
-                ++i2;
+                menuStrip.ResumeLayout();
             }
-
-            ResumeLayout();
         }
 
         public void OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0)
@@ -1816,7 +1847,8 @@ namespace Chummer
                     if (objCharacterLoadingTask?.IsCompleted == false)
                         await objCharacterLoadingTask;
                     if (lstCharactersToLoad.Count > 0)
-                        OpenCharacterList(lstCharactersToLoad);
+                        // ReSharper disable once AccessToDisposedClosure
+                        await this.DoThreadSafeFunc(() => OpenCharacterList(lstCharactersToLoad));
                     lstCharactersToLoad.Dispose();
                 });
             }

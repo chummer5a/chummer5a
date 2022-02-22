@@ -69,6 +69,7 @@ namespace Chummer
         private bool _blnAllowObsolescentUpgrade;
         private bool _blnDontUseCyberlimbCalculation;
         private bool _blnAllowSkillRegrouping = true;
+        private bool _blnSpecializationsBreakSkillGroups = true;
         private bool _blnAlternateMetatypeAttributeKarma;
         private bool _blnArmorDegradation;
         private bool _blnStrictSkillGroupsInCreateMode;
@@ -518,6 +519,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnAllowObsolescentUpgrade.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDontUseCyberlimbCalculation.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowSkillRegrouping.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnSpecializationsBreakSkillGroups.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAlternateMetatypeAttributeKarma.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnArmorDegradation.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnStrictSkillGroupsInCreateMode.GetHashCode();
@@ -800,6 +802,8 @@ namespace Chummer
                     objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString(GlobalSettings.InvariantCultureInfo));
                     // <allowskillregrouping />
                     objWriter.WriteElementString("allowskillregrouping", _blnAllowSkillRegrouping.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <specializationsbreakskillgroups />
+                    objWriter.WriteElementString("specializationsbreakskillgroups", _blnSpecializationsBreakSkillGroups.ToString(GlobalSettings.InvariantCultureInfo));
                     // <metatypecostskarma />
                     objWriter.WriteElementString("metatypecostskarma", _blnMetatypeCostsKarma.ToString(GlobalSettings.InvariantCultureInfo));
                     // <metatypecostskarmamultiplier />
@@ -1272,6 +1276,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
             // Allow Skill Regrouping.
             objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
+            // Whether skill specializations break skill groups.
+            objXmlNode.TryGetBoolFieldQuickly("specializationsbreakskillgroups", ref _blnSpecializationsBreakSkillGroups);
             // Metatype Costs Karma.
             objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
             // Allow characters to spend karma before attribute points.
@@ -2595,6 +2601,22 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Whether or not specializations in an active skill (permanently) break a skill group.
+        /// </summary>
+        public bool SpecializationsBreakSkillGroups
+        {
+            get => _blnSpecializationsBreakSkillGroups;
+            set
+            {
+                if (_blnSpecializationsBreakSkillGroups != value)
+                {
+                    _blnSpecializationsBreakSkillGroups = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Sourcebooks.
         /// </summary>
         public HashSet<string> BooksWritable => _setBooks;
@@ -3758,7 +3780,7 @@ namespace Chummer
         /// </summary>
         public int MaxKnowledgeSkillRating
         {
-            get => _intMaxKnowledgeSkillRatingCreate;
+            get => _intMaxKnowledgeSkillRating;
             set
             {
                 if (_intMaxKnowledgeSkillRating != value)

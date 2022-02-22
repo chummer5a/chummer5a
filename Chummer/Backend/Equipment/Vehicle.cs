@@ -2639,11 +2639,9 @@ namespace Chummer.Backend.Equipment
 
                 // Rigger 5 says max extra armor is Body + starting Armor, p159
                 // When you need to use a 0 for the math, use 0.5 instead
-                int intReturn;
-                if (IsDrone && _objCharacter.Settings.DroneArmorMultiplierEnabled)
-                    intReturn = ((Math.Max(Body, 0.5m) + Armor) * _objCharacter.Settings.DroneArmorMultiplier).StandardRound();
-                else
-                    intReturn = Math.Max(Body + Armor, 1);
+                int intReturn = IsDrone && _objCharacter.Settings.DroneArmorMultiplierEnabled
+                    ? ((Math.Max(Body, 0.5m) + Armor) * _objCharacter.Settings.DroneArmorMultiplier).StandardRound()
+                    : Math.Max(Body + Armor, 1);
 
                 return intReturn;
             }

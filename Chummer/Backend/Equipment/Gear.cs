@@ -4238,7 +4238,6 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objChild in _lstChildren)
                 objChild.Dispose();
             DisposeSelf();
-            
         }
 
         private void DisposeSelf()

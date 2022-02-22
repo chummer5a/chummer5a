@@ -93,6 +93,7 @@ namespace Chummer.UI.Shared.Components
             this.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.Name = "DicePoolControl";
             this.Size = new System.Drawing.Size(64, 24);
+            this.Load += new System.EventHandler(this.DicePoolControl_Load);
             this.flpContainer.ResumeLayout(false);
             this.flpContainer.PerformLayout();
             this.ResumeLayout(false);

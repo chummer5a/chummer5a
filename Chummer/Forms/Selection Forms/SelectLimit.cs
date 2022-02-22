@@ -27,32 +27,16 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
         private string _strSelectedDisplayLimit = string.Empty;
+        private readonly string[] _lstLimits;
 
         #region Control Events
 
         public SelectLimit(params string[] lstLimits)
         {
+            _lstLimits = lstLimits;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            // Build the list of Limits.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
-            {
-                foreach (string strLimit in lstLimits)
-                {
-                    lstLimitItems.Add(
-                        new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short")));
-                }
-
-                cboLimit.BeginUpdate();
-                cboLimit.PopulateWithListItems(lstLimitItems);
-                if (lstLimitItems.Count >= 1)
-                    cboLimit.SelectedIndex = 0;
-                else
-                    cmdOK.Enabled = false;
-                cboLimit.EndUpdate();
-            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -66,11 +50,26 @@ namespace Chummer
             }
         }
 
-        private void SelectLimit_Load(object sender, EventArgs e)
+        private async void SelectLimit_Load(object sender, EventArgs e)
         {
-            if (cboLimit.Items.Count == 1)
+            // Build the list of Limits.
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
             {
-                cmdOK_Click(sender, e);
+                foreach (string strLimit in _lstLimits)
+                {
+                    lstLimitItems.Add(
+                        new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short")));
+                }
+
+                cboLimit.BeginUpdate();
+                cboLimit.PopulateWithListItems(lstLimitItems);
+                cboLimit.EndUpdate();
+                if (lstLimitItems.Count >= 1)
+                    cboLimit.SelectedIndex = 0;
+                else if (lstLimitItems.Count == 1)
+                    cmdOK_Click(sender, e);
+                else
+                    cmdOK.Enabled = false;
             }
         }
 

@@ -109,9 +109,9 @@ namespace Chummer
             }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -629,19 +629,19 @@ namespace Chummer
         /// <summary>
         /// Accept the values on the Form and create the required XML data.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             // Make sure a value has been selected if necessary.
             if (txtTranslateSelection.Visible && string.IsNullOrEmpty(txtSelect.Text))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectItem"), LanguageManager.GetString("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectItem"), await LanguageManager.GetStringAsync("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Make sure a value has been provided for the name.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementName"), LanguageManager.GetString("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementName"), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtName.Focus();
                 return;
             }
@@ -652,14 +652,14 @@ namespace Chummer
                 // Here instead of later because objWriter.Close() needs Stream to not be disposed, but StreamReader.Close() will dispose the Stream.
                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                 {
-                    using (XmlWriter objWriter = XmlWriter.Create(objStream))
+                    using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
                     {
                         // Build the XML for the Improvement.
                         XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + ']');
                         string strInternal = objFetchNode?["internal"]?.InnerText;
                         if (string.IsNullOrEmpty(strInternal))
                             return;
-                        objWriter.WriteStartDocument();
+                        await objWriter.WriteStartDocumentAsync();
                         // <bonus>
                         objWriter.WriteStartElement("bonus");
                         // <whatever element>
@@ -687,15 +687,15 @@ namespace Chummer
                             .Replace("{free}", chkFree.Checked.ToString(GlobalSettings.InvariantCultureInfo).ToLowerInvariant())
                             .Replace("{select}", txtSelect.Text)
                             .Replace("{applytorating}", strRating);
-                        objWriter.WriteRaw(strXml);
+                        await objWriter.WriteRawAsync(strXml);
 
                         // Write the rest of the document.
                         // </whatever element>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                         // </bonus>
-                        objWriter.WriteEndElement();
-                        objWriter.WriteEndDocument();
-                        objWriter.Flush();
+                        await objWriter.WriteEndElementAsync();
+                        await objWriter.WriteEndDocumentAsync();
+                        await objWriter.FlushAsync();
 
                         objStream.Position = 0;
 

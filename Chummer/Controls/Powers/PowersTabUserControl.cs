@@ -23,7 +23,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -133,13 +132,13 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Character.PowerPointsTotal) || e.PropertyName == nameof(Character.PowerPointsUsed))
-                CalculatePowerPoints();
+                await CalculatePowerPoints();
         }
 
-        private void OnPowersListChanged(object sender, ListChangedEventArgs e)
+        private async void OnPowersListChanged(object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
             {
@@ -149,14 +148,14 @@ namespace Chummer.UI.Powers
                         if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                         {
                             // recalculation of power points on rating/free levels change
-                            CalculatePowerPoints();
+                            await CalculatePowerPoints();
                         }
                         break;
                     }
                 case ListChangedType.Reset:
                 case ListChangedType.ItemAdded:
                 case ListChangedType.ItemDeleted:
-                    CalculatePowerPoints();
+                    await CalculatePowerPoints();
                     break;
             }
         }
@@ -250,12 +249,12 @@ namespace Chummer.UI.Powers
         /// <summary>
         /// Calculate the number of Adept Power Points used.
         /// </summary>
-        public void CalculatePowerPoints()
+        public async ValueTask CalculatePowerPoints()
         {
             decimal decPowerPointsTotal = _objCharacter.PowerPointsTotal;
             decimal decPowerPointsRemaining = decPowerPointsTotal - _objCharacter.PowerPointsUsed;
             lblPowerPoints.Text = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                LanguageManager.GetString("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, LanguageManager.GetString("String_Remaining"));
+                await LanguageManager.GetStringAsync("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, await LanguageManager.GetStringAsync("String_Remaining"));
         }
 
         private void InitializeTable()
@@ -361,7 +360,7 @@ namespace Chummer.UI.Powers
                 ValueGetter = p => p.DiscountedAdeptWay,
                 ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
                 VisibleExtractor = p => p.AdeptWayDiscountEnabled,
-                EnabledExtractor = p => (p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay),
+                EnabledExtractor = p => p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay,
                 Alignment = Alignment.Center
             })
             {
@@ -432,11 +431,11 @@ namespace Chummer.UI.Powers
                     {
                         string strExtra = p.Extra;
                         string strImprovementSourceName = ImprovementManager.GetCachedImprovementListForValueOf(p.CharacterObject, Improvement.ImprovementType.AdeptPowerFreePoints, p.Name)
-                                                           .FirstOrDefault(x => x.UniqueName == strExtra)?.SourceName;
+                                                           .Find(x => x.UniqueName == strExtra)?.SourceName;
                         if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
                         {
                             Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
-                            if (objGear != null && objGear.Bonded)
+                            if (objGear?.Bonded == true)
                             {
                                 objGear.Equipped = false;
                                 objGear.Extra = string.Empty;

@@ -30,31 +30,31 @@ namespace Chummer
         private string _strForceCategory = string.Empty;
 
         public string WeaponType { get; set; }
-
-        private readonly XPathNavigator _objXmlDocument;
+        
+        private readonly Character _objCharacter;
 
         #region Control Events
 
         public SelectWeaponCategory(Character objCharacter)
         {
-            _objXmlDocument =
-                XmlManager.LoadXPath("weapons.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
+            _objCharacter = objCharacter;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
-        private void SelectWeaponCategory_Load(object sender, EventArgs e)
+        private async void SelectWeaponCategory_Load(object sender, EventArgs e)
         {
             // Build a list of Weapon Categories found in the Weapons file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
-                foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
-                             ? _objXmlDocument.Select("/chummer/categories/category[. = "
-                                                      + _strForceCategory.CleanXPath() + ']')
-                             : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+                XPathNavigator objXmlDocument = await XmlManager.LoadXPathAsync("weapons.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
+                foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(OnlyCategory)
+                             ? objXmlDocument.Select("/chummer/categories/category[. = "
+                                                      + OnlyCategory.CleanXPath() + ']')
+                             : objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
-                    if (WeaponType != null && _strForceCategory != "Exotic Ranged Weapons")
+                    if (!string.IsNullOrEmpty(WeaponType) && objXmlCategory.Value != "Exotic Ranged Weapons")
                     {
                         string strType = objXmlCategory.SelectSingleNodeAndCacheExpression("@type")?.Value;
                         if (string.IsNullOrEmpty(strType) || strType != WeaponType)
@@ -68,9 +68,9 @@ namespace Chummer
                 }
 
                 // Add the Cyberware Category.
-                if ( /*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
+                if (lstCategory.Count == 0 && (OnlyCategory == "Cyberware" || OnlyCategory == "Cyberweapon"))
                 {
-                    lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware")));
+                    lstCategory.Add(new ListItem("Cyberware", await LanguageManager.GetStringAsync("String_Cyberware")));
                 }
 
                 switch (lstCategory.Count)
@@ -132,12 +132,8 @@ namespace Chummer
         /// </summary>
         public string OnlyCategory
         {
-            set
-            {
-                _strForceCategory = value;
-                if (value == "Cyberware")
-                    _strForceCategory = "Cyberweapon";
-            }
+            get => _strForceCategory;
+            set => _strForceCategory = value == "Cyberware" ? "Cyberweapon" : value;
         }
 
         #endregion Properties

@@ -90,7 +90,6 @@ namespace Chummer.Backend.Equipment
         private bool _blnTrustFund;
         private LifestyleType _eType = LifestyleType.Standard;
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
-        private readonly EnhancedObservableCollection<LifestyleQuality> _lstFreeGrids = new EnhancedObservableCollection<LifestyleQuality>();
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
@@ -156,8 +155,6 @@ namespace Chummer.Backend.Equipment
             _objCharacter = objCharacter;
             LifestyleQualities.CollectionChanged += LifestyleQualitiesCollectionChanged;
             LifestyleQualities.BeforeClearCollectionChanged += LifestyleQualitiesOnBeforeClearCollectionChanged;
-            FreeGrids.CollectionChanged += FreeGridsOnCollectionChanged;
-            FreeGrids.BeforeClearCollectionChanged += FreeGridsOnBeforeClearCollectionChanged;
         }
 
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
@@ -226,12 +223,11 @@ namespace Chummer.Backend.Equipment
                     if (lstGridNodes == null || lstGridNodes.Count <= 0)
                         return;
 
-                    foreach (LifestyleQuality grid in FreeGrids)
+                    foreach (LifestyleQuality objFreeGrid in LifestyleQualities.Where(x => x.IsFreeGrid).ToList())
                     {
-                        ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, grid.InternalId);
+                        objFreeGrid.Remove(false);
                     }
-
-                    FreeGrids.Clear();
+                    
                     XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                     foreach (XmlNode xmlNode in lstGridNodes)
                     {
@@ -242,10 +238,9 @@ namespace Chummer.Backend.Equipment
                         {
                             _objCharacter.PushText.Push(strPush);
                         }
-
                         objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-
-                        FreeGrids.Add(objQuality);
+                        objQuality.IsFreeGrid = true;
+                        LifestyleQualities.Add(objQuality);
                     }
                 }
             }
@@ -313,12 +308,6 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteStartElement("lifestylequalities");
             foreach (LifestyleQuality objQuality in LifestyleQualities)
-            {
-                objQuality.Save(objWriter);
-            }
-            objWriter.WriteEndElement();
-            objWriter.WriteStartElement("freegrids");
-            foreach (LifestyleQuality objQuality in _lstFreeGrids)
             {
                 objQuality.Save(objWriter);
             }
@@ -497,7 +486,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            // Free Grids provided by the Lifestyle
+            // Legacy sweep:
+            // Free Grids provided by the Lifestyle saved to a separate node
             using (XmlNodeList xmlQualityList = objNode.SelectNodes("freegrids/lifestylequality"))
             {
                 if (xmlQualityList != null)
@@ -506,7 +496,8 @@ namespace Chummer.Backend.Equipment
                     {
                         LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                         objQuality.Load(xmlQuality, this);
-                        FreeGrids.Add(objQuality);
+                        objQuality.IsFreeGrid = true;
+                        LifestyleQualities.Add(objQuality);
                     }
                 }
             }
@@ -648,11 +639,6 @@ namespace Chummer.Backend.Equipment
             {
                 objQuality.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            // Retrieve the free Grids for the Advanced Lifestyle if applicable.
-            foreach (LifestyleQuality objQuality in FreeGrids)
-            {
-                objQuality.Print(objWriter, objCulture, strLanguageToPrint);
-            }
             objWriter.WriteEndElement();
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -667,8 +653,6 @@ namespace Chummer.Backend.Equipment
         /// Internal identifier which will be used to identify this Lifestyle in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
-
-        public EnhancedObservableCollection<LifestyleQuality> FreeGrids => _lstFreeGrids;
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -889,7 +873,8 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    LifestyleQualities.RemoveAll(objQuality => objQuality.Name == "Not a Home" || objQuality.Name == "Dug a Hole");
+                    foreach (LifestyleQuality objNotAHomeQuality in LifestyleQualities.Where(x => x.Name == "Not a Home" || x.Name == "Dug a Hole").ToList())
+                        objNotAHomeQuality.Remove(false);
                 }
 
                 XmlNode xmlLifestyle = xmlLifestyleDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + value.CleanXPath() + ']');
@@ -1115,7 +1100,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
-        public EnhancedObservableCollection<LifestyleQuality> LifestyleQualities { get; } = new EnhancedObservableCollection<LifestyleQuality>();
+        public ThreadSafeObservableCollection<LifestyleQuality> LifestyleQualities { get; } = new ThreadSafeObservableCollection<LifestyleQuality>();
 
         /// <summary>
         /// Notes.
@@ -1600,46 +1585,11 @@ namespace Chummer.Backend.Equipment
             ++Increments;
         }
 
-        private void FreeGridsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            foreach (LifestyleQuality objQuality in e.OldItems)
-            {
-                if (!LifestyleQualities.Contains(objQuality))
-                    objQuality.Dispose();
-            }
-        }
-
-        private void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (LifestyleQuality objQuality in e.OldItems)
-                    {
-                        if (!LifestyleQualities.Contains(objQuality))
-                            objQuality.Dispose();
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    List<LifestyleQuality> lstNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToList();
-                    foreach (LifestyleQuality objQuality in e.OldItems)
-                    {
-                        if (!lstNewLifestyleQualities.Contains(objQuality) && !LifestyleQualities.Contains(objQuality))
-                            objQuality.Dispose();
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Move:
-                    return;
-            }
-            OnPropertyChanged(nameof(FreeGrids));
-        }
-
         private void LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             foreach (LifestyleQuality objQuality in e.OldItems)
             {
-                if (!FreeGrids.Contains(objQuality))
-                    objQuality.Dispose();
+                objQuality.Dispose();
             }
         }
 
@@ -1650,15 +1600,14 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Remove:
                     foreach (LifestyleQuality objQuality in e.OldItems)
                     {
-                        if (!FreeGrids.Contains(objQuality))
-                            objQuality.Dispose();
+                        objQuality.Dispose();
                     }
                     break;
                 case NotifyCollectionChangedAction.Replace:
-                    List<LifestyleQuality> lstNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToList();
+                    HashSet<LifestyleQuality> setNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToHashSet();
                     foreach (LifestyleQuality objQuality in e.OldItems)
                     {
-                        if (!lstNewLifestyleQualities.Contains(objQuality) && !FreeGrids.Contains(objQuality))
+                        if (!setNewLifestyleQualities.Contains(objQuality))
                             objQuality.Dispose();
                     }
                     break;
@@ -1895,12 +1844,11 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public void Dispose()
         {
-            LifestyleQualities.Clear();
-            FreeGrids.Clear();
+            foreach (LifestyleQuality objQuality in LifestyleQualities)
+                objQuality.Dispose();
             LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
             LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
-            FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
-            FreeGrids.BeforeClearCollectionChanged -= FreeGridsOnBeforeClearCollectionChanged;
+            LifestyleQualities.Dispose();
         }
     }
 }

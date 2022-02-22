@@ -1,4 +1,4 @@
-version: 5.221.{build}
+version: 5.222.{build}
 branches:
   only:
   - master

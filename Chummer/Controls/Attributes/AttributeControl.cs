@@ -21,6 +21,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -31,7 +32,7 @@ namespace Chummer.UI.Attributes
     public partial class AttributeControl : UserControl
     {
         public event EventHandler ValueChanged;
-        
+
         private readonly string _strAttributeName;
         private int _oldBase;
         private int _oldKarma;
@@ -206,18 +207,18 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private void cmdImproveATT_Click(object sender, EventArgs e)
+        private async void cmdImproveATT_Click(object sender, EventArgs e)
         {
             int intUpgradeKarmaCost = AttributeObject.UpgradeKarmaCost;
 
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
             if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"), AttributeObject.DisplayNameFormatted, AttributeObject.Value + 1, intUpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"), AttributeObject.DisplayNameFormatted, AttributeObject.Value + 1, intUpgradeKarmaCost);
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
@@ -225,12 +226,12 @@ namespace Chummer.UI.Attributes
             ValueChanged?.Invoke(this, e);
         }
 
-        private void nudBase_ValueChanged(object sender, EventArgs e)
+        private async void nudBase_ValueChanged(object sender, EventArgs e)
         {
             int intValue = ((NumericUpDownEx)sender).ValueAsInt;
             if (intValue == _oldBase)
                 return;
-            if (!CanBeMetatypeMax(
+            if (!await CanBeMetatypeMax(
                 Math.Max(
                     nudKarma.ValueAsInt + AttributeObject.FreeBase + AttributeObject.RawMinimum +
                     AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
@@ -251,12 +252,12 @@ namespace Chummer.UI.Attributes
             _oldBase = intValue;
         }
 
-        private void nudKarma_ValueChanged(object sender, EventArgs e)
+        private async void nudKarma_ValueChanged(object sender, EventArgs e)
         {
             int intValue = ((NumericUpDownEx)sender).ValueAsInt;
             if (intValue == _oldKarma)
                 return;
-            if (!CanBeMetatypeMax(
+            if (!await CanBeMetatypeMax(
                 Math.Max(
                     nudBase.ValueAsInt + AttributeObject.FreeBase + AttributeObject.RawMinimum +
                     AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
@@ -293,7 +294,7 @@ namespace Chummer.UI.Attributes
         /// attribute at their natural maximum limit; the special attributes of Magic, Edge,
         /// and Resonance are not included in this limitation.
         /// </summary>
-        private bool CanBeMetatypeMax(int intValue)
+        private async ValueTask<bool> CanBeMetatypeMax(int intValue)
         {
             int intTotalMaximum = AttributeObject.TotalMaximum;
             if (intValue < intTotalMaximum || intTotalMaximum == 0)
@@ -303,9 +304,9 @@ namespace Chummer.UI.Attributes
                 return true;
 
             Program.MainForm.ShowMessageBox(
-                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_AttributeMaximum"),
+                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_AttributeMaximum"),
                               _objCharacter.Settings.MaxNumberMaxAttributesCreate),
-                LanguageManager.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
+                await LanguageManager.GetStringAsync("MessageTitle_Attribute"), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return false;
         }
@@ -321,17 +322,17 @@ namespace Chummer.UI.Attributes
         [UsedImplicitly]
         public int NameWidth => lblName.PreferredWidth;
 
-        private void cmdBurnEdge_Click(object sender, EventArgs e)
+        private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
             if (AttributeObject.Value <= 0)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotBurnEdge"), LanguageManager.GetString("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             // Verify that the user wants to Burn a point of Edge.
-            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BurnEdge"), LanguageManager.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_BurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             AttributeObject.Degrade(1);

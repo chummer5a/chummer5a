@@ -7167,27 +7167,18 @@ namespace Chummer
                 _intCFPLimit = 0;
                 _intAINormalProgramLimit = 0;
                 _intAIAdvancedProgramLimit = 0;
-                _intCachedAllowSpriteFettering = int.MinValue;
-                _intCachedBlackMarketDiscount = int.MinValue;
                 _intCachedCareerKarma = int.MinValue;
                 _intCachedContactPoints = int.MinValue;
                 _decCachedBaseCarryLimit = decimal.MinValue;
                 _decCachedBaseLiftLimit = decimal.MinValue;
                 _decCachedTotalCarriedWeight = decimal.MinValue;
                 _decCachedEncumbranceInterval = decimal.MinValue;
-                _intCachedDealerConnectionDiscount = int.MinValue;
                 _intCachedEnemyKarma = int.MinValue;
-                _intCachedErased = int.MinValue;
-                _intCachedExCon = int.MinValue;
-                _intCachedFame = int.MinValue;
-                _intCachedFriendsInHighPlaces = int.MinValue;
                 _intCachedInitiationEnabled = int.MinValue;
-                _intCachedMadeMan = int.MinValue;
                 _intCachedMetagenicNegativeQualities = int.MinValue;
                 _intCachedMetagenicPositiveQualities = int.MinValue;
                 _intCachedNegativeQualities = int.MinValue;
                 _intCachedNegativeQualityLimitKarma = int.MinValue;
-                _intCachedOverclocker = int.MinValue;
                 _intCachedPositiveQualities = int.MinValue;
                 _intCachedPositiveQualitiesTotal = int.MinValue;
                 _intCachedRedlinerBonus = int.MinValue;
@@ -9256,7 +9247,7 @@ namespace Chummer
                             this,
                             Improvement.ImprovementType.SpecialTab,
                             "Cyberware")
-                        .FirstOrDefault(x => x.UniqueName == "disabletab");
+                        .Find(x => x.UniqueName == "disabletab");
                     if (objDisablingImprovement != null)
                     {
                         strDisabledSource = LanguageManager.GetString("String_Space") +
@@ -11377,11 +11368,11 @@ namespace Chummer
                 }
             }
         }
+        
 
-        public bool Ambidextrous =>
-            ImprovementManager
-                .GetCachedImprovementListForValueOf(
-                    this, Improvement.ImprovementType.Ambidextrous).Count > 0;
+        public bool Ambidextrous => ImprovementManager
+                                    .GetCachedImprovementListForValueOf(
+                                        this, Improvement.ImprovementType.Ambidextrous).Count > 0;
 
         #endregion
 
@@ -17826,8 +17817,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strMovement))
                 {
-                    _strMovement = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("movement")?.Value
-                                   ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("movement")?.Value
+                    _strMovement = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("movement")?.Value
+                                   ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("movement")?.Value
                                    ?? string.Empty;
                 }
 
@@ -17852,8 +17843,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strRun))
                 {
-                    _strRun = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("run")?.Value
-                              ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("run")?.Value
+                    _strRun = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("run")?.Value
+                              ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("run")?.Value
                               ?? string.Empty;
                 }
 
@@ -17878,8 +17869,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strRunAlt))
                 {
-                    _strRunAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
-                                 ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
+                    _strRunAlt = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
+                                 ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("run")?.GetAttribute("alt", string.Empty)
                                  ?? string.Empty;
                 }
 
@@ -17904,8 +17895,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strWalk))
                 {
-                    _strWalk = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("walk")?.Value
-                               ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("walk")?.Value
+                    _strWalk = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("walk")?.Value
+                               ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("walk")?.Value
                                ?? string.Empty;
                 }
 
@@ -17930,8 +17921,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strWalkAlt))
                 {
-                    _strWalkAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
-                                  ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
+                    _strWalkAlt = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
+                                  ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("walk")?.GetAttribute("alt", string.Empty)
                                   ?? string.Empty;
                 }
 
@@ -17956,8 +17947,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strSprint))
                 {
-                    _strSprint = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("sprint")?.Value
-                                 ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("sprint")?.Value
+                    _strSprint = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("sprint")?.Value
+                                 ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("sprint")?.Value
                                  ?? string.Empty;
                 }
 
@@ -17982,8 +17973,8 @@ namespace Chummer
             {
                 if(string.IsNullOrWhiteSpace(_strSprintAlt))
                 {
-                    _strSprintAlt = this.GetNodeXPath().SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
-                                    ?? GetNodeXPath(true).SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
+                    _strSprintAlt = this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
+                                    ?? GetNodeXPath(true)?.SelectSingleNodeAndCacheExpression("sprint")?.GetAttribute("alt", string.Empty)
                                     ?? string.Empty;
                 }
 
@@ -18510,10 +18501,10 @@ namespace Chummer
             get { return _blnCritterEnabled; }
             set
             {
-                if(_blnCritterEnabled != value)
+                if (_blnCritterEnabled != value)
                 {
                     _blnCritterEnabled = value;
-                    if(!value)
+                    if (!value)
                     {
                         ClearCritterPowers();
                     }
@@ -18523,26 +18514,12 @@ namespace Chummer
             }
         }
 
-        private int _intCachedDealerConnectionDiscount = int.MinValue;
-
         /// <summary>
         /// Whether or not Black Market Discount is enabled.
         /// </summary>
-        public bool DealerConnectionDiscount
-        {
-            get
-            {
-                if (_intCachedDealerConnectionDiscount < 0)
-                    _intCachedDealerConnectionDiscount = ImprovementManager
-                                                         .GetCachedImprovementListForValueOf(
-                                                             this, Improvement.ImprovementType.DealerConnection).Count
-                                                         > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedDealerConnectionDiscount > 0;
-            }
-        }
+        public bool DealerConnectionDiscount => ImprovementManager
+                                                .GetCachedImprovementListForValueOf(
+                                                    this, Improvement.ImprovementType.DealerConnection).Count > 0;
 
         public void RefreshDealerConnectionDiscounts()
         {
@@ -18574,26 +18551,13 @@ namespace Chummer
             }
         }
 
-        private int _intCachedBlackMarketDiscount = int.MinValue;
-
         /// <summary>
         /// Whether or not Black Market Discount is enabled.
         /// </summary>
-        public bool BlackMarketDiscount
-        {
-            get
-            {
-                if (_intCachedBlackMarketDiscount < 0)
-                    _intCachedBlackMarketDiscount = ImprovementManager
-                                                    .GetCachedImprovementListForValueOf(
-                                                        this, Improvement.ImprovementType.BlackMarketDiscount).Count
-                                                    > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedBlackMarketDiscount > 0;
-            }
-        }
+        public bool BlackMarketDiscount => ImprovementManager
+                                           .GetCachedImprovementListForValueOf(
+                                               this, Improvement.ImprovementType.BlackMarketDiscount).Count
+                                           > 0;
 
         public void RefreshBlackMarketDiscounts()
         {
@@ -18899,46 +18863,18 @@ namespace Chummer
             get { return PrototypeTranshuman > 0; }
         }
 
-        private int _intCachedFriendsInHighPlaces = int.MinValue;
-
         /// <summary>
         /// Whether or not Friends in High Places is enabled.
         /// </summary>
-        public bool FriendsInHighPlaces
-        {
-            get
-            {
-                if (_intCachedFriendsInHighPlaces < 0)
-                    _intCachedFriendsInHighPlaces = ImprovementManager
-                                                    .GetCachedImprovementListForValueOf(
-                                                        this, Improvement.ImprovementType.FriendsInHighPlaces).Count
-                                                    > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedFriendsInHighPlaces > 0;
-            }
-        }
-
-        private int _intCachedExCon = int.MinValue;
+        public bool FriendsInHighPlaces => ImprovementManager
+                                           .GetCachedImprovementListForValueOf(
+                                               this, Improvement.ImprovementType.FriendsInHighPlaces).Count > 0;
 
         /// <summary>
         /// Whether or not ExCon is enabled.
         /// </summary>
-        public bool ExCon
-        {
-            get
-            {
-                if (_intCachedExCon < 0)
-                    _intCachedExCon = ImprovementManager
-                                      .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.ExCon).Count
-                                      > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedExCon > 0;
-            }
-        }
+        public bool ExCon => ImprovementManager
+                             .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.ExCon).Count > 0;
 
         private int _intCachedTrustFund = int.MinValue;
 
@@ -18982,104 +18918,40 @@ namespace Chummer
             }
         }
 
-        private int _intCachedOverclocker = int.MinValue;
-
         /// <summary>
         /// Whether or not Overclocker is enabled.
         /// </summary>
-        public bool Overclocker
-        {
-            get
-            {
-                if (_intCachedOverclocker < 0)
-                    _intCachedOverclocker = ImprovementManager
-                                            .GetCachedImprovementListForValueOf(
-                                                this, Improvement.ImprovementType.Overclocker).Count > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedOverclocker > 0;
-            }
-        }
-
-        private int _intCachedMadeMan = int.MinValue;
+        public bool Overclocker => ImprovementManager
+                                   .GetCachedImprovementListForValueOf(
+                                       this, Improvement.ImprovementType.Overclocker).Count > 0;
 
         /// <summary>
         /// Whether or not MadeMan is enabled.
         /// </summary>
-        public bool MadeMan
-        {
-            get
-            {
-                if (_intCachedMadeMan < 0)
-                    _intCachedMadeMan
-                        = ImprovementManager
-                          .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.MadeMan).Count > 0
-                            ? 1
-                            : 0;
-
-                return _intCachedMadeMan > 0;
-            }
-        }
-
-        private int _intCachedFame = int.MinValue;
+        public bool MadeMan => ImprovementManager
+                               .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.MadeMan).Count > 0;
 
         /// <summary>
         /// Whether or not Fame is enabled.
         /// </summary>
-        public bool Fame
-        {
-            get
-            {
-                if (_intCachedFame < 0)
-                    _intCachedFame = ImprovementManager
-                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Fame).Count
-                                     > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedFame > 0;
-            }
-        }
-
-        private int _intCachedErased = int.MinValue;
+        public bool Fame => ImprovementManager
+                            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Fame).Count
+                            > 0;
 
         /// <summary>
         /// Whether or not Erased is enabled.
         /// </summary>
-        public bool Erased
-        {
-            get
-            {
-                if(_intCachedErased < 0)
-                    _intCachedErased = ImprovementManager
-                                       .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Erased).Count
-                                       > 0
-                        ? 1
-                        : 0;
-
-                return _intCachedErased > 0;
-            }
-        }
-
-        private int _intCachedAllowSpriteFettering = int.MinValue;
+        public bool Erased => ImprovementManager
+                              .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Erased).Count
+                              > 0;
 
         /// <summary>
         /// Whether or not the character is allowed to Fetter sprites. See Kill Code 91 (Sprite Pet)
         /// </summary>
-        public bool AllowSpriteFettering
-        {
-            get
-            {
-                if (_intCachedAllowSpriteFettering < 0)
-                    _intCachedAllowSpriteFettering = ImprovementManager
-                                                     .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.AllowSpriteFettering).Count
-                                                     > 0
-                        ? 1
-                        : 0;
-                return _intCachedAllowSpriteFettering > 0;
-            }
-        }
+        public bool AllowSpriteFettering => ImprovementManager
+                                            .GetCachedImprovementListForValueOf(
+                                                this, Improvement.ImprovementType.AllowSpriteFettering).Count
+                                            > 0;
 
         /// <summary>
         /// Extended Availability Test information for an item based on the character's Negotiate Skill.
@@ -20760,7 +20632,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
@@ -20795,7 +20667,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
@@ -20827,7 +20699,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
@@ -20860,7 +20732,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
@@ -20892,7 +20764,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
@@ -20930,7 +20802,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
@@ -20966,7 +20838,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
@@ -21019,7 +20891,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
@@ -21048,7 +20920,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
@@ -21088,7 +20960,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
@@ -21118,7 +20990,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
@@ -21146,7 +21018,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
@@ -21164,7 +21036,7 @@ namespace Chummer
                 {
                     if (IsAI)
                         EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{DEP}"))
@@ -21173,7 +21045,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
@@ -21193,7 +21065,7 @@ namespace Chummer
                     break;
                 case nameof(CharacterAttrib.TotalValue):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{ESS}"))
@@ -21202,7 +21074,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    List<string> lstProperties = new List<string>();
+                    List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
                     if (!Created && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
@@ -22422,41 +22294,6 @@ namespace Chummer
                             _intCachedRestrictedGear = int.MinValue;
                         }
 
-                        if (setNamesOfChangedProperties.Contains(nameof(FriendsInHighPlaces)))
-                        {
-                            _intCachedFriendsInHighPlaces = int.MinValue;
-                        }
-
-                        if (setNamesOfChangedProperties.Contains(nameof(ExCon)))
-                        {
-                            _intCachedExCon = int.MinValue;
-                        }
-
-                        if (setNamesOfChangedProperties.Contains(nameof(MadeMan)))
-                        {
-                            _intCachedMadeMan = int.MinValue;
-                        }
-
-                        if (setNamesOfChangedProperties.Contains(nameof(Fame)))
-                        {
-                            _intCachedFame = int.MinValue;
-                        }
-
-                        if (setNamesOfChangedProperties.Contains(nameof(Erased)))
-                        {
-                            _intCachedErased = int.MinValue;
-                        }
-
-                        if (setNamesOfChangedProperties.Contains(nameof(AllowSpriteFettering)))
-                        {
-                            _intCachedAllowSpriteFettering = int.MinValue;
-                        }
-
-                        if (setNamesOfChangedProperties.Contains(nameof(Overclocker)))
-                        {
-                            _intCachedOverclocker = int.MinValue;
-                        }
-
                         if (setNamesOfChangedProperties.Contains(nameof(TotalCarriedWeight)))
                         {
                             _decCachedTotalCarriedWeight = decimal.MinValue;
@@ -22464,13 +22301,11 @@ namespace Chummer
 
                         if (setNamesOfChangedProperties.Contains(nameof(DealerConnectionDiscount)))
                         {
-                            _intCachedDealerConnectionDiscount = int.MinValue;
                             RefreshDealerConnectionDiscounts();
                         }
 
                         if (setNamesOfChangedProperties.Contains(nameof(BlackMarketDiscount)))
                         {
-                            _intCachedBlackMarketDiscount = int.MinValue;
                             RefreshBlackMarketDiscounts();
                         }
 
@@ -22654,23 +22489,23 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName = "")
+        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
-            return LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsName).GetAwaiter().GetResult();
+            return LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey).GetAwaiter().GetResult();
         }
 
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public Task<bool> LoadFromHeroLabFileAsync(string strPorFile, string strCharacterId, string strSettingsName = "")
+        public Task<bool> LoadFromHeroLabFileAsync(string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
-            return LoadFromHeroLabFileCoreAsync(false, strPorFile, strCharacterId, strSettingsName);
+            return LoadFromHeroLabFileCoreAsync(false, strPorFile, strCharacterId, strSettingsKey);
         }
 
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public async Task<bool> LoadFromHeroLabFileCoreAsync(bool blnSync, string strPorFile, string strCharacterId, string strSettingsName = "")
+        public async Task<bool> LoadFromHeroLabFileCoreAsync(bool blnSync, string strPorFile, string strCharacterId, string strSettingsKey = "")
         {
             if(!File.Exists(strPorFile))
                 return false;
@@ -22941,12 +22776,12 @@ namespace Chummer
                                     ResetCharacter();
 
                                     // Get the name of the settings file in use if possible.
-                                    if (!string.IsNullOrEmpty(strSettingsName))
+                                    if (!string.IsNullOrEmpty(strSettingsKey))
                                     {
-                                        if (!SettingsManager.LoadedCharacterSettings.ContainsKey(strSettingsName))
+                                        if (!SettingsManager.LoadedCharacterSettings.ContainsKey(strSettingsKey))
                                             return false;
 
-                                        SettingsKey = strSettingsName;
+                                        SettingsKey = strSettingsKey;
                                     }
 
                                     // Metatype information.
@@ -23069,7 +22904,7 @@ namespace Chummer
                                     if (_lstMugshots.Count > 0)
                                         _intMainMugshotIndex = 0;
 
-                                    if (string.IsNullOrEmpty(strSettingsName))
+                                    if (string.IsNullOrEmpty(strSettingsKey))
                                     {
                                         string strSettingsSummary =
                                             xmlStatBlockBaseNode.SelectSingleNode("settings/@summary")?.Value;
@@ -23077,144 +22912,86 @@ namespace Chummer
                                         {
                                             int intCharCreationSystemsIndex =
                                                 strSettingsSummary.IndexOf("Character Creation Systems:",
-                                                    StringComparison.Ordinal);
-                                            int intSemicolonIndex = strSettingsSummary.IndexOf(';');
-                                            if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex &&
-                                                intCharCreationSystemsIndex != -1)
+                                                                           StringComparison.OrdinalIgnoreCase);
+                                            if (intCharCreationSystemsIndex != -1)
                                             {
-                                                string strHeroLabSettingsName = strSettingsSummary.Substring(
-                                                        intCharCreationSystemsIndex + 28,
-                                                        strSettingsSummary.IndexOf(';') - 28 -
-                                                        intCharCreationSystemsIndex)
-                                                    .Trim();
-                                                if (strHeroLabSettingsName == "Established Runners")
-                                                    strHeroLabSettingsName = "Standard";
-                                                KeyValuePair<string, CharacterSettings> kvpHeroLabSettings =
-                                                    SettingsManager.LoadedCharacterSettings.FirstOrDefault(x =>
-                                                        x.Value.Name == strHeroLabSettingsName);
-                                                if (kvpHeroLabSettings.Value != null)
+                                                int intSemicolonIndex
+                                                    = strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex);
+                                                if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex)
                                                 {
-                                                    SettingsKey = kvpHeroLabSettings.Key;
-                                                    strSettingsName = kvpHeroLabSettings.Key;
+                                                    string strHeroLabSettingsName = strSettingsSummary.Substring(
+                                                            intCharCreationSystemsIndex + 28,
+                                                            strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex)
+                                                            - 28 - intCharCreationSystemsIndex)
+                                                        .Trim();
+                                                    if (strHeroLabSettingsName == "Established Runners")
+                                                        strHeroLabSettingsName = "Standard";
+
+                                                    if (strHeroLabSettingsName == "Standard")
+                                                    {
+                                                        bool blnDoFullHouse = false;
+                                                        int intSourcebooksIndex
+                                                            = strSettingsSummary.IndexOf(
+                                                                "Core Rulebooks:", StringComparison.OrdinalIgnoreCase);
+                                                        if (intSourcebooksIndex != -1)
+                                                        {
+                                                            intSemicolonIndex
+                                                                = strSettingsSummary.IndexOf(';', intSourcebooksIndex);
+                                                            if (intSourcebooksIndex + 16 < intSemicolonIndex)
+                                                            {
+                                                                blnDoFullHouse
+                                                                    = true; // We probably have multiple books enabled, so use Full House instead
+                                                            }
+                                                        }
+
+                                                        bool blnIsKarmaBased = xmlStatBlockBaseNode
+                                                                               .SelectSingleNode("creation/bp/@total")
+                                                                               ?.ValueAsInt > 100;
+                                                        if (blnDoFullHouse)
+                                                        {
+                                                            strHeroLabSettingsName = blnIsKarmaBased
+                                                                ? "Full House (Point Buy)"
+                                                                : "Full House";
+                                                        }
+                                                        else if (blnIsKarmaBased)
+                                                            strHeroLabSettingsName = "Point Buy";
+                                                    }
+
+                                                    CharacterSettings objHeroLabSettings =
+                                                        SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                                                            x => x.Name == strHeroLabSettingsName);
+                                                    if (objHeroLabSettings != null)
+                                                    {
+                                                        strSettingsKey = SettingsKey = objHeroLabSettings.DictionaryKey;
+                                                    }
                                                 }
                                             }
                                         }
                                     }
 
-                                    if (string.IsNullOrEmpty(strSettingsName))
-                                    {
-                                        int intKarma =
-                                            xmlStatBlockBaseNode.SelectSingleNode("creation/bp/@total")?.ValueAsInt ??
-                                            0;
-
-                                        if (intKarma >= 100)
-                                        {
-                                            KeyValuePair<string, CharacterSettings> kvpHeroLabSettings =
-                                                SettingsManager.LoadedCharacterSettings.FirstOrDefault(x =>
-                                                    x.Value.BuiltInOption
-                                                    && x.Value.BuildMethod == CharacterBuildMethod.Karma);
-                                            if (kvpHeroLabSettings.Value != null)
-                                            {
-                                                SettingsKey = kvpHeroLabSettings.Key;
-                                                strSettingsName = kvpHeroLabSettings.Key;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            _strPriorityAttributes = ConvertPriorityString(xmlLeadsBaseNode
-                                                .SelectSingleNode(
-                                                    "container/pick[@thing = \"priAttr\"]/field[@id = \"priOrder\"]/@value")
-                                                ?.Value);
-                                            _strPrioritySpecial = ConvertPriorityString(xmlLeadsBaseNode
-                                                .SelectSingleNode(
-                                                    "container/pick[@thing = \"priMagic\"]/field[@id = \"priOrder\"]/@value")
-                                                ?.Value);
-                                            _strPriorityMetatype = ConvertPriorityString(xmlLeadsBaseNode
-                                                .SelectSingleNode(
-                                                    "container/pick[@thing = \"priMeta\"]/field[@id = \"priOrder\"]/@value")
-                                                ?.Value);
-                                            _strPriorityResources = ConvertPriorityString(xmlLeadsBaseNode
-                                                .SelectSingleNode(
-                                                    "container/pick[@thing = \"priResourc\"]/field[@id = \"priOrder\"]/@value")
-                                                ?.Value);
-                                            _strPrioritySkills = ConvertPriorityString(xmlLeadsBaseNode
-                                                .SelectSingleNode(
-                                                    "container/pick[@thing = \"priSkill\"]/field[@id = \"priOrder\"]/@value")
-                                                ?.Value);
-
-                                            string ConvertPriorityString(string strInput)
-                                            {
-                                                switch (strInput)
-                                                {
-                                                    case "1.":
-                                                        return "A";
-                                                    case "2.":
-                                                        return "B";
-                                                    case "3.":
-                                                        return "C";
-                                                    case "4.":
-                                                        return "D";
-                                                    case "5.":
-                                                        return "E";
-                                                    default:
-                                                        return string.Empty;
-                                                }
-                                            }
-
-                                            if (_strPriorityAttributes == _strPrioritySpecial ||
-                                                _strPriorityAttributes == _strPriorityMetatype ||
-                                                _strPriorityAttributes == _strPriorityResources ||
-                                                _strPriorityAttributes == _strPrioritySkills ||
-                                                _strPrioritySpecial == _strPrioritySkills ||
-                                                _strPrioritySpecial == _strPriorityMetatype ||
-                                                _strPrioritySpecial == _strPriorityResources ||
-                                                _strPriorityMetatype == _strPriorityResources ||
-                                                _strPriorityMetatype == _strPrioritySpecial ||
-                                                _strPriorityResources == _strPrioritySkills)
-                                            {
-                                                KeyValuePair<string, CharacterSettings> kvpHeroLabSettings =
-                                                    SettingsManager.LoadedCharacterSettings.FirstOrDefault(x =>
-                                                        x.Value.BuiltInOption
-                                                        && x.Value.BuildMethod == CharacterBuildMethod.SumtoTen);
-                                                if (kvpHeroLabSettings.Value != null)
-                                                {
-                                                    SettingsKey = kvpHeroLabSettings.Key;
-                                                    strSettingsName = kvpHeroLabSettings.Key;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                KeyValuePair<string, CharacterSettings> kvpHeroLabSettings =
-                                                    SettingsManager.LoadedCharacterSettings.FirstOrDefault(x =>
-                                                        x.Value.BuiltInOption
-                                                        && x.Value.BuildMethod == CharacterBuildMethod.Priority);
-                                                if (kvpHeroLabSettings.Value != null)
-                                                {
-                                                    SettingsKey = kvpHeroLabSettings.Key;
-                                                    strSettingsName = kvpHeroLabSettings.Key;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    if (string.IsNullOrEmpty(strSettingsName))
+                                    if (string.IsNullOrEmpty(strSettingsKey))
                                     {
                                         if (Program.MainForm.ShowMessageBox(
                                                 string.Format(GlobalSettings.CultureInfo,
-                                                    blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? LanguageManager.GetString("Message_MissingGameplayOption")
-                                                        : await LanguageManager.GetStringAsync(
-                                                            "Message_MissingGameplayOption"),
-                                                    SettingsKey),
+                                                              blnSync
+                                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                                  ? LanguageManager.GetString(
+                                                                      "Message_MissingGameplayOption")
+                                                                  : await LanguageManager
+                                                                      .GetStringAsync(
+                                                                          "Message_MissingGameplayOption"),
+                                                              SettingsKey),
                                                 blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
-                                                    ? LanguageManager.GetString("Message_MissingGameplayOption_Title")
+                                                    ? LanguageManager.GetString(
+                                                        "Message_MissingGameplayOption_Title")
                                                     : await LanguageManager.GetStringAsync(
                                                         "Message_MissingGameplayOption_Title"),
-                                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error) == DialogResult.OK)
+                                                MessageBoxButtons.OKCancel, MessageBoxIcon.Error)
+                                            == DialogResult.OK)
                                         {
-                                            using (SelectBuildMethod frmPickBP = new SelectBuildMethod(this, true))
+                                            using (SelectBuildMethod frmPickBP
+                                                   = new SelectBuildMethod(this, true))
                                             {
                                                 if (blnSync)
                                                     // ReSharper disable once MethodHasAsyncOverload

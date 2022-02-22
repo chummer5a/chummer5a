@@ -1101,12 +1101,12 @@ namespace ChummerHub.Client.Backend
             string filepath = await DownloadFileTask(sinner, objCache);
             PluginHandler.MySINnerLoading = sinner;
             PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
-            await PluginHandler.MainForm.DoThreadSafeAsync(() =>
+            await PluginHandler.MainForm.DoThreadSafeFunc(async () =>
             {
-                Character c = PluginHandler.MainForm.LoadCharacter(filepath);
+                Character c = await PluginHandler.MainForm.LoadCharacterAsync(filepath);
                 if (c != null)
                 {
-                    SwitchToCharacter(c);
+                    await SwitchToCharacter(c);
                 }
                 PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers();
                 PluginHandler.MySINnerLoading = null;
@@ -1141,30 +1141,30 @@ namespace ChummerHub.Client.Backend
         }
 
 
-        private static void SwitchToCharacter(Character objOpenCharacter)
+        private static async ValueTask SwitchToCharacter(Character objOpenCharacter)
         {
             using (new CursorWait(PluginHandler.MainForm, true))
             {
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                await PluginHandler.MainForm.DoThreadSafeFunc(async () =>
                 {
                     if (objOpenCharacter == null
-                        || !PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
+                        || !await PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
                     {
-                        PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
+                        await PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
                     }
                 });
             }
         }
 
-        private static void SwitchToCharacter(CharacterCache objCache)
+        private static async ValueTask SwitchToCharacter(CharacterCache objCache)
         {
             using (new CursorWait(PluginHandler.MainForm, true))
             {
                 Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
-                                             ?? PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                                             ?? await PluginHandler.MainForm.LoadCharacterAsync(objCache.FilePath);
+                await PluginHandler.MainForm.DoThreadSafeFunc(async () =>
                 {
-                    SwitchToCharacter(objOpenCharacter);
+                    await SwitchToCharacter(objOpenCharacter);
                 });
             }
         }

@@ -32,7 +32,7 @@ namespace Chummer
     {
         private bool _blnSkipRefresh = true;
         private CharacterSettings _objSelectedSetting = GetInitialSetting();
-        private readonly LockingDictionary<MasterIndexEntry, string> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, string>();
+        private readonly LockingDictionary<MasterIndexEntry, Task<string>> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, Task<string>>();
         private readonly List<ListItem> _lstFileNamesWithItems = Utils.ListItemListPool.Get();
         private readonly List<ListItem> _lstItems = Utils.ListItemListPool.Get();
 
@@ -48,7 +48,7 @@ namespace Chummer
                 : SettingsManager.LoadedCharacterSettings.Values.First();
         }
 
-        private static readonly IReadOnlyCollection<string> _astrFileNames = new []
+        private static readonly IReadOnlyList<string> _astrFileNames = Array.AsReadOnly(new[]
         {
             "actions.xml",
             "armor.xml",
@@ -78,7 +78,7 @@ namespace Chummer
             "traditions.xml",
             "vehicles.xml",
             "weapons.xml"
-        };
+        });
 
         public MasterIndex()
         {
@@ -257,7 +257,7 @@ namespace Chummer
                                     strTranslatedNameOnPage);
                                 lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
                                 if (!string.IsNullOrEmpty(strNotes))
-                                    _dicCachedNotes.TryAdd(objEntry, strNotes);
+                                    _dicCachedNotes.TryAdd(objEntry, Task.FromResult(strNotes));
                             }
 
                             if (blnLoopFileNameHasItems)
@@ -389,7 +389,7 @@ namespace Chummer
 
         private async void lblSource_Click(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         private void RefreshList(object sender, EventArgs e)
@@ -450,7 +450,7 @@ namespace Chummer
             }
         }
 
-        private void lstItems_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstItems_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -463,23 +463,35 @@ namespace Chummer
                     lblSourceClickReminder.Visible = true;
                     lblSource.Text = objEntry.DisplaySource.ToString();
                     lblSource.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
-                    if (!_dicCachedNotes.TryGetValue(objEntry, out string strNotes))
+                    if (!_dicCachedNotes.TryGetValue(objEntry, out Task<string> tskNotes))
                     {
-                        strNotes = CommonFunctions.GetTextFromPdf(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
-
-                        if (string.IsNullOrEmpty(strNotes)
-                            && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                StringComparison.OrdinalIgnoreCase)
                             && (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage
                                 || objEntry.Source.Page != objEntry.DisplaySource.Page))
                         {
                             // don't check again it is not translated
-                            strNotes = CommonFunctions.GetTextFromPdf(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                            tskNotes = Task.Run(async () =>
+                            {
+                                string strReturn = await CommonFunctions.GetTextFromPdfAsync(objEntry.Source.ToString(),
+                                    objEntry.EnglishNameOnPage);
+                                if (string.IsNullOrEmpty(strReturn))
+                                    strReturn = await CommonFunctions.GetTextFromPdfAsync(
+                                        objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                                return strReturn;
+                            });
+                        }
+                        else
+                        {
+                            tskNotes = Task.Run(() =>
+                                CommonFunctions.GetTextFromPdfAsync(objEntry.Source.ToString(),
+                                    objEntry.EnglishNameOnPage));
                         }
 
-                        _dicCachedNotes.TryAdd(objEntry, strNotes);
+                        _dicCachedNotes.TryAdd(objEntry, tskNotes);
                     }
 
-                    txtNotes.Text = strNotes;
+                    txtNotes.Text = await tskNotes;
                     txtNotes.Visible = true;
                 }
                 else

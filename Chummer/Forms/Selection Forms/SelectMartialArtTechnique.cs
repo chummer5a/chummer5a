@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -80,10 +81,10 @@ namespace Chummer
             }
         }
 
-        private void SelectMartialArtTechnique_Load(object sender, EventArgs e)
+        private async void SelectMartialArtTechnique_Load(object sender, EventArgs e)
         {
             _blnLoading = false;
-            RefreshTechniquesList();
+            await RefreshTechniquesList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -103,7 +104,7 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void lstTechniques_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstTechniques_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -115,8 +116,8 @@ namespace Chummer
 
                 if (xmlTechnique != null)
                 {
-                    string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strPage = xmlTechnique.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                    string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strPage = xmlTechnique.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -133,9 +134,9 @@ namespace Chummer
             }
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshTechniquesList();
+            await RefreshTechniquesList();
         }
 
         #endregion Control Events
@@ -172,7 +173,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts Techniques list.
         /// </summary>
-        private void RefreshTechniquesList()
+        private async ValueTask RefreshTechniquesList()
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (!string.IsNullOrEmpty(txtSearch.Text))
@@ -187,7 +188,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strId))
                     {
                         string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                  ?? LanguageManager.GetString("String_Unknown");
+                                                  ?? await LanguageManager.GetStringAsync("String_Unknown");
 
                         if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
                             continue;
@@ -218,7 +219,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

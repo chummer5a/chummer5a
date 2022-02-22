@@ -27,12 +27,10 @@ namespace Chummer
 {
     public class CustomTelemetryInitializer : ITelemetryInitializer
     {
-       
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         // Set session data:
         //private static string Hostname =  Dns.GetHostName();
-
 
         [CLSCompliant(false)]
         public void Initialize(ITelemetry telemetry)
@@ -66,8 +64,6 @@ namespace Chummer
             telemetry.Context.Session.Id = Properties.Settings.Default.UploadClientId.ToString();
             telemetry.Context.User.Id = Properties.Settings.Default.UploadClientId.ToString();
 
-
-       
             telemetry.Context.Component.Version = Utils.CurrentChummerVersion.ToString();
 
             if (System.Diagnostics.Debugger.IsAttached)

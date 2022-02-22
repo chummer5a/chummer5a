@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
@@ -102,7 +103,7 @@ namespace Chummer
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode));
         }
 
-        private void SelectCyberware_Load(object sender, EventArgs e)
+        private async void SelectCyberware_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -131,7 +132,7 @@ namespace Chummer
 
             chkPrototypeTranshuman.Visible = _objCharacter.IsPrototypeTranshuman && _objMode == Mode.Bioware && !_objCharacter.Created;
 
-            PopulateCategories();
+            await PopulateCategories();
             // Select the first Category in the list.
             if (!string.IsNullOrEmpty(_sStrSelectCategory))
                 cboCategory.SelectedValue = _sStrSelectCategory;
@@ -171,10 +172,15 @@ namespace Chummer
             nudESSDiscount.Visible = _objCharacter.Settings.AllowCyberwareESSDiscounts;
 
             _blnLoading = false;
-            RefreshList(_strSelectedCategory);
+            await RefreshList(_strSelectedCategory);
         }
 
-        private void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await ProcessGradeChanged();
+        }
+
+        private async ValueTask ProcessGradeChanged()
         {
             if (_blnLoading)
                 return;
@@ -195,19 +201,19 @@ namespace Chummer
                 _decESSMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("ess")?.Value, GlobalSettings.InvariantCultureInfo);
                 _intAvailModifier = xmlGrade.SelectSingleNode("avail")?.ValueAsInt ?? 0;
 
-                PopulateCategories();
+                await PopulateCategories();
                 _blnLoading = false;
-                RefreshList(_strSelectedCategory);
-                lstCyberware_SelectedIndexChanged(sender, EventArgs.Empty);
+                await RefreshList(_strSelectedCategory);
+                await DoRefreshSelectedCyberware();
             }
             else
             {
                 _blnLoading = false;
-                UpdateCyberwareInfo();
+                await UpdateCyberwareInfo();
             }
         }
 
-        private void cboGrade_EnabledChanged(object sender, EventArgs e)
+        private async void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
             if (cboGrade.Enabled != _blnOldGradeEnabled)
             {
@@ -216,11 +222,11 @@ namespace Chummer
                 {
                     cboGrade.SelectedValue = _strOldSelectedGrade;
                 }
-                cboGrade_SelectedIndexChanged(sender, e);
+                await ProcessGradeChanged();
             }
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -235,10 +241,15 @@ namespace Chummer
             Grade objForcedGrade = _objForcedGrade ?? (string.IsNullOrEmpty(strForceGrade) ? null : _lstGrades.Find(x => x.SourceIDString == strForceGrade));
             PopulateGrades(!string.IsNullOrEmpty(_strSelectedCategory) && !cboGrade.Enabled && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
             _blnLoading = false;
-            RefreshList(_strSelectedCategory);
+            await RefreshList(_strSelectedCategory);
         }
 
-        private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await DoRefreshSelectedCyberware();
+        }
+
+        private async ValueTask DoRefreshSelectedCyberware()
         {
             if (_blnLoading)
                 return;
@@ -263,10 +274,18 @@ namespace Chummer
                     // Not a simple integer, so we need to start mucking around with strings
                     if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                     {
-                        strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
+                        strMinRating = await strMinRating.CheapReplaceAsync("MaximumSTR",
+                                () => (ParentVehicle != null
+                                    ? Math.Max(1, ParentVehicle.TotalBody * 2)
+                                    : _objCharacter.STR.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("MaximumAGI",
+                                () => (ParentVehicle != null
+                                    ? Math.Max(1, ParentVehicle.Pilot * 2)
+                                    : _objCharacter.AGI.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("MinimumSTR",
+                                () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("MinimumAGI",
+                                () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
                         intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
@@ -278,10 +297,18 @@ namespace Chummer
                     // Not a simple integer, so we need to start mucking around with strings
                     if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
                     {
-                        strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
+                        strMaxRating = await strMaxRating.CheapReplaceAsync("MaximumSTR",
+                                () => (ParentVehicle != null
+                                    ? Math.Max(1, ParentVehicle.TotalBody * 2)
+                                    : _objCharacter.STR.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("MaximumAGI",
+                                () => (ParentVehicle != null
+                                    ? Math.Max(1, ParentVehicle.Pilot * 2)
+                                    : _objCharacter.AGI.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("MinimumSTR",
+                                () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("MinimumAGI",
+                                () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out bool blnIsSuccess);
                         intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
@@ -324,12 +351,12 @@ namespace Chummer
 
                 string strRatingLabel = xmlCyberware.SelectSingleNode("ratinglabel")?.Value;
                 lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
-                        LanguageManager.GetString(strRatingLabel))
-                    : LanguageManager.GetString("Label_Rating");
+                    ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
+                        await LanguageManager.GetStringAsync(strRatingLabel))
+                    : await LanguageManager.GetStringAsync("Label_Rating");
 
-                string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = xmlCyberware.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
+                string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                string strPage = xmlCyberware.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
@@ -399,36 +426,36 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = false;
             }
             _blnLoading = false;
-            UpdateCyberwareInfo();
+            await UpdateCyberwareInfo();
         }
 
-        private void ProcessCyberwareInfoChanged(object sender, EventArgs e)
+        private async void ProcessCyberwareInfoChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            UpdateCyberwareInfo();
+            await UpdateCyberwareInfo();
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object sender, EventArgs e)
         {
-            RefreshList(_strSelectedCategory);
+            await RefreshList(_strSelectedCategory);
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
             {
-                RefreshList(_strSelectedCategory);
+                await RefreshList(_strSelectedCategory);
             }
-            UpdateCyberwareInfo();
+            await UpdateCyberwareInfo();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -448,26 +475,26 @@ namespace Chummer
             PopulateGrades(false, false, string.Empty, chkHideBannedGrades.Checked);
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            AcceptForm();
+            await AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList(_strSelectedCategory);
+            await RefreshList(_strSelectedCategory);
         }
 
-        private void chkFree_CheckedChanged(object sender, EventArgs e)
+        private async void chkFree_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             if (chkShowOnlyAffordItems.Checked)
             {
-                RefreshList(_strSelectedCategory);
+                await RefreshList(_strSelectedCategory);
             }
-            UpdateCyberwareInfo();
+            await UpdateCyberwareInfo();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -654,7 +681,7 @@ namespace Chummer
         /// <summary>
         /// Update the Cyberware's information based on the Cyberware selected and current Rating.
         /// </summary>
-        private void UpdateCyberwareInfo()
+        private async ValueTask UpdateCyberwareInfo()
         {
             XPathNavigator objXmlCyberware = null;
             string strSelectedId = lstCyberware.SelectedValue?.ToString();
@@ -736,10 +763,14 @@ namespace Chummer
                     }
                     else
                     {
-                        strCost = strCost.CheapReplace("Parent Cost", () => CyberwareParent?.Cost ?? "0")
-                            .CheapReplace("Parent Gear Cost", () => CyberwareParent?.GearChildren.Sum(x => x.TotalCost).ToString(GlobalSettings.InvariantCultureInfo) ?? "0")
-                            .CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                        strCost = await strCost.CheapReplaceAsync("Parent Cost", () => CyberwareParent?.Cost ?? "0")
+                            .CheapReplaceAsync("Parent Gear Cost",
+                                () => CyberwareParent?.GearChildren.Sum(x => x.TotalCost)
+                                    .ToString(GlobalSettings.InvariantCultureInfo) ?? "0")
+                            .CheapReplaceAsync("MinRating",
+                                () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("Rating",
+                                () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                         if (blnIsSuccess)
@@ -899,22 +930,20 @@ namespace Chummer
 
         private bool _blnSkipListRefresh;
 
-        private bool AnyItemInList(string strCategory = "")
+        private ValueTask<bool> AnyItemInList(string strCategory = "")
         {
-            RefreshList(out bool blnReturn, strCategory, false);
-            return blnReturn;
+            return RefreshList(strCategory, false);
         }
 
-        private void RefreshList(string strCategory = "")
+        private ValueTask<bool> RefreshList(string strCategory = "")
         {
-            RefreshList(out bool _, strCategory, true);
+            return RefreshList(strCategory, true);
         }
 
-        private void RefreshList(out bool blnAnyItem, string strCategory, bool blnDoUIUpdate)
+        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate)
         {
-            blnAnyItem = false;
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
-                return;
+                return false;
             if (string.IsNullOrEmpty(strCategory))
             {
                 if (blnDoUIUpdate)
@@ -923,7 +952,7 @@ namespace Chummer
                     lstCyberware.PopulateWithListItems(ListItem.Blank.Yield());
                     lstCyberware.EndUpdate();
                 }
-                return;
+                return false;
             }
 
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
@@ -992,7 +1021,7 @@ namespace Chummer
             catch (XPathException e)
             {
                 Log.Warn(e);
-                return;
+                return false;
             }
 
             bool blnCyberwareDisabled = !_objCharacter.AddCyberwareEnabled;
@@ -1096,43 +1125,43 @@ namespace Chummer
                         if ((!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out int intMaxRating))
                             || (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating)))
                         {
-                            strMinRating = strMinRating.CheapReplace("MaximumSTR",
-                                                                     () => (ParentVehicle != null
-                                                                             ? Math.Max(1, ParentVehicle.TotalBody * 2)
-                                                                             : _objCharacter.STR.TotalMaximum)
-                                                                         .ToString(GlobalSettings.InvariantCultureInfo))
-                                                       .CheapReplace("MaximumAGI",
-                                                                     () => (ParentVehicle != null
-                                                                             ? Math.Max(1, ParentVehicle.Pilot * 2)
-                                                                             : _objCharacter.AGI.TotalMaximum)
-                                                                         .ToString(GlobalSettings.InvariantCultureInfo))
-                                                       .CheapReplace("MinimumSTR",
-                                                                     () => (ParentVehicle?.TotalBody ?? 3).ToString(
-                                                                         GlobalSettings.InvariantCultureInfo))
-                                                       .CheapReplace("MinimumAGI",
-                                                                     () => (ParentVehicle?.Pilot ?? 3).ToString(
-                                                                         GlobalSettings.InvariantCultureInfo));
+                            strMinRating = await strMinRating.CheapReplaceAsync("MaximumSTR",
+                                    () => (ParentVehicle != null
+                                            ? Math.Max(1, ParentVehicle.TotalBody * 2)
+                                            : _objCharacter.STR.TotalMaximum)
+                                        .ToString(GlobalSettings.InvariantCultureInfo))
+                                .CheapReplaceAsync("MaximumAGI",
+                                    () => (ParentVehicle != null
+                                            ? Math.Max(1, ParentVehicle.Pilot * 2)
+                                            : _objCharacter.AGI.TotalMaximum)
+                                        .ToString(GlobalSettings.InvariantCultureInfo))
+                                .CheapReplaceAsync("MinimumSTR",
+                                    () => (ParentVehicle?.TotalBody ?? 3).ToString(
+                                        GlobalSettings.InvariantCultureInfo))
+                                .CheapReplaceAsync("MinimumAGI",
+                                    () => (ParentVehicle?.Pilot ?? 3).ToString(
+                                        GlobalSettings.InvariantCultureInfo));
 
                             object objProcess
                                 = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
                             intMinRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
 
-                            strMaxRating = strMaxRating.CheapReplace("MaximumSTR",
-                                                                     () => (ParentVehicle != null
-                                                                             ? Math.Max(1, ParentVehicle.TotalBody * 2)
-                                                                             : _objCharacter.STR.TotalMaximum)
-                                                                         .ToString(GlobalSettings.InvariantCultureInfo))
-                                                       .CheapReplace("MaximumAGI",
-                                                                     () => (ParentVehicle != null
-                                                                             ? Math.Max(1, ParentVehicle.Pilot * 2)
-                                                                             : _objCharacter.AGI.TotalMaximum)
-                                                                         .ToString(GlobalSettings.InvariantCultureInfo))
-                                                       .CheapReplace("MinimumSTR",
-                                                                     () => (ParentVehicle?.TotalBody ?? 3).ToString(
-                                                                         GlobalSettings.InvariantCultureInfo))
-                                                       .CheapReplace("MinimumAGI",
-                                                                     () => (ParentVehicle?.Pilot ?? 3).ToString(
-                                                                         GlobalSettings.InvariantCultureInfo));
+                            strMaxRating = await strMaxRating.CheapReplaceAsync("MaximumSTR",
+                                    () => (ParentVehicle != null
+                                            ? Math.Max(1, ParentVehicle.TotalBody * 2)
+                                            : _objCharacter.STR.TotalMaximum)
+                                        .ToString(GlobalSettings.InvariantCultureInfo))
+                                .CheapReplaceAsync("MaximumAGI",
+                                    () => (ParentVehicle != null
+                                            ? Math.Max(1, ParentVehicle.Pilot * 2)
+                                            : _objCharacter.AGI.TotalMaximum)
+                                        .ToString(GlobalSettings.InvariantCultureInfo))
+                                .CheapReplaceAsync("MinimumSTR",
+                                    () => (ParentVehicle?.TotalBody ?? 3).ToString(
+                                        GlobalSettings.InvariantCultureInfo))
+                                .CheapReplaceAsync("MinimumAGI",
+                                    () => (ParentVehicle?.Pilot ?? 3).ToString(
+                                        GlobalSettings.InvariantCultureInfo));
 
                             objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out blnIsSuccess);
                             intMaxRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 1;
@@ -1177,8 +1206,7 @@ namespace Chummer
 
                         if (!blnDoUIUpdate)
                         {
-                            blnAnyItem = true;
-                            return;
+                            return true;
                         }
 
                         if (chkHideOverAvailLimit.Checked
@@ -1202,7 +1230,6 @@ namespace Chummer
                             }
                         }
 
-                        blnAnyItem = true;
                         lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNodeAndCacheExpression("id")?.Value,
                                                        xmlCyberware.SelectSingleNodeAndCacheExpression("translate")
                                                                    ?.Value ?? xmlCyberware
@@ -1219,7 +1246,7 @@ namespace Chummer
                         // Add after sort so that it's always at the end
                         lstCyberwares.Add(new ListItem(string.Empty,
                                                        string.Format(GlobalSettings.CultureInfo,
-                                                                     LanguageManager.GetString(
+                                                                     await LanguageManager.GetStringAsync(
                                                                          "String_RestrictedItemsHidden"),
                                                                      intOverLimit)));
                     }
@@ -1236,6 +1263,8 @@ namespace Chummer
 
                     lstCyberware.EndUpdate();
                 }
+
+                return lstCyberwares?.Count > 0;
             }
             finally
             {
@@ -1261,7 +1290,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             string strSelectedId = lstCyberware.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
@@ -1269,8 +1298,8 @@ namespace Chummer
             if (cboGrade.Text.StartsWith('*'))
             {
                 Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_BannedGrade"),
-                    LanguageManager.GetString("MessageTitle_BannedGrade"),
+                    await LanguageManager.GetStringAsync("Message_BannedGrade"),
+                    await LanguageManager.GetStringAsync("MessageTitle_BannedGrade"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -1306,15 +1335,15 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OverCapacityLimit")
+                        Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit")
                                 , decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo)
                                 , decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo)),
-                            LanguageManager.GetString("MessageTitle_OverCapacityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            await LanguageManager.GetStringAsync("MessageTitle_OverCapacityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }
             }
-            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware")))
+            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware")))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNodeAndCacheExpression("forcegrade")?.Value;
@@ -1392,7 +1421,7 @@ namespace Chummer
                                     continue;
                                 if (_objCharacter.AdapsinEnabled)
                                 {
-                                    if (!objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
+                                    if (!objWareGrade.Adapsin && _lstGrades.Any(x => x.Adapsin && objWareGrade.Name.Contains(x.Name)))
                                         continue;
                                 }
                                 else if (objWareGrade.Adapsin)
@@ -1451,7 +1480,7 @@ namespace Chummer
 
         private bool _blnPopulatingCategories;
 
-        private void PopulateCategories()
+        private async ValueTask PopulateCategories()
         {
             if (_blnPopulatingCategories)
                 return;
@@ -1475,7 +1504,7 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
                 {
                     // Make sure the category contains items that we can actually display
-                    if (AnyItemInList(objXmlCategory.Value))
+                    if (await AnyItemInList(objXmlCategory.Value))
                     {
                         string strInnerText = objXmlCategory.Value;
                         lstCategory.Add(new ListItem(strInnerText,
@@ -1488,7 +1517,7 @@ namespace Chummer
 
                 if (lstCategory.Count > 0)
                 {
-                    lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                    lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
                 }
 
                 string strOldSelected = _strSelectedCategory;
@@ -1511,7 +1540,7 @@ namespace Chummer
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

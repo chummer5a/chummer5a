@@ -1279,27 +1279,25 @@ namespace Chummer
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="sender">Control from which this method was called.</param>
-        /// <param name="e">EventArgs used when this method was called.</param>
-        public static async ValueTask OpenPdfFromControl(object sender, EventArgs e)
+        public static async ValueTask OpenPdfFromControl(object sender)
         {
-            if (sender is Control objControl)
+            if (!(sender is Control objControl))
+                return;
+            Control objLoopControl = objControl;
+            Character objCharacter = null;
+            while (objLoopControl != null)
             {
-                Control objLoopControl = objControl;
-                Character objCharacter = null;
-                while (objLoopControl != null)
+                if (objLoopControl is CharacterShared objShared)
                 {
-                    if (objLoopControl is CharacterShared objShared)
-                    {
-                        objCharacter = objShared.CharacterObject;
-                        break;
-                    }
-
-                    objLoopControl = objLoopControl.Parent;
+                    objCharacter = objShared.CharacterObject;
+                    break;
                 }
 
-                using (new CursorWait(objControl.FindForm() ?? objControl))
-                    await OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
+                objLoopControl = objLoopControl.Parent;
             }
+
+            using (new CursorWait(objControl.FindForm() ?? objControl))
+                await OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
         }
 
         /// <summary>
@@ -1392,7 +1390,9 @@ namespace Chummer
             // Check if the file actually exists.
             while (uriPath == null || !File.Exists(uriPath.LocalPath))
             {
-                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
+                if (!blnOpenOptions)
+                    return;
+                if (Program.MainForm.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
                         await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))
@@ -1438,6 +1438,33 @@ namespace Chummer
         /// <returns></returns>
         public static string GetTextFromPdf(string strSource, string strText, Character objCharacter = null)
         {
+            return GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// </summary>
+        /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <returns></returns>
+        public static Task<string> GetTextFromPdfAsync(string strSource, string strText, Character objCharacter = null)
+        {
+            return GetTextFromPdfCoreAsync(false, strSource, strText, objCharacter);
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <returns></returns>
+        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, Character objCharacter)
+        {
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
 
@@ -1452,7 +1479,10 @@ namespace Chummer
                 return string.Empty;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter);
+            string strBook = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter)
+                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook)
@@ -1477,10 +1507,6 @@ namespace Chummer
                 return string.Empty;
             intPage += objBookInfo.Offset;
 
-            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
-            if (objPdfDocument == null)
-                return string.Empty;
-
             // due to the tag <nameonpage> for the qualities those variants are no longer needed,
             // as such the code would run at most half of the comparisons with the variants
             // but to be sure we find everything still strip unnecessary stuff after the ':' and any number in it.
@@ -1490,163 +1516,180 @@ namespace Chummer
             if (intPos != -1)
                 strTextToSearch = strTextToSearch.Substring(0, intPos);
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
-
+            
             List<string> lstStringFromPdf = new List<string>(30);
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
-            int intMaxPagesToRead = 3; // parse at most 3 pages of content
-            // Loop through each page, starting at the listed page + offset.
-            for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
+            string strReturn = blnSync ? FetchTexts().GetAwaiter().GetResult() : await Task.Run(FetchTexts);
+
+            async Task<string> FetchTexts()
             {
-                // failsafe if something goes wrong, I guess no description takes more than two full pages?
-                if (intMaxPagesToRead-- == 0)
-                    break;
+                PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
+                if (objPdfDocument == null)
+                    return string.Empty;
 
-                int intProcessedStrings = lstStringFromPdf.Count;
-                // each page should have its own text extraction strategy for it to work properly
-                // this way we don't need to check for previous page appearing in the current page
-                // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-
-                string strPageText;
-                try
+                int intMaxPagesToRead = 3; // parse at most 3 pages of content
+                // Loop through each page, starting at the listed page + offset.
+                for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
                 {
-                    strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
-                        new SimpleTextExtractionStrategy())
-                    .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
-                }
-                catch(IndexOutOfRangeException)
-                {
-                    return LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false);
-                }
-
-                // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPdf.AddRange(strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
-
-                for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
-                {
-                    // failsafe for languages that don't have case distinction (chinese, japanese, etc)
-                    // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
-                    if (intExtraAllCapsInfo > 10)
+                    // failsafe if something goes wrong, I guess no description takes more than two full pages?
+                    if (intMaxPagesToRead-- == 0)
                         break;
 
-                    string strCurrentLine = lstStringFromPdf[i];
-                    // we still haven't found anything
-                    if (intTitleIndex == -1)
+                    int intProcessedStrings = lstStringFromPdf.Count;
+                    // each page should have its own text extraction strategy for it to work properly
+                    // this way we don't need to check for previous page appearing in the current page
+                    // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+
+                    string strPageText;
+                    try
                     {
-                        int intTextToSearchLength = strTextToSearch.Length;
-                        int intTitleExtraLines = 0;
-                        if (strCurrentLine.Length < intTextToSearchLength)
+                        strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
+                                new SimpleTextExtractionStrategy())
+                            .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        return blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false)
+                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false);
+                    }
+
+                    // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                    lstStringFromPdf.AddRange(strPageText
+                        .SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+
+                    for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                    {
+                        // failsafe for languages that don't have case distinction (chinese, japanese, etc)
+                        // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
+                        if (intExtraAllCapsInfo > 10)
+                            break;
+
+                        string strCurrentLine = lstStringFromPdf[i];
+                        // we still haven't found anything
+                        if (intTitleIndex == -1)
                         {
-                            // if the line is smaller first check if it contains the start of the text, before parsing the rest
-                            if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
+                            int intTextToSearchLength = strTextToSearch.Length;
+                            int intTitleExtraLines = 0;
+                            if (strCurrentLine.Length < intTextToSearchLength)
                             {
-                                // now just add more lines to it until it is enough
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                              out StringBuilder sbdCurrentLine))
+                                // if the line is smaller first check if it contains the start of the text, before parsing the rest
+                                if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    sbdCurrentLine.Append(strCurrentLine);
-                                    while (sbdCurrentLine.Length < intTextToSearchLength
-                                           && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                    // now just add more lines to it until it is enough
+                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdCurrentLine))
                                     {
-                                        intTitleExtraLines++;
-                                        // add the content plus a space
-                                        sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
+                                        sbdCurrentLine.Append(strCurrentLine);
+                                        while (sbdCurrentLine.Length < intTextToSearchLength
+                                               && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                        {
+                                            intTitleExtraLines++;
+                                            // add the content plus a space
+                                            sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
+                                        }
+
+                                        strCurrentLine = sbdCurrentLine.ToString();
                                     }
-
-                                    strCurrentLine = sbdCurrentLine.ToString();
+                                }
+                                else
+                                {
+                                    // just go to the next line
+                                    continue;
                                 }
                             }
-                            else
+
+                            // now either we have enough text to search or the page doesn't have anymore stuff and must give up
+                            if (strCurrentLine.Length < intTextToSearchLength)
+                                break;
+
+                            if (strCurrentLine.StartsWith(strTextToSearch, StringComparison.OrdinalIgnoreCase))
                             {
-                                // just go to the next line
-                                continue;
+                                // WE FOUND SOMETHING! lets check what kind block we have
+                                // if it is bigger it must have a ':' after the name otherwise it is probably the wrong stuff
+                                if (strCurrentLine.Length > intTextToSearchLength)
+                                {
+                                    if (strCurrentLine[intTextToSearchLength] == ':')
+                                    {
+                                        intTitleIndex = i;
+                                        blnTitleWithColon = true;
+                                    }
+                                }
+                                else // if it is not bigger it is the same length
+                                {
+                                    // this must be an upper case title
+                                    if (strCurrentLine.IsAllLettersUpperCase())
+                                    {
+                                        intTitleIndex = i;
+                                        blnTitleWithColon = false;
+                                    }
+                                }
+
+                                // if we found the tile lets finish some things before finding the text block
+                                if (intTitleIndex != -1 && intTitleExtraLines > 0)
+                                {
+                                    // if we had to concatenate stuff lets fix the list of strings before continuing
+                                    lstStringFromPdf[i] = strCurrentLine;
+                                    lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
+                                }
                             }
                         }
-
-                        // now either we have enough text to search or the page doesn't have anymore stuff and must give up
-                        if (strCurrentLine.Length < intTextToSearchLength)
-                            break;
-
-                        if (strCurrentLine.StartsWith(strTextToSearch, StringComparison.OrdinalIgnoreCase))
+                        else // we already found our title, just go to the end of the block
                         {
-                            // WE FOUND SOMETHING! lets check what kind block we have
-                            // if it is bigger it must have a ':' after the name otherwise it is probably the wrong stuff
-                            if (strCurrentLine.Length > intTextToSearchLength)
+                            // it is something in all caps we need to verify what it is
+                            if (strCurrentLine.IsAllLettersUpperCase())
                             {
-                                if (strCurrentLine[intTextToSearchLength] == ':')
+                                // if it is header or footer information just remove it
+                                // do we also include lines with just numbers as probably page numbers??
+                                if (strCurrentLine.All(char.IsDigit) || strCurrentLine.Contains(">>") ||
+                                    strCurrentLine.Contains("<<"))
                                 {
-                                    intTitleIndex = i;
-                                    blnTitleWithColon = true;
+                                    lstStringFromPdf.RemoveAt(i);
+                                    // rewind and go again
+                                    i--;
+                                    continue;
                                 }
-                            }
-                            else // if it is not bigger it is the same length
-                            {
-                                // this must be an upper case title
-                                if (strCurrentLine.IsAllLettersUpperCase())
+
+                                // if it is a line in all caps following the all caps title just skip it
+                                if (!blnTitleWithColon && i == intTitleIndex + intExtraAllCapsInfo + 1)
                                 {
-                                    intTitleIndex = i;
-                                    blnTitleWithColon = false;
+                                    intExtraAllCapsInfo++;
+                                    continue;
                                 }
+
+                                // if we are here it is the end of the block we found our end, mark it and be done
+                                intBlockEndIndex = i;
+                                break;
                             }
 
-                            // if we found the tile lets finish some things before finding the text block
-                            if (intTitleIndex != -1 && intTitleExtraLines > 0)
+                            // if it is a title with colon we stop in the next line that has a colon
+                            // this is not perfect, if we had bold information we could do more about that
+                            if (blnTitleWithColon && strCurrentLine.Contains(':'))
                             {
-                                // if we had to concatenate stuff lets fix the list of strings before continuing
-                                lstStringFromPdf[i] = strCurrentLine;
-                                lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
+                                intBlockEndIndex = i;
+                                break;
                             }
                         }
                     }
-                    else // we already found our title, just go to the end of the block
-                    {
-                        // it is something in all caps we need to verify what it is
-                        if (strCurrentLine.IsAllLettersUpperCase())
-                        {
-                            // if it is header or footer information just remove it
-                            // do we also include lines with just numbers as probably page numbers??
-                            if (strCurrentLine.All(char.IsDigit) || strCurrentLine.Contains(">>") || strCurrentLine.Contains("<<"))
-                            {
-                                lstStringFromPdf.RemoveAt(i);
-                                // rewind and go again
-                                i--;
-                                continue;
-                            }
 
-                            // if it is a line in all caps following the all caps title just skip it
-                            if (!blnTitleWithColon && i == intTitleIndex + intExtraAllCapsInfo + 1)
-                            {
-                                intExtraAllCapsInfo++;
-                                continue;
-                            }
-
-                            // if we are here it is the end of the block we found our end, mark it and be done
-                            intBlockEndIndex = i;
-                            break;
-                        }
-
-                        // if it is a title with colon we stop in the next line that has a colon
-                        // this is not perfect, if we had bold information we could do more about that
-                        if (blnTitleWithColon && strCurrentLine.Contains(':'))
-                        {
-                            intBlockEndIndex = i;
-                            break;
-                        }
-                    }
+                    // we scanned the first page and found nothing, just give up
+                    if (intTitleIndex == -1)
+                        return string.Empty;
+                    // already have our end, quit searching here
+                    if (intBlockEndIndex != -1)
+                        break;
                 }
 
-                // we scanned the first page and found nothing, just give up
-                if (intTitleIndex == -1)
-                    return string.Empty;
-                // already have our end, quit searching here
-                if (intBlockEndIndex != -1)
-                    break;
+                return string.Empty;
             }
-
+            
             // we have our textblock, lets format it and be done with it
-            if (intBlockEndIndex != -1)
+            if (string.IsNullOrEmpty(strReturn) && intBlockEndIndex != -1)
             {
                 string[] strArray = lstStringFromPdf.ToArray();
                 // if it is a "paragraph title" just concatenate everything
@@ -1698,11 +1741,11 @@ namespace Chummer
                         }
                     }
 
-                    return sbdResultContent.ToString().Trim();
+                    strReturn = sbdResultContent.ToString().Trim();
                 }
             }
 
-            return string.Empty;
+            return strReturn;
         }
 
         #endregion PDF Functions
@@ -1797,8 +1840,6 @@ namespace Chummer
                     return LanguageManager.GetString("String_Days", strLanguage);
 
                 case Timescale.Instant:
-                    return LanguageManager.GetString("String_Immediate", strLanguage);
-
                 default:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
             }
