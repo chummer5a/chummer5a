@@ -180,7 +180,7 @@ namespace Chummer
             }
         }
 
-        private void CharacterCreate_Load(object sender, EventArgs e)
+        private async void CharacterCreate_Load(object sender, EventArgs e)
         {
             using (CustomActivity op_load_frm_create = Timekeeper.StartSyncron("load_frm_create", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
@@ -207,7 +207,7 @@ namespace Chummer
                         if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
                         {
                             mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
-                            mnuSpecialChangeMetatype.Text = LanguageManager.GetString("Menu_SpecialChangePriorities");
+                            mnuSpecialChangeMetatype.Text = await LanguageManager.GetStringAsync("Menu_SpecialChangePriorities");
                         }
                     }
 
@@ -242,10 +242,10 @@ namespace Chummer
                         lblMetagenicQualities.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblMetagenicQualitiesLabel.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblEnemiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
-                        tslKarmaLabel.Text = LanguageManager.GetString("Label_Karma");
-                        tslKarmaRemainingLabel.Text = LanguageManager.GetString("Label_KarmaRemaining");
-                        tabBPSummary.Text = LanguageManager.GetString("Tab_BPSummary_Karma");
-                        lblQualityBPLabel.Text = LanguageManager.GetString("Label_Karma");
+                        tslKarmaLabel.Text = await LanguageManager.GetStringAsync("Label_Karma");
+                        tslKarmaRemainingLabel.Text = await LanguageManager.GetStringAsync("Label_KarmaRemaining");
+                        tabBPSummary.Text = await LanguageManager.GetStringAsync("Tab_BPSummary_Karma");
+                        lblQualityBPLabel.Text = await LanguageManager.GetStringAsync("Label_Karma");
 
                         lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
 
@@ -276,7 +276,7 @@ namespace Chummer
                             nudMugshotIndex.Value = 0;
                         }
 
-                        lblNumMugshots.Text = LanguageManager.GetString("String_Of") +
+                        lblNumMugshots.Text = await LanguageManager.GetStringAsync("String_Of") +
                                               CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
                     }
 
@@ -401,7 +401,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
+                            (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNodeAndCacheExpression("/chummer");
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstTraditions))
                         {
@@ -425,7 +425,7 @@ namespace Chummer
                             {
                                 lstTraditions.Sort(CompareListItems.CompareNames);
                                 lstTraditions.Insert(0,
-                                                     new ListItem("None", LanguageManager.GetString("String_None")));
+                                                     new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                 cboTradition.BeginUpdate();
                                 cboTradition.PopulateWithListItems(lstTraditions);
                                 cboTradition.EndUpdate();
@@ -569,7 +569,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
+                            (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNodeAndCacheExpression("/chummer");
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstStreams))
                         {
@@ -592,7 +592,7 @@ namespace Chummer
                             {
                                 lstStreams.Sort(CompareListItems.CompareNames);
                                 lstStreams.Insert(0,
-                                                  new ListItem("None", LanguageManager.GetString("String_None")));
+                                                  new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                 cboStream.BeginUpdate();
                                 cboStream.PopulateWithListItems(lstStreams);
                                 cboStream.EndUpdate();
@@ -624,6 +624,26 @@ namespace Chummer
                             cboStream.SelectedIndex = 0;
                     }
 
+                    using (CustomActivity op_load_frm_career_longloads = Timekeeper.StartSyncron("load_frm_create_longloads", op_load_frm_create))
+                    {
+                        using (_ = Timekeeper.StartSyncron("load_frm_create_skills", op_load_frm_career_longloads))
+                        {
+                            tabSkillsUc.RealLoad();
+                        }
+
+                        using (_ = Timekeeper.StartSyncron("load_frm_create_powers", op_load_frm_career_longloads))
+                        {
+                            tabPowerUc.RealLoad();
+                        }
+
+                        using (_ = Timekeeper.StartSyncron("load_frm_create_OnCharacterPropertyChanged", op_load_frm_career_longloads))
+                        {
+                            // Run through all appropriate property changers
+                            foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
+                                await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
+                        }
+                    }
+
                     IsLoading = false;
 
                     treGear.ItemDrag += treGear_ItemDrag;
@@ -651,23 +671,6 @@ namespace Chummer
                     // Merge the ToolStrips.
                     ToolStripManager.RevertMerge("toolStrip");
                     ToolStripManager.Merge(tsMain, "toolStrip");
-                    using (_ = Timekeeper.StartSyncron("load_frm_create_skills", op_load_frm_create))
-                    {
-                        tabSkillsUc.RealLoad();
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_frm_create_powers", op_load_frm_create))
-                    {
-                        tabPowerUc.RealLoad();
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_frm_create_OnCharacterPropertyChanged", op_load_frm_create))
-                    {
-                        // Run through all appropriate property changers
-                        foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                            Utils.RunWithoutThreadLock(
-                                () => DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name)).AsTask());
-                    }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_databinding2", op_load_frm_create))
                     {
@@ -857,7 +860,7 @@ namespace Chummer
                                 if (mode == Weapon.FiringMode.NumFiringModes)
                                     continue;
                                 lstFireModes.Add(new ListItem(mode,
-                                                              LanguageManager.GetString("Enum_" + mode)));
+                                                              await LanguageManager.GetStringAsync("Enum_" + mode)));
                             }
 
                             cboVehicleWeaponFiringMode.BeginUpdate();
@@ -874,7 +877,7 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Directly calling here so that we can properly unset the dirty flag after the update
-                        DoUpdateCharacterInfo();
+                        await DoUpdateCharacterInfoAsync();
 
                         // Now we can start checking for character updates
                         Application.Idle += UpdateCharacterInfo;
@@ -894,11 +897,11 @@ namespace Chummer
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0
                         && !Utils.IsUnitTest
                         && Program.MainForm.ShowMessageBox(this,
-                            LanguageManager.GetString("Message_ImprovementLoadError"),
-                            LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
+                            await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
+                            await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements).AsTask());
+                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                         CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                     }
 
@@ -1631,8 +1634,12 @@ namespace Chummer
                     }
                 case nameof(Character.Settings):
                 {
-                    foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
-                        await DoOnCharacterSettingsPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
+                    if (!IsLoading)
+                    {
+                        foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
+                            await DoOnCharacterSettingsPropertyChanged(
+                                new PropertyChangedEventArgs(objProperty.Name));
+                    }
                     break;
                 }
             }

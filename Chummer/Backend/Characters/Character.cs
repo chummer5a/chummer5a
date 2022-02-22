@@ -7092,19 +7092,20 @@ namespace Chummer
         }
         #endregion
 
-        private bool _blnDisposing;
+        public bool IsDisposed { get; private set; }
+
         /// <summary>
         /// Remove stray event handlers and clear all info used by this character
         /// </summary>
         public void Dispose()
         {
-            if (_blnDisposing)
+            if (IsDisposed)
                 return;
             if (!Utils.IsUnitTest && (Program.MainForm.OpenCharacters.Contains(this) || Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this))))
                 return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
             using (new EnterWriteLock(LockObject)) // Wait for all pending locks to get freed before disposing
             {
-                _blnDisposing = true;
+                IsDisposed = true;
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 _lstLinkedCharacters.Dispose();
                 foreach (Image imgMugshot in _lstMugshots)
@@ -7182,7 +7183,6 @@ namespace Chummer
                     _objSettings.Dispose();
             }
             LockObject.Dispose();
-            _blnDisposing = false;
         }
 
         /// <summary>

@@ -359,7 +359,7 @@ namespace Chummer.UI.Skills
 
         private void UnbindSkillsTabUserControl()
         {
-            if (_objCharacter != null)
+            if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
                 _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
