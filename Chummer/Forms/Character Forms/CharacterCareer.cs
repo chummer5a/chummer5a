@@ -698,7 +698,7 @@ namespace Chummer
                             foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
                             {
                                 Utils.RunWithoutThreadLock(
-                                    () => DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name)));
+                                    () => DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name)).AsTask());
                             }
                         }
 
@@ -934,7 +934,7 @@ namespace Chummer
                         MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
                         Utils.RunWithoutThreadLock(
-                            () => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements));
+                            () => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements).AsTask());
                         CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                     }
 
@@ -12926,7 +12926,7 @@ namespace Chummer
                 LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
                 Utils.RunWithoutThreadLock(
-                    () => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements));
+                    () => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements).AsTask());
                 CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
             }
         }
