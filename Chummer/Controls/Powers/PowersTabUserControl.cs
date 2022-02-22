@@ -125,7 +125,7 @@ namespace Chummer.UI.Powers
 
         private void UnbindPowersTabUserControl()
         {
-            if (_objCharacter != null)
+            if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.Powers.ListChanged -= OnPowersListChanged;
                 _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
