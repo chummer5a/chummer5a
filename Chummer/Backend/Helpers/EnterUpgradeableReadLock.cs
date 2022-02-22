@@ -39,9 +39,10 @@ namespace Chummer
             {
                 _rwlMyLock.EnterUpgradeableReadLock();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Utils.BreakIfDebug();
+                throw;
             }
 #else
             _rwlMyLock.EnterUpgradeableReadLock();
@@ -57,9 +58,10 @@ namespace Chummer
             {
                 _rwlMyLock.EnterUpgradeableReadLock();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Utils.BreakIfDebug();
+                throw;
             }
 #else
             _rwlMyLock.EnterUpgradeableReadLock();

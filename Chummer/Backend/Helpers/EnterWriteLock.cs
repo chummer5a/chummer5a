@@ -39,9 +39,10 @@ namespace Chummer
             {
                 _rwlMyLock.EnterWriteLock();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Utils.BreakIfDebug();
+                throw;
             }
 #else
             _rwlMyLock.EnterWriteLock();
@@ -57,9 +58,10 @@ namespace Chummer
             {
                 _rwlMyLock.EnterWriteLock();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 Utils.BreakIfDebug();
+                throw;
             }
 #else
             _rwlMyLock.EnterWriteLock();
