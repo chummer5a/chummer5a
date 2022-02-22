@@ -113,6 +113,11 @@ namespace Chummer
 
         private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
         {
+            await ProcessGradeChanged();
+        }
+
+        private async ValueTask ProcessGradeChanged()
+        {
             if (_blnLoading)
                 return;
             _blnLoading = true;
@@ -141,7 +146,7 @@ namespace Chummer
             }
         }
 
-        private void cboGrade_EnabledChanged(object sender, EventArgs e)
+        private async void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
             if (cboGrade.Enabled != _blnOldGradeEnabled)
             {
@@ -150,7 +155,7 @@ namespace Chummer
                 {
                     cboGrade.SelectedValue = _strOldSelectedGrade;
                 }
-                cboGrade_SelectedIndexChanged(sender, e);
+                await ProcessGradeChanged();
             }
         }
 

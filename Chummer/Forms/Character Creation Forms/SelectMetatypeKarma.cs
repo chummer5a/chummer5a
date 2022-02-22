@@ -149,6 +149,11 @@ namespace Chummer
 
         private async void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
+            await ProcessMetatypeSelectedChanged();
+        }
+
+        private async ValueTask ProcessMetatypeSelectedChanged()
+        {
             if (_blnLoading)
                 return;
             SuspendLayout();
@@ -162,6 +167,11 @@ namespace Chummer
         }
 
         private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            await ProcessMetavariantSelectedChanged();
+        }
+
+        private async ValueTask ProcessMetavariantSelectedChanged()
         {
             if (_blnLoading)
                 return;
@@ -727,7 +737,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
                     {
                         if (cboMetavariant.SelectedValue?.ToString() == strOldSelectedValue)
-                            cboMetavariant_SelectedIndexChanged(null, null);
+                            await ProcessMetavariantSelectedChanged();
                         else
                             cboMetavariant.SelectedValue = strOldSelectedValue;
                     }
@@ -820,7 +830,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strOldSelected))
                     {
                         if (lstMetatypes.SelectedValue?.ToString() == strOldSelected)
-                            lstMetatypes_SelectedIndexChanged(this, EventArgs.Empty);
+                            await ProcessMetatypeSelectedChanged();
                         else
                             lstMetatypes.SelectedValue = strOldSelected;
                     }

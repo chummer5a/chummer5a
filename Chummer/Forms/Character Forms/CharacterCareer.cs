@@ -14348,7 +14348,7 @@ namespace Chummer
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
         /// </summary>
-        public async ValueTask<bool> PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
+        private async ValueTask<bool> PickCyberware(Cyberware objSelectedCyberware, Improvement.ImprovementSource objSource)
         {
             using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, objSource, objSelectedCyberware))
             {
