@@ -4832,7 +4832,10 @@ namespace Chummer
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleWeaponAccessories"), await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(
+                    this, await LanguageManager.GetStringAsync("Message_VehicleWeaponAccessories"),
+                    await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -4840,7 +4843,9 @@ namespace Chummer
             XmlNode objXmlWeapon = await objWeapon.GetNodeAsync();
             if (objXmlWeapon == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"),
+                                                await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"),
+                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4855,7 +4860,10 @@ namespace Chummer
                     // Make sure the Weapon allows Accessories to be added to it.
                     if (!objWeapon.AllowAccessory)
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(
+                            this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
 
@@ -4895,7 +4903,10 @@ namespace Chummer
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objSelectedWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(
+                    this, await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel"),
+                    await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
