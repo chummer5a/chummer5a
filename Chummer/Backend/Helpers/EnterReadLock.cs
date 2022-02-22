@@ -34,14 +34,36 @@ namespace Chummer
         public EnterReadLock(ReaderWriterLockSlim rwlMyLock)
         {
             _rwlMyLock = rwlMyLock;
+#if DEBUG
+            try
+            {
+                _rwlMyLock.EnterReadLock();
+            }
+            catch (Exception)
+            {
+                Utils.BreakIfDebug();
+            }
+#else
             _rwlMyLock.EnterReadLock();
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public EnterReadLock(IHasLockObject rwlMyLock)
         {
             _rwlMyLock = rwlMyLock.LockObject;
+#if DEBUG
+            try
+            {
+                _rwlMyLock.EnterReadLock();
+            }
+            catch (Exception)
+            {
+                Utils.BreakIfDebug();
+            }
+#else
             _rwlMyLock.EnterReadLock();
+#endif
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
