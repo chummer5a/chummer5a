@@ -667,7 +667,7 @@ namespace Chummer
                         // Run through all appropriate property changers
                         foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
                             Utils.RunWithoutThreadLock(
-                                () => DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name)));
+                                () => DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name)).AsTask());
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_databinding2", op_load_frm_create))
@@ -899,7 +899,7 @@ namespace Chummer
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements));
+                        Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements).AsTask());
                         CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                     }
 
@@ -9646,7 +9646,7 @@ namespace Chummer
                 && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
                     LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
-                Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements));
+                Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements).AsTask());
                 CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
             }
         }
@@ -9728,7 +9728,7 @@ namespace Chummer
             if (decStolenNuyenAllowance != 0)
             {
                 object objStolenDeductionsLock = new object();
-                Parallel.Invoke(
+                Utils.RunWithoutThreadLock(
                     () =>
                     {
                         // Cyberware/Bioware cost.
@@ -9842,7 +9842,7 @@ namespace Chummer
             }
             else
             {
-                Parallel.Invoke(
+                Utils.RunWithoutThreadLock(
                     () =>
                     {
                         // Cyberware/Bioware cost.
