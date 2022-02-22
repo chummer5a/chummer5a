@@ -33,7 +33,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove
+    public class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -313,7 +313,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Components of the Drug.
         /// </summary>
-        public EnhancedObservableCollection<DrugComponent> Components { get; } = new EnhancedObservableCollection<DrugComponent>();
+        public ThreadSafeObservableCollection<DrugComponent> Components
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstComponents.LockObject))
+                    return _lstComponents;
+            }
+        }
 
         /// <summary>
         /// Name of the Drug.
@@ -1106,6 +1114,7 @@ namespace Chummer.Backend.Equipment
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
+        private readonly ThreadSafeObservableCollection<DrugComponent> _lstComponents = new ThreadSafeObservableCollection<DrugComponent>();
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
@@ -1136,10 +1145,19 @@ namespace Chummer.Backend.Equipment
             }
             _objCharacter.Drugs.Remove(this);
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Drug, InternalId);
+
+            Dispose();
+
             return true;
         }
 
         #endregion Methods
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstComponents.Dispose();
+        }
     }
 
     /// <summary>

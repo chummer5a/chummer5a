@@ -3242,12 +3242,28 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of child pieces of Cyberware.
         /// </summary>
-        public TaggedObservableCollection<Cyberware> Children => _lstChildren;
+        public TaggedObservableCollection<Cyberware> Children
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstChildren.LockObject))
+                    return _lstChildren;
+            }
+        }
 
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
+        public TaggedObservableCollection<Gear> GearChildren
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstGear.LockObject))
+                    return _lstGear;
+            }
+        }
 
         /// <summary>
         /// List of names to include in pair bonus

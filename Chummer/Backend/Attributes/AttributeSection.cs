@@ -81,47 +81,63 @@ namespace Chummer.Backend.Attributes
             new PropertyDependencyGraph<AttributeSection>(
             );
 
-        private EnhancedObservableCollection<CharacterAttrib> _colAttributes;
+        private bool _blnAttributesInitialized;
+        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
 
-        public EnhancedObservableCollection<CharacterAttrib> Attributes
+        public ThreadSafeObservableCollection<CharacterAttrib> Attributes
         {
             get
             {
-                if (_colAttributes != null)
+                using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+                using (new EnterUpgradeableReadLock(_lstAttributes.LockObject))
                 {
-                    return _colAttributes;
+                    if (!_blnAttributesInitialized)
+                    {
+                        InitializeAttributesList();
+                    }
+                    return _lstAttributes;
                 }
+            }
+        }
 
-                _colAttributes = new EnhancedObservableCollection<CharacterAttrib>
-                {
-                    _objCharacter.BOD,
-                    _objCharacter.AGI,
-                    _objCharacter.REA,
-                    _objCharacter.STR,
-                    _objCharacter.CHA,
-                    _objCharacter.INT,
-                    _objCharacter.LOG,
-                    _objCharacter.WIL,
-                    _objCharacter.EDG
-                };
+        private void InitializeAttributesList()
+        {
+            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(_lstAttributes.LockObject))
+            {
+                _blnAttributesInitialized = true;
+
+                // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                _lstAttributes.Clear();
+                _lstAttributes.Add(_objCharacter.BOD);
+                _lstAttributes.Add(_objCharacter.AGI);
+                _lstAttributes.Add(_objCharacter.REA);
+                _lstAttributes.Add(_objCharacter.STR);
+                _lstAttributes.Add(_objCharacter.CHA);
+                _lstAttributes.Add(_objCharacter.INT);
+                _lstAttributes.Add(_objCharacter.LOG);
+                _lstAttributes.Add(_objCharacter.WIL);
+                _lstAttributes.Add(_objCharacter.EDG);
+
                 if (_objCharacter.MAGEnabled)
                 {
-                    _colAttributes.Add(_objCharacter.MAG);
+                    _lstAttributes.Add(_objCharacter.MAG);
                     if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                        _colAttributes.Add(_objCharacter.MAGAdept);
-                }
-                if (_objCharacter.RESEnabled)
-                {
-                    _colAttributes.Add(_objCharacter.RES);
-                }
-                if (_objCharacter.DEPEnabled)
-                {
-                    _colAttributes.Add(_objCharacter.DEP);
+                        _lstAttributes.Add(_objCharacter.MAGAdept);
                 }
 
-                return _colAttributes;
+                if (_objCharacter.RESEnabled)
+                {
+                    _lstAttributes.Add(_objCharacter.RES);
+                }
+
+                if (_objCharacter.DEPEnabled)
+                {
+                    _lstAttributes.Add(_objCharacter.DEP);
+                }
+
+                ResetBindings();
             }
-            internal set => _colAttributes = value;
         }
 
         public static readonly ReadOnlyCollection<string> AttributeStrings = Array.AsReadOnly(new[]
@@ -187,6 +203,8 @@ namespace Chummer.Backend.Attributes
         private readonly LockingDictionary<string, BindingSource> _dicBindings = new LockingDictionary<string, BindingSource>(AttributeStrings.Count);
         private readonly Character _objCharacter;
         private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
+        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstNormalAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
+        private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstSpecialAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
 
         #region Constructor, Save, Load, Print Methods
 
@@ -472,48 +490,16 @@ namespace Chummer.Backend.Attributes
                         _objCharacter.EDG.Base = Math.Min(intOldEDGBase, _objCharacter.EDG.PriorityMaximum);
                         _objCharacter.EDG.Karma = Math.Min(intOldEDGKarma, _objCharacter.EDG.KarmaMaximum);
 
-                        if (Attributes == null)
-                        {
-                            Attributes = new EnhancedObservableCollection<CharacterAttrib>
-                            {
-                                _objCharacter.BOD,
-                                _objCharacter.AGI,
-                                _objCharacter.REA,
-                                _objCharacter.STR,
-                                _objCharacter.CHA,
-                                _objCharacter.INT,
-                                _objCharacter.LOG,
-                                _objCharacter.WIL,
-                                _objCharacter.EDG
-                            };
-                        }
-                        else
-                        {
-                            // Not creating a new collection here so that CollectionChanged events from previous list are kept
-                            Attributes.Clear();
-                            Attributes.Add(_objCharacter.BOD);
-                            Attributes.Add(_objCharacter.AGI);
-                            Attributes.Add(_objCharacter.REA);
-                            Attributes.Add(_objCharacter.STR);
-                            Attributes.Add(_objCharacter.CHA);
-                            Attributes.Add(_objCharacter.INT);
-                            Attributes.Add(_objCharacter.LOG);
-                            Attributes.Add(_objCharacter.WIL);
-                            Attributes.Add(_objCharacter.EDG);
-                        }
-
                         if (_objCharacter.MAGEnabled)
                         {
                             _objCharacter.MAG.Base = Math.Min(intOldMAGBase, _objCharacter.MAG.PriorityMaximum);
                             _objCharacter.MAG.Karma = Math.Min(intOldMAGKarma, _objCharacter.MAG.KarmaMaximum);
-                            Attributes.Add(_objCharacter.MAG);
                             if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
                             {
                                 _objCharacter.MAGAdept.Base =
                                     Math.Min(intOldMAGAdeptBase, _objCharacter.MAGAdept.PriorityMaximum);
                                 _objCharacter.MAGAdept.Karma =
                                     Math.Min(intOldMAGAdeptKarma, _objCharacter.MAGAdept.KarmaMaximum);
-                                Attributes.Add(_objCharacter.MAGAdept);
                             }
                         }
 
@@ -521,17 +507,16 @@ namespace Chummer.Backend.Attributes
                         {
                             _objCharacter.RES.Base = Math.Min(intOldRESBase, _objCharacter.RES.PriorityMaximum);
                             _objCharacter.RES.Karma = Math.Min(intOldRESKarma, _objCharacter.RES.KarmaMaximum);
-                            Attributes.Add(_objCharacter.RES);
                         }
 
                         if (_objCharacter.DEPEnabled)
                         {
                             _objCharacter.DEP.Base = Math.Min(intOldDEPBase, _objCharacter.DEP.PriorityMaximum);
                             _objCharacter.DEP.Karma = Math.Min(intOldDEPKarma, _objCharacter.DEP.KarmaMaximum);
-                            Attributes.Add(_objCharacter.DEP);
                         }
 
-                        ResetBindings();
+                        InitializeAttributesList();
+                        
                         //Timekeeper.Finish("create_char_attrib");
                     }
                 }
@@ -1325,12 +1310,28 @@ namespace Chummer.Backend.Attributes
         /// Character's Attributes.
         /// </summary>
         [HubTag(true)]
-        public ThreadSafeObservableCollection<CharacterAttrib> AttributeList { get; } = new ThreadSafeObservableCollection<CharacterAttrib>();
+        public ThreadSafeObservableCollection<CharacterAttrib> AttributeList
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstNormalAttributes.LockObject))
+                    return _lstNormalAttributes;
+            }
+        }
 
         /// <summary>
         /// Character's Attributes.
         /// </summary>
-        public ThreadSafeObservableCollection<CharacterAttrib> SpecialAttributeList { get; } = new ThreadSafeObservableCollection<CharacterAttrib>();
+        public ThreadSafeObservableCollection<CharacterAttrib> SpecialAttributeList
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstSpecialAttributes.LockObject))
+                    return _lstSpecialAttributes;
+            }
+        }
 
         public CharacterAttrib.AttributeCategory AttributeCategory
         {

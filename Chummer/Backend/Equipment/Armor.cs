@@ -1642,12 +1642,28 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Modifications currently applied to the Armor.
         /// </summary>
-        public TaggedObservableCollection<ArmorMod> ArmorMods => _lstArmorMods;
+        public TaggedObservableCollection<ArmorMod> ArmorMods
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstArmorMods.LockObject))
+                    return _lstArmorMods;
+            }
+        }
 
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
+        public TaggedObservableCollection<Gear> GearChildren
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstGear.LockObject))
+                    return _lstGear;
+            }
+        }
 
         /// <summary>
         /// Location.

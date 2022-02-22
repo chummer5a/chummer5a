@@ -1503,9 +1503,19 @@ namespace Chummer.Backend.Skills
 
         public string CurrentDisplaySpecialization => DisplaySpecialization(GlobalSettings.Language);
 
+        private readonly ThreadSafeBindingList<SkillSpecialization> _lstSpecializations = new ThreadSafeBindingList<SkillSpecialization>();
+
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
         //Or just ignore support for multiple specializations even if the rules say it is possible?
-        public ThreadSafeBindingList<SkillSpecialization> Specializations { get; } = new ThreadSafeBindingList<SkillSpecialization>();
+        public ThreadSafeBindingList<SkillSpecialization> Specializations
+        {
+            get
+            {
+                using (new EnterReadLock(CharacterObject.LockObject))
+                using (new EnterReadLock(_lstSpecializations.LockObject))
+                    return _lstSpecializations;
+            }
+        }
 
         public string TopMostDisplaySpecialization
         {

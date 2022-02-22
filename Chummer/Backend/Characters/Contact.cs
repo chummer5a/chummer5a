@@ -1164,7 +1164,20 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public ThreadSafeList<Image> Mugshots => LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
+        public ThreadSafeList<Image> Mugshots
+        {
+            get
+            {
+                using (new EnterReadLock(CharacterObject.LockObject))
+                {
+                    if (LinkedCharacter != null)
+                        return LinkedCharacter.Mugshots;
+
+                    using (new EnterReadLock(_lstMugshots.LockObject))
+                        return _lstMugshots;
+                }
+            }
+        }
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -1216,12 +1229,26 @@ namespace Chummer
                     LinkedCharacter.MainMugshotIndex = value;
                 else
                 {
-                    if (value >= _lstMugshots.Count || value < -1)
+                    if (value < -1)
                         value = -1;
-                    if (_intMainMugshotIndex != value)
+                    else if (value >= 0)
                     {
-                        _intMainMugshotIndex = value;
-                        OnPropertyChanged();
+                        using (new EnterReadLock(_objCharacter.LockObject))
+                        {
+                            if (value >= Mugshots.Count)
+                                value = -1;
+                        }
+                    }
+
+                    using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+                    {
+                        if (_intMainMugshotIndex == value)
+                            return;
+                        using (new EnterWriteLock(_objCharacter.LockObject))
+                        {
+                            _intMainMugshotIndex = value;
+                            OnPropertyChanged();
+                        }
                     }
                 }
             }

@@ -1413,19 +1413,54 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<VehicleMod> Mods => _lstVehicleMods;
+        public TaggedObservableCollection<VehicleMod> Mods
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstVehicleMods.LockObject))
+                    return _lstVehicleMods;
+            }
+        }
 
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
+        public TaggedObservableCollection<Gear> GearChildren
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstGear.LockObject))
+                    return _lstGear;
+            }
+        }
 
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
+        public TaggedObservableCollection<Weapon> Weapons
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstWeapons.LockObject))
+                    return _lstWeapons;
+            }
+        }
 
-        public TaggedObservableCollection<WeaponMount> WeaponMounts => _lstWeaponMounts;
+        /// <summary>
+        /// Weapon mounts applied to the Vehicle.
+        /// </summary>
+        public TaggedObservableCollection<WeaponMount> WeaponMounts
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstWeaponMounts.LockObject))
+                    return _lstWeaponMounts;
+            }
+        }
 
         /// <summary>
         /// Total Availability in the program's current language.
@@ -1652,7 +1687,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public TaggedObservableCollection<Location> Locations => _lstLocations;
+        public TaggedObservableCollection<Location> Locations
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstLocations.LockObject))
+                    return _lstLocations;
+            }
+        }
 
         /// <summary>
         /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
@@ -3615,6 +3658,8 @@ namespace Chummer.Backend.Equipment
             foreach (Weapon objChild in _lstWeapons)
                 objChild.Dispose();
             foreach (WeaponMount objChild in _lstWeaponMounts)
+                objChild.Dispose();
+            foreach (Location objChild in _lstLocations)
                 objChild.Dispose();
             DisposeSelf();
         }

@@ -1097,10 +1097,20 @@ namespace Chummer.Backend.Equipment
                                                      .Where(x => x.OriginSource != QualitySource.BuiltIn)
                                                      .Sum(lq => lq.AreaMaximum);
 
+        private readonly ThreadSafeObservableCollection<LifestyleQuality> _lstLifestyleQualities = new ThreadSafeObservableCollection<LifestyleQuality>();
+
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
-        public ThreadSafeObservableCollection<LifestyleQuality> LifestyleQualities { get; } = new ThreadSafeObservableCollection<LifestyleQuality>();
+        public ThreadSafeObservableCollection<LifestyleQuality> LifestyleQualities
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstLifestyleQualities.LockObject))
+                    return _lstLifestyleQualities;
+            }
+        }
 
         /// <summary>
         /// Notes.

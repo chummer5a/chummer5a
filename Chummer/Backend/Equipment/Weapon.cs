@@ -1528,12 +1528,28 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Accessories.
         /// </summary>
-        public TaggedObservableCollection<WeaponAccessory> WeaponAccessories => _lstAccessories;
+        public TaggedObservableCollection<WeaponAccessory> WeaponAccessories
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstAccessories.LockObject))
+                    return _lstAccessories;
+            }
+        }
 
         /// <summary>
         /// Underbarrel Weapon.
         /// </summary>
-        public TaggedObservableCollection<Weapon> UnderbarrelWeapons => _lstUnderbarrel;
+        public TaggedObservableCollection<Weapon> UnderbarrelWeapons
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstUnderbarrel.LockObject))
+                    return _lstUnderbarrel;
+            }
+        }
 
         /// <summary>
         /// Children as Underbarrel Weapon.

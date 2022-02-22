@@ -259,6 +259,9 @@ namespace Chummer
         public ReaderWriterLockSlim LockObject { get; } =
             new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
+        private readonly LockingOrderedSet<Func<Character, bool>> _setDoOnSaveCompleted = new LockingOrderedSet<Func<Character, bool>>();
+        private readonly LockingOrderedSet<Func<Character, Task<bool>>> _setDoOnSaveCompletedAsync = new LockingOrderedSet<Func<Character, Task<bool>>>();
+
         /// <summary>
         /// Set of unique methods to run after the character's Save() method is otherwise finished.
         /// Input is the character in question, output is if the code resolved without errors.
@@ -266,7 +269,15 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public LockingOrderedSet<Func<Character, bool>> DoOnSaveCompleted { get; } = new LockingOrderedSet<Func<Character, bool>>();
+        public LockingOrderedSet<Func<Character, bool>> DoOnSaveCompleted
+        {
+            get
+            {
+                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterUpgradeableReadLock(_setDoOnSaveCompleted.LockObject))
+                    return _setDoOnSaveCompleted;
+            }
+        }
 
         /// <summary>
         /// Set of unique async methods to run after the character's Save() method is otherwise finished.
@@ -275,7 +286,15 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public LockingOrderedSet<Func<Character, Task<bool>>> DoOnSaveCompletedAsync { get; } = new LockingOrderedSet<Func<Character, Task<bool>>>();
+        public LockingOrderedSet<Func<Character, Task<bool>>> DoOnSaveCompletedAsync
+        {
+            get
+            {
+                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterUpgradeableReadLock(_setDoOnSaveCompletedAsync.LockObject))
+                    return _setDoOnSaveCompletedAsync;
+            }
+        }
 
         #region Initialization, Save, Load, Print, and Reset Methods
 
@@ -7137,11 +7156,21 @@ namespace Chummer
                 _lstInitiationGrades.Dispose();
                 _lstInternalIdsNeedingReapplyImprovements.Dispose();
                 _lstCalendar.Dispose();
+                foreach (Drug objItem in _lstDrugs)
+                    objItem.Dispose();
                 _lstDrugs.Dispose();
                 _lstExpenseLog.Dispose();
+                foreach (Location objItem in _lstArmorLocations)
+                    objItem.Dispose();
                 _lstArmorLocations.Dispose();
+                foreach (Location objItem in _lstGearLocations)
+                    objItem.Dispose();
                 _lstGearLocations.Dispose();
+                foreach (Location objItem in _lstWeaponLocations)
+                    objItem.Dispose();
                 _lstWeaponLocations.Dispose();
+                foreach (Location objItem in _lstVehicleLocations)
+                    objItem.Dispose();
                 _lstVehicleLocations.Dispose();
                 _lstImprovementGroups.Dispose();
                 PostLoadMethods.Dispose();
@@ -9474,6 +9503,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstMugshots.LockObject))
                     return _lstMugshots;
             }
         }
@@ -14553,6 +14583,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstImprovements.LockObject))
                     return _lstImprovements;
             }
         }
@@ -14566,6 +14597,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstMentorSpirits.LockObject))
                     return _lstMentorSpirits;
             }
         }
@@ -14578,6 +14610,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstContacts.LockObject))
                     return _lstContacts;
             }
         }
@@ -14590,6 +14623,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstSpirits.LockObject))
                     return _lstSpirits;
             }
         }
@@ -14603,6 +14637,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstSpells.LockObject))
                     return _lstSpells;
             }
         }
@@ -14615,6 +14650,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstSustainedObjects.LockObject))
                     return _lstSustainedObjects;
             }
         }
@@ -14627,6 +14663,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstFoci.LockObject))
                     return _lstFoci;
             }
         }
@@ -14639,6 +14676,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstStackedFoci.LockObject))
                     return _lstStackedFoci;
             }
         }
@@ -14652,6 +14690,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstPowers.LockObject))
                     return _lstPowers;
             }
         }
@@ -14665,6 +14704,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstComplexForms.LockObject))
                     return _lstComplexForms;
             }
         }
@@ -14678,6 +14718,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstAIPrograms.LockObject))
                     return _lstAIPrograms;
             }
         }
@@ -14690,6 +14731,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstMartialArts.LockObject))
                     return _lstMartialArts;
             }
         }
@@ -14702,6 +14744,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstLimitModifiers.LockObject))
                     return _lstLimitModifiers;
             }
         }
@@ -14715,6 +14758,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstArmor.LockObject))
                     return _lstArmor;
             }
         }
@@ -14728,6 +14772,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstCyberware.LockObject))
                     return _lstCyberware;
             }
         }
@@ -14741,6 +14786,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstWeapons.LockObject))
                     return _lstWeapons;
             }
         }
@@ -14753,6 +14799,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstLifestyles.LockObject))
                     return _lstLifestyles;
             }
         }
@@ -14766,6 +14813,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstGear.LockObject))
                     return _lstGear;
             }
         }
@@ -14779,6 +14827,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstVehicles.LockObject))
                     return _lstVehicles;
             }
         }
@@ -14792,6 +14841,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstMetamagics.LockObject))
                     return _lstMetamagics;
             }
         }
@@ -14804,6 +14854,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstEnhancements.LockObject))
                     return _lstEnhancements;
             }
         }
@@ -14816,6 +14867,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstArts.LockObject))
                     return _lstArts;
             }
         }
@@ -14829,6 +14881,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstCritterPowers.LockObject))
                     return _lstCritterPowers;
             }
         }
@@ -14841,6 +14894,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstInitiationGrades.LockObject))
                     return _lstInitiationGrades;
             }
         }
@@ -14853,6 +14907,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstExpenseLog.LockObject))
                     return _lstExpenseLog;
             }
         }
@@ -14866,6 +14921,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstQualities.LockObject))
                     return _lstQualities;
             }
         }
@@ -14888,6 +14944,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstGearLocations.LockObject))
                     return _lstGearLocations;
             }
         }
@@ -14900,6 +14957,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstArmorLocations.LockObject))
                     return _lstArmorLocations;
             }
         }
@@ -14912,6 +14970,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstVehicleLocations.LockObject))
                     return _lstVehicleLocations;
             }
         }
@@ -14924,6 +14983,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstWeaponLocations.LockObject))
                     return _lstWeaponLocations;
             }
         }
@@ -14936,6 +14996,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstImprovementGroups.LockObject))
                     return _lstImprovementGroups;
             }
         }
@@ -14948,6 +15009,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstCalendar.LockObject))
                     return _lstCalendar;
             }
         }
@@ -14960,6 +15022,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstInternalIdsNeedingReapplyImprovements.LockObject))
                     return _lstInternalIdsNeedingReapplyImprovements;
             }
         }
@@ -16887,6 +16950,7 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstDrugs.LockObject))
                     return _lstDrugs;
             }
         }
@@ -19061,7 +19125,12 @@ namespace Chummer
         /// </summary>
         public LockingHashSet<Character> LinkedCharacters
         {
-            get { return _lstLinkedCharacters; }
+            get
+            {
+                using (new EnterReadLock(LockObject))
+                using (new EnterReadLock(_lstLinkedCharacters.LockObject))
+                    return _lstLinkedCharacters;
+            }
         }
 
         #endregion

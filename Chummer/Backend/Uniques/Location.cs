@@ -32,7 +32,7 @@ namespace Chummer
     /// A Location.
     /// </summary>
     [DebuggerDisplay("{nameof(Name)}")]
-    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort
+    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IDisposable
     {
         private Guid _guiID;
         private string _strName;
@@ -40,6 +40,7 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
+        private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren = new ThreadSafeObservableCollection<IHasLocation>();
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -185,7 +186,15 @@ namespace Chummer
             set => _intSortOrder = value;
         }
 
-        public EnhancedObservableCollection<IHasLocation> Children { get; } = new EnhancedObservableCollection<IHasLocation>();
+        public ThreadSafeObservableCollection<IHasLocation> Children
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstChildren.LockObject))
+                    return _lstChildren;
+            }
+        }
 
         public ICollection<Location> Parent { get; }
 
@@ -262,7 +271,17 @@ namespace Chummer
             foreach (IHasLocation item in Children)
                 item.Location = null;
 
-            return Parent?.Contains(this) != true || Parent.Remove(this);
+            bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
+
+            Dispose();
+
+            return blnReturn;
+        }
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            _lstChildren.Dispose();
         }
     }
 }

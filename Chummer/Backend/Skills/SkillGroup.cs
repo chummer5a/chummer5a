@@ -325,28 +325,30 @@ namespace Chummer.Backend.Skills
 
             if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
                 return null;
-            
-            foreach (SkillGroup objSkillGroup in objSkill.CharacterObject.SkillsSection.SkillGroups)
+
+            SkillGroup objSkillGroup =
+                objSkill.CharacterObject.SkillsSection.SkillGroups.Find(x => x.Name == objSkill.SkillGroup);
+            if (objSkillGroup != null)
             {
-                if (objSkillGroup.Name == objSkill.SkillGroup)
-                {
-                    if (!objSkillGroup.SkillList.Contains(objSkill))
-                        objSkillGroup.Add(objSkill);
-                    return objSkillGroup;
-                }
+                if (!objSkillGroup.SkillList.Contains(objSkill))
+                    objSkillGroup.Add(objSkill);
+            }
+            else
+            {
+                objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
+                objSkillGroup.Add(objSkill);
+                objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objSkillGroup,
+                    SkillsSection.CompareSkillGroups,
+                    (objExistingSkillGroup, objNewSkillGroup) =>
+                    {
+                        foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
+                                     !objExistingSkillGroup.SkillList.Contains(x)))
+                            objExistingSkillGroup.Add(x);
+                        objNewSkillGroup.UnbindSkillGroup();
+                    });
             }
 
-            SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
-            objNewGroup.Add(objSkill);
-            objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objNewGroup, SkillsSection.CompareSkillGroups,
-                (objExistingSkillGroup, objNewSkillGroup) =>
-                {
-                    foreach (Skill x in objExistingSkillGroup.SkillList.Where(x => !objExistingSkillGroup.SkillList.Contains(x)))
-                        objExistingSkillGroup.Add(x);
-                    objNewSkillGroup.UnbindSkillGroup();
-                });
-
-            return objNewGroup;
+            return objSkillGroup;
         }
 
         public void Add(Skill skill)

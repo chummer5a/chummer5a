@@ -1068,7 +1068,7 @@ namespace Chummer.Backend.Skills
             using (new EnterWriteLock(_objCharacter.LockObject))
             {
                 _dicSkills.Clear();
-                Skills.Clear();
+                _lstSkills.Clear();
                 KnowledgeSkills.Clear();
                 KnowsoftSkills.Clear();
                 SkillGroups.Clear();
@@ -1095,6 +1095,7 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+                using (new EnterUpgradeableReadLock(_lstSkills.LockObject))
                 {
                     if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this)
                     {
@@ -1190,17 +1191,45 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public ThreadSafeBindingList<KnowledgeSkill> KnowledgeSkills { get; } = new ThreadSafeBindingList<KnowledgeSkill>();
+        private readonly ThreadSafeBindingList<KnowledgeSkill> _lstKnowledgeSkills = new ThreadSafeBindingList<KnowledgeSkill>();
+        private readonly ThreadSafeBindingList<KnowledgeSkill> _lstKnowsoftSkills = new ThreadSafeBindingList<KnowledgeSkill>();
+        private readonly ThreadSafeBindingList<SkillGroup> _lstSkillGroups = new ThreadSafeBindingList<SkillGroup>();
+
+        public ThreadSafeBindingList<KnowledgeSkill> KnowledgeSkills
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstKnowledgeSkills.LockObject))
+                    return _lstKnowledgeSkills;
+            }
+        }
 
         /// <summary>
         /// KnowsoftSkills.
         /// </summary>
-        public ThreadSafeBindingList<KnowledgeSkill> KnowsoftSkills { get; } = new ThreadSafeBindingList<KnowledgeSkill>();
+        public ThreadSafeBindingList<KnowledgeSkill> KnowsoftSkills
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstKnowsoftSkills.LockObject))
+                    return _lstKnowsoftSkills;
+            }
+        }
 
         /// <summary>
         /// Skill Groups.
         /// </summary>
-        public ThreadSafeBindingList<SkillGroup> SkillGroups { get; } = new ThreadSafeBindingList<SkillGroup>();
+        public ThreadSafeBindingList<SkillGroup> SkillGroups
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(_lstSkillGroups.LockObject))
+                    return _lstSkillGroups;
+            }
+        }
 
         public bool HasKnowledgePoints => KnowledgeSkillPoints > 0;
 
