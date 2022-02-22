@@ -903,6 +903,7 @@ namespace Chummer
                             ? objXmlMetatype
                             : objXmlMetavariant ?? objXmlMetatype;
 
+                    int intSpecialAttribPoints = 0;
                     bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
                     if (strOldSpecialPriority != _objCharacter.SpecialPriority || strOldTalentPriority != _objCharacter.SpecialPriority)
                     {
@@ -981,6 +982,9 @@ namespace Chummer
 
                                     blnRemoveFreeSkills = false;
                                     AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
+
+                                    if (int.TryParse(xmlTalentPriorityNode.SelectSingleNodeAndCacheExpression("specialattribpoints")?.Value, out int intTalentSpecialAttribPoints))
+                                        intSpecialAttribPoints += intTalentSpecialAttribPoints;
                                 }
 
                                 break;
@@ -997,7 +1001,29 @@ namespace Chummer
                     }
 
                     // Set Special Attributes
-                    _objCharacter.Special = Convert.ToInt32(lblSpecialAttributes.Text, GlobalSettings.CultureInfo);
+                    
+                    XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
+                        "priorities/priority[category = \"Heritage\" and value = "
+                        + _objCharacter.MetatypePriority.CleanXPath()
+                        + " and (not(prioritytable) or prioritytable = "
+                        + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                    foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
+                    {
+                        if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                        {
+                            XPathNavigator objXmlMetatypePriorityNode
+                                = xmlBaseMetatypePriority.SelectSingleNode(
+                                    "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                            if (!string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
+                                objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode(
+                                    "metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + ']');
+                            if (int.TryParse(objXmlMetatypePriorityNode?.SelectSingleNodeAndCacheExpression("value")?.Value, out int intTemp))
+                                intSpecialAttribPoints += intTemp;
+                            break;
+                        }
+                    }
+
+                    _objCharacter.Special = intSpecialAttribPoints;
                     _objCharacter.TotalSpecial = _objCharacter.Special;
 
                     // Set Attributes
