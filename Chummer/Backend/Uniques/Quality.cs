@@ -379,7 +379,7 @@ namespace Chummer
             else
                 objWriter.WriteElementString("firstlevelbonus", string.Empty);
             if (!string.IsNullOrEmpty(_nodNaturalWeaponsNode?.InnerXml))
-                objWriter.WriteRaw("<naturalweapons>" + _nodNaturalWeaponsNode.InnerXml + "</firstlevelbonus>");
+                objWriter.WriteRaw("<naturalweapons>" + _nodNaturalWeaponsNode.InnerXml + "</naturalweapons>");
             else
                 objWriter.WriteElementString("naturalweapons", string.Empty);
             if (_guiWeaponID != Guid.Empty)

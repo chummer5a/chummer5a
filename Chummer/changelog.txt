@@ -13,6 +13,7 @@ Application Changes:
 - Adding and/or removing lifestyle qualities no longer generates orphaned improvements.
 - Encumbrance penalties and maximum skill ratings can now properly be modified through the Character Settings window.
 - Fixed a crash when adding cyberware or bioware that requires a specific side to be picked.
+- Characters with natural weapons can now be saved properly.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups
