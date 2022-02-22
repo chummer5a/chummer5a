@@ -12082,15 +12082,6 @@ namespace Chummer
 
         #endregion Additional Karma and Nuyen Tab Control Events
 
-        #region Additional Calendar Tab Control Events
-
-        private void lstCalendar_DoubleClick(object sender, EventArgs e)
-        {
-            cmdEditWeek_Click(sender, e);
-        }
-
-        #endregion Additional Calendar Tab Control Events
-
         #region Additional Improvements Tab Control Events
 
         private void treImprovements_AfterSelect(object sender, TreeViewEventArgs e)
