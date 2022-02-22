@@ -3124,12 +3124,21 @@ namespace Chummer.Backend.Skills
             return strReturn;
         }
 
+        public void Remove()
+        {
+            using (new EnterWriteLock(CharacterObject.LockObject))
+            {
+                SkillGroupObject?.Remove(this);
+                Dispose();
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
                 UnbindSkill();
-                Specializations.Dispose();
+                _lstSpecializations.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(_lstCachedSuggestedSpecializations);
             }

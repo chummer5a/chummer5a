@@ -64,7 +64,7 @@ namespace Chummer.Backend.Skills
                 {
                     _dicSkills.Remove(objSkill.DictionaryKey);
                     if (!_dicSkillBackups.ContainsValue(objSkill))
-                        objSkill.Dispose();
+                        objSkill.Remove();
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace Chummer.Backend.Skills
                 {
                     objSkill.PropertyChanged -= OnKnowledgeSkillPropertyChanged;
                     if (!_dicSkillBackups.ContainsValue(objSkill) && !KnowsoftSkills.Contains(objSkill))
-                        objSkill.Dispose();
+                        objSkill.Remove();
                 }
             }
         }
@@ -90,8 +90,7 @@ namespace Chummer.Backend.Skills
                 KnowledgeSkill objSkill = KnowsoftSkills[e.OldIndex];
                 if (!_dicSkillBackups.ContainsValue(objSkill) && !KnowledgeSkills.Contains(objSkill))
                 {
-                    using (new EnterWriteLock(_objCharacter.LockObject))
-                        objSkill.Dispose();
+                    objSkill.Remove();
                 }
             }
         }
@@ -500,7 +499,7 @@ namespace Chummer.Backend.Skills
                             }
 
                             // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
-                            foreach (SkillGroup g in SkillGroups)
+                            foreach (SkillGroup g in SkillGroups.ToList())
                             {
                                 g.OnPropertyChanged(nameof(SkillGroup.SkillList));
                             }
@@ -523,7 +522,7 @@ namespace Chummer.Backend.Skills
                                         {
                                             Utils
                                                 .BreakIfDebug(); // Somehow, a non-knowledge skill got into a knowledge skill block
-                                            objUncastSkill.Dispose();
+                                            objUncastSkill.Remove();
                                         }
                                     }
                                 }
@@ -1484,7 +1483,7 @@ namespace Chummer.Backend.Skills
             objExistingSkill.Notes += objNewSkill.Notes;
             objExistingSkill.NotesColor = objNewSkill.NotesColor;
             objExistingSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
-            objNewSkill.Dispose();
+            objNewSkill.Remove();
         }
 
         private List<ListItem> _lstDefaultKnowledgeSkills;

@@ -2297,7 +2297,7 @@ namespace Chummer
                                 else
                                 {
                                     Utils.BreakIfDebug();
-                                    objUncastSkill.Dispose();
+                                    objUncastSkill.Remove();
                                 }
                             }
                             else

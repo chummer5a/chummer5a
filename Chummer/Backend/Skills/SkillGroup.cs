@@ -353,8 +353,19 @@ namespace Chummer.Backend.Skills
 
         public void Add(Skill skill)
         {
+            // Do not add duplicate skills that we are still in the process of loading
+            if (_lstAffectedSkills.Any(x => x.SkillId == skill.SkillId))
+                return;
             _lstAffectedSkills.Add(skill);
             skill.PropertyChanged += SkillOnPropertyChanged;
+            OnPropertyChanged(nameof(SkillList));
+        }
+
+        public void Remove(Skill skill)
+        {
+            if (!_lstAffectedSkills.Remove(skill))
+                return;
+            skill.PropertyChanged -= SkillOnPropertyChanged;
             OnPropertyChanged(nameof(SkillList));
         }
 
