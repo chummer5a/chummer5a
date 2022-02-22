@@ -20840,7 +20840,7 @@ namespace Chummer
             this.lstCalendar.TabIndex = 1;
             this.lstCalendar.UseCompatibleStateImageBehavior = false;
             this.lstCalendar.View = System.Windows.Forms.View.Details;
-            this.lstCalendar.DoubleClick += new System.EventHandler(this.lstCalendar_DoubleClick);
+            this.lstCalendar.DoubleClick += new System.EventHandler(this.cmdEditWeek_Click);
             // 
             // colCalendarDate
             // 
