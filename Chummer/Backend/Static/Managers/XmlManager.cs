@@ -23,6 +23,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -94,7 +95,7 @@ namespace Chummer
         private static readonly LockingDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
             new LockingDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
         private static bool s_blnSetDataDirectoriesLoaded = true;
-        private static readonly object s_SetDataDirectoriesLock = new object();
+        private static readonly SemaphoreSlim s_objDataDirectoriesSemaphore = new SemaphoreSlim(1);
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(s_StrBaseDataPath.Yield());
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
 
@@ -124,7 +125,8 @@ namespace Chummer
             if (!s_blnSetDataDirectoriesLoaded)
                 return;
             s_DicXmlDocuments.Clear();
-            lock (s_SetDataDirectoriesLock)
+            s_objDataDirectoriesSemaphore.Wait();
+            try
             {
                 s_blnSetDataDirectoriesLoaded = false;
                 s_SetDataDirectories.Clear();
@@ -133,6 +135,7 @@ namespace Chummer
                 {
                     s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
                 }
+
                 if (!Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
                 {
                     foreach (string strFileName in Utils.BasicDataFileNames)
@@ -144,10 +147,16 @@ namespace Chummer
                         }
                         else
                             setLoop.Clear();
+
                         setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories));
                     }
                 }
+
                 s_blnSetDataDirectoriesLoaded = true;
+            }
+            finally
+            {
+                s_objDataDirectoriesSemaphore.Release();
             }
         }
 
@@ -228,7 +237,8 @@ namespace Chummer
                 astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths).ToArray();
                 if (astrRelevantCustomDataPaths.Length > 0 && !Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
                 {
-                    lock (s_SetDataDirectoriesLock)
+                    await s_objDataDirectoriesSemaphore.WaitAsync();
+                    try
                     {
                         if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
                         {
@@ -237,6 +247,10 @@ namespace Chummer
                         }
 
                         setLoop.AddRange(astrRelevantCustomDataPaths);
+                    }
+                    finally
+                    {
+                        s_objDataDirectoriesSemaphore.Release();
                     }
                 }
             }

@@ -666,7 +666,8 @@ namespace Chummer
                     {
                         // Run through all appropriate property changers
                         foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                            OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(objProperty.Name));
+                            Utils.RunWithoutThreadLock(
+                                () => DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name)));
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_databinding2", op_load_frm_create))
@@ -898,7 +899,7 @@ namespace Chummer
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                        Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements));
                         CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                     }
 
@@ -1066,6 +1067,11 @@ namespace Chummer
         #region Character Events
 
         private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            await DoOnCharacterPropertyChanged(e);
+        }
+
+        private async ValueTask DoOnCharacterPropertyChanged(PropertyChangedEventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1627,13 +1633,18 @@ namespace Chummer
                 case nameof(Character.Settings):
                 {
                     foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
-                        OnCharacterPropertyChanged(CharacterObjectSettings, new PropertyChangedEventArgs(objProperty.Name));
+                        await DoOnCharacterSettingsPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
                     break;
                 }
             }
         }
 
         private async void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            await DoOnCharacterSettingsPropertyChanged(e);
+        }
+
+        private async ValueTask DoOnCharacterSettingsPropertyChanged(PropertyChangedEventArgs e)
         {
             IsCharacterUpdateRequested = true;
             switch (e.PropertyName)
@@ -2038,17 +2049,17 @@ namespace Chummer
             await CreateCyberwareSuite(Improvement.ImprovementSource.Bioware);
         }
 
-        private void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
+        private async void mnuSpecialReapplyImprovements_Click(object sender, EventArgs e)
         {
             // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
             // Verify that the user wants to go through with it.
             if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            DoReapplyImprovements();
+            await DoReapplyImprovements();
         }
 
-        private void DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
+        private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
             using (new CursorWait(this))
             {
@@ -2147,7 +2158,7 @@ namespace Chummer
                         if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
                             continue;
 
-                        XmlNode objNode = objQuality.GetNode();
+                        XmlNode objNode = await objQuality.GetNodeAsync();
                         if (objNode != null)
                         {
                             string strSelected = objQuality.Extra;
@@ -2230,7 +2241,7 @@ namespace Chummer
                     // Refresh Martial Art Techniques.
                     foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                     {
-                        XmlNode objMartialArtNode = objMartialArt.GetNode();
+                        XmlNode objMartialArtNode = await objMartialArt.GetNodeAsync();
                         if (objMartialArtNode != null)
                         {
                             // We're only re-apply improvements a list of items, not all of them
@@ -2253,7 +2264,7 @@ namespace Chummer
                         foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(
                                      x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                         {
-                            XmlNode objNode = objTechnique.GetNode();
+                            XmlNode objNode = await objTechnique.GetNodeAsync();
                             if (objNode != null)
                             {
                                 if (objNode["bonus"] != null)
@@ -2273,7 +2284,7 @@ namespace Chummer
                     foreach (Spell objSpell in CharacterObject.Spells.Where(
                                  x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objSpell.GetNode();
+                        XmlNode objNode = await objSpell.GetNodeAsync();
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
@@ -2303,7 +2314,7 @@ namespace Chummer
                     foreach (Power objPower in CharacterObject.Powers.Where(
                                  x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objPower.GetNode();
+                        XmlNode objNode = await objPower.GetNodeAsync();
                         if (objNode != null)
                         {
                             objPower.Bonus = objNode["bonus"];
@@ -2328,7 +2339,7 @@ namespace Chummer
                     foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(
                                  x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objComplexForm.GetNode();
+                        XmlNode objNode = await objComplexForm.GetNodeAsync();
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
@@ -2358,7 +2369,7 @@ namespace Chummer
                     foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(
                                  x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objProgram.GetNode();
+                        XmlNode objNode = await objProgram.GetNodeAsync();
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
@@ -2388,7 +2399,7 @@ namespace Chummer
                     foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(
                                  x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objPower.GetNode();
+                        XmlNode objNode = await objPower.GetNodeAsync();
                         if (objNode != null)
                         {
                             objPower.Bonus = objNode["bonus"];
@@ -2432,7 +2443,7 @@ namespace Chummer
                         // We're only re-apply improvements a list of items, not all of them
                         if (lstInternalIdFilter?.Contains(objMetamagic.InternalId) == false)
                             continue;
-                        XmlNode objNode = objMetamagic.GetNode();
+                        XmlNode objNode = await objMetamagic.GetNodeAsync();
                         if (objNode != null)
                         {
                             objMetamagic.Bonus = objNode["bonus"];
@@ -2458,7 +2469,7 @@ namespace Chummer
                         // We're only re-apply improvements a list of items, not all of them
                         if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)
                         {
-                            XmlNode objNode = objCyberware.GetNode();
+                            XmlNode objNode = await objCyberware.GetNodeAsync();
                             if (objNode != null)
                             {
                                 objCyberware.Bonus = objNode["bonus"];
@@ -2582,7 +2593,7 @@ namespace Chummer
                         // We're only re-apply improvements a list of items, not all of them
                         if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
                         {
-                            XmlNode objNode = objArmor.GetNode();
+                            XmlNode objNode = await objArmor.GetNodeAsync();
                             if (objNode != null)
                             {
                                 objArmor.Bonus = objNode["bonus"];
@@ -2614,7 +2625,7 @@ namespace Chummer
                             // We're only re-apply improvements a list of items, not all of them
                             if (lstInternalIdFilter?.Contains(objMod.InternalId) != false)
                             {
-                                XmlNode objChild = objMod.GetNode();
+                                XmlNode objChild = await objMod.GetNodeAsync();
 
                                 if (objChild != null)
                                 {
@@ -2681,14 +2692,11 @@ namespace Chummer
 
                     // If the status of any Character Event flags has changed, manually trigger those events.
                     if (blnMAGEnabled != CharacterObject.MAGEnabled)
-                        OnCharacterPropertyChanged(CharacterObject,
-                                                   new PropertyChangedEventArgs(nameof(Character.MAGEnabled)));
+                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.MAGEnabled)));
                     if (blnRESEnabled != CharacterObject.RESEnabled)
-                        OnCharacterPropertyChanged(CharacterObject,
-                                                   new PropertyChangedEventArgs(nameof(Character.RESEnabled)));
+                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.RESEnabled)));
                     if (blnDEPEnabled != CharacterObject.DEPEnabled)
-                        OnCharacterPropertyChanged(CharacterObject,
-                                                   new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
+                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
 
                     IsCharacterUpdateRequested = true;
                     // Immediately call character update because it re-applies essence loss improvements
@@ -2697,10 +2705,10 @@ namespace Chummer
                     if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                     {
                         Program.MainForm.ShowMessageBox(
-                            this, LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
+                            this, await LanguageManager.GetStringAsync("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
                                   sbdOutdatedItems +
-                                  LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom"),
-                            LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.OK,
+                                  await LanguageManager.GetStringAsync("Message_ReapplyImprovementsFoundOutdatedItems_Bottom"),
+                            await LanguageManager.GetStringAsync("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
                 }
@@ -9627,7 +9635,7 @@ namespace Chummer
                 && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
                     LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
-                DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements));
                 CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
             }
         }

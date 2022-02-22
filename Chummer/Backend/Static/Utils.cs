@@ -23,7 +23,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
 #if DEBUG
@@ -561,18 +560,21 @@ namespace Chummer
             if (blnSync)
             {
                 object objSuccessLock = new object();
-                bool[] ablnSuccess = new bool[astrFilesToDelete.Length];
-                Parallel.For(0, astrFilesToDelete.Length, i =>
+                bool blnReturn = true;
+                Parallel.ForEach<string, bool>(astrFilesToDelete, null, (strToDelete, x, y) =>
                 {
                     // ReSharper disable once AccessToModifiedClosure
-                    string strToDelete = astrFilesToDelete[i];
-                    // ReSharper disable once AccessToModifiedClosure
-                    bool blnLoop = SafeDeleteFile(strToDelete, false, intTimeout);
+                    return SafeDeleteFile(strToDelete, false, intTimeout);
+                }, blnLoop =>
+                {
                     lock (objSuccessLock)
-                        // ReSharper disable once AccessToModifiedClosure
-                        ablnSuccess[i] = blnLoop;
+                    {
+                        if (!blnLoop)
+                            // ReSharper disable once AccessToModifiedClosure
+                            blnReturn = false;
+                    }
                 });
-                return ablnSuccess.All(x => x);
+                return blnReturn;
             }
 
             Task<bool>[] atskSuccesses = new Task<bool>[astrFilesToDelete.Length];
