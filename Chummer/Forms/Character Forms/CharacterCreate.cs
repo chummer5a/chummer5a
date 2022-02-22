@@ -5289,11 +5289,6 @@ namespace Chummer
             }
         }
 
-        private void tsGearButtonAddAccessory_Click(object sender, EventArgs e)
-        {
-            tsGearAddAsPlugin_Click(sender, e);
-        }
-
         private async void tsGearRename_Click(object sender, EventArgs e)
         {
             using (SelectText frmPickText = new SelectText())

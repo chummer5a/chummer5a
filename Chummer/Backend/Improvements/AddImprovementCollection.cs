@@ -403,13 +403,13 @@ namespace Chummer
                         {
                             case "cyberware":
                                 _objCharacter.CyberwareDisabled = true;
-                                Log.Trace("disabletab" + " cyberware");
+                                Log.Trace("disabletab cyberware");
                                 CreateImprovement("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
                                 break;
                             case "initiation":
                                 _objCharacter.InitiationForceDisabled = true;
-                                Log.Trace("disabletab" + " initiation");
+                                Log.Trace("disabletab initiation");
                                 CreateImprovement("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
                                 break;
