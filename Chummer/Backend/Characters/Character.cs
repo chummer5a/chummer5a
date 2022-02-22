@@ -10295,11 +10295,9 @@ namespace Chummer
                 return Math.Max(decReturn.StandardRound(), 0);
             }
         }
-        
 
         public bool Ambidextrous => ImprovementManager
-                                    .GetCachedImprovementListForValueOf(
-                                        this, Improvement.ImprovementType.Ambidextrous).Count > 0;
+            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.Ambidextrous).Count > 0;
 
         #endregion
 
@@ -12346,7 +12344,7 @@ namespace Chummer
                                   .Append(objLoopImprovement.Value.ToString(GlobalSettings.CultureInfo))
                                   .Append(')');
                     }
-                    
+
                     return sbdToolTip.ToString();
                 }
             }
@@ -16046,9 +16044,9 @@ namespace Chummer
 
             if (DealerConnectionDiscount)
                 return;
-            
+
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                            out HashSet<string> setDealerConnectionMaps))
+                       out HashSet<string> setDealerConnectionMaps))
             {
                 foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
                              this, Improvement.ImprovementType.DealerConnection))

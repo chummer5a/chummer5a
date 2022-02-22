@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,7 +49,7 @@ namespace Chummer
                 : SettingsManager.LoadedCharacterSettings.Values.First();
         }
 
-        private static readonly IReadOnlyList<string> _astrFileNames = Array.AsReadOnly(new[]
+        private static readonly ReadOnlyCollection<string> _astrFileNames = Array.AsReadOnly(new[]
         {
             "actions.xml",
             "armor.xml",

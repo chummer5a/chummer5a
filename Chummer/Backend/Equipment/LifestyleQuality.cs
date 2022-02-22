@@ -85,7 +85,7 @@ namespace Chummer.Backend.Equipment
                     return QualityType.Entertainment;
             }
         }
-        
+
         /// <summary>
         /// Convert a string to a LifestyleQualitySource.
         /// </summary>

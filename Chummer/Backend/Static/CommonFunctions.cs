@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -53,7 +54,7 @@ namespace Chummer
         private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
             new LockingDictionary<string, Tuple<bool, object>>();
 
-        private static readonly IReadOnlyList<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray());
+        private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray());
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
@@ -1506,7 +1507,7 @@ namespace Chummer
             if (intPos != -1)
                 strTextToSearch = strTextToSearch.Substring(0, intPos);
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
-            
+
             List<string> lstStringFromPdf = new List<string>(30);
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
@@ -1677,7 +1678,7 @@ namespace Chummer
 
                 return string.Empty;
             }
-            
+
             // we have our textblock, lets format it and be done with it
             if (string.IsNullOrEmpty(strReturn) && intBlockEndIndex != -1)
             {

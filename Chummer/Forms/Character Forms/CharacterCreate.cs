@@ -86,7 +86,6 @@ namespace Chummer
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
             CharacterObjectSettings.PropertyChanged += OnCharacterSettingsPropertyChanged;
-            
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
@@ -6681,7 +6680,7 @@ namespace Chummer
             if (!(treQualities.SelectedNode?.Tag is Quality objSelectedQuality))
                 return;
             int intCurrentLevels = objSelectedQuality.Levels;
-            
+
             // Adding new levels
             for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
             {
@@ -7394,7 +7393,7 @@ namespace Chummer
             if (!(treWeapons.SelectedNode?.Tag is WeaponAccessory objAccessory))
                 return;
             objAccessory.IncludedInWeapon = chkIncludedInWeapon.Checked;
-            
+
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
