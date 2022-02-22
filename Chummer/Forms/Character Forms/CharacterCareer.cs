@@ -697,8 +697,8 @@ namespace Chummer
                             // Run through all appropriate property changers
                             foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
                             {
-                                OnCharacterPropertyChanged(CharacterObject,
-                                                           new PropertyChangedEventArgs(objProperty.Name));
+                                Utils.RunWithoutThreadLock(
+                                    () => DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name)));
                             }
                         }
 
@@ -933,7 +933,8 @@ namespace Chummer
                         LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                        Utils.RunWithoutThreadLock(
+                            () => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements));
                         CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                     }
 
@@ -1261,7 +1262,12 @@ namespace Chummer
 
         #region Character Events
 
-        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            await DoOnCharacterPropertyChanged(e);
+        }
+
+        private async ValueTask DoOnCharacterPropertyChanged(PropertyChangedEventArgs e)
         {
             if (_blnReapplyImprovements)
                 return;
@@ -1353,24 +1359,24 @@ namespace Chummer
                         {
                             if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                                 tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-                            tabInitiation.Text = LanguageManager.GetString("Tab_Initiation");
+                            tabInitiation.Text = await LanguageManager.GetStringAsync("Tab_Initiation");
                             tsMetamagicAddMetamagic.Text =
-                                LanguageManager.GetString("Button_AddMetamagic");
+                                await LanguageManager.GetStringAsync("Button_AddMetamagic");
                             cmdAddMetamagic.Text =
-                                LanguageManager.GetString("Button_AddInitiateGrade");
+                                await LanguageManager.GetStringAsync("Button_AddInitiateGrade");
                             cmdDeleteMetamagic.Text =
-                                LanguageManager.GetString("Button_RemoveInitiateGrade");
+                                await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade");
                             gpbInitiationType.Text =
-                                LanguageManager.GetString("String_InitiationType");
+                                await LanguageManager.GetStringAsync("String_InitiationType");
                             gpbInitiationGroup.Text =
-                                LanguageManager.GetString("String_InitiationGroup");
+                                await LanguageManager.GetStringAsync("String_InitiationGroup");
                             chkInitiationSchooling.Enabled = true;
                             tsMetamagicAddArt.Visible = true;
                             tsMetamagicAddEnchantment.Visible = true;
                             tsMetamagicAddEnhancement.Visible = true;
                             tsMetamagicAddRitual.Visible = true;
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
-                                                              LanguageManager.GetString("Tip_ImproveInitiateGrade"),
+                                                              await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade"),
                                                               (CharacterObject.InitiateGrade + 1).ToString(
                                                                   GlobalSettings.CultureInfo),
                                                               (CharacterObjectSettings.KarmaInitiationFlat
@@ -1378,13 +1384,13 @@ namespace Chummer
                                                                * CharacterObjectSettings.KarmaInitiation)
                                                               .ToString(GlobalSettings.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup");
+                            chkJoinGroup.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup");
 
-                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal")
+                            chkInitiationOrdeal.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationOrdeal"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_InitiationGroup")
+                            chkInitiationGroup.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationGroup"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationGroupPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
+                            chkInitiationSchooling.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationSchooling"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalSettings.CultureInfo));
                             if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                             {
@@ -1423,35 +1429,35 @@ namespace Chummer
                         {
                             if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                                 tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-                            tabInitiation.Text = LanguageManager.GetString("Tab_Submersion");
+                            tabInitiation.Text = await LanguageManager.GetStringAsync("Tab_Submersion");
                             tsMetamagicAddMetamagic.Text =
-                                LanguageManager.GetString("Button_AddEcho");
+                                await LanguageManager.GetStringAsync("Button_AddEcho");
                             cmdAddMetamagic.Text =
-                                LanguageManager.GetString("Button_AddSubmersionGrade");
+                                await LanguageManager.GetStringAsync("Button_AddSubmersionGrade");
                             cmdDeleteMetamagic.Text =
-                                LanguageManager.GetString("Button_RemoveSubmersionGrade");
+                                await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade");
                             gpbInitiationType.Text =
-                                LanguageManager.GetString("String_SubmersionType");
+                                await LanguageManager.GetStringAsync("String_SubmersionType");
                             gpbInitiationGroup.Text =
-                                LanguageManager.GetString("String_SubmersionNetwork");
+                                await LanguageManager.GetStringAsync("String_SubmersionNetwork");
                             chkInitiationSchooling.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
                             tsMetamagicAddArt.Visible = false;
                             tsMetamagicAddEnchantment.Visible = false;
                             tsMetamagicAddEnhancement.Visible = false;
                             tsMetamagicAddRitual.Visible = false;
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("Tip_ImproveSubmersionGrade"),
+                                await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade"),
                                 (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo),
                                 (CharacterObjectSettings.KarmaInitiationFlat +
                                  (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation)
                                 .ToString(GlobalSettings.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork");
-                            chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask")
+                            chkJoinGroup.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork");
+                            chkInitiationOrdeal.Text = (await LanguageManager.GetStringAsync("Checkbox_SubmersionTask"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationOrdealPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion")
+                            chkInitiationGroup.Text = (await LanguageManager.GetStringAsync("Checkbox_NetworkSubmersion"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationGroupPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
+                            chkInitiationSchooling.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationSchooling"))
                                 .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationSchoolingPercent.ToString("P", GlobalSettings.CultureInfo));
                             if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.RES))
                             {
@@ -1494,16 +1500,16 @@ namespace Chummer
                             if (CharacterObject.Ambidextrous)
                             {
                                 lstPrimaryArm.Add(new ListItem("Ambidextrous",
-                                                               LanguageManager.GetString("String_Ambidextrous")));
+                                                               await LanguageManager.GetStringAsync("String_Ambidextrous")));
                                 cboPrimaryArm.Enabled = false;
                             }
                             else
                             {
                                 //Create the dropdown for the character's primary arm.
                                 lstPrimaryArm.Add(new ListItem("Left",
-                                                               LanguageManager.GetString("String_Improvement_SideLeft")));
+                                                               await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
                                 lstPrimaryArm.Add(new ListItem("Right",
-                                                               LanguageManager.GetString("String_Improvement_SideRight")));
+                                                               await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
                                 lstPrimaryArm.Sort(CompareListItems.CompareNames);
                                 cboPrimaryArm.Enabled = true;
                             }
@@ -1659,9 +1665,9 @@ namespace Chummer
                             if (objDisablingImprovement != null)
                             {
                                 strBiowareDisabledSource =
-                                    LanguageManager.GetString("String_Space") + '(' +
+                                    await LanguageManager.GetStringAsync("String_Space") + '(' +
                                     CharacterObject.GetObjectName(objDisablingImprovement) + ')' +
-                                    LanguageManager.GetString("String_Space");
+                                    await LanguageManager.GetStringAsync("String_Space");
                             }
                             
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
@@ -1682,7 +1688,7 @@ namespace Chummer
                                 {
                                     objCyberware.DeleteCyberware();
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                    string strEntry = LanguageManager.GetString("String_ExpenseSoldBioware");
+                                    string strEntry = await LanguageManager.GetStringAsync("String_ExpenseSoldBioware");
                                     objExpense.Create(0,
                                                       strEntry + strBiowareDisabledSource +
                                                       objCyberware.DisplayNameShort(GlobalSettings.Language),
@@ -1708,9 +1714,9 @@ namespace Chummer
                             if (objDisablingImprovement != null)
                             {
                                 strCyberwareDisabledSource =
-                                    LanguageManager.GetString("String_Space") + '(' +
+                                    await LanguageManager.GetStringAsync("String_Space") + '(' +
                                     CharacterObject.GetObjectName(objDisablingImprovement) + ')' +
-                                    LanguageManager.GetString("String_Space");
+                                    await LanguageManager.GetStringAsync("String_Space");
                             }
                             
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
@@ -1731,7 +1737,7 @@ namespace Chummer
                                 {
                                     objCyberware.DeleteCyberware();
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                    string strEntry = LanguageManager.GetString("String_ExpenseSoldCyberware");
+                                    string strEntry = await LanguageManager.GetStringAsync("String_ExpenseSoldCyberware");
                                     objExpense.Create(0,
                                                       strEntry + strCyberwareDisabledSource +
                                                       objCyberware.DisplayNameShort(GlobalSettings.Language),
@@ -1756,10 +1762,10 @@ namespace Chummer
                                                               .FirstOrDefault();
                             if (objExConImprovement != null)
                             {
-                                strExConString = LanguageManager.GetString("String_Space") + '(' +
+                                strExConString = await LanguageManager.GetStringAsync("String_Space") + '(' +
                                                  CharacterObject.GetObjectName(objExConImprovement,
                                                      GlobalSettings.Language) + ')' +
-                                                 LanguageManager.GetString("String_Space");
+                                                 await LanguageManager.GetStringAsync("String_Space");
                             }
                             
                             foreach (Cyberware objCyberware in CharacterObject.Cyberware.DeepWhere(x => x.Children,
@@ -1783,7 +1789,7 @@ namespace Chummer
                                 {
                                     objCyberware.DeleteCyberware();
                                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                                    string strEntry = LanguageManager.GetString(
+                                    string strEntry = await LanguageManager.GetStringAsync(
                                         objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
                                             ? "String_ExpenseSoldCyberware"
                                             : "String_ExpenseSoldBioware");
@@ -1861,13 +1867,18 @@ namespace Chummer
                 case nameof(Character.Settings):
                     {
                         foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
-                            OnCharacterPropertyChanged(CharacterObjectSettings, new PropertyChangedEventArgs(objProperty.Name));
+                            await DoOnCharacterSettingsPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
                         break;
                     }
             }
         }
 
-        private void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            await DoOnCharacterSettingsPropertyChanged(e);
+        }
+
+        private async ValueTask DoOnCharacterSettingsPropertyChanged(PropertyChangedEventArgs e)
         {
             IsCharacterUpdateRequested = true;
             switch (e.PropertyName)
@@ -1946,7 +1957,7 @@ namespace Chummer
                             treCritterPowers.SortCustomOrder();
 
                             XPathNavigator xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
+                                (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNodeAndCacheExpression("/chummer");
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstTraditions))
                             {
@@ -1970,7 +1981,7 @@ namespace Chummer
                                 {
                                     lstTraditions.Sort(CompareListItems.CompareNames);
                                     lstTraditions.Insert(
-                                        0, new ListItem("None", LanguageManager.GetString("String_None")));
+                                        0, new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                     if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
                                     {
                                         cboTradition.BeginUpdate();
@@ -2070,7 +2081,7 @@ namespace Chummer
 
                             // Populate the Technomancer Streams list.
                             xmlTraditionsBaseChummerNode =
-                                CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
+                                (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNodeAndCacheExpression("/chummer");
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstStreams))
                             {
@@ -2094,7 +2105,7 @@ namespace Chummer
                                 {
                                     lstStreams.Sort(CompareListItems.CompareNames);
                                     lstStreams.Insert(
-                                        0, new ListItem("None", LanguageManager.GetString("String_None")));
+                                        0, new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                     if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
                                     {
                                         cboStream.BeginUpdate();
@@ -2302,10 +2313,10 @@ namespace Chummer
             if (Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ConfirmReapplyImprovements"), await LanguageManager.GetStringAsync("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            DoReapplyImprovements();
+            await DoReapplyImprovements();
         }
 
-        private void DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
+        private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
             using (new CursorWait(this))
             {
@@ -2369,7 +2380,7 @@ namespace Chummer
                         if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
                             continue;
 
-                        XmlNode objNode = objQuality.GetNode();
+                        XmlNode objNode = await objQuality.GetNodeAsync();
                         if (objNode != null)
                         {
                             string strSelected = objQuality.Extra;
@@ -2444,7 +2455,7 @@ namespace Chummer
                     // Refresh Martial Art Techniques.
                     foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
                     {
-                        XmlNode objMartialArtNode = objMartialArt.GetNode();
+                        XmlNode objMartialArtNode = await objMartialArt.GetNodeAsync();
                         if (objMartialArtNode != null)
                         {
                             // We're only re-apply improvements a list of items, not all of them
@@ -2461,7 +2472,7 @@ namespace Chummer
 
                         foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                         {
-                            XmlNode objNode = objTechnique.GetNode();
+                            XmlNode objNode = await objTechnique.GetNodeAsync();
                             if (objNode != null)
                             {
                                 if (objNode["bonus"] != null)
@@ -2477,7 +2488,7 @@ namespace Chummer
                     // Refresh Spells.
                     foreach (Spell objSpell in CharacterObject.Spells.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objSpell.GetNode();
+                        XmlNode objNode = await objSpell.GetNodeAsync();
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
@@ -2502,7 +2513,7 @@ namespace Chummer
                     // Refresh Adept Powers.
                     foreach (Power objPower in CharacterObject.Powers.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objPower.GetNode();
+                        XmlNode objNode = await objPower.GetNodeAsync();
                         if (objNode != null)
                         {
                             objPower.Bonus = objNode["bonus"];
@@ -2522,7 +2533,7 @@ namespace Chummer
                     // Refresh Complex Forms.
                     foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objComplexForm.GetNode();
+                        XmlNode objNode = await objComplexForm.GetNodeAsync();
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
@@ -2547,7 +2558,7 @@ namespace Chummer
                     // Refresh AI Programs and Advanced Programs
                     foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objProgram.GetNode();
+                        XmlNode objNode = await objProgram.GetNodeAsync();
                         if (objNode != null)
                         {
                             if (objNode["bonus"] != null)
@@ -2572,7 +2583,7 @@ namespace Chummer
                     // Refresh Critter Powers.
                     foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                     {
-                        XmlNode objNode = objPower.GetNode();
+                        XmlNode objNode = await objPower.GetNodeAsync();
                         if (objNode != null)
                         {
                             objPower.Bonus = objNode["bonus"];
@@ -2612,7 +2623,7 @@ namespace Chummer
                         // We're only re-apply improvements a list of items, not all of them
                         if (lstInternalIdFilter?.Contains(objMetamagic.InternalId) == false)
                             continue;
-                        XmlNode objNode = objMetamagic.GetNode();
+                        XmlNode objNode = await objMetamagic.GetNodeAsync();
                         if (objNode != null)
                         {
                             objMetamagic.Bonus = objNode["bonus"];
@@ -2634,7 +2645,7 @@ namespace Chummer
                         // We're only re-apply improvements a list of items, not all of them
                         if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)
                         {
-                            XmlNode objNode = objCyberware.GetNode();
+                            XmlNode objNode = await objCyberware.GetNodeAsync();
                             if (objNode != null)
                             {
                                 objCyberware.Bonus = objNode["bonus"];
@@ -2737,7 +2748,7 @@ namespace Chummer
                         // We're only re-apply improvements a list of items, not all of them
                         if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
                         {
-                            XmlNode objNode = objArmor.GetNode();
+                            XmlNode objNode = await objArmor.GetNodeAsync();
                             if (objNode != null)
                             {
                                 objArmor.Bonus = objNode["bonus"];
@@ -2766,7 +2777,7 @@ namespace Chummer
                             // We're only re-apply improvements a list of items, not all of them
                             if (lstInternalIdFilter?.Contains(objMod.InternalId) != false)
                             {
-                                XmlNode objChild = objMod.GetNode();
+                                XmlNode objChild = await objMod.GetNodeAsync();
 
                                 if (objChild != null)
                                 {
@@ -2830,19 +2841,19 @@ namespace Chummer
                     if (blnMAGEnabled != CharacterObject.MAGEnabled)
                     {
                         CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                        OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.MAGEnabled)));
+                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.MAGEnabled)));
                     }
 
                     if (blnRESEnabled != CharacterObject.RESEnabled)
                     {
                         CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                        OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.RESEnabled)));
+                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.RESEnabled)));
                     }
 
                     if (blnDEPEnabled != CharacterObject.DEPEnabled)
                     {
                         CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                        OnCharacterPropertyChanged(CharacterObject, new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
+                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -2851,9 +2862,9 @@ namespace Chummer
 
                     if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
+                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
                                                               sbdOutdatedItems +
-                                                              LanguageManager.GetString("Message_ReapplyImprovementsFoundOutdatedItems_Bottom"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.OK,
+                                                              await LanguageManager.GetStringAsync("Message_ReapplyImprovementsFoundOutdatedItems_Bottom"), await LanguageManager.GetStringAsync("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     }
                 }
@@ -12914,7 +12925,8 @@ namespace Chummer
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
                 LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
-                DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                Utils.RunWithoutThreadLock(
+                    () => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements));
                 CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
             }
         }
