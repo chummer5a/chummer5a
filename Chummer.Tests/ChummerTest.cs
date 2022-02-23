@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -217,6 +218,7 @@ namespace Chummer.Tests
                 using (Character objCharacter = LoadCharacter(objFileInfo))
                 {
                     string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+                    List<Task> lstExportTasks = new List<Task>();
                     foreach (string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
                     {
                         string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
@@ -224,9 +226,10 @@ namespace Chummer.Tests
                             continue;
                         CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
                         string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
-                        XmlDocument xmlCharacter = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
-                        xmlCharacter.Save(strDestination);
+                        lstExportTasks.Add(objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage)
+                            .ContinueWith(x => x.Result.Save(strDestination)));
                     }
+                    await Task.WhenAll(lstExportTasks);
                 }
             }
         }
