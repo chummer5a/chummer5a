@@ -290,7 +290,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public async ValueTask Save(XmlTextWriter objWriter)
+        public async ValueTask Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -399,7 +399,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async ValueTask Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -1254,7 +1254,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SaveMugshots(XmlTextWriter objWriter)
+        public async ValueTask SaveMugshots(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -1296,7 +1296,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask PrintMugshots(XmlTextWriter objWriter)
+        public async ValueTask PrintMugshots(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;

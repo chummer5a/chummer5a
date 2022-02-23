@@ -346,7 +346,7 @@ namespace Chummer.Backend.Attributes
             LockObject.Dispose();
         }
 
-        internal void Save(XmlTextWriter objWriter)
+        internal void Save(XmlWriter objWriter)
         {
             using (new EnterReadLock(LockObject))
             {
@@ -909,7 +909,7 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-        internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             using (new EnterReadLock(LockObject))
             {

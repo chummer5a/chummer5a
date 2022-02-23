@@ -189,7 +189,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;

@@ -86,7 +86,7 @@ namespace Chummer.Backend.Skills
         private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnDefault;
 
-        public void WriteTo(XmlTextWriter objWriter)
+        public void WriteTo(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -123,11 +123,11 @@ namespace Chummer.Backend.Skills
             objWriter.WriteEndElement();
         }
 
-        public virtual void WriteToDerived(XmlTextWriter objWriter)
+        public virtual void WriteToDerived(XmlWriter objWriter)
         {
         }
 
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;

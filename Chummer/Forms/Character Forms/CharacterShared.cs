@@ -5848,12 +5848,7 @@ namespace Chummer
                         {
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             MemoryStream objStream = new MemoryStream();
-                            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                            {
-                                Formatting = Formatting.Indented,
-                                Indentation = 1,
-                                IndentChar = '\t'
-                            })
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
                                 objWriter.WriteStartDocument();
 
@@ -5901,12 +5896,7 @@ namespace Chummer
                         {
                             MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                            {
-                                Formatting = Formatting.Indented,
-                                Indentation = 1,
-                                IndentChar = '\t'
-                            })
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
                                 objWriter.WriteStartDocument();
 
@@ -5954,12 +5944,7 @@ namespace Chummer
                         {
                             MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                            {
-                                Formatting = Formatting.Indented,
-                                Indentation = 1,
-                                IndentChar = '\t'
-                            })
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
                                 objWriter.WriteStartDocument();
 
@@ -6022,12 +6007,7 @@ namespace Chummer
                         {
                             MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                            {
-                                Formatting = Formatting.Indented,
-                                Indentation = 1,
-                                IndentChar = '\t'
-                            })
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
                                 objWriter.WriteStartDocument();
 
@@ -6075,12 +6055,7 @@ namespace Chummer
                         {
                             MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                            {
-                                Formatting = Formatting.Indented,
-                                Indentation = 1,
-                                IndentChar = '\t'
-                            })
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
                                 objWriter.WriteStartDocument();
 
@@ -6115,12 +6090,7 @@ namespace Chummer
                         {
                             MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                            {
-                                Formatting = Formatting.Indented,
-                                Indentation = 1,
-                                IndentChar = '\t'
-                            })
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
                                 objWriter.WriteStartDocument();
 
@@ -6159,12 +6129,7 @@ namespace Chummer
 
                             MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                            {
-                                Formatting = Formatting.Indented,
-                                Indentation = 1,
-                                IndentChar = '\t'
-                            })
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
                                 objWriter.WriteStartDocument();
 
@@ -6202,12 +6167,7 @@ namespace Chummer
 
                             MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                            {
-                                Formatting = Formatting.Indented,
-                                Indentation = 1,
-                                IndentChar = '\t'
-                            })
+                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                             {
                                 objWriter.WriteStartDocument();
 

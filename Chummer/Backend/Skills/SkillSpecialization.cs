@@ -53,7 +53,7 @@ namespace Chummer.Backend.Skills
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -90,7 +90,7 @@ namespace Chummer.Backend.Skills
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;

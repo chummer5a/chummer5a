@@ -31,10 +31,10 @@ namespace Chummer
         Image MainMugshot { get; set; }
         int MainMugshotIndex { get; set; }
 
-        ValueTask SaveMugshots(XmlTextWriter objWriter);
+        ValueTask SaveMugshots(XmlWriter objWriter);
 
         void LoadMugshots(XPathNavigator xmlSavedNode);
 
-        ValueTask PrintMugshots(XmlTextWriter objWriter);
+        ValueTask PrintMugshots(XmlWriter objWriter);
     }
 }

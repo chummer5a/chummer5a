@@ -485,7 +485,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override void WriteToDerived(XmlTextWriter objWriter)
+        public override void WriteToDerived(XmlWriter objWriter)
         {
             objWriter.WriteElementString("type", Type);
             objWriter.WriteElementString("isnativelanguage", IsNativeLanguage.ToString(GlobalSettings.InvariantCultureInfo));

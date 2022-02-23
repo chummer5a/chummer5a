@@ -2614,14 +2614,9 @@ namespace Chummer
                 {
                     using (MemoryStream objStream = new MemoryStream())
                     {
-                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                               {
-                                   Formatting = Formatting.Indented,
-                                   Indentation = 1,
-                                   IndentChar = '\t'
-                               })
+                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                         {
-                            objWriter.WriteStartDocument();
+                            await objWriter.WriteStartDocumentAsync();
 
                             // <character>
                             await objWriter.WriteStartElementAsync("character");
@@ -3319,8 +3314,8 @@ namespace Chummer
                             // </character>
                             await objWriter.WriteEndElementAsync();
 
-                            objWriter.WriteEndDocument();
-                            objWriter.Flush();
+                            await objWriter.WriteEndDocumentAsync();
+                            await objWriter.FlushAsync();
                             objStream.Position = 0;
 
                             // Validate that the character can save properly. If there's no error, save the file to the listed file location.
@@ -6205,7 +6200,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write to.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public async Task PrintToXmlTextWriter(XmlTextWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
+        public async Task PrintToXmlTextWriter(XmlWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
         {
             if (objWriter == null)
                 throw new ArgumentNullException(nameof(objWriter));
@@ -9584,7 +9579,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SaveMugshots(XmlTextWriter objWriter)
+        public async ValueTask SaveMugshots(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -9596,7 +9591,7 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("mugshots");
                 foreach (Image imgMugshot in Mugshots)
                 {
-                    await objWriter.WriteElementStringAsync("mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
+                    await objWriter.WriteElementStringAsync("mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
                 }
 
                 // </mugshot>
@@ -9647,7 +9642,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask PrintMugshots(XmlTextWriter objWriter)
+        public async ValueTask PrintMugshots(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;

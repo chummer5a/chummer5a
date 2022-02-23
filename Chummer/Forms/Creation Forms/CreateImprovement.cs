@@ -652,7 +652,7 @@ namespace Chummer
                 // Here instead of later because objWriter.Close() needs Stream to not be disposed, but StreamReader.Close() will dispose the Stream.
                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                 {
-                    using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                     {
                         // Build the XML for the Improvement.
                         XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + ']');

@@ -1010,7 +1010,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void Save(XmlTextWriter objWriter)
+        internal void Save(XmlWriter objWriter)
         {
             using (new EnterReadLock(LockObject))
             {
@@ -1617,7 +1617,7 @@ namespace Chummer.Backend.Skills
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             using (new EnterReadLock(LockObject))
             {
