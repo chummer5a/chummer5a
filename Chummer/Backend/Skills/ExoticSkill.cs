@@ -64,7 +64,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
-        public override void WriteToDerived(XmlTextWriter objWriter)
+        public override void WriteToDerived(XmlWriter objWriter)
         {
             objWriter.WriteElementString("specific", Specific);
         }

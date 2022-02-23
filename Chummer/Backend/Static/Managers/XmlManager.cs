@@ -1659,12 +1659,7 @@ namespace Chummer
 
             string strLangPath = Path.Combine(languageDirectoryPath, "results_" + strLanguage + ".xml");
             FileStream objStream = new FileStream(strLangPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
-            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-            {
-                Formatting = Formatting.Indented,
-                Indentation = 1,
-                IndentChar = '\t'
-            })
+            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
             {
                 objWriter.WriteStartDocument();
                 // <results>

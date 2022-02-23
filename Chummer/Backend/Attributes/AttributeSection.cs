@@ -316,7 +316,7 @@ namespace Chummer.Backend.Attributes
             _dicBindings.Dispose();
         }
 
-        internal void Save(XmlTextWriter objWriter)
+        internal void Save(XmlWriter objWriter)
         {
             foreach (CharacterAttrib objAttribute in AttributeList)
             {
@@ -890,7 +890,7 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-        internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (_objCharacter.MetatypeCategory == "Shapeshifter")
             {

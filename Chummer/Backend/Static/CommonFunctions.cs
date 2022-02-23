@@ -1230,7 +1230,7 @@ namespace Chummer
             XmlDocument objReturn = new XmlDocument {XmlResolver = null};
             // Write the Character information to a MemoryStream so we don't need to create any files.
             using (MemoryStream objStream = new MemoryStream())
-            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
             {
                 // Begin the document.
                 objWriter.WriteStartDocument();

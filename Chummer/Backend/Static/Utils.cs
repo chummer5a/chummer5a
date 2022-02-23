@@ -34,6 +34,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Win32;
 using NLog;
@@ -1206,6 +1207,14 @@ namespace Chummer
             {
                 // Swallow this
             }
+        }
+
+        private static readonly XmlWriterSettings _objStandardXmlWriterSettings = new XmlWriterSettings
+            { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t" };
+
+        public static XmlWriter GetStandardXmlWriter(Stream output)
+        {
+            return XmlWriter.Create(output, _objStandardXmlWriterSettings);
         }
 
         private static string s_strTempPath = string.Empty;

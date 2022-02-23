@@ -2356,12 +2356,7 @@ namespace Chummer
             IsSaving = true;
             using (MemoryStream objStream = new MemoryStream())
             {
-                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                {
-                    Formatting = Formatting.Indented,
-                    Indentation = 1,
-                    IndentChar = '\t'
-                })
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     objWriter.WriteStartDocument();
 
@@ -5783,7 +5778,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write to.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public async Task PrintToXmlTextWriter(XmlTextWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
+        public async Task PrintToXmlTextWriter(XmlWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
         {
             if (objWriter == null)
                 throw new ArgumentNullException(nameof(objWriter));
@@ -8865,7 +8860,7 @@ namespace Chummer
             }
         }
 
-        public void SaveMugshots(XmlTextWriter objWriter)
+        public void SaveMugshots(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -8920,7 +8915,7 @@ namespace Chummer
             }
         }
 
-        public void PrintMugshots(XmlTextWriter objWriter)
+        public void PrintMugshots(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;

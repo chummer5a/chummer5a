@@ -711,12 +711,7 @@ namespace Chummer
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             using (FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
-                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                {
-                    Formatting = Formatting.Indented,
-                    Indentation = 1,
-                    IndentChar = '\t'
-                })
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     objWriter.WriteStartDocument();
 

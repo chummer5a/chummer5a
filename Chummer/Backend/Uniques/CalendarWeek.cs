@@ -74,7 +74,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -108,7 +108,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="blnPrintNotes">Whether to print notes attached to the CalendarWeek.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
+        public void Print(XmlWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
             if (objWriter == null)
                 return;

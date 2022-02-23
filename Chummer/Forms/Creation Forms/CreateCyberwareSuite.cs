@@ -19,7 +19,6 @@
 
 using System;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -112,31 +111,26 @@ namespace Chummer
 
             using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
-                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    Formatting = Formatting.Indented,
-                    Indentation = 1,
-                    IndentChar = '\t'
-                })
-                {
-                    objWriter.WriteStartDocument();
+                    await objWriter.WriteStartDocumentAsync();
 
                     // <chummer>
-                    objWriter.WriteStartElement("chummer");
+                    await objWriter.WriteStartElementAsync("chummer");
                     if (!blnNewFile)
                     {
                         // <cyberwares>
-                        objWriter.WriteStartElement(_strType + 's');
+                        await objWriter.WriteStartElementAsync(_strType + 's');
                         using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + 's'))
                             if (xmlCyberwareList?.Count > 0)
                                 foreach (XmlNode xmlCyberware in xmlCyberwareList)
                                     xmlCyberware.WriteContentTo(objWriter);
                         // </cyberwares>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // <suites>
-                    objWriter.WriteStartElement("suites");
+                    await objWriter.WriteStartElementAsync("suites");
 
                     // If this is not a new file, write out the current contents.
                     if (!blnNewFile)
@@ -159,15 +153,15 @@ namespace Chummer
                     }
 
                     // <suite>
-                    objWriter.WriteStartElement("suite");
+                    await objWriter.WriteStartElementAsync("suite");
                     // <name />
-                    objWriter.WriteElementString("id", Guid.NewGuid().ToString());
+                    await objWriter.WriteElementStringAsync("id", Guid.NewGuid().ToString());
                     // <name />
-                    objWriter.WriteElementString("name", txtName.Text);
+                    await objWriter.WriteElementStringAsync("name", txtName.Text);
                     // <grade />
-                    objWriter.WriteElementString("grade", strGrade);
+                    await objWriter.WriteElementStringAsync("grade", strGrade);
                     // <cyberwares>
-                    objWriter.WriteStartElement(_strType + 's');
+                    await objWriter.WriteStartElementAsync(_strType + 's');
 
                     // Write out the Cyberware.
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
@@ -175,46 +169,46 @@ namespace Chummer
                         if (objCyberware.SourceType == _objSource)
                         {
                             // <cyberware>
-                            objWriter.WriteStartElement(_strType);
-                            objWriter.WriteElementString("name", objCyberware.Name);
+                            await objWriter.WriteStartElementAsync(_strType);
+                            await objWriter.WriteElementStringAsync("name", objCyberware.Name);
                             if (objCyberware.Rating > 0)
-                                objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                await objWriter.WriteElementStringAsync("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                             // Write out child items.
                             if (objCyberware.Children.Count > 0)
                             {
                                 // <cyberwares>
-                                objWriter.WriteStartElement(_strType + 's');
+                                await objWriter.WriteStartElementAsync(_strType + 's');
                                 foreach (Cyberware objChild in objCyberware.Children)
                                 {
                                     // Do not include items that come with the base item by default.
                                     if (objChild.Capacity != "[*]")
                                     {
-                                        objWriter.WriteStartElement(_strType);
-                                        objWriter.WriteElementString("name", objChild.Name);
+                                        await objWriter.WriteStartElementAsync(_strType);
+                                        await objWriter.WriteElementStringAsync("name", objChild.Name);
                                         if (objChild.Rating > 0)
-                                            objWriter.WriteElementString("rating", objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                            await objWriter.WriteElementStringAsync("rating", objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                         // </cyberware>
-                                        objWriter.WriteEndElement();
+                                        await objWriter.WriteEndElementAsync();
                                     }
                                 }
 
                                 // </cyberwares>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync();
                             }
 
                             // </cyberware>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
                     }
 
                     // </cyberwares>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync();
                     // </suite>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync();
                     // </chummer>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync();
 
-                    objWriter.WriteEndDocument();
+                    await objWriter.WriteEndDocumentAsync();
                 }
             }
 
