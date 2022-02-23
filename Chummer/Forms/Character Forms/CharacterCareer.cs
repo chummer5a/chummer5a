@@ -669,8 +669,7 @@ namespace Chummer
 
                     IsLoading = false;
 
-                    using (CustomActivity op_load_frm_career_databindingCallbacks2 =
-                        Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2", op_load_frm_career))
                     {
                         treGear.ItemDrag += treGear_ItemDrag;
                         treGear.DragEnter += treGear_DragEnter;
