@@ -77,7 +77,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             string.Format(
                                 GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction"),
@@ -98,7 +98,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             string.Format(
                                 GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction"),
@@ -115,7 +115,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             string.Format(
                                 GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction"),
@@ -329,7 +329,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            Program.MainForm.ShowMessageBox(
+                            Program.ShowMessageBox(
                                 string.Format(
                                     GlobalSettings.CultureInfo,
                                     LanguageManager.GetString("Message_SelectGeneric_Limit"),
@@ -358,7 +358,7 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                Program.MainForm.ShowMessageBox(
+                                Program.ShowMessageBox(
                                     string.Format(
                                         GlobalSettings.CultureInfo,
                                         LanguageManager.GetString("Message_SelectGeneric_Restriction"),
@@ -466,7 +466,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            Program.MainForm.ShowMessageBox(
+                            Program.ShowMessageBox(
                                 string.Format(
                                     GlobalSettings.CultureInfo,
                                     LanguageManager.GetString("Message_SelectGeneric_Requirement"),

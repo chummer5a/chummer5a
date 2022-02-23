@@ -893,7 +893,7 @@ namespace Chummer
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0
                         && !Utils.IsUnitTest
-                        && Program.MainForm.ShowMessageBox(this,
+                        && Program.ShowMessageBox(this,
                             LanguageManager.GetString("Message_ImprovementLoadError"),
                             LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
@@ -926,7 +926,7 @@ namespace Chummer
             if (IsDirty)
             {
                 string strCharacterName = CharacterObject.CharacterName;
-                DialogResult objResult = Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnsavedChanges"), strCharacterName),
+                DialogResult objResult = Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnsavedChanges"), strCharacterName),
                     await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 switch (objResult)
                 {
@@ -2052,7 +2052,7 @@ namespace Chummer
         {
             // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
             // Verify that the user wants to go through with it.
-            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.ShowMessageBox(this, LanguageManager.GetString("Message_ConfirmReapplyImprovements"), LanguageManager.GetString("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             await DoReapplyImprovements();
@@ -2703,7 +2703,7 @@ namespace Chummer
 
                     if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             this, await LanguageManager.GetStringAsync("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
                                   sbdOutdatedItems +
                                   await LanguageManager.GetStringAsync("Message_ReapplyImprovementsFoundOutdatedItems_Bottom"),
@@ -3181,7 +3181,7 @@ namespace Chummer
                     // The number of Complex Forms cannot exceed twice the character's RES.
                     if (CharacterObject.ComplexForms.Count >= CharacterObject.RES.Value * 2 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit) && !CharacterObject.IgnoreRules)
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ComplexFormLimit"), await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ComplexFormLimit"), await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         break;
                     }
 
@@ -3626,7 +3626,7 @@ namespace Chummer
                     if (CharacterObject.InitiateGrade + 1 > CharacterObject.MAG.TotalValue ||
                         CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseInitiateGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseInitiateGrade"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return;
                     }
@@ -3647,7 +3647,7 @@ namespace Chummer
                     // Make sure that the Initiate Grade is not attempting to go above the character's RES CharacterAttribute.
                     if (CharacterObject.SubmersionGrade + 1 > CharacterObject.RES.TotalValue)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(this, LanguageManager.GetString("Message_CannotIncreaseSubmersionGrade"), LanguageManager.GetString("MessageTitle_CannotIncreaseSubmersionGrade"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return;
                     }
@@ -3855,7 +3855,7 @@ namespace Chummer
                                         intBP += CharacterObject.NegativeQualityLimitKarma;
                                         if (intBP < intMaxQualityAmount * -1)
                                         {
-                                            Program.MainForm.ShowMessageBox(this,
+                                            Program.ShowMessageBox(this,
                                                 string.Format(GlobalSettings.CultureInfo,
                                                     await LanguageManager.GetStringAsync("Message_NegativeQualityLimit"),
                                                     strAmount),
@@ -3866,7 +3866,7 @@ namespace Chummer
                                         else if (CharacterObject.MetatypeBP < 0
                                                  && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
                                         {
-                                            Program.MainForm.ShowMessageBox(this,
+                                            Program.ShowMessageBox(this,
                                                 string.Format(GlobalSettings.CultureInfo,
                                                     await LanguageManager.GetStringAsync(
                                                         "Message_NegativeQualityAndMetatypeLimit"), strAmount),
@@ -3882,7 +3882,7 @@ namespace Chummer
                                     intBP += CharacterObject.PositiveQualityKarma;
                                     if (intBP > intMaxQualityAmount)
                                     {
-                                        Program.MainForm.ShowMessageBox(this,
+                                        Program.ShowMessageBox(this,
                                             string.Format(GlobalSettings.CultureInfo,
                                                 await LanguageManager.GetStringAsync("Message_PositiveQualityLimit"), strAmount),
                                             await LanguageManager.GetStringAsync("MessageTitle_PositiveQualityLimit"),
@@ -3961,11 +3961,11 @@ namespace Chummer
                 // Qualities that come from a Metatype cannot be removed.
                 case QualitySource.Metatype:
                 case QualitySource.Heritage:
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_MetavariantQuality"), LanguageManager.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, LanguageManager.GetString("Message_MetavariantQuality"), LanguageManager.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
 
                 case QualitySource.Improvement:
-                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ImprovementQuality"), objSelectedQuality.GetSourceName(GlobalSettings.Language)),
+                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ImprovementQuality"), objSelectedQuality.GetSourceName(GlobalSettings.Language)),
                         LanguageManager.GetString("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
             }
@@ -4142,7 +4142,7 @@ namespace Chummer
             // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
             if (intFree < 2)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotStackFoci"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotStackFoci"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4177,7 +4177,7 @@ namespace Chummer
             // Make sure at least 2 Foci were selected.
             if (lstStack.Count < 2)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusMinimum"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusMinimum"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4189,7 +4189,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in lstStack)
                         objGear.Bonded = false;
-                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusForce"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusForce"), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
             }
@@ -4331,7 +4331,7 @@ namespace Chummer
             }
             else
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleLocation"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleLocation"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4358,7 +4358,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4375,7 +4375,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems)))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4391,7 +4391,7 @@ namespace Chummer
         {
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory"),
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponAccessory"),
                     await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4399,7 +4399,7 @@ namespace Chummer
             // Accessories cannot be added to Cyberweapons.
             if (objWeapon.Cyberware)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberweaponNoAccessory"), await LanguageManager.GetStringAsync("MessageTitle_CyberweaponNoAccessory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberweaponNoAccessory"), await LanguageManager.GetStringAsync("MessageTitle_CyberweaponNoAccessory"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4407,7 +4407,7 @@ namespace Chummer
             XmlNode objXmlWeapon = await objWeapon.GetNodeAsync();
             if (objXmlWeapon == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4421,7 +4421,7 @@ namespace Chummer
                     // Make sure the Weapon allows Accessories to be added to it.
                     if (!objWeapon.AllowAccessory)
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"), await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         break;
                     }
 
@@ -4497,7 +4497,7 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4577,7 +4577,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Cyberware window.
             if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4615,7 +4615,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Vehicle Mod window.
             if (!(objSelectedNode?.Tag is Vehicle objVehicle))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -4757,7 +4757,7 @@ namespace Chummer
 
             if (objWeaponMount == null && objMod == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotAddWeapon"),
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotAddWeapon"),
                     await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -4765,7 +4765,7 @@ namespace Chummer
 
             if (objWeaponMount?.IsWeaponsFull == true)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponMountFull"),
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponMountFull"),
                     await LanguageManager.GetStringAsync("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
@@ -4831,7 +4831,7 @@ namespace Chummer
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     this, await LanguageManager.GetStringAsync("Message_VehicleWeaponAccessories"),
                     await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponAccessories"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -4842,7 +4842,7 @@ namespace Chummer
             XmlNode objXmlWeapon = await objWeapon.GetNodeAsync();
             if (objXmlWeapon == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"),
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotFindWeapon"),
                                                 await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"),
                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -4859,7 +4859,7 @@ namespace Chummer
                     // Make sure the Weapon allows Accessories to be added to it.
                     if (!objWeapon.AllowAccessory)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             this, await LanguageManager.GetStringAsync("Message_CannotModifyWeapon"),
                             await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon"),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -4902,7 +4902,7 @@ namespace Chummer
             // Attempt to locate the selected VehicleWeapon.
             if (!(treVehicles.SelectedNode?.Tag is Weapon objSelectedWeapon))
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     this, await LanguageManager.GetStringAsync("Message_VehicleWeaponUnderbarrel"),
                     await LanguageManager.GetStringAsync("MessageTitle_VehicleWeaponUnderbarrel"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
@@ -4963,13 +4963,13 @@ namespace Chummer
 
             if (treMartialArts.SelectedNode == null || treMartialArts.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (!(treMartialArts.SelectedNode?.Tag is MartialArt objMartialArt))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectMartialArtTechnique"), await LanguageManager.GetStringAsync("MessageTitle_SelectMartialArtTechnique"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5021,7 +5021,7 @@ namespace Chummer
                     break;
 
                 default:
-                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearVehicle"), await LanguageManager.GetStringAsync("MessageTitle_SelectGearVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
             }
             await PurchaseVehicleGear(objSelectedVehicle, objLocation);
@@ -5033,14 +5033,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Gear was found.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_ModifyVehicleGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5188,14 +5188,14 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Weapon.
             if (!(treWeapons.SelectedNode?.Tag is Weapon objWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponName"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5223,14 +5223,14 @@ namespace Chummer
         {
             if (treGear.SelectedNode == null || treGear.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Gear.
             if (!(treGear.SelectedNode?.Tag is Gear objGear))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectGearName"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5260,13 +5260,13 @@ namespace Chummer
             // Locate the Weapon that is selected in the tree.
             if (!(objSelectedNode?.Tag is Weapon objSelectedWeapon))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectWeaponUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_SelectWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (objSelectedWeapon.Cyberware)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_WeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareUnderbarrel"), await LanguageManager.GetStringAsync("MessageTitle_WeaponUnderbarrel"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5340,7 +5340,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5359,7 +5359,7 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5368,7 +5368,7 @@ namespace Chummer
             {
                 // Make sure the selected item is another piece of Gear.
                 case ArmorMod objMod when string.IsNullOrEmpty(objMod.GearCapacity):
-                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmor"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
 
                 case ArmorMod objMod:
@@ -5522,14 +5522,14 @@ namespace Chummer
             // Make sure a parent item is selected.
             if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Vehicle.
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectVehicleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectVehicle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5555,7 +5555,7 @@ namespace Chummer
         {
             if (treVehicles.SelectedNode?.Tag is string)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5567,7 +5567,7 @@ namespace Chummer
 
             if (objCyberwareParent == null && objMod?.AllowCyberware != true)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5650,7 +5650,7 @@ namespace Chummer
                                 // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
                                 if (CharacterObjectSettings.EnforceCapacity && objCyberwareParent.CapacityRemaining < 0)
                                 {
-                                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"), await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
+                                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"), await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                                     break;
                                 }
@@ -5748,14 +5748,14 @@ namespace Chummer
             // Make sure a parent item is selected, then open the Select Accessory window.
             if (treArmor.SelectedNode == null || treArmor.SelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Get the information for the currently selected Armor.
             if (!(treArmor.SelectedNode?.Tag is Armor objArmor))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectArmorName"), await LanguageManager.GetStringAsync("MessageTitle_SelectArmor"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5784,7 +5784,7 @@ namespace Chummer
             // Get the information for the currently selected Lifestyle.
             if (!(treLifestyles.SelectedNode?.Tag is IHasCustomName objCustomName))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectLifestyleName"), await LanguageManager.GetStringAsync("MessageTitle_SelectLifestyle"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5864,7 +5864,7 @@ namespace Chummer
             // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
             if (CharacterObject.Spells.Count >= 2 * intSkillValue + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit) && !CharacterObject.IgnoreRules)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -5910,14 +5910,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
             if (!(objSelectedNode.Tag is Cyberware objCyberware) || objCyberware.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6014,14 +6014,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (!(treVehicles.SelectedNode?.Tag is Cyberware objCyberware))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectCyberware"), await LanguageManager.GetStringAsync("MessageTitle_SelectCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the Cyberware is allowed to accept Gear.
             if (objCyberware.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6097,14 +6097,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null || objSelectedNode.Level < 2)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Locate the Vehicle Sensor Gear.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6181,14 +6181,14 @@ namespace Chummer
             // Make sure a parent items is selected, then open the Select Gear window.
             if (objSelectedNode == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Locate the Vehicle Sensor Gear.
             if (!(objSelectedNode.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6265,7 +6265,7 @@ namespace Chummer
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6337,7 +6337,7 @@ namespace Chummer
             if (!(treWeapons.SelectedNode?.Tag is Gear objSensor))
             // Make sure the Gear was found.
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6453,7 +6453,7 @@ namespace Chummer
             // Make sure the Gear was found.
             if (!(treVehicles.SelectedNode?.Tag is Gear objSensor))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ModifyVehicleGear"), await LanguageManager.GetStringAsync("MessageTitle_SelectGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6538,7 +6538,7 @@ namespace Chummer
             // Make sure the Weapon Accessory is allowed to accept Gear.
             if (!(objSelectedNode?.Tag is WeaponAccessory objAccessory) || objAccessory.AllowGear == null)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_WeaponGear"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGear"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -6723,13 +6723,13 @@ namespace Chummer
                             intBP += CharacterObject.NegativeQualityLimitKarma;
                             if (intBP < intMaxQualityAmount * -1)
                             {
-                                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strAmount),
+                                Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strAmount),
                                     LanguageManager.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 blnAddItem = false;
                             }
                             else if (CharacterObject.MetatypeBP < 0 && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
                             {
-                                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NegativeQualityAndMetatypeLimit"), strAmount),
+                                Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NegativeQualityAndMetatypeLimit"), strAmount),
                                     LanguageManager.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 blnAddItem = false;
                             }
@@ -6741,7 +6741,7 @@ namespace Chummer
                         intBP += CharacterObject.PositiveQualityKarma;
                         if (intBP > intMaxQualityAmount)
                         {
-                            Program.MainForm.ShowMessageBox(this,
+                            Program.ShowMessageBox(this,
                                 string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit"), strAmount),
                                 LanguageManager.GetString("MessageTitle_PositiveQualityLimit"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8122,7 +8122,7 @@ namespace Chummer
                 if (intFociTotal > CharacterObject.MAG.TotalValue * 5 ||
                     CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && CharacterObject.InitiateGrade + 1 > CharacterObject.MAGAdept.TotalValue)
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumForce"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
@@ -8130,7 +8130,7 @@ namespace Chummer
                 if (intFociCount > CharacterObject.MAG.TotalValue ||
                     CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept && intFociCount > CharacterObject.MAGAdept.TotalValue)
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, LanguageManager.GetString("Message_FocusMaximumNumber"), LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     e.Cancel = true;
                     return;
                 }
@@ -9642,7 +9642,7 @@ namespace Chummer
             }
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest
-                && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
+                && Program.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
                     LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
                 Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements).AsTask());
@@ -11787,7 +11787,7 @@ namespace Chummer
                     {
                         if (objExistingGear.Location == objLocation
                             && objGear.IsIdenticalToOtherGear(objExistingGear, true)
-                            && Program.MainForm.ShowMessageBox(this,
+                            && Program.ShowMessageBox(this,
                                 string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_MergeIdentical"), objGear.DisplayNameShort(GlobalSettings.Language)),
                                 await LanguageManager.GetStringAsync("MessageTitle_MergeIdentical"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -13417,7 +13417,7 @@ namespace Chummer
                                                                                   "Message_OverLanguageLimit"),
                                                                               intLanguages, intLanguageLimit);
                         }
-                        else if (Program.MainForm.ShowMessageBox(this,
+                        else if (Program.ShowMessageBox(this,
                                                                  string.Format(
                                                                      GlobalSettings.CultureInfo,
                                                                      LanguageManager.GetString(
@@ -13747,7 +13747,7 @@ namespace Chummer
                     i = CharacterObject.Attributes
                         - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
                     // Check if the character has gone over on Primary Attributes
-                    if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
+                    if (blnValid && i > 0 && Program.ShowMessageBox(this,
                                                                              string.Format(
                                                                                  GlobalSettings.CultureInfo,
                                                                                  LanguageManager.GetString(
@@ -13766,7 +13766,7 @@ namespace Chummer
                     i = CharacterObject.Special
                         - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);
                     // Check if the character has gone over on Special Attributes
-                    if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
+                    if (blnValid && i > 0 && Program.ShowMessageBox(this,
                                                                              string.Format(
                                                                                  GlobalSettings.CultureInfo,
                                                                                  LanguageManager.GetString(
@@ -13784,7 +13784,7 @@ namespace Chummer
 
                     // Check if the character has gone over on Skill Groups
                     if (blnValid && CharacterObject.SkillsSection.SkillGroupPoints > 0
-                                 && Program.MainForm.ShowMessageBox(this,
+                                 && Program.ShowMessageBox(this,
                                                                     string.Format(
                                                                         GlobalSettings.CultureInfo,
                                                                         LanguageManager.GetString("Message_ExtraPoints")
@@ -13800,7 +13800,7 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over on Active Skills
-                    if (blnValid && CharacterObject.SkillsSection.SkillPoints > 0 && Program.MainForm.ShowMessageBox(
+                    if (blnValid && CharacterObject.SkillsSection.SkillPoints > 0 && Program.ShowMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
                                           , CharacterObject.SkillsSection.SkillPoints.ToString(
@@ -13814,7 +13814,7 @@ namespace Chummer
 
                     // Check if the character has gone over on Knowledge Skills
                     if (blnValid && CharacterObject.SkillsSection.KnowledgeSkillPointsRemain > 0
-                                 && Program.MainForm.ShowMessageBox(this,
+                                 && Program.ShowMessageBox(this,
                                                                     string.Format(
                                                                         GlobalSettings.CultureInfo,
                                                                         LanguageManager.GetString("Message_ExtraPoints")
@@ -13832,7 +13832,7 @@ namespace Chummer
                 }
 
                 if (!blnValid && sbdMessage.Length > LanguageManager.GetString("Message_InvalidBeginning").Length)
-                    Program.MainForm.ShowMessageBox(this, sbdMessage.ToString(),
+                    Program.ShowMessageBox(this, sbdMessage.ToString(),
                                                     LanguageManager.GetString("MessageTitle_Invalid"),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -13854,11 +13854,11 @@ namespace Chummer
                 {
                     if (!CharacterObject.EffectiveBuildMethodUsesPriorityTables)
                     {
-                        if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NoExtraKarma"), intBuildPoints.ToString(GlobalSettings.CultureInfo)),
+                        if (Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NoExtraKarma"), intBuildPoints.ToString(GlobalSettings.CultureInfo)),
                                 await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
                             return false;
                     }
-                    else if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraKarma")
+                    else if (Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraKarma")
                             , intBuildPoints.ToString(GlobalSettings.CultureInfo)
                             , CharacterObjectSettings.KarmaCarryover.ToString(GlobalSettings.CultureInfo)),
                         await LanguageManager.GetStringAsync("MessageTitle_ExtraKarma"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
@@ -13866,7 +13866,7 @@ namespace Chummer
                         return false;
                     }
                 }
-                if (CharacterObject.Nuyen > 5000 && Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraNuyen")
+                if (CharacterObject.Nuyen > 5000 && Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraNuyen")
                         , CharacterObject.Nuyen.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
                         , 5000.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)),
                     await LanguageManager.GetStringAsync("MessageTitle_ExtraNuyen"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
@@ -13883,7 +13883,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                             return false;
                         }
                     }
@@ -13959,7 +13959,7 @@ namespace Chummer
         /// </summary>
         public override async Task<bool> ConfirmSaveCreatedCharacter()
         {
-            return Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ConfirmCreate"),
+            return Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ConfirmCreate"),
                 await LanguageManager.GetStringAsync("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo,
                 MessageBoxIcon.Question) != DialogResult.No && await ValidateCharacter();
         }
@@ -14782,7 +14782,7 @@ namespace Chummer
                         strGrade = objCyberware.Grade.ToString();
                     else if (strGrade != objCyberware.Grade.ToString())
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGradeMismatch"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGradeMismatch"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareGradeMismatch"), await LanguageManager.GetStringAsync("MessageTitle_CyberwareGradeMismatch"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -14790,7 +14790,7 @@ namespace Chummer
             // The character has no Cyberware!
             if (string.IsNullOrEmpty(strGrade))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NoCyberware"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NoCyberware"), await LanguageManager.GetStringAsync("MessageTitle_NoCyberware"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
@@ -15444,7 +15444,7 @@ namespace Chummer
         {
             if (CheckCharacterValidity())
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ValidCharacter"), await LanguageManager.GetStringAsync("MessageTitle_ValidCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ValidCharacter"), await LanguageManager.GetStringAsync("MessageTitle_ValidCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -15606,7 +15606,7 @@ namespace Chummer
 
         private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)
         {
-            Program.MainForm.ShowMessageBox(this, CharacterObject.CalculateKarmaValue(GlobalSettings.Language, out int _),
+            Program.ShowMessageBox(this, CharacterObject.CalculateKarmaValue(GlobalSettings.Language, out int _),
                 LanguageManager.GetString("MessageTitle_KarmaValue"),
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
@@ -15625,7 +15625,7 @@ namespace Chummer
                 if (!objModularCyberware.IsModularCurrentlyEquipped
                     && lstModularMounts.All(x => !string.Equals(x.Value.ToString(), "None", StringComparison.Ordinal)))
                 {
-                    Program.MainForm.ShowMessageBox(this,
+                    Program.ShowMessageBox(this,
                                                     await LanguageManager.GetStringAsync("Message_NoValidModularMount"),
                                                     await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount"),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -15723,7 +15723,7 @@ namespace Chummer
                     && lstModularMounts.All(
                         x => !string.Equals(x.Value.ToString(), "None", StringComparison.OrdinalIgnoreCase)))
                 {
-                    Program.MainForm.ShowMessageBox(this,
+                    Program.ShowMessageBox(this,
                                                     await LanguageManager.GetStringAsync("Message_NoValidModularMount"),
                                                     await LanguageManager.GetStringAsync("MessageTitle_NoValidModularMount"),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Information);

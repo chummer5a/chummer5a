@@ -445,8 +445,8 @@ namespace Chummer
                                     const string strMessage =
                                         "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                     Log.Warn(strMessage);
-                                    MainForm.ShowMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK,
-                                                            MessageBoxIcon.Exclamation);
+                                    ShowMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK,
+                                        MessageBoxIcon.Exclamation);
                                 }
                                 else
                                 {
@@ -468,8 +468,8 @@ namespace Chummer
                                                 Environment.NewLine
                                                 + "If you want to use command-line arguments, please enable this plugin and restart the program.";
                                             Log.Warn(strMessage);
-                                            MainForm.ShowMessageBox(strMessage, strWhatPlugin + " not enabled",
-                                                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            ShowMessageBox(strMessage, strWhatPlugin + " not enabled",
+                                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
                                     }
                                     else
@@ -673,11 +673,60 @@ namespace Chummer
             get => _frmMainForm;
             set
             {
+                if (_frmMainForm == value)
+                    return;
                 _frmMainForm = value;
-                foreach (Action<ChummerMainForm> funcToRun in MainFormOnAssignActions)
-                    funcToRun(_frmMainForm);
-                MainFormOnAssignActions.Clear();
+                if (value != null)
+                {
+                    foreach (Action<ChummerMainForm> funcToRun in MainFormOnAssignActions)
+                        funcToRun(_frmMainForm);
+                    MainFormOnAssignActions.Clear();
+                }
             }
+        }
+
+        /// <summary>
+        /// Shows a dialog box centered on the Chummer main form window, or otherwise queues up such a box to be displayed
+        /// </summary>
+        public static DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        {
+            if (MainForm != null)
+                return MainForm.ShowMessageBox(null, message, caption, buttons, icon, defaultButton);
+            if (Utils.IsUnitTest)
+            {
+                if (icon == MessageBoxIcon.Error || buttons != MessageBoxButtons.OK)
+                {
+                    Utils.BreakIfDebug();
+                    string strMessage = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine +
+                                        "Caption: " + caption + Environment.NewLine + "Message: " + message;
+                    throw new InvalidOperationException(strMessage);
+                }
+                return DialogResult.OK;
+            }
+            MainFormOnAssignActions.Add(x => x.ShowMessageBox(null, message, caption, buttons, icon, defaultButton));
+            return DialogResult.Cancel;
+        }
+
+        /// <summary>
+        /// Shows a dialog box centered on the a window containing a WinForms control, or otherwise queues up such a box to be displayed
+        /// </summary>
+        public static DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        {
+            if (MainForm != null)
+                return MainForm.ShowMessageBox(owner, message, caption, buttons, icon, defaultButton);
+            if (Utils.IsUnitTest)
+            {
+                if (icon == MessageBoxIcon.Error || buttons != MessageBoxButtons.OK)
+                {
+                    Utils.BreakIfDebug();
+                    string strMessage = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine +
+                                        "Caption: " + caption + Environment.NewLine + "Message: " + message;
+                    throw new InvalidOperationException(strMessage);
+                }
+                return DialogResult.OK;
+            }
+            MainFormOnAssignActions.Add(x => x.ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
+            return DialogResult.Cancel;
         }
 
         /// <summary>

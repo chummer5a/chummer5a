@@ -118,7 +118,7 @@ namespace Chummer
                 string text = await LanguageManager.GetStringAsync("Message_Options_SaveForms", _strSelectedLanguage);
                 string caption = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", _strSelectedLanguage);
 
-                if (Program.MainForm.ShowMessageBox(this, text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (Program.ShowMessageBox(this, text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
 
@@ -201,7 +201,7 @@ namespace Chummer
                 }
 
                 string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
-                Program.MainForm.ShowMessageBox(this, string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
+                Program.ShowMessageBox(this, string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
                     await LanguageManager.GetStringAsync("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -273,7 +273,7 @@ namespace Chummer
             GlobalSettings.UseLoggingResetCounter = 10;
             if (useAI > UseAILogging.Info
                 && GlobalSettings.UseLoggingApplicationInsightsPreference <= UseAILogging.Info
-                && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
+                && DialogResult.Yes != Program.ShowMessageBox(this,
                     (await LanguageManager.GetStringAsync("Message_Options_ConfirmTelemetry", _strSelectedLanguage)).WordWrap(),
                     await LanguageManager.GetStringAsync("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
                     MessageBoxButtons.YesNo))
@@ -290,7 +290,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            if (chkUseLogging.Checked && !GlobalSettings.UseLogging && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
+            if (chkUseLogging.Checked && !GlobalSettings.UseLogging && DialogResult.Yes != Program.ShowMessageBox(this,
                 (await LanguageManager.GetStringAsync("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)).WordWrap(),
                 await LanguageManager.GetStringAsync("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage),
                 MessageBoxButtons.YesNo))
@@ -442,7 +442,7 @@ namespace Chummer
         {
             if (!chkLifeModule.Checked || _blnLoading)
                 return;
-            if (Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
+            if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
                 chkLifeModule.Checked = false;
             else
@@ -481,7 +481,7 @@ namespace Chummer
                     CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, dlgSelectFolder.SelectedPath);
                     if (objNewCustomDataDirectory.XmlException != default)
                     {
-                        Program.MainForm.ShowMessageBox(this,
+                        Program.ShowMessageBox(this,
                             string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Message_FailedLoad", _strSelectedLanguage),
                                 objNewCustomDataDirectory.XmlException.Message),
                             string.Format(_objSelectedCultureInfo,
@@ -494,7 +494,7 @@ namespace Chummer
                     string strDirectoryPath = objNewCustomDataDirectory.DirectoryPath;
                     if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == strDirectoryPath))
                     {
-                        Program.MainForm.ShowMessageBox(this,
+                        Program.ShowMessageBox(this,
                             string.Format(
                                 await LanguageManager.GetStringAsync("Message_Duplicate_CustomDataDirectoryPath",
                                                                      _strSelectedLanguage), objNewCustomDataDirectory.Name),
@@ -512,7 +512,7 @@ namespace Chummer
                             {
                                 if (objExistingInfo.HasManifest)
                                 {
-                                    Program.MainForm.ShowMessageBox(
+                                    Program.ShowMessageBox(
                                         string.Format(
                                             await LanguageManager.GetStringAsync(
                                                 "Message_Duplicate_CustomDataDirectory"),
@@ -541,7 +541,7 @@ namespace Chummer
                     }
                     if (_setCustomDataDirectoryInfos.Any(x =>
                         objNewCustomDataDirectory.CharacterSettingsSaveKey.Equals(x.CharacterSettingsSaveKey,
-                            StringComparison.OrdinalIgnoreCase)) && Program.MainForm.ShowMessageBox(this,
+                            StringComparison.OrdinalIgnoreCase)) && Program.ShowMessageBox(this,
                         string.Format(
                             await LanguageManager.GetStringAsync("Message_Duplicate_CustomDataDirectoryName",
                                                                  _strSelectedLanguage), objNewCustomDataDirectory.Name),
@@ -584,7 +584,7 @@ namespace Chummer
                     objNewInfo.CopyGuid(objInfoToRename);
                 if (objNewInfo.XmlException != default)
                 {
-                    Program.MainForm.ShowMessageBox(this,
+                    Program.ShowMessageBox(this,
                         string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Message_FailedLoad", _strSelectedLanguage),
                             objNewInfo.XmlException.Message),
                         string.Format(_objSelectedCultureInfo,
@@ -597,7 +597,7 @@ namespace Chummer
                                                           objNewInfo.CharacterSettingsSaveKey.Equals(
                                                               x.CharacterSettingsSaveKey,
                                                               StringComparison.OrdinalIgnoreCase)) &&
-                    Program.MainForm.ShowMessageBox(this,
+                    Program.ShowMessageBox(this,
                         string.Format(
                             await LanguageManager.GetStringAsync("Message_Duplicate_CustomDataDirectoryName",
                                                                  _strSelectedLanguage), objNewInfo.Name),
@@ -847,7 +847,7 @@ namespace Chummer
                 }
                 catch (Exception)
                 {
-                    Program.MainForm.ShowMessageBox(this, string.Format(
+                    Program.ShowMessageBox(this, string.Format(
                                                         await LanguageManager.GetStringAsync(
                                                             "Message_Options_FileIsNotPDF",
                                                             _strSelectedLanguage), Path.GetFileName(strNewFileName)),
@@ -1694,7 +1694,7 @@ namespace Chummer
 
                         string message = string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Message_FoundPDFsInFolder", _strSelectedLanguage), list.Count, fbd.SelectedPath);
                         string title = await LanguageManager.GetStringAsync("MessageTitle_FoundPDFsInFolder", _strSelectedLanguage);
-                        Program.MainForm.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
             }

@@ -1426,7 +1426,7 @@ namespace Chummer
                 }
                 if (intKarmaCost > _objCharacter.Karma)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     blnAddItem = false;
                 }
 
@@ -1451,7 +1451,7 @@ namespace Chummer
                 {
                     if (intKarmaCost > _objCharacter.Karma)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         blnAddItem = false;
                     }
 

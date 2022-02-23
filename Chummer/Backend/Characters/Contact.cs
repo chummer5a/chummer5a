@@ -1076,7 +1076,7 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
+                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
                         LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -1289,7 +1289,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();

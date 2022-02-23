@@ -192,11 +192,11 @@ namespace Chummer
             }
             catch (XmlException)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
             }
         }
 
@@ -232,7 +232,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strPdfPrinter))
                 {
-                    DialogResult ePdfPrinterDialogResult = Program.MainForm.ShowMessageBox(this,
+                    DialogResult ePdfPrinterDialogResult = Program.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter"), strPdfPrinter),
                         await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter"),
@@ -244,7 +244,7 @@ namespace Chummer
                             return;
 
                         case DialogResult.Yes:
-                            Program.MainForm.ShowMessageBox(this,
+                            Program.ShowMessageBox(this,
                                 await LanguageManager.GetStringAsync("Message_Viewer_PDFPrinterError"));
                             break;
                     }
@@ -265,7 +265,7 @@ namespace Chummer
 
                 if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
                 {
-                    Program.MainForm.ShowMessageBox(this,
+                    Program.ShowMessageBox(this,
                                                     string.Format(GlobalSettings.CultureInfo,
                                                                   await LanguageManager.GetStringAsync(
                                                                       "Message_File_Cannot_Be_Accessed"), strSaveFile));
@@ -274,7 +274,7 @@ namespace Chummer
 
                 if (!await Utils.SafeDeleteFileAsync(strSaveFile, true))
                 {
-                    Program.MainForm.ShowMessageBox(this,
+                    Program.ShowMessageBox(this,
                                                     string.Format(GlobalSettings.CultureInfo,
                                                                   await LanguageManager.GetStringAsync(
                                                                       "Message_File_Cannot_Be_Accessed"), strSaveFile));
@@ -323,7 +323,7 @@ namespace Chummer
                 }
                 catch (Exception ex)
                 {
-                    Program.MainForm.ShowMessageBox(this, ex.ToString());
+                    Program.ShowMessageBox(this, ex.ToString());
                 }
             }
         }
@@ -522,7 +522,7 @@ namespace Chummer
                     string strReturn = "File not found when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.MainForm.ShowMessageBox(this, strReturn);
+                    Program.ShowMessageBox(this, strReturn);
                     return;
                 }
 
@@ -536,7 +536,7 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.MainForm.ShowMessageBox(this, strReturn);
+                    Program.ShowMessageBox(this, strReturn);
                     return;
                 }
                 catch (PathTooLongException)
@@ -544,7 +544,7 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.MainForm.ShowMessageBox(this, strReturn);
+                    Program.ShowMessageBox(this, strReturn);
                     return;
                 }
                 catch (UnauthorizedAccessException)
@@ -552,7 +552,7 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.MainForm.ShowMessageBox(this, strReturn);
+                    Program.ShowMessageBox(this, strReturn);
                     return;
                 }
                 catch (XsltException ex)
@@ -561,7 +561,7 @@ namespace Chummer
                     Log.Debug(strReturn);
                     Log.Error("ERROR Message = " + ex.Message);
                     strReturn += ex.Message;
-                    Program.MainForm.ShowMessageBox(this, strReturn);
+                    Program.ShowMessageBox(this, strReturn);
                     return;
                 }
 

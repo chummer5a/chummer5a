@@ -175,7 +175,7 @@ namespace Chummer
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to delete this setting
-            if (Program.MainForm.ShowMessageBox(
+            if (Program.ShowMessageBox(
                 string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CharacterOptions_ConfirmDelete"),
                     _objReferenceCharacterSettings.Name),
                 await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_ConfirmDelete"),
@@ -254,7 +254,7 @@ namespace Chummer
 
                     if (SettingsManager.LoadedCharacterSettings.Any(x => x.Value.Name == strSelectedName))
                     {
-                        DialogResult eCreateDuplicateSetting = Program.MainForm.ShowMessageBox(
+                        DialogResult eCreateDuplicateSetting = Program.ShowMessageBox(
                             string.Format(await LanguageManager.GetStringAsync("Message_CharacterOptions_DuplicateSettingName"),
                                 strSelectedName),
                             await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_DuplicateFileName"),
@@ -286,7 +286,7 @@ namespace Chummer
                     strSelectedFullFileName = strBaseFileName + strSeparator + uintAccumulator.ToString(GlobalSettings.InvariantCultureInfo) + ".xml";
                     if (strSelectedFullFileName.Length > intMaxNameLength)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingFileNameTooLongError"),
                             await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_SettingFileNameTooLongError"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -366,7 +366,7 @@ namespace Chummer
 
                         if (sbdConflictingCharacters.Length > 0)
                         {
-                            Program.MainForm.ShowMessageBox(this,
+                            Program.ShowMessageBox(this,
                                                             await LanguageManager.GetStringAsync(
                                                                 "Message_CharacterOptions_OpenCharacterOnBuildMethodChange")
                                                             +
@@ -416,7 +416,7 @@ namespace Chummer
                 string text = await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty");
                 string caption = await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty");
 
-                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) !=
+                if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) !=
                     DialogResult.Yes)
                 {
                     _blnLoading = true;
@@ -475,7 +475,7 @@ namespace Chummer
         private async void cmdRestoreDefaults_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to reset these values.
-            if (Program.MainForm.ShowMessageBox(
+            if (Program.ShowMessageBox(
                 await LanguageManager.GetStringAsync("Message_Options_RestoreDefaults"),
                 await LanguageManager.GetStringAsync("MessageTitle_Options_RestoreDefaults"),
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
@@ -575,7 +575,7 @@ namespace Chummer
 
         private async void EditCharacterSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (IsDirty && Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty"),
+            if (IsDirty && Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty"),
                 await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 e.Cancel = true;

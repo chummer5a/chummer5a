@@ -452,13 +452,11 @@ namespace Chummer
                 }
                 catch (System.Security.SecurityException)
                 {
-                    Program.MainFormOnAssignActions.Add(x =>
-                        x.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry")));
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.MainFormOnAssignActions.Add(x =>
-                        x.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry")));
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
                 }
             }
 
@@ -590,7 +588,7 @@ namespace Chummer
                 *#else
                 *                string msg = "Error while loading PluginOptions from registry: " + Environment.NewLine;
                 *                msg += e.Message;
-                *                Program.MainForm.ShowMessageBox(msg);
+                *                Program.ShowMessageBox(msg);
                 */
 #endif
             }
@@ -629,24 +627,14 @@ namespace Chummer
                                 = new CustomDataDirectoryInfo(strDirectoryName, strPath);
                             if (objCustomDataDirectory.XmlException != default)
                             {
-                                Program.MainFormOnAssignActions.Add(x =>
-                                                                        x.ShowMessageBox(
-                                                                            string.Format(
-                                                                                CultureInfo,
-                                                                                LanguageManager.GetString(
-                                                                                    "Message_FailedLoad"),
-                                                                                objCustomDataDirectory.XmlException
-                                                                                    .Message),
-                                                                            string.Format(CultureInfo,
-                                                                                LanguageManager.GetString(
-                                                                                    "MessageTitle_FailedLoad") +
-                                                                                LanguageManager.GetString(
-                                                                                    "String_Space")
-                                                                                + objCustomDataDirectory.Name
-                                                                                + Path.DirectorySeparatorChar
-                                                                                + "manifest.xml"),
-                                                                            MessageBoxButtons.OK,
-                                                                            MessageBoxIcon.Error));
+                                Program.ShowMessageBox(
+                                    string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                        objCustomDataDirectory.XmlException.Message),
+                                    string.Format(CultureInfo,
+                                        LanguageManager.GetString("MessageTitle_FailedLoad") +
+                                        LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name +
+                                        Path.DirectorySeparatorChar + "manifest.xml"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
                             }
 
                             if (s_SetCustomDataDirectoryInfos.Contains(objCustomDataDirectory))
@@ -659,15 +647,12 @@ namespace Chummer
                                     {
                                         if (objExistingInfo.HasManifest)
                                         {
-                                            Program.MainFormOnAssignActions.Add(x =>
-                                                x.ShowMessageBox(
-                                                    string.Format(
-                                                        LanguageManager.GetString(
-                                                            "Message_Duplicate_CustomDataDirectory"),
-                                                        objExistingInfo.Name, objCustomDataDirectory.Name),
-                                                    LanguageManager.GetString(
-                                                        "MessageTitle_Duplicate_CustomDataDirectory"),
-                                                    MessageBoxButtons.OK, MessageBoxIcon.Error));
+                                            Program.ShowMessageBox(
+                                                string.Format(
+                                                    LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
+                                                    objExistingInfo.Name, objCustomDataDirectory.Name),
+                                                LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
+                                                MessageBoxButtons.OK, MessageBoxIcon.Error);
                                             continue;
                                         }
 
@@ -709,19 +694,14 @@ namespace Chummer
                         = new CustomDataDirectoryInfo(Path.GetFileName(strLoopDirectoryPath), strLoopDirectoryPath);
                     if (objCustomDataDirectory.XmlException != default)
                     {
-                        Program.MainFormOnAssignActions.Add(x =>
-                                                                x.ShowMessageBox(
-                                                                    string.Format(
-                                                                        CultureInfo,
-                                                                        LanguageManager.GetString("Message_FailedLoad"),
-                                                                        objCustomDataDirectory.XmlException.Message),
-                                                                    string.Format(CultureInfo,
-                                                                        LanguageManager.GetString(
-                                                                            "MessageTitle_FailedLoad") +
-                                                                        LanguageManager.GetString("String_Space")
-                                                                        + objCustomDataDirectory.Name
-                                                                        + Path.DirectorySeparatorChar + "manifest.xml"),
-                                                                    MessageBoxButtons.OK, MessageBoxIcon.Error));
+                        Program.ShowMessageBox(
+                            string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                objCustomDataDirectory.XmlException.Message),
+                            string.Format(CultureInfo,
+                                LanguageManager.GetString("MessageTitle_FailedLoad") +
+                                LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name +
+                                Path.DirectorySeparatorChar + "manifest.xml"), MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
                     }
 
                     if (s_SetCustomDataDirectoryInfos.Contains(objCustomDataDirectory))
@@ -734,17 +714,12 @@ namespace Chummer
                             {
                                 if (objExistingInfo.HasManifest)
                                 {
-                                    Program.MainFormOnAssignActions.Add(x =>
-                                                                            x.ShowMessageBox(
-                                                                                string.Format(
-                                                                                    LanguageManager.GetString(
-                                                                                        "Message_Duplicate_CustomDataDirectory"),
-                                                                                    objExistingInfo.Name,
-                                                                                    objCustomDataDirectory.Name),
-                                                                                LanguageManager.GetString(
-                                                                                    "MessageTitle_Duplicate_CustomDataDirectory"),
-                                                                                MessageBoxButtons.OK,
-                                                                                MessageBoxIcon.Error));
+                                    Program.ShowMessageBox(
+                                        string.Format(
+                                            LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
+                                            objExistingInfo.Name, objCustomDataDirectory.Name),
+                                        LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     continue;
                                 }
 
@@ -909,17 +884,17 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (ArgumentNullException e) when (e.ParamName == nameof(Registry))
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
         }
@@ -1630,17 +1605,17 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
         }
@@ -1745,17 +1720,17 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
         }

@@ -712,14 +712,14 @@ namespace Chummer
                 int intSumToTen = SumToTen(false);
                 if (intSumToTen != _objCharacter.Settings.SumtoTen)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SumtoTen"),
+                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SumtoTen"),
                         _objCharacter.Settings.SumtoTen.ToString(GlobalSettings.CultureInfo), intSumToTen.ToString(GlobalSettings.CultureInfo)));
                     return;
                 }
             }
             if (cboTalents.SelectedIndex == -1)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectTalent"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectTalent"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -731,7 +731,7 @@ namespace Chummer
                 || (cboSkill2.Visible && string.IsNullOrEmpty(strSkill2))
                 || (cboSkill3.Visible && string.IsNullOrEmpty(strSkill3)))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectSkill"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectSkill"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -770,7 +770,7 @@ namespace Chummer
                 || (cboSkill1.Visible && cboSkill3.Visible && strSkill1 == strSkill3)
                 || (cboSkill2.Visible && cboSkill3.Visible && strSkill2 == strSkill3))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_Duplicate"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_Duplicate"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -782,7 +782,7 @@ namespace Chummer
                     XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                     if (objXmlMetatype == null)
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return;
                     }
@@ -1210,7 +1210,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
@@ -1412,7 +1412,7 @@ namespace Chummer
             {
                 if (objXmlMetavariantPriorityNode == null)
                 {
-                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("String_NotSupported"), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("String_NotSupported"), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     cmdOK.Enabled = false;
                 }
                 else

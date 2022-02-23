@@ -397,7 +397,7 @@ namespace Chummer
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
                                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
@@ -436,7 +436,7 @@ namespace Chummer
 
                     if (blnOverCapacity)
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached"),
                                                         await LanguageManager.GetStringAsync("MessageTitle_CapacityReached"),
                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)

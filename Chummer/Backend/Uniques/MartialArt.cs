@@ -571,7 +571,7 @@ namespace Chummer
                         int intKarmaCost = objMartialArt.Cost;
                         if (intKarmaCost > objCharacter.Karma)
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
+                            Program.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
                                 MessageBoxIcon.Information);
                             ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
                             return false;

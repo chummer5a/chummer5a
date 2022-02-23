@@ -83,7 +83,7 @@ namespace Chummer
             CharacterBuildMethod eSelectedBuildMethod = objSelectedGameplayOption.BuildMethod;
             if (_blnForExistingCharacter && !_objCharacter.Created && _objCharacter.Settings.BuildMethod == _objCharacter.EffectiveBuildMethod && eSelectedBuildMethod != _eStartingBuildMethod)
             {
-                if (Program.MainForm.ShowMessageBox(this,
+                if (Program.ShowMessageBox(this,
                     string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SelectBP_SwitchBuildMethods"),
                         await LanguageManager.GetStringAsync("String_" + eSelectedBuildMethod), await LanguageManager.GetStringAsync("String_" + _eStartingBuildMethod)).WordWrap(),
                     await LanguageManager.GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods"), MessageBoxButtons.YesNo,

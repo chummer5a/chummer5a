@@ -563,7 +563,7 @@ namespace Chummer
                         !x.Fettered))
                     {
                         // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                        Program.MainForm.ShowMessageBox(null,
+                        Program.ShowMessageBox(
                             LanguageManager.GetString(EntityType == SpiritType.Sprite
                                 ? "Message_UnregisteredSpriteLimit"
                                 : "Message_UnboundSpiritLimit"),
@@ -581,7 +581,7 @@ namespace Chummer
 
                     if (value > intSkillValue)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             LanguageManager.GetString(EntityType == SpiritType.Spirit
                                 ? "Message_SpiritServices"
                                 : "Message_SpriteServices"),
@@ -639,7 +639,7 @@ namespace Chummer
                     !x.Fettered))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                    Program.MainForm.ShowMessageBox(null,
+                    Program.ShowMessageBox(
                         LanguageManager.GetString(EntityType == SpiritType.Sprite
                             ? "Message_UnregisteredSpriteLimit"
                             : "Message_UnboundSpiritLimit"),
@@ -814,7 +814,7 @@ namespace Chummer
                         !x.Fettered))
                     {
                         // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                        Program.MainForm.ShowMessageBox(null,
+                        Program.ShowMessageBox(
                             LanguageManager.GetString(EntityType == SpiritType.Sprite
                                 ? "Message_UnregisteredSpriteLimit"
                                 : "Message_UnboundSpiritLimit"),
@@ -972,7 +972,7 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
+                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
                         LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -1172,7 +1172,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();

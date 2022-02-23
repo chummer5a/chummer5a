@@ -137,7 +137,7 @@ namespace ChummerHub.Client.UI
             string text = LanguageManager.GetString("String_SINners_HowToGroupParentDescription", _strSelectedLanguage);
             this.DoThreadSafe(() =>
             {
-                PluginHandler.MainForm.ShowMessageBox(Parent, text, "How to ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(Parent, text, "How to ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
             });
         }
     }

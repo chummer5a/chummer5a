@@ -77,7 +77,7 @@ namespace Chummer
         {
             if (!File.Exists(strFile))
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                                   await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
@@ -145,7 +145,7 @@ namespace Chummer
                 }
                 catch (IOException)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
                                       await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
@@ -153,7 +153,7 @@ namespace Chummer
                 }
                 catch (NotSupportedException)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
                                       await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
@@ -161,7 +161,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                     return null;
                 }

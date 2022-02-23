@@ -61,7 +61,7 @@ namespace Chummer
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterSettings.NuyenPerBPWftP != 0)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange"),
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange"),
                     await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }

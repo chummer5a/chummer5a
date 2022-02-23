@@ -342,7 +342,7 @@ namespace Chummer.Plugins
                     catch (Exception e)
                     {
                         Log.Error(e);
-                        MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
+                        Program.ShowMessageBox("Error loading SINner: " + e.Message);
                     }
                     string msg = "Load:" + argument;
                     Log.Trace("Sending argument to Pipeserver: " + msg);
@@ -667,7 +667,7 @@ namespace Chummer.Plugins
                     }
                     else
                     {
-                        MainForm.ShowMessageBox("No archetypes found!");
+                        Program.ShowMessageBox("No archetypes found!");
                     }
                 }
             }
@@ -907,7 +907,7 @@ namespace Chummer.Plugins
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
             }
         }
 
@@ -935,7 +935,7 @@ namespace Chummer.Plugins
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
             }
         }
 
@@ -977,7 +977,7 @@ namespace Chummer.Plugins
                     catch (Exception exception)
                     {
                         Log.Error(exception);
-                        MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                        Program.ShowMessageBox("Error sharing SINner: " + exception.Message);
                     }
 
                     break;
@@ -1060,7 +1060,7 @@ namespace Chummer.Plugins
                     catch (Exception exception)
                     {
                         Log.Error(exception);
-                        MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                        Program.ShowMessageBox("Error sharing SINner: " + exception.Message);
                     }
 
                     break;
@@ -1107,7 +1107,7 @@ namespace Chummer.Plugins
                         catch (Exception exception)
                         {
                             Log.Error(exception);
-                            MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                            Program.ShowMessageBox("Error sharing SINner: " + exception.Message);
                         }
                     }
 
@@ -1129,7 +1129,7 @@ namespace Chummer.Plugins
                         catch (Exception exception)
                         {
                             Log.Error(exception);
-                            MainForm.ShowMessageBox("Error sharing Group: " + exception.Message);
+                            Program.ShowMessageBox("Error sharing Group: " + exception.Message);
                         }
                     }
 
@@ -1280,14 +1280,14 @@ namespace Chummer.Plugins
                             {
                                 await StaticUtils.WebCall(callback, 0,
                                     "Character not found");
-                                MainForm.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
+                                Program.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
                             }
                         }
                     }
                     catch (Exception e)
                     {
                         Log.Error(e);
-                        MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
+                        Program.ShowMessageBox("Error loading SINner: " + e.Message);
                     }
 
                 }

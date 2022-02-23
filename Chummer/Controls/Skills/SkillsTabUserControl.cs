@@ -741,7 +741,7 @@ namespace Chummer.UI.Skills
             // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
             if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
                 _objCharacter.SkillsSection.Skills.Remove(objSkill);
                 return;
             }
@@ -784,7 +784,7 @@ namespace Chummer.UI.Skills
                 if (_objCharacter.SkillsSection.HasAvailableNativeLanguageSlots
                     && (skill.IsLanguage || string.IsNullOrEmpty(skill.Type)))
                 {
-                    DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
+                    DialogResult eDialogResult = Program.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
                                       await LanguageManager.GetStringAsync("Message_NewNativeLanguageSkill"),
                                       1 + ImprovementManager.ValueOf(

@@ -43,7 +43,7 @@ namespace Chummer
             }
             catch
             {
-                Program.MainForm.ShowMessageBox(this,
+                Program.ShowMessageBox(this,
                     await LanguageManager.GetStringAsync("Message_History_FileNotFound"),
                     await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK,
                     MessageBoxIcon.Exclamation);

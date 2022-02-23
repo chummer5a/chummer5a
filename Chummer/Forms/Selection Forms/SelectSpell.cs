@@ -463,7 +463,7 @@ namespace Chummer
                     {
                         if (intAlchPrepCount >= intSpellLimit)
                         {
-                            Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
@@ -471,13 +471,13 @@ namespace Chummer
                     {
                         if (intRitualCount >= intSpellLimit)
                         {
-                            Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             return;
                         }
                     }
                     else if (intSpellCount >= intSpellLimit)
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"),
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"),
                             await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }

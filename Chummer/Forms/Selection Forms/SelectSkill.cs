@@ -237,7 +237,7 @@ namespace Chummer
 
                 if (lstSkills.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
                                       await LanguageManager.GetStringAsync("Message_Improvement_EmptySelectionListNamed"),

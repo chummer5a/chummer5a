@@ -2038,7 +2038,7 @@ namespace Chummer
 
                 if (lstSelectedContacts.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound"),
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound"),
                         LanguageManager.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                     throw new AbortedException();
                 }
@@ -4286,7 +4286,7 @@ namespace Chummer
 
                             if (lstArts.Count == 0)
                             {
-                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                               LanguageManager.GetString(
                                                                                   "Message_Improvement_EmptySelectionListNamed"),
                                                                               SourceName));
@@ -4397,7 +4397,7 @@ namespace Chummer
 
                             if (lstMetamagics.Count == 0)
                             {
-                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                               LanguageManager.GetString(
                                                                                   "Message_Improvement_EmptySelectionListNamed"),
                                                                               SourceName));
@@ -4517,7 +4517,7 @@ namespace Chummer
 
                             if (lstEchoes.Count == 0)
                             {
-                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                               LanguageManager.GetString(
                                                                                   "Message_Improvement_EmptySelectionListNamed"),
                                                                               SourceName));
@@ -5841,7 +5841,7 @@ namespace Chummer
 
                 if (lstItems.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString(
                                                                       "Message_Improvement_EmptySelectionListNamed"),
                                                                   SourceName));
@@ -6007,7 +6007,7 @@ namespace Chummer
 
                 if (lstQualities.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString(
                                                                       "Message_Improvement_EmptySelectionListNamed"),
                                                                   SourceName));
@@ -6071,7 +6071,7 @@ namespace Chummer
 
                     if (lstQualities.Count == 0)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                       LanguageManager.GetString(
                                                                           "Message_Improvement_EmptySelectionListNamed"),
                                                                       SourceName));

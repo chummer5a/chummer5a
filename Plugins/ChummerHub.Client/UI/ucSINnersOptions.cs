@@ -564,7 +564,7 @@ namespace ChummerHub.Client.UI
                     }
                 }
 
-                Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
+                Program.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
             }
         }
 
@@ -584,7 +584,7 @@ namespace ChummerHub.Client.UI
                 {
                     await BackupTask(folderBrowserDialog1).ContinueWith(a =>
                     {
-                        Program.MainForm.ShowMessageBox(a.Status.ToString());
+                        Program.ShowMessageBox(a.Status.ToString());
                     });
                 }
             }
@@ -618,7 +618,7 @@ namespace ChummerHub.Client.UI
                         catch (Exception e2)
                         {
                             Log.Error(e2);
-                            Invoke(new Action(() => Program.MainForm.ShowMessageBox(e2.Message)));
+                            Invoke(new Action(() => Program.ShowMessageBox(e2.Message)));
                         }
                     }
                     //getsinner.Dispose();
@@ -626,7 +626,7 @@ namespace ChummerHub.Client.UI
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
+                    Invoke(new Action(() => Program.ShowMessageBox(ex.Message)));
                 }
             }
         }
@@ -641,7 +641,7 @@ namespace ChummerHub.Client.UI
                 {
                     await RestoreTask(folderBrowserDialog1).ContinueWith(a =>
                     {
-                        Program.MainForm.ShowMessageBox(a.Status.ToString());
+                        Program.ShowMessageBox(a.Status.ToString());
                     });
                 }
             }
@@ -700,7 +700,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
             }
         }
 

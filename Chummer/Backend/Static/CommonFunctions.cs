@@ -1204,7 +1204,7 @@ namespace Chummer
         public static bool ConfirmDelete(string strMessage)
         {
             return !GlobalSettings.ConfirmDelete ||
-                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
+                   Program.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -1214,7 +1214,7 @@ namespace Chummer
         public static bool ConfirmKarmaExpense(string strMessage)
         {
             return !GlobalSettings.ConfirmKarmaExpense ||
-                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
+                   Program.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -1310,7 +1310,7 @@ namespace Chummer
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
-                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
+                if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
                     await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))
@@ -1383,7 +1383,7 @@ namespace Chummer
             {
                 if (!blnOpenOptions)
                     return;
-                if (Program.MainForm.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
+                if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
                         await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))

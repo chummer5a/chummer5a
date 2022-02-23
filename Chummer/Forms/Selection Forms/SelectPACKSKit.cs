@@ -826,7 +826,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedKit))
                 return;
 
-            if (Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DeletePACKSKit"), strSelectedKit),
+            if (Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DeletePACKSKit"), strSelectedKit),
                     await LanguageManager.GetStringAsync("MessageTitle_Delete"), MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.No)
                 return;
 

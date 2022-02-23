@@ -215,7 +215,7 @@ namespace Chummer.Backend
             }
             catch (Exception nex)
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     "Failed to create crash report." + Environment.NewLine +
                     "Chummer crashed with version: " + Utils.CurrentChummerVersion + Environment.NewLine +
                     "Here is some information to help the developers figure out why:" + Environment.NewLine + nex +

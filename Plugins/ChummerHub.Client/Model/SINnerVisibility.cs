@@ -42,7 +42,7 @@ namespace ChummerHub.Client.Sinners
         {
             if (!IsValidEmail(email))
             {
-                Program.MainForm.ShowMessageBox("Please enter a valid email address!");
+                Program.ShowMessageBox("Please enter a valid email address!");
                 return;
             }
             SINnerUserRight ur = UserRightsObservable.FirstOrDefault(a => a?.EMail != null && a.EMail.Equals(email, StringComparison.OrdinalIgnoreCase)) ?? new SINnerUserRight
