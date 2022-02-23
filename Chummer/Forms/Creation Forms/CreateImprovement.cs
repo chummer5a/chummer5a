@@ -634,14 +634,14 @@ namespace Chummer
             // Make sure a value has been selected if necessary.
             if (txtTranslateSelection.Visible && string.IsNullOrEmpty(txtSelect.Text))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectItem"), await LanguageManager.GetStringAsync("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectItem"), await LanguageManager.GetStringAsync("MessageTitle_SelectItem"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Make sure a value has been provided for the name.
             if (string.IsNullOrEmpty(txtName.Text))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementName"), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementName"), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtName.Focus();
                 return;
             }

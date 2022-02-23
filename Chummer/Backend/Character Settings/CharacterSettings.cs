@@ -702,7 +702,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     return false;
                 }
             }
@@ -1142,14 +1142,14 @@ namespace Chummer
                 catch (IOException)
                 {
                     if (blnShowDialogs)
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     return false;
                 }
                 catch (XmlException)
                 {
                     if (blnShowDialogs)
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     return false;
                 }
@@ -1157,7 +1157,7 @@ namespace Chummer
             else
             {
                 if (blnShowDialogs)
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 return false;
             }

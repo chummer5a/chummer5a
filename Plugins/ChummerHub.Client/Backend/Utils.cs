@@ -383,7 +383,7 @@ namespace ChummerHub.Client.Backend
                     msg += "(the complete error description is copied to clipboard)" + Environment.NewLine + Environment.NewLine + inner;
                     PluginHandler.MainForm.DoThreadSafe(() => { Clipboard.SetText(ex.ToString()); });
                     msg += Environment.NewLine + Environment.NewLine + "Please check the Plugin-Options dialog.";
-                    Program.MainForm.ShowMessageBox(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    Program.ShowMessageBox(msg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
             return client;
@@ -883,7 +883,7 @@ namespace ChummerHub.Client.Backend
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
                 throw;
             }
             return null;
@@ -920,7 +920,7 @@ namespace ChummerHub.Client.Backend
                         }
                         catch (Exception exception)
                         {
-                            Program.MainForm.ShowMessageBox(exception.Message);
+                            Program.ShowMessageBox(exception.Message);
                         }
                     }
                 }
@@ -928,7 +928,7 @@ namespace ChummerHub.Client.Backend
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.ToString());
+                Program.ShowMessageBox(ex.ToString());
             }
             return null;
         }
@@ -973,7 +973,7 @@ namespace ChummerHub.Client.Backend
                 string msg = "Exception while loading " + fileName + ":" + Environment.NewLine + ex;
                 Log.Warn(msg);
                 /* run your code here */
-                Program.MainForm.ShowMessageBox(msg);
+                Program.ShowMessageBox(msg);
             }
             finally
             {
@@ -1314,7 +1314,7 @@ namespace ChummerHub.Client.Backend
                             {
                                 if (res?.CallSuccess == false)
                                 {
-                                    Program.MainForm.ShowMessageBox(msg);
+                                    Program.ShowMessageBox(msg);
                                 }
                                 using (new CursorWait(PluginHandler.MainForm, true))
                                 {
@@ -1334,7 +1334,7 @@ namespace ChummerHub.Client.Backend
                     catch (Exception e)
                     {
                         Log.Error(e);
-                        Program.MainForm.ShowMessageBox(e.Message);
+                        Program.ShowMessageBox(e.Message);
                     }
                 }
             }

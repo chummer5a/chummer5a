@@ -220,7 +220,7 @@ namespace Chummer
                     XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[id = " + strSelectedMetatype.CleanXPath() + ']');
                     if (objXmlMetatype == null)
                     {
-                        Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
                             MessageBoxIcon.Information);
                         return;
                     }
@@ -307,7 +307,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }

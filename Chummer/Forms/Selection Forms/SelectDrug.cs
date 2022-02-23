@@ -809,7 +809,7 @@ namespace Chummer
                 return;
             if (cboGrade.Text.StartsWith('*'))
             {
-                Program.MainForm.ShowMessageBox(this,
+                Program.ShowMessageBox(this,
                     await LanguageManager.GetStringAsync("Message_BannedGrade"),
                     await LanguageManager.GetStringAsync("MessageTitle_BannedGrade"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -3786,7 +3786,7 @@ namespace Chummer.Backend.Equipment
 
                 if (intFociTotal + intNewRating > intMaxFocusTotal && !_objCharacter.IgnoreRules)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"),
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_FocusMaximumForce"),
                         LanguageManager.GetString("MessageTitle_FocusMaximum"), MessageBoxButtons.OK,
                         MessageBoxIcon.Information);
                     return false;

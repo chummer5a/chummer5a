@@ -214,7 +214,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                Program.ShowMessageBox(objControl, e.ToString());
 #endif
             }
         }
@@ -316,7 +316,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                Program.ShowMessageBox(objControl, e.ToString());
 #endif
             }
         }
@@ -365,7 +365,7 @@ namespace Chummer
                 {
                     Log.Error(e);
 #if DEBUG
-                    Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                    Program.ShowMessageBox(objControl, e.ToString());
 #endif
                 }
             }
@@ -416,7 +416,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                Program.ShowMessageBox(objControl, e.ToString());
 #endif
             }
         }
@@ -509,7 +509,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.MainForm?.ShowMessageBox(objControl, e.ToString());
+                Program.ShowMessageBox(objControl, e.ToString());
 #endif
             }
 

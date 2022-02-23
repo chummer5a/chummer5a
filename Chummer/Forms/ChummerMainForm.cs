@@ -224,7 +224,7 @@ namespace Chummer
                                                 GlobalSettings.FavoriteCharacters.All(x =>
                                                     Path.GetFileName(x) != objMostRecentAutosave.Name))
                                             {
-                                                if (ShowMessageBox(
+                                                if (Program.ShowMessageBox(
                                                         string.Format(GlobalSettings.CultureInfo,
                                                                       await LanguageManager.GetStringAsync(
                                                                           "Message_PossibleCrashAutosaveFound"),
@@ -1008,9 +1008,9 @@ namespace Chummer
 
         private async void mnuHeroLabImporter_Click(object sender, EventArgs e)
         {
-            if (ShowMessageBox(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning"),
-                               await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title"),
-                               MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning"),
+                    await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title"),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
             HeroLabImporter frmImporter = new HeroLabImporter();
@@ -1082,30 +1082,11 @@ namespace Chummer
 #endif
 
         /// <summary>
-        /// This makes sure, that the MessageBox is shown in the UI Thread.
-        /// https://stackoverflow.com/questions/559252/does-messagebox-show-automatically-marshall-to-the-ui-thread
+        /// WARNING: DO NOT CALL THIS METHOD DIRECTLY!
+        /// You probably want to use Program.ShowMessageBox instead of doing this through MainForm
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="caption"></param>
-        /// <param name="icon"></param>
-        /// <param name="defaultButton"></param>
-        /// <param name="buttons"></param>
-        /// <returns></returns>
-        public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
+        internal DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
-            return ShowMessageBox(null, message, caption, buttons, icon);
-        }
-
-        public DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
-        {
-            if (Utils.IsUnitTest)
-            {
-                string msg = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine;
-                msg += "Caption: " + caption + Environment.NewLine;
-                msg += "Message: " + message;
-                throw new ArgumentException(msg);
-            }
-
             if (owner == null)
                 owner = _frmProgressBar.IsNullOrDisposed() ? this as Control : _frmProgressBar;
 
@@ -1130,8 +1111,8 @@ namespace Chummer
 
                 try
                 {
-                    return (DialogResult)owner.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox),
-                        message, caption, buttons, icon, defaultButton);
+                    return (DialogResult)owner.Invoke(new PassControlStringStringReturnDialogResultDelegate(Program.ShowMessageBox),
+                        owner, message, caption, buttons, icon, defaultButton);
                 }
                 catch (ObjectDisposedException)
                 {
@@ -1145,11 +1126,11 @@ namespace Chummer
                 }
             }
 
-            return CenterableMessageBox.Show(_frmProgressBar.IsNullOrDisposed() ? this : _frmProgressBar as IWin32Window, message, caption, buttons, icon, defaultButton);
+            return CenterableMessageBox.Show(_frmProgressBar.IsNullOrDisposed() ? owner.FindForm() : _frmProgressBar, message, caption, buttons, icon, defaultButton);
         }
 
-        public delegate DialogResult PassStringStringReturnDialogResultDelegate(
-            string s1, string s2, MessageBoxButtons buttons,
+        public delegate DialogResult PassControlStringStringReturnDialogResultDelegate(
+            Control owner, string s1, string s2, MessageBoxButtons buttons,
             MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
 
         /// <summary>
@@ -1330,7 +1311,7 @@ namespace Chummer
                     _frmProgressBar.PerformStep(objCharacter == null ? strUI : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
                     if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                         continue;
-                    if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500) && ShowMessageBox(
+                    if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500) && Program.ShowMessageBox(
                         string.Format(await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning"), objCharacter.CharacterName),
                         await LanguageManager.GetStringAsync("MessageTitle_TooManyHandlesWarning"),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
@@ -1455,7 +1436,7 @@ namespace Chummer
                             }
                         }
                     }
-                    if (blnLoadAutosave && ShowMessageBox(
+                    if (blnLoadAutosave && Program.ShowMessageBox(
                         string.Format(GlobalSettings.CultureInfo,
                                       // ReSharper disable once MethodHasAsyncOverload
                                       blnSync ? LanguageManager.GetString("Message_AutosaveFound") : await LanguageManager.GetStringAsync("Message_AutosaveFound"),
@@ -1522,17 +1503,17 @@ namespace Chummer
             }
             else if (blnShowErrors)
             {
-                ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                             blnSync
-                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                 ? LanguageManager.GetString("Message_FileNotFound")
-                                                 : await LanguageManager.GetStringAsync("Message_FileNotFound"),
-                                             strFileName),
-                               blnSync
-                                   // ReSharper disable once MethodHasAsyncOverload
-                                   ? LanguageManager.GetString("MessageTitle_FileNotFound")
-                                   : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"),
-                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                        blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? LanguageManager.GetString("Message_FileNotFound")
+                            : await LanguageManager.GetStringAsync("Message_FileNotFound"),
+                        strFileName),
+                    blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? LanguageManager.GetString("MessageTitle_FileNotFound")
+                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
         }
@@ -1806,7 +1787,7 @@ namespace Chummer
                                         x => Path.GetFileName(x) != objMostRecentAutosave.Name)
                                     && GlobalSettings.FavoriteCharacters.All(
                                         x => Path.GetFileName(x) != objMostRecentAutosave.Name)
-                                    && ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                    && Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                     LanguageManager.GetString(
                                                                         "Message_PossibleCrashAutosaveFound"),
                                                                     objMostRecentAutosave.Name,

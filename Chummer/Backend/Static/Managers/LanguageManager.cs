@@ -221,7 +221,7 @@ namespace Chummer
             {
                 if (!objNewLanguage.ErrorAlreadyShown)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         "Language with code " + strLanguage + " could not be loaded for the following reasons:" +
                         Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -758,7 +758,7 @@ namespace Chummer
             }
 
             // Display the message.
-            Program.MainForm.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
+            Program.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
                 "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 

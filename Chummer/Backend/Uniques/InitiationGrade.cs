@@ -350,7 +350,7 @@ namespace Chummer
             {
                 if (Grade != _objCharacter.InitiateGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
                         LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return false;
@@ -363,7 +363,7 @@ namespace Chummer
             {
                 if (Grade != _objCharacter.SubmersionGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
                         LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return false;

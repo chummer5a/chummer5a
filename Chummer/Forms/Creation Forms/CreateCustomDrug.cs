@@ -142,13 +142,13 @@ namespace Chummer
             // Make sure the suite and file name fields are populated.
             if (string.IsNullOrEmpty(txtDrugName.Text))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name"), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name"), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation"), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation"), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -176,7 +176,7 @@ namespace Chummer
             if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
-                Program.MainForm.ShowMessageBox(this,
+                Program.ShowMessageBox(this,
                     string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning"),
                         objNodeData.DrugComponent.Limit));
                 return;
@@ -185,7 +185,7 @@ namespace Chummer
             //drug can have only one foundation
             if (objNodeData.DrugComponent.Category == "Foundation" && _lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
             {
-                Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning"));
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning"));
                 return;
             }
 
@@ -214,7 +214,7 @@ namespace Chummer
                                                 objNodeData.DrugComponent.CurrentDisplayName + strColonString +
                                                 strSpaceString + objItem.Key +
                                                 decBlockAttrValue.ToString("+#.#;-#.#;", GlobalSettings.CultureInfo);
-                            Program.MainForm.ShowMessageBox(this, strMessage);
+                            Program.ShowMessageBox(this, strMessage);
                             return;
                         }
                     }

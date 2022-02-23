@@ -268,7 +268,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.MainForm.ShowMessageBox(this,
+                            Program.ShowMessageBox(this,
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
@@ -325,7 +325,7 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound"));
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound"));
                     return;
                 }
                 using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
@@ -4075,7 +4075,7 @@ namespace Chummer
                                                                 objNode.Checked = false;
                                                                 if (!blnWarned)
                                                                 {
-                                                                    Program.MainForm.ShowMessageBox(this,
+                                                                    Program.ShowMessageBox(this,
                                                                         LanguageManager.GetString("Message_FocusMaximumForce"),
                                                                         LanguageManager.GetString("MessageTitle_FocusMaximum"),
                                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -4263,7 +4263,7 @@ namespace Chummer
                                                                 objNode.Checked = false;
                                                                 if (!blnWarned)
                                                                 {
-                                                                    Program.MainForm.ShowMessageBox(this,
+                                                                    Program.ShowMessageBox(this,
                                                                         LanguageManager.GetString("Message_FocusMaximumForce"),
                                                                         LanguageManager.GetString("MessageTitle_FocusMaximum"),
                                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -6375,12 +6375,12 @@ namespace Chummer
                     }
                     catch (IOException ex)
                     {
-                        Program.MainForm.ShowMessageBox(this, ex.ToString());
+                        Program.ShowMessageBox(this, ex.ToString());
                         return;
                     }
                     catch (XmlException ex)
                     {
-                        Program.MainForm.ShowMessageBox(this, ex.ToString());
+                        Program.ShowMessageBox(this, ex.ToString());
                         return;
                     }
                 }
@@ -6648,7 +6648,7 @@ namespace Chummer
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.BoundSpiritLimit)
             {
-                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_BoundSpiritLimit"), CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
+                Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_BoundSpiritLimit"), CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
                     LanguageManager.GetString("MessageTitle_BoundSpiritLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6673,7 +6673,7 @@ namespace Chummer
                 CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
                 CharacterObject.RegisteredSpriteLimit)
             {
-                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_RegisteredSpriteLimit"), CharacterObject.Settings.RegisteredSpriteExpression, CharacterObject.RegisteredSpriteLimit),
+                Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_RegisteredSpriteLimit"), CharacterObject.Settings.RegisteredSpriteExpression, CharacterObject.RegisteredSpriteLimit),
                     LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -6745,7 +6745,7 @@ namespace Chummer
                             return false;
                         if (!File.Exists(dlgOpenFileDialog.FileName))
                         {
-                            Program.MainForm.ShowMessageBox(string.Format(
+                            Program.ShowMessageBox(string.Format(
                                 await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Read_Accessed"),
                                 dlgOpenFileDialog.FileName));
                             blnMakeLoop = true;
@@ -7164,7 +7164,7 @@ namespace Chummer
                             {
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    Program.MainForm.ShowMessageBox(this,
+                                    Program.ShowMessageBox(this,
                                         await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
                                         MessageBoxButtons.OK,

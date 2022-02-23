@@ -1579,7 +1579,7 @@ namespace Chummer.Backend.Equipment
             decimal decAmount = TotalMonthlyCost;
             if (decAmount > _objCharacter.Nuyen)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughNuyen"), LanguageManager.GetString("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 

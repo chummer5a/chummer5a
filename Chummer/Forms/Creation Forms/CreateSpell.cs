@@ -793,7 +793,7 @@ namespace Chummer
             // Show the message if necessary.
             if (!string.IsNullOrEmpty(strMessage))
             {
-                Program.MainForm.ShowMessageBox(this, strMessage, await LanguageManager.GetStringAsync("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(this, strMessage, await LanguageManager.GetStringAsync("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

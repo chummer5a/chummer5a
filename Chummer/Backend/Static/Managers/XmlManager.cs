@@ -596,19 +596,19 @@ namespace Chummer
                             sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
                         }
 
-                        Program.MainForm?.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
-                                                                       , LanguageManager.GetString(
-                                                                           "Message_DuplicateGuidWarning")
-                                                                       , setDuplicateIDs.Count
-                                                                       , strFileName
-                                                                       , sbdDuplicatesNames.ToString()));
+                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
+                            , LanguageManager.GetString(
+                                "Message_DuplicateGuidWarning")
+                            , setDuplicateIDs.Count
+                            , strFileName
+                            , sbdDuplicatesNames.ToString()));
                     }
                 }
             }
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
-                Program.MainForm?.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
+                Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
                     , LanguageManager.GetString("Message_NonGuidIdWarning")
                     , lstItemsWithMalformedIDs.Count
                     , strFileName
@@ -1210,7 +1210,7 @@ namespace Chummer
                         }
                         catch (ArgumentException ex)
                         {
-                            Program.MainForm?.ShowMessageBox(ex.ToString());
+                            Program.ShowMessageBox(ex.ToString());
                             return false;
                         }
 
@@ -1396,7 +1396,7 @@ namespace Chummer
                                                             }
                                                             catch (ArgumentException ex)
                                                             {
-                                                                Program.MainForm?.ShowMessageBox(ex.ToString());
+                                                                Program.ShowMessageBox(ex.ToString());
                                                                 // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
                                                                 // So just exit out early instead of spamming the user with a bunch of error messages
                                                                 if (!blnReturn)
@@ -1424,7 +1424,7 @@ namespace Chummer
                                                     }
                                                     catch (ArgumentException ex)
                                                     {
-                                                        Program.MainForm?.ShowMessageBox(ex.ToString());
+                                                        Program.ShowMessageBox(ex.ToString());
                                                         // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
                                                         // So just exit out early instead of spamming the user with a bunch of error messages
                                                         if (!blnReturn)
@@ -1646,12 +1646,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                Program.MainForm?.ShowMessageBox(ex.ToString());
+                Program.ShowMessageBox(ex.ToString());
                 return;
             }
             catch (XmlException ex)
             {
-                Program.MainForm?.ShowMessageBox(ex.ToString());
+                Program.ShowMessageBox(ex.ToString());
                 return;
             }
 

@@ -536,7 +536,7 @@ namespace ChummerHub.Client.Sinners
                                 "\tand use this new version from now on," + Environment.NewLine;
                             message += "but only on this client (NOT recommended)."
                                        + Environment.NewLine + Environment.NewLine;
-                            DialogResult result = PluginHandler.MainForm.ShowMessageBox(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
+                            DialogResult result = Program.ShowMessageBox(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
                                 MessageBoxIcon.Asterisk);
                             switch (result)
                             {
@@ -822,7 +822,7 @@ namespace ChummerHub.Client.Sinners
             catch(Exception e)
             {
                 Log.Error(e);
-                Program.MainForm.ShowMessageBox(e.ToString());
+                Program.ShowMessageBox(e.ToString());
             }
             return true;
         }

@@ -463,7 +463,7 @@ namespace Chummer
                     if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
                     {
                         if (blnShowMessage)
-                            Program.MainForm.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectQuality_QualityLimit"), await LanguageManager.GetStringAsync("MessageTitle_SelectQuality_QualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectQuality_QualityLimit"), await LanguageManager.GetStringAsync("MessageTitle_SelectQuality_QualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
                 }
@@ -595,7 +595,7 @@ namespace Chummer
                     if (blnRequirementForbidden)
                     {
                         if (blnShowMessage)
-                            Program.MainForm.ShowMessageBox(this,
+                            Program.ShowMessageBox(this,
                                                             await LanguageManager.GetStringAsync(
                                                                 "Message_SelectQuality_QualityRestriction")
                                                             + sbdForbidden,
@@ -1346,7 +1346,7 @@ namespace Chummer
                         {
                             string strMessage = await LanguageManager.GetStringAsync("Message_SelectQuality_QualityRequirement");
                             strMessage += sbdRequirement.ToString();
-                            Program.MainForm.ShowMessageBox(this, strMessage,
+                            Program.ShowMessageBox(this, strMessage,
                                                             await LanguageManager.GetStringAsync(
                                                                 "MessageTitle_SelectQuality_QualityRequirement"),
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);

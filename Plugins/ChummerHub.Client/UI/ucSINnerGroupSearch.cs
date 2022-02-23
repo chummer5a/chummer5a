@@ -155,7 +155,7 @@ namespace ChummerHub.Client.UI
             catch(Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
             }
             finally
             {
@@ -250,7 +250,7 @@ namespace ChummerHub.Client.UI
                                         msg = new StringBuilder(a.Exception.Message);
                                 }
 
-                                Program.MainForm.ShowMessageBox(msg.ToString());
+                                Program.ShowMessageBox(msg.ToString());
                                 return;
                             }
 
@@ -265,7 +265,7 @@ namespace ChummerHub.Client.UI
                                              item.Groupname +
                                              ".";
                                 Log.Info(msg);
-                                Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, EventArgs.Empty));
                             }
                             else
@@ -278,7 +278,7 @@ namespace ChummerHub.Client.UI
                                              item.Groupname +
                                              ".";
                                 Log.Info(msg);
-                                Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                Program.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, EventArgs.Empty));
                                 await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                             }
@@ -311,7 +311,7 @@ namespace ChummerHub.Client.UI
                     catch (Exception e)
                     {
                         Log.Warn("Group disbanded: " + e.Message);
-                        Program.MainForm.ShowMessageBox("Group " + myGroup.Groupname
+                        Program.ShowMessageBox("Group " + myGroup.Groupname
                                                                  + " disbanded because of no members left.");
                     }
                     finally
@@ -327,13 +327,13 @@ namespace ChummerHub.Client.UI
 
                     string msg = "StatusCode: " + false + " after DeleteLeaveGroupAsync!" + Environment.NewLine;
                     Log.Info(msg);
-                    Program.MainForm.ShowMessageBox(msg);
+                    Program.ShowMessageBox(msg);
                 }
             }
             catch (Exception e)
             {
                 Log.Error(e);
-                Program.MainForm.ShowMessageBox(e.Message);
+                Program.ShowMessageBox(e.Message);
             }
             if (!noupdate)
                 OnGroupJoinCallback?.Invoke(this, myGroup);
@@ -468,7 +468,7 @@ namespace ChummerHub.Client.UI
                     catch (Exception exception)
                     {
                         Log.Error(exception);
-                        Program.MainForm.ShowMessageBox(exception.Message);
+                        Program.ShowMessageBox(exception.Message);
                     }
                     finally
                     {
@@ -570,7 +570,7 @@ namespace ChummerHub.Client.UI
                     if (response)
                     {
                         bSearch_Click(sender, e);
-                        Program.MainForm.ShowMessageBox("Group deleted.");
+                        Program.ShowMessageBox("Group deleted.");
                     }
                     else
                     {
@@ -583,7 +583,7 @@ namespace ChummerHub.Client.UI
                 catch (Exception exception)
                 {
                     Log.Error(exception);
-                    Program.MainForm.ShowMessageBox(exception.ToString(), "Error deleting Group", MessageBoxButtons.OK,
+                    Program.ShowMessageBox(exception.ToString(), "Error deleting Group", MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 }
             }
@@ -796,7 +796,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.ToString());
+                Program.ShowMessageBox(ex.ToString());
             }
         }
 

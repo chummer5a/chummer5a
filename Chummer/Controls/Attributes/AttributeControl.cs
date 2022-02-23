@@ -214,7 +214,7 @@ namespace Chummer.UI.Attributes
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
             if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -303,7 +303,7 @@ namespace Chummer.UI.Attributes
             if (_objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject))
                 return true;
 
-            Program.MainForm.ShowMessageBox(
+            Program.ShowMessageBox(
                 string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_AttributeMaximum"),
                               _objCharacter.Settings.MaxNumberMaxAttributesCreate),
                 await LanguageManager.GetStringAsync("MessageTitle_Attribute"), MessageBoxButtons.OK,
@@ -327,12 +327,12 @@ namespace Chummer.UI.Attributes
             // Edge cannot go below 1.
             if (AttributeObject.Value <= 0)
             {
-                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             // Verify that the user wants to Burn a point of Edge.
-            if (Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_BurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_BurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             AttributeObject.Degrade(1);
