@@ -133,108 +133,125 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test02_LoadThenSave()
+        public async Task Test02_LoadThenSave()
         {
             Debug.WriteLine("Unit test initialized for: Test02_LoadThenSave()");
+            List<Task> lstTasks = new List<Task>(TestFiles.Length);
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
-                using (Character objCharacter = LoadCharacter(objFileInfo))
+                lstTasks.Add(Task.Run(async () =>
                 {
-                    SaveCharacter(objCharacter, strDestination);
-                    using (Character _ = LoadCharacter(new FileInfo(strDestination)))
+                    using (Character objCharacter = await LoadCharacter(objFileInfo))
                     {
-                        // Assert on failed load will already happen inside LoadCharacter
+                        await SaveCharacter(objCharacter, strDestination);
+                        using (Character _ = await LoadCharacter(new FileInfo(strDestination)))
+                        {
+                            // Assert on failed load will already happen inside LoadCharacter
+                        }
                     }
-                }
+                }));
             }
+            await Task.WhenAll(lstTasks);
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test03_LoadThenSaveIsDeterministic()
+        public async Task Test03_LoadThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Test03_LoadThenSaveIsDeterministic()");
+            List<Task> lstTasks = new List<Task>(TestFiles.Length);
             foreach (FileInfo objBaseFileInfo in TestFiles)
             {
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + objBaseFileInfo.Name);
-                using (Character objCharacterControl = LoadCharacter(objBaseFileInfo))
+                lstTasks.Add(Task.Run(async () =>
                 {
-                    SaveCharacter(objCharacterControl, strDestinationControl);
-                    // Second Load-Save cycle
-                    string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
-                    using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
+                    using (Character objCharacterControl = await LoadCharacter(objBaseFileInfo))
                     {
-                        SaveCharacter(objCharacterTest, strDestinationTest);
-                        // Check to see that character after first load cycle is consistent with character after second
-                        using (FileStream controlFileStream =
-                            File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                        await SaveCharacter(objCharacterControl, strDestinationControl);
+                        // Second Load-Save cycle
+                        string strDestinationTest =
+                            Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
+                        using (Character objCharacterTest = await LoadCharacter(new FileInfo(strDestinationControl)))
                         {
-                            using (FileStream testFileStream =
-                                File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                            await SaveCharacter(objCharacterTest, strDestinationTest);
+                            // Check to see that character after first load cycle is consistent with character after second
+                            using (FileStream controlFileStream =
+                                   File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
                             {
-                                try
+                                using (FileStream testFileStream =
+                                       File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
                                 {
-                                    Diff myDiff = DiffBuilder
-                                        .Compare(controlFileStream)
-                                        .WithTest(testFileStream)
-                                        .CheckForIdentical()
-                                        .WithNodeFilter(x =>
-                                            x.Name !=
-                                            "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
-                                        .WithNodeMatcher(
-                                            new DefaultNodeMatcher(
-                                                ElementSelectors.Or(
-                                                    ElementSelectors.ByNameAndText,
-                                                    ElementSelectors.ByName)))
-                                        .IgnoreWhitespace()
-                                        .Build();
-                                    foreach (Difference diff in myDiff.Differences)
+                                    try
                                     {
-                                        Console.WriteLine(diff.Comparison);
-                                        Console.WriteLine();
-                                    }
+                                        Diff myDiff = DiffBuilder
+                                            .Compare(controlFileStream)
+                                            .WithTest(testFileStream)
+                                            .CheckForIdentical()
+                                            .WithNodeFilter(x =>
+                                                x.Name !=
+                                                "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                                            .WithNodeMatcher(
+                                                new DefaultNodeMatcher(
+                                                    ElementSelectors.Or(
+                                                        ElementSelectors.ByNameAndText,
+                                                        ElementSelectors.ByName)))
+                                            .IgnoreWhitespace()
+                                            .Build();
+                                        foreach (Difference diff in myDiff.Differences)
+                                        {
+                                            Console.WriteLine(diff.Comparison);
+                                            Console.WriteLine();
+                                        }
 
-                                    Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
-                                }
-                                catch (XmlSchemaException e)
-                                {
-                                    Assert.Fail("Unexpected validation failure: " + e.Message);
+                                        Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                                    }
+                                    catch (XmlSchemaException e)
+                                    {
+                                        Assert.Fail("Unexpected validation failure: " + e.Message);
+                                    }
                                 }
                             }
                         }
                     }
-                }
+                }));
             }
+            await Task.WhenAll(lstTasks);
         }
 
         [TestMethod]
         public async Task Test04_LoadThenPrint()
         {
             Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
+            List<Task> lstTasks = new List<Task>(TestFiles.Length);
             foreach (FileInfo objFileInfo in TestFiles)
             {
-                using (Character objCharacter = LoadCharacter(objFileInfo))
+                lstTasks.Add(Task.Run(async () =>
                 {
-                    string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-                    List<Task> lstExportTasks = new List<Task>();
-                    foreach (string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
+                    using (Character objCharacter = await LoadCharacter(objFileInfo))
                     {
-                        string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                        if (strExportLanguage.Contains("data"))
-                            continue;
-                        // ReSharper disable once AccessToDisposedClosure
-                        lstExportTasks.Add(Task.Run(() => DoAndSaveExport(objCharacter, strExportLanguage)));
+                        string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+                        List<Task> lstExportTasks = new List<Task>();
+                        foreach (string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
+                        {
+                            string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
+                            if (strExportLanguage.Contains("data"))
+                                continue;
+                            // ReSharper disable once AccessToDisposedClosure
+                            lstExportTasks.Add(Task.Run(() => DoAndSaveExport(objCharacter, strExportLanguage)));
+                        }
+
+                        await Task.WhenAll(lstExportTasks);
                     }
-                    await Task.WhenAll(lstExportTasks);
-                }
+                }));
             }
+            await Task.WhenAll(lstTasks);
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test05_LoadCharacterForms()
+        public async Task Test05_LoadCharacterForms()
         {
             Debug.WriteLine("Unit test initialized for: Test05_LoadCharacterForms()");
             ChummerMainForm frmOldMainForm = Program.MainForm;
@@ -252,11 +269,11 @@ namespace Chummer.Tests
                 frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
                 while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Utils.SafeSleep(true);
+                    await Utils.SafeSleepAsync();
                 }
                 foreach (FileInfo objFileInfo in TestFiles)
                 {
-                    using (Character objCharacter = LoadCharacter(objFileInfo))
+                    using (Character objCharacter = await LoadCharacter(objFileInfo))
                     {
                         try
                         {
@@ -293,7 +310,7 @@ namespace Chummer.Tests
         /// Validate that a given list of Characters can be successfully loaded.
         /// </summary>
         // ReSharper disable once SuggestBaseTypeForParameter
-        private static Character LoadCharacter(FileInfo objFileInfo)
+        private static async Task<Character> LoadCharacter(FileInfo objFileInfo)
         {
             Character objCharacter = null;
             try
@@ -303,7 +320,7 @@ namespace Chummer.Tests
                 {
                     FileName = objFileInfo.FullName
                 };
-                bool blnSuccess = objCharacter.Load();
+                bool blnSuccess = await objCharacter.LoadAsync();
                 Assert.IsTrue(blnSuccess);
                 Debug.WriteLine("Character loaded: " + objCharacter.Name + ", " + objFileInfo.Name);
             }
@@ -333,13 +350,13 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests saving a given character.
         /// </summary>
-        private static void SaveCharacter(Character objCharacter, string strPath)
+        private static async Task SaveCharacter(Character objCharacter, string strPath)
         {
             Assert.IsNotNull(objCharacter);
             try
             {
                 Debug.WriteLine("Saving: " + objCharacter.Name + ", " + objCharacter.FileName);
-                objCharacter.Save(strPath, false);
+                await objCharacter.SaveAsync(strPath, false);
                 Debug.WriteLine("Character saved: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
