@@ -47,7 +47,6 @@ using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using NLog;
 using Application = System.Windows.Forms.Application;
-using Formatting = System.Xml.Formatting;
 
 namespace Chummer
 {
@@ -5787,82 +5786,82 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguageToPrint))
                 strLanguageToPrint = GlobalSettings.Language;
             // <character>
-            objWriter.WriteStartElement("character");
+            await objWriter.WriteStartElementAsync("character");
 
             // <settings />
-            objWriter.WriteElementString("settings", SettingsKey);
+            await objWriter.WriteElementStringAsync("settings", SettingsKey);
             // <buildmethod />
-            objWriter.WriteElementString("buildmethod", Settings.BuildMethod.ToString());
+            await objWriter.WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString());
             // <imageformat />
-            objWriter.WriteElementString("imageformat", "jpeg"); // Here for legacy/compatibility purposes, we always export as JPEG now
+            await objWriter.WriteElementStringAsync("imageformat", "jpeg"); // Here for legacy/compatibility purposes, we always export as JPEG now
             // <metatype />
-            objWriter.WriteElementString("metatype", DisplayMetatype(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("metatype", DisplayMetatype(strLanguageToPrint));
             // <metatype_english />
-            objWriter.WriteElementString("metatype_english", Metatype);
+            await objWriter.WriteElementStringAsync("metatype_english", Metatype);
             // <metatype_guid />
-            objWriter.WriteElementString("metatype_guid", MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("metatype_guid", MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
             // <metavariant />
-            objWriter.WriteElementString("metavariant", DisplayMetavariant(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("metavariant", DisplayMetavariant(strLanguageToPrint));
             // <metavariant_english />
-            objWriter.WriteElementString("metavariant_english", Metavariant);
+            await objWriter.WriteElementStringAsync("metavariant_english", Metavariant);
             // <metavariant_guid />
-            objWriter.WriteElementString("metavariant_guid", MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("metavariant_guid", MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
             // <movement />
-            objWriter.WriteElementString("movement", FullMovement(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("movement", FullMovement(objCulture, strLanguageToPrint));
             // <walk />
-            objWriter.WriteElementString("walk", FullMovement(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("walk", FullMovement(objCulture, strLanguageToPrint));
             // <run />
-            objWriter.WriteElementString("run", FullMovement(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("run", FullMovement(objCulture, strLanguageToPrint));
             // <sprint />
-            objWriter.WriteElementString("sprint", FullMovement(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("sprint", FullMovement(objCulture, strLanguageToPrint));
             // <movementwalk />
-            objWriter.WriteElementString("movementwalk", GetMovement(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("movementwalk", GetMovement(objCulture, strLanguageToPrint));
             // <movementswim />
-            objWriter.WriteElementString("movementswim", GetSwim(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("movementswim", GetSwim(objCulture, strLanguageToPrint));
             // <movementfly />
-            objWriter.WriteElementString("movementfly", GetFly(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("movementfly", GetFly(objCulture, strLanguageToPrint));
 
             // <prioritymetatype />
-            objWriter.WriteElementString("prioritymetatype", MetatypePriority);
+            await objWriter.WriteElementStringAsync("prioritymetatype", MetatypePriority);
             // <priorityattributes />
-            objWriter.WriteElementString("priorityattributes", AttributesPriority);
+            await objWriter.WriteElementStringAsync("priorityattributes", AttributesPriority);
             // <priorityspecial />
-            objWriter.WriteElementString("priorityspecial", SpecialPriority);
+            await objWriter.WriteElementStringAsync("priorityspecial", SpecialPriority);
             // <priorityskills />
-            objWriter.WriteElementString("priorityskills", SkillsPriority);
+            await objWriter.WriteElementStringAsync("priorityskills", SkillsPriority);
             // <priorityresources />
-            objWriter.WriteElementString("priorityresources", ResourcesPriority);
+            await objWriter.WriteElementStringAsync("priorityresources", ResourcesPriority);
             // <priorityskills >
-            objWriter.WriteStartElement("priorityskills");
+            await objWriter.WriteStartElementAsync("priorityskills");
             foreach(string strSkill in PriorityBonusSkillList)
             {
-                objWriter.WriteElementString("priorityskill", strSkill);
+                await objWriter.WriteElementStringAsync("priorityskill", strSkill);
             }
 
             // </priorityskills>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <handedness />
             if(Ambidextrous)
             {
-                objWriter.WriteElementString("primaryarm",
+                await objWriter.WriteElementStringAsync("primaryarm",
                     await LanguageManager.GetStringAsync("String_Ambidextrous", strLanguageToPrint));
             }
             else if(PrimaryArm == "Left")
             {
-                objWriter.WriteElementString("primaryarm",
+                await objWriter.WriteElementStringAsync("primaryarm",
                     await LanguageManager.GetStringAsync("String_Improvement_SideLeft", strLanguageToPrint));
             }
             else
             {
-                objWriter.WriteElementString("primaryarm",
+                await objWriter.WriteElementStringAsync("primaryarm",
                     await LanguageManager.GetStringAsync("String_Improvement_SideRight", strLanguageToPrint));
             }
 
             // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from
             // having a self-terminated title tag which causes browser to not rendering anything.
             // <name />
-            objWriter.WriteElementString("name",
+            await objWriter.WriteElementStringAsync("name",
                 !string.IsNullOrEmpty(Name)
                     ? Name
                     : await LanguageManager.GetStringAsync("String_UnnamedCharacter", strLanguageToPrint));
@@ -5870,120 +5869,120 @@ namespace Chummer
             PrintMugshots(objWriter);
 
             // <sex />
-            objWriter.WriteElementString("gender",
+            await objWriter.WriteElementStringAsync("gender",
                 await TranslateExtraAsync(await ReverseTranslateExtraAsync(Gender, GlobalSettings.Language, "contacts.xml"),
                                           strLanguageToPrint, "contacts.xml"));
             // <age />
-            objWriter.WriteElementString("age",
+            await objWriter.WriteElementStringAsync("age",
                 await TranslateExtraAsync(await ReverseTranslateExtraAsync(Age, GlobalSettings.Language, "contacts.xml"), strLanguageToPrint,
                                           "contacts.xml"));
             // <eyes />
-            objWriter.WriteElementString("eyes", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Eyes), strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("eyes", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Eyes), strLanguageToPrint));
             // <height />
-            objWriter.WriteElementString("height", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Height), strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("height", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Height), strLanguageToPrint));
             // <weight />
-            objWriter.WriteElementString("weight", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Weight), strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("weight", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Weight), strLanguageToPrint));
             // <skin />
-            objWriter.WriteElementString("skin", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Skin), strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("skin", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Skin), strLanguageToPrint));
             // <hair />
-            objWriter.WriteElementString("hair", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Hair), strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("hair", await TranslateExtraAsync(await ReverseTranslateExtraAsync(Hair), strLanguageToPrint));
             // <description />
-            objWriter.WriteElementString("description", Description.RtfToHtml());
+            await objWriter.WriteElementStringAsync("description", Description.RtfToHtml());
             // <background />
-            objWriter.WriteElementString("background", Background.RtfToHtml());
+            await objWriter.WriteElementStringAsync("background", Background.RtfToHtml());
             // <concept />
-            objWriter.WriteElementString("concept", Concept.RtfToHtml());
+            await objWriter.WriteElementStringAsync("concept", Concept.RtfToHtml());
             // <notes />
-            objWriter.WriteElementString("notes", Notes.RtfToHtml());
+            await objWriter.WriteElementStringAsync("notes", Notes.RtfToHtml());
             // <alias />
-            objWriter.WriteElementString("alias", Alias);
+            await objWriter.WriteElementStringAsync("alias", Alias);
             // <playername />
-            objWriter.WriteElementString("playername", PlayerName);
+            await objWriter.WriteElementStringAsync("playername", PlayerName);
             // <gamenotes />
-            objWriter.WriteElementString("gamenotes", GameNotes.RtfToHtml());
+            await objWriter.WriteElementStringAsync("gamenotes", GameNotes.RtfToHtml());
 
             // <limitphysical />
-            objWriter.WriteElementString("limitphysical", LimitPhysical.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("limitphysical", LimitPhysical.ToString(objCulture));
             // <limitmental />
-            objWriter.WriteElementString("limitmental", LimitMental.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("limitmental", LimitMental.ToString(objCulture));
             // <limitsocial />
-            objWriter.WriteElementString("limitsocial", LimitSocial.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("limitsocial", LimitSocial.ToString(objCulture));
             // <limitastral />
-            objWriter.WriteElementString("limitastral", LimitAstral.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("limitastral", LimitAstral.ToString(objCulture));
             // <contactpoints />
-            objWriter.WriteElementString("contactpoints", ContactPoints.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("contactpoints", ContactPoints.ToString(objCulture));
             // <contactpointsused />
-            objWriter.WriteElementString("contactpointsused", ContactPointsUsed.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("contactpointsused", ContactPointsUsed.ToString(objCulture));
             // <cfplimit />
-            objWriter.WriteElementString("cfplimit", CFPLimit.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("cfplimit", CFPLimit.ToString(objCulture));
             // <totalaiprogramlimit />
-            objWriter.WriteElementString("ainormalprogramlimit", AINormalProgramLimit.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("ainormalprogramlimit", AINormalProgramLimit.ToString(objCulture));
             // <aiadvancedprogramlimit />
-            objWriter.WriteElementString("aiadvancedprogramlimit", AIAdvancedProgramLimit.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("aiadvancedprogramlimit", AIAdvancedProgramLimit.ToString(objCulture));
             // <spelllimit />
-            objWriter.WriteElementString("spelllimit", FreeSpells.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("spelllimit", FreeSpells.ToString(objCulture));
             // <karma />
-            objWriter.WriteElementString("karma", Karma.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture));
             // <totalkarma />
-            objWriter.WriteElementString("totalkarma", CareerKarma.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("totalkarma", CareerKarma.ToString(objCulture));
             // <special />
-            objWriter.WriteElementString("special", Special.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("special", Special.ToString(objCulture));
             // <totalspecial />
-            objWriter.WriteElementString("totalspecial", TotalSpecial.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("totalspecial", TotalSpecial.ToString(objCulture));
             // <attributes />
-            objWriter.WriteElementString("attributes", Attributes.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("attributes", Attributes.ToString(objCulture));
             // <totalattributes />
-            objWriter.WriteElementString("totalattributes", TotalAttributes.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("totalattributes", TotalAttributes.ToString(objCulture));
             // <edgeused />
-            objWriter.WriteElementString("edgeused", EdgeUsed.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("edgeused", EdgeUsed.ToString(objCulture));
             // <edgeremaining />
-            objWriter.WriteElementString("edgeremaining", EdgeRemaining.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("edgeremaining", EdgeRemaining.ToString(objCulture));
             // <streetcred />
-            objWriter.WriteElementString("streetcred", StreetCred.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("streetcred", StreetCred.ToString(objCulture));
             // <calculatedstreetcred />
-            objWriter.WriteElementString("calculatedstreetcred", CalculatedStreetCred.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("calculatedstreetcred", CalculatedStreetCred.ToString(objCulture));
             // <totalstreetcred />
-            objWriter.WriteElementString("totalstreetcred", TotalStreetCred.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("totalstreetcred", TotalStreetCred.ToString(objCulture));
             // <burntstreetcred />
-            objWriter.WriteElementString("burntstreetcred", BurntStreetCred.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("burntstreetcred", BurntStreetCred.ToString(objCulture));
             // <notoriety />
-            objWriter.WriteElementString("notoriety", Notoriety.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("notoriety", Notoriety.ToString(objCulture));
             // <calculatednotoriety />
-            objWriter.WriteElementString("calculatednotoriety", CalculatedNotoriety.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("calculatednotoriety", CalculatedNotoriety.ToString(objCulture));
             // <totalnotoriety />
-            objWriter.WriteElementString("totalnotoriety", TotalNotoriety.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("totalnotoriety", TotalNotoriety.ToString(objCulture));
             // <publicawareness />
-            objWriter.WriteElementString("publicawareness", PublicAwareness.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("publicawareness", PublicAwareness.ToString(objCulture));
             // <calculatedpublicawareness />
-            objWriter.WriteElementString("calculatedpublicawareness", CalculatedPublicAwareness.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("calculatedpublicawareness", CalculatedPublicAwareness.ToString(objCulture));
             // <totalpublicawareness />
-            objWriter.WriteElementString("totalpublicawareness", TotalPublicAwareness.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("totalpublicawareness", TotalPublicAwareness.ToString(objCulture));
             // <astralreputation />
-            objWriter.WriteElementString("astralreputation", AstralReputation.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("astralreputation", AstralReputation.ToString(objCulture));
             // <totalastralreputation />
-            objWriter.WriteElementString("totalastralreputation", TotalAstralReputation.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("totalastralreputation", TotalAstralReputation.ToString(objCulture));
             // <wildreputation />
-            objWriter.WriteElementString("wildreputation", WildReputation.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("wildreputation", WildReputation.ToString(objCulture));
             // <totalwildreputation />
-            objWriter.WriteElementString("totalwildreputation", TotalWildReputation.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("totalwildreputation", TotalWildReputation.ToString(objCulture));
             // <created />
-            objWriter.WriteElementString("created", Created.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("created", Created.ToString(GlobalSettings.InvariantCultureInfo));
             // <nuyen />
-            objWriter.WriteElementString("nuyen", Nuyen.ToString(Settings.NuyenFormat, objCulture));
+            await objWriter.WriteElementStringAsync("nuyen", Nuyen.ToString(Settings.NuyenFormat, objCulture));
             // <adept />
-            objWriter.WriteElementString("adept", AdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("adept", AdeptEnabled.ToString(GlobalSettings.InvariantCultureInfo));
             // <magician />
-            objWriter.WriteElementString("magician", MagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("magician", MagicianEnabled.ToString(GlobalSettings.InvariantCultureInfo));
             // <technomancer />
-            objWriter.WriteElementString("technomancer", TechnomancerEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("technomancer", TechnomancerEnabled.ToString(GlobalSettings.InvariantCultureInfo));
             // <ai />
-            objWriter.WriteElementString("ai", AdvancedProgramsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("ai", AdvancedProgramsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
             // <cyberwaredisabled />
-            objWriter.WriteElementString("cyberwaredisabled", CyberwareDisabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("cyberwaredisabled", CyberwareDisabled.ToString(GlobalSettings.InvariantCultureInfo));
             // <critter />
-            objWriter.WriteElementString("critter", CritterEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("critter", CritterEnabled.ToString(GlobalSettings.InvariantCultureInfo));
 
-            objWriter.WriteElementString("totaless", Essence().ToString(Settings.EssenceFormat, objCulture));
+            await objWriter.WriteElementStringAsync("totaless", Essence().ToString(Settings.EssenceFormat, objCulture));
 
             // <tradition />
             if(MagicTradition.Type != TraditionType.None)
@@ -5992,62 +5991,62 @@ namespace Chummer
             }
 
             // <attributes>
-            objWriter.WriteStartElement("attributes");
+            await objWriter.WriteStartElementAsync("attributes");
             AttributeSection.Print(objWriter, objCulture, strLanguageToPrint);
 
             // </attributes>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             // <dodge />
-            objWriter.WriteElementString("dodge", Dodge.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("dodge", Dodge.ToString(objCulture));
             // <armor />
-            objWriter.WriteElementString("armor", TotalArmorRating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("armor", TotalArmorRating.ToString(objCulture));
             // <firearmor />
-            objWriter.WriteElementString("firearmor", TotalFireArmorRating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("firearmor", TotalFireArmorRating.ToString(objCulture));
             // <coldarmor />
-            objWriter.WriteElementString("coldarmor", TotalColdArmorRating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("coldarmor", TotalColdArmorRating.ToString(objCulture));
             // <electricityarmor />
-            objWriter.WriteElementString("electricityarmor", TotalElectricityArmorRating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("electricityarmor", TotalElectricityArmorRating.ToString(objCulture));
             // <acidarmor />
-            objWriter.WriteElementString("acidarmor", TotalAcidArmorRating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("acidarmor", TotalAcidArmorRating.ToString(objCulture));
             // <fallingarmor />
-            objWriter.WriteElementString("fallingarmor", TotalFallingArmorRating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("fallingarmor", TotalFallingArmorRating.ToString(objCulture));
 
             int intDamageResistanceDice = ImprovementManager.ValueOf(this, Improvement.ImprovementType.DamageResistance).StandardRound();
             // <armordicestun />
-            objWriter.WriteElementString("armordicestun",
+            await objWriter.WriteElementStringAsync("armordicestun",
                 (BOD.TotalValue + intDamageResistanceDice + TotalArmorRating).ToString(objCulture));
             // <firearmordicestun />
-            objWriter.WriteElementString("firearmordicestun",
+            await objWriter.WriteElementStringAsync("firearmordicestun",
                 (BOD.TotalValue + intDamageResistanceDice + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicestun />
-            objWriter.WriteElementString("coldarmordicestun",
+            await objWriter.WriteElementStringAsync("coldarmordicestun",
                 (BOD.TotalValue + intDamageResistanceDice + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicestun />
-            objWriter.WriteElementString("electricityarmordicestun",
+            await objWriter.WriteElementStringAsync("electricityarmordicestun",
                 (BOD.TotalValue + intDamageResistanceDice + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicestun />
-            objWriter.WriteElementString("acidarmordicestun",
+            await objWriter.WriteElementStringAsync("acidarmordicestun",
                 (BOD.TotalValue + intDamageResistanceDice + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicestun />
-            objWriter.WriteElementString("fallingarmordicestun",
+            await objWriter.WriteElementStringAsync("fallingarmordicestun",
                 (BOD.TotalValue + intDamageResistanceDice + TotalFallingArmorRating).ToString(objCulture));
             // <armordicephysical />
-            objWriter.WriteElementString("armordicephysical",
+            await objWriter.WriteElementStringAsync("armordicephysical",
                 (BOD.TotalValue + intDamageResistanceDice + TotalArmorRating).ToString(objCulture));
             // <firearmordicephysical />
-            objWriter.WriteElementString("firearmordicephysical",
+            await objWriter.WriteElementStringAsync("firearmordicephysical",
                 (BOD.TotalValue + intDamageResistanceDice + TotalFireArmorRating).ToString(objCulture));
             // <coldarmordicephysical />
-            objWriter.WriteElementString("coldarmordicephysical",
+            await objWriter.WriteElementStringAsync("coldarmordicephysical",
                 (BOD.TotalValue + intDamageResistanceDice + TotalColdArmorRating).ToString(objCulture));
             // <electricityarmordicephysical />
-            objWriter.WriteElementString("electricityarmordicephysical",
+            await objWriter.WriteElementStringAsync("electricityarmordicephysical",
                 (BOD.TotalValue + intDamageResistanceDice + TotalElectricityArmorRating).ToString(objCulture));
             // <acidarmordicephysical />
-            objWriter.WriteElementString("acidarmordicephysical",
+            await objWriter.WriteElementStringAsync("acidarmordicephysical",
                 (BOD.TotalValue + intDamageResistanceDice + TotalAcidArmorRating).ToString(objCulture));
             // <fallingarmordicephysical />
-            objWriter.WriteElementString("fallingarmordicephysical",
+            await objWriter.WriteElementStringAsync("fallingarmordicephysical",
                 (BOD.TotalValue + intDamageResistanceDice + TotalFallingArmorRating).ToString(objCulture));
 
             bool blnIsAI = IsAI;
@@ -6055,200 +6054,200 @@ namespace Chummer
             // Condition Monitors.
             // <physicalcm />
             int intPhysicalCM = PhysicalCM;
-            objWriter.WriteElementString("physicalcm", intPhysicalCM.ToString(objCulture));
-            objWriter.WriteElementString("physicalcmiscorecm",
+            await objWriter.WriteElementStringAsync("physicalcm", intPhysicalCM.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("physicalcmiscorecm",
                 blnPhysicalTrackIsCore.ToString(GlobalSettings.InvariantCultureInfo));
             // <stuncm />
             int intStunCM = StunCM;
-            objWriter.WriteElementString("stuncm", intStunCM.ToString(objCulture));
-            objWriter.WriteElementString("stuncmismatrixcm", blnIsAI.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("stuncm", intStunCM.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("stuncmismatrixcm", blnIsAI.ToString(GlobalSettings.InvariantCultureInfo));
 
             // Condition Monitor Progress.
             // <physicalcmfilled />
-            objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
             // <stuncmfilled />
-            objWriter.WriteElementString("stuncmfilled", StunCMFilled.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("stuncmfilled", StunCMFilled.ToString(objCulture));
 
             // <cmthreshold>
-            objWriter.WriteElementString("cmthreshold", CMThreshold.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("cmthreshold", CMThreshold.ToString(objCulture));
             // <cmthresholdoffset>
-            objWriter.WriteElementString("physicalcmthresholdoffset",
+            await objWriter.WriteElementStringAsync("physicalcmthresholdoffset",
                 Math.Min(PhysicalCMThresholdOffset, intPhysicalCM).ToString(objCulture));
             // <cmthresholdoffset>
-            objWriter.WriteElementString("stuncmthresholdoffset",
+            await objWriter.WriteElementStringAsync("stuncmthresholdoffset",
                 Math.Min(StunCMThresholdOffset, intStunCM).ToString(objCulture));
             // <cmoverflow>
-            objWriter.WriteElementString("cmoverflow", CMOverflow.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("cmoverflow", CMOverflow.ToString(objCulture));
 
             // <psyche>
-            objWriter.WriteElementString("psyche", _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("psyche", _blnPsycheActive.ToString(GlobalSettings.InvariantCultureInfo));
 
             // Calculate Initiatives.
             // Initiative.
-            objWriter.WriteElementString("init", GetInitiative(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("initdice", InitiativeDice.ToString(objCulture));
-            objWriter.WriteElementString("initvalue", InitiativeValue.ToString(objCulture));
-            objWriter.WriteElementString("initbonus",
+            await objWriter.WriteElementStringAsync("init", GetInitiative(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("initdice", InitiativeDice.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("initvalue", InitiativeValue.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("initbonus",
                 Math.Max(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Initiative), 0)
                     .ToString(objCulture));
 
             // Astral Initiative.
             if(MAGEnabled)
             {
-                objWriter.WriteElementString("astralinit", GetAstralInitiative(objCulture, strLanguageToPrint));
-                objWriter.WriteElementString("astralinitdice", AstralInitiativeDice.ToString(objCulture));
-                objWriter.WriteElementString("astralinitvalue", AstralInitiativeValue.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("astralinit", GetAstralInitiative(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("astralinitdice", AstralInitiativeDice.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("astralinitvalue", AstralInitiativeValue.ToString(objCulture));
             }
 
             // Matrix Initiative (AR).
-            objWriter.WriteElementString("matrixarinit", GetMatrixInitiative(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("matrixarinitdice", MatrixInitiativeDice.ToString(objCulture));
-            objWriter.WriteElementString("matrixarinitvalue", MatrixInitiativeValue.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("matrixarinit", GetMatrixInitiative(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("matrixarinitdice", MatrixInitiativeDice.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("matrixarinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Matrix Initiative (Cold).
-            objWriter.WriteElementString("matrixcoldinit", GetMatrixInitiativeCold(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("matrixcoldinitdice", MatrixInitiativeDice.ToString(objCulture));
-            objWriter.WriteElementString("matrixcoldinitvalue", MatrixInitiativeValue.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("matrixcoldinit", GetMatrixInitiativeCold(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("matrixcoldinitdice", MatrixInitiativeDice.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("matrixcoldinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Matrix Initiative (Hot).
-            objWriter.WriteElementString("matrixhotinit", GetMatrixInitiativeHot(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("matrixhotinitdice", MatrixInitiativeDice.ToString(objCulture));
-            objWriter.WriteElementString("matrixhotinitvalue", MatrixInitiativeValue.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("matrixhotinit", GetMatrixInitiativeHot(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("matrixhotinitdice", MatrixInitiativeDice.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("matrixhotinitvalue", MatrixInitiativeValue.ToString(objCulture));
 
             // Rigger Initiative.
-            objWriter.WriteElementString("riggerinit", GetInitiative(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("riggerinit", GetInitiative(objCulture, strLanguageToPrint));
 
             // <magenabled />
-            objWriter.WriteElementString("magenabled", MAGEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("magenabled", MAGEnabled.ToString(GlobalSettings.InvariantCultureInfo));
             // <initiategrade />
-            objWriter.WriteElementString("initiategrade", InitiateGrade.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("initiategrade", InitiateGrade.ToString(objCulture));
             // <resenabled />
-            objWriter.WriteElementString("resenabled", RESEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("resenabled", RESEnabled.ToString(GlobalSettings.InvariantCultureInfo));
             // <submersiongrade />
-            objWriter.WriteElementString("submersiongrade", SubmersionGrade.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("submersiongrade", SubmersionGrade.ToString(objCulture));
             // <depenabled />
-            objWriter.WriteElementString("depenabled", DEPEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("depenabled", DEPEnabled.ToString(GlobalSettings.InvariantCultureInfo));
             // <groupmember />
-            objWriter.WriteElementString("groupmember", GroupMember.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("groupmember", GroupMember.ToString(GlobalSettings.InvariantCultureInfo));
             // <groupname />
-            objWriter.WriteElementString("groupname", GroupName);
+            await objWriter.WriteElementStringAsync("groupname", GroupName);
             // <groupnotes />
-            objWriter.WriteElementString("groupnotes", GroupNotes);
+            await objWriter.WriteElementStringAsync("groupnotes", GroupNotes);
             // <surprise />
-            objWriter.WriteElementString("surprise", Surprise.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("surprise", Surprise.ToString(objCulture));
             // <composure />
-            objWriter.WriteElementString("composure", Composure.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("composure", Composure.ToString(objCulture));
             // <judgeintentions />
-            objWriter.WriteElementString("judgeintentions", JudgeIntentions.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("judgeintentions", JudgeIntentions.ToString(objCulture));
             // <judgeintentionsresist />
-            objWriter.WriteElementString("judgeintentionsresist", JudgeIntentionsResist.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("judgeintentionsresist", JudgeIntentionsResist.ToString(objCulture));
             // <liftandcarry />
-            objWriter.WriteElementString("liftandcarry", LiftAndCarry.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("liftandcarry", LiftAndCarry.ToString(objCulture));
             // <memory />
-            objWriter.WriteElementString("memory", Memory.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("memory", Memory.ToString(objCulture));
             // <liftweight />
-            objWriter.WriteElementString("liftweight", LiftLimit.ToString(Settings.WeightFormat, objCulture));
+            await objWriter.WriteElementStringAsync("liftweight", LiftLimit.ToString(Settings.WeightFormat, objCulture));
             // <carryweight />
-            objWriter.WriteElementString("carryweight", CarryLimit.ToString(Settings.WeightFormat, objCulture));
+            await objWriter.WriteElementStringAsync("carryweight", CarryLimit.ToString(Settings.WeightFormat, objCulture));
             // <totalcarriedweight />
-            objWriter.WriteElementString("totalcarriedweight", TotalCarriedWeight.ToString(Settings.WeightFormat, objCulture));
+            await objWriter.WriteElementStringAsync("totalcarriedweight", TotalCarriedWeight.ToString(Settings.WeightFormat, objCulture));
             // <fatigueresist />
-            objWriter.WriteElementString("fatigueresist", FatigueResist.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("fatigueresist", FatigueResist.ToString(objCulture));
             // <radiationresist />
-            objWriter.WriteElementString("radiationresist", RadiationResist.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("radiationresist", RadiationResist.ToString(objCulture));
             // <sonicresist />
-            objWriter.WriteElementString("sonicresist", SonicResist.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("sonicresist", SonicResist.ToString(objCulture));
             // <toxincontacttesist />
-            objWriter.WriteElementString("toxincontactresist", ToxinContactResist(strLanguageToPrint, objCulture));
+            await objWriter.WriteElementStringAsync("toxincontactresist", ToxinContactResist(strLanguageToPrint, objCulture));
             // <toxiningestionresist />
-            objWriter.WriteElementString("toxiningestionresist", ToxinIngestionResist(strLanguageToPrint, objCulture));
+            await objWriter.WriteElementStringAsync("toxiningestionresist", ToxinIngestionResist(strLanguageToPrint, objCulture));
             // <toxininhalationresist />
-            objWriter.WriteElementString("toxininhalationresist",
+            await objWriter.WriteElementStringAsync("toxininhalationresist",
                 ToxinInhalationResist(strLanguageToPrint, objCulture));
             // <toxininjectionresist />
-            objWriter.WriteElementString("toxininjectionresist", ToxinInjectionResist(strLanguageToPrint, objCulture));
+            await objWriter.WriteElementStringAsync("toxininjectionresist", ToxinInjectionResist(strLanguageToPrint, objCulture));
             // <pathogencontactresist />
-            objWriter.WriteElementString("pathogencontactresist",
+            await objWriter.WriteElementStringAsync("pathogencontactresist",
                 PathogenContactResist(strLanguageToPrint, objCulture));
             // <pathogeningestionresist />
-            objWriter.WriteElementString("pathogeningestionresist",
+            await objWriter.WriteElementStringAsync("pathogeningestionresist",
                 PathogenIngestionResist(strLanguageToPrint, objCulture));
             // <pathogeninhalationresist />
-            objWriter.WriteElementString("pathogeninhalationresist",
+            await objWriter.WriteElementStringAsync("pathogeninhalationresist",
                 PathogenInhalationResist(strLanguageToPrint, objCulture));
             // <pathogeninjectionresist />
-            objWriter.WriteElementString("pathogeninjectionresist",
+            await objWriter.WriteElementStringAsync("pathogeninjectionresist",
                 PathogenInjectionResist(strLanguageToPrint, objCulture));
             // <physiologicaladdictionresistfirsttime />
-            objWriter.WriteElementString("physiologicaladdictionresistfirsttime",
+            await objWriter.WriteElementStringAsync("physiologicaladdictionresistfirsttime",
                 PhysiologicalAddictionResistFirstTime.ToString(objCulture));
             // <physiologicaladdictionresistalreadyaddicted />
-            objWriter.WriteElementString("physiologicaladdictionresistalreadyaddicted",
+            await objWriter.WriteElementStringAsync("physiologicaladdictionresistalreadyaddicted",
                 PhysiologicalAddictionResistAlreadyAddicted.ToString(objCulture));
             // <psychologicaladdictionresistfirsttime />
-            objWriter.WriteElementString("psychologicaladdictionresistfirsttime",
+            await objWriter.WriteElementStringAsync("psychologicaladdictionresistfirsttime",
                 PsychologicalAddictionResistFirstTime.ToString(objCulture));
             // <psychologicaladdictionresistalreadyaddicted />
-            objWriter.WriteElementString("psychologicaladdictionresistalreadyaddicted",
+            await objWriter.WriteElementStringAsync("psychologicaladdictionresistalreadyaddicted",
                 PsychologicalAddictionResistAlreadyAddicted.ToString(objCulture));
             // <physicalcmnaturalrecovery />
-            objWriter.WriteElementString("physicalcmnaturalrecovery", PhysicalCMNaturalRecovery.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("physicalcmnaturalrecovery", PhysicalCMNaturalRecovery.ToString(objCulture));
             // <stuncmnaturalrecovery />
-            objWriter.WriteElementString("stuncmnaturalrecovery", StunCMNaturalRecovery.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("stuncmnaturalrecovery", StunCMNaturalRecovery.ToString(objCulture));
 
             // Spell Resistances
             //Indirect Dodge
-            objWriter.WriteElementString("indirectdefenseresist", SpellDefenseIndirectDodge.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("indirectdefenseresist", SpellDefenseIndirectDodge.ToString(objCulture));
             //Direct Soak - Mana
-            objWriter.WriteElementString("directmanaresist", SpellDefenseDirectSoakMana.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("directmanaresist", SpellDefenseDirectSoakMana.ToString(objCulture));
             //Direct Soak - Physical
-            objWriter.WriteElementString("directphysicalresist", SpellDefenseDirectSoakPhysical.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("directphysicalresist", SpellDefenseDirectSoakPhysical.ToString(objCulture));
             //Detection Spells
-            objWriter.WriteElementString("detectionspellresist", SpellDefenseDetection.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("detectionspellresist", SpellDefenseDetection.ToString(objCulture));
             //Decrease Attribute - BOD
-            objWriter.WriteElementString("decreasebodresist", SpellDefenseDecreaseBOD.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("decreasebodresist", SpellDefenseDecreaseBOD.ToString(objCulture));
             //Decrease Attribute - AGI
-            objWriter.WriteElementString("decreaseagiresist", SpellDefenseDecreaseAGI.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("decreaseagiresist", SpellDefenseDecreaseAGI.ToString(objCulture));
             //Decrease Attribute - REA
-            objWriter.WriteElementString("decreaserearesist", SpellDefenseDecreaseREA.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("decreaserearesist", SpellDefenseDecreaseREA.ToString(objCulture));
             //Decrease Attribute - STR
-            objWriter.WriteElementString("decreasestrresist", SpellDefenseDecreaseSTR.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("decreasestrresist", SpellDefenseDecreaseSTR.ToString(objCulture));
             //Decrease Attribute - CHA
-            objWriter.WriteElementString("decreasecharesist", SpellDefenseDecreaseCHA.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("decreasecharesist", SpellDefenseDecreaseCHA.ToString(objCulture));
             //Decrease Attribute - INT
-            objWriter.WriteElementString("decreaseintresist", SpellDefenseDecreaseINT.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("decreaseintresist", SpellDefenseDecreaseINT.ToString(objCulture));
             //Decrease Attribute - LOG
-            objWriter.WriteElementString("decreaselogresist", SpellDefenseDecreaseLOG.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("decreaselogresist", SpellDefenseDecreaseLOG.ToString(objCulture));
             //Decrease Attribute - WIL
-            objWriter.WriteElementString("decreasewilresist", SpellDefenseDecreaseWIL.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("decreasewilresist", SpellDefenseDecreaseWIL.ToString(objCulture));
             //Illusion - Mana
-            objWriter.WriteElementString("illusionmanaresist", SpellDefenseIllusionMana.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("illusionmanaresist", SpellDefenseIllusionMana.ToString(objCulture));
             //Illusion - Physical
-            objWriter.WriteElementString("illusionphysicalresist", SpellDefenseIllusionPhysical.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("illusionphysicalresist", SpellDefenseIllusionPhysical.ToString(objCulture));
             //Manipulation - Mental
-            objWriter.WriteElementString("manipulationmentalresist",
+            await objWriter.WriteElementStringAsync("manipulationmentalresist",
                 SpellDefenseManipulationMental.ToString(objCulture));
             //Manipulation - Physical
-            objWriter.WriteElementString("manipulationphysicalresist",
+            await objWriter.WriteElementStringAsync("manipulationphysicalresist",
                 SpellDefenseManipulationPhysical.ToString(objCulture));
 
             // <skills>
-            objWriter.WriteStartElement("skills");
+            await objWriter.WriteStartElementAsync("skills");
             SkillsSection.Print(objWriter, objCulture, strLanguageToPrint);
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <contacts>
-            objWriter.WriteStartElement("contacts");
+            await objWriter.WriteStartElementAsync("contacts");
             foreach(Contact objContact in Contacts)
             {
                 objContact.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </contacts>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <limitmodifiersphys>
-            objWriter.WriteStartElement("limitmodifiersphys");
+            await objWriter.WriteStartElementAsync("limitmodifiersphys");
             foreach(LimitModifier objLimitModifier in LimitModifiers)
             {
                 if (objLimitModifier.Limit == "Physical")
@@ -6269,18 +6268,18 @@ namespace Chummer
                 if(!string.IsNullOrEmpty(objImprovement.Condition))
                     strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
-                objWriter.WriteStartElement("limitmodifier");
-                objWriter.WriteElementString("name", strName);
+                await objWriter.WriteStartElementAsync("limitmodifier");
+                await objWriter.WriteElementStringAsync("name", strName);
                 if(GlobalSettings.PrintNotes)
-                    objWriter.WriteElementString("notes", objImprovement.Notes);
-                objWriter.WriteEndElement();
+                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes);
+                await objWriter.WriteEndElementAsync();
             }
 
             // </limitmodifiersphys>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <limitmodifiersment>
-            objWriter.WriteStartElement("limitmodifiersment");
+            await objWriter.WriteStartElementAsync("limitmodifiersment");
             foreach(LimitModifier objLimitModifier in LimitModifiers)
             {
                 if (objLimitModifier.Limit == "Mental")
@@ -6301,18 +6300,18 @@ namespace Chummer
                 if(!string.IsNullOrEmpty(objImprovement.Condition))
                     strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
-                objWriter.WriteStartElement("limitmodifier");
-                objWriter.WriteElementString("name", strName);
+                await objWriter.WriteStartElementAsync("limitmodifier");
+                await objWriter.WriteElementStringAsync("name", strName);
                 if(GlobalSettings.PrintNotes)
-                    objWriter.WriteElementString("notes", objImprovement.Notes);
-                objWriter.WriteEndElement();
+                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes);
+                await objWriter.WriteEndElementAsync();
             }
 
             // </limitmodifiersment>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <limitmodifierssoc>
-            objWriter.WriteStartElement("limitmodifierssoc");
+            await objWriter.WriteStartElementAsync("limitmodifierssoc");
             foreach(LimitModifier objLimitModifier in LimitModifiers)
             {
                 if (objLimitModifier.Limit == "Social")
@@ -6333,115 +6332,115 @@ namespace Chummer
                 if(!string.IsNullOrEmpty(objImprovement.Condition))
                     strName += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint) + objImprovement.Condition;
 
-                objWriter.WriteStartElement("limitmodifier");
-                objWriter.WriteElementString("name", strName);
+                await objWriter.WriteStartElementAsync("limitmodifier");
+                await objWriter.WriteElementStringAsync("name", strName);
                 if(GlobalSettings.PrintNotes)
-                    objWriter.WriteElementString("notes", objImprovement.Notes);
-                objWriter.WriteEndElement();
+                    await objWriter.WriteElementStringAsync("notes", objImprovement.Notes);
+                await objWriter.WriteEndElementAsync();
             }
 
             // </limitmodifierssoc>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <mentorspirits>
-            objWriter.WriteStartElement("mentorspirits");
+            await objWriter.WriteStartElementAsync("mentorspirits");
             foreach (MentorSpirit objMentorSpirit in MentorSpirits)
             {
                 objMentorSpirit.Print(objWriter, strLanguageToPrint);
             }
 
             // </mentorspirits>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <spells>
-            objWriter.WriteStartElement("spells");
+            await objWriter.WriteStartElementAsync("spells");
             foreach(Spell objSpell in Spells)
             {
                 objSpell.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </spells>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <powers>
-            objWriter.WriteStartElement("powers");
+            await objWriter.WriteStartElementAsync("powers");
             foreach(Power objPower in Powers)
             {
                 objPower.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </powers>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <spirits>
-            objWriter.WriteStartElement("spirits");
+            await objWriter.WriteStartElementAsync("spirits");
             foreach(Spirit objSpirit in Spirits)
             {
                 objSpirit.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </spirits>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <complexforms>
-            objWriter.WriteStartElement("complexforms");
+            await objWriter.WriteStartElementAsync("complexforms");
             foreach(ComplexForm objComplexForm in ComplexForms)
             {
                 objComplexForm.Print(objWriter, strLanguageToPrint);
             }
 
             // </complexforms>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <aiprograms>
-            objWriter.WriteStartElement("aiprograms");
+            await objWriter.WriteStartElementAsync("aiprograms");
             foreach(AIProgram objProgram in AIPrograms)
             {
                 objProgram.Print(objWriter, strLanguageToPrint);
             }
 
             // </aiprograms>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <martialarts>
-            objWriter.WriteStartElement("martialarts");
+            await objWriter.WriteStartElementAsync("martialarts");
             foreach(MartialArt objMartialArt in MartialArts)
             {
                 objMartialArt.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </martialarts>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <armors>
-            objWriter.WriteStartElement("armors");
+            await objWriter.WriteStartElementAsync("armors");
             foreach(Armor objArmor in Armor)
             {
                 objArmor.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </armors>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <weapons>
-            objWriter.WriteStartElement("weapons");
+            await objWriter.WriteStartElementAsync("weapons");
             foreach(Weapon objWeapon in Weapons)
             {
                 objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </weapons>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <cyberwares>
-            objWriter.WriteStartElement("cyberwares");
+            await objWriter.WriteStartElementAsync("cyberwares");
             foreach(Cyberware objCyberware in Cyberware)
             {
                 objCyberware.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </cyberwares>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <qualities>
             // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
@@ -6459,7 +6458,7 @@ namespace Chummer
                 }
             }
 
-            objWriter.WriteStartElement("qualities");
+            await objWriter.WriteStartElementAsync("qualities");
             foreach(Quality objQuality in Qualities)
             {
                 string strKey = objQuality.SourceIDString + '|' + objQuality.SourceName + '|' + objQuality.Extra;
@@ -6471,57 +6470,57 @@ namespace Chummer
             }
 
             // </qualities>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <lifestyles>
-            objWriter.WriteStartElement("lifestyles");
+            await objWriter.WriteStartElementAsync("lifestyles");
             foreach(Lifestyle objLifestyle in Lifestyles)
             {
                 objLifestyle.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </lifestyles>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <gears>
-            objWriter.WriteStartElement("gears");
+            await objWriter.WriteStartElementAsync("gears");
             foreach(Gear objGear in Gear)
             {
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </gears>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <drugs>
-            objWriter.WriteStartElement("drugs");
+            await objWriter.WriteStartElementAsync("drugs");
             foreach(Drug objDrug in Drugs)
             {
                 objDrug.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </drugs>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <vehicles>
-            objWriter.WriteStartElement("vehicles");
+            await objWriter.WriteStartElementAsync("vehicles");
             foreach(Vehicle objVehicle in Vehicles)
             {
                 objVehicle.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </vehicles>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <initiationgrades>
-            objWriter.WriteStartElement("initiationgrades");
+            await objWriter.WriteStartElementAsync("initiationgrades");
             foreach(InitiationGrade objGrade in InitiationGrades)
             {
                 objGrade.Print(objWriter, objCulture);
 
                 //TODO: Probably better to integrate this into the main print method, but eh.
                 // <metamagics>
-                objWriter.WriteStartElement("metamagics");
+                await objWriter.WriteStartElementAsync("metamagics");
                 foreach(Metamagic objMetamagic in Metamagics)
                 {
                     if (objMetamagic.Grade == objGrade.Grade)
@@ -6529,10 +6528,10 @@ namespace Chummer
                 }
 
                 // </metamagics>
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
 
                 // <arts>
-                objWriter.WriteStartElement("arts");
+                await objWriter.WriteStartElementAsync("arts");
                 foreach(Art objArt in Arts)
                 {
                     if (objArt.Grade == objGrade.Grade)
@@ -6540,10 +6539,10 @@ namespace Chummer
                 }
 
                 // </arts>
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
 
                 // <enhancements>
-                objWriter.WriteStartElement("enhancements");
+                await objWriter.WriteStartElementAsync("enhancements");
                 foreach(Enhancement objEnhancement in Enhancements)
                 {
                     if (objEnhancement.Grade == objGrade.Grade)
@@ -6551,83 +6550,83 @@ namespace Chummer
                 }
 
                 // </enhancements>
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
             }
 
             // </initiationgrade>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <metamagics>
-            objWriter.WriteStartElement("metamagics");
+            await objWriter.WriteStartElementAsync("metamagics");
             foreach(Metamagic objMetamagic in Metamagics)
             {
                 objMetamagic.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             // </metamagics>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <arts>
-            objWriter.WriteStartElement("arts");
+            await objWriter.WriteStartElementAsync("arts");
             foreach(Art objArt in Arts)
             {
                 objArt.Print(objWriter, strLanguageToPrint);
             }
 
             // </arts>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <enhancements>
-            objWriter.WriteStartElement("enhancements");
+            await objWriter.WriteStartElementAsync("enhancements");
             foreach(Enhancement objEnhancement in Enhancements)
             {
                 objEnhancement.Print(objWriter, strLanguageToPrint);
             }
 
             // </enhancements>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <critterpowers>
-            objWriter.WriteStartElement("critterpowers");
+            await objWriter.WriteStartElementAsync("critterpowers");
             foreach(CritterPower objPower in CritterPowers)
             {
                 objPower.Print(objWriter, strLanguageToPrint);
             }
 
             // </critterpowers>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <sustained>
-            objWriter.WriteStartElement("sustainedobjects");
+            await objWriter.WriteStartElementAsync("sustainedobjects");
             foreach (SustainedObject objSustained in SustainedCollection)
             {
                 objSustained.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
             //</sustained>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <calendar>
-            objWriter.WriteStartElement("calendar");
+            await objWriter.WriteStartElementAsync("calendar");
             //Calendar.Sort();
             foreach(CalendarWeek objWeek in Calendar)
                 objWeek.Print(objWriter, objCulture, GlobalSettings.PrintNotes);
             // </expenses>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // Print the Expense Log Entries if the option is enabled.
             if(GlobalSettings.PrintExpenses)
             {
                 // <expenses>
-                objWriter.WriteStartElement("expenses");
+                await objWriter.WriteStartElementAsync("expenses");
                 foreach(ExpenseLogEntry objExpense in ExpenseEntries.Reverse())
                     objExpense.Print(objWriter, objCulture, strLanguageToPrint);
                 // </expenses>
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
             }
 
             // </character>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
         #endregion
 

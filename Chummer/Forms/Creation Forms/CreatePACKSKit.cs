@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Annotations;
@@ -101,12 +102,12 @@ namespace Chummer
             {
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    objWriter.WriteStartDocument();
+                    await objWriter.WriteStartDocumentAsync();
 
                     // <chummer>
-                    objWriter.WriteStartElement("chummer");
+                    await objWriter.WriteStartElementAsync("chummer");
                     // <packs>
-                    objWriter.WriteStartElement("packs");
+                    await objWriter.WriteStartElementAsync("packs");
 
                     // If this is not a new file, write out the current contents.
                     if (objXmlCurrentDocument != null)
@@ -118,11 +119,11 @@ namespace Chummer
                     }
 
                     // <pack>
-                    objWriter.WriteStartElement("pack");
+                    await objWriter.WriteStartElementAsync("pack");
                     // <name />
-                    objWriter.WriteElementString("name", txtName.Text);
+                    await objWriter.WriteElementStringAsync("name", txtName.Text);
                     // <category />
-                    objWriter.WriteElementString("category", "Custom");
+                    await objWriter.WriteElementStringAsync("category", "Custom");
 
                     // Export Attributes.
                     if (chkAttributes.Checked)
@@ -141,29 +142,29 @@ namespace Chummer
                         int intDEP = _objCharacter.DEP.Value - (_objCharacter.DEP.MetatypeMinimum - 1);
                         int intRES = _objCharacter.RES.Value - (_objCharacter.RES.MetatypeMinimum - 1);
                         // <attributes>
-                        objWriter.WriteStartElement("attributes");
-                        objWriter.WriteElementString("bod", intBOD.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("agi", intAGI.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("rea", intREA.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("str", intSTR.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("cha", intCHA.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("int", intINT.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("log", intLOG.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("wil", intWIL.ToString(GlobalSettings.InvariantCultureInfo));
-                        objWriter.WriteElementString("edg", intEDG.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteStartElementAsync("attributes");
+                        await objWriter.WriteElementStringAsync("bod", intBOD.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("agi", intAGI.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("rea", intREA.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("str", intSTR.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("cha", intCHA.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("int", intINT.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("log", intLOG.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("wil", intWIL.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("edg", intEDG.ToString(GlobalSettings.InvariantCultureInfo));
                         if (_objCharacter.MAGEnabled)
                         {
-                            objWriter.WriteElementString("mag", intMAG.ToString(GlobalSettings.InvariantCultureInfo));
+                            await objWriter.WriteElementStringAsync("mag", intMAG.ToString(GlobalSettings.InvariantCultureInfo));
                             if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                                objWriter.WriteElementString("magadept", intMAGAdept.ToString(GlobalSettings.InvariantCultureInfo));
+                                await objWriter.WriteElementStringAsync("magadept", intMAGAdept.ToString(GlobalSettings.InvariantCultureInfo));
                         }
 
                         if (_objCharacter.RESEnabled)
-                            objWriter.WriteElementString("res", intRES.ToString(GlobalSettings.InvariantCultureInfo));
+                            await objWriter.WriteElementStringAsync("res", intRES.ToString(GlobalSettings.InvariantCultureInfo));
                         if (_objCharacter.DEPEnabled)
-                            objWriter.WriteElementString("dep", intDEP.ToString(GlobalSettings.InvariantCultureInfo));
+                            await objWriter.WriteElementStringAsync("dep", intDEP.ToString(GlobalSettings.InvariantCultureInfo));
                         // </attributes>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Qualities.
@@ -190,52 +191,52 @@ namespace Chummer
                         }
 
                         // <qualities>
-                        objWriter.WriteStartElement("qualities");
+                        await objWriter.WriteStartElementAsync("qualities");
 
                         // Positive Qualities.
                         if (blnPositive)
                         {
                             // <positive>
-                            objWriter.WriteStartElement("positive");
+                            await objWriter.WriteStartElementAsync("positive");
                             foreach (Quality objQuality in _objCharacter.Qualities)
                             {
                                 if (objQuality.Type == QualityType.Positive)
                                 {
-                                    objWriter.WriteStartElement("quality");
+                                    await objWriter.WriteStartElementAsync("quality");
                                     if (!string.IsNullOrEmpty(objQuality.Extra))
-                                        objWriter.WriteAttributeString("select", objQuality.Extra);
+                                        await objWriter.WriteAttributeStringAsync("select", objQuality.Extra);
                                     objWriter.WriteValue(objQuality.Name);
-                                    objWriter.WriteEndElement();
+                                    await objWriter.WriteEndElementAsync();
                                 }
                             }
 
                             // </positive>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         // Negative Qualities.
                         if (blnPositive)
                         {
                             // <negative>
-                            objWriter.WriteStartElement("negative");
+                            await objWriter.WriteStartElementAsync("negative");
                             foreach (Quality objQuality in _objCharacter.Qualities)
                             {
                                 if (objQuality.Type == QualityType.Negative)
                                 {
-                                    objWriter.WriteStartElement("quality");
+                                    await objWriter.WriteStartElementAsync("quality");
                                     if (!string.IsNullOrEmpty(objQuality.Extra))
-                                        objWriter.WriteAttributeString("select", objQuality.Extra);
+                                        await objWriter.WriteAttributeStringAsync("select", objQuality.Extra);
                                     objWriter.WriteValue(objQuality.Name);
-                                    objWriter.WriteEndElement();
+                                    await objWriter.WriteEndElementAsync();
                                 }
                             }
 
                             // </negative>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         // </qualities>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Starting Nuyen.
@@ -244,7 +245,7 @@ namespace Chummer
                         decimal decNuyenBP = _objCharacter.NuyenBP;
                         if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                             decNuyenBP /= 2.0m;
-                        objWriter.WriteElementString("nuyenbp", decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo));
+                        await objWriter.WriteElementStringAsync("nuyenbp", decNuyenBP.ToString(GlobalSettings.InvariantCultureInfo));
                     }
 
                     /* TODO: Add support for active and knowledge skills and skill groups
@@ -252,7 +253,7 @@ namespace Chummer
                     if (chkActiveSkills.Checked)
                     {
                         // <skills>
-                        objWriter.WriteStartElement("skills");
+                        await objWriter.WriteStartElementAsync("skills");
 
                         // Active Skills.
                         foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
@@ -260,13 +261,13 @@ namespace Chummer
                             if (!objSkill.IsKnowledgeSkill && objSkill.Rating > 0)
                             {
                                 // <skill>
-                                objWriter.WriteStartElement("skill");
-                                objWriter.WriteElementString("name", objSkill.Name);
-                                objWriter.WriteElementString("rating", objSkill.Rating.ToString());
+                                await objWriter.WriteStartElementAsync("skill");
+                                await objWriter.WriteElementStringAsync("name", objSkill.Name);
+                                await objWriter.WriteElementStringAsync("rating", objSkill.Rating.ToString());
                                 if (!string.IsNullOrEmpty(objSkill.Specialization))
-                                    objWriter.WriteElementString("spec", objSkill.Specialization);
+                                    await objWriter.WriteElementStringAsync("spec", objSkill.Specialization);
                                 // </skill>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync();
                             }
                         }
 
@@ -276,37 +277,37 @@ namespace Chummer
                             if (objSkillGroup.BaseUnbroken && objSkillGroup.Rating > 0)
                             {
                                 // <skillgroup>
-                                objWriter.WriteStartElement("skillgroup");
-                                objWriter.WriteElementString("name", objSkillGroup.Name);
-                                objWriter.WriteElementString("rating", objSkillGroup.Rating.ToString());
+                                await objWriter.WriteStartElementAsync("skillgroup");
+                                await objWriter.WriteElementStringAsync("name", objSkillGroup.Name);
+                                await objWriter.WriteElementStringAsync("rating", objSkillGroup.Rating.ToString());
                                 // </skillgroup>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync();
                             }
                         }
                         // </skills>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Knowledge Skills.
                     if (chkKnowledgeSkills.Checked)
                     {
                         // <knowledgeskills>
-                        objWriter.WriteStartElement("knowledgeskills");
+                        await objWriter.WriteStartElementAsync("knowledgeskills");
                         foreach (KnowledgeSkill objSkill in _objCharacter.SkillsSection.Skills.OfType<KnowledgeSkill>())
                         {
                             // <skill>
-                            objWriter.WriteStartElement("skill");
-                            objWriter.WriteElementString("name", objSkill.Name);
-                            objWriter.WriteElementString("rating", objSkill.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                            await objWriter.WriteStartElementAsync("skill");
+                            await objWriter.WriteElementStringAsync("name", objSkill.Name);
+                            await objWriter.WriteElementStringAsync("rating", objSkill.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                             if (!string.IsNullOrEmpty(objSkill.Specialization))
-                                objWriter.WriteElementString("spec", objSkill.Specialization);
-                            objWriter.WriteElementString("category", objSkill.SkillCategory);
+                                await objWriter.WriteElementStringAsync("spec", objSkill.Specialization);
+                            await objWriter.WriteElementStringAsync("category", objSkill.SkillCategory);
                             // </skill>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         // </knowledgeskills>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
                     */
 
@@ -314,71 +315,71 @@ namespace Chummer
                     if (chkMartialArts.Checked)
                     {
                         // <martialarts>
-                        objWriter.WriteStartElement("martialarts");
+                        await objWriter.WriteStartElementAsync("martialarts");
                         foreach (MartialArt objArt in _objCharacter.MartialArts)
                         {
                             // <martialart>
-                            objWriter.WriteStartElement("martialart");
-                            objWriter.WriteElementString("name", objArt.Name);
+                            await objWriter.WriteStartElementAsync("martialart");
+                            await objWriter.WriteElementStringAsync("name", objArt.Name);
                             if (objArt.Techniques.Count > 0)
                             {
                                 // <techniques>
-                                objWriter.WriteStartElement("techniques");
+                                await objWriter.WriteStartElementAsync("techniques");
                                 foreach (MartialArtTechnique objTechnique in objArt.Techniques)
-                                    objWriter.WriteElementString("technique", objTechnique.Name);
+                                    await objWriter.WriteElementStringAsync("technique", objTechnique.Name);
                                 // </techniques>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync();
                             }
 
                             // </martialart>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
                         // </martialarts>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Spells.
                     if (chkSpells.Checked)
                     {
                         // <spells>
-                        objWriter.WriteStartElement("spells");
+                        await objWriter.WriteStartElementAsync("spells");
                         foreach (Spell objSpell in _objCharacter.Spells)
                         {
-                            objWriter.WriteStartElement("spell");
-                            objWriter.WriteStartElement("name");
+                            await objWriter.WriteStartElementAsync("spell");
+                            await objWriter.WriteStartElementAsync("name");
                             if (!string.IsNullOrEmpty(objSpell.Extra))
-                                objWriter.WriteAttributeString("select", objSpell.Extra);
+                                await objWriter.WriteAttributeStringAsync("select", objSpell.Extra);
                             objWriter.WriteValue(objSpell.Name);
-                            objWriter.WriteEndElement();
-                            objWriter.WriteElementString("category", objSpell.Category);
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
+                            await objWriter.WriteElementStringAsync("category", objSpell.Category);
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         // </spells>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Complex Forms.
                     if (chkComplexForms.Checked)
                     {
                         // <programs>
-                        objWriter.WriteStartElement("complexforms");
+                        await objWriter.WriteStartElementAsync("complexforms");
                         foreach (ComplexForm objComplexForm in _objCharacter.ComplexForms)
                         {
                             // <program>
-                            objWriter.WriteStartElement("complexform");
-                            objWriter.WriteStartElement("name");
+                            await objWriter.WriteStartElementAsync("complexform");
+                            await objWriter.WriteStartElementAsync("name");
                             if (!string.IsNullOrEmpty(objComplexForm.Extra))
-                                objWriter.WriteAttributeString("select", objComplexForm.Extra);
+                                await objWriter.WriteAttributeStringAsync("select", objComplexForm.Extra);
                             objWriter.WriteValue(objComplexForm.Name);
-                            objWriter.WriteEndElement();
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
+                            await objWriter.WriteEndElementAsync();
                             // </program>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         // </programs>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Cyberware/Bioware.
@@ -406,78 +407,78 @@ namespace Chummer
                         if (blnCyberware)
                         {
                             // <cyberwares>
-                            objWriter.WriteStartElement("cyberwares");
+                            await objWriter.WriteStartElementAsync("cyberwares");
                             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                             {
                                 if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
                                 {
                                     // <cyberware>
-                                    objWriter.WriteStartElement("cyberware");
-                                    objWriter.WriteElementString("name", objCyberware.Name);
+                                    await objWriter.WriteStartElementAsync("cyberware");
+                                    await objWriter.WriteElementStringAsync("name", objCyberware.Name);
                                     if (objCyberware.Rating > 0)
-                                        objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                    objWriter.WriteElementString("grade", objCyberware.Grade.Name);
+                                        await objWriter.WriteElementStringAsync("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.Name);
                                     if (objCyberware.Children.Count > 0)
                                     {
                                         // <cyberwares>
-                                        objWriter.WriteStartElement("cyberwares");
+                                        await objWriter.WriteStartElementAsync("cyberwares");
                                         foreach (Cyberware objChildCyberware in objCyberware.Children)
                                         {
                                             if (objChildCyberware.Capacity != "[*]")
                                             {
                                                 // <cyberware>
-                                                objWriter.WriteStartElement("cyberware");
-                                                objWriter.WriteElementString("name", objChildCyberware.Name);
+                                                await objWriter.WriteStartElementAsync("cyberware");
+                                                await objWriter.WriteElementStringAsync("name", objChildCyberware.Name);
                                                 if (objChildCyberware.Rating > 0)
-                                                    objWriter.WriteElementString("rating", objChildCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                                    await objWriter.WriteElementStringAsync("rating", objChildCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
 
                                                 if (objChildCyberware.GearChildren.Count > 0)
-                                                    WriteGear(objWriter, objChildCyberware.GearChildren);
+                                                    await WriteGear(objWriter, objChildCyberware.GearChildren);
                                                 // </cyberware>
-                                                objWriter.WriteEndElement();
+                                                await objWriter.WriteEndElementAsync();
                                             }
                                         }
 
                                         // </cyberwares>
-                                        objWriter.WriteEndElement();
+                                        await objWriter.WriteEndElementAsync();
                                     }
 
                                     if (objCyberware.GearChildren.Count > 0)
-                                        WriteGear(objWriter, objCyberware.GearChildren);
+                                        await WriteGear(objWriter, objCyberware.GearChildren);
 
                                     // </cyberware>
-                                    objWriter.WriteEndElement();
+                                    await objWriter.WriteEndElementAsync();
                                 }
                             }
 
                             // </cyberwares>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         if (blnBioware)
                         {
                             // <biowares>
-                            objWriter.WriteStartElement("biowares");
+                            await objWriter.WriteStartElementAsync("biowares");
                             foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                             {
                                 if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
                                 {
                                     // <bioware>
-                                    objWriter.WriteStartElement("bioware");
-                                    objWriter.WriteElementString("name", objCyberware.Name);
+                                    await objWriter.WriteStartElementAsync("bioware");
+                                    await objWriter.WriteElementStringAsync("name", objCyberware.Name);
                                     if (objCyberware.Rating > 0)
-                                        objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                    objWriter.WriteElementString("grade", objCyberware.Grade.ToString());
+                                        await objWriter.WriteElementStringAsync("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                    await objWriter.WriteElementStringAsync("grade", objCyberware.Grade.ToString());
 
                                     if (objCyberware.GearChildren.Count > 0)
-                                        WriteGear(objWriter, objCyberware.GearChildren);
+                                        await WriteGear(objWriter, objCyberware.GearChildren);
                                     // </bioware>
-                                    objWriter.WriteEndElement();
+                                    await objWriter.WriteEndElementAsync();
                                 }
                             }
 
                             // </biowares>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
                     }
 
@@ -485,119 +486,119 @@ namespace Chummer
                     if (chkLifestyle.Checked)
                     {
                         // <lifestyles>
-                        objWriter.WriteStartElement("lifestyles");
+                        await objWriter.WriteStartElementAsync("lifestyles");
                         foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
                         {
                             // <lifestyle>
-                            objWriter.WriteStartElement("lifestyle");
-                            objWriter.WriteElementString("name", objLifestyle.Name);
-                            objWriter.WriteElementString("months", objLifestyle.Increments.ToString(GlobalSettings.InvariantCultureInfo));
+                            await objWriter.WriteStartElementAsync("lifestyle");
+                            await objWriter.WriteElementStringAsync("name", objLifestyle.Name);
+                            await objWriter.WriteElementStringAsync("months", objLifestyle.Increments.ToString(GlobalSettings.InvariantCultureInfo));
                             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                             {
                                 // This is an Advanced Lifestyle, so write out its properties.
-                                objWriter.WriteElementString("cost", objLifestyle.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo));
-                                objWriter.WriteElementString("dice", objLifestyle.Dice.ToString(GlobalSettings.InvariantCultureInfo));
-                                objWriter.WriteElementString("multiplier", objLifestyle.Multiplier.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo));
-                                objWriter.WriteElementString("baselifestyle", objLifestyle.BaseLifestyle);
+                                await objWriter.WriteElementStringAsync("cost", objLifestyle.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo));
+                                await objWriter.WriteElementStringAsync("dice", objLifestyle.Dice.ToString(GlobalSettings.InvariantCultureInfo));
+                                await objWriter.WriteElementStringAsync("multiplier", objLifestyle.Multiplier.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo));
+                                await objWriter.WriteElementStringAsync("baselifestyle", objLifestyle.BaseLifestyle);
                                 if (objLifestyle.LifestyleQualities.Count > 0)
                                 {
                                     // <qualities>
-                                    objWriter.WriteStartElement("qualities");
+                                    await objWriter.WriteStartElementAsync("qualities");
                                     foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
-                                        objWriter.WriteElementString("quality", objQuality.Name);
+                                        await objWriter.WriteElementStringAsync("quality", objQuality.Name);
                                     // </qualities>
-                                    objWriter.WriteEndElement();
+                                    await objWriter.WriteEndElementAsync();
                                 }
                             }
 
                             // </lifestyle>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         // </lifestyles>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Armor.
                     if (chkArmor.Checked)
                     {
                         // <armors>
-                        objWriter.WriteStartElement("armors");
+                        await objWriter.WriteStartElementAsync("armors");
                         foreach (Armor objArmor in _objCharacter.Armor)
                         {
                             // <armor>
-                            objWriter.WriteStartElement("armor");
-                            objWriter.WriteElementString("name", objArmor.Name);
+                            await objWriter.WriteStartElementAsync("armor");
+                            await objWriter.WriteElementStringAsync("name", objArmor.Name);
                             if (objArmor.ArmorMods.Count > 0)
                             {
                                 // <mods>
-                                objWriter.WriteStartElement("mods");
+                                await objWriter.WriteStartElementAsync("mods");
                                 foreach (ArmorMod objMod in objArmor.ArmorMods)
                                 {
                                     // <mod>
-                                    objWriter.WriteStartElement("mod");
-                                    objWriter.WriteElementString("name", objMod.Name);
+                                    await objWriter.WriteStartElementAsync("mod");
+                                    await objWriter.WriteElementStringAsync("name", objMod.Name);
                                     if (objMod.Rating > 0)
-                                        objWriter.WriteElementString("rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                        await objWriter.WriteElementStringAsync("rating", objMod.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                     // </mod>
-                                    objWriter.WriteEndElement();
+                                    await objWriter.WriteEndElementAsync();
                                 }
 
                                 // </mods>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync();
                             }
 
                             if (objArmor.GearChildren.Count > 0)
-                                WriteGear(objWriter, objArmor.GearChildren);
+                                await WriteGear(objWriter, objArmor.GearChildren);
 
                             // </armor>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         // </armors>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Weapons.
                     if (chkWeapons.Checked)
                     {
                         // <weapons>
-                        objWriter.WriteStartElement("weapons");
+                        await objWriter.WriteStartElementAsync("weapons");
                         foreach (Weapon objWeapon in _objCharacter.Weapons)
                         {
                             // Don't attempt to export Cyberware and Gear Weapons since those are handled by those object types. The default Unarmed Attack Weapon should also not be exported.
                             if (objWeapon.Category != "Cyberware" && objWeapon.Category != "Gear" && objWeapon.Name != "Unarmed Attack")
                             {
                                 // <weapon>
-                                objWriter.WriteStartElement("weapon");
-                                objWriter.WriteElementString("name", objWeapon.Name);
+                                await objWriter.WriteStartElementAsync("weapon");
+                                await objWriter.WriteElementStringAsync("name", objWeapon.Name);
 
                                 // Weapon Accessories.
                                 if (objWeapon.WeaponAccessories.Count > 0)
                                 {
                                     // <accessories>
-                                    objWriter.WriteStartElement("accessories");
+                                    await objWriter.WriteStartElementAsync("accessories");
                                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                     {
                                         // Don't attempt to export items included in the Weapon.
                                         if (!objAccessory.IncludedInWeapon)
                                         {
                                             // <accessory>
-                                            objWriter.WriteStartElement("accessory");
-                                            objWriter.WriteElementString("name", objAccessory.Name);
-                                            objWriter.WriteElementString("mount", objAccessory.Mount);
-                                            objWriter.WriteElementString("extramount", objAccessory.ExtraMount);
+                                            await objWriter.WriteStartElementAsync("accessory");
+                                            await objWriter.WriteElementStringAsync("name", objAccessory.Name);
+                                            await objWriter.WriteElementStringAsync("mount", objAccessory.Mount);
+                                            await objWriter.WriteElementStringAsync("extramount", objAccessory.ExtraMount);
 
                                             if (objAccessory.GearChildren.Count > 0)
-                                                WriteGear(objWriter, objAccessory.GearChildren);
+                                                await WriteGear(objWriter, objAccessory.GearChildren);
 
                                             // </accessory>
-                                            objWriter.WriteEndElement();
+                                            await objWriter.WriteEndElementAsync();
                                         }
                                     }
 
                                     // </accessories>
-                                    objWriter.WriteEndElement();
+                                    await objWriter.WriteEndElementAsync();
                                 }
 
                                 // Underbarrel Weapon.
@@ -606,52 +607,52 @@ namespace Chummer
                                     foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
                                     {
                                         if (!objUnderbarrelWeapon.IncludedInWeapon)
-                                            objWriter.WriteElementString("underbarrel", objUnderbarrelWeapon.Name);
+                                            await objWriter.WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name);
                                     }
                                 }
 
                                 // </weapon>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync();
                             }
                         }
 
                         // </weapons>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // Export Gear.
                     if (chkGear.Checked)
                     {
-                        WriteGear(objWriter, _objCharacter.Gear);
+                        await WriteGear(objWriter, _objCharacter.Gear);
                     }
 
                     // Export Vehicles.
                     if (chkVehicles.Checked)
                     {
                         // <vehicles>
-                        objWriter.WriteStartElement("vehicles");
+                        await objWriter.WriteStartElementAsync("vehicles");
                         foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                         {
                             bool blnWeapons = false;
                             // <vehicle>
-                            objWriter.WriteStartElement("vehicle");
-                            objWriter.WriteElementString("name", objVehicle.Name);
+                            await objWriter.WriteStartElementAsync("vehicle");
+                            await objWriter.WriteElementStringAsync("name", objVehicle.Name);
                             if (objVehicle.Mods.Count > 0)
                             {
                                 // <mods>
-                                objWriter.WriteStartElement("mods");
+                                await objWriter.WriteStartElementAsync("mods");
                                 foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                                 {
                                     // Only write out the Mods that are not part of the base vehicle.
                                     if (!objVehicleMod.IncludedInVehicle)
                                     {
                                         // <mod>
-                                        objWriter.WriteStartElement("mod");
-                                        objWriter.WriteElementString("name", objVehicleMod.Name);
+                                        await objWriter.WriteStartElementAsync("mod");
+                                        await objWriter.WriteElementStringAsync("name", objVehicleMod.Name);
                                         if (objVehicleMod.Rating > 0)
-                                            objWriter.WriteElementString("rating", objVehicleMod.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                            await objWriter.WriteElementStringAsync("rating", objVehicleMod.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                         // </mod>
-                                        objWriter.WriteEndElement();
+                                        await objWriter.WriteEndElementAsync();
 
                                         // See if this is a Weapon Mount with Weapons.
                                         if (objVehicleMod.Weapons.Count > 0)
@@ -666,84 +667,84 @@ namespace Chummer
                                 }
 
                                 // </mods>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync();
                             }
 
                             // If there are Weapons, add them.
                             if (blnWeapons)
                             {
                                 // <weapons>
-                                objWriter.WriteStartElement("weapons");
+                                await objWriter.WriteStartElementAsync("weapons");
                                 foreach (VehicleMod objVehicleMod in objVehicle.Mods)
                                 {
                                     foreach (Weapon objWeapon in objVehicleMod.Weapons)
                                     {
                                         // <weapon>
-                                        objWriter.WriteStartElement("weapon");
-                                        objWriter.WriteElementString("name", objWeapon.Name);
+                                        await objWriter.WriteStartElementAsync("weapon");
+                                        await objWriter.WriteElementStringAsync("name", objWeapon.Name);
 
                                         // Weapon Accessories.
                                         if (objWeapon.WeaponAccessories.Count > 0)
                                         {
                                             // <accessories>
-                                            objWriter.WriteStartElement("accessories");
+                                            await objWriter.WriteStartElementAsync("accessories");
                                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                             {
                                                 // Don't attempt to export items included in the Weapon.
                                                 if (!objAccessory.IncludedInWeapon)
                                                 {
                                                     // <accessory>
-                                                    objWriter.WriteStartElement("accessory");
-                                                    objWriter.WriteElementString("name", objAccessory.Name);
-                                                    objWriter.WriteElementString("mount", objAccessory.Mount);
-                                                    objWriter.WriteElementString("extramount", objAccessory.ExtraMount);
+                                                    await objWriter.WriteStartElementAsync("accessory");
+                                                    await objWriter.WriteElementStringAsync("name", objAccessory.Name);
+                                                    await objWriter.WriteElementStringAsync("mount", objAccessory.Mount);
+                                                    await objWriter.WriteElementStringAsync("extramount", objAccessory.ExtraMount);
                                                     // </accessory>
-                                                    objWriter.WriteEndElement();
+                                                    await objWriter.WriteEndElementAsync();
                                                 }
                                             }
 
                                             // </accessories>
-                                            objWriter.WriteEndElement();
+                                            await objWriter.WriteEndElementAsync();
                                         }
 
                                         // Underbarrel Weapon.
                                         if (objWeapon.UnderbarrelWeapons.Count > 0)
                                         {
                                             foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons)
-                                                objWriter.WriteElementString("underbarrel", objUnderbarrelWeapon.Name);
+                                                await objWriter.WriteElementStringAsync("underbarrel", objUnderbarrelWeapon.Name);
                                         }
 
                                         // </weapon>
-                                        objWriter.WriteEndElement();
+                                        await objWriter.WriteEndElementAsync();
                                     }
                                 }
 
                                 // </weapons>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync();
                             }
 
                             // Gear.
                             if (objVehicle.GearChildren.Count > 0)
                             {
-                                WriteGear(objWriter, objVehicle.GearChildren);
+                                await WriteGear(objWriter, objVehicle.GearChildren);
                             }
 
                             // </vehicle>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                         }
 
                         // </vehicles>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     // </pack>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync();
                     // </packs>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync();
                     // </chummer>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync();
 
-                    objWriter.WriteEndDocument();
+                    await objWriter.WriteEndDocumentAsync();
                 }
             }
 
@@ -766,33 +767,33 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlWriter to use.</param>
         /// <param name="lstGear">List of Gear to write.</param>
-        private static void WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
+        private static async ValueTask WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
         {
             // <gears>
-            objWriter.WriteStartElement("gears");
+            await objWriter.WriteStartElementAsync("gears");
             foreach (Gear objGear in lstGear)
             {
                 if (objGear.IncludedInParent)
                     continue;
                 // <gear>
-                objWriter.WriteStartElement("gear");
-                objWriter.WriteStartElement("name");
+                await objWriter.WriteStartElementAsync("gear");
+                await objWriter.WriteStartElementAsync("name");
                 if (!string.IsNullOrEmpty(objGear.Extra))
-                    objWriter.WriteAttributeString("select", objGear.Extra);
+                    await objWriter.WriteAttributeStringAsync("select", objGear.Extra);
                 objWriter.WriteValue(objGear.Name);
-                objWriter.WriteEndElement();
-                objWriter.WriteElementString("category", objGear.Category);
+                await objWriter.WriteEndElementAsync();
+                await objWriter.WriteElementStringAsync("category", objGear.Category);
                 if (objGear.Rating > 0)
-                    objWriter.WriteElementString("rating", objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("rating", objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (objGear.Quantity != 1)
-                    objWriter.WriteElementString("qty", objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("qty", objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                 if (objGear.Children.Count > 0)
-                    WriteGear(objWriter, objGear.Children);
+                    await WriteGear(objWriter, objGear.Children);
                 // </gear>
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
             }
             // </gears>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Methods

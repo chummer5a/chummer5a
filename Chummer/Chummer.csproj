@@ -350,6 +350,7 @@
     <Compile Include="Backend\Static\Extensions\VersionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XmlDocumentExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XmlWriterExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>

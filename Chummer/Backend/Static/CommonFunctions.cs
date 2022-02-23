@@ -1233,10 +1233,10 @@ namespace Chummer
             using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
             {
                 // Begin the document.
-                objWriter.WriteStartDocument();
+                await objWriter.WriteStartDocumentAsync();
 
                 // </characters>
-                objWriter.WriteStartElement("characters");
+                await objWriter.WriteStartElementAsync("characters");
 
                 foreach (Character objCharacter in lstCharacters)
                 {
@@ -1246,11 +1246,11 @@ namespace Chummer
                 }
 
                 // </characters>
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
 
                 // Finish the document and flush the Writer and Stream.
-                objWriter.WriteEndDocument();
-                objWriter.Flush();
+                await objWriter.WriteEndDocumentAsync();
+                await objWriter.FlushAsync();
 
                 if (objToken.IsCancellationRequested)
                     return objReturn;

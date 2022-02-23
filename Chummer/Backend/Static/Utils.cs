@@ -562,11 +562,7 @@ namespace Chummer
             {
                 object objSuccessLock = new object();
                 bool blnReturn = true;
-                Parallel.ForEach(astrFilesToDelete, () => true, (strToDelete, x, y) =>
-                {
-                    // ReSharper disable once AccessToModifiedClosure
-                    return SafeDeleteFile(strToDelete, false, intTimeout);
-                }, blnLoop =>
+                Parallel.ForEach(astrFilesToDelete, () => true, (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout), blnLoop =>
                 {
                     lock (objSuccessLock)
                     {

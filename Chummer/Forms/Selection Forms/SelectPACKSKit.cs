@@ -856,12 +856,12 @@ namespace Chummer
                     {
                         using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                         {
-                            objWriter.WriteStartDocument();
+                            await objWriter.WriteStartDocumentAsync();
 
                             // <chummer>
-                            objWriter.WriteStartElement("chummer");
+                            await objWriter.WriteStartElementAsync("chummer");
                             // <packs>
-                            objWriter.WriteStartElement("packs");
+                            await objWriter.WriteStartElementAsync("packs");
 
                             // If this is not a new file, write out the current contents.
                             using (XmlNodeList objXmlNodeList = xmlDocumentBasePacksNode.SelectNodes("*"))
@@ -873,21 +873,21 @@ namespace Chummer
                                         if (objXmlNode["name"]?.InnerText != strSelectedKit)
                                         {
                                             // <pack>
-                                            objWriter.WriteStartElement("pack");
+                                            await objWriter.WriteStartElementAsync("pack");
                                             objXmlNode.WriteContentTo(objWriter);
                                             // </pack>
-                                            objWriter.WriteEndElement();
+                                            await objWriter.WriteEndElementAsync();
                                         }
                                     }
                                 }
                             }
 
                             // </packs>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
                             // </chummer>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync();
 
-                            objWriter.WriteEndDocument();
+                            await objWriter.WriteEndDocumentAsync();
                         }
                     }
                 }
