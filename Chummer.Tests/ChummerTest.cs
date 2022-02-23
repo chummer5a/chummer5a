@@ -226,8 +226,13 @@ namespace Chummer.Tests
                             continue;
                         CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
                         string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
-                        lstExportTasks.Add(objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage)
-                            .ContinueWith(x => x.Result.Save(strDestination)));
+                        // ReSharper disable once AccessToDisposedClosure
+                        lstExportTasks.Add(Task.Run(() => DoAndSaveExport(objCharacter)));
+                        async Task DoAndSaveExport(Character objLocalCharacter)
+                        {
+                            XmlDocument xmlDocument = await objLocalCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
+                            xmlDocument.Save(strDestination);
+                        }
                     }
                     await Task.WhenAll(lstExportTasks);
                 }
