@@ -103,25 +103,25 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public async ValueTask Save(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("spirit");
-            objWriter.WriteElementString("guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("crittername", _strCritterName);
-            objWriter.WriteElementString("services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("type", _eEntityType.ToString());
-            objWriter.WriteElementString("file", _strFileName);
-            objWriter.WriteElementString("relative", _strRelativeName);
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
-            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            SaveMugshots(objWriter);
-            objWriter.WriteEndElement();
+            await objWriter.WriteStartElementAsync("spirit");
+            await objWriter.WriteElementStringAsync("guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("name", _strName);
+            await objWriter.WriteElementStringAsync("crittername", _strCritterName);
+            await objWriter.WriteElementStringAsync("services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("type", _eEntityType.ToString());
+            await objWriter.WriteElementStringAsync("file", _strFileName);
+            await objWriter.WriteElementStringAsync("relative", _strRelativeName);
+            await objWriter.WriteElementStringAsync("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes));
+            await SaveMugshots(objWriter);
+            await objWriter.WriteEndElementAsync();
 
             /* Disabled for now because we cannot change any properties in the linked character anyway
             if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
@@ -177,35 +177,35 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
             // Translate the Critter name if applicable.
             string strName = Name;
-            XmlNode objXmlCritterNode = this.GetNode(strLanguageToPrint);
+            XmlNode objXmlCritterNode = await this.GetNodeAsync(strLanguageToPrint);
             if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText ?? Name;
             }
 
-            objWriter.WriteStartElement("spirit");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", strName);
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("crittername", CritterName);
-            objWriter.WriteElementString("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("services", ServicesOwed.ToString(objCulture));
-            objWriter.WriteElementString("force", Force.ToString(objCulture));
-            objWriter.WriteElementString("ratinglabel", LanguageManager.GetString(RatingLabel, strLanguageToPrint));
+            await objWriter.WriteStartElementAsync("spirit");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("name", strName);
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("crittername", CritterName);
+            await objWriter.WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("services", ServicesOwed.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("ratinglabel", await LanguageManager.GetStringAsync(RatingLabel, strLanguageToPrint));
 
             if (objXmlCritterNode != null)
             {
                 //Attributes for spirits, named differently as to not confuse <attribute>
 
                 Dictionary<string, int> dicAttributes = new Dictionary<string, int>(s_PrintAttributeLabels.Count);
-                objWriter.WriteStartElement("spiritattributes");
+                await objWriter.WriteStartElementAsync("spiritattributes");
                 foreach (string strAttribute in s_PrintAttributeLabels)
                 {
                     string strInner = string.Empty;
@@ -213,48 +213,48 @@ namespace Chummer
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                         int intValue = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
-                        objWriter.WriteElementString(strAttribute, intValue.ToString(objCulture));
+                        await objWriter.WriteElementStringAsync(strAttribute, intValue.ToString(objCulture));
 
                         dicAttributes[strAttribute] = intValue;
                     }
                 }
 
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
 
                 if (_objLinkedCharacter != null)
                 {
                     //Dump skills, (optional)powers if present to output
 
-                    XPathNavigator xmlSpiritPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("spiritpowers.xml", strLanguageToPrint).SelectSingleNodeAndCacheExpression("/chummer");
-                    XPathNavigator xmlCritterPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("critterpowers.xml", strLanguageToPrint).SelectSingleNodeAndCacheExpression("/chummer");
+                    XPathNavigator xmlSpiritPowersBaseChummerNode = (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpression("/chummer");
+                    XPathNavigator xmlCritterPowersBaseChummerNode = (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpression("/chummer");
 
                     XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                     if (xmlPowersNode != null)
                     {
-                        objWriter.WriteStartElement("powers");
+                        await objWriter.WriteStartElementAsync("powers");
                         foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                         {
-                            PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                            await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
                         }
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     xmlPowersNode = objXmlCritterNode["optionalpowers"];
                     if (xmlPowersNode != null)
                     {
-                        objWriter.WriteStartElement("optionalpowers");
+                        await objWriter.WriteStartElementAsync("optionalpowers");
                         foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                         {
-                            PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                            await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
                         }
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     xmlPowersNode = objXmlCritterNode["skills"];
                     if (xmlPowersNode != null)
                     {
-                        XPathNavigator xmlSkillsDocument = CharacterObject.LoadDataXPath("skills.xml", strLanguageToPrint);
-                        objWriter.WriteStartElement("skills");
+                        XPathNavigator xmlSkillsDocument = await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguageToPrint);
+                        await objWriter.WriteStartElementAsync("skills");
                         foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
                         {
                             string strAttrName = xmlSkillNode.Attributes?["attr"]?.Value ?? string.Empty;
@@ -265,25 +265,25 @@ namespace Chummer
                             string strEnglishName = xmlSkillNode.InnerText;
                             string strTranslatedName = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + strEnglishName.CleanXPath() + "]/translate")?.Value ??
                                                        xmlSkillsDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strEnglishName.CleanXPath() + "]/translate")?.Value ?? strEnglishName;
-                            objWriter.WriteStartElement("skill");
-                            objWriter.WriteElementString("name", strTranslatedName);
-                            objWriter.WriteElementString("name_english", strEnglishName);
-                            objWriter.WriteElementString("attr", strAttrName);
-                            objWriter.WriteElementString("pool", intDicepool.ToString(objCulture));
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteStartElementAsync("skill");
+                            await objWriter.WriteElementStringAsync("name", strTranslatedName);
+                            await objWriter.WriteElementStringAsync("name_english", strEnglishName);
+                            await objWriter.WriteElementStringAsync("attr", strAttrName);
+                            await objWriter.WriteElementStringAsync("pool", intDicepool.ToString(objCulture));
+                            await objWriter.WriteEndElementAsync();
                         }
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
 
                     xmlPowersNode = objXmlCritterNode["weaknesses"];
                     if (xmlPowersNode != null)
                     {
-                        objWriter.WriteStartElement("weaknesses");
+                        await objWriter.WriteStartElementAsync("weaknesses");
                         foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
                         {
-                            PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                            await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
                         }
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync();
                     }
                 }
                 //Page in book for reference
@@ -291,28 +291,28 @@ namespace Chummer
                 string strPage = string.Empty;
 
                 if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
-                    objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint));
                 if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage) || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
-                    objWriter.WriteElementString("page", strPage);
+                    await objWriter.WriteElementStringAsync("page", strPage);
             }
 
-            objWriter.WriteElementString("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("type", EntityType.ToString());
+            await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("type", EntityType.ToString());
 
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            PrintMugshots(objWriter);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await PrintMugshots(objWriter);
+            await objWriter.WriteEndElementAsync();
         }
 
-        private void PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
+        private async ValueTask PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdExtra))
             {
                 string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
                 if (!string.IsNullOrEmpty(strSelect))
-                    sbdExtra.Append(CharacterObject.TranslateExtra(strSelect, strLanguageToPrint));
+                    sbdExtra.Append(await CharacterObject.TranslateExtraAsync(strSelect, strLanguageToPrint));
                 string strSource = string.Empty;
                 string strPage = string.Empty;
                 string strPowerName = xmlPowerEntryNode.InnerText;
@@ -339,7 +339,7 @@ namespace Chummer
                         objXmlPowerNode.TryGetStringFieldQuickly("page", ref strPage);
 
                     objXmlPowerNode.TryGetStringFieldQuickly("name", ref strEnglishName);
-                    string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
                     bool blnExtrasAdded = false;
                     foreach (string strLoopExtra in strPowerName.TrimStartOnce(strEnglishName).Trim().TrimStartOnce('(')
                                                                 .TrimEndOnce(')')
@@ -347,7 +347,7 @@ namespace Chummer
                                                                     ',', StringSplitOptions.RemoveEmptyEntries))
                     {
                         blnExtrasAdded = true;
-                        sbdExtra.Append(CharacterObject.TranslateExtra(strLoopExtra, strLanguageToPrint)).Append(',')
+                        sbdExtra.Append(await CharacterObject.TranslateExtraAsync(strLoopExtra, strLanguageToPrint)).Append(',')
                                 .Append(strSpace);
                     }
 
@@ -367,35 +367,35 @@ namespace Chummer
                     switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type")?.Value)
                     {
                         case "M":
-                            strDisplayType = LanguageManager.GetString("String_SpellTypeMana", strLanguageToPrint);
+                            strDisplayType = await LanguageManager.GetStringAsync("String_SpellTypeMana", strLanguageToPrint);
                             break;
 
                         case "P":
-                            strDisplayType = LanguageManager.GetString("String_SpellTypePhysical", strLanguageToPrint);
+                            strDisplayType = await LanguageManager.GetStringAsync("String_SpellTypePhysical", strLanguageToPrint);
                             break;
                     }
 
                     switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action")?.Value)
                     {
                         case "Auto":
-                            strDisplayAction = LanguageManager.GetString("String_ActionAutomatic", strLanguageToPrint);
+                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguageToPrint);
                             break;
 
                         case "Free":
-                            strDisplayAction = LanguageManager.GetString("String_ActionFree", strLanguageToPrint);
+                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionFree", strLanguageToPrint);
                             break;
 
                         case "Simple":
-                            strDisplayAction = LanguageManager.GetString("String_ActionSimple", strLanguageToPrint);
+                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionSimple", strLanguageToPrint);
                             break;
 
                         case "Complex":
-                            strDisplayAction = LanguageManager.GetString("String_ActionComplex", strLanguageToPrint);
+                            strDisplayAction = await LanguageManager.GetStringAsync("String_ActionComplex", strLanguageToPrint);
                             break;
 
                         case "Special":
                             strDisplayAction
-                                = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint);
                             break;
                     }
 
@@ -403,22 +403,22 @@ namespace Chummer
                     {
                         case "Instant":
                             strDisplayDuration
-                                = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguageToPrint);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationInstantLong", strLanguageToPrint);
                             break;
 
                         case "Sustained":
                             strDisplayDuration
-                                = LanguageManager.GetString("String_SpellDurationSustained", strLanguageToPrint);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguageToPrint);
                             break;
 
                         case "Always":
                             strDisplayDuration
-                                = LanguageManager.GetString("String_SpellDurationAlways", strLanguageToPrint);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationAlways", strLanguageToPrint);
                             break;
 
                         case "Special":
                             strDisplayDuration
-                                = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
+                                = await LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint);
                             break;
                     }
 
@@ -426,62 +426,62 @@ namespace Chummer
                         && !strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage,
                                                       StringComparison.OrdinalIgnoreCase))
                     {
-                        strDisplayRange = strDisplayRange
-                                          .CheapReplace(
-                                              "Self",
-                                              () => LanguageManager.GetString(
-                                                  "String_SpellRangeSelf", strLanguageToPrint))
-                                          .CheapReplace(
-                                              "Special",
-                                              () => LanguageManager.GetString(
-                                                  "String_SpellDurationSpecial", strLanguageToPrint))
-                                          .CheapReplace(
-                                              "LOS",
-                                              () => LanguageManager.GetString(
-                                                  "String_SpellRangeLineOfSight", strLanguageToPrint))
-                                          .CheapReplace(
-                                              "LOI",
-                                              () => LanguageManager.GetString(
-                                                  "String_SpellRangeLineOfInfluence", strLanguageToPrint))
-                                          .CheapReplace(
-                                              "Touch",
-                                              () => LanguageManager.GetString(
-                                                  "String_SpellRangeTouch",
-                                                  strLanguageToPrint)) // Short form to remain export-friendly
-                                          .CheapReplace(
-                                              "T",
-                                              () => LanguageManager.GetString(
-                                                  "String_SpellRangeTouch", strLanguageToPrint))
-                                          .CheapReplace(
-                                              "(A)",
-                                              () => '(' + LanguageManager.GetString(
-                                                  "String_SpellRangeArea", strLanguageToPrint) + ')')
-                                          .CheapReplace(
-                                              "MAG",
-                                              () => LanguageManager.GetString(
-                                                  "String_AttributeMAGShort", strLanguageToPrint));
+                        strDisplayRange = await strDisplayRange
+                            .CheapReplaceAsync(
+                                "Self",
+                                () => LanguageManager.GetString(
+                                    "String_SpellRangeSelf", strLanguageToPrint))
+                            .CheapReplaceAsync(
+                                "Special",
+                                () => LanguageManager.GetString(
+                                    "String_SpellDurationSpecial", strLanguageToPrint))
+                            .CheapReplaceAsync(
+                                "LOS",
+                                () => LanguageManager.GetString(
+                                    "String_SpellRangeLineOfSight", strLanguageToPrint))
+                            .CheapReplaceAsync(
+                                "LOI",
+                                () => LanguageManager.GetString(
+                                    "String_SpellRangeLineOfInfluence", strLanguageToPrint))
+                            .CheapReplaceAsync(
+                                "Touch",
+                                () => LanguageManager.GetString(
+                                    "String_SpellRangeTouch",
+                                    strLanguageToPrint)) // Short form to remain export-friendly
+                            .CheapReplaceAsync(
+                                "T",
+                                () => LanguageManager.GetString(
+                                    "String_SpellRangeTouch", strLanguageToPrint))
+                            .CheapReplaceAsync(
+                                "(A)",
+                                () => '(' + LanguageManager.GetString(
+                                    "String_SpellRangeArea", strLanguageToPrint) + ')')
+                            .CheapReplaceAsync(
+                                "MAG",
+                                () => LanguageManager.GetString(
+                                    "String_AttributeMAGShort", strLanguageToPrint));
                     }
                 }
 
                 if (string.IsNullOrEmpty(strDisplayType))
-                    strDisplayType = LanguageManager.GetString("String_None", strLanguageToPrint);
+                    strDisplayType = await LanguageManager.GetStringAsync("String_None", strLanguageToPrint);
                 if (string.IsNullOrEmpty(strDisplayAction))
-                    strDisplayAction = LanguageManager.GetString("String_None", strLanguageToPrint);
+                    strDisplayAction = await LanguageManager.GetStringAsync("String_None", strLanguageToPrint);
 
-                objWriter.WriteStartElement("critterpower");
-                objWriter.WriteElementString("name", strPowerName);
-                objWriter.WriteElementString("name_english", strEnglishName);
-                objWriter.WriteElementString("extra", sbdExtra.ToString());
-                objWriter.WriteElementString("category", strCategory);
-                objWriter.WriteElementString("category_english", strEnglishCategory);
-                objWriter.WriteElementString("type", strDisplayType);
-                objWriter.WriteElementString("action", strDisplayAction);
-                objWriter.WriteElementString("range", strDisplayRange);
-                objWriter.WriteElementString("duration", strDisplayDuration);
-                objWriter.WriteElementString(
-                    "source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
-                objWriter.WriteElementString("page", strPage);
-                objWriter.WriteEndElement();
+                await objWriter.WriteStartElementAsync("critterpower");
+                await objWriter.WriteElementStringAsync("name", strPowerName);
+                await objWriter.WriteElementStringAsync("name_english", strEnglishName);
+                await objWriter.WriteElementStringAsync("extra", sbdExtra.ToString());
+                await objWriter.WriteElementStringAsync("category", strCategory);
+                await objWriter.WriteElementStringAsync("category_english", strEnglishCategory);
+                await objWriter.WriteElementStringAsync("type", strDisplayType);
+                await objWriter.WriteElementStringAsync("action", strDisplayAction);
+                await objWriter.WriteElementStringAsync("range", strDisplayRange);
+                await objWriter.WriteElementStringAsync("duration", strDisplayDuration);
+                await objWriter.WriteElementStringAsync(
+                    "source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", strPage);
+                await objWriter.WriteEndElementAsync();
             }
         }
 
@@ -1137,20 +1137,20 @@ namespace Chummer
             }
         }
 
-        public void SaveMugshots(XmlTextWriter objWriter)
+        public async ValueTask SaveMugshots(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteElementString("mainmugshotindex",
+            await objWriter.WriteElementStringAsync("mainmugshotindex",
                 MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
             // <mugshot>
-            objWriter.WriteStartElement("mugshots");
+            await objWriter.WriteStartElementAsync("mugshots");
             foreach (Image imgMugshot in Mugshots)
             {
-                objWriter.WriteElementString("mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
+                objWriter.WriteElementString("mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
             }
             // </mugshot>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         public void LoadMugshots(XPathNavigator xmlSavedNode)
@@ -1179,12 +1179,12 @@ namespace Chummer
             }
         }
 
-        public void PrintMugshots(XmlTextWriter objWriter)
+        public async ValueTask PrintMugshots(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
             if (LinkedCharacter != null)
-                LinkedCharacter.PrintMugshots(objWriter);
+                await LinkedCharacter.PrintMugshots(objWriter);
             else if (Mugshots.Count > 0)
             {
                 // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
@@ -1199,7 +1199,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
@@ -1210,35 +1210,35 @@ namespace Chummer
                         guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) + ".jpg");
                     imgMainMugshot.Save(imgMugshotPath);
                     // <mainmugshotpath />
-                    objWriter.WriteElementString("mainmugshotpath",
+                    await objWriter.WriteElementStringAsync("mainmugshotpath",
                         "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
                     // <mainmugshotbase64 />
-                    objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64StringAsJpeg());
+                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync());
                 }
                 // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots",
+                await objWriter.WriteElementStringAsync("hasothermugshots",
                     (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteStartElement("othermugshots");
+                await objWriter.WriteStartElementAsync("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
                     if (i == MainMugshotIndex)
                         continue;
                     Image imgMugshot = Mugshots[i];
-                    objWriter.WriteStartElement("mugshot");
+                    await objWriter.WriteStartElementAsync("mugshot");
 
-                    objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64StringAsJpeg());
+                    await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync());
 
                     string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
                         guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
                         i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
                     imgMugshot.Save(imgMugshotPath);
-                    objWriter.WriteElementString("temppath",
+                    await objWriter.WriteElementStringAsync("temppath",
                         "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
 
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync();
                 }
                 // </mugshots>
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
             }
         }
 

@@ -17,24 +17,26 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-using System.Drawing;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.XPath;
 
 namespace Chummer
 {
-    public interface IHasMugshots : IDisposable
+    public static class XmlWriterExtensions
     {
-        ThreadSafeList<Image> Mugshots { get; }
-        Image MainMugshot { get; set; }
-        int MainMugshotIndex { get; set; }
+        /// <inheritdoc cref="XmlWriter.WriteStartElementAsync"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task WriteStartElementAsync(this XmlWriter objWriter, string localName)
+        {
+            return objWriter.WriteStartElementAsync(null, localName, null);
+        }
 
-        ValueTask SaveMugshots(XmlTextWriter objWriter);
-
-        void LoadMugshots(XPathNavigator xmlSavedNode);
-
-        ValueTask PrintMugshots(XmlTextWriter objWriter);
+        /// <inheritdoc cref="XmlWriter.WriteElementStringAsync"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task WriteElementStringAsync(this XmlWriter objWriter, string localName, string value)
+        {
+            return objWriter.WriteElementStringAsync(null, localName, null, value);
+        }
     }
 }

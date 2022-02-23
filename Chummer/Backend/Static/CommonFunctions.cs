@@ -1242,25 +1242,24 @@ namespace Chummer
             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
             {
                 // Begin the document.
-                objWriter.WriteStartDocument();
+                await objWriter.WriteStartDocumentAsync();
 
                 // </characters>
-                objWriter.WriteStartElement("characters");
+                await objWriter.WriteStartElementAsync("characters");
 
                 foreach (Character objCharacter in lstCharacters)
                 {
-                    using (new EnterReadLock(objCharacter.LockObject))
-                        await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
+                    await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
                     if (objToken.IsCancellationRequested)
                         return objReturn;
                 }
 
                 // </characters>
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
 
                 // Finish the document and flush the Writer and Stream.
-                objWriter.WriteEndDocument();
-                objWriter.Flush();
+                await objWriter.WriteEndDocumentAsync();
+                await objWriter.FlushAsync();
 
                 if (objToken.IsCancellationRequested)
                     return objReturn;

@@ -25,6 +25,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -1507,6 +1508,17 @@ namespace Chummer
             return SavedImageQuality == int.MaxValue
                 ? objImageToSave.ToBase64String()
                 : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
+        }
+
+        /// <summary>
+        /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
+        /// </summary>
+        /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
+        public static Task<string> ImageToBase64StringForStorageAsync(Image objImageToSave)
+        {
+            return SavedImageQuality == int.MaxValue
+                ? objImageToSave.ToBase64StringAsync()
+                : objImageToSave.ToBase64StringAsJpegAsync(SavedImageQuality);
         }
 
         /// <summary>
