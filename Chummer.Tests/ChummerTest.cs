@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -208,7 +209,7 @@ namespace Chummer.Tests
         }
 
         [TestMethod]
-        public void Test04_LoadThenPrint()
+        public async Task Test04_LoadThenPrint()
         {
             Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
             foreach (FileInfo objFileInfo in TestFiles)
@@ -223,8 +224,7 @@ namespace Chummer.Tests
                             continue;
                         CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
                         string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
-                        // ReSharper disable once AccessToDisposedClosure
-                        XmlDocument xmlCharacter = Utils.RunWithoutThreadLock(() => objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage));
+                        XmlDocument xmlCharacter = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
                         xmlCharacter.Save(strDestination);
                     }
                 }
