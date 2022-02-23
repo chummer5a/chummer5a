@@ -24,6 +24,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -31,10 +32,10 @@ using Chummer.Annotations;
 
 namespace Chummer.Backend.Skills
 {
-    public sealed class SkillsSection : INotifyMultiplePropertyChanged, IDisposable
+    public sealed class SkillsSection : INotifyMultiplePropertyChanged, IHasLockObject
     {
         private readonly Character _objCharacter;
-        private readonly Dictionary<Guid, Skill> _dicSkillBackups = new Dictionary<Guid, Skill>();
+        private readonly LockingDictionary<Guid, Skill> _dicSkillBackups = new LockingDictionary<Guid, Skill>();
 
         public SkillsSection(Character character)
         {
@@ -51,19 +52,19 @@ namespace Chummer.Backend.Skills
 
         private void SkillGroupsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
                 SkillGroups[e.OldIndex].UnbindSkillGroup();
         }
 
         private void SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+            using (new EnterUpgradeableReadLock(LockObject))
             {
                 Skill objSkill = Skills[e.OldIndex];
-                using (new EnterWriteLock(_objCharacter.LockObject))
+                using (new EnterWriteLock(LockObject))
                 {
                     _dicSkills.Remove(objSkill.DictionaryKey);
-                    if (!_dicSkillBackups.ContainsValue(objSkill))
+                    if (!_dicSkillBackups.Values.Contains(objSkill))
                         objSkill.Remove();
                 }
             }
@@ -71,13 +72,13 @@ namespace Chummer.Backend.Skills
 
         private void KnowledgeSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+            using (new EnterUpgradeableReadLock(LockObject))
             {
                 KnowledgeSkill objSkill = KnowledgeSkills[e.OldIndex];
-                using (new EnterWriteLock(_objCharacter.LockObject))
+                using (new EnterWriteLock(LockObject))
                 {
                     objSkill.PropertyChanged -= OnKnowledgeSkillPropertyChanged;
-                    if (!_dicSkillBackups.ContainsValue(objSkill) && !KnowsoftSkills.Contains(objSkill))
+                    if (!_dicSkillBackups.Values.Contains(objSkill) && !KnowsoftSkills.Contains(objSkill))
                         objSkill.Remove();
                 }
             }
@@ -85,10 +86,10 @@ namespace Chummer.Backend.Skills
 
         private void KnowsoftSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+            using (new EnterUpgradeableReadLock(LockObject))
             {
                 KnowledgeSkill objSkill = KnowsoftSkills[e.OldIndex];
-                if (!_dicSkillBackups.ContainsValue(objSkill) && !KnowledgeSkills.Contains(objSkill))
+                if (!_dicSkillBackups.Values.Contains(objSkill) && !KnowledgeSkills.Contains(objSkill))
                 {
                     objSkill.Remove();
                 }
@@ -97,7 +98,7 @@ namespace Chummer.Backend.Skills
 
         private void SkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 switch (e.ListChangedType)
                 {
@@ -125,14 +126,14 @@ namespace Chummer.Backend.Skills
             switch (e.ListChangedType)
             {
                 case ListChangedType.Reset:
-                    using (new EnterWriteLock(_objCharacter.LockObject))
+                    using (new EnterWriteLock(LockObject))
                     {
                         foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
                             objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
                     }
                     goto case ListChangedType.ItemDeleted;
                 case ListChangedType.ItemAdded:
-                    using (new EnterWriteLock(_objCharacter.LockObject))
+                    using (new EnterWriteLock(LockObject))
                         KnowledgeSkills[e.NewIndex].PropertyChanged += OnKnowledgeSkillPropertyChanged;
                     goto case ListChangedType.ItemDeleted;
                 case ListChangedType.ItemDeleted:
@@ -177,7 +178,7 @@ namespace Chummer.Backend.Skills
                     break;
                 case nameof(CharacterSettings.MaxSkillRatingCreate):
                 {
-                    using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+                    using (new EnterUpgradeableReadLock(LockObject))
                     {
                         if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
                         {
@@ -192,7 +193,7 @@ namespace Chummer.Backend.Skills
                 }
                 case nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate):
                 {
-                    using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+                    using (new EnterUpgradeableReadLock(LockObject))
                     {
                         if (!_objCharacter.Created && !_objCharacter.IgnoreRules)
                         {
@@ -251,7 +252,7 @@ namespace Chummer.Backend.Skills
 
         internal IEnumerable<Skill> GetActiveSkillsFromData(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "")
         {
-            using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+            using (new EnterUpgradeableReadLock(LockObject))
             {
                 XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
@@ -291,7 +292,7 @@ namespace Chummer.Backend.Skills
         internal void AddSkills(FilterOption eFilterOption, string strName = "")
         {
             List<Skill> lstSkillsToAdd = GetActiveSkillsFromData(eFilterOption, true, strName).ToList();
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 foreach (Skill objSkill in lstSkillsToAdd)
                 {
@@ -313,12 +314,12 @@ namespace Chummer.Backend.Skills
 
         internal ExoticSkill AddExoticSkill(string strName, string strSpecific)
         {
-            using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+            using (new EnterUpgradeableReadLock(LockObject))
             {
                 XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml")
                                                     .SelectSingleNode(
                                                         "/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
-                using (new EnterWriteLock(_objCharacter.LockObject))
+                using (new EnterWriteLock(LockObject))
                 {
                     ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
                     {
@@ -332,7 +333,7 @@ namespace Chummer.Backend.Skills
 
         internal void RemoveSkills(FilterOption eSkillsToRemove, string strName = "", bool blnCreateKnowledge = true)
         {
-            using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+            using (new EnterUpgradeableReadLock(LockObject))
             {
                 HashSet<Skill> setSkillsToRemove
                     = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName));
@@ -364,7 +365,7 @@ namespace Chummer.Backend.Skills
                     });
                 }
 
-                using (new EnterWriteLock(_objCharacter.LockObject))
+                using (new EnterWriteLock(LockObject))
                 {
                     for (int i = Skills.Count - 1; i >= 0; --i)
                     {
@@ -420,7 +421,7 @@ namespace Chummer.Backend.Skills
         {
             if (xmlSkillNode == null)
                 return;
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 using (CustomActivity opLoadCharSkills
                        = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
@@ -696,7 +697,7 @@ namespace Chummer.Backend.Skills
 
         internal void LoadFromHeroLab(XPathNavigator xmlSkillNode, CustomActivity parentActivity)
         {
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
                 {
@@ -942,7 +943,7 @@ namespace Chummer.Backend.Skills
 
         private void UpdateUndoList(XmlDocument xmlSkillOwnerDocument)
         {
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 //Hacky way of converting Expense entries to guid based skill identification
                 //specs already did?
@@ -1011,7 +1012,7 @@ namespace Chummer.Backend.Skills
 
         internal void Save(XmlTextWriter objWriter)
         {
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 objWriter.WriteStartElement("newskills");
 
@@ -1064,7 +1065,7 @@ namespace Chummer.Backend.Skills
 
         internal void Reset()
         {
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 _dicSkills.Clear();
                 _lstSkills.Clear();
@@ -1083,6 +1084,7 @@ namespace Chummer.Backend.Skills
         public int MaxSkillRating { get; set; } = 0;
         
         private bool _blnSkillsInitialized;
+        private readonly ReaderWriterLockSlim _objSkillsInitializerLock = new ReaderWriterLockSlim();
         private readonly ThreadSafeBindingList<Skill> _lstSkills = new ThreadSafeBindingList<Skill>();
         private readonly LockingDictionary<string, Skill> _dicSkills = new LockingDictionary<string, Skill>();
 
@@ -1093,52 +1095,56 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
-                using (new EnterUpgradeableReadLock(_lstSkills.LockObject))
+                using (new EnterReadLock(LockObject))
                 {
-                    if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this)
+                    using (new EnterUpgradeableReadLock(_objSkillsInitializerLock))
                     {
-                        using (new EnterWriteLock(_objCharacter.LockObject))
+                        if (!_blnSkillsInitialized && _objCharacter.SkillsSection == this)
                         {
-                            XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
-                            using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                                       .SelectNodes("/chummer/skills/skill[not(exotic) and ("
-                                                    + _objCharacter.Settings.BookXPath() + ')'
-                                                    + SkillFilter(FilterOption.NonSpecial) + ']'))
+                            using (new EnterWriteLock(_objSkillsInitializerLock))
                             {
-                                if (xmlSkillList?.Count > 0)
+                                XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
+                                using (XmlNodeList xmlSkillList = xmlSkillsDocument
+                                           .SelectNodes("/chummer/skills/skill[not(exotic) and ("
+                                                        + _objCharacter.Settings.BookXPath() + ')'
+                                                        + SkillFilter(FilterOption.NonSpecial) + ']'))
                                 {
-                                    foreach (XmlNode xmlSkill in xmlSkillList)
+                                    if (xmlSkillList?.Count > 0)
                                     {
-                                        bool blnIsKnowledgeSkill
-                                            = xmlSkillsDocument
-                                              .SelectSingleNode("/chummer/categories/category[. = "
-                                                                + xmlSkill["category"]?.InnerText.CleanXPath()
-                                                                + "]/@type")
-                                              ?.Value
-                                              != "active";
-                                        Skill objSkill = Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill);
-                                        if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
+                                        foreach (XmlNode xmlSkill in xmlSkillList)
                                         {
-                                            Skill objExistingSkill
-                                                = _lstSkills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
-                                            if (objExistingSkill != null)
+                                            bool blnIsKnowledgeSkill
+                                                = xmlSkillsDocument
+                                                      .SelectSingleNode("/chummer/categories/category[. = "
+                                                                        + xmlSkill["category"]?.InnerText.CleanXPath()
+                                                                        + "]/@type")
+                                                      ?.Value
+                                                  != "active";
+                                            Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
+                                                blnIsKnowledgeSkill);
+                                            if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                                             {
-                                                MergeSkills(objExistingSkill, objSkill);
-                                                continue;
+                                                Skill objExistingSkill
+                                                    = _lstSkills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
+                                                if (objExistingSkill != null)
+                                                {
+                                                    MergeSkills(objExistingSkill, objSkill);
+                                                    continue;
+                                                }
                                             }
-                                        }
 
-                                        _lstSkills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                            _lstSkills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                        }
                                     }
                                 }
-                            }
 
-                            _blnSkillsInitialized = true;
+                                _blnSkillsInitialized = true;
+                            }
                         }
                     }
 
-                    return _lstSkills;
+                    using (new EnterReadLock(_lstSkills.LockObject))
+                        return _lstSkills;
                 }
             }
         }
@@ -1150,7 +1156,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public bool HasActiveSkill(string strSkillKey)
         {
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
                 return _dicSkills.ContainsKey(strSkillKey);
         }
 
@@ -1161,7 +1167,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public Skill GetActiveSkill(string strSkillName)
         {
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 _dicSkills.TryGetValue(strSkillName, out Skill objReturn);
                 return objReturn;
@@ -1176,7 +1182,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     List<Skill> resultList = new List<Skill>(_lstSkills.Count);
                     foreach (Skill objLoopSkill in _lstSkills)
@@ -1198,7 +1204,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 using (new EnterReadLock(_lstKnowledgeSkills.LockObject))
                     return _lstKnowledgeSkills;
             }
@@ -1211,7 +1217,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 using (new EnterReadLock(_lstKnowsoftSkills.LockObject))
                     return _lstKnowsoftSkills;
             }
@@ -1224,7 +1230,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 using (new EnterReadLock(_lstSkillGroups.LockObject))
                     return _lstSkillGroups;
             }
@@ -1236,7 +1242,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                     return KnowledgeSkills.Count(x => x.IsNativeLanguage) < 1
                         + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit);
             }
@@ -1251,7 +1257,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (_intCachedKnowledgePoints == int.MinValue)
                     {
@@ -1293,7 +1299,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                     return KnowledgeSkillPoints - KnowledgeSkillPointsUsed;
             }
         }
@@ -1305,7 +1311,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                     return KnowledgeSkillRanksSum - SkillPointsSpentOnKnoskills;
             }
         }
@@ -1317,7 +1323,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                     return KnowledgeSkills.Sum(x => x.CurrentSpCost);
             }
         }
@@ -1329,7 +1335,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     //Even if it is stupid, you can spend real skill points on knoskills...
                     if (!_objCharacter.EffectiveBuildMethodUsesPriorityTables)
@@ -1352,7 +1358,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (SkillPointsMaximum == 0)
                     {
@@ -1376,7 +1382,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                     return SkillGroupPointsMaximum - SkillGroups.Sum(x => x.Base - x.FreeBase);
             }
         }
@@ -1492,7 +1498,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (GlobalSettings.LiveCustomData || _lstDefaultKnowledgeSkills == null)
                     {
@@ -1500,9 +1506,7 @@ namespace Chummer.Backend.Skills
                             _lstDefaultKnowledgeSkills = Utils.ListItemListPool.Get();
                         else
                             _lstDefaultKnowledgeSkills.Clear();
-                        XPathNavigator xmlSkillsDocument
-                            = XmlManager.LoadXPath("skills.xml",
-                                                   _objCharacter.Settings.EnabledCustomDataDirectoryPaths);
+                        XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
                         foreach (XPathNavigator xmlSkill in xmlSkillsDocument.SelectAndCacheExpression(
                                      "/chummer/knowledgeskills/skill"))
                         {
@@ -1527,7 +1531,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (GlobalSettings.LiveCustomData || _lstKnowledgeTypes == null)
                     {
@@ -1535,9 +1539,7 @@ namespace Chummer.Backend.Skills
                             _lstKnowledgeTypes = Utils.ListItemListPool.Get();
                         else
                             _lstKnowledgeTypes.Clear();
-                        XPathNavigator xmlSkillsDocument
-                            = XmlManager.LoadXPath("skills.xml",
-                                                   _objCharacter.Settings.EnabledCustomDataDirectoryPaths);
+                        XPathNavigator xmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml");
                         foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.SelectAndCacheExpression(
                                      "/chummer/categories/category[@type = \"knowledge\"]"))
                         {
@@ -1599,7 +1601,7 @@ namespace Chummer.Backend.Skills
 
         internal void ForceProperyChangedNotificationAll(string strName)
         {
-            using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+            using (new EnterUpgradeableReadLock(LockObject))
             {
                 foreach (Skill objSkill in Skills)
                 {
@@ -1617,7 +1619,7 @@ namespace Chummer.Backend.Skills
 
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (Skill objSkill in Skills)
                 {
@@ -1686,7 +1688,7 @@ namespace Chummer.Backend.Skills
                 strLanguage = GlobalSettings.Language;
             string strReturn = strInput;
             string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage) + "({0})" : string.Empty;
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
                 {
@@ -1735,7 +1737,7 @@ namespace Chummer.Backend.Skills
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage) + "({0})" : string.Empty;
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
                 {
@@ -1766,22 +1768,30 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public void Dispose()
         {
-            UnbindSkillsSection();
-            foreach (Skill objSkill in Skills)
-                objSkill.Dispose();
-            Skills.Dispose();
-            foreach (KnowledgeSkill objSkill in KnowledgeSkills)
-                objSkill.Dispose();
-            KnowledgeSkills.Dispose();
-            KnowsoftSkills.Clear();
-            KnowsoftSkills.Dispose();
-            SkillGroups.Clear();
-            SkillGroups.Dispose();
-            _dicSkills.Dispose();
-            if (_lstDefaultKnowledgeSkills != null)
-                Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);
-            if (_lstKnowledgeTypes != null)
-                Utils.ListItemListPool.Return(_lstKnowledgeTypes);
+            using (new EnterWriteLock(LockObject))
+            {
+                UnbindSkillsSection();
+                foreach (Skill objSkill in _lstSkills)
+                    objSkill.Dispose();
+                _lstSkills.Dispose();
+                foreach (KnowledgeSkill objSkill in _lstKnowledgeSkills)
+                    objSkill.Dispose();
+                _lstKnowledgeSkills.Dispose();
+                _lstKnowsoftSkills.Clear();
+                _lstKnowsoftSkills.Dispose();
+                _lstSkillGroups.Clear();
+                _lstSkillGroups.Dispose();
+                _dicSkills.Dispose();
+                _dicSkillBackups.Dispose();
+                _objSkillsInitializerLock.Dispose();
+                if (_lstDefaultKnowledgeSkills != null)
+                    Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);
+                if (_lstKnowledgeTypes != null)
+                    Utils.ListItemListPool.Return(_lstKnowledgeTypes);
+            }
+            LockObject.Dispose();
         }
+
+        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
     }
 }

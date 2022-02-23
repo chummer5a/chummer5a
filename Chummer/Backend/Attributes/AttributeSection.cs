@@ -26,6 +26,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -33,7 +34,7 @@ using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
-    public sealed class AttributeSection : INotifyMultiplePropertyChanged, IDisposable
+    public sealed class AttributeSection : INotifyMultiplePropertyChanged, IHasLockObject
     {
         private bool _blnLoading = true;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -82,28 +83,33 @@ namespace Chummer.Backend.Attributes
             );
 
         private bool _blnAttributesInitialized;
+        private readonly ReaderWriterLockSlim _objAttributesInitializerLock = new ReaderWriterLockSlim();
         private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
 
         public ThreadSafeObservableCollection<CharacterAttrib> Attributes
         {
             get
             {
-                using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
-                using (new EnterUpgradeableReadLock(_lstAttributes.LockObject))
+                using (new EnterReadLock(LockObject))
                 {
-                    if (!_blnAttributesInitialized)
+                    using (new EnterUpgradeableReadLock(_objAttributesInitializerLock))
                     {
-                        InitializeAttributesList();
+                        if (!_blnAttributesInitialized)
+                        {
+                            InitializeAttributesList();
+                        }
                     }
-                    return _lstAttributes;
+
+                    using (new EnterReadLock(_lstAttributes.LockObject))
+                        return _lstAttributes;
                 }
             }
         }
 
         private void InitializeAttributesList()
         {
-            using (new EnterWriteLock(_objCharacter.LockObject))
-            using (new EnterWriteLock(_lstAttributes.LockObject))
+            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(_objAttributesInitializerLock))
             {
                 _blnAttributesInitialized = true;
 
@@ -135,8 +141,6 @@ namespace Chummer.Backend.Attributes
                 {
                     _lstAttributes.Add(_objCharacter.DEP);
                 }
-
-                ResetBindings();
             }
         }
 
@@ -329,16 +333,22 @@ namespace Chummer.Backend.Attributes
 
         public void Dispose()
         {
-            foreach (BindingSource objSource in _dicBindings.Values)
-                objSource.Dispose();
-            _dicBindings.Dispose();
-            AttributeList.Dispose();
-            SpecialAttributeList.Dispose();
+            using (new EnterWriteLock(LockObject))
+            {
+                foreach (BindingSource objSource in _dicBindings.Values)
+                    objSource.Dispose();
+                _dicBindings.Dispose();
+                _lstNormalAttributes.Dispose();
+                _lstSpecialAttributes.Dispose();
+                _lstAttributes.Dispose();
+                _objAttributesInitializerLock.Dispose();
+            }
+            LockObject.Dispose();
         }
 
         internal void Save(XmlTextWriter objWriter)
         {
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (CharacterAttrib objAttribute in AttributeList)
                 {
@@ -357,6 +367,7 @@ namespace Chummer.Backend.Attributes
             if (charNode == null)
                 return;
             using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 bool blnOldLoading = _blnLoading;
                 try
@@ -516,7 +527,8 @@ namespace Chummer.Backend.Attributes
                         }
 
                         InitializeAttributesList();
-                        
+                        ResetBindings();
+
                         //Timekeeper.Finish("create_char_attrib");
                     }
                 }
@@ -531,7 +543,7 @@ namespace Chummer.Backend.Attributes
         {
             if (xmlSavedCharacterNode == null)
                 return;
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 bool blnOldLoading = _blnLoading;
                 try
@@ -630,7 +642,7 @@ namespace Chummer.Backend.Attributes
         {
             if (xmlStatBlockBaseNode == null)
                 return;
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 using (_ = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
                 {
@@ -899,7 +911,7 @@ namespace Chummer.Backend.Attributes
 
         internal void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 if (_objCharacter.MetatypeCategory == "Shapeshifter")
                 {
@@ -941,7 +953,7 @@ namespace Chummer.Backend.Attributes
 
         public CharacterAttrib GetAttributeByName(string abbrev)
         {
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
                     && AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
@@ -957,7 +969,8 @@ namespace Chummer.Backend.Attributes
 
         public BindingSource GetAttributeBindingByName(string abbrev)
         {
-            return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
+            using (new EnterReadLock(LockObject))
+                return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
         }
 
         internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
@@ -997,7 +1010,7 @@ namespace Chummer.Backend.Attributes
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 string strReturn = strInput;
                 foreach (string strCharAttributeName in AttributeStrings)
@@ -1031,7 +1044,7 @@ namespace Chummer.Backend.Attributes
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1064,7 +1077,7 @@ namespace Chummer.Backend.Attributes
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             string strReturn = strInput;
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1140,7 +1153,7 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1198,7 +1211,7 @@ namespace Chummer.Backend.Attributes
 
         internal void Reset(bool blnFirstTime = false)
         {
-            using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 bool blnOldLoading = !blnFirstTime && _blnLoading;
                 try
@@ -1269,6 +1282,7 @@ namespace Chummer.Backend.Attributes
         public void ResetBindings()
         {
             using (new EnterWriteLock(_objCharacter.LockObject))
+            using (new EnterWriteLock(LockObject))
             {
                 foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)
                 {
@@ -1290,7 +1304,7 @@ namespace Chummer.Backend.Attributes
         /// <returns></returns>
         public bool CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute)
         {
-            using (new EnterReadLock(_objCharacter.LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 if (_objCharacter.Created || _objCharacter.IgnoreRules
                                           || objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special
@@ -1314,7 +1328,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 using (new EnterReadLock(_lstNormalAttributes.LockObject))
                     return _lstNormalAttributes;
             }
@@ -1327,7 +1341,7 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                 using (new EnterReadLock(_lstSpecialAttributes.LockObject))
                     return _lstSpecialAttributes;
             }
@@ -1337,16 +1351,16 @@ namespace Chummer.Backend.Attributes
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (new EnterReadLock(LockObject))
                     return _eAttributeCategory;
             }
             set
             {
-                using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+                using (new EnterUpgradeableReadLock(LockObject))
                 {
                     if (_eAttributeCategory == value)
                         return;
-                    using (new EnterWriteLock(_objCharacter.LockObject))
+                    using (new EnterWriteLock(LockObject))
                     {
                         _eAttributeCategory = value;
                         if (_objCharacter.Created)
@@ -1362,5 +1376,8 @@ namespace Chummer.Backend.Attributes
         }
 
         #endregion Properties
+
+        public ReaderWriterLockSlim LockObject { get; } =
+            new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
     }
 }
