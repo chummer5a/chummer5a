@@ -194,7 +194,7 @@ namespace Chummer
             }
         }
 
-        private void CharacterCareer_Load(object sender, EventArgs e)
+        private async void CharacterCareer_Load(object sender, EventArgs e)
         {
             using (CustomActivity op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
@@ -246,7 +246,7 @@ namespace Chummer
                             nudMugshotIndex.Value = 0;
                         }
 
-                        lblNumMugshots.Text = LanguageManager.GetString("String_Of") +
+                        lblNumMugshots.Text = await LanguageManager.GetStringAsync("String_Of") +
                                               CharacterObject.Mugshots.Count.ToString(GlobalSettings.CultureInfo);
 
                         nudStreetCred.DoDataBinding("Value", CharacterObject, nameof(Character.StreetCred));
@@ -373,7 +373,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNodeAndCacheExpression("/chummer");
+                            (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNodeAndCacheExpression("/chummer");
                         using (new FetchSafelyFromPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstTraditions))
                         {
@@ -397,7 +397,7 @@ namespace Chummer
                             {
                                 lstTraditions.Sort(CompareListItems.CompareNames);
                                 lstTraditions.Insert(0,
-                                                     new ListItem("None", LanguageManager.GetString("String_None")));
+                                                     new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                 cboTradition.BeginUpdate();
                                 cboTradition.PopulateWithListItems(lstTraditions);
                                 cboTradition.EndUpdate();
@@ -535,7 +535,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadDataXPath("streams.xml").SelectSingleNodeAndCacheExpression("/chummer");
+                            (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNodeAndCacheExpression("/chummer");
                         using (new FetchSafelyFromPool<List<ListItem>>(
                                    Utils.ListItemListPool, out List<ListItem> lstStreams))
                         {
@@ -558,7 +558,7 @@ namespace Chummer
                             {
                                 lstStreams.Sort(CompareListItems.CompareNames);
                                 lstStreams.Insert(0,
-                                                  new ListItem("None", LanguageManager.GetString("String_None")));
+                                                  new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
                                 cboStream.BeginUpdate();
                                 cboStream.PopulateWithListItems(lstStreams);
                                 cboStream.EndUpdate();
@@ -576,7 +576,7 @@ namespace Chummer
                         cboAttributeCategory.Visible = CharacterObject.MetatypeCategory == "Shapeshifter";
                         if (CharacterObject.MetatypeCategory == "Shapeshifter")
                         {
-                            XPathNavigator objDoc = CharacterObject.LoadDataXPath("metatypes.xml");
+                            XPathNavigator objDoc = await CharacterObject.LoadDataXPathAsync("metatypes.xml");
                             XPathNavigator node =
                                 objDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = " + CharacterObject.Metatype.CleanXPath() + ']');
@@ -621,7 +621,7 @@ namespace Chummer
                                 if (mode == Weapon.FiringMode.NumFiringModes)
                                     continue;
                                 lstFireModes.Add(new ListItem(mode,
-                                                              LanguageManager.GetString("Enum_" + mode)));
+                                                              await LanguageManager.GetStringAsync("Enum_" + mode)));
                             }
 
                             cboVehicleWeaponFiringMode.BeginUpdate();
@@ -696,10 +696,7 @@ namespace Chummer
                         {
                             // Run through all appropriate property changers
                             foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                            {
-                                Utils.RunWithoutThreadLock(
-                                    () => DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name)).AsTask());
-                            }
+                                await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
                         }
 
                         lblCMPenalty.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.WoundModifier));
@@ -929,12 +926,11 @@ namespace Chummer
                     }
 
                     if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest && Program.ShowMessageBox(this,
-                        LanguageManager.GetString("Message_ImprovementLoadError"),
-                        LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
+                        await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
+                        await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"),
                         MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        Utils.RunWithoutThreadLock(
-                            () => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements).AsTask());
+                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                         CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                     }
 
