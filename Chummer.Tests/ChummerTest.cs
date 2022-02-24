@@ -22,7 +22,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -132,16 +131,16 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public async Task Test02_LoadThenSave()
+        public void Test02_LoadThenSave()
         {
             Debug.WriteLine("Unit test initialized for: Test02_LoadThenSave()");
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
-                using (Character objCharacter = await LoadCharacter(objFileInfo))
+                using (Character objCharacter = LoadCharacter(objFileInfo))
                 {
-                    await SaveCharacter(objCharacter, strDestination);
-                    using (Character _ = await LoadCharacter(new FileInfo(strDestination)))
+                    SaveCharacter(objCharacter, strDestination);
+                    using (Character _ = LoadCharacter(new FileInfo(strDestination)))
                     {
                         // Assert on failed load will already happen inside LoadCharacter
                     }
@@ -151,22 +150,22 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public async Task Test03_LoadThenSaveIsDeterministic()
+        public void Test03_LoadThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Test03_LoadThenSaveIsDeterministic()");
             foreach (FileInfo objBaseFileInfo in TestFiles)
             {
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + objBaseFileInfo.Name);
-                using (Character objCharacterControl = await LoadCharacter(objBaseFileInfo))
+                using (Character objCharacterControl = LoadCharacter(objBaseFileInfo))
                 {
-                    await SaveCharacter(objCharacterControl, strDestinationControl);
+                    SaveCharacter(objCharacterControl, strDestinationControl);
                     // Second Load-Save cycle
                     string strDestinationTest =
                         Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
-                    using (Character objCharacterTest = await LoadCharacter(new FileInfo(strDestinationControl)))
+                    using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
                     {
-                        await SaveCharacter(objCharacterTest, strDestinationTest);
+                        SaveCharacter(objCharacterTest, strDestinationTest);
                         // Check to see that character after first load cycle is consistent with character after second
                         using (FileStream controlFileStream =
                                File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
@@ -210,12 +209,12 @@ namespace Chummer.Tests
         }
 
         [TestMethod]
-        public async Task Test04_LoadThenPrint()
+        public void Test04_LoadThenPrint()
         {
             Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
             foreach (FileInfo objFileInfo in TestFiles)
             {
-                using (Character objCharacter = await LoadCharacter(objFileInfo))
+                using (Character objCharacter = LoadCharacter(objFileInfo))
                 {
                     string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
                     foreach (string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
@@ -223,7 +222,7 @@ namespace Chummer.Tests
                         string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
                         if (strExportLanguage.Contains("data"))
                             continue;
-                        await DoAndSaveExport(objCharacter, strExportLanguage);
+                        DoAndSaveExport(objCharacter, strExportLanguage);
                     }
                 }
             }
@@ -231,7 +230,7 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public async Task Test05_LoadCharacterForms()
+        public void Test05_LoadCharacterForms()
         {
             Debug.WriteLine("Unit test initialized for: Test05_LoadCharacterForms()");
             ChummerMainForm frmOldMainForm = Program.MainForm;
@@ -253,7 +252,7 @@ namespace Chummer.Tests
                 }
                 foreach (FileInfo objFileInfo in TestFiles)
                 {
-                    using (Character objCharacter = await LoadCharacter(objFileInfo))
+                    using (Character objCharacter = LoadCharacter(objFileInfo))
                     {
                         try
                         {
@@ -290,7 +289,7 @@ namespace Chummer.Tests
         /// Validate that a given list of Characters can be successfully loaded.
         /// </summary>
         // ReSharper disable once SuggestBaseTypeForParameter
-        private static async Task<Character> LoadCharacter(FileInfo objFileInfo)
+        private static Character LoadCharacter(FileInfo objFileInfo)
         {
             Character objCharacter = null;
             try
@@ -300,7 +299,7 @@ namespace Chummer.Tests
                 {
                     FileName = objFileInfo.FullName
                 };
-                bool blnSuccess = await objCharacter.LoadAsync();
+                bool blnSuccess = objCharacter.Load();
                 Assert.IsTrue(blnSuccess);
                 Debug.WriteLine("Character loaded: " + objCharacter.Name + ", " + objFileInfo.Name);
             }
@@ -330,13 +329,13 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests saving a given character.
         /// </summary>
-        private static async Task SaveCharacter(Character objCharacter, string strPath)
+        private static void SaveCharacter(Character objCharacter, string strPath)
         {
             Assert.IsNotNull(objCharacter);
             try
             {
                 Debug.WriteLine("Saving: " + objCharacter.Name + ", " + objCharacter.FileName);
-                await objCharacter.SaveAsync(strPath, false);
+                objCharacter.Save(strPath, false);
                 Debug.WriteLine("Character saved: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
@@ -368,7 +367,7 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests exporting a given character.
         /// </summary>
-        private async Task DoAndSaveExport(Character objCharacter, string strExportLanguage)
+        private void DoAndSaveExport(Character objCharacter, string strExportLanguage)
         {
             Assert.IsNotNull(objCharacter);
             string strPath = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + Path.GetFileNameWithoutExtension(objCharacter.FileName) + ".xml");
@@ -384,7 +383,7 @@ namespace Chummer.Tests
                 {
                     objExportCultureInfo = CultureInfo.InvariantCulture;
                 }
-                XmlDocument xmlDocument = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
+                XmlDocument xmlDocument = objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage).GetAwaiter().GetResult();
                 xmlDocument.Save(strPath);
                 Debug.WriteLine("Character exported: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
