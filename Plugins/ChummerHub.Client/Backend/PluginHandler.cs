@@ -661,7 +661,7 @@ namespace Chummer.Plugins
 
                             await MainForm.CharacterRoster.RefreshPluginNodes(this);
                             MainForm.CharacterRoster.treCharacterList.SelectedNode =
-                                nodelist.FirstOrDefault(a => a.Name == "Archetypes");
+                                nodelist.Find(a => a.Name == "Archetypes");
                             MainForm.BringToFront();
                         });
                     }
@@ -902,7 +902,7 @@ namespace Chummer.Plugins
             try
             {
                 SINnerGroup g = await ChummerHub.Client.Backend.Utils.CreateGroupOnClickAsync();
-                ShowMySINnersOnClick(sender, e);
+                await ShowMySINners();
             }
             catch (Exception ex)
             {
@@ -912,6 +912,11 @@ namespace Chummer.Plugins
         }
 
         private async void ShowMySINnersOnClick(object sender, EventArgs e)
+        {
+            await ShowMySINners();
+        }
+
+        private async ValueTask ShowMySINners()
         {
             try
             {
@@ -1193,7 +1198,7 @@ namespace Chummer.Plugins
                 if (BlnHasDuplicate)
                 {
                     Log.Info("More than one instance, not starting NamedPipe-Server...");
-                    throw new ApplicationException("More than one instance is running.");
+                    throw new InvalidOperationException("More than one instance is running.");
                 }
 
                 Log.Info("Only one instance, starting NamedPipe-Server...");
@@ -1378,8 +1383,7 @@ namespace Chummer.Plugins
                             }
                             case CharacterCache objCache:
                             {
-                                object sinidob = null;
-                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out sinidob))
+                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob))
                                 {
                                     mySiNnerId = (Guid?) sinidob;
                                 }
@@ -1411,8 +1415,8 @@ namespace Chummer.Plugins
                                 {
                                     using (frmSINnerPassword getPWD = new frmSINnerPassword())
                                     {
-                                        string pwdquestion = LanguageManager.GetString("String_SINners_EnterGroupPassword", true);
-                                        string pwdcaption = LanguageManager.GetString("String_SINners_EnterGroupPasswordTitle", true);
+                                        string pwdquestion = await LanguageManager.GetStringAsync("String_SINners_EnterGroupPassword", true);
+                                        string pwdcaption = await LanguageManager.GetStringAsync("String_SINners_EnterGroupPasswordTitle", true);
                                         passwd = getPWD.ShowDialog(Program.MainForm, pwdquestion, pwdcaption);
                                     }
                                 }
