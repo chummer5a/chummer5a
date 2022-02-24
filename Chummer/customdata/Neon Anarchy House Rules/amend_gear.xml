@@ -120,5 +120,9 @@
 			<name>Fab Sensor Upkeep (1 Month Advance Payment)</name>
 			<category>Contracts/Upkeep</category>
 		</gear>
+		<gear>
+		    <name>Naga Venom</name>
+			<rating amendoperation="replace">12</rating>
+		</gear>
 	</gears>
 </chummer>

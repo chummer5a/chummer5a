@@ -288,7 +288,7 @@
 			<name>Throwing Syringe</name>
 			<useskill>Throwing Weapons</useskill>
 		</weapon>
-
+		<!-- Actual stst changes -->
 		<weapon>
 			<name>Heavy Crossbow</name>
 			<accessorymounts>
@@ -317,13 +317,21 @@
 				<!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
 			</accessorymounts>
 		</weapon>
-	<weapon>
+		<weapon>
 			<name>Mitsubishi Yakusoku MRL</name>
 			<accuracy>5</accuracy>
 		</weapon>
-	<weapon>
+		<weapon>
 			<name>Onotari Arms Ballista MML</name>
 			<accuracy>5</accuracy>
+		</weapon>
+		<weapon>
+			<name>Nodachi</name>
+			<conceal>+10</conceal>
+		</weapon>
+		<weapon>
+			<name>Osmium Mace</name>
+			<conceal>+10</conceal>
 		</weapon>
 	</weapons>
 </chummer>
