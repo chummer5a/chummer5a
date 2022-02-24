@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -103,30 +104,84 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public async ValueTask Save(XmlWriter objWriter)
+        public void Save(XmlWriter objWriter)
+        {
+            SaveCoreAsync(true, objWriter).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public Task SaveAsync(XmlWriter objWriter)
+        {
+            return SaveCoreAsync(false, objWriter);
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="blnSync"></param>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
+        private async Task SaveCoreAsync(bool blnSync, XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("spirit");
-            await objWriter.WriteElementStringAsync("guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("name", _strName);
-            await objWriter.WriteElementStringAsync("crittername", _strCritterName);
-            await objWriter.WriteElementStringAsync("services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("type", _eEntityType.ToString());
-            await objWriter.WriteElementStringAsync("file", _strFileName);
-            await objWriter.WriteElementStringAsync("relative", _strRelativeName);
-            await objWriter.WriteElementStringAsync("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
-            await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes));
-            await SaveMugshots(objWriter);
-            await objWriter.WriteEndElementAsync();
-
-            /* Disabled for now because we cannot change any properties in the linked character anyway
-            if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
-                LinkedCharacter.Save();
-            */
+            if (blnSync)
+            {
+                objWriter.WriteStartElement("spirit");
+                objWriter.WriteElementString(
+                    "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("name", _strName);
+                objWriter.WriteElementString("crittername", _strCritterName);
+                objWriter.WriteElementString(
+                    "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString(
+                    "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString(
+                    "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString(
+                    "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("type", _eEntityType.ToString());
+                objWriter.WriteElementString("file", _strFileName);
+                objWriter.WriteElementString("relative", _strRelativeName);
+                objWriter.WriteElementString(
+                    "notes",
+                    System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+                                                                 string.Empty));
+                objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
+                // ReSharper disable once MethodHasAsyncOverload
+                SaveMugshots(objWriter);
+                // ReSharper disable once MethodHasAsyncOverload
+                objWriter.WriteEndElement();
+            }
+            else
+            {
+                await objWriter.WriteStartElementAsync("spirit");
+                await objWriter.WriteElementStringAsync(
+                    "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("name", _strName);
+                await objWriter.WriteElementStringAsync("crittername", _strCritterName);
+                await objWriter.WriteElementStringAsync(
+                    "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync(
+                    "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync(
+                    "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync(
+                    "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("type", _eEntityType.ToString());
+                await objWriter.WriteElementStringAsync("file", _strFileName);
+                await objWriter.WriteElementStringAsync("relative", _strRelativeName);
+                await objWriter.WriteElementStringAsync(
+                    "notes",
+                    System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+                                                                 string.Empty));
+                await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes));
+                await SaveMugshotsAsync(objWriter);
+                await objWriter.WriteEndElementAsync();
+            }
         }
 
         /// <summary>
@@ -1137,20 +1192,50 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SaveMugshots(XmlWriter objWriter)
+        public void SaveMugshots(XmlWriter objWriter)
+        {
+            SaveMugshotsCore(true, objWriter).GetAwaiter().GetResult();
+        }
+
+        public Task SaveMugshotsAsync(XmlWriter objWriter)
+        {
+            return SaveMugshotsCore(false, objWriter);
+        }
+
+        public async Task SaveMugshotsCore(bool blnSync, XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteElementStringAsync("mainmugshotindex",
-                MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
-            // <mugshot>
-            await objWriter.WriteStartElementAsync("mugshots");
-            foreach (Image imgMugshot in Mugshots)
+            if (blnSync)
             {
-                await objWriter.WriteElementStringAsync("mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
+                objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
+                // <mugshot>
+                objWriter.WriteStartElement("mugshots");
+                foreach (Image imgMugshot in Mugshots)
+                {
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objWriter.WriteElementString("mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
+                }
+
+                // </mugshot>
+                // ReSharper disable once MethodHasAsyncOverload
+                objWriter.WriteEndElement();
             }
-            // </mugshot>
-            await objWriter.WriteEndElementAsync();
+            else
+            {
+                await objWriter.WriteElementStringAsync("mainmugshotindex",
+                                                        MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
+                // <mugshot>
+                await objWriter.WriteStartElementAsync("mugshots");
+                foreach (Image imgMugshot in Mugshots)
+                {
+                    await objWriter.WriteElementStringAsync(
+                        "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
+                }
+
+                // </mugshot>
+                await objWriter.WriteEndElementAsync();
+            }
         }
 
         public void LoadMugshots(XPathNavigator xmlSavedNode)
