@@ -3049,38 +3049,39 @@ namespace Chummer
 
                     objWriter.WriteEndDocument();
                     objWriter.Flush();
-                    objStream.Position = 0;
+                }
 
-                    // Validate that the character can save properly. If there's no error, save the file to the listed file location.
-                    try
-                    {
-                        XmlDocument objDoc = new XmlDocument {XmlResolver = null};
-                        using (XmlReader objXmlReader =
-                            XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                            objDoc.Load(objXmlReader);
-                        objDoc.Save(strFileName);
-                    }
-                    catch (IOException e)
-                    {
-                        Log.Error(e);
-                        if (Utils.IsUnitTest)
-                            throw;
-                        Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
-                        blnErrorFree = false;
-                    }
-                    catch (XmlException ex)
-                    {
-                        Log.Warn(ex);
-                        if (Utils.IsUnitTest)
-                            throw;
-                        Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
-                        blnErrorFree = false;
-                    }
-                    catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
-                    {
-                        Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
-                        blnErrorFree = false;
-                    }
+                objStream.Position = 0;
+
+                // Validate that the character can save properly. If there's no error, save the file to the listed file location.
+                try
+                {
+                    XmlDocument objDoc = new XmlDocument { XmlResolver = null };
+                    using (XmlReader objXmlReader =
+                           XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                        objDoc.Load(objXmlReader);
+                    objDoc.Save(strFileName);
+                }
+                catch (IOException e)
+                {
+                    Log.Error(e);
+                    if (Utils.IsUnitTest)
+                        throw;
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                    blnErrorFree = false;
+                }
+                catch (XmlException ex)
+                {
+                    Log.Warn(ex);
+                    if (Utils.IsUnitTest)
+                        throw;
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                    blnErrorFree = false;
+                }
+                catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
+                {
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
+                    blnErrorFree = false;
                 }
             }
 
