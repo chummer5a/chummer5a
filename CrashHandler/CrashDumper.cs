@@ -492,8 +492,8 @@ namespace CrashHandler
 
         private static string MakeStringKey(IEnumerable<byte> iv, IEnumerable<byte> key)
         {
-            return string.Join(string.Empty, iv.Select(x => x.ToString("X2"))) + ':' +
-                   string.Join(string.Empty, key.Select(x => x.ToString("X2")));
+            return string.Concat(iv.Select(x => x.ToString("X2"))) + ':' +
+                   string.Concat(key.Select(x => x.ToString("X2")));
         }
 
         #region IDisposable Support

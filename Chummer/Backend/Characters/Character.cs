@@ -20804,7 +20804,7 @@ namespace Chummer
                 List<string> lstSeekerAttributes = ImprovementManager
                     .GetCachedImprovementListForValueOf(
                         this, Improvement.ImprovementType.Seeker)
-                    .Select(objImprovement => objImprovement.ImprovedName).ToList();
+                    .ConvertAll(objImprovement => objImprovement.ImprovedName);
 
                 //if neither contains anything, it is safe to exit
                 if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
