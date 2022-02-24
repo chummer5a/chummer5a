@@ -1599,7 +1599,7 @@ namespace Chummer.Backend.Skills
             XPath
         }
 
-        internal void ForceProperyChangedNotificationAll(string strName)
+        internal void ForcePropertyChangedNotificationAll(string strName)
         {
             using (new EnterUpgradeableReadLock(LockObject))
             {
@@ -1643,6 +1643,7 @@ namespace Chummer.Backend.Skills
                 }
             }
         }
+
         #region XPath Processing
         /// <summary>
         /// Replaces substring in the form of {Skill} with the total dicepool of the skill.
