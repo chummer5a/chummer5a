@@ -222,7 +222,7 @@ namespace Chummer.Tests
                         if (strExportLanguage.Contains("data"))
                             continue;
                         CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
-                        string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
+                        string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + Path.GetFileNameWithoutExtension(objFileInfo.Name) + ".xml");
                         // ReSharper disable once AccessToDisposedClosure
                         XmlDocument xmlCharacter = Utils.RunWithoutThreadLock(() => objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage));
                         xmlCharacter.Save(strDestination);
