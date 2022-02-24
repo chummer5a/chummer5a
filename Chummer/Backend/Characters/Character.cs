@@ -7831,89 +7831,108 @@ namespace Chummer
         /// </summary>
         public void Dispose()
         {
-            if (IsDisposed)
-                return;
-            if (!Utils.IsUnitTest && (Program.MainForm.OpenCharacters.Contains(this) || Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this))))
-                return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
-            using (new EnterWriteLock(LockObject)) // Wait for all pending locks to get freed before disposing
+            try
             {
-                IsDisposed = true;
-                ImprovementManager.ClearCachedValues(this);
-                _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
-                _lstLinkedCharacters.Dispose();
-                foreach (Image imgMugshot in _lstMugshots)
-                    imgMugshot.Dispose();
-                _lstMugshots.Dispose();
-                foreach (Contact objContact in _lstContacts)
-                    objContact.Dispose();
-                _lstContacts.Dispose();
-                foreach (Spirit objSpirit in _lstSpirits)
-                    objSpirit.Dispose();
-                _lstSpirits.Dispose();
-                foreach (Armor objItem in _lstArmor)
-                    objItem.Dispose();
-                _lstArmor.Dispose();
-                foreach (Weapon objItem in _lstWeapons)
-                    objItem.Dispose();
-                _lstWeapons.Dispose();
-                foreach (Gear objItem in _lstGear)
-                    objItem.Dispose();
-                _lstGear.Dispose();
-                foreach (Cyberware objItem in _lstCyberware)
-                    objItem.Dispose();
-                _lstCyberware.Dispose();
-                foreach (Vehicle objItem in _lstVehicles)
-                    objItem.Dispose();
-                _lstVehicles.Dispose();
-                foreach (Lifestyle objItem in _lstLifestyles)
-                    objItem.Dispose();
-                _lstLifestyles.Dispose();
-                foreach (Spell objItem in _lstSpells)
-                    objItem.Dispose();
-                _lstSpells.Dispose();
-                foreach (MartialArt objItem in _lstMartialArts)
-                    objItem.Dispose();
-                _lstMartialArts.Dispose();
-                _lstComplexForms.Dispose();
-                _lstAIPrograms.Dispose();
-                _lstPowers.Dispose();
-                _lstCritterPowers.Dispose();
-                _lstFoci.Dispose();
-                _lstStackedFoci.Dispose();
-                _lstMetamagics.Dispose();
-                _lstArts.Dispose();
-                _lstEnhancements.Dispose();
-                _lstImprovements.Dispose();
-                _lstInitiationGrades.Dispose();
-                _lstInternalIdsNeedingReapplyImprovements.Dispose();
-                _lstCalendar.Dispose();
-                foreach (Drug objItem in _lstDrugs)
-                    objItem.Dispose();
-                _lstDrugs.Dispose();
-                _lstExpenseLog.Dispose();
-                foreach (Location objItem in _lstArmorLocations)
-                    objItem.Dispose();
-                _lstArmorLocations.Dispose();
-                foreach (Location objItem in _lstGearLocations)
-                    objItem.Dispose();
-                _lstGearLocations.Dispose();
-                foreach (Location objItem in _lstWeaponLocations)
-                    objItem.Dispose();
-                _lstWeaponLocations.Dispose();
-                foreach (Location objItem in _lstVehicleLocations)
-                    objItem.Dispose();
-                _lstVehicleLocations.Dispose();
-                _lstImprovementGroups.Dispose();
-                SkillsSection.Dispose();
-                AttributeSection.Dispose();
-                PostLoadMethods.Dispose();
-                DoOnSaveCompleted.Dispose();
-                DoOnSaveCompletedAsync.Dispose();
-                if (_stkPushText.IsValueCreated)
-                    _stkPushText.Value.Dispose();
-                if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
-                    _objSettings.Dispose();
+                LockObject.EnterUpgradeableReadLock();
             }
+            catch (ObjectDisposedException)
+            {
+                return;
+            }
+
+            try
+            {
+                if (IsDisposed)
+                    return;
+                if (!Utils.IsUnitTest && (Program.MainForm.OpenCharacters.Contains(this)
+                                          || Program.MainForm.OpenCharacters.Any(
+                                              x => x.LinkedCharacters.Contains(this))))
+                    return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
+                using (new EnterWriteLock(LockObject)) // Wait for all pending locks to get freed before disposing
+                {
+                    IsDisposed = true;
+                    ImprovementManager.ClearCachedValues(this);
+                    _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
+                    _lstLinkedCharacters.Dispose();
+                    foreach (Image imgMugshot in _lstMugshots)
+                        imgMugshot.Dispose();
+                    _lstMugshots.Dispose();
+                    foreach (Contact objContact in _lstContacts)
+                        objContact.Dispose();
+                    _lstContacts.Dispose();
+                    foreach (Spirit objSpirit in _lstSpirits)
+                        objSpirit.Dispose();
+                    _lstSpirits.Dispose();
+                    foreach (Armor objItem in _lstArmor)
+                        objItem.Dispose();
+                    _lstArmor.Dispose();
+                    foreach (Weapon objItem in _lstWeapons)
+                        objItem.Dispose();
+                    _lstWeapons.Dispose();
+                    foreach (Gear objItem in _lstGear)
+                        objItem.Dispose();
+                    _lstGear.Dispose();
+                    foreach (Cyberware objItem in _lstCyberware)
+                        objItem.Dispose();
+                    _lstCyberware.Dispose();
+                    foreach (Vehicle objItem in _lstVehicles)
+                        objItem.Dispose();
+                    _lstVehicles.Dispose();
+                    foreach (Lifestyle objItem in _lstLifestyles)
+                        objItem.Dispose();
+                    _lstLifestyles.Dispose();
+                    foreach (Spell objItem in _lstSpells)
+                        objItem.Dispose();
+                    _lstSpells.Dispose();
+                    foreach (MartialArt objItem in _lstMartialArts)
+                        objItem.Dispose();
+                    _lstMartialArts.Dispose();
+                    _lstComplexForms.Dispose();
+                    _lstAIPrograms.Dispose();
+                    _lstPowers.Dispose();
+                    _lstCritterPowers.Dispose();
+                    _lstFoci.Dispose();
+                    _lstStackedFoci.Dispose();
+                    _lstMetamagics.Dispose();
+                    _lstArts.Dispose();
+                    _lstEnhancements.Dispose();
+                    _lstImprovements.Dispose();
+                    _lstInitiationGrades.Dispose();
+                    _lstInternalIdsNeedingReapplyImprovements.Dispose();
+                    _lstCalendar.Dispose();
+                    foreach (Drug objItem in _lstDrugs)
+                        objItem.Dispose();
+                    _lstDrugs.Dispose();
+                    _lstExpenseLog.Dispose();
+                    foreach (Location objItem in _lstArmorLocations)
+                        objItem.Dispose();
+                    _lstArmorLocations.Dispose();
+                    foreach (Location objItem in _lstGearLocations)
+                        objItem.Dispose();
+                    _lstGearLocations.Dispose();
+                    foreach (Location objItem in _lstWeaponLocations)
+                        objItem.Dispose();
+                    _lstWeaponLocations.Dispose();
+                    foreach (Location objItem in _lstVehicleLocations)
+                        objItem.Dispose();
+                    _lstVehicleLocations.Dispose();
+                    _lstImprovementGroups.Dispose();
+                    SkillsSection.Dispose();
+                    AttributeSection.Dispose();
+                    PostLoadMethods.Dispose();
+                    DoOnSaveCompleted.Dispose();
+                    DoOnSaveCompletedAsync.Dispose();
+                    if (_stkPushText.IsValueCreated)
+                        _stkPushText.Value.Dispose();
+                    if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
+                        _objSettings.Dispose();
+                }
+            }
+            finally
+            {
+                LockObject.ExitUpgradeableReadLock();
+            }
+
             LockObject.Dispose();
         }
 
