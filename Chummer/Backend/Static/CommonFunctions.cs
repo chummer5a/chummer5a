@@ -1261,17 +1261,7 @@ namespace Chummer
                     // Finish the document and flush the Writer and Stream.
                     await objWriter.WriteEndDocumentAsync();
                     await objWriter.FlushAsync();
-
-                    if (objToken.IsCancellationRequested)
-                        return objReturn;
                 }
-
-                // </characters>
-                await objWriter.WriteEndElementAsync();
-
-                // Finish the document and flush the Writer and Stream.
-                await objWriter.WriteEndDocumentAsync();
-                await objWriter.FlushAsync();
 
                 if (objToken.IsCancellationRequested)
                     return objReturn;

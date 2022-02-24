@@ -701,23 +701,6 @@ namespace Chummer
                         ToolStripManager.RevertMerge("toolStrip");
                         ToolStripManager.Merge(tsMain, "toolStrip");
 
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabSkillsUc.RealLoad()", op_load_frm_career_databindingCallbacks2))
-                        {
-                            tabSkillsUc.RealLoad();
-                        }
-
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabPowerUc.RealLoad()", op_load_frm_career_databindingCallbacks2))
-                        {
-                            tabPowerUc.RealLoad();
-                        }
-
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_Run through all appropriate property changers", op_load_frm_career_databindingCallbacks2))
-                        {
-                            // Run through all appropriate property changers
-                            foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                                await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
-                        }
-
                         lblCMPenalty.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.WoundModifier));
                         lblCMPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.PhysicalCMToolTip));
