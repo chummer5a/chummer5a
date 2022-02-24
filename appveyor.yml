@@ -108,7 +108,7 @@ deploy:
 - provider: GitHub
   tag: Nightly-v$(appveyor_build_version)
   auth_token:
-    secure: xrNlPolUlOE6KAfl/ZDdT8kdVxlzMZXfvafmN92gRYHGh6b2XcwXNi8K1+f0LO6m
+    secure: $env:CHUMMER_OAUTH_TOKEN
   artifact: Chummer
   draft: false
   prerelease: true
