@@ -770,7 +770,10 @@ namespace ChummerHub.Client.Backend
             };
             if (ssg.MyMembers.Count == 0 && ssg.MySINSearchGroups.Count == 0)
             {
-                string emptystring = LanguageManager.GetString("String_Empty", GlobalSettings.Language);
+                string emptystring = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? LanguageManager.GetString("String_Empty", GlobalSettings.Language)
+                    : await LanguageManager.GetStringAsync("String_Empty", GlobalSettings.Language);
                 TreeNode empty = new TreeNode()
                 {
                     Text = emptystring
@@ -818,7 +821,7 @@ namespace ChummerHub.Client.Backend
 
                     Log.Warn(objCache.ErrorText);
                 }
-                TreeNode nodExistingMemberNode = objListNode.Nodes.Find(memberNode.Name, false).FirstOrDefault(x => x.Tag == memberNode.Tag);
+                TreeNode nodExistingMemberNode = objListNode.Nodes.Find(memberNode.Name, false).Find(x => x.Tag == memberNode.Tag);
                 if (nodExistingMemberNode != null)
                 {
                     objListNode.Nodes.Remove(nodExistingMemberNode);
@@ -829,9 +832,17 @@ namespace ChummerHub.Client.Backend
                 {
                     memberNode.ForeColor = Color.Red;
                     memberNode.ToolTipText += Environment.NewLine + Environment.NewLine +
-                                               LanguageManager.GetString("String_Error", GlobalSettings.Language)
-                                               + LanguageManager.GetString("String_Colon", GlobalSettings.Language) +
-                                               Environment.NewLine + objCache.ErrorText;
+                                              (blnSync
+                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                  ? LanguageManager.GetString("String_Error", GlobalSettings.Language)
+                                                  : await LanguageManager.GetStringAsync(
+                                                      "String_Error", GlobalSettings.Language))
+                                              + (blnSync
+                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                  ? LanguageManager.GetString("String_Colon", GlobalSettings.Language)
+                                                  : await LanguageManager.GetStringAsync(
+                                                      "String_Colon", GlobalSettings.Language)) +
+                                              Environment.NewLine + objCache.ErrorText;
                 }
             }
 
@@ -855,7 +866,7 @@ namespace ChummerHub.Client.Backend
                                 {
                                     if (mergenode.Nodes.ContainsKey(what.Name))
                                     {
-                                        TreeNode nodExistingNode = mergenode.Nodes.Find(what.Name, false).FirstOrDefault(x => x.Tag == what.Tag);
+                                        TreeNode nodExistingNode = mergenode.Nodes.Find(what.Name, false).Find(x => x.Tag == what.Tag);
                                         if (nodExistingNode != null)
                                             mergenode.Nodes.Remove(nodExistingNode);
                                         else
@@ -957,7 +968,7 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Trace("Loading: " + fileName);
                 objCharacter = new Character {FileName = fileName};
-                using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(fileName), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = await ChummerMainForm.CreateAndShowProgressBarAsync(Path.GetFileName(fileName), Character.NumLoadingSections))
                 {
                     if (!await objCharacter.LoadAsync(frmLoadingForm, false))
                         return null;
@@ -1087,9 +1098,9 @@ namespace ChummerHub.Client.Backend
                         }
                     }
                 }
-                await PluginHandler.MainForm.CharacterRoster.DoThreadSafeAsync(() =>
+                await PluginHandler.MainForm.CharacterRoster.DoThreadSafeFunc(async () =>
                 {
-                    PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
+                    await PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
                 });
 
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
@@ -1211,7 +1222,7 @@ namespace ChummerHub.Client.Backend
                     {
                         Task<ResultSinnerPostSIN> objPostTask = client.PostSINAsync(uploadInfoObject);
                         objPostTask.RunSynchronously(objUIScheduler);
-                        res = objPostTask.Result;
+                        res = objPostTask.GetAwaiter().GetResult();
                     }
                     else
                         res = await client.PostSINAsync(uploadInfoObject);
@@ -1299,7 +1310,7 @@ namespace ChummerHub.Client.Backend
                                     Task<ResultSINnerPut> objPutTask = client.PutSINAsync(ce.MySINnerFile.Id.Value, fp);
                                     if (objPutTask.Status == TaskStatus.Created)
                                         objPutTask.RunSynchronously();
-                                    res = objPutTask.Result;
+                                    res = objPutTask.GetAwaiter().GetResult();
                                 }
                                 else
                                     res = await client.PutSINAsync(ce.MySINnerFile.Id.Value, fp);
@@ -1326,7 +1337,7 @@ namespace ChummerHub.Client.Backend
                         {
                             FileParameter fp = new FileParameter(fs);
                             if (blnSync)
-                                client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp).Wait();
+                                client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp).GetAwaiter().GetResult();
                             else
                                 await client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp);
                         }

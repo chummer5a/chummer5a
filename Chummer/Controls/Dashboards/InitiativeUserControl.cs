@@ -304,7 +304,7 @@ namespace Chummer
                     int intInitRoll = intInitPasses;
                     for (int j = 0; j < intInitPasses; j++)
                     {
-                        intInitRoll += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                        intInitRoll += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                     }
                     objLoopCharacter.InitRoll = intInitRoll + objLoopCharacter.InitialInit;
                 }

@@ -163,7 +163,7 @@ namespace ChummerHub.Client.UI
                                     c = new Character { FileName = MyCharacterCache.FilePath };
                                     using (LoadingBar frmLoadingForm = new LoadingBar { CharacterFile = MyCharacterCache.FilePath })
                                     {
-                                        frmLoadingForm.Reset(36);
+                                        await frmLoadingForm.ResetAsync(36);
                                         frmLoadingForm.Show();
                                         myState.StatusText = "Loading chummer file...";
                                         myState.CurrentProgress += 10;

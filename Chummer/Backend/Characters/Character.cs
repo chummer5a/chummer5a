@@ -47,7 +47,6 @@ using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using NLog;
 using Application = System.Windows.Forms.Application;
-using Formatting = System.Xml.Formatting;
 
 namespace Chummer
 {
@@ -3281,8 +3280,8 @@ namespace Chummer
                                     {
                                         System.Reflection.Assembly pluginAssm = plugin.GetPluginAssembly();
                                         await objWriter.WriteStartElementAsync(pluginAssm.GetName().Name);
-                                        objWriter.WriteAttributeString("version", pluginAssm.GetName().Version.ToString());
-                                        objWriter.WriteString(plugin.GetSaveToFileElement(this));
+                                        await objWriter.WriteAttributeStringAsync("version", pluginAssm.GetName().Version.ToString());
+                                        await objWriter.WriteStringAsync(plugin.GetSaveToFileElement(this));
                                         await objWriter.WriteEndElementAsync();
                                     }
                                     catch (Exception e)
@@ -3297,7 +3296,7 @@ namespace Chummer
 
                             //calculatedValues
                             await objWriter.WriteStartElementAsync("calculatedvalues");
-                            objWriter.WriteComment(
+                            await objWriter.WriteCommentAsync(
                                 "these values are not loaded and only stored here for third parties, who parse this files (to not have to calculate them themselves)");
                             await objWriter.WriteElementStringAsync("physicalcm",
                                 PhysicalCM.ToString(GlobalSettings.InvariantCultureInfo));
@@ -3316,47 +3315,48 @@ namespace Chummer
 
                             await objWriter.WriteEndDocumentAsync();
                             await objWriter.FlushAsync();
-                            objStream.Position = 0;
+                        }
 
-                            // Validate that the character can save properly. If there's no error, save the file to the listed file location.
-                            try
-                            {
-                                XmlDocument objDoc = new XmlDocument { XmlResolver = null };
-                                using (XmlReader objXmlReader =
-                                       XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                                    objDoc.Load(objXmlReader);
-                                objDoc.Save(strFileName);
-                            }
-                            catch (IOException e)
-                            {
-                                Log.Error(e);
-                                if (Utils.IsUnitTest)
-                                    throw;
-                                Program.ShowMessageBox(blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Message_Save_Error_Warning")
-                                    : await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
-                                blnErrorFree = false;
-                            }
-                            catch (XmlException ex)
-                            {
-                                Log.Warn(ex);
-                                if (Utils.IsUnitTest)
-                                    throw;
-                                Program.ShowMessageBox(blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Message_Save_Error_Warning")
-                                    : await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
-                                blnErrorFree = false;
-                            }
-                            catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
-                            {
-                                Program.ShowMessageBox(blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Message_Save_Error_Warning")
-                                    : await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
-                                blnErrorFree = false;
-                            }
+                        objStream.Position = 0;
+
+                        // Validate that the character can save properly. If there's no error, save the file to the listed file location.
+                        try
+                        {
+                            XmlDocument objDoc = new XmlDocument { XmlResolver = null };
+                            using (XmlReader objXmlReader
+                                   = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                                objDoc.Load(objXmlReader);
+                            objDoc.Save(strFileName);
+                        }
+                        catch (IOException e)
+                        {
+                            Log.Error(e);
+                            if (Utils.IsUnitTest)
+                                throw;
+                            Program.ShowMessageBox(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("Message_Save_Error_Warning")
+                                : await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
+                            blnErrorFree = false;
+                        }
+                        catch (XmlException ex)
+                        {
+                            Log.Warn(ex);
+                            if (Utils.IsUnitTest)
+                                throw;
+                            Program.ShowMessageBox(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("Message_Save_Error_Warning")
+                                : await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
+                            blnErrorFree = false;
+                        }
+                        catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
+                        {
+                            Program.ShowMessageBox(blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("Message_Save_Error_Warning")
+                                : await LanguageManager.GetStringAsync("Message_Save_Error_Warning"));
+                            blnErrorFree = false;
                         }
                     }
                 }

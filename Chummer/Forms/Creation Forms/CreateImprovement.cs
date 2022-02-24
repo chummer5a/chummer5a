@@ -649,61 +649,58 @@ namespace Chummer
             XmlDocument objBonusXml = new XmlDocument { XmlResolver = null };
             using (MemoryStream objStream = new MemoryStream())
             {
-                // Here instead of later because objWriter.Close() needs Stream to not be disposed, but StreamReader.Close() will dispose the Stream.
-                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                    // Build the XML for the Improvement.
+                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + ']');
+                    string strInternal = objFetchNode?["internal"]?.InnerText;
+                    if (string.IsNullOrEmpty(strInternal))
+                        return;
+                    await objWriter.WriteStartDocumentAsync();
+                    // <bonus>
+                    await objWriter.WriteStartElementAsync("bonus");
+                    // <whatever element>
+                    await objWriter.WriteStartElementAsync(strInternal);
+
+                    string strRating = string.Empty;
+                    if (chkApplyToRating.Checked)
+                        strRating = "<applytorating>True</applytorating>";
+
+                    // Retrieve the XML data from the document and replace the values as necessary.
+                    XmlAttributeCollection xmlAttributeCollection = objFetchNode["xml"]?.Attributes;
+                    if (xmlAttributeCollection != null)
                     {
-                        // Build the XML for the Improvement.
-                        XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + ']');
-                        string strInternal = objFetchNode?["internal"]?.InnerText;
-                        if (string.IsNullOrEmpty(strInternal))
-                            return;
-                        await objWriter.WriteStartDocumentAsync();
-                        // <bonus>
-                        objWriter.WriteStartElement("bonus");
-                        // <whatever element>
-                        objWriter.WriteStartElement(strInternal);
-
-                        string strRating = string.Empty;
-                        if (chkApplyToRating.Checked)
-                            strRating = "<applytorating>True</applytorating>";
-
-                        // Retrieve the XML data from the document and replace the values as necessary.
-                        XmlAttributeCollection xmlAttributeCollection = objFetchNode["xml"]?.Attributes;
-                        if (xmlAttributeCollection != null)
+                        foreach (XmlAttribute xmlAttribute in xmlAttributeCollection)
                         {
-                            foreach (XmlAttribute xmlAttribute in xmlAttributeCollection)
-                            {
-                                objWriter.WriteAttributeString(xmlAttribute.LocalName, xmlAttribute.Value);
-                            }
+                            await objWriter.WriteAttributeStringAsync(xmlAttribute.LocalName, xmlAttribute.Value);
                         }
-                        // ReSharper disable once PossibleNullReferenceException
-                        string strXml = objFetchNode["xml"].InnerText
-                            .Replace("{val}", nudVal.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                            .Replace("{min}", nudMin.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                            .Replace("{max}", nudMax.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                            .Replace("{aug}", nudAug.Value.ToString(GlobalSettings.InvariantCultureInfo))
-                            .Replace("{free}", chkFree.Checked.ToString(GlobalSettings.InvariantCultureInfo).ToLowerInvariant())
-                            .Replace("{select}", txtSelect.Text)
-                            .Replace("{applytorating}", strRating);
-                        await objWriter.WriteRawAsync(strXml);
-
-                        // Write the rest of the document.
-                        // </whatever element>
-                        await objWriter.WriteEndElementAsync();
-                        // </bonus>
-                        await objWriter.WriteEndElementAsync();
-                        await objWriter.WriteEndDocumentAsync();
-                        await objWriter.FlushAsync();
-
-                        objStream.Position = 0;
-
-                        // Read it back in as an XmlDocument.
-                        using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                            objBonusXml.Load(objXmlReader);
                     }
+                    // ReSharper disable once PossibleNullReferenceException
+                    string strXml = objFetchNode["xml"].InnerText
+                        .Replace("{val}", nudVal.Value.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("{min}", nudMin.Value.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("{max}", nudMax.Value.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("{aug}", nudAug.Value.ToString(GlobalSettings.InvariantCultureInfo))
+                        .Replace("{free}", chkFree.Checked.ToString(GlobalSettings.InvariantCultureInfo).ToLowerInvariant())
+                        .Replace("{select}", txtSelect.Text)
+                        .Replace("{applytorating}", strRating);
+                    await objWriter.WriteRawAsync(strXml);
+
+                    // Write the rest of the document.
+                    // </whatever element>
+                    await objWriter.WriteEndElementAsync();
+                    // </bonus>
+                    await objWriter.WriteEndElementAsync();
+                    await objWriter.WriteEndDocumentAsync();
+                    await objWriter.FlushAsync();
                 }
+
+                objStream.Position = 0;
+
+                    // Read it back in as an XmlDocument.
+                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                    objBonusXml.Load(objXmlReader);
             }
 
             // Pluck out the bonus information.

@@ -5847,44 +5847,47 @@ namespace Chummer
                     case Armor objCopyArmor:
                         {
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            MemoryStream objStream = new MemoryStream();
-                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                            using (MemoryStream objStream = new MemoryStream())
                             {
-                                objWriter.WriteStartDocument();
-
-                                // </characters>
-                                objWriter.WriteStartElement("character");
-
-                                objCopyArmor.Save(objWriter);
-                                GlobalSettings.ClipboardContentType = ClipboardContentType.Armor;
-
-                                if (!objCopyArmor.WeaponID.IsEmptyGuid())
+                                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                                 {
-                                    // <weapons>
-                                    objWriter.WriteStartElement("weapons");
-                                    // Copy any Weapon that comes with the Gear.
-                                    foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children,
-                                        x => x.ParentID == objCopyArmor.InternalId))
+                                    objWriter.WriteStartDocument();
+
+                                    // </characters>
+                                    objWriter.WriteStartElement("character");
+
+                                    objCopyArmor.Save(objWriter);
+                                    GlobalSettings.ClipboardContentType = ClipboardContentType.Armor;
+
+                                    if (!objCopyArmor.WeaponID.IsEmptyGuid())
                                     {
-                                        objCopyWeapon.Save(objWriter);
+                                        // <weapons>
+                                        objWriter.WriteStartElement("weapons");
+                                        // Copy any Weapon that comes with the Gear.
+                                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
+                                                     x => x.Children,
+                                                     x => x.ParentID == objCopyArmor.InternalId))
+                                        {
+                                            objCopyWeapon.Save(objWriter);
+                                        }
+
+                                        objWriter.WriteEndElement();
                                     }
 
+                                    // </characters>
                                     objWriter.WriteEndElement();
+
+                                    // Finish the document and flush the Writer and Stream.
+                                    objWriter.WriteEndDocument();
+                                    objWriter.Flush();
                                 }
-
-                                // </characters>
-                                objWriter.WriteEndElement();
-
-                                // Finish the document and flush the Writer and Stream.
-                                objWriter.WriteEndDocument();
-                                objWriter.Flush();
 
                                 // Read the stream.
                                 objStream.Position = 0;
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                       XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
@@ -5894,45 +5897,48 @@ namespace Chummer
                         }
                     case ArmorMod objCopyArmorMod:
                         {
-                            MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                            using (MemoryStream objStream = new MemoryStream())
                             {
-                                objWriter.WriteStartDocument();
-
-                                // </characters>
-                                objWriter.WriteStartElement("character");
-
-                                objCopyArmorMod.Save(objWriter);
-                                GlobalSettings.ClipboardContentType = ClipboardContentType.Armor;
-
-                                if (!objCopyArmorMod.WeaponID.IsEmptyGuid())
+                                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                                 {
-                                    // <weapons>
-                                    objWriter.WriteStartElement("weapons");
-                                    // Copy any Weapon that comes with the Gear.
-                                    foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children,
-                                        x => x.ParentID == objCopyArmorMod.InternalId))
+                                    objWriter.WriteStartDocument();
+
+                                    // </characters>
+                                    objWriter.WriteStartElement("character");
+
+                                    objCopyArmorMod.Save(objWriter);
+                                    GlobalSettings.ClipboardContentType = ClipboardContentType.Armor;
+
+                                    if (!objCopyArmorMod.WeaponID.IsEmptyGuid())
                                     {
-                                        objCopyWeapon.Save(objWriter);
+                                        // <weapons>
+                                        objWriter.WriteStartElement("weapons");
+                                        // Copy any Weapon that comes with the Gear.
+                                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
+                                                     x => x.Children,
+                                                     x => x.ParentID == objCopyArmorMod.InternalId))
+                                        {
+                                            objCopyWeapon.Save(objWriter);
+                                        }
+
+                                        objWriter.WriteEndElement();
                                     }
 
+                                    // </characters>
                                     objWriter.WriteEndElement();
+
+                                    // Finish the document and flush the Writer and Stream.
+                                    objWriter.WriteEndDocument();
+                                    objWriter.Flush();
                                 }
-
-                                // </characters>
-                                objWriter.WriteEndElement();
-
-                                // Finish the document and flush the Writer and Stream.
-                                objWriter.WriteEndDocument();
-                                objWriter.Flush();
 
                                 // Read the stream.
                                 objStream.Position = 0;
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                       XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
@@ -5942,59 +5948,62 @@ namespace Chummer
                         }
                     case Cyberware objCopyCyberware:
                         {
-                            MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                            using (MemoryStream objStream = new MemoryStream())
                             {
-                                objWriter.WriteStartDocument();
-
-                                // </characters>
-                                objWriter.WriteStartElement("character");
-
-                                objCopyCyberware.Save(objWriter);
-                                GlobalSettings.ClipboardContentType = ClipboardContentType.Cyberware;
-
-                                if (!objCopyCyberware.WeaponID.IsEmptyGuid())
+                                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                                 {
-                                    // <weapons>
-                                    objWriter.WriteStartElement("weapons");
-                                    // Copy any Weapon that comes with the Gear.
-                                    foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children,
-                                        x => x.ParentID == objCopyCyberware.InternalId))
+                                    objWriter.WriteStartDocument();
+
+                                    // </characters>
+                                    objWriter.WriteStartElement("character");
+
+                                    objCopyCyberware.Save(objWriter);
+                                    GlobalSettings.ClipboardContentType = ClipboardContentType.Cyberware;
+
+                                    if (!objCopyCyberware.WeaponID.IsEmptyGuid())
                                     {
-                                        objCopyWeapon.Save(objWriter);
+                                        // <weapons>
+                                        objWriter.WriteStartElement("weapons");
+                                        // Copy any Weapon that comes with the Gear.
+                                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
+                                                     x => x.Children,
+                                                     x => x.ParentID == objCopyCyberware.InternalId))
+                                        {
+                                            objCopyWeapon.Save(objWriter);
+                                        }
+
+                                        objWriter.WriteEndElement();
                                     }
 
-                                    objWriter.WriteEndElement();
-                                }
-
-                                if (!objCopyCyberware.VehicleID.IsEmptyGuid())
-                                {
-                                    // <vehicles>
-                                    objWriter.WriteStartElement("vehicles");
-                                    // Copy any Vehicle that comes with the Gear.
-                                    foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x =>
-                                        x.ParentID == objCopyCyberware.InternalId))
+                                    if (!objCopyCyberware.VehicleID.IsEmptyGuid())
                                     {
-                                        objCopyVehicle.Save(objWriter);
+                                        // <vehicles>
+                                        objWriter.WriteStartElement("vehicles");
+                                        // Copy any Vehicle that comes with the Gear.
+                                        foreach (Vehicle objCopyVehicle in CharacterObject.Vehicles.Where(x =>
+                                                     x.ParentID == objCopyCyberware.InternalId))
+                                        {
+                                            objCopyVehicle.Save(objWriter);
+                                        }
+
+                                        objWriter.WriteEndElement();
                                     }
 
+                                    // </characters>
                                     objWriter.WriteEndElement();
+
+                                    // Finish the document and flush the Writer and Stream.
+                                    objWriter.WriteEndDocument();
+                                    objWriter.Flush();
                                 }
-
-                                // </characters>
-                                objWriter.WriteEndElement();
-
-                                // Finish the document and flush the Writer and Stream.
-                                objWriter.WriteEndDocument();
-                                objWriter.Flush();
 
                                 // Read the stream.
                                 objStream.Position = 0;
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                       XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
@@ -6005,45 +6014,48 @@ namespace Chummer
                         }
                     case Gear objCopyGear:
                         {
-                            MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                            using (MemoryStream objStream = new MemoryStream())
                             {
-                                objWriter.WriteStartDocument();
-
-                                // </characters>
-                                objWriter.WriteStartElement("character");
-
-                                objCopyGear.Save(objWriter);
-                                GlobalSettings.ClipboardContentType = ClipboardContentType.Gear;
-
-                                if (!objCopyGear.WeaponID.IsEmptyGuid())
+                                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                                 {
-                                    // <weapons>
-                                    objWriter.WriteStartElement("weapons");
-                                    // Copy any Weapon that comes with the Gear.
-                                    foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(x => x.Children,
-                                        x => x.ParentID == objCopyGear.InternalId))
+                                    objWriter.WriteStartDocument();
+
+                                    // </characters>
+                                    objWriter.WriteStartElement("character");
+
+                                    objCopyGear.Save(objWriter);
+                                    GlobalSettings.ClipboardContentType = ClipboardContentType.Gear;
+
+                                    if (!objCopyGear.WeaponID.IsEmptyGuid())
                                     {
-                                        objCopyWeapon.Save(objWriter);
+                                        // <weapons>
+                                        objWriter.WriteStartElement("weapons");
+                                        // Copy any Weapon that comes with the Gear.
+                                        foreach (Weapon objCopyWeapon in CharacterObject.Weapons.DeepWhere(
+                                                     x => x.Children,
+                                                     x => x.ParentID == objCopyGear.InternalId))
+                                        {
+                                            objCopyWeapon.Save(objWriter);
+                                        }
+
+                                        objWriter.WriteEndElement();
                                     }
 
+                                    // </characters>
                                     objWriter.WriteEndElement();
+
+                                    // Finish the document and flush the Writer and Stream.
+                                    objWriter.WriteEndDocument();
+                                    objWriter.Flush();
                                 }
-
-                                // </characters>
-                                objWriter.WriteEndElement();
-
-                                // Finish the document and flush the Writer and Stream.
-                                objWriter.WriteEndDocument();
-                                objWriter.Flush();
 
                                 // Read the stream.
                                 objStream.Position = 0;
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                       XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
@@ -6053,32 +6065,34 @@ namespace Chummer
                         }
                     case Lifestyle objCopyLifestyle:
                         {
-                            MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                            using (MemoryStream objStream = new MemoryStream())
                             {
-                                objWriter.WriteStartDocument();
+                                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                {
+                                    objWriter.WriteStartDocument();
 
-                                // </characters>
-                                objWriter.WriteStartElement("character");
+                                    // </characters>
+                                    objWriter.WriteStartElement("character");
 
-                                objCopyLifestyle.Save(objWriter);
+                                    objCopyLifestyle.Save(objWriter);
 
-                                // </characters>
-                                objWriter.WriteEndElement();
+                                    // </characters>
+                                    objWriter.WriteEndElement();
 
-                                // Finish the document and flush the Writer and Stream.
-                                objWriter.WriteEndDocument();
-                                objWriter.Flush();
+                                    // Finish the document and flush the Writer and Stream.
+                                    objWriter.WriteEndDocument();
+                                    objWriter.Flush();
 
-                                // Read the stream.
-                                objStream.Position = 0;
+                                    // Read the stream.
+                                    objStream.Position = 0;
 
-                                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                                    // Put the stream into an XmlDocument
-                                    objCharacterXml.Load(objXmlReader);
+                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                    using (XmlReader objXmlReader =
+                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                        // Put the stream into an XmlDocument
+                                        objCharacterXml.Load(objXmlReader);
+                                }
                             }
 
                             GlobalSettings.Clipboard = objCharacterXml;
@@ -6088,30 +6102,32 @@ namespace Chummer
                         }
                     case Vehicle objCopyVehicle:
                         {
-                            MemoryStream objStream = new MemoryStream();
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                            using (MemoryStream objStream = new MemoryStream())
                             {
-                                objWriter.WriteStartDocument();
+                                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                {
+                                    objWriter.WriteStartDocument();
 
-                                // </characters>
-                                objWriter.WriteStartElement("character");
+                                    // </characters>
+                                    objWriter.WriteStartElement("character");
 
-                                objCopyVehicle.Save(objWriter);
+                                    objCopyVehicle.Save(objWriter);
 
-                                // </characters>
-                                objWriter.WriteEndElement();
+                                    // </characters>
+                                    objWriter.WriteEndElement();
 
-                                // Finish the document and flush the Writer and Stream.
-                                objWriter.WriteEndDocument();
-                                objWriter.Flush();
+                                    // Finish the document and flush the Writer and Stream.
+                                    objWriter.WriteEndDocument();
+                                    objWriter.Flush();
+                                }
 
                                 // Read the stream.
                                 objStream.Position = 0;
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                       XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
@@ -6126,31 +6142,33 @@ namespace Chummer
                             // Do not let the user copy Gear or Cyberware Weapons.
                             if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
                                 return;
-
-                            MemoryStream objStream = new MemoryStream();
+                            
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                            using (MemoryStream objStream = new MemoryStream())
                             {
-                                objWriter.WriteStartDocument();
+                                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                {
+                                    objWriter.WriteStartDocument();
 
-                                // </characters>
-                                objWriter.WriteStartElement("character");
+                                    // </characters>
+                                    objWriter.WriteStartElement("character");
 
-                                objCopyWeapon.Save(objWriter);
+                                    objCopyWeapon.Save(objWriter);
 
-                                // </characters>
-                                objWriter.WriteEndElement();
+                                    // </characters>
+                                    objWriter.WriteEndElement();
 
-                                // Finish the document and flush the Writer and Stream.
-                                objWriter.WriteEndDocument();
-                                objWriter.Flush();
+                                    // Finish the document and flush the Writer and Stream.
+                                    objWriter.WriteEndDocument();
+                                    objWriter.Flush();
+                                }
 
                                 // Read the stream.
                                 objStream.Position = 0;
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                       XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }
@@ -6164,31 +6182,33 @@ namespace Chummer
                             // Do not let the user copy accessories that are unique to its parent.
                             if (objCopyAccessory.IncludedInWeapon)
                                 return;
-
-                            MemoryStream objStream = new MemoryStream();
+                            
                             XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                            using (MemoryStream objStream = new MemoryStream())
                             {
-                                objWriter.WriteStartDocument();
+                                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                {
+                                    objWriter.WriteStartDocument();
 
-                                // </characters>
-                                objWriter.WriteStartElement("character");
+                                    // </characters>
+                                    objWriter.WriteStartElement("character");
 
-                                objCopyAccessory.Save(objWriter);
+                                    objCopyAccessory.Save(objWriter);
 
-                                // </characters>
-                                objWriter.WriteEndElement();
+                                    // </characters>
+                                    objWriter.WriteEndElement();
 
-                                // Finish the document and flush the Writer and Stream.
-                                objWriter.WriteEndDocument();
-                                objWriter.Flush();
+                                    // Finish the document and flush the Writer and Stream.
+                                    objWriter.WriteEndDocument();
+                                    objWriter.Flush();
+                                }
 
                                 // Read the stream.
                                 objStream.Position = 0;
 
                                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                 using (XmlReader objXmlReader =
-                                        XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                       XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
                                     objCharacterXml.Load(objXmlReader);
                             }

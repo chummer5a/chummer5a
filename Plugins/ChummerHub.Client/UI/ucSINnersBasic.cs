@@ -167,7 +167,7 @@ namespace ChummerHub.Client.UI
                         continue;
                     //search for a CheckBox that is named like the tag
                     string checkBoxKey = "cbTag" + tag.TagName;
-                    Control objMatchingCheckBox = gpControlSeq.FirstOrDefault(x => x.Name == checkBoxKey);
+                    Control objMatchingCheckBox = gpControlSeq.Find(x => x.Name == checkBoxKey);
                     if (objMatchingCheckBox == null)
                         continue;
                     if (!(objMatchingCheckBox is CheckBox cbTag))
@@ -175,7 +175,7 @@ namespace ChummerHub.Client.UI
 
                     cbTag.Checked = bool.TryParse(tag.TagValue, out bool value) && value;
                     //search for the value-control (whatever that may be)
-                    Control objMatchingControl = gpControlValueSeq.FirstOrDefault(x => x.Name == "TagValue" + tag.TagName);
+                    Control objMatchingControl = gpControlValueSeq.Find(x => x.Name == "TagValue" + tag.TagName);
                     if (objMatchingControl == null)
                         continue;
 
@@ -260,7 +260,7 @@ namespace ChummerHub.Client.UI
                     tag.TagValue = bool.TrueString;
                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
                 //search for the value
-                Control objMatchingControl = gpControlValueSeq.FirstOrDefault(x => x.Name == "TagValue" + tag.TagName);
+                Control objMatchingControl = gpControlValueSeq.Find(x => x.Name == "TagValue" + tag.TagName);
                 switch (objMatchingControl)
                 {
                     case TextBox tbTagValue:

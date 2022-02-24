@@ -1239,17 +1239,29 @@ namespace Chummer
             XmlDocument objReturn = new XmlDocument {XmlResolver = null};
             // Write the Character information to a MemoryStream so we don't need to create any files.
             using (MemoryStream objStream = new MemoryStream())
-            using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
             {
-                // Begin the document.
-                await objWriter.WriteStartDocumentAsync();
-
-                // </characters>
-                await objWriter.WriteStartElementAsync("characters");
-
-                foreach (Character objCharacter in lstCharacters)
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
+                    // Begin the document.
+                    await objWriter.WriteStartDocumentAsync();
+
+                    // </characters>
+                    await objWriter.WriteStartElementAsync("characters");
+
+                    foreach (Character objCharacter in lstCharacters)
+                    {
+                        await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
+                        if (objToken.IsCancellationRequested)
+                            return objReturn;
+                    }
+
+                    // </characters>
+                    await objWriter.WriteEndElementAsync();
+
+                    // Finish the document and flush the Writer and Stream.
+                    await objWriter.WriteEndDocumentAsync();
+                    await objWriter.FlushAsync();
+
                     if (objToken.IsCancellationRequested)
                         return objReturn;
                 }
@@ -1270,6 +1282,7 @@ namespace Chummer
                 using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.UnSafeXmlReaderSettings))
                     objReturn.Load(objXmlReader);
             }
+
             return objReturn;
         }
 

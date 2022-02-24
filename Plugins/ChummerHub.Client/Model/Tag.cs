@@ -146,7 +146,7 @@ namespace ChummerHub.Client.Sinners
             StringBuilder sbdPropertyValues = new StringBuilder(byte.MaxValue);
             foreach (string strProperty in objAttribute.ListCommentProperties)
             {
-                System.Reflection.PropertyInfo objProperty = objItemType.GetProperties().FirstOrDefault(p => p.Name == strProperty);
+                System.Reflection.PropertyInfo objProperty = objItemType.GetProperties().Find(p => p.Name == strProperty);
                 if (objProperty == null)
                     throw new ArgumentOutOfRangeException("Could not find property " + strProperty + " on instance of type " + objItemType + ".");
 

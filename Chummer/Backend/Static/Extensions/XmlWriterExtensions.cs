@@ -38,5 +38,12 @@ namespace Chummer
         {
             return objWriter.WriteElementStringAsync(null, localName, null, value);
         }
+
+        /// <inheritdoc cref="XmlWriter.WriteElementStringAsync"/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task WriteAttributeStringAsync(this XmlWriter objWriter, string localName, string value)
+        {
+            return objWriter.WriteAttributeStringAsync(null, localName, null, value);
+        }
     }
 }

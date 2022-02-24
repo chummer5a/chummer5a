@@ -402,13 +402,14 @@ namespace ChummerHub.Client.Sinners
                 // get all tags in the list with parent is null
                 foreach (Tag branch in tags.Where(t => t != null && t.MyParentTag == null))
                 {
+                    string strText = branch.TagName;
+                    if (!string.IsNullOrEmpty(branch.TagValue))
+                        strText += ": " + branch.TagValue;
                     TreeNode child = new TreeNode
                     {
-                        Text = branch.TagName,
+                        Text = strText,
                         Tag = branch.Id,
                     };
-                    if (!string.IsNullOrEmpty(branch.TagValue))
-                        child.Text += ": " + branch.TagValue;
                     if (!string.IsNullOrEmpty(branch.TagComment))
                         child.ToolTipText = branch.TagComment;
                     PopulateTree(ref child, branch.Tags.ToArray(), filtertags);
@@ -421,18 +422,18 @@ namespace ChummerHub.Client.Sinners
             {
                 foreach (Tag tag in tags)
                 {
-                    if (filtertags != null && (filtertags.All(x => x.TagName != tag.TagName) && tag.Tags.Count <= 0))
+                    if (filtertags != null && filtertags.All(x => x.TagName != tag.TagName) && tag.Tags.Count == 0)
                         continue;
+                    string strText = string.IsNullOrEmpty(tag.TagComment)
+                        ? tag.TagName
+                        : '(' + tag.TagComment + ") " + tag.TagName;
+                    if (!string.IsNullOrEmpty(tag.TagValue))
+                        strText += ": " + tag.TagValue;
                     TreeNode child = new TreeNode
                     {
-                        Text = string.Empty,
+                        Text = strText,
                         Tag = tag.Id
                     };
-                    if(!string.IsNullOrEmpty(tag.TagComment))
-                        child.Text = "(" + tag.TagComment + ") ";
-                    child.Text += tag.TagName;
-                    if (!string.IsNullOrEmpty(tag.TagValue))
-                        child.Text += ": " + tag.TagValue;
                     PopulateTree(ref child, tag.Tags?.ToArray(), filtertags);
                     root.Nodes.Add(child);
                 }
@@ -456,8 +457,8 @@ namespace ChummerHub.Client.Sinners
             {
                 MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
             }
-            object sinidob = null;
-            if (MyCharacterCache?.MyPluginDataDic.TryGetValue("SINnerId", out sinidob) == true)
+
+            if (MyCharacterCache?.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob) == true)
             {
                 MySINnerFile.Id = (Guid)sinidob;
             }
@@ -491,7 +492,7 @@ namespace ChummerHub.Client.Sinners
                                 Task<ResultSinnerGetOwnedSINByAlias> objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
                                 if (objSearchTask.Status == TaskStatus.Created)
                                     objSearchTask.RunSynchronously();
-                                res = objSearchTask.Result;
+                                res = objSearchTask.GetAwaiter().GetResult();
                             }
                             else
                                 res =  await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
