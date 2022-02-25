@@ -942,19 +942,21 @@ namespace Chummer
         {
             get
             {
+                XPathNavigator objCategoryNode = _objCharacter.LoadDataXPath("spells.xml")
+                    .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + ']');
+                if (objCategoryNode == null)
+                    return null;
+                string strSkillKey = string.Empty;
+                objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
                 if (Alchemical)
                 {
-                    return _objCharacter.SkillsSection.GetActiveSkill("Alchemy");
+                    objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
                 }
-                switch (Category)
+                else if (BarehandedAdept)
                 {
-                    case "Enchantments":
-                        return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
-                    case "Rituals":
-                        return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
-                    default:
-                        return _objCharacter.SkillsSection.GetActiveSkill(BarehandedAdept ? "Unarmed Combat" : "Spellcasting");
+                    objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
                 }
+                return string.IsNullOrEmpty(strSkillKey) ? null : _objCharacter.SkillsSection.GetActiveSkill(strSkillKey);
             }
         }
 

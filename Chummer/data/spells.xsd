@@ -11,8 +11,11 @@
             <xs:sequence>
               <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
-                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
+                  <xs:simpleContent>
                     <xs:extension base="xs:string">
+                      <xs:attribute name="useskill" type="xs:string" use="optional" />
+                      <xs:attribute name="alchemicalskill" type="xs:string" use="optional" />
+                      <xs:attribute name="barehandedadeptskill" type="xs:string" use="optional" />
                     </xs:extension>
                   </xs:simpleContent>
                 </xs:complexType>
