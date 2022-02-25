@@ -1293,67 +1293,67 @@ namespace Chummer.Backend.Equipment
             }
             Gear objGear = lstGearToSearch.DeepFindById(ParentID);
 
-            objWriter.WriteStartElement("weapon");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("type", RangeType);
-            objWriter.WriteElementString("reach", TotalReach.ToString(objCulture));
-            objWriter.WriteElementString("accuracy", GetAccuracy(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("rawaccuracy", Accuracy);
-            objWriter.WriteElementString("damage", CalculatedDamage(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("damage_english", CalculatedDamage(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
-            objWriter.WriteElementString("rawdamage", Damage);
-            objWriter.WriteElementString("ap", TotalAP(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("rawap", AP);
-            objWriter.WriteElementString("mode", CalculatedMode(strLanguageToPrint));
-            objWriter.WriteElementString("rc", TotalRC(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("rawrc", RC);
-            objWriter.WriteElementString("ammo", CalculatedAmmo(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("ammo_english", CalculatedAmmo(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
-            objWriter.WriteElementString("maxammo", Ammo);
-            objWriter.WriteElementString("conceal", CalculatedConcealability(objCulture));
+            await objWriter.WriteStartElementAsync("weapon");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("category_english", Category);
+            await objWriter.WriteElementStringAsync("type", RangeType);
+            await objWriter.WriteElementStringAsync("reach", TotalReach.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("accuracy", await GetAccuracyAsync(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("rawaccuracy", Accuracy);
+            await objWriter.WriteElementStringAsync("damage", await CalculatedDamageAsync(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("damage_english", await CalculatedDamageAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
+            await objWriter.WriteElementStringAsync("rawdamage", Damage);
+            await objWriter.WriteElementStringAsync("ap", await TotalAPAsync(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("rawap", AP);
+            await objWriter.WriteElementStringAsync("mode", await CalculatedModeAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("rc", await TotalRCAsync(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("rawrc", RC);
+            await objWriter.WriteElementStringAsync("ammo", await CalculatedAmmoAsync(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("ammo_english", await CalculatedAmmoAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
+            await objWriter.WriteElementStringAsync("maxammo", Ammo);
+            await objWriter.WriteElementStringAsync("conceal", CalculatedConcealability(objCulture));
             if (objGear != null)
             {
-                objWriter.WriteElementString("avail", await objGear.TotalAvailAsync(objCulture, strLanguageToPrint));
-                objWriter.WriteElementString("cost", objGear.TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                objWriter.WriteElementString("owncost", objGear.OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                objWriter.WriteElementString("weight", objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-                objWriter.WriteElementString("ownweight", objGear.OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                await objWriter.WriteElementStringAsync("avail", await objGear.TotalAvailAsync(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("cost", objGear.TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("owncost", objGear.OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("weight", objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                await objWriter.WriteElementStringAsync("ownweight", objGear.OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             }
             else
             {
-                objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
-                objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-                objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-                objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             }
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("weaponname", CustomName);
-            objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("weaponname", CustomName);
+            await objWriter.WriteElementStringAsync("location", Location?.DisplayName(strLanguageToPrint));
 
-            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
-            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
-            objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
-            objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
-            objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
-            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
 
             if (_lstAccessories.Count > 0)
             {
-                objWriter.WriteStartElement("accessories");
+                await objWriter.WriteStartElementAsync("accessories");
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     await objAccessory.Print(objWriter, objCulture, strLanguageToPrint);
                 await objWriter.WriteEndElementAsync();
@@ -1361,49 +1361,49 @@ namespace Chummer.Backend.Equipment
 
             Dictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
             // <ranges>
-            objWriter.WriteStartElement("ranges");
-            objWriter.WriteElementString("name", DisplayRange(strLanguageToPrint));
-            objWriter.WriteElementString("short", dictionaryRanges["short"]);
-            objWriter.WriteElementString("medium", dictionaryRanges["medium"]);
-            objWriter.WriteElementString("long", dictionaryRanges["long"]);
-            objWriter.WriteElementString("extreme", dictionaryRanges["extreme"]);
+            await objWriter.WriteStartElementAsync("ranges");
+            await objWriter.WriteElementStringAsync("name", await DisplayRangeAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("short", dictionaryRanges["short"]);
+            await objWriter.WriteElementStringAsync("medium", dictionaryRanges["medium"]);
+            await objWriter.WriteElementStringAsync("long", dictionaryRanges["long"]);
+            await objWriter.WriteElementStringAsync("extreme", dictionaryRanges["extreme"]);
             // </ranges>
             await objWriter.WriteEndElementAsync();
 
             // <alternateranges>
-            objWriter.WriteStartElement("alternateranges");
-            objWriter.WriteElementString("name", DisplayAlternateRange(strLanguageToPrint));
-            objWriter.WriteElementString("short", dictionaryRanges["alternateshort"]);
-            objWriter.WriteElementString("medium", dictionaryRanges["alternatemedium"]);
-            objWriter.WriteElementString("long", dictionaryRanges["alternatelong"]);
-            objWriter.WriteElementString("extreme", dictionaryRanges["alternateextreme"]);
+            await objWriter.WriteStartElementAsync("alternateranges");
+            await objWriter.WriteElementStringAsync("name", await DisplayAlternateRangeAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("short", dictionaryRanges["alternateshort"]);
+            await objWriter.WriteElementStringAsync("medium", dictionaryRanges["alternatemedium"]);
+            await objWriter.WriteElementStringAsync("long", dictionaryRanges["alternatelong"]);
+            await objWriter.WriteElementStringAsync("extreme", dictionaryRanges["alternateextreme"]);
             // </alternateranges>
             await objWriter.WriteEndElementAsync();
 
             foreach (Weapon objUnderbarrel in Children)
             {
-                objWriter.WriteStartElement("underbarrel");
+                await objWriter.WriteStartElementAsync("underbarrel");
                 await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint);
                 await objWriter.WriteEndElementAsync();
             }
 
             // Currently loaded Ammo.
             Guid guiAmmo = GetClip(_intActiveAmmoSlot).Guid;
-            objWriter.WriteElementString("availableammo", GetAvailableAmmo.ToString(objCulture));
-            objWriter.WriteElementString("currentammo", GetAmmoName(guiAmmo, strLanguageToPrint));
-            objWriter.WriteStartElement("clips");
+            await objWriter.WriteElementStringAsync("availableammo", GetAvailableAmmo.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("currentammo", await GetAmmoNameAsync(guiAmmo, strLanguageToPrint));
+            await objWriter.WriteStartElementAsync("clips");
             if (RequireAmmo)
             {
                 foreach (Clip objClip in _lstAmmo)
                 {
-                    objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
+                    objClip.AmmoName = await GetAmmoNameAsync(objClip.Guid, strLanguageToPrint);
                     objClip.Save(objWriter);
                 }
 
                 foreach (Gear reloadClipGear in GetAmmoReloadable(lstGearToSearch))
                 {
                     Clip reload = new Clip(Guid.Parse(reloadClipGear.InternalId), reloadClipGear.Quantity.ToInt32());
-                    reload.AmmoName = GetAmmoName(reload.Guid, strLanguageToPrint);
+                    reload.AmmoName = await GetAmmoNameAsync(reload.Guid, strLanguageToPrint);
                     reload.AmmoLocation = reloadClipGear.Location != null
                         ? reloadClipGear.Location.Name
                         : "available or loaded";
@@ -1418,17 +1418,17 @@ namespace Chummer.Backend.Equipment
             await objWriter.WriteEndElementAsync();
 
             //Don't seem to be used
-            //objWriter.WriteElementString("ammoslot1", GetAmmoName(_guiAmmoLoaded));
-            //objWriter.WriteElementString("ammoslot2", GetAmmoName(_guiAmmoLoaded2));
-            //objWriter.WriteElementString("ammoslot3", GetAmmoName(_guiAmmoLoaded3));
-            //objWriter.WriteElementString("ammoslot4", GetAmmoName(_guiAmmoLoaded4));
+            //await objWriter.WriteElementStringAsync("ammoslot1", GetAmmoName(_guiAmmoLoaded));
+            //await objWriter.WriteElementStringAsync("ammoslot2", GetAmmoName(_guiAmmoLoaded2));
+            //await objWriter.WriteElementStringAsync("ammoslot3", GetAmmoName(_guiAmmoLoaded3));
+            //await objWriter.WriteElementStringAsync("ammoslot4", GetAmmoName(_guiAmmoLoaded4));
 
-            objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
-            objWriter.WriteElementString("skill", Skill?.Name);
+            await objWriter.WriteElementStringAsync("dicepool", DicePool.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("skill", Skill?.Name);
 
-            objWriter.WriteElementString("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
+                await objWriter.WriteElementStringAsync("notes", Notes);
 
             await objWriter.WriteEndElementAsync();
         }
@@ -1448,6 +1448,25 @@ namespace Chummer.Backend.Equipment
                 : _objCharacter.Gear.DeepFindById(strAmmoGuid);
 
             return objAmmo?.DisplayNameShort(strLanguage) ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Get the name of Ammo from the character or Vehicle.
+        /// </summary>
+        /// <param name="guiAmmo">InternalId of the Ammo to find.</param>
+        /// <param name="strLanguage">Language in which to display ammo name.</param>
+        public async ValueTask<string> GetAmmoNameAsync(Guid guiAmmo, string strLanguage)
+        {
+            if (guiAmmo == Guid.Empty)
+                return string.Empty;
+            string strAmmoGuid = guiAmmo.ToString("D", GlobalSettings.InvariantCultureInfo);
+            Gear objAmmo = ParentVehicle != null
+                ? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid)
+                : _objCharacter.Gear.DeepFindById(strAmmoGuid);
+
+            if (objAmmo != null)
+                return await objAmmo.DisplayNameShortAsync(strLanguage);
+            return string.Empty;
         }
 
         /// <summary>
@@ -1569,6 +1588,14 @@ namespace Chummer.Backend.Equipment
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
@@ -1580,6 +1607,20 @@ namespace Chummer.Backend.Equipment
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             if (Rating > 0)
                 strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
+            if (!string.IsNullOrEmpty(CustomName))
+                strReturn += strSpace + "(\"" + CustomName + "\")";
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Display name.
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            if (Rating > 0)
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             return strReturn;
@@ -1717,6 +1758,30 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Translated Category.
+        /// </summary>
+        public async ValueTask<string> DisplayCategoryAsync(string strLanguage)
+        {
+            switch (Category)
+            {
+                // If Categories are actually the name of object types, so pull them from the language file.
+                case "Gear":
+                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Gear", strLanguage);
+
+                case "Cyberware":
+                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Cyberware", strLanguage);
+
+                case "Bioware":
+                    return await LanguageManager.GetStringAsync("String_SelectPACKSKit_Bioware", strLanguage);
+            }
+
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Category;
+
+            return (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+        }
+
+        /// <summary>
         /// Translated Ammo Category.
         /// </summary>
         public string DisplayAmmoCategory(string strLanguage)
@@ -1726,6 +1791,18 @@ namespace Chummer.Backend.Equipment
                 return AmmoCategory;
 
             return _objCharacter.LoadDataXPath("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + AmmoCategory.CleanXPath() + "]/@translate")?.Value ?? AmmoCategory;
+        }
+
+        /// <summary>
+        /// Translated Ammo Category.
+        /// </summary>
+        public async ValueTask<string> DisplayAmmoCategoryAsync(string strLanguage)
+        {
+            // Get the translated name if applicable.
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return AmmoCategory;
+
+            return (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage)).SelectSingleNode("/chummer/categories/category[. = " + AmmoCategory.CleanXPath() + "]/@translate")?.Value ?? AmmoCategory;
         }
 
         /// <summary>
@@ -2004,6 +2081,20 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -2369,6 +2460,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedDamage(CultureInfo objCulture, string strLanguage)
         {
+            return CalculatedDamageCoreAsync(true, objCulture, strLanguage).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
+        /// </summary>
+        public Task<string> CalculatedDamageAsync(CultureInfo objCulture, string strLanguage)
+        {
+            return CalculatedDamageCoreAsync(false, objCulture, strLanguage);
+        }
+
+        /// <summary>
+        /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
+        /// </summary>
+        private async Task<string> CalculatedDamageCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage)
+        {
             // If the cost is determined by the Rating, evaluate the expression.
             string strDamageType = string.Empty;
             string strDamageExtra = string.Empty;
@@ -2377,7 +2484,11 @@ namespace Chummer.Backend.Equipment
             {
                 sbdDamage.Append(Damage);
                 ProcessAttributesInXPath(sbdDamage, Damage);
-                sbdDamage.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    sbdDamage.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                else
+                    await sbdDamage.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 strDamage = sbdDamage.ToString();
             }
 
@@ -2717,42 +2828,221 @@ namespace Chummer.Backend.Equipment
             // Translate the Damage Code.
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                strReturn = strReturn
-                    .CheapReplace("Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
-                    .CheapReplace("P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
-                    .CheapReplace("Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
-                    .CheapReplace("(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
-                    .CheapReplace("(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage))
-                    .CheapReplace("Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage))
-                    .CheapReplace("Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage))
-                    .CheapReplace("Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage))
-                    .CheapReplace("Rocket", () => LanguageManager.GetString("String_DamageRocket", strLanguage))
-                    .CheapReplace("Radius", () => LanguageManager.GetString("String_DamageRadius", strLanguage))
-                    .CheapReplace("As Drug/Toxin", () => LanguageManager.GetString("String_DamageAsDrugToxin", strLanguage))
-                    .CheapReplace("as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage))
-                    .CheapReplace("/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage))
-                    .CheapReplace("(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage));
-                strReturn = strReturn
-                    .CheapReplace("0S", () => '0' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("1S", () => '1' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("2S", () => '2' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("3S", () => '3' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("4S", () => '4' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("5S", () => '5' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("6S", () => '6' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("7S", () => '7' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("8S", () => '8' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("9S", () => '9' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                    .CheapReplace("0P", () => '0' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("1P", () => '1' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("2P", () => '2' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("3P", () => '3' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("4P", () => '4' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("5P", () => '5' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("6P", () => '6' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("7P", () => '7' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("8P", () => '8' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                    .CheapReplace("9P", () => '9' + LanguageManager.GetString("String_DamagePhysical", strLanguage));
+                if (blnSync)
+                {
+                    // ReSharper disable MethodHasAsyncOverload
+                    strReturn = strReturn
+                                .CheapReplace(
+                                    "Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
+                                .CheapReplace(
+                                    "P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
+                                .CheapReplace(
+                                    "Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
+                                .CheapReplace(
+                                    "(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
+                                .CheapReplace(
+                                    "(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage))
+                                .CheapReplace(
+                                    "Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage))
+                                .CheapReplace(
+                                    "Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage))
+                                .CheapReplace(
+                                    "Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage))
+                                .CheapReplace(
+                                    "Rocket", () => LanguageManager.GetString("String_DamageRocket", strLanguage))
+                                .CheapReplace(
+                                    "Radius", () => LanguageManager.GetString("String_DamageRadius", strLanguage))
+                                .CheapReplace("As Drug/Toxin",
+                                              () => LanguageManager.GetString("String_DamageAsDrugToxin", strLanguage))
+                                .CheapReplace(
+                                    "as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage))
+                                .CheapReplace(
+                                    "/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage))
+                                .CheapReplace(
+                                    "(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage));
+                    strReturn = strReturn
+                                .CheapReplace(
+                                    "0S", () => '0' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "1S", () => '1' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "2S", () => '2' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "3S", () => '3' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "4S", () => '4' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "5S", () => '5' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "6S", () => '6' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "7S", () => '7' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "8S", () => '8' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "9S", () => '9' + LanguageManager.GetString("String_DamageStun", strLanguage))
+                                .CheapReplace(
+                                    "0P", () => '0' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "1P", () => '1' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "2P", () => '2' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "3P", () => '3' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "4P", () => '4' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "5P", () => '5' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "6P", () => '6' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "7P", () => '7' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "8P", () => '8' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
+                                .CheapReplace(
+                                    "9P", () => '9' + LanguageManager.GetString("String_DamagePhysical", strLanguage));
+                    // ReSharper restore MethodHasAsyncOverload
+                }
+                else
+                {
+                    strReturn = await strReturn
+                                      .CheapReplaceAsync(
+                                          "Special",
+                                          () => LanguageManager.GetStringAsync("String_DamageSpecial", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "P or S", () => LanguageManager.GetStringAsync("String_DamagePOrS", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "Chemical",
+                                          () => LanguageManager.GetStringAsync("String_DamageChemical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "(e)", () => LanguageManager.GetStringAsync("String_DamageElectric", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "(f)", () => LanguageManager.GetStringAsync("String_DamageFlechette", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "Grenade",
+                                          () => LanguageManager.GetStringAsync("String_DamageGrenade", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "Missile",
+                                          () => LanguageManager.GetStringAsync("String_DamageMissile", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "Mortar", () => LanguageManager.GetStringAsync("String_DamageMortar", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "Rocket", () => LanguageManager.GetStringAsync("String_DamageRocket", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "Radius", () => LanguageManager.GetStringAsync("String_DamageRadius", strLanguage))
+                                      .CheapReplaceAsync("As Drug/Toxin",
+                                                         () => LanguageManager.GetStringAsync(
+                                                             "String_DamageAsDrugToxin", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "as round",
+                                          () => LanguageManager.GetStringAsync("String_DamageAsRound", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "/m",
+                                          async () => '/' + await LanguageManager.GetStringAsync("String_DamageMeter", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "(M)", () => LanguageManager.GetStringAsync("String_DamageMatrix", strLanguage));
+                    strReturn = await strReturn
+                                      .CheapReplaceAsync(
+                                          "0S",
+                                          async () => '0'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "1S",
+                                          async () => '1'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "2S",
+                                          async () => '2'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "3S",
+                                          async () => '3'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "4S",
+                                          async () => '4'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "5S",
+                                          async () => '5'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "6S",
+                                          async () => '6'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "7S",
+                                          async () => '7'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "8S",
+                                          async () => '8'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "9S",
+                                          async () => '9'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamageStun", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "0P",
+                                          async () => '0'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "1P",
+                                          async () => '1'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "2P",
+                                          async () => '2'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "3P",
+                                          async () => '3'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "4P",
+                                          async () => '4'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "5P",
+                                          async () => '5'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "6P",
+                                          async () => '6'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "7P",
+                                          async () => '7'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "8P",
+                                          async () => '8'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage))
+                                      .CheapReplaceAsync(
+                                          "9P",
+                                          async () => '9'
+                                                      + await LanguageManager.GetStringAsync(
+                                                          "String_DamagePhysical", strLanguage));
+                }
             }
 
             return strReturn;
@@ -2767,6 +3057,22 @@ namespace Chummer.Backend.Equipment
         /// Calculated Ammo capacity.
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
+        {
+            return CalculatedAmmoCoreAsync(true, objCulture, strLanguage).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Calculated Ammo capacity.
+        /// </summary>
+        public Task<string> CalculatedAmmoAsync(CultureInfo objCulture, string strLanguage)
+        {
+            return CalculatedAmmoCoreAsync(false, objCulture, strLanguage);
+        }
+
+        /// <summary>
+        /// Calculated Ammo capacity.
+        /// </summary>
+        private async Task<string> CalculatedAmmoCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage)
         {
             IEnumerable<string> lstAmmos = Ammo.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
             int intAmmoBonus = 0;
@@ -2806,7 +3112,10 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_Space", strLanguage)
+                : await LanguageManager.GetStringAsync("String_Space", strLanguage);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (string strAmmo in lstAmmos)
@@ -2851,7 +3160,10 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        strThisAmmo = strThisAmmo.CheapReplace("Weapon", () => AmmoCapacity(Ammo));
+                        strThisAmmo = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? strThisAmmo.CheapReplace("Weapon", () => AmmoCapacity(Ammo))
+                            : await strThisAmmo.CheapReplaceAsync("Weapon", () => AmmoCapacity(Ammo));
                         // Replace the division sign with "div" since we're using XPath.
                         strThisAmmo = strThisAmmo.Replace("/", " div ");
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strThisAmmo, out bool blnIsSuccess);
@@ -2883,43 +3195,120 @@ namespace Chummer.Backend.Equipment
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     // Translate the Ammo string.
-                    strReturn = strReturn
-                                .CheapReplace(
-                                    " or ",
-                                    () => strSpace + LanguageManager.GetString("String_Or", strLanguage) + strSpace,
-                                    StringComparison.OrdinalIgnoreCase)
-                                .CheapReplace(" Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage),
+                    if (blnSync)
+                    {
+                        // ReSharper disable MethodHasAsyncOverload
+                        strReturn = strReturn
+                                    .CheapReplace(
+                                        " or ",
+                                        () => strSpace + LanguageManager.GetString("String_Or", strLanguage) + strSpace,
+                                        StringComparison.OrdinalIgnoreCase)
+                                    .CheapReplace(
+                                        " Belt", () => LanguageManager.GetString("String_AmmoBelt", strLanguage),
+                                        StringComparison.OrdinalIgnoreCase)
+                                    .CheapReplace(
+                                        " Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage),
+                                        StringComparison.OrdinalIgnoreCase)
+                                    .CheapReplace(" External Source",
+                                                  () => LanguageManager.GetString(
+                                                      "String_AmmoExternalSource", strLanguage),
+                                                  StringComparison.OrdinalIgnoreCase)
+                                    .CheapReplace(
+                                        " Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage),
+                                        StringComparison.OrdinalIgnoreCase)
+                                    .CheapReplace(
+                                        "(b)",
+                                        () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage)
+                                                  + ')')
+                                    .CheapReplace(
+                                        "(belt)",
+                                        () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ')')
+                                    .CheapReplace(
+                                        "(box)",
+                                        () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage) + ')')
+                                    .CheapReplace(
+                                        "(c)",
+                                        () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage) + ')')
+                                    .CheapReplace(
+                                        "(cy)",
+                                        () => '(' + LanguageManager.GetString("String_AmmoCylinder", strLanguage) + ')')
+                                    .CheapReplace(
+                                        "(d)",
+                                        () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage) + ')')
+                                    .CheapReplace(
+                                        "(m)",
+                                        () => '(' + LanguageManager.GetString("String_AmmoMagazine", strLanguage) + ')')
+                                    .CheapReplace(
+                                        "(ml)",
+                                        () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage)
+                                                  + ')');
+                        // ReSharper restore MethodHasAsyncOverload
+                    }
+                    else
+                    {
+                        strReturn = await strReturn
+                                          .CheapReplaceAsync(
+                                              " or ",
+                                              () => strSpace + LanguageManager.GetStringAsync("String_Or", strLanguage)
+                                                             + strSpace,
                                               StringComparison.OrdinalIgnoreCase)
-                                .CheapReplace(
-                                    " Energy", () => LanguageManager.GetString("String_AmmoEnergy", strLanguage),
-                                    StringComparison.OrdinalIgnoreCase)
-                                .CheapReplace(" External Source",
-                                              () => LanguageManager.GetString("String_AmmoExternalSource", strLanguage),
+                                          .CheapReplaceAsync(
+                                              " Belt",
+                                              () => LanguageManager.GetStringAsync("String_AmmoBelt", strLanguage),
                                               StringComparison.OrdinalIgnoreCase)
-                                .CheapReplace(
-                                    " Special", () => LanguageManager.GetString("String_AmmoSpecial", strLanguage),
-                                    StringComparison.OrdinalIgnoreCase)
-                                .CheapReplace(
-                                    "(b)",
-                                    () => '(' + LanguageManager.GetString("String_AmmoBreakAction", strLanguage) + ')')
-                                .CheapReplace(
-                                    "(belt)",
-                                    () => '(' + LanguageManager.GetString("String_AmmoBelt", strLanguage) + ')')
-                                .CheapReplace(
-                                    "(box)", () => '(' + LanguageManager.GetString("String_AmmoBox", strLanguage) + ')')
-                                .CheapReplace(
-                                    "(c)", () => '(' + LanguageManager.GetString("String_AmmoClip", strLanguage) + ')')
-                                .CheapReplace(
-                                    "(cy)",
-                                    () => '(' + LanguageManager.GetString("String_AmmoCylinder", strLanguage) + ')')
-                                .CheapReplace(
-                                    "(d)", () => '(' + LanguageManager.GetString("String_AmmoDrum", strLanguage) + ')')
-                                .CheapReplace(
-                                    "(m)",
-                                    () => '(' + LanguageManager.GetString("String_AmmoMagazine", strLanguage) + ')')
-                                .CheapReplace(
-                                    "(ml)",
-                                    () => '(' + LanguageManager.GetString("String_AmmoMuzzleLoad", strLanguage) + ')');
+                                          .CheapReplaceAsync(
+                                              " Energy",
+                                              () => LanguageManager.GetStringAsync("String_AmmoEnergy", strLanguage),
+                                              StringComparison.OrdinalIgnoreCase)
+                                          .CheapReplaceAsync(" External Source",
+                                                             () => LanguageManager.GetStringAsync(
+                                                                 "String_AmmoExternalSource", strLanguage),
+                                                             StringComparison.OrdinalIgnoreCase)
+                                          .CheapReplaceAsync(
+                                              " Special",
+                                              () => LanguageManager.GetStringAsync("String_AmmoSpecial", strLanguage),
+                                              StringComparison.OrdinalIgnoreCase)
+                                          .CheapReplaceAsync(
+                                              "(b)",
+                                              async () => '('
+                                                          + await LanguageManager.GetStringAsync(
+                                                              "String_AmmoBreakAction", strLanguage) + ')')
+                                          .CheapReplaceAsync(
+                                              "(belt)",
+                                              async () => '('
+                                                          + await LanguageManager.GetStringAsync(
+                                                              "String_AmmoBelt", strLanguage) + ')')
+                                          .CheapReplaceAsync(
+                                              "(box)",
+                                              async () => '('
+                                                          + await LanguageManager.GetStringAsync(
+                                                              "String_AmmoBox", strLanguage) + ')')
+                                          .CheapReplaceAsync(
+                                              "(c)",
+                                              async () => '('
+                                                          + await LanguageManager.GetStringAsync(
+                                                              "String_AmmoClip", strLanguage) + ')')
+                                          .CheapReplaceAsync(
+                                              "(cy)",
+                                              async () => '('
+                                                          + await LanguageManager.GetStringAsync(
+                                                              "String_AmmoCylinder", strLanguage) + ')')
+                                          .CheapReplaceAsync(
+                                              "(d)",
+                                              async () => '('
+                                                          + await LanguageManager.GetStringAsync(
+                                                              "String_AmmoDrum", strLanguage) + ')')
+                                          .CheapReplaceAsync(
+                                              "(m)",
+                                              async () => '('
+                                                          + await LanguageManager.GetStringAsync(
+                                                              "String_AmmoMagazine", strLanguage) + ')')
+                                          .CheapReplaceAsync(
+                                              "(ml)",
+                                              async () => '('
+                                                          + await LanguageManager.GetStringAsync(
+                                                              "String_AmmoMuzzleLoad", strLanguage) + ')');
+                    }
                 }
 
                 return strReturn;
@@ -2956,6 +3345,22 @@ namespace Chummer.Backend.Equipment
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
         public string CalculatedMode(string strLanguage)
+        {
+            return CalculatedModeCoreAsync(true, strLanguage).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// The Weapon's Firing Mode including Modifications.
+        /// </summary>
+        public Task<string> CalculatedModeAsync(string strLanguage)
+        {
+            return CalculatedModeCoreAsync(false, strLanguage);
+        }
+
+        /// <summary>
+        /// The Weapon's Firing Mode including Modifications.
+        /// </summary>
+        private async Task<string> CalculatedModeCoreAsync(bool blnSync, string strLanguage)
         {
             // Move the contents of the array to a list so it's easier to work with.
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -3163,18 +3568,45 @@ namespace Chummer.Backend.Equipment
 
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
-                    if (setModes.Contains("SS"))
-                        sbdReturn.Append(LanguageManager.GetString("String_ModeSingleShot", strLanguage)).Append('/');
-                    if (setModes.Contains("SA"))
-                        sbdReturn.Append(LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage))
-                                 .Append('/');
-                    if (setModes.Contains("BF"))
-                        sbdReturn.Append(LanguageManager.GetString("String_ModeBurstFire", strLanguage)).Append('/');
-                    if (setModes.Contains("FA"))
-                        sbdReturn.Append(LanguageManager.GetString("String_ModeFullAutomatic", strLanguage))
-                                 .Append('/');
-                    if (setModes.Contains("Special"))
-                        sbdReturn.Append(LanguageManager.GetString("String_ModeSpecial", strLanguage)).Append('/');
+                    if (blnSync)
+                    {
+                        if (setModes.Contains("SS"))
+                            // ReSharper disable once MethodHasAsyncOverload
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeSingleShot", strLanguage))
+                                     .Append('/');
+                        if (setModes.Contains("SA"))
+                            // ReSharper disable once MethodHasAsyncOverload
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeSemiAutomatic", strLanguage))
+                                     .Append('/');
+                        if (setModes.Contains("BF"))
+                            // ReSharper disable once MethodHasAsyncOverload
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeBurstFire", strLanguage))
+                                     .Append('/');
+                        if (setModes.Contains("FA"))
+                            // ReSharper disable once MethodHasAsyncOverload
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeFullAutomatic", strLanguage))
+                                     .Append('/');
+                        if (setModes.Contains("Special"))
+                            // ReSharper disable once MethodHasAsyncOverload
+                            sbdReturn.Append(LanguageManager.GetString("String_ModeSpecial", strLanguage)).Append('/');
+                    }
+                    else
+                    {
+                        if (setModes.Contains("SS"))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSingleShot", strLanguage))
+                                     .Append('/');
+                        if (setModes.Contains("SA"))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSemiAutomatic", strLanguage))
+                                     .Append('/');
+                        if (setModes.Contains("BF"))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeBurstFire", strLanguage))
+                                     .Append('/');
+                        if (setModes.Contains("FA"))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeFullAutomatic", strLanguage))
+                                     .Append('/');
+                        if (setModes.Contains("Special"))
+                            sbdReturn.Append(await LanguageManager.GetStringAsync("String_ModeSpecial", strLanguage)).Append('/');
+                    }
 
                     // Remove the trailing "/".
                     if (sbdReturn.Length > 0)
@@ -3398,6 +3830,22 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalAP(CultureInfo objCulture, string strLanguage)
         {
+            return TotalAPCoreAsync(true, objCulture, strLanguage).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// The Weapon's total AP including Ammunition.
+        /// </summary>
+        public Task<string> TotalAPAsync(CultureInfo objCulture, string strLanguage)
+        {
+            return TotalAPCoreAsync(false, objCulture, strLanguage);
+        }
+
+        /// <summary>
+        /// The Weapon's total AP including Ammunition.
+        /// </summary>
+        private async Task<string> TotalAPCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage)
+        {
             string strAP = AP;
 
             int intImprove = 0;
@@ -3462,15 +3910,26 @@ namespace Chummer.Backend.Equipment
             }
 
             if (strAP.Contains("//"))
-                return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                    ? strAP.Replace("//", "/")
-                    : strAP.Replace("//", "/").CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+            {
+                if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    return strAP.Replace("//", "/");
+                if (blnSync)
+                    return strAP.Replace("//", "/")
+                                // ReSharper disable once MethodHasAsyncOverload
+                                .CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                return await strAP.Replace("//", "/")
+                                  .CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
+            }
 
             int intAP;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAP))
             {
                 sbdAP.Append(strAP);
-                sbdAP.CheapReplace("{Rating}", strAP, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    sbdAP.CheapReplace("{Rating}", strAP, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                else
+                    await sbdAP.CheapReplaceAsync("{Rating}", strAP, () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 ProcessAttributesInXPath(sbdAP, strAP);
                 try
                 {
@@ -3479,32 +3938,43 @@ namespace Chummer.Backend.Equipment
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(sbdAP.ToString(), out bool blnIsSuccess);
                     if (blnIsSuccess)
                         intAP = ((double) objProcess).StandardRound();
+                    else if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                        return strAP;
+                    else if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
                     else
-                        return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                            ? strAP
-                            : strAP.CheapReplace(
-                                "-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                        return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
                 }
                 catch (FormatException)
                 {
                     // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                    return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                        ? strAP
-                        : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                    if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                        return strAP;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
                 }
                 catch (OverflowException)
                 {
                     // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                    return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                        ? strAP
-                        : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                    if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                        return strAP;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
                 }
                 catch (InvalidCastException)
                 {
                     // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
-                    return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                        ? strAP
-                        : strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                    if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                        return strAP;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        return strAP.CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
+                    return await strAP.CheapReplaceAsync("-half", () => LanguageManager.GetStringAsync("String_APHalf", strLanguage));
                 }
             }
 
@@ -3523,14 +3993,36 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
         {
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            return TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// The Weapon's total RC including Accessories and Modifications.
+        /// </summary>
+        public Task<string> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
+        {
+            return TotalRCCoreAsync(false, objCulture, strLanguage, blnRefreshRCToolTip);
+        }
+
+        /// <summary>
+        /// The Weapon's total RC including Accessories and Modifications.
+        /// </summary>
+        private async Task<string> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip)
+        {
+            string strSpace = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString("String_Space", strLanguage)
+                : await LanguageManager.GetStringAsync("String_Space", strLanguage);
             string strRCBase = "0";
             string strRCFull;
             string strRC = RC;
 
             List<Tuple<string, int>> lstRCGroups = new List<Tuple<string, int>>(5);
             List<Tuple<string, int>> lstRCDeployGroups = new List<Tuple<string, int>>(5);
-            strRC = strRC.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+            strRC = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? strRC.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                : await strRC.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
             int intPos = strRC.IndexOf('(');
             if (intPos != -1)
             {
@@ -3558,7 +4050,11 @@ namespace Chummer.Backend.Equipment
                 sbdRCTip.Append(1.ToString(GlobalSettings.CultureInfo)).Append(strSpace);
                 if (blnRefreshRCToolTip && strRCBase != "0")
                 {
-                    sbdRCTip.Append('+').Append(strSpace).Append(LanguageManager.GetString("Label_Base", strLanguage))
+                    sbdRCTip.Append('+').Append(strSpace)
+                            .Append(blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LanguageManager.GetString("Label_Base", strLanguage)
+                                        : await LanguageManager.GetStringAsync("Label_Base", strLanguage))
                             .Append('(').Append(strRCBase).Append(')');
                 }
 
@@ -3585,7 +4081,11 @@ namespace Chummer.Backend.Equipment
 
                                 if (blnRefreshRCToolTip)
                                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
-                                            .Append(objGear.DisplayName(objCulture, strLanguage)).Append(strSpace)
+                                            .Append(blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? objGear.DisplayName(objCulture, strLanguage)
+                                                        : await objGear.DisplayNameAsync(objCulture, strLanguage))
+                                            .Append(strSpace)
                                             .Append('(').Append(strRCBonus).Append(')');
                             }
                         }
@@ -3599,7 +4099,10 @@ namespace Chummer.Backend.Equipment
 
                                 if (blnRefreshRCToolTip)
                                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
-                                            .Append(objGear.DisplayName(objCulture, strLanguage)).Append(strSpace)
+                                            .Append(blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? objGear.DisplayName(objCulture, strLanguage)
+                                                        : await objGear.DisplayNameAsync(objCulture, strLanguage)).Append(strSpace)
                                             .Append('(').Append(strRCBonus).Append(')');
                             }
                         }
@@ -3677,7 +4180,12 @@ namespace Chummer.Backend.Equipment
                         intRCFull += intRecoil;
                         if (blnRefreshRCToolTip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace).AppendFormat(
-                                objCulture, LanguageManager.GetString("Tip_RecoilAccessories", strLanguage), strGroup,
+                                objCulture,
+                                blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("Tip_RecoilAccessories", strLanguage)
+                                    : await LanguageManager.GetStringAsync("Tip_RecoilAccessories", strLanguage),
+                                strGroup,
                                 intRecoil);
                     }
                 }
@@ -3759,7 +4267,11 @@ namespace Chummer.Backend.Equipment
                 intRCFull += intStrRC + 1;
                 if (blnRefreshRCToolTip)
                     sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
-                            .Append(_objCharacter.STR.GetDisplayAbbrev(strLanguage)).Append(strSpace).Append('[')
+                            .Append(blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? _objCharacter.STR.GetDisplayAbbrev(strLanguage)
+                                        : await _objCharacter.STR.GetDisplayAbbrevAsync(strLanguage)).Append(strSpace)
+                            .Append('[')
                             .Append(intUseSTR.ToString(objCulture)).Append(strSpace).Append('/').Append(strSpace)
                             .Append(3.ToString(objCulture)).Append(strSpace).Append('=').Append(strSpace)
                             .Append(intStrRC.ToString(objCulture)).Append(']');
@@ -3920,6 +4432,18 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
+        /// </summary>
+        public async ValueTask<string> GetAccuracyAsync(CultureInfo objCulture, string strLanguage)
+        {
+            int intTotalAccuracy = TotalAccuracy;
+            if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
+                return string.Format(objCulture, "{0}{1}({2})",
+                                     intAccuracy, await LanguageManager.GetStringAsync("String_Space", strLanguage), intTotalAccuracy);
+            return intTotalAccuracy.ToString(objCulture);
+        }
+
+        /// <summary>
         /// The slots the weapon has for modifications.
         /// </summary>
         public string ModificationSlots => _strWeaponSlots;
@@ -3972,6 +4496,35 @@ namespace Chummer.Backend.Equipment
             return strRange;
         }
 
+        /// <summary>
+        /// The string for the Weapon's Range category
+        /// </summary>
+        public async ValueTask<string> DisplayRangeAsync(string strLanguage)
+        {
+            string strRange = Range;
+            if (string.IsNullOrWhiteSpace(strRange))
+                strRange = Category;
+            if (!string.IsNullOrWhiteSpace(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage);
+                XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate");
+                if (xmlTranslateNode != null)
+                {
+                    strRange = xmlTranslateNode.Value;
+                }
+                else
+                {
+                    objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage);
+                    objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
+                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
+                    if (xmlTranslateNode != null)
+                        strRange = xmlTranslateNode.Value;
+                }
+            }
+            return strRange;
+        }
+
         public string CurrentDisplayAlternateRange => DisplayAlternateRange(GlobalSettings.Language);
 
         /// <summary>
@@ -3992,6 +4545,33 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     objXmlDocument = _objCharacter.LoadDataXPath("weapons.xml", strLanguage);
+                    objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
+                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
+                    if (xmlTranslateNode != null)
+                        strRange = xmlTranslateNode.Value;
+                }
+            }
+            return strRange;
+        }
+
+        /// <summary>
+        /// The string for the Weapon's Range category (setter is English-only).
+        /// </summary>
+        public async ValueTask<string> DisplayAlternateRangeAsync(string strLanguage)
+        {
+            string strRange = AlternateRange.Trim();
+            if (!string.IsNullOrEmpty(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage);
+                XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate");
+                if (xmlTranslateNode != null)
+                {
+                    strRange = xmlTranslateNode.Value;
+                }
+                else
+                {
+                    objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
                     xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
                     if (xmlTranslateNode != null)

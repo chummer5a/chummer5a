@@ -617,22 +617,22 @@ namespace Chummer
         {
             return Range
                    .CheapReplaceAsync(
-                       "Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguage))
+                       "Self", () => LanguageManager.GetStringAsync("String_SpellRangeSelf", strLanguage))
                    .CheapReplaceAsync(
-                       "Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguage))
+                       "Special", () => LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage))
                    .CheapReplaceAsync(
-                       "LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", strLanguage))
+                       "LOS", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight", strLanguage))
                    .CheapReplaceAsync(
-                       "LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage))
+                       "LOI", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", strLanguage))
                    .CheapReplaceAsync(
                        "Touch",
-                       () => LanguageManager.GetString("String_SpellRangeTouch",
-                                                       strLanguage)) // Short form to remain export-friendly
-                   .CheapReplaceAsync("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage))
+                       () => LanguageManager.GetStringAsync("String_SpellRangeTouch",
+                                                            strLanguage)) // Short form to remain export-friendly
+                   .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch", strLanguage))
                    .CheapReplaceAsync(
-                       "(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
+                       "(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea", strLanguage) + ')')
                    .CheapReplaceAsync(
-                       "MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage));
+                       "MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage));
         }
 
         /// <summary>
@@ -672,26 +672,26 @@ namespace Chummer
         /// <summary>
         /// Translated Duration.
         /// </summary>
-        public async ValueTask<string> DisplayDurationAsync(string strLanguage)
+        public Task<string> DisplayDurationAsync(string strLanguage)
         {
             string strReturn = Duration;
 
             switch (strReturn)
             {
                 case "Instant":
-                    return await LanguageManager.GetStringAsync("String_SpellDurationInstantLong", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationInstantLong", strLanguage);
 
                 case "Sustained":
-                    return await LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguage);
 
                 case "Always":
-                    return await LanguageManager.GetStringAsync("String_SpellDurationAlways", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationAlways", strLanguage);
 
                 case "Special":
-                    return await LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
+                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
             }
 
-            return strReturn;
+            return Task.FromResult(strReturn);
         }
 
         /// <summary>

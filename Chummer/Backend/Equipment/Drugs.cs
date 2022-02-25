@@ -193,77 +193,77 @@ namespace Chummer.Backend.Equipment
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("drug");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("category", await DisplayCategoryAsync(strLanguageToPrint));
-            objWriter.WriteElementString("category_english", Category);
+            await objWriter.WriteStartElementAsync("drug");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("category_english", Category);
             if (Grade != null)
-                objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("qty", Quantity.ToString("#,0.##", objCulture));
-            objWriter.WriteElementString("addictionthreshold", AddictionThreshold.ToString(objCulture));
-            objWriter.WriteElementString("addictionrating", AddictionRating.ToString(objCulture));
-            objWriter.WriteElementString("initiative", Initiative.ToString(objCulture));
-            objWriter.WriteElementString("initiativedice", InitiativeDice.ToString(objCulture));
-            objWriter.WriteElementString("speed", Speed.ToString(objCulture));
-            objWriter.WriteElementString("duration", Duration.ToString(objCulture));
-            objWriter.WriteElementString("crashdamage", CrashDamage.ToString(objCulture));
-            objWriter.WriteElementString("avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint));
-            objWriter.WriteElementString("avail_english", TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage));
-            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("qty", Quantity.ToString("#,0.##", objCulture));
+            await objWriter.WriteElementStringAsync("addictionthreshold", AddictionThreshold.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("addictionrating", AddictionRating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("initiative", Initiative.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("initiativedice", InitiativeDice.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("speed", Speed.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("duration", Duration.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("crashdamage", CrashDamage.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("avail_english", TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage));
+            await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
 
-            objWriter.WriteStartElement("attributes");
+            await objWriter.WriteStartElementAsync("attributes");
             foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
             {
                 if (objAttribute.Value != 0)
                 {
-                    objWriter.WriteStartElement("attribute");
-                    objWriter.WriteElementString("name", await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", strLanguageToPrint));
-                    objWriter.WriteElementString("name_english", objAttribute.Key);
-                    objWriter.WriteElementString("value", objAttribute.Value.ToString("+#.#;-#.#", objCulture));
+                    await objWriter.WriteStartElementAsync("attribute");
+                    await objWriter.WriteElementStringAsync("name", await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("name_english", objAttribute.Key);
+                    await objWriter.WriteElementStringAsync("value", objAttribute.Value.ToString("+#.#;-#.#", objCulture));
                     await objWriter.WriteEndElementAsync();
                 }
             }
             await objWriter.WriteEndElementAsync();
 
-            objWriter.WriteStartElement("limits");
+            await objWriter.WriteStartElementAsync("limits");
             foreach (KeyValuePair<string, int> objLimit in Limits)
             {
                 if (objLimit.Value != 0)
                 {
-                    objWriter.WriteStartElement("limit");
-                    objWriter.WriteElementString("name", await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguageToPrint));
-                    objWriter.WriteElementString("name_english", objLimit.Key);
-                    objWriter.WriteElementString("value", objLimit.Value.ToString("+#;-#", objCulture));
+                    await objWriter.WriteStartElementAsync("limit");
+                    await objWriter.WriteElementStringAsync("name", await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("name_english", objLimit.Key);
+                    await objWriter.WriteElementStringAsync("value", objLimit.Value.ToString("+#;-#", objCulture));
                     await objWriter.WriteEndElementAsync();
                 }
             }
             await objWriter.WriteEndElementAsync();
 
-            objWriter.WriteStartElement("qualities");
+            await objWriter.WriteStartElementAsync("qualities");
             foreach (string strQualityText in Qualities.Select(x => x.InnerText))
             {
-                objWriter.WriteStartElement("quality");
-                objWriter.WriteElementString("name", await _objCharacter.TranslateExtraAsync(strQualityText, strLanguageToPrint));
-                objWriter.WriteElementString("name_english", strQualityText);
+                await objWriter.WriteStartElementAsync("quality");
+                await objWriter.WriteElementStringAsync("name", await _objCharacter.TranslateExtraAsync(strQualityText, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", strQualityText);
                 await objWriter.WriteEndElementAsync();
             }
             await objWriter.WriteEndElementAsync();
 
-            objWriter.WriteStartElement("infos");
+            await objWriter.WriteStartElementAsync("infos");
             foreach (string strInfo in Infos)
             {
-                objWriter.WriteStartElement("info");
-                objWriter.WriteElementString("name", await _objCharacter.TranslateExtraAsync(strInfo, strLanguageToPrint));
-                objWriter.WriteElementString("name_english", strInfo);
+                await objWriter.WriteStartElementAsync("info");
+                await objWriter.WriteElementStringAsync("name", await _objCharacter.TranslateExtraAsync(strInfo, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", strInfo);
                 await objWriter.WriteEndElementAsync();
             }
             await objWriter.WriteEndElementAsync();
 
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
+                await objWriter.WriteElementStringAsync("notes", Notes);
 
             await objWriter.WriteEndElementAsync();
         }

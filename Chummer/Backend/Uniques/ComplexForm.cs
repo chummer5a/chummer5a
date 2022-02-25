@@ -416,23 +416,23 @@ namespace Chummer
             {
                 strReturn = await strReturn
                                   .CheapReplaceAsync(
-                                      "L", () => LanguageManager.GetString("String_ComplexFormLevel", strLanguage))
+                                      "L", () => LanguageManager.GetStringAsync("String_ComplexFormLevel", strLanguage))
                                   .CheapReplaceAsync("Overflow damage",
-                                                     () => LanguageManager.GetString(
+                                                     () => LanguageManager.GetStringAsync(
                                                          "String_SpellOverflowDamage", strLanguage))
                                   .CheapReplaceAsync("Damage Value",
-                                                     () => LanguageManager.GetString(
+                                                     () => LanguageManager.GetStringAsync(
                                                          "String_SpellDamageValue", strLanguage))
                                   .CheapReplaceAsync(
-                                      "Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", strLanguage))
+                                      "Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage))
                                   .CheapReplaceAsync("Disease DV",
-                                                     () => LanguageManager.GetString(
+                                                     () => LanguageManager.GetStringAsync(
                                                          "String_SpellDiseaseDV", strLanguage))
                                   .CheapReplaceAsync("Radiation Power",
-                                                     () => LanguageManager.GetString(
+                                                     () => LanguageManager.GetStringAsync(
                                                          "String_SpellRadiationPower", strLanguage))
                                   .CheapReplaceAsync(
-                                      "Special", () => LanguageManager.GetString("String_Special", strLanguage));
+                                      "Special", () => LanguageManager.GetStringAsync("String_Special", strLanguage));
             }
             return strReturn;
         }
