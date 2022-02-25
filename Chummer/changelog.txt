@@ -15,6 +15,9 @@ Application Changes:
 - Fixed a crash when adding cyberware or bioware that requires a specific side to be picked.
 - Characters with natural weapons can now be saved properly.
 
+Data Changes:
+- One with the Matrix I, II, and III can no longer be taken multiple times.
+
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups
 - MessageTitle_ExtraNativeLanguages

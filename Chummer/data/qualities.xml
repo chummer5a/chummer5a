@@ -18225,7 +18225,6 @@
       <name>One With the Matrix I</name>
       <karma>2</karma>
       <category>Positive</category>
-      <limit>3</limit>
       <bonus />
       <forbidden>
         <oneof>
@@ -18245,7 +18244,6 @@
       <name>One With the Matrix II</name>
       <karma>8</karma>
       <category>Positive</category>
-      <limit>3</limit>
       <bonus />
       <forbidden>
         <oneof>
@@ -18265,7 +18263,6 @@
       <name>One With the Matrix III</name>
       <karma>10</karma>
       <category>Positive</category>
-      <limit>3</limit>
       <bonus />
       <forbidden>
         <oneof>
