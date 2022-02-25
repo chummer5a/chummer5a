@@ -14,6 +14,7 @@ Application Changes:
 - Encumbrance penalties and maximum skill ratings can now properly be modified through the Character Settings window.
 - Fixed a crash when adding cyberware or bioware that requires a specific side to be picked.
 - Characters with natural weapons can now be saved properly.
+- If a user has some custom PACKS already created, creating new custom PACKS now properly lists all PACKS under one `packs` XML node instead of under multiple different versions of it.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
