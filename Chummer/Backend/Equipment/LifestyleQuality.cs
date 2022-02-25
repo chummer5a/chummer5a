@@ -445,38 +445,38 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (!AllowPrint || objWriter == null)
                 return;
-            objWriter.WriteStartElement("quality");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            objWriter.WriteElementString("lp", LP.ToString(objCulture));
-            objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            await objWriter.WriteStartElementAsync("quality");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("formattedname", await FormattedDisplayNameAsync(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             string strLifestyleQualityType = Type.ToString();
             if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                XPathNavigator objNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguageToPrint)
+                XPathNavigator objNode = (await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint))
                     .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + ']');
                 strLifestyleQualityType = objNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strLifestyleQualityType;
             }
 
-            objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
-            objWriter.WriteElementString("lifestylequalitytype_english", Type.ToString());
-            objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
-            objWriter.WriteElementString("free", Free.ToString());
-            objWriter.WriteElementString("freebylifestyle", FreeByLifestyle.ToString());
-            objWriter.WriteElementString("isfreegrid", IsFreeGrid.ToString());
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType);
+            await objWriter.WriteElementStringAsync("lifestylequalitytype_english", Type.ToString());
+            await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString());
+            await objWriter.WriteElementStringAsync("free", Free.ToString());
+            await objWriter.WriteElementStringAsync("freebylifestyle", FreeByLifestyle.ToString());
+            await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString());
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -561,6 +561,20 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
         ///     Bonus node from the XML file.
         /// </summary>
         public XmlNode Bonus { get; set; }
@@ -602,6 +616,17 @@ namespace Chummer.Backend.Equipment
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
+        /// <summary>
+        ///     The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
@@ -618,12 +643,43 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
+        /// <summary>
+        ///     The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+
+            if (!string.IsNullOrEmpty(Extra))
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' +
+                             await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+            return strReturn;
+        }
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         public string FormattedDisplayName(CultureInfo objCulture, string strLanguage)
         {
             string strReturn = DisplayName(strLanguage);
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+
+            if (Multiplier > 0)
+                strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";
+            else if (Multiplier < 0)
+                strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
+
+            if (Cost > 0)
+                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+            else if (Cost < 0)
+                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+            return strReturn;
+        }
+
+        public async ValueTask<string> FormattedDisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = await DisplayNameAsync(strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
 
             if (Multiplier > 0)
                 strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";

@@ -575,7 +575,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -595,7 +595,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             objWriter.WriteElementString("included", IncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture));
             if (GearChildren.Count > 0)
@@ -603,13 +603,13 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteStartElement("gears");
                 foreach (Gear objGear in GearChildren)
                 {
-                    objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objGear.Print(objWriter, objCulture, strLanguageToPrint);
                 }
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
             }
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

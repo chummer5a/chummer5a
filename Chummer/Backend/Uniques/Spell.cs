@@ -700,7 +700,7 @@ namespace Chummer
                                                                     .Find(x => x.ImprovedName == "T" || x.ImprovedName == "T (A)");
                         string strBarehandedAdeptName = objBarehandedAdeptImprovement != null
                             ? _objCharacter.GetObjectName(objBarehandedAdeptImprovement)
-                            : LanguageManager.TranslateExtra("Barehanded Adept", GlobalSettings.Language, _objCharacter, "qualities.xml");
+                            : _objCharacter.TranslateExtra("Barehanded Adept", GlobalSettings.Language, "qualities.xml");
                         sbdTip.Append(')').Append(strSpace).Append('×').Append(strSpace).Append(strBarehandedAdeptName).Append(strSpace).Append("(×2)");
                     }
 

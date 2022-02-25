@@ -1887,7 +1887,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -1899,7 +1899,7 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdName))
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdNameEnglish))
                 {
@@ -1916,8 +1916,13 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                             blnFirst = false;
-                        sbdName.Append(_objCharacter.GetAttribute(strAbbrev)?.GetDisplayAbbrev(strLanguageToPrint)
-                                       ?? strAbbrev).Append(strSpace).Append(intTotalValue.ToString(objCulture));
+
+                        CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAbbrev);
+                        if (objLoopAttribute != null)
+                            sbdName.Append(await objLoopAttribute.GetDisplayAbbrevAsync(strLanguageToPrint));
+                        else
+                            sbdName.Append(strAbbrev);
+                        sbdName.Append(strSpace).Append(intTotalValue.ToString(objCulture));
                         sbdNameEnglish.Append(strAbbrev).Append(strSpace)
                                       .Append(intTotalValue.ToString(GlobalSettings.InvariantCultureInfo));
                     }
@@ -1939,7 +1944,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("minrating", MinRating.ToString(objCulture));
@@ -1949,7 +1954,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
             objWriter.WriteElementString("improvementsource", SourceType.ToString());
 
             objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
@@ -1970,22 +1975,22 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteStartElement("gears");
                 foreach (Gear objGear in GearChildren)
                 {
-                    objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objGear.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
-                objWriter.WriteEndElement();
+                await objWriter.WriteEndElementAsync();
             }
 
             objWriter.WriteStartElement("children");
             foreach (Cyberware objChild in Children)
             {
-                objChild.Print(objWriter, objCulture, strLanguageToPrint);
+                await objChild.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

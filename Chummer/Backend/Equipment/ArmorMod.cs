@@ -461,7 +461,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -480,7 +480,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("included", IncludedInArmor.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo));
@@ -488,13 +488,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in GearChildren)
             {
-                objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                await objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(_strExtra, strLanguageToPrint));
+            await objWriter.WriteEndElementAsync();
+            objWriter.WriteElementString("extra", await _objCharacter.TranslateExtraAsync(_strExtra, strLanguageToPrint));
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

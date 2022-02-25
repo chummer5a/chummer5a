@@ -361,17 +361,17 @@ namespace Chummer.Backend.Uniques
             await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
             if (Type == TraditionType.MAG)
             {
-                await objWriter.WriteElementStringAsync("spiritcombat", DisplaySpiritCombatMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("spiritdetection", DisplaySpiritDetectionMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("spirithealth", DisplaySpiritHealthMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("spiritillusion", DisplaySpiritIllusionMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("spiritmanipulation", DisplaySpiritManipulationMethod(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("spiritform", DisplaySpiritForm(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritcombat", await DisplaySpiritCombatMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritdetection", await DisplaySpiritDetectionMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spirithealth", await DisplaySpiritHealthMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritillusion", await DisplaySpiritIllusionMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritmanipulation", await DisplaySpiritManipulationMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritform", await DisplaySpiritFormAsync(strLanguageToPrint));
             }
-            await objWriter.WriteElementStringAsync("drainattributes", DisplayDrainExpressionMethod(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("drainattributes", await DisplayDrainExpressionMethodAsync(objCulture, strLanguageToPrint));
             await objWriter.WriteElementStringAsync("drainvalue", DrainValue.ToString(objCulture));
             await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", DisplayPage(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
             await objWriter.WriteEndElementAsync();
         }
 
@@ -570,6 +570,14 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// The spirit form of the tradition as it should be displayed in printouts and the UI.
+        /// </summary>
+        public Task<string> DisplaySpiritFormAsync(string strLanguage)
+        {
+            return _objCharacter.TranslateExtraAsync(SpiritForm, strLanguage, "critterpowers.xml");
+        }
+
+        /// <summary>
         /// Value that was selected during an ImprovementManager dialogue.
         /// </summary>
         public string Extra
@@ -624,6 +632,14 @@ namespace Chummer.Backend.Uniques
         public string DisplayDrainExpressionMethod(CultureInfo objCultureInfo, string strLanguage)
         {
             return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
+        }
+
+        /// <summary>
+        /// Magician's Tradition Drain Attributes for display purposes.
+        /// </summary>
+        public ValueTask<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage)
+        {
+            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltipAsync(DrainExpression, objCultureInfo, strLanguage, false);
         }
 
         /// <summary>
@@ -737,6 +753,16 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Method to get Magician's Combat Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritCombatMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritCombat)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritCombat, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
         /// Magician's Combat Spirit (for Custom Traditions) in the language of the current UI.
         /// </summary>
         public string DisplaySpiritCombat
@@ -773,6 +799,16 @@ namespace Chummer.Backend.Uniques
             return string.IsNullOrEmpty(SpiritDetection)
                 ? LanguageManager.GetString("String_None", strLanguage)
                 : _objCharacter.TranslateExtra(SpiritDetection, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
+        /// Method to get Magician's Detection Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritDetectionMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritDetection)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritDetection, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -815,6 +851,16 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Method to get Magician's Health Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritHealthMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritHealth)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritHealth, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
         /// Magician's Health Spirit (for Custom Traditions) in the language of the current UI.
         /// </summary>
         public string DisplaySpiritHealth
@@ -854,6 +900,16 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Method to get Magician's Illusion Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritIllusionMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritIllusion)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritIllusion, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
         /// Magician's Illusion Spirit (for Custom Traditions) in the language of the current UI.
         /// </summary>
         public string DisplaySpiritIllusion
@@ -890,6 +946,16 @@ namespace Chummer.Backend.Uniques
             return string.IsNullOrEmpty(SpiritManipulation)
                 ? LanguageManager.GetString("String_None", strLanguage)
                 : _objCharacter.TranslateExtra(SpiritManipulation, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
+        /// Method to get Magician's Manipulation Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritManipulationMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritManipulation)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritManipulation, strLanguage, "critters.xml");
         }
 
         /// <summary>

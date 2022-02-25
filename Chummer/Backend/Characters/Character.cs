@@ -7617,7 +7617,7 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("armors");
                 foreach (Armor objArmor in Armor)
                 {
-                    objArmor.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objArmor.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
                 // </armors>
@@ -7627,7 +7627,7 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("weapons");
                 foreach (Weapon objWeapon in Weapons)
                 {
-                    objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
                 // </weapons>
@@ -7637,7 +7637,7 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("cyberwares");
                 foreach (Cyberware objCyberware in Cyberware)
                 {
-                    objCyberware.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objCyberware.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
                 // </cyberwares>
@@ -7677,7 +7677,7 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("lifestyles");
                 foreach (Lifestyle objLifestyle in Lifestyles)
                 {
-                    objLifestyle.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objLifestyle.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
                 // </lifestyles>
@@ -7687,7 +7687,7 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("gears");
                 foreach (Gear objGear in Gear)
                 {
-                    objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objGear.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
                 // </gears>
@@ -7697,7 +7697,7 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("drugs");
                 foreach (Drug objDrug in Drugs)
                 {
-                    objDrug.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objDrug.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
                 // </drugs>
@@ -7707,7 +7707,7 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("vehicles");
                 foreach (Vehicle objVehicle in Vehicles)
                 {
-                    objVehicle.Print(objWriter, objCulture, strLanguageToPrint);
+                    await objVehicle.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
                 // </vehicles>

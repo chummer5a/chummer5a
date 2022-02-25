@@ -1247,7 +1247,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             // Find the piece of Gear that created this item if applicable
             List<Gear> lstGearToSearch = new List<Gear>(_objCharacter.Gear);
@@ -1319,7 +1319,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("conceal", CalculatedConcealability(objCulture));
             if (objGear != null)
             {
-                objWriter.WriteElementString("avail", objGear.TotalAvail(objCulture, strLanguageToPrint));
+                objWriter.WriteElementString("avail", await objGear.TotalAvailAsync(objCulture, strLanguageToPrint));
                 objWriter.WriteElementString("cost", objGear.TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", objGear.OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
                 objWriter.WriteElementString("weight", objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
@@ -1333,7 +1333,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
                 objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             }
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", CustomName);
             objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
@@ -1355,8 +1355,8 @@ namespace Chummer.Backend.Equipment
             {
                 objWriter.WriteStartElement("accessories");
                 foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                    objAccessory.Print(objWriter, objCulture, strLanguageToPrint);
-                objWriter.WriteEndElement();
+                    await objAccessory.Print(objWriter, objCulture, strLanguageToPrint);
+                await objWriter.WriteEndElementAsync();
             }
 
             Dictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
@@ -1368,7 +1368,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("long", dictionaryRanges["long"]);
             objWriter.WriteElementString("extreme", dictionaryRanges["extreme"]);
             // </ranges>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             // <alternateranges>
             objWriter.WriteStartElement("alternateranges");
@@ -1378,13 +1378,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("long", dictionaryRanges["alternatelong"]);
             objWriter.WriteElementString("extreme", dictionaryRanges["alternateextreme"]);
             // </alternateranges>
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             foreach (Weapon objUnderbarrel in Children)
             {
                 objWriter.WriteStartElement("underbarrel");
-                objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint);
-                objWriter.WriteEndElement();
+                await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint);
+                await objWriter.WriteEndElementAsync();
             }
 
             // Currently loaded Ammo.
@@ -1415,7 +1415,7 @@ namespace Chummer.Backend.Equipment
             {
                 GetClip(_intActiveAmmoSlot).Save(objWriter);
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             //Don't seem to be used
             //objWriter.WriteElementString("ammoslot1", GetAmmoName(_guiAmmoLoaded));
@@ -1430,7 +1430,7 @@ namespace Chummer.Backend.Equipment
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         /// <summary>

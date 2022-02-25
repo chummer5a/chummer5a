@@ -939,15 +939,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("armor");
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("name", await DisplayNameShortAsync(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", await DisplayNameAsync(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
@@ -960,7 +960,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
             objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("armorname", CustomName);
             objWriter.WriteElementString("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo));
@@ -969,16 +969,16 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("armormods");
             foreach (ArmorMod objMod in ArmorMods)
             {
-                objMod.Print(objWriter, objCulture, strLanguageToPrint);
+                await objMod.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in GearChildren)
             {
-                objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                await objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
+            await objWriter.WriteEndElementAsync();
+            objWriter.WriteElementString("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
             objWriter.WriteElementString("location", Location?.DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
             objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
@@ -999,7 +999,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -2154,6 +2154,17 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The name of the object as it should appear on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
@@ -2166,6 +2177,22 @@ namespace Chummer.Backend.Equipment
                 strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            if (!string.IsNullOrEmpty(CustomName))
+                strReturn += strSpace + "(\"" + CustomName + "\")";
+            if (Rating > 0)
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
+            if (!string.IsNullOrEmpty(Extra))
+                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
             return strReturn;
         }
 

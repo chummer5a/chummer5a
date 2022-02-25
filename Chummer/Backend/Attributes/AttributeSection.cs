@@ -1212,6 +1212,154 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        public async ValueTask<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strReturn = strInput;
+            using (new EnterReadLock(LockObject))
+            {
+                foreach (string strCharAttributeName in AttributeStrings)
+                {
+                    strReturn = await strReturn
+                                      .CheapReplaceAsync('{' + strCharAttributeName + '}', () =>
+                                      {
+                                          string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                                                               .DisplayNameShort(strLanguage);
+                                          if (blnShowValues)
+                                          {
+                                              if (dicValueOverrides == null
+                                                  || !dicValueOverrides.TryGetValue(
+                                                      strCharAttributeName, out int intAttributeValue))
+                                                  intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName)
+                                                      .TotalValue;
+                                              strInnerReturn
+                                                  += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                                     + ')';
+                                          }
+
+                                          return strInnerReturn;
+                                      })
+                                      .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
+                                      {
+                                          string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                                                               .DisplayNameShort(strLanguage);
+                                          if (blnShowValues)
+                                          {
+                                              if (dicValueOverrides == null
+                                                  || !dicValueOverrides.TryGetValue(
+                                                      strCharAttributeName + "Unaug", out int intAttributeValue))
+                                                  intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName)
+                                                      .Value;
+                                              strInnerReturn
+                                                  += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                                     + ')';
+                                          }
+
+                                          return string.Format(objCultureInfo,
+                                                               await LanguageManager.GetStringAsync(
+                                                                   "String_NaturalAttribute", strLanguage),
+                                                               strInnerReturn);
+                                      })
+                                      .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
+                                      {
+                                          string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                                                               .DisplayNameShort(strLanguage);
+                                          if (blnShowValues)
+                                          {
+                                              if (dicValueOverrides == null
+                                                  || !dicValueOverrides.TryGetValue(
+                                                      strCharAttributeName + "Base", out int intAttributeValue))
+                                                  intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName)
+                                                      .TotalBase;
+                                              strInnerReturn
+                                                  += strSpace + '(' + intAttributeValue.ToString(objCultureInfo)
+                                                     + ')';
+                                          }
+
+                                          return string.Format(objCultureInfo,
+                                                               await LanguageManager.GetStringAsync(
+                                                                   "String_BaseAttribute", strLanguage),
+                                                               strInnerReturn);
+                                      });
+                }
+            }
+
+            return strReturn;
+        }
+
+        public async ValueTask ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            using (new EnterReadLock(LockObject))
+            {
+                foreach (string strCharAttributeName in AttributeStrings)
+                {
+                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', () =>
+                    {
+                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                                             .DisplayNameShort(strLanguage);
+                        if (blnShowValues)
+                        {
+                            if (dicValueOverrides == null
+                                || !dicValueOverrides.TryGetValue(strCharAttributeName, out int intAttributeValue))
+                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalValue;
+                            strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
+                        }
+
+                        return strInnerReturn;
+                    });
+                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
+                    {
+                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                                             .DisplayNameShort(strLanguage);
+                        if (blnShowValues)
+                        {
+                            if (dicValueOverrides == null
+                                || !dicValueOverrides.TryGetValue(strCharAttributeName + "Unaug",
+                                                                  out int intAttributeValue))
+                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).Value;
+                            strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
+                        }
+
+                        return string.Format(objCultureInfo,
+                                             await LanguageManager.GetStringAsync("String_NaturalAttribute", strLanguage),
+                                             strInnerReturn);
+                    });
+                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
+                    {
+                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
+                                                             .DisplayNameShort(strLanguage);
+                        if (blnShowValues)
+                        {
+                            if (dicValueOverrides == null
+                                || !dicValueOverrides.TryGetValue(strCharAttributeName + "Base",
+                                                                  out int intAttributeValue))
+                                intAttributeValue = _objCharacter.GetAttribute(strCharAttributeName).TotalBase;
+                            strInnerReturn += strSpace + '(' + intAttributeValue.ToString(objCultureInfo) + ')';
+                        }
+
+                        return string.Format(objCultureInfo,
+                                             await LanguageManager.GetStringAsync("String_BaseAttribute", strLanguage),
+                                             strInnerReturn);
+                    });
+                }
+            }
+        }
+
         internal void Reset(bool blnFirstTime = false)
         {
             using (new EnterWriteLock(LockObject))

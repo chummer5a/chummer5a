@@ -1381,100 +1381,100 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("gear");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
+            await objWriter.WriteStartElementAsync("gear");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
             if ((Category == "Foci" || Category == "Metamagic Foci") && Bonded)
-                objWriter.WriteElementString(
+                await objWriter.WriteElementStringAsync(
                     "name",
-                    DisplayNameShort(strLanguageToPrint) + LanguageManager.GetString("String_Space", strLanguageToPrint)
-                                                         + LanguageManager.GetString(
-                                                             "Label_BondedFoci", strLanguageToPrint));
+                    await DisplayNameShortAsync(strLanguageToPrint) + await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint)
+                                                                    + await LanguageManager.GetStringAsync(
+                                                                        "Label_BondedFoci", strLanguageToPrint));
             else
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
 
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("ispersona",
-                (Name == "Living Persona").ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("isammo",
-                (Category == "Ammunition" || !string.IsNullOrEmpty(AmmoForWeaponType)).ToString(GlobalSettings
-                    .InvariantCultureInfo));
-            objWriter.WriteElementString("issin",
-                (Name == "Fake SIN" || Name == "Credstick, Fake (2050)" || Name == "Fake SIN").ToString(GlobalSettings
-                    .InvariantCultureInfo));
-            objWriter.WriteElementString("capacity", Capacity);
-            objWriter.WriteElementString("armorcapacity", ArmorCapacity);
-            objWriter.WriteElementString("maxrating", MaxRating);
-            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
-            objWriter.WriteElementString("qty", DisplayQuantity(objCulture));
-            objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("avail_english",
-                TotalAvail(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
-            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            objWriter.WriteElementString("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            objWriter.WriteElementString("bonded", Bonded.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("gearname", GearName);
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("category", DisplayCategory(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("category_english", Category);
+            await objWriter.WriteElementStringAsync("ispersona",
+                                                    (Name == "Living Persona").ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("isammo",
+                                                    (Category == "Ammunition" || !string.IsNullOrEmpty(AmmoForWeaponType)).ToString(GlobalSettings
+                                                        .InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("issin",
+                                                    (Name == "Fake SIN" || Name == "Credstick, Fake (2050)" || Name == "Fake SIN").ToString(GlobalSettings
+                                                        .InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("capacity", Capacity);
+            await objWriter.WriteElementStringAsync("armorcapacity", ArmorCapacity);
+            await objWriter.WriteElementStringAsync("maxrating", MaxRating);
+            await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("qty", DisplayQuantity(objCulture));
+            await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("avail_english",
+                                                    await TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage));
+            await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+            await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+            await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("bonded", Bonded.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("location", Location?.DisplayName(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("gearname", GearName);
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
 
-            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
-            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
-            objWriter.WriteElementString("dataprocessing",
-                this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
-            objWriter.WriteElementString("devicerating",
-                this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
-            objWriter.WriteElementString("programlimit",
-                this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("active",
-                this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("homenode",
-                this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
-            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("dataprocessing",
+                                                    this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("devicerating",
+                                                    this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("programlimit",
+                                                    this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+            await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("active",
+                                                    this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("homenode",
+                                                    this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
 
-            objWriter.WriteStartElement("children");
+            await objWriter.WriteStartElementAsync("children");
             foreach (Gear objGear in Children)
             {
-                objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                await objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
 
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             if (_nodWeaponBonus != null)
             {
-                objWriter.WriteElementString("weaponbonusdamage", WeaponBonusDamage(strLanguageToPrint));
-                objWriter.WriteElementString("weaponbonusdamage_english",
-                    WeaponBonusDamage(GlobalSettings.DefaultLanguage));
-                objWriter.WriteElementString("weaponbonusap", WeaponBonusAP);
-                objWriter.WriteElementString("weaponbonusacc", WeaponBonusAcc);
+                await objWriter.WriteElementStringAsync("weaponbonusdamage", await WeaponBonusDamageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("weaponbonusdamage_english",
+                                                        await WeaponBonusDamageAsync(GlobalSettings.DefaultLanguage));
+                await objWriter.WriteElementStringAsync("weaponbonusap", WeaponBonusAP);
+                await objWriter.WriteElementStringAsync("weaponbonusacc", WeaponBonusAcc);
             }
 
             if (_nodFlechetteWeaponBonus != null)
             {
-                objWriter.WriteElementString("flechetteweaponbonusdamage",
-                    FlechetteWeaponBonusDamage(strLanguageToPrint));
-                objWriter.WriteElementString("flechetteweaponbonusdamage_english",
-                    FlechetteWeaponBonusDamage(GlobalSettings.DefaultLanguage));
-                objWriter.WriteElementString("flechetteweaponbonusap", FlechetteWeaponBonusAP);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage",
+                                                        await FlechetteWeaponBonusDamageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage_english",
+                                                        await FlechetteWeaponBonusDamageAsync(GlobalSettings.DefaultLanguage));
+                await objWriter.WriteElementStringAsync("flechetteweaponbonusap", FlechetteWeaponBonusAP);
             }
 
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -1901,6 +1901,20 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -2443,6 +2457,14 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Total Availability of the Gear and its accessories.
+        /// </summary>
+        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage)
+        {
+            return (await TotalAvailTupleAsync()).ToString(objCulture, strLanguage);
+        }
+
+        /// <summary>
         /// Total Availability as a triple.
         /// </summary>
         public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
@@ -2512,6 +2534,93 @@ namespace Chummer.Backend.Equipment
                     if (objChild.ParentID != InternalId)
                     {
                         AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
+                        if (objLoopAvailTuple.AddToParent)
+                            intAvail += objLoopAvailTuple.Value;
+                        if (objLoopAvailTuple.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                            chrLastAvailChar = 'R';
+                    }
+                }
+            }
+
+            // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
+            if (intAvail < 0)
+                intAvail = 0;
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInParent);
+        }
+
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
+            {
+                if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                        .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-') && !IncludedInParent;
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                {
+                    sbdAvail.Append(strAvail.TrimStart('+'));
+                    await sbdAvail.CheapReplaceAsync(strAvail, "MinRating",
+                                                     () => MinRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Parent Rating",
+                                                     () => (Parent as IHasRating)?.Rating.ToString(
+                                                         GlobalSettings.InvariantCultureInfo));
+                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                    // Keeping enumerations separate reduces heap allocations
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                    {
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
+                                                         () => objLoopAttribute.TotalValue.ToString(
+                                                             GlobalSettings.InvariantCultureInfo));
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
+                                                         () => objLoopAttribute.TotalBase.ToString(
+                                                             GlobalSettings.InvariantCultureInfo));
+                    }
+
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                    {
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
+                                                         () => objLoopAttribute.TotalValue.ToString(
+                                                             GlobalSettings.InvariantCultureInfo));
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
+                                                         () => objLoopAttribute.TotalBase.ToString(
+                                                             GlobalSettings.InvariantCultureInfo));
+                    }
+
+                    object objProcess
+                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString(), out bool blnIsSuccess);
+                    if (blnIsSuccess)
+                        intAvail += ((double)objProcess).StandardRound();
+                }
+            }
+
+            if (blnCheckChildren)
+            {
+                // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
+                foreach (Gear objChild in Children)
+                {
+                    if (objChild.ParentID != InternalId)
+                    {
+                        AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync();
                         if (objLoopAvailTuple.AddToParent)
                             intAvail += objLoopAvailTuple.Value;
                         if (objLoopAvailTuple.Suffix == 'F')
@@ -3024,6 +3133,23 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The name of the object as it should appear on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            XPathNavigator xmlGearDataNode = await this.GetNodeXPathAsync(strLanguage);
+            if (xmlGearDataNode?.SelectSingleNode("name")?.Value == "Custom Item")
+            {
+                return await _objCharacter.TranslateExtraAsync(Name, strLanguage);
+            }
+
+            return xmlGearDataNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
+        /// <summary>
         /// Quantity to show, formatted for display purposes.
         /// </summary>
         /// <param name="objCulture">CultureInfo in which number formatting should be done.</param>
@@ -3067,6 +3193,27 @@ namespace Chummer.Backend.Equipment
             return strReturn;
         }
 
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, bool blnOverrideQuantity = false, decimal decQuantityToUse = 0.0m)
+        {
+            string strQuantity = DisplayQuantity(objCulture, true, blnOverrideQuantity, decQuantityToUse);
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            if (!string.IsNullOrEmpty(strQuantity))
+                strReturn = strQuantity + strSpace + strReturn;
+
+            if (Rating > 0)
+                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage) + strSpace +
+                             Rating.ToString(objCulture) + ')';
+            if (!string.IsNullOrEmpty(Extra))
+                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+            if (!string.IsNullOrEmpty(GearName))
+                strReturn += strSpace + "(\"" + GearName + "\")";
+            return strReturn;
+        }
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
@@ -3097,6 +3244,41 @@ namespace Chummer.Backend.Equipment
                 strReturn = strReturn.CheapReplace("P",
                         () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
                     .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Weapon Bonus Damage.
+        /// </summary>
+        public async ValueTask<string> WeaponBonusDamageAsync(string strLanguage)
+        {
+            if (_nodWeaponBonus == null)
+                return string.Empty;
+            string strReturn = _nodWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            // Use the damagereplace value if applicable.
+            if (strReturn == "0")
+            {
+                // Use the damage bonus if available, otherwise use 0.
+                strReturn = _nodWeaponBonus["damage"]?.InnerText ?? "0";
+
+                // Attach the type if applicable.
+                strReturn += _nodWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-', '+'))
+                    strReturn = '+' + strReturn;
+            }
+
+            // Translate the Avail string.
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                strReturn = await strReturn
+                                  .CheapReplaceAsync(
+                                      "P", () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "S", () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage));
             }
 
             return strReturn;
@@ -3185,6 +3367,38 @@ namespace Chummer.Backend.Equipment
                 strReturn = strReturn.CheapReplace("P",
                         () => LanguageManager.GetString("String_DamagePhysical", strLanguage))
                     .CheapReplace("S", () => LanguageManager.GetString("String_DamageStun", strLanguage));
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Weapon Bonus Damage.
+        /// </summary>
+        public async ValueTask<string> FlechetteWeaponBonusDamageAsync(string strLanguage)
+        {
+            if (_nodFlechetteWeaponBonus == null)
+                return string.Empty;
+            string strReturn = _nodFlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            // Use the damagereplace value if applicable.
+            if (strReturn == "0")
+            {
+                // Use the damage bonus if available, otherwise use 0.
+                strReturn = _nodFlechetteWeaponBonus["damage"]?.InnerText ?? "0";
+
+                // Attach the type if applicable.
+                strReturn += _nodFlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+
+                // If this does not start with "-", add a "+" to the string.
+                if (!strReturn.StartsWith('-'))
+                    strReturn = '+' + strReturn;
+            }
+
+            // Translate the Avail string.
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                strReturn = await strReturn.CheapReplaceAsync("P", () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage))
+                                           .CheapReplaceAsync("S", () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage));
             }
 
             return strReturn;

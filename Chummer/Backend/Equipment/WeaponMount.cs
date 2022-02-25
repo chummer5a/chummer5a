@@ -425,7 +425,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -435,16 +435,16 @@ namespace Chummer.Backend.Equipment
             // we instead display them as if they were one of the CRB mounts, but give them a different name
             if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
             {
-                XPathNavigator xmlOverrideNode = this.GetNodeXPath(strLanguageToPrint);
+                XPathNavigator xmlOverrideNode = await this.GetNodeXPathAsync(strLanguageToPrint);
                 objWriter.WriteElementString("sourceid", xmlOverrideNode?.SelectSingleNodeAndCacheExpression("id")?.Value ?? SourceIDString);
                 objWriter.WriteElementString("source",
-                    _objCharacter.LanguageBookShort(xmlOverrideNode?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
-                        strLanguageToPrint));
+                    await _objCharacter.LanguageBookShortAsync(xmlOverrideNode?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
+                                                               strLanguageToPrint));
             }
             else
             {
                 objWriter.WriteElementString("sourceid", SourceIDString);
-                objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+                objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             }
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -462,18 +462,18 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
             {
-                objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
+                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objVehicleMod in Mods)
             {
-                objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint);
+                await objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         /// <summary>

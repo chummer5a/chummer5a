@@ -596,31 +596,31 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("lifestyle");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", CustomName);
-            objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("totalcost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("dice", Dice.ToString(objCulture));
-            objWriter.WriteElementString("multiplier", Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("months", Increments.ToString(objCulture));
-            objWriter.WriteElementString("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("type", StyleType.ToString());
-            objWriter.WriteElementString("increment", IncrementType.ToString());
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("bonuslp", BonusLP.ToString(objCulture));
+            await objWriter.WriteStartElementAsync("lifestyle");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", CustomName);
+            await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            await objWriter.WriteElementStringAsync("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            await objWriter.WriteElementStringAsync("totalcost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("multiplier", Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            await objWriter.WriteElementStringAsync("months", Increments.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("type", StyleType.ToString());
+            await objWriter.WriteElementStringAsync("increment", IncrementType.ToString());
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("bonuslp", BonusLP.ToString(objCulture));
             string strBaseLifestyle = string.Empty;
 
             // Retrieve the Advanced Lifestyle information if applicable.
             if (!string.IsNullOrEmpty(BaseLifestyle))
             {
-                XPathNavigator objXmlAspect = this.GetNodeXPath();
+                XPathNavigator objXmlAspect = await this.GetNodeXPathAsync();
                 if (objXmlAspect != null)
                 {
                     strBaseLifestyle = objXmlAspect.SelectSingleNodeAndCacheExpression("translate")?.Value
@@ -628,21 +628,21 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
-            objWriter.WriteElementString("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteStartElement("qualities");
+            await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyle);
+            await objWriter.WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+            await objWriter.WriteStartElementAsync("qualities");
 
             // Retrieve the Qualities for the Advanced Lifestyle if applicable.
             foreach (LifestyleQuality objQuality in LifestyleQualities)
             {
-                objQuality.Print(objWriter, objCulture, strLanguageToPrint);
+                await objQuality.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -763,6 +763,20 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
