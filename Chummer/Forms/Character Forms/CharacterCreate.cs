@@ -624,52 +624,60 @@ namespace Chummer
                             cboStream.SelectedIndex = 0;
                     }
 
+                    using (CustomActivity op_load_frm_create_longloads = Timekeeper.StartSyncron("load_frm_create_longloads", op_load_frm_create))
+                    {
+                        using (_ = Timekeeper.StartSyncron("load_frm_create_tabSkillsUc.RealLoad()",
+                                   op_load_frm_create_longloads))
+                        {
+                            tabSkillsUc.RealLoad();
+                        }
+
+                        using (_ = Timekeeper.StartSyncron("load_frm_create_tabPowerUc.RealLoad()",
+                                   op_load_frm_create_longloads))
+                        {
+                            tabPowerUc.RealLoad();
+                        }
+
+                        using (_ = Timekeeper.StartSyncron(
+                                   "load_frm_create_Run through all appropriate property changers",
+                                   op_load_frm_create_longloads))
+                        {
+                            // Run through all appropriate property changers
+                            foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
+                                await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
+                        }
+                    }
+
                     IsLoading = false;
-
-                    treGear.ItemDrag += treGear_ItemDrag;
-                    treGear.DragEnter += treGear_DragEnter;
-                    treGear.DragDrop += treGear_DragDrop;
-
-                    /*
-                    treLifestyles.ItemDrag += treLifestyles_ItemDrag;
-                    treLifestyles.DragEnter += treLifestyles_DragEnter;
-                    treLifestyles.DragDrop += treLifestyles_DragDrop;
-                    */
-
-                    treArmor.ItemDrag += treArmor_ItemDrag;
-                    treArmor.DragEnter += treArmor_DragEnter;
-                    treArmor.DragDrop += treArmor_DragDrop;
-
-                    treWeapons.ItemDrag += treWeapons_ItemDrag;
-                    treWeapons.DragEnter += treWeapons_DragEnter;
-                    treWeapons.DragDrop += treWeapons_DragDrop;
-
-                    treVehicles.ItemDrag += treVehicles_ItemDrag;
-                    treVehicles.DragEnter += treVehicles_DragEnter;
-                    treVehicles.DragDrop += treVehicles_DragDrop;
-
-                    // Merge the ToolStrips.
-                    ToolStripManager.RevertMerge("toolStrip");
-                    ToolStripManager.Merge(tsMain, "toolStrip");
-                    using (_ = Timekeeper.StartSyncron("load_frm_create_skills", op_load_frm_create))
-                    {
-                        tabSkillsUc.RealLoad();
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_frm_create_powers", op_load_frm_create))
-                    {
-                        tabPowerUc.RealLoad();
-                    }
-
-                    using (_ = Timekeeper.StartSyncron("load_frm_create_OnCharacterPropertyChanged", op_load_frm_create))
-                    {
-                        // Run through all appropriate property changers
-                        foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                            await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
-                    }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_databinding2", op_load_frm_create))
                     {
+                        treGear.ItemDrag += treGear_ItemDrag;
+                        treGear.DragEnter += treGear_DragEnter;
+                        treGear.DragDrop += treGear_DragDrop;
+
+                        /*
+                        treLifestyles.ItemDrag += treLifestyles_ItemDrag;
+                        treLifestyles.DragEnter += treLifestyles_DragEnter;
+                        treLifestyles.DragDrop += treLifestyles_DragDrop;
+                        */
+
+                        treArmor.ItemDrag += treArmor_ItemDrag;
+                        treArmor.DragEnter += treArmor_DragEnter;
+                        treArmor.DragDrop += treArmor_DragDrop;
+
+                        treWeapons.ItemDrag += treWeapons_ItemDrag;
+                        treWeapons.DragEnter += treWeapons_DragEnter;
+                        treWeapons.DragDrop += treWeapons_DragDrop;
+
+                        treVehicles.ItemDrag += treVehicles_ItemDrag;
+                        treVehicles.DragEnter += treVehicles_DragEnter;
+                        treVehicles.DragDrop += treVehicles_DragDrop;
+
+                        // Merge the ToolStrips.
+                        ToolStripManager.RevertMerge("toolStrip");
+                        ToolStripManager.Merge(tsMain, "toolStrip");
+
                         nudNuyen.DoDataBinding("Value", CharacterObject, nameof(Character.NuyenBP));
                         nudNuyen.DoOneWayDataBinding("Maximum", CharacterObject, nameof(Character.TotalNuyenMaximumBP));
 

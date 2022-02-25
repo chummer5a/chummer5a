@@ -647,10 +647,33 @@ namespace Chummer
                             cboStream.SelectedIndex = 0;
                     }
 
+                    using (CustomActivity op_load_frm_career_longloads = Timekeeper.StartSyncron("load_frm_career_longloads", op_load_frm_career))
+                    {
+                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabSkillsUc.RealLoad()",
+                                   op_load_frm_career_longloads))
+                        {
+                            tabSkillsUc.RealLoad();
+                        }
+
+                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabPowerUc.RealLoad()",
+                                   op_load_frm_career_longloads))
+                        {
+                            tabPowerUc.RealLoad();
+                        }
+
+                        using (_ = Timekeeper.StartSyncron(
+                                   "load_frm_career_Run through all appropriate property changers",
+                                   op_load_frm_career_longloads))
+                        {
+                            // Run through all appropriate property changers
+                            foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
+                                await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
+                        }
+                    }
+
                     IsLoading = false;
 
-                    using (CustomActivity op_load_frm_career_databindingCallbacks2 =
-                        Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2", op_load_frm_career))
+                    using (_ = Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2", op_load_frm_career))
                     {
                         treGear.ItemDrag += treGear_ItemDrag;
                         treGear.DragEnter += treGear_DragEnter;
@@ -681,23 +704,6 @@ namespace Chummer
                         // Merge the ToolStrips.
                         ToolStripManager.RevertMerge("toolStrip");
                         ToolStripManager.Merge(tsMain, "toolStrip");
-
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabSkillsUc.RealLoad()", op_load_frm_career_databindingCallbacks2))
-                        {
-                            tabSkillsUc.RealLoad();
-                        }
-
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabPowerUc.RealLoad()", op_load_frm_career_databindingCallbacks2))
-                        {
-                            tabPowerUc.RealLoad();
-                        }
-
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_Run through all appropriate property changers", op_load_frm_career_databindingCallbacks2))
-                        {
-                            // Run through all appropriate property changers
-                            foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
-                                await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
-                        }
 
                         lblCMPenalty.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.WoundModifier));
                         lblCMPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
