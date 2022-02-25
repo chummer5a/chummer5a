@@ -14781,7 +14781,9 @@
         <value>-5</value>
       </costdiscount>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <skilldisable>Spellcasting</skilldisable>
+      </bonus>
       <required>
         <allof>
           <attribute>
@@ -14821,6 +14823,8 @@
       <bonus>
         <freespells skill="Spellcasting" />
         <newspellkarmacost type="Spells">-1</newspellkarmacost>
+        <skilldisable>Summoning</skilldisable>
+        <skilldisable>Binding</skilldisable>
       </bonus>
       <required>
         <allof>
@@ -17304,9 +17308,7 @@
         <limitspiritcategory>
           <spirit>Spirit of Air</spirit>
         </limitspiritcategory>
-        <skilldisable>Artificing</skilldisable>
-        <skilldisable>Disenchanting</skilldisable>
-        <skilldisable>Alchemy</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
@@ -17332,9 +17334,7 @@
         <limitspiritcategory>
           <spirit>Spirit of Earth</spirit>
         </limitspiritcategory>
-        <skilldisable>Artificing</skilldisable>
-        <skilldisable>Disenchanting</skilldisable>
-        <skilldisable>Alchemy</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
@@ -17360,9 +17360,7 @@
         <limitspiritcategory>
           <spirit>Spirit of Fire</spirit>
         </limitspiritcategory>
-        <skilldisable>Artificing</skilldisable>
-        <skilldisable>Disenchanting</skilldisable>
-        <skilldisable>Alchemy</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
@@ -17388,9 +17386,7 @@
         <limitspiritcategory>
           <spirit>Spirit of Water</spirit>
         </limitspiritcategory>
-        <skilldisable>Artificing</skilldisable>
-        <skilldisable>Disenchanting</skilldisable>
-        <skilldisable>Alchemy</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
