@@ -27,6 +27,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -909,19 +910,20 @@ namespace Chummer.Backend.Attributes
             return objNewAttribute;
         }
 
-        internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             using (new EnterReadLock(LockObject))
             {
                 if (_objCharacter.MetatypeCategory == "Shapeshifter")
                 {
-                    XPathNavigator xmlNode = _objCharacter.GetNodeXPath(true);
+                    XPathNavigator xmlNode = await _objCharacter.GetNodeXPathAsync(true);
 
                     if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
                     {
-                        objWriter.WriteElementString("attributecategory",
-                                                     xmlNode?.SelectSingleNodeAndCacheExpression("name/@translate")
-                                                            ?.Value ?? _objCharacter.Metatype);
+                        await objWriter.WriteElementStringAsync("attributecategory",
+                                                                xmlNode?.SelectSingleNodeAndCacheExpression(
+                                                                           "name/@translate")
+                                                                       ?.Value ?? _objCharacter.Metatype);
                     }
                     else
                     {
@@ -930,19 +932,20 @@ namespace Chummer.Backend.Attributes
                                                                            .ToString(
                                                                                "D", GlobalSettings.InvariantCultureInfo)
                                                                            .CleanXPath() + ']');
-                        objWriter.WriteElementString("attributecategory", xmlNode?.Value ?? _objCharacter.Metavariant);
+                        await objWriter.WriteElementStringAsync("attributecategory",
+                                                                xmlNode?.Value ?? _objCharacter.Metavariant);
                     }
                 }
 
-                objWriter.WriteElementString("attributecategory_english", AttributeCategory.ToString());
+                await objWriter.WriteElementStringAsync("attributecategory_english", AttributeCategory.ToString());
                 foreach (CharacterAttrib att in AttributeList)
                 {
-                    att.Print(objWriter, objCulture, strLanguageToPrint);
+                    await att.Print(objWriter, objCulture, strLanguageToPrint);
                 }
 
                 foreach (CharacterAttrib att in SpecialAttributeList)
                 {
-                    att.Print(objWriter, objCulture, strLanguageToPrint);
+                    await att.Print(objWriter, objCulture, strLanguageToPrint);
                 }
             }
         }

@@ -175,25 +175,25 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("aiprogram");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName);
-            objWriter.WriteElementString("name_english", Name);
-            if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == LanguageManager.GetString("String_None", strLanguageToPrint))
-                objWriter.WriteElementString("requiresprogram", LanguageManager.GetString("String_None", strLanguageToPrint));
+            await objWriter.WriteStartElementAsync("aiprogram");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("fullname", DisplayName);
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == await LanguageManager.GetStringAsync("String_None", strLanguageToPrint))
+                await objWriter.WriteElementStringAsync("requiresprogram", await LanguageManager.GetStringAsync("String_None", strLanguageToPrint));
             else
-                objWriter.WriteElementString("requiresprogram", DisplayRequiresProgram(strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("requiresprogram", await DisplayRequiresProgramAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -261,6 +261,26 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            string strReturn = Name;
+            // Get the translated name if applicable.
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                strReturn = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                string strExtra = Extra;
+                if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    strExtra = await _objCharacter.TranslateExtraAsync(Extra, strLanguage);
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + strExtra + ')';
+            }
+            return strReturn;
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
         public string DisplayName => DisplayNameShort(GlobalSettings.Language);
@@ -285,6 +305,19 @@ namespace Chummer
                 return RequiresProgram;
 
             return _objCharacter.LoadDataXPath("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
+        }
+
+        /// <summary>
+        /// AI Advanced Program's requirement program.
+        /// </summary>
+        public async ValueTask<string> DisplayRequiresProgramAsync(string strLanguage)
+        {
+            if (string.IsNullOrEmpty(RequiresProgram))
+                return await LanguageManager.GetStringAsync("String_None", strLanguage);
+            if (strLanguage == GlobalSettings.Language)
+                return RequiresProgram;
+
+            return (await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage)).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
         }
 
         /// <summary>
@@ -325,6 +358,20 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

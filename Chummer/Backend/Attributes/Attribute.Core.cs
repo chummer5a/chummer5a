@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using Chummer.Annotations;
 using Chummer.Backend.Equipment;
@@ -159,7 +160,7 @@ namespace Chummer.Backend.Attributes
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -185,17 +186,17 @@ namespace Chummer.Backend.Attributes
                         return;
                     break;
             }
-            objWriter.WriteStartElement("attribute");
-            objWriter.WriteElementString("name_english", Abbrev);
-            objWriter.WriteElementString("name", GetDisplayAbbrev(strLanguageToPrint));
-            objWriter.WriteElementString("base", Value.ToString(objCulture));
-            objWriter.WriteElementString("total", TotalValue.ToString(objCulture));
-            objWriter.WriteElementString("min", TotalMinimum.ToString(objCulture));
-            objWriter.WriteElementString("max", TotalMaximum.ToString(objCulture));
-            objWriter.WriteElementString("aug", TotalAugmentedMaximum.ToString(objCulture));
-            objWriter.WriteElementString("bp", TotalKarmaCost.ToString(objCulture));
-            objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
-            objWriter.WriteEndElement();
+            await objWriter.WriteStartElementAsync("attribute");
+            await objWriter.WriteElementStringAsync("name_english", Abbrev);
+            await objWriter.WriteElementStringAsync("name", await GetDisplayAbbrevAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("base", Value.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("total", TotalValue.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("min", TotalMinimum.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("max", TotalMaximum.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("aug", TotalAugmentedMaximum.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("bp", TotalKarmaCost.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("metatypecategory", MetatypeCategory.ToString());
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Save, Load, and Print Methods
@@ -1486,6 +1487,13 @@ namespace Chummer.Backend.Attributes
             return Abbrev == "MAGAdept"
                 ? LanguageManager.MAGAdeptString(strLanguage)
                 : LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
+        }
+
+        public Task<string> GetDisplayAbbrevAsync(string strLanguage)
+        {
+            return Abbrev == "MAGAdept"
+                ? LanguageManager.MAGAdeptStringAsync(strLanguage).AsTask()
+                : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Short", strLanguage);
         }
 
         public void Upgrade(int intAmount = 1)

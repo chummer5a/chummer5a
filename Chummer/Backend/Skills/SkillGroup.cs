@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
@@ -384,22 +385,22 @@ namespace Chummer.Backend.Skills
             writer.WriteEndElement();
         }
 
-        internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("skillgroup");
+            await objWriter.WriteStartElementAsync("skillgroup");
 
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
-            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
-            objWriter.WriteElementString("base", Base.ToString(objCulture));
-            objWriter.WriteElementString("karma", Karma.ToString(objCulture));
-            objWriter.WriteElementString("isbroken", IsBroken.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("ratingmax", RatingMaximum.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("base", Base.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("isbroken", IsBroken.ToString(GlobalSettings.InvariantCultureInfo));
 
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         public void Load(XmlNode xmlNode)
@@ -576,6 +577,15 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
             return _objCharacter.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value ?? Name;
+        }
+
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+            return (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage))
+                   .SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value
+                   ?? Name;
         }
 
         public string DisplayRating

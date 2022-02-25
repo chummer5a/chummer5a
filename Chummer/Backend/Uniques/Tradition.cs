@@ -347,32 +347,32 @@ namespace Chummer.Backend.Uniques
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("tradition");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
+            await objWriter.WriteStartElementAsync("tradition");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
             if (Type == TraditionType.MAG)
             {
-                objWriter.WriteElementString("spiritcombat", DisplaySpiritCombatMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spiritdetection", DisplaySpiritDetectionMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spirithealth", DisplaySpiritHealthMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spiritillusion", DisplaySpiritIllusionMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spiritmanipulation", DisplaySpiritManipulationMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spiritform", DisplaySpiritForm(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritcombat", DisplaySpiritCombatMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritdetection", DisplaySpiritDetectionMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spirithealth", DisplaySpiritHealthMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritillusion", DisplaySpiritIllusionMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritmanipulation", DisplaySpiritManipulationMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("spiritform", DisplaySpiritForm(strLanguageToPrint));
             }
-            objWriter.WriteElementString("drainattributes", DisplayDrainExpressionMethod(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("drainvalue", DrainValue.ToString(objCulture));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteEndElement();
+            await objWriter.WriteElementStringAsync("drainattributes", DisplayDrainExpressionMethod(objCulture, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("drainvalue", DrainValue.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", DisplayPage(strLanguageToPrint));
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -491,6 +491,40 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async Task<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (IsCustomTradition)
+            {
+                if (GlobalSettings.Language != strLanguage)
+                {
+                    string strFile = string.Empty;
+                    switch (Type)
+                    {
+                        case TraditionType.MAG:
+                            strFile = "traditions.xml";
+                            break;
+
+                        case TraditionType.RES:
+                            strFile = "streams.xml";
+                            break;
+                    }
+                    string strReturnEnglish = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? Name : await _objCharacter.ReverseTranslateExtraAsync(Name, GlobalSettings.DefaultLanguage, strFile);
+                    return await _objCharacter.TranslateExtraAsync(strReturnEnglish, strLanguage);
+                }
+
+                return await _objCharacter.TranslateExtraAsync(Name, strLanguage);
+            }
+
+            // Get the translated name if applicable.
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
         public string DisplayName(string strLanguage)
@@ -499,6 +533,19 @@ namespace Chummer.Backend.Uniques
 
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public async Task<string> DisplayNameAsync(string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+
+            if (!string.IsNullOrEmpty(Extra))
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
 
             return strReturn;
         }
@@ -896,6 +943,20 @@ namespace Chummer.Backend.Uniques
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async Task<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

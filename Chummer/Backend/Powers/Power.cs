@@ -367,32 +367,32 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("power");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("extra", CharacterObject.TranslateExtra(Extra, strLanguageToPrint));
-            objWriter.WriteElementString("pointsperlevel", PointsPerLevel.ToString(objCulture));
-            objWriter.WriteElementString("adeptway", AdeptWayDiscount.ToString(objCulture));
-            objWriter.WriteElementString("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
-            objWriter.WriteElementString("totalpoints", PowerPoints.ToString(objCulture));
-            objWriter.WriteElementString("action", DisplayActionMethod(strLanguageToPrint));
-            objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+            await objWriter.WriteStartElementAsync("power");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("extra", await CharacterObject.TranslateExtraAsync(Extra, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("pointsperlevel", PointsPerLevel.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("adeptway", AdeptWayDiscount.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
+            await objWriter.WriteElementStringAsync("totalpoints", PowerPoints.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("action", await DisplayActionMethodAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteStartElement("enhancements");
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteStartElementAsync("enhancements");
             foreach (Enhancement objEnhancement in Enhancements)
             {
-                objEnhancement.Print(objWriter, strLanguageToPrint);
+                await objEnhancement.Print(objWriter, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -521,6 +521,21 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            string strReturn = Name;
+
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                strReturn = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
         /// The translated name of the Power (Name + any Extra text).
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
@@ -536,6 +551,22 @@ namespace Chummer
             {
                 // Attempt to retrieve the CharacterAttribute name.
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + CharacterObject.TranslateExtra(Extra, strLanguage) + ')';
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The translated name of the Power (Name + any Extra text).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await CharacterObject.TranslateExtraAsync(Extra, strLanguage) + ')';
             }
 
             return strReturn;
@@ -792,6 +823,20 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
         /// Bonus node from the XML file.
         /// </summary>
         public XmlNode Bonus { get; set; }
@@ -917,6 +962,35 @@ namespace Chummer
             }
 
             return string.Empty;
+        }
+
+        /// <summary>
+        /// Translated Action.
+        /// </summary>
+        public Task<string> DisplayActionMethodAsync(string strLanguage)
+        {
+            switch (Action)
+            {
+                case "Auto":
+                    return LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguage);
+
+                case "Free":
+                    return LanguageManager.GetStringAsync("String_ActionFree", strLanguage);
+
+                case "Simple":
+                    return LanguageManager.GetStringAsync("String_ActionSimple", strLanguage);
+
+                case "Complex":
+                    return LanguageManager.GetStringAsync("String_ActionComplex", strLanguage);
+
+                case "Interrupt":
+                    return LanguageManager.GetStringAsync("String_ActionInterrupt", strLanguage);
+
+                case "Special":
+                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
+            }
+
+            return Task.FromResult(string.Empty);
         }
 
         public Color PreferredColor =>

@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Xml;
 using Chummer.Annotations;
 
@@ -108,18 +109,18 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="blnPrintNotes">Whether to print notes attached to the CalendarWeek.</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, bool blnPrintNotes = true)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("week");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("year", Year.ToString(objCulture));
-            objWriter.WriteElementString("month", Month.ToString(objCulture));
-            objWriter.WriteElementString("week", MonthWeek.ToString(objCulture));
+            await objWriter.WriteStartElementAsync("week");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture));
             if (blnPrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Save, Load, and Print Methods

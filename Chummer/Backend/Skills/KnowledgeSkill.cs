@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -213,6 +214,11 @@ namespace Chummer.Backend.Skills
         public override string DisplaySpecialization(string strLanguage)
         {
             return IsNativeLanguage ? string.Empty : base.DisplaySpecialization(strLanguage);
+        }
+
+        public override async ValueTask<string> DisplaySpecializationAsync(string strLanguage)
+        {
+            return IsNativeLanguage ? string.Empty : await base.DisplaySpecializationAsync(strLanguage);
         }
 
         public string Type

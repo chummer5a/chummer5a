@@ -299,27 +299,27 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("mentorspirit");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("mentortype", _eMentorType.ToString());
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("advantage", DisplayAdvantage(strLanguageToPrint));
-            objWriter.WriteElementString("disadvantage", DisplayDisadvantage(strLanguageToPrint));
-            objWriter.WriteElementString("advantage_english", Advantage);
-            objWriter.WriteElementString("disadvantage_english", Disadvantage);
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("mentormask", MentorMask.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteStartElementAsync("mentorspirit");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("mentortype", _eMentorType.ToString());
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("advantage", await DisplayAdvantageAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("disadvantage", await DisplayDisadvantageAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("advantage_english", Advantage);
+            await objWriter.WriteElementStringAsync("disadvantage_english", Disadvantage);
+            await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("mentormask", MentorMask.ToString(GlobalSettings.InvariantCultureInfo));
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor
@@ -419,6 +419,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Advantage of the mentor as it should be displayed in the UI. Advantage (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayAdvantageAsync(string strLanguage)
+        {
+            string strReturn = Advantage;
+            if (strLanguage != GlobalSettings.DefaultLanguage)
+            {
+                string strTemp = string.Empty;
+                if ((await this.GetNodeXPathAsync(strLanguage))?.TryGetMultiLineStringFieldQuickly("altadvantage", ref strTemp) == true)
+                    strReturn = strTemp;
+            }
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
         /// Disadvantage of the Mentor Spirit or Paragon (in English).
         /// </summary>
         public string Disadvantage => _strDisadvantage;
@@ -446,6 +468,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Disadvantage of the mentor as it should be displayed in the UI. Disadvantage (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayDisadvantageAsync(string strLanguage)
+        {
+            string strReturn = Disadvantage;
+            if (strLanguage != GlobalSettings.DefaultLanguage)
+            {
+                string strTemp = string.Empty;
+                if ((await this.GetNodeXPathAsync(strLanguage))?.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref strTemp) == true)
+                    strReturn = strTemp;
+            }
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public string DisplayNameShort(string strLanguage)
@@ -454,6 +498,17 @@ namespace Chummer
                 return Name;
 
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -485,6 +540,20 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

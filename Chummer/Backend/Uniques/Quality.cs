@@ -485,41 +485,44 @@ namespace Chummer
         /// <param name="intRating">Pre-calculated rating of the quality for printing.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint)
         {
-            if (AllowPrint && objWriter != null)
+            if (!AllowPrint || objWriter == null)
+                return;
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
+            string strRatingString = string.Empty;
+            if (intRating > 1)
+                strRatingString = strSpace + intRating.ToString(objCulture);
+            string strSourceName = string.Empty;
+            if (!string.IsNullOrWhiteSpace(SourceName))
+                strSourceName = strSpace + '(' + await GetSourceNameAsync(strLanguageToPrint) + ')';
+            await objWriter.WriteStartElementAsync("quality");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync(
+                "extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint) + strRatingString + strSourceName);
+            await objWriter.WriteElementStringAsync("bp", BP.ToString(objCulture));
+            string strQualityType = Type.ToString();
+            if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                string strSpace = LanguageManager.GetString("String_Space", strLanguageToPrint);
-                string strRatingString = string.Empty;
-                if (intRating > 1)
-                    strRatingString = strSpace + intRating.ToString(objCulture);
-                string strSourceName = string.Empty;
-                if (!string.IsNullOrWhiteSpace(SourceName))
-                    strSourceName = strSpace + '(' + GetSourceName(strLanguageToPrint) + ')';
-                objWriter.WriteStartElement("quality");
-                objWriter.WriteElementString("guid", InternalId);
-                objWriter.WriteElementString("sourceid", SourceIDString);
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-                objWriter.WriteElementString("name_english", Name);
-                objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint) + strRatingString + strSourceName);
-                objWriter.WriteElementString("bp", BP.ToString(objCulture));
-                string strQualityType = Type.ToString();
-                if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                {
-                    strQualityType =
-                        _objCharacter.LoadDataXPath("qualities.xml", strLanguageToPrint)
-                            .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath() + "]/@translate")
-                            ?.Value ?? strQualityType;
-                }
-                objWriter.WriteElementString("qualitytype", strQualityType);
-                objWriter.WriteElementString("qualitytype_english", Type.ToString());
-                objWriter.WriteElementString("qualitysource", OriginSource.ToString());
-                objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-                objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-                if (GlobalSettings.PrintNotes)
-                    objWriter.WriteElementString("notes", Notes);
-                objWriter.WriteEndElement();
+                strQualityType =
+                    (await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguageToPrint))
+                                 .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath()
+                                                   + "]/@translate")
+                                 ?.Value ?? strQualityType;
             }
+
+            await objWriter.WriteElementStringAsync("qualitytype", strQualityType);
+            await objWriter.WriteElementStringAsync("qualitytype_english", Type.ToString());
+            await objWriter.WriteElementStringAsync("qualitysource", OriginSource.ToString());
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+            if (GlobalSettings.PrintNotes)
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -638,6 +641,20 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
         /// Name of the Improvement that added this quality.
         /// </summary>
         public string SourceName
@@ -658,6 +675,14 @@ namespace Chummer
         public string GetSourceName(string strLanguage)
         {
             return _objCharacter.TranslateExtra(_strSourceName, strLanguage);
+        }
+
+        /// <summary>
+        /// Name of the Improvement that added this quality.
+        /// </summary>
+        public Task<string> GetSourceNameAsync(string strLanguage)
+        {
+            return _objCharacter.TranslateExtraAsync(_strSourceName, strLanguage);
         }
 
         /// <summary>
@@ -783,6 +808,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// If there is more than one instance of the same quality, it's: Name (Extra) Number
         /// </summary>
@@ -806,6 +842,37 @@ namespace Chummer
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
                 XPathNavigator xmlMyLimitNode = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("limit");
+                if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
+                    strReturn += strSpace + intLevels.ToString(objCulture);
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// If there is more than one instance of the same quality, it's: Name (Extra) Number
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+            }
+
+            int intLevels = Levels;
+            if (intLevels > 1)
+            {
+                strReturn += strSpace + intLevels.ToString(objCulture);
+            }
+            else
+            {
+                // Add a "1" to qualities that have levels, but for which we are only at level 1
+                XPathNavigator xmlMyLimitNode = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("limit");
                 if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                     strReturn += strSpace + intLevels.ToString(objCulture);
             }

@@ -39,6 +39,23 @@ namespace Chummer
             return strInput == EmptyGuid;
         }
 
+        public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks)
+        {
+            bool blnAddSeparator = false;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (Task<string> tskString in lstStringTasks)
+                {
+                    sbdReturn.Append(await tskString);
+                    if (blnAddSeparator)
+                        sbdReturn.Append(strSeparator);
+                    else
+                        blnAddSeparator = true;
+                }
+                return sbdReturn.ToString();
+            }
+        }
+
         /// <summary>
         /// Identical to string::Replace(), but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
         /// </summary>
