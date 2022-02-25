@@ -17414,10 +17414,10 @@
       <bonus>
         <allowspellcategory>Rituals</allowspellcategory>
         <limitspellcategory exclude="Rituals" />
-        <skillgroupdisable>Conjuring</skillgroupdisable>
         <spellcategorydrain>
           <val>-2</val>
         </spellcategorydrain>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
       </bonus>
       <required>
         <oneof>

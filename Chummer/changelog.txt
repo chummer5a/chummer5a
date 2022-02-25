@@ -18,6 +18,7 @@ Application Changes:
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
+- Fixed Hedge Witch/Wizard drain reduction not working properly. Existing character with this quality will need to remove and then re-add it to see the effects (or reapply improvements). Fixes #4715.
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups
