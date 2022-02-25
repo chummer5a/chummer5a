@@ -1885,6 +1885,8 @@ namespace Chummer
                     break;
                 case nameof(CharacterSettings.Books):
                     {
+                        if (IsLoading)
+                            break;
                         using (new CursorWait(this))
                         {
                             SuspendLayout();
