@@ -613,7 +613,7 @@ namespace Chummer
         /// <summary>
         /// Translated Range.
         /// </summary>
-        public ValueTask<string> DisplayRangeAsync(string strLanguage)
+        public Task<string> DisplayRangeAsync(string strLanguage)
         {
             return Range
                    .CheapReplaceAsync(
