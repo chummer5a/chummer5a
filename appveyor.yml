@@ -107,8 +107,7 @@ artifacts:
 deploy:
 - provider: GitHub
   tag: Nightly-v$(appveyor_build_version)
-  auth_token:
-    secure: $env:CHUMMER_OAUTH_TOKEN
+  auth_token: $env:CHUMMER_OAUTH_TOKEN
   artifact: Chummer
   draft: false
   prerelease: true
