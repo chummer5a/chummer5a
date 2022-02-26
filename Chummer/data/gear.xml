@@ -1532,6 +1532,51 @@
       </weaponbonus>
       <ammoforweapontype>firefighting cannons</ammoforweapontype>
     </gear>
+	<gear>
+      <id>d71ea9c1-9b5f-428e-b849-7d665eb31c5e</id>
+      <name>Ammo: Sling-Shot Acid Capsules</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>13</page>
+      <avail>-</avail>
+      <cost>100</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>6P Acid</damage>
+      </weaponbonus>
+      <ammoforweapontype>sling-shot</ammoforweapontype>
+    </gear>
+	<gear>
+      <id>e20f021b-1d00-4443-a481-d417114e067e</id>
+      <name>Ammo: Sling-Shot Paint Capsules</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>13</page>
+      <avail>-</avail>
+      <cost>10</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>0</damage>
+      </weaponbonus>
+      <ammoforweapontype>sling-shot</ammoforweapontype>
+    </gear>
+	<gear>
+      <id>5ece577b-7c15-4f2c-9f4b-cd325154cf9c</id>
+      <name>Ammo: Sling-Shot Poison Capsules</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>13</page>
+      <avail>-</avail>
+      <cost>100</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damage>As Narcoject</damage>
+      </weaponbonus>
+      <ammoforweapontype>sling-shot</ammoforweapontype>
+    </gear>
     <!-- Region Kill Code-->
 
     <gear>
