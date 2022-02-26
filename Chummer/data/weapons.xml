@@ -14843,6 +14843,45 @@
       <hide />
       <spec>Machine Guns</spec>
     </weapon>
+    <weapon>
+      <id>4629315e-9d09-4d04-92ac-3bad46675522</id>
+      <name>Ontario Arms Sling-Shot</name>
+      <category>Underbarrel Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <damage>As Ammo</damage>
+      <mode>SA</mode>
+      <ammo>10(m)</ammo>
+      <avail>-</avail>
+      <cost>150</cost>
+      <source>SOTG</source>
+      <page>13</page>
+      <useskill>Archery</useskill>
+      <required>
+        <OR>
+          <category>Assault Rifles</category>
+          <category>Sniper Rifles</category>
+          <category>Sporting Rifles</category>
+          <useskill>Longarms</useskill>
+          <useskill>Heavy Weapons</useskill>
+          <AND>
+            <useskill NOT="" operation="exists" />
+            <OR>
+              <category>Shotguns</category>
+              <category>Sporting Rifles</category>
+              <category>Sniper Rifles</category>
+              <category>Light Machine Guns</category>
+              <category>Medium Machine Guns</category>
+              <category>Heavy Machine Guns</category>
+              <category>Assault Cannons</category>
+              <category>Grenade Launchers</category>
+              <category>Missile Launchers</category>
+            </OR>
+          </AND>
+        </OR>
+      </required>
+    </weapon>
     <!-- End Region -->
     <!-- Region Datapuls Verschlusssache (German) -->
     <weapon>
