@@ -277,6 +277,7 @@ namespace Chummer.Tests
                                 frmCharacterForm.ShowInTaskbar = false;
                                 frmCharacterForm.WindowState = FormWindowState.Minimized;
                                 frmCharacterForm.Show();
+                                Utils.SafeSleep(true);
                                 while (frmCharacterForm.IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                 {
                                     Utils.SafeSleep(true);
@@ -288,6 +289,7 @@ namespace Chummer.Tests
                                     Utils.SafeSleep(true);
                                 }
                             }
+                            Utils.SafeSleep(true);
                         }
                         catch (Exception e)
                         {

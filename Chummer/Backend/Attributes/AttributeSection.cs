@@ -990,7 +990,7 @@ namespace Chummer.Backend.Attributes
         {
             foreach (CharacterAttrib att in AttributeList)
             {
-                att.OnMultiplePropertyChanged(lstNames);
+                att.OnMultiplePropertyChanged(Array.AsReadOnly(lstNames));
             }
         }
 

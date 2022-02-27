@@ -974,7 +974,7 @@ namespace Chummer
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
                 finally
@@ -1050,7 +1050,7 @@ namespace Chummer
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
                     }
                 }
                 finally
@@ -1131,7 +1131,7 @@ namespace Chummer
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
                     }
                 }
                 finally
@@ -1207,7 +1207,7 @@ namespace Chummer
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
                     }
                 }
                 finally
@@ -1283,7 +1283,7 @@ namespace Chummer
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
                              dicChangedProperties)
                     {
-                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                        kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
                     }
                 }
                 finally
@@ -1354,7 +1354,7 @@ namespace Chummer
                 }
 
                 if (setPropertiesToRefresh.Count > 0)
-                    OnMultiplePropertyChanged(setPropertiesToRefresh);
+                    OnMultiplePropertyChanged(setPropertiesToRefresh.ToList());
             }
         }
 
@@ -1490,7 +1490,7 @@ namespace Chummer
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
                 finally
@@ -1633,7 +1633,7 @@ namespace Chummer
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
                 finally
@@ -1800,7 +1800,7 @@ namespace Chummer
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
                 finally
@@ -1997,7 +1997,7 @@ namespace Chummer
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
                 finally
@@ -6883,7 +6883,7 @@ namespace Chummer
                                                  kvpToProcess in
                                              dicChangedProperties)
                                     {
-                                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                                     }
                                 }
                                 finally
@@ -7859,9 +7859,8 @@ namespace Chummer
             {
                 if (IsDisposed)
                     return;
-                if (!Utils.IsUnitTest && (Program.MainForm.OpenCharacters.Contains(this)
-                                          || Program.MainForm.OpenCharacters.Any(
-                                              x => x.LinkedCharacters.Contains(this))))
+                if (Program.MainForm.OpenCharacters.Contains(this)
+                    || Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
                     return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
                 using (new EnterWriteLock(LockObject)) // Wait for all pending locks to get freed before disposing
                 {

@@ -3135,7 +3135,7 @@ namespace Chummer
                     // Fire each event once
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpChangedProperties in
                              dicChangedProperties)
-                        kvpChangedProperties.Key.OnMultiplePropertyChanged(kvpChangedProperties.Value);
+                        kvpChangedProperties.Key.OnMultiplePropertyChanged(kvpChangedProperties.Value.ToList());
                 }
                 finally
                 {

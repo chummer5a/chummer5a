@@ -548,7 +548,7 @@ namespace Chummer.Backend.Equipment
                         foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
                                  dicChangedProperties)
                         {
-                            kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                            kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                         }
                     }
                     finally
@@ -3086,7 +3086,7 @@ namespace Chummer.Backend.Equipment
 
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
                     {
-                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value);
+                        kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
                 }
                 finally
