@@ -14,6 +14,14 @@ Application Changes:
 - Encumbrance penalties and maximum skill ratings can now properly be modified through the Character Settings window.
 - Fixed a crash when adding cyberware or bioware that requires a specific side to be picked.
 - Characters with natural weapons can now be saved properly.
+- If a user has some custom PACKS already created, creating new custom PACKS now properly lists all PACKS under one `packs` XML node instead of under multiple different versions of it.
+- The skills used by different spell categories have now been unhardcoded.
+
+Data Changes:
+- One with the Matrix I, II, and III can no longer be taken multiple times.
+- Fixed Hedge Witch/Wizard drain reduction not working properly. Existing character with this quality will need to remove and then re-add it to see the effects (or reapply improvements). Fixes #4715.
+- Dedicated Spellslinger and Dedicated Conjurer now properly disable access to the Summoning and Binding skills and the Spellcasting skill respectively.
+- Delnar Skills Remake now reports the appropriate dice pools for rituals (based on Ceremony) and enchantments (based on Arcana).
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

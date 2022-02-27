@@ -14781,7 +14781,9 @@
         <value>-5</value>
       </costdiscount>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <skilldisable>Spellcasting</skilldisable>
+      </bonus>
       <required>
         <allof>
           <attribute>
@@ -14821,6 +14823,8 @@
       <bonus>
         <freespells skill="Spellcasting" />
         <newspellkarmacost type="Spells">-1</newspellkarmacost>
+        <skilldisable>Summoning</skilldisable>
+        <skilldisable>Binding</skilldisable>
       </bonus>
       <required>
         <allof>
@@ -17304,9 +17308,7 @@
         <limitspiritcategory>
           <spirit>Spirit of Air</spirit>
         </limitspiritcategory>
-        <skilldisable>Artificing</skilldisable>
-        <skilldisable>Disenchanting</skilldisable>
-        <skilldisable>Alchemy</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
@@ -17332,9 +17334,7 @@
         <limitspiritcategory>
           <spirit>Spirit of Earth</spirit>
         </limitspiritcategory>
-        <skilldisable>Artificing</skilldisable>
-        <skilldisable>Disenchanting</skilldisable>
-        <skilldisable>Alchemy</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
@@ -17360,9 +17360,7 @@
         <limitspiritcategory>
           <spirit>Spirit of Fire</spirit>
         </limitspiritcategory>
-        <skilldisable>Artificing</skilldisable>
-        <skilldisable>Disenchanting</skilldisable>
-        <skilldisable>Alchemy</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
@@ -17388,9 +17386,7 @@
         <limitspiritcategory>
           <spirit>Spirit of Water</spirit>
         </limitspiritcategory>
-        <skilldisable>Artificing</skilldisable>
-        <skilldisable>Disenchanting</skilldisable>
-        <skilldisable>Alchemy</skilldisable>
+        <skillgroupdisable>Enchanting</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
@@ -17414,10 +17410,10 @@
       <bonus>
         <allowspellcategory>Rituals</allowspellcategory>
         <limitspellcategory exclude="Rituals" />
-        <skillgroupdisable>Conjuring</skillgroupdisable>
         <spellcategorydrain>
           <val>-2</val>
         </spellcategorydrain>
+        <skillgroupdisable>Conjuring</skillgroupdisable>
       </bonus>
       <required>
         <oneof>
@@ -18225,7 +18221,6 @@
       <name>One With the Matrix I</name>
       <karma>2</karma>
       <category>Positive</category>
-      <limit>3</limit>
       <bonus />
       <forbidden>
         <oneof>
@@ -18245,7 +18240,6 @@
       <name>One With the Matrix II</name>
       <karma>8</karma>
       <category>Positive</category>
-      <limit>3</limit>
       <bonus />
       <forbidden>
         <oneof>
@@ -18265,7 +18259,6 @@
       <name>One With the Matrix III</name>
       <karma>10</karma>
       <category>Positive</category>
-      <limit>3</limit>
       <bonus />
       <forbidden>
         <oneof>

@@ -649,17 +649,21 @@ namespace Chummer
 
                     using (CustomActivity op_load_frm_career_longloads = Timekeeper.StartSyncron("load_frm_career_longloads", op_load_frm_career))
                     {
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabSkillsUc.RealLoad()", op_load_frm_career_longloads))
+                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabSkillsUc.RealLoad()",
+                                   op_load_frm_career_longloads))
                         {
                             tabSkillsUc.RealLoad();
                         }
 
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabPowerUc.RealLoad()", op_load_frm_career_longloads))
+                        using (_ = Timekeeper.StartSyncron("load_frm_career_tabPowerUc.RealLoad()",
+                                   op_load_frm_career_longloads))
                         {
                             tabPowerUc.RealLoad();
                         }
 
-                        using (_ = Timekeeper.StartSyncron("load_frm_career_Run through all appropriate property changers", op_load_frm_career_longloads))
+                        using (_ = Timekeeper.StartSyncron(
+                                   "load_frm_career_Run through all appropriate property changers",
+                                   op_load_frm_career_longloads))
                         {
                             // Run through all appropriate property changers
                             foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
@@ -1891,6 +1895,8 @@ namespace Chummer
                     break;
                 case nameof(CharacterSettings.Books):
                     {
+                        if (IsLoading)
+                            break;
                         using (new CursorWait(this))
                         {
                             SuspendLayout();

@@ -112,10 +112,8 @@ namespace Chummer
                     // If this is not a new file, write out the current contents.
                     if (objXmlCurrentDocument != null)
                     {
-                        using (XmlNodeList objXmlNodeList = objXmlCurrentDocument.SelectNodes("/chummer/*"))
-                            if (objXmlNodeList?.Count > 0)
-                                foreach (XmlNode objXmlNode in objXmlNodeList)
-                                    objXmlNode.WriteContentTo(objWriter);
+                        XmlNode xmlExistingPacksNode = objXmlCurrentDocument.SelectSingleNode("/chummer/packs");
+                        xmlExistingPacksNode?.WriteContentTo(objWriter);
                     }
 
                     // <pack>
