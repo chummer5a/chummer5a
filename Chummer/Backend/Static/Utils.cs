@@ -50,7 +50,7 @@ namespace Chummer
         public static void BreakIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached && !IsUnitTest)
+            if (Debugger.IsAttached)
                 Debugger.Break();
 #else
             // Method intentionally left empty.
@@ -61,7 +61,7 @@ namespace Chummer
         public static void BreakOnErrorIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached && !IsUnitTest)
+            if (Debugger.IsAttached)
             {
                 int intErrorCode = Marshal.GetLastWin32Error();
                 if (intErrorCode != 0)
