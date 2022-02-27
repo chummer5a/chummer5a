@@ -7456,7 +7456,7 @@ namespace Chummer
 
                 // <limitmodifiersphys>
                 await objWriter.WriteStartElementAsync("limitmodifiersphys");
-                foreach (LimitModifier objLimitModifier in LimitModifiers.FindAll(x => x.Limit == "Physical"))
+                foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Physical"))
                 {
                     await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
                 }
@@ -7490,7 +7490,7 @@ namespace Chummer
 
                 // <limitmodifiersment>
                 await objWriter.WriteStartElementAsync("limitmodifiersment");
-                foreach (LimitModifier objLimitModifier in LimitModifiers.FindAll(x => x.Limit == "Mental"))
+                foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Mental"))
                 {
                     await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
                 }
@@ -7524,7 +7524,7 @@ namespace Chummer
 
                 // <limitmodifierssoc>
                 await objWriter.WriteStartElementAsync("limitmodifierssoc");
-                foreach (LimitModifier objLimitModifier in LimitModifiers.FindAll(x => x.Limit == "Social"))
+                foreach (LimitModifier objLimitModifier in LimitModifiers.Where(x => x.Limit == "Social"))
                 {
                     await objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint);
                 }
