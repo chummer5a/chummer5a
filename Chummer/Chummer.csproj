@@ -347,6 +347,7 @@
     <Compile Include="Backend\Static\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\SemaphoreSlimExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\VersionExtensions.cs" />

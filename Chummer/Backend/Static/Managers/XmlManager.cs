@@ -125,7 +125,7 @@ namespace Chummer
             if (!s_blnSetDataDirectoriesLoaded)
                 return;
             s_DicXmlDocuments.Clear();
-            s_objDataDirectoriesSemaphore.Wait();
+            s_objDataDirectoriesSemaphore.SafeWait();
             try
             {
                 s_blnSetDataDirectoriesLoaded = false;

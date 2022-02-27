@@ -822,22 +822,8 @@ namespace Chummer
             for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
             {
                 Thread.Sleep(intDurationMilliseconds);
-                if (!EverDoEvents)
-                    return;
-                bool blnDoEvents = blnForceDoEvents || _blnIsOkToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        _blnIsOkToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
-                }
+                if (EverDoEvents)
+                    DoEventsSafe(blnForceDoEvents);
             }
         }
 
@@ -853,10 +839,26 @@ namespace Chummer
             SafeSleep(objTimeSpan.Milliseconds, blnForceDoEvents);
         }
 
+        public static void DoEventsSafe(bool blnForceDoEvents = false)
+        {
+            if (blnForceDoEvents || _blnIsOkToRunDoEvents)
+            {
+                try
+                {
+                    _blnIsOkToRunDoEvents = false;
+                    Application.DoEvents();
+                }
+                finally
+                {
+                    _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
+                }
+            }
+        }
+
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
         /// </summary>
-        private static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
+        public static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
 
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
