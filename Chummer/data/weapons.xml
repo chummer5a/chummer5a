@@ -14854,33 +14854,18 @@
       <mode>SA</mode>
       <ammo>10(m)</ammo>
       <avail>-</avail>
+	  <range>Shuriken</range>
       <cost>150</cost>
       <source>SOTG</source>
       <page>13</page>
       <useskill>Archery</useskill>
-      <required>
-        <OR>
-          <category>Assault Rifles</category>
-          <category>Sniper Rifles</category>
-          <category>Sporting Rifles</category>
-          <useskill>Longarms</useskill>
-          <useskill>Heavy Weapons</useskill>
-          <AND>
-            <useskill NOT="" operation="exists" />
-            <OR>
-              <category>Shotguns</category>
-              <category>Sporting Rifles</category>
-              <category>Sniper Rifles</category>
-              <category>Light Machine Guns</category>
-              <category>Medium Machine Guns</category>
-              <category>Heavy Machine Guns</category>
-              <category>Assault Cannons</category>
-              <category>Grenade Launchers</category>
-              <category>Missile Launchers</category>
-            </OR>
-          </AND>
-        </OR>
-      </required>
+	  <required>
+		<weapondetails>
+			<conceal operation="greaterthan">0</conceal>
+		</weapondetails>
+	  </required>
+	  <weapontype>slingshot</weapontype>
+	  <spec>Slingshots</spec>
     </weapon>
     <!-- End Region -->
     <!-- Region Datapuls Verschlusssache (German) -->

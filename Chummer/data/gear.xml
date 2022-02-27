@@ -1543,9 +1543,9 @@
       <cost>100</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <damage>6P Acid</damage>
+        <damagereplace>6P Acid</damagereplace>
       </weaponbonus>
-      <ammoforweapontype>sling-shot</ammoforweapontype>
+      <ammoforweapontype>slingshot</ammoforweapontype>
     </gear>
 	<gear>
       <id>e20f021b-1d00-4443-a481-d417114e067e</id>
@@ -1558,9 +1558,9 @@
       <cost>10</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <damage>0</damage>
+        <damagereplace>0</damagereplace>
       </weaponbonus>
-      <ammoforweapontype>sling-shot</ammoforweapontype>
+      <ammoforweapontype>slingshot</ammoforweapontype>
     </gear>
 	<gear>
       <id>5ece577b-7c15-4f2c-9f4b-cd325154cf9c</id>
@@ -1573,10 +1573,27 @@
       <cost>100</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <damage>As Narcoject</damage>
+        <damagereplace>As Narcoject</damagereplace>
       </weaponbonus>
-      <ammoforweapontype>sling-shot</ammoforweapontype>
+      <ammoforweapontype>slingshot</ammoforweapontype>
     </gear>
+	<gear>
+      <id>d82e68e5-08d1-4f27-af45-de54ad1dcd72</id>
+      <name>Ammo: Slingshot Capsule Round</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>23</page>
+      <avail>-</avail>
+      <cost>5</cost>
+      <costfor>10</costfor>
+      <weaponbonus>
+        <damagereplace>As Substance Within</damagereplace>
+		<userange>Light Pistol</userange>
+      </weaponbonus>
+      <ammoforweapontype>slingshot</ammoforweapontype>
+    </gear>
+	
     <!-- Region Kill Code-->
 
     <gear>
