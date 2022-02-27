@@ -25,6 +25,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
@@ -325,34 +326,47 @@ namespace Chummer.Backend.Skills
 
             if (string.IsNullOrWhiteSpace(objSkill.SkillGroup))
                 return null;
-            
-            foreach (SkillGroup objSkillGroup in objSkill.CharacterObject.SkillsSection.SkillGroups)
+
+            SkillGroup objSkillGroup =
+                objSkill.CharacterObject.SkillsSection.SkillGroups.Find(x => x.Name == objSkill.SkillGroup);
+            if (objSkillGroup != null)
             {
-                if (objSkillGroup.Name == objSkill.SkillGroup)
-                {
-                    if (!objSkillGroup.SkillList.Contains(objSkill))
-                        objSkillGroup.Add(objSkill);
-                    return objSkillGroup;
-                }
+                if (!objSkillGroup.SkillList.Contains(objSkill))
+                    objSkillGroup.Add(objSkill);
+            }
+            else
+            {
+                objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
+                objSkillGroup.Add(objSkill);
+                objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objSkillGroup,
+                    SkillsSection.CompareSkillGroups,
+                    (objExistingSkillGroup, objNewSkillGroup) =>
+                    {
+                        foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>
+                                     !objExistingSkillGroup.SkillList.Contains(x)))
+                            objExistingSkillGroup.Add(x);
+                        objNewSkillGroup.UnbindSkillGroup();
+                    });
             }
 
-            SkillGroup objNewGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
-            objNewGroup.Add(objSkill);
-            objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSort(objNewGroup, SkillsSection.CompareSkillGroups,
-                (objExistingSkillGroup, objNewSkillGroup) =>
-                {
-                    foreach (Skill x in objExistingSkillGroup.SkillList.Where(x => !objExistingSkillGroup.SkillList.Contains(x)))
-                        objExistingSkillGroup.Add(x);
-                    objNewSkillGroup.UnbindSkillGroup();
-                });
-
-            return objNewGroup;
+            return objSkillGroup;
         }
 
         public void Add(Skill skill)
         {
+            // Do not add duplicate skills that we are still in the process of loading
+            if (_lstAffectedSkills.Any(x => x.SkillId == skill.SkillId))
+                return;
             _lstAffectedSkills.Add(skill);
             skill.PropertyChanged += SkillOnPropertyChanged;
+            OnPropertyChanged(nameof(SkillList));
+        }
+
+        public void Remove(Skill skill)
+        {
+            if (!_lstAffectedSkills.Remove(skill))
+                return;
+            skill.PropertyChanged -= SkillOnPropertyChanged;
             OnPropertyChanged(nameof(SkillList));
         }
 
@@ -371,22 +385,22 @@ namespace Chummer.Backend.Skills
             writer.WriteEndElement();
         }
 
-        internal void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("skillgroup");
+            await objWriter.WriteStartElementAsync("skillgroup");
 
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
-            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
-            objWriter.WriteElementString("base", Base.ToString(objCulture));
-            objWriter.WriteElementString("karma", Karma.ToString(objCulture));
-            objWriter.WriteElementString("isbroken", IsBroken.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("ratingmax", RatingMaximum.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("base", Base.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("isbroken", IsBroken.ToString(GlobalSettings.InvariantCultureInfo));
 
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         public void Load(XmlNode xmlNode)
@@ -563,6 +577,15 @@ namespace Chummer.Backend.Skills
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
             return _objCharacter.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value ?? Name;
+        }
+
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+            return (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage))
+                   .SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value
+                   ?? Name;
         }
 
         public string DisplayRating

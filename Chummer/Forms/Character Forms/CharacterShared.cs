@@ -238,6 +238,22 @@ namespace Chummer
         /// </summary>
         protected void AutoSaveCharacter()
         {
+            AutoSaveCharacterCoreAsync(true).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Automatically Save the character to a backup folder.
+        /// </summary>
+        protected Task AutoSaveCharacterAsync()
+        {
+            return AutoSaveCharacterCoreAsync(false);
+        }
+
+        /// <summary>
+        /// Automatically Save the character to a backup folder.
+        /// </summary>
+        private async Task AutoSaveCharacterCoreAsync(bool blnSync)
+        {
             using (new CursorWait(this))
             {
                 try
@@ -252,7 +268,11 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowMessageBox(this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                            Program.ShowMessageBox(this,
+                                blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
+                                    : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                             return;
                         }
                     }
@@ -267,7 +287,15 @@ namespace Chummer
                     }
 
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                    if (!CharacterObject.Save(strFilePath, false, false))
+                    if (blnSync)
+                    {
+                        // ReSharper disable once MethodHasAsyncOverload
+                        if (!CharacterObject.Save(strFilePath, false, false))
+                        {
+                            Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " (" + CharacterObject.FileName + ')');
+                        }
+                    }
+                    else if (!await CharacterObject.SaveAsync(strFilePath, false, false))
                     {
                         Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " (" + CharacterObject.FileName + ')');
                     }
@@ -6943,7 +6971,7 @@ namespace Chummer
                     if (blnNeedConfirm && !await ConfirmSaveCreatedCharacter())
                         return false;
                     // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                    return SaveCharacterAsCreated();
+                    return await SaveCharacterAsCreated();
                 }
 
                 using (new CursorWait(this))
@@ -6951,7 +6979,7 @@ namespace Chummer
                     using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
                     {
                         frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                        if (!CharacterObject.Save())
+                        if (!await CharacterObject.SaveAsync())
                             return false;
                         GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);
                         IsDirty = false;
@@ -7003,7 +7031,7 @@ namespace Chummer
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        public virtual bool SaveCharacterAsCreated() { return false; }
+        public virtual Task<bool> SaveCharacterAsCreated() { return Task.FromResult(false); }
 
         /// <summary>
         /// Verify that the user wants to save this character as Created.

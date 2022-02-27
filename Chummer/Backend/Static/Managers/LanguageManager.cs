@@ -35,7 +35,7 @@ namespace Chummer
 {
     public static class LanguageManager
     {
-        private static readonly LockingHashSet<string> s_SetLanguageDataCurrentlyLoading = new LockingHashSet<string>();
+        private static readonly LockingDictionary<string, SemaphoreSlim> s_DicLanguageDataLockers = new LockingDictionary<string, SemaphoreSlim>();
         private static readonly LockingDictionary<string, LanguageData> s_DicLanguageData = new LockingDictionary<string, LanguageData>();
         private static readonly LockingDictionary<string, string> s_DicEnglishStrings = new LockingDictionary<string, string>();
         public static IReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
@@ -194,16 +194,28 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return true;
             string strKey = strLanguage.ToUpperInvariant();
-            if (!s_DicLanguageData.TryGetValue(strKey, out LanguageData objNewLanguage) || objNewLanguage == null)
+            SemaphoreSlim objLockerObject;
+            while (!s_DicLanguageDataLockers.TryGetValue(strKey, out objLockerObject))
             {
-                while (!s_SetLanguageDataCurrentlyLoading.TryAdd(strKey))
-                {
-                    if (blnSync)
-                        Utils.SafeSleep();
-                    else
-                        await Utils.SafeSleepAsync();
-                }
-                try
+                objLockerObject = Utils.SemaphorePool.Get();
+                if (s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject))
+                    break;
+                objLockerObject.Dispose();
+                if (blnSync)
+                    Utils.SafeSleep();
+                else
+                    await Utils.SafeSleepAsync();
+            }
+
+            LanguageData objNewLanguage;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLockerObject.SafeWait();
+            else
+                await objLockerObject.WaitAsync();
+            try
+            {
+                if (!s_DicLanguageData.TryGetValue(strKey, out objNewLanguage) || objNewLanguage == null)
                 {
                     if (s_DicLanguageData.ContainsKey(strKey))
                         s_DicLanguageData.Remove(strKey);
@@ -212,11 +224,12 @@ namespace Chummer
                         : await Task.Run(() => new LanguageData(strLanguage));
                     s_DicLanguageData.Add(strKey, objNewLanguage);
                 }
-                finally
-                {
-                    s_SetLanguageDataCurrentlyLoading.Remove(strKey);
-                }
             }
+            finally
+            {
+                objLockerObject.Release();
+            }
+
             if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
             {
                 if (!objNewLanguage.ErrorAlreadyShown)

@@ -28,7 +28,7 @@ namespace Chummer.Backend
 {
     public sealed class ExceptionHeatMap : IDisposable
     {
-        private readonly LockingDictionary<string, int> _map = new LockingDictionary<string, int>();
+        private readonly Lazy<LockingDictionary<string, int>> _map = new Lazy<LockingDictionary<string,int>>(() => new LockingDictionary<string, int>());
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
@@ -45,7 +45,7 @@ namespace Chummer.Backend
             if (frame == null)
                 return;
             string heat = string.Format(GlobalSettings.InvariantCultureInfo, "{0}:{1}", frame.GetFileName(), frame.GetFileLineNumber());
-            _map.AddOrUpdate(heat, 1, (a, b) => b + 1);
+            _map.Value.AddOrUpdate(heat, 1, (a, b) => b + 1);
         }
 
         public string GenerateInfo()
@@ -54,7 +54,7 @@ namespace Chummer.Backend
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.AppendLine();
-                foreach (KeyValuePair<string, int> exception in _map.OrderBy(i => -i.Value))
+                foreach (KeyValuePair<string, int> exception in _map.Value.OrderBy(i => -i.Value))
                 {
                     intLength = Math.Max((int) Math.Ceiling(Math.Log10(exception.Value)), intLength);
                     sbdReturn.Append("\t\t")
@@ -71,7 +71,8 @@ namespace Chummer.Backend
         /// <inheritdoc />
         public void Dispose()
         {
-            _map?.Dispose();
+            if (_map.IsValueCreated)
+                _map.Value.Dispose();
         }
     }
 }

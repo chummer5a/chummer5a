@@ -50,7 +50,7 @@ namespace Chummer
         public static void BreakIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached && !IsUnitTest)
+            if (Debugger.IsAttached)
                 Debugger.Break();
 #else
             // Method intentionally left empty.
@@ -61,7 +61,7 @@ namespace Chummer
         public static void BreakOnErrorIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached && !IsUnitTest)
+            if (Debugger.IsAttached)
             {
                 int intErrorCode = Marshal.GetLastWin32Error();
                 if (intErrorCode != 0)
@@ -822,22 +822,8 @@ namespace Chummer
             for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
             {
                 Thread.Sleep(intDurationMilliseconds);
-                if (!EverDoEvents)
-                    return;
-                bool blnDoEvents = blnForceDoEvents || _blnIsOkToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        _blnIsOkToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
-                }
+                if (EverDoEvents)
+                    DoEventsSafe(blnForceDoEvents);
             }
         }
 
@@ -853,10 +839,26 @@ namespace Chummer
             SafeSleep(objTimeSpan.Milliseconds, blnForceDoEvents);
         }
 
+        public static void DoEventsSafe(bool blnForceDoEvents = false)
+        {
+            if (blnForceDoEvents || _blnIsOkToRunDoEvents)
+            {
+                try
+                {
+                    _blnIsOkToRunDoEvents = false;
+                    Application.DoEvents();
+                }
+                finally
+                {
+                    _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
+                }
+            }
+        }
+
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
         /// </summary>
-        private static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
+        public static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
 
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
@@ -1260,5 +1262,32 @@ namespace Chummer
             = s_ObjObjectPoolProvider.Create(
                 new CollectionPooledObjectPolicy<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>,
                     KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>>>());
+
+        /// <summary>
+        /// Memory Pool for SemaphoreSlim with one allowed semaphore that is used for async-friendly thread safety stuff. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static ObjectPool<SemaphoreSlim> SemaphorePool { get; }
+            = s_ObjObjectPoolProvider.Create(new SemaphoreSlimPooledObjectPolicy());
+
+        private sealed class SemaphoreSlimPooledObjectPolicy : PooledObjectPolicy<SemaphoreSlim>
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public override SemaphoreSlim Create()
+            {
+                return new SemaphoreSlim(1, 1);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public override bool Return(SemaphoreSlim obj)
+            {
+                if (obj.CurrentCount != 1)
+                {
+                    throw new InvalidOperationException("Shouldn't be returning semaphore with a count != 1");
+                }
+
+                return true;
+            }
+        }
     }
 }

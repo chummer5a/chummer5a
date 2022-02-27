@@ -15316,10 +15316,10 @@
       <damage>11P</damage>
       <ap>-1</ap>
       <mode>SS</mode>
-      <rc>-</rc>
+      <rc>0</rc>
       <ammo>1(b)</ammo>
-      <avail>-</avail>
-      <cost>-</cost>
+      <avail>0</avail>
+      <cost>0</cost>
       <source>KK</source>
       <page>10</page>
       <accessories>
@@ -15551,10 +15551,10 @@
       <damage>Grenade</damage>
       <ap>-</ap>
       <mode>SS</mode>
-      <rc>-</rc>
+      <rc>0</rc>
       <ammo>4(m)</ammo>
-      <avail>-</avail>
-      <cost>-</cost>
+      <avail>0</avail>
+      <cost>0</cost>
       <source>KK</source>
       <page>13</page>
       <accessories>
@@ -16238,7 +16238,7 @@
       <id>5D5D9FC6-9CB9-40A4-8185-891E29DAECC5</id>
       <name>External Clip Port</name>
       <mount />
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>

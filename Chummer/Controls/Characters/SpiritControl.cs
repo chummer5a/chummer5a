@@ -565,7 +565,7 @@ namespace Chummer
                     using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
                     {
                         frmProgressBar.PerformStep(objCharacter.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                        if (!objCharacter.Save())
+                        if (!await objCharacter.SaveAsync())
                             return;
                     }
 

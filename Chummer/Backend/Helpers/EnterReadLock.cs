@@ -20,21 +20,39 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
     /// <summary>
-    /// Syntactic Sugar for wrapping a ReaderWriterLockSlim's EnterReadLock() and ExitReadLock() methods into something that hooks into `using`
+    /// Syntactic Sugar for wrapping a AsyncFriendlyReaderWriterLock's EnterReadLock() and ExitReadLock() methods into something that hooks into `using`
     /// </summary>
     public sealed class EnterReadLock : IDisposable
     {
-        private readonly ReaderWriterLockSlim _rwlMyLock;
+        private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterReadLock(ReaderWriterLockSlim rwlMyLock)
+        public EnterReadLock(AsyncFriendlyReaderWriterLock rwlMyLock, bool blnEnterLock = true, CancellationToken token = default)
         {
             _rwlMyLock = rwlMyLock;
-            _rwlMyLock.EnterReadLock();
+            if (blnEnterLock)
+                _rwlMyLock.EnterReadLock(token);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<EnterReadLock> EnterReadLockAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
+        {
+            EnterReadLock objReturn = new EnterReadLock(rwlMyLock, false);
+            await rwlMyLock.EnterReadLockAsync(token);
+            return objReturn;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public EnterReadLock(IHasLockObject rwlMyLock, bool blnEnterLock = true, CancellationToken token = default)
+        {
+            _rwlMyLock = rwlMyLock.LockObject;
+            if (blnEnterLock)
+                _rwlMyLock.EnterReadLock(token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

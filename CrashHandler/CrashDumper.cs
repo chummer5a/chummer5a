@@ -41,7 +41,7 @@ namespace CrashHandler
         private readonly uint _threadId;
         private volatile CrashDumperProgress _progress;
         private readonly BackgroundWorker _worker = new BackgroundWorker();
-        private readonly ManualResetEvent _startSendEvent = new ManualResetEvent(false);
+        private readonly ManualResetEventSlim _startSendEvent = new ManualResetEventSlim(false);
         private string _strLatestDumpName = string.Empty;
         private readonly Random _objRandom = new Random();
 
@@ -161,7 +161,7 @@ namespace CrashHandler
 
                 SetProgress(CrashDumperProgress.FinishedCollecting);
 
-                _startSendEvent.WaitOne();
+                _startSendEvent.Wait();
 
                 await CrashLogWriter.WriteLineAsync("Files collected");
                 await CrashLogWriter.FlushAsync();
@@ -492,8 +492,8 @@ namespace CrashHandler
 
         private static string MakeStringKey(IEnumerable<byte> iv, IEnumerable<byte> key)
         {
-            return string.Join(string.Empty, iv.Select(x => x.ToString("X2"))) + ':' +
-                   string.Join(string.Empty, key.Select(x => x.ToString("X2")));
+            return string.Concat(iv.Select(x => x.ToString("X2"))) + ':' +
+                   string.Concat(key.Select(x => x.ToString("X2")));
         }
 
         #region IDisposable Support

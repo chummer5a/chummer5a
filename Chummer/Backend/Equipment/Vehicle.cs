@@ -1046,7 +1046,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -1070,7 +1070,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
@@ -1093,21 +1093,21 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in Mods)
-                objMod.Print(objWriter, objCulture, strLanguageToPrint);
+                await objMod.Print(objWriter, objCulture, strLanguageToPrint);
             foreach (WeaponMount objMount in WeaponMounts)
-                objMount.Print(objWriter, objCulture, strLanguageToPrint);
-            objWriter.WriteEndElement();
+                await objMount.Print(objWriter, objCulture, strLanguageToPrint);
+            await objWriter.WriteEndElementAsync();
             objWriter.WriteStartElement("gears");
             foreach (Gear objGear in GearChildren)
-                objGear.Print(objWriter, objCulture, strLanguageToPrint);
-            objWriter.WriteEndElement();
+                await objGear.Print(objWriter, objCulture, strLanguageToPrint);
+            await objWriter.WriteEndElementAsync();
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
-                objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
-            objWriter.WriteEndElement();
+                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
+            await objWriter.WriteEndElementAsync();
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -1413,19 +1413,50 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Vehicle Modifications applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<VehicleMod> Mods => _lstVehicleMods;
+        public TaggedObservableCollection<VehicleMod> Mods
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstVehicleMods;
+            }
+        }
 
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
+        public TaggedObservableCollection<Gear> GearChildren
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstGear;
+            }
+        }
 
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
         /// </summary>
-        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
+        public TaggedObservableCollection<Weapon> Weapons
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstWeapons;
+            }
+        }
 
-        public TaggedObservableCollection<WeaponMount> WeaponMounts => _lstWeaponMounts;
+        /// <summary>
+        /// Weapon mounts applied to the Vehicle.
+        /// </summary>
+        public TaggedObservableCollection<WeaponMount> WeaponMounts
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstWeaponMounts;
+            }
+        }
 
         /// <summary>
         /// Total Availability in the program's current language.
@@ -1652,7 +1683,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Locations.
         /// </summary>
-        public TaggedObservableCollection<Location> Locations => _lstLocations;
+        public TaggedObservableCollection<Location> Locations
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstLocations;
+            }
+        }
 
         /// <summary>
         /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
@@ -3615,6 +3653,8 @@ namespace Chummer.Backend.Equipment
             foreach (Weapon objChild in _lstWeapons)
                 objChild.Dispose();
             foreach (WeaponMount objChild in _lstWeaponMounts)
+                objChild.Dispose();
+            foreach (Location objChild in _lstLocations)
                 objChild.Dispose();
             DisposeSelf();
         }

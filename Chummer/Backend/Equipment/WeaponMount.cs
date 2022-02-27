@@ -359,25 +359,8 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
             }
             objNode.TryGetInt32FieldQuickly("weaponcapacity", ref _intWeaponCapacity);
-            XmlNode xmlChildrenNode = objNode["weapons"];
-            using (XmlNodeList xmlWeaponList = xmlChildrenNode?.SelectNodes("weapon"))
-            {
-                if (xmlWeaponList != null)
-                {
-                    foreach (XmlNode xmlWeaponNode in xmlWeaponList)
-                    {
-                        Weapon objWeapon = new Weapon(_objCharacter)
-                        {
-                            ParentVehicle = Parent,
-                            ParentMount = this
-                        };
-                        objWeapon.Load(xmlWeaponNode, blnCopy);
-                        Weapons.Add(objWeapon);
-                    }
-                }
-            }
 
-            xmlChildrenNode = objNode["weaponmountoptions"];
+            XmlNode xmlChildrenNode = objNode["weaponmountoptions"];
             using (XmlNodeList xmlWeaponMountOptionList = xmlChildrenNode?.SelectNodes("weaponmountoption"))
             {
                 if (xmlWeaponMountOptionList != null)
@@ -405,6 +388,34 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            xmlChildrenNode = objNode["weapons"];
+            using (XmlNodeList xmlWeaponList = xmlChildrenNode?.SelectNodes("weapon"))
+            {
+                if (xmlWeaponList != null)
+                {
+                    foreach (XmlNode xmlWeaponNode in xmlWeaponList)
+                    {
+                        if (WeaponCapacity >= Weapons.Count)
+                        {
+                            // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
+                            Weapon objWeapon = new Weapon(_objCharacter);
+                            objWeapon.Load(xmlWeaponNode, blnCopy);
+                            _objCharacter.Weapons.Add(objWeapon);
+                        }
+                        else
+                        {
+                            Weapon objWeapon = new Weapon(_objCharacter)
+                            {
+                                ParentVehicle = Parent,
+                                ParentMount = this
+                            };
+                            objWeapon.Load(xmlWeaponNode, blnCopy);
+                            Weapons.Add(objWeapon);
+                        }
+                    }
+                }
+            }
+
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
@@ -425,7 +436,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -435,16 +446,16 @@ namespace Chummer.Backend.Equipment
             // we instead display them as if they were one of the CRB mounts, but give them a different name
             if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
             {
-                XPathNavigator xmlOverrideNode = this.GetNodeXPath(strLanguageToPrint);
+                XPathNavigator xmlOverrideNode = await this.GetNodeXPathAsync(strLanguageToPrint);
                 objWriter.WriteElementString("sourceid", xmlOverrideNode?.SelectSingleNodeAndCacheExpression("id")?.Value ?? SourceIDString);
                 objWriter.WriteElementString("source",
-                    _objCharacter.LanguageBookShort(xmlOverrideNode?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
-                        strLanguageToPrint));
+                    await _objCharacter.LanguageBookShortAsync(xmlOverrideNode?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
+                                                               strLanguageToPrint));
             }
             else
             {
                 objWriter.WriteElementString("sourceid", SourceIDString);
-                objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+                objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
             }
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
@@ -462,18 +473,18 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in Weapons)
             {
-                objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
+                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objVehicleMod in Mods)
             {
-                objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint);
+                await objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         /// <summary>
@@ -563,7 +574,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapons.
         /// </summary>
-        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
+        public TaggedObservableCollection<Weapon> Weapons
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstWeapons;
+            }
+        }
 
         /// <summary>
         /// Maximum number of weapons this mount can have.
@@ -1035,7 +1053,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public TaggedObservableCollection<VehicleMod> Mods => _lstMods;
+        public TaggedObservableCollection<VehicleMod> Mods
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstMods;
+            }
+        }
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).

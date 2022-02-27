@@ -881,7 +881,7 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Directly calling here so that we can properly unset the dirty flag after the update
-                        UpdateCharacterInfo();
+                        await DoUpdateCharacterInfoAsync();
 
                         // Now we can start checking for character updates
                         Application.Idle += UpdateCharacterInfo;
@@ -929,129 +929,146 @@ namespace Chummer
 
         private async void CharacterCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // If there are unsaved changes to the character, as the user if they would like to save their changes.
-            if (IsDirty)
-            {
-                string strCharacterName = CharacterObject.CharacterName;
-                DialogResult objResult = Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnsavedChanges"), strCharacterName),
-                    await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges"), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                switch (objResult)
-                {
-                    case DialogResult.Yes:
-                        {
-                            // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                            bool blnResult = await SaveCharacter();
-                            if (!blnResult)
-                                e.Cancel = true;
-                            break;
-                        }
-                    case DialogResult.Cancel:
-                        e.Cancel = true;
-                        break;
-                }
-            }
-            // Reset the ToolStrip so the Save button is removed for the currently closing window.
-            if (e.Cancel)
-                return;
-            IsLoading = true;
             using (new CursorWait(this))
             {
-                Application.Idle -= UpdateCharacterInfo;
-                Application.Idle -= LiveUpdateFromCharacterFile;
-                if (Program.MainForm.ActiveMdiChild == this)
-                    ToolStripManager.RevertMerge("toolStrip");
-                Program.MainForm.OpenCharacterForms.Remove(this);
-
-                // Unsubscribe from events.
-                GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
-                CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;
-                CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
-                CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
-                CharacterObject.Arts.CollectionChanged -= ArtCollectionChanged;
-                CharacterObject.Enhancements.CollectionChanged -= EnhancementCollectionChanged;
-                CharacterObject.Metamagics.CollectionChanged -= MetamagicCollectionChanged;
-                CharacterObject.InitiationGrades.CollectionChanged -= InitiationGradeCollectionChanged;
-                CharacterObject.Powers.ListChanged -= PowersListChanged;
-                CharacterObject.Powers.BeforeRemove -= PowersBeforeRemove;
-                CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
-                CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
-                CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
-                CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
-                CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
-                CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
-                CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
-                CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
-                CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
-                CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
-                CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
-                CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
-                CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
-                CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
-                CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
-                CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
-                CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
-                CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                CharacterObjectSettings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
-
-                SetupCommonCollectionDatabindings(false);
-
-                treGear.ItemDrag -= treGear_ItemDrag;
-                treGear.DragEnter -= treGear_DragEnter;
-                treGear.DragDrop -= treGear_DragDrop;
-
-                /*
-                treLifestyles.ItemDrag -= treLifestyles_ItemDrag;
-                treLifestyles.DragEnter -= treLifestyles_DragEnter;
-                treLifestyles.DragDrop -= treLifestyles_DragDrop;
-                */
-
-                treArmor.ItemDrag -= treArmor_ItemDrag;
-                treArmor.DragEnter -= treArmor_DragEnter;
-                treArmor.DragDrop -= treArmor_DragDrop;
-
-                treWeapons.ItemDrag -= treWeapons_ItemDrag;
-                treWeapons.DragEnter -= treWeapons_DragEnter;
-                treWeapons.DragDrop -= treWeapons_DragDrop;
-
-                treVehicles.ItemDrag -= treVehicles_ItemDrag;
-                treVehicles.DragEnter -= treVehicles_DragEnter;
-                treVehicles.DragDrop -= treVehicles_DragDrop;
-
-                foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
+                bool blnOldIsLoading = IsLoading;
+                IsLoading = true;
+                try
                 {
-                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objContactControl.DeleteContact -= DeleteContact;
-                    objContactControl.MouseDown -= DragContactControl;
-                }
+                    // If there are unsaved changes to the character, as the user if they would like to save their changes.
+                    if (IsDirty && !Utils.IsUnitTest)
+                    {
+                        string strCharacterName = CharacterObject.CharacterName;
+                        DialogResult objResult = Program.ShowMessageBox(
+                            this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_UnsavedChanges"),
+                                          strCharacterName),
+                            await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges"),
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                        switch (objResult)
+                        {
+                            case DialogResult.Yes:
+                            {
+                                // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
+                                bool blnResult = await SaveCharacter();
+                                if (!blnResult)
+                                    e.Cancel = true;
+                                break;
+                            }
+                            case DialogResult.Cancel:
+                                e.Cancel = true;
+                                break;
+                        }
+                    }
 
-                foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
+                    // Reset the ToolStrip so the Save button is removed for the currently closing window.
+                    if (e.Cancel)
+                        return;
+                    Application.Idle -= UpdateCharacterInfo;
+                    Application.Idle -= LiveUpdateFromCharacterFile;
+                    if (Program.MainForm.ActiveMdiChild == this)
+                        ToolStripManager.RevertMerge("toolStrip");
+                    Program.MainForm.OpenCharacterForms.Remove(this);
+
+                    // Unsubscribe from events.
+                    GlobalSettings.ClipboardChanged -= RefreshPasteStatus;
+                    CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;
+                    CharacterObject.Spells.CollectionChanged -= SpellCollectionChanged;
+                    CharacterObject.ComplexForms.CollectionChanged -= ComplexFormCollectionChanged;
+                    CharacterObject.Arts.CollectionChanged -= ArtCollectionChanged;
+                    CharacterObject.Enhancements.CollectionChanged -= EnhancementCollectionChanged;
+                    CharacterObject.Metamagics.CollectionChanged -= MetamagicCollectionChanged;
+                    CharacterObject.InitiationGrades.CollectionChanged -= InitiationGradeCollectionChanged;
+                    CharacterObject.Powers.ListChanged -= PowersListChanged;
+                    CharacterObject.Powers.BeforeRemove -= PowersBeforeRemove;
+                    CharacterObject.AIPrograms.CollectionChanged -= AIProgramCollectionChanged;
+                    CharacterObject.CritterPowers.CollectionChanged -= CritterPowerCollectionChanged;
+                    CharacterObject.Qualities.CollectionChanged -= QualityCollectionChanged;
+                    CharacterObject.MartialArts.CollectionChanged -= MartialArtCollectionChanged;
+                    CharacterObject.Lifestyles.CollectionChanged -= LifestyleCollectionChanged;
+                    CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
+                    CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
+                    CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
+                    CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
+                    CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
+                    CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
+                    CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
+                    CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
+                    CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
+                    CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
+                    CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
+                    CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
+                    CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
+                    CharacterObjectSettings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+
+                    SetupCommonCollectionDatabindings(false);
+
+                    treGear.ItemDrag -= treGear_ItemDrag;
+                    treGear.DragEnter -= treGear_DragEnter;
+                    treGear.DragDrop -= treGear_DragDrop;
+
+                    /*
+                    treLifestyles.ItemDrag -= treLifestyles_ItemDrag;
+                    treLifestyles.DragEnter -= treLifestyles_DragEnter;
+                    treLifestyles.DragDrop -= treLifestyles_DragDrop;
+                    */
+
+                    treArmor.ItemDrag -= treArmor_ItemDrag;
+                    treArmor.DragEnter -= treArmor_DragEnter;
+                    treArmor.DragDrop -= treArmor_DragDrop;
+
+                    treWeapons.ItemDrag -= treWeapons_ItemDrag;
+                    treWeapons.DragEnter -= treWeapons_DragEnter;
+                    treWeapons.DragDrop -= treWeapons_DragDrop;
+
+                    treVehicles.ItemDrag -= treVehicles_ItemDrag;
+                    treVehicles.DragEnter -= treVehicles_DragEnter;
+                    treVehicles.DragDrop -= treVehicles_DragDrop;
+
+                    foreach (ContactControl objContactControl in panContacts.Controls.OfType<ContactControl>())
+                    {
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objContactControl.DeleteContact -= DeleteContact;
+                        objContactControl.MouseDown -= DragContactControl;
+                    }
+
+                    foreach (ContactControl objContactControl in panEnemies.Controls.OfType<ContactControl>())
+                    {
+                        objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objContactControl.DeleteContact -= DeleteEnemy;
+                        objContactControl.MouseDown -= DragContactControl;
+                    }
+
+                    foreach (PetControl objPetControl in panPets.Controls.OfType<PetControl>())
+                    {
+                        objPetControl.DeleteContact -= DeletePet;
+                        objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                    }
+
+                    foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
+                    {
+                        objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                    }
+
+                    foreach (SpiritControl objSpiritControl in panSprites.Controls.OfType<SpiritControl>())
+                    {
+                        objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
+                        objSpiritControl.DeleteSpirit -= DeleteSpirit;
+                    }
+
+                    // Trash the global variables and dispose of the Form.
+                    if (!_blnIsReopenQueued
+                        && Program.MainForm.OpenCharacters.All(
+                            x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
+                        Program.MainForm.OpenCharacters.Remove(CharacterObject);
+                }
+                finally
                 {
-                    objContactControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objContactControl.DeleteContact -= DeleteEnemy;
-                    objContactControl.MouseDown -= DragContactControl;
+                    if (IsLoading)
+                        IsLoading = blnOldIsLoading;
                 }
-
-                foreach (PetControl objPetControl in panPets.Controls.OfType<PetControl>())
-                {
-                    objPetControl.DeleteContact -= DeletePet;
-                    objPetControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                }
-
-                foreach (SpiritControl objSpiritControl in panSpirits.Controls.OfType<SpiritControl>())
-                {
-                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                }
-
-                foreach (SpiritControl objSpiritControl in panSprites.Controls.OfType<SpiritControl>())
-                {
-                    objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
-                    objSpiritControl.DeleteSpirit -= DeleteSpirit;
-                }
-
-                // Trash the global variables and dispose of the Form.
-                if (!_blnIsReopenQueued && Program.MainForm.OpenCharacters.All(x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
-                    Program.MainForm.OpenCharacters.Remove(CharacterObject);
             }
         }
 
@@ -1638,8 +1655,12 @@ namespace Chummer
                     }
                 case nameof(Character.Settings):
                 {
-                    foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
-                        await DoOnCharacterSettingsPropertyChanged(new PropertyChangedEventArgs(objProperty.Name));
+                    if (!IsLoading)
+                    {
+                        foreach (PropertyInfo objProperty in typeof(CharacterSettings).GetProperties())
+                            await DoOnCharacterSettingsPropertyChanged(
+                                new PropertyChangedEventArgs(objProperty.Name));
+                    }
                     break;
                 }
             }
@@ -2070,6 +2091,7 @@ namespace Chummer
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
             using (new CursorWait(this))
+            using (await new EnterWriteLock(CharacterObject.LockObject, false).EnterLockAsync())
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdOutdatedItems))
@@ -2708,7 +2730,7 @@ namespace Chummer
 
                     IsCharacterUpdateRequested = true;
                     // Immediately call character update because it re-applies essence loss improvements
-                    UpdateCharacterInfo();
+                    DoUpdateCharacterInfo();
 
                     if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                     {
@@ -9607,7 +9629,7 @@ namespace Chummer
             lblSkillGroupsBP.Text = strTemp;
         }
 
-        private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
+        private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
             if (IsDirty || !GlobalSettings.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
@@ -9626,8 +9648,8 @@ namespace Chummer
             {
                 using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
-                    CharacterObject.Load(frmLoadingForm);
-                    frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
+                    await CharacterObject.LoadAsync(frmLoadingForm);
+                    frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
 
                     // Select the Magician's Tradition.
                     if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
@@ -9644,25 +9666,46 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
                     _blnSkipUpdate = false;
                     // Immediately call character update because we know it's necessary
-                    UpdateCharacterInfo();
+                    await DoUpdateCharacterInfoAsync();
 
                     IsDirty = false;
                 }
             }
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest
-                && Program.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
-                    LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                && Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
+                    await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
-                Utils.RunWithoutThreadLock(() => DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements).AsTask());
+                await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                 CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
             }
+        }
+        
+        private async void UpdateCharacterInfo(object sender, EventArgs e)
+        {
+            await DoUpdateCharacterInfoAsync();
         }
 
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private void UpdateCharacterInfo(object sender = null, EventArgs e = null)
+        private void DoUpdateCharacterInfo()
+        {
+            DoUpdateCharacterInfoCoreAsync(true).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Update the Character information.
+        /// </summary>
+        private Task DoUpdateCharacterInfoAsync()
+        {
+            return DoUpdateCharacterInfoCoreAsync(false);
+        }
+
+        /// <summary>
+        /// Update the Character information.
+        /// </summary>
+        private async Task DoUpdateCharacterInfoCoreAsync(bool blnSync)
         {
             if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
@@ -9713,7 +9756,11 @@ namespace Chummer
 
                 if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                 {
-                    AutoSaveCharacter();
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        AutoSaveCharacter();
+                    else
+                        await AutoSaveCharacterAsync();
                 }
             }
 
@@ -11242,7 +11289,7 @@ namespace Chummer
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        public override bool SaveCharacterAsCreated()
+        public override async Task<bool> SaveCharacterAsCreated()
         {
             using (new CursorWait(this))
             {
@@ -11250,7 +11297,7 @@ namespace Chummer
                 if (CharacterObject.Karma > 0)
                 {
                     ExpenseLogEntry objKarma = new ExpenseLogEntry(CharacterObject);
-                    objKarma.Create(CharacterObject.Karma, LanguageManager.GetString("Label_SelectBP_StartingKarma"), ExpenseType.Karma, DateTime.Now);
+                    objKarma.Create(CharacterObject.Karma, await LanguageManager.GetStringAsync("Label_SelectBP_StartingKarma"), ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objKarma);
 
                     // Create an Undo entry so that the starting Karma amount can be modified if needed.
@@ -11263,7 +11310,7 @@ namespace Chummer
                 if (CharacterObject.MetatypeCategory == "Shapeshifter")
                 {
                     lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
-                    XmlDocument xmlDoc = CharacterObject.LoadData("metatypes.xml");
+                    XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml");
                     string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
                                                  + CharacterObject.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
                                                  + "]/metavariants/metavariant[id = "
@@ -11285,7 +11332,7 @@ namespace Chummer
 
                 // Create an Expense Entry for Starting Nuyen.
                 ExpenseLogEntry objNuyen = new ExpenseLogEntry(CharacterObject);
-                objNuyen.Create(CharacterObject.Nuyen, LanguageManager.GetString("Title_LifestyleNuyen"), ExpenseType.Nuyen, DateTime.Now);
+                objNuyen.Create(CharacterObject.Nuyen, await LanguageManager.GetStringAsync("Title_LifestyleNuyen"), ExpenseType.Nuyen, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objNuyen);
 
                 // Create an Undo entry so that the Starting Nuyen amount can be modified if needed.
@@ -11298,7 +11345,7 @@ namespace Chummer
                 using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
                 {
                     frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                    if (!CharacterObject.Save())
+                    if (!await CharacterObject.SaveAsync())
                     {
                         CharacterObject.ExpenseEntries.Clear();
                         if (lstAttributesToAdd != null)
@@ -13917,7 +13964,7 @@ namespace Chummer
                         using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
                         {
                             frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                            if (!CharacterObject.Save(strNewName))
+                            if (!await CharacterObject.SaveAsync(strNewName))
                                 return false;
                         }
                     }

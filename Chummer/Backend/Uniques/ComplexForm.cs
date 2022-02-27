@@ -175,24 +175,24 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("complexform");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
-            objWriter.WriteElementString("fv", DisplayFv(strLanguageToPrint));
-            objWriter.WriteElementString("target", DisplayTarget(strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+            await objWriter.WriteStartElementAsync("complexform");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("duration", await DisplayDurationAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("fv", await DisplayFvAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("target", await DisplayTargetAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -284,6 +284,19 @@ namespace Chummer
             return strReturn;
         }
 
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            string strReturn = _strName;
+            // Get the translated name if applicable.
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                strReturn = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? _strName;
+
+            return strReturn;
+        }
+
         public string DisplayName(string strLanguage)
         {
             string strReturn = DisplayNameShort(strLanguage);
@@ -294,6 +307,20 @@ namespace Chummer
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     strExtra = _objCharacter.TranslateExtra(Extra, strLanguage);
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
+            }
+            return strReturn;
+        }
+
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                string strExtra = Extra;
+                if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    strExtra = await _objCharacter.TranslateExtraAsync(Extra, strLanguage);
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + strExtra + ')';
             }
             return strReturn;
         }
@@ -328,6 +355,30 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Translated Duration.
+        /// </summary>
+        public Task<string> DisplayDurationAsync(string strLanguage)
+        {
+            switch (Duration)
+            {
+                case "P":
+                    return LanguageManager.GetStringAsync("String_SpellDurationPermanent", strLanguage);
+
+                case "S":
+                    return LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguage);
+
+                case "I":
+                    return LanguageManager.GetStringAsync("String_SpellDurationInstant", strLanguage);
+
+                case "Special":
+                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
+
+                default:
+                    return LanguageManager.GetStringAsync("String_None", strLanguage);
+            }
+        }
+
+        /// <summary>
         /// Complex Form's Duration.
         /// </summary>
         public string Duration
@@ -351,6 +402,37 @@ namespace Chummer
                     .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", strLanguage))
                     .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage))
                     .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
+            }
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Translated Fading Value.
+        /// </summary>
+        public async ValueTask<string> DisplayFvAsync(string strLanguage)
+        {
+            string strReturn = CalculatedFv.Replace('/', '÷').Replace('*', '×');
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                strReturn = await strReturn
+                                  .CheapReplaceAsync(
+                                      "L", () => LanguageManager.GetStringAsync("String_ComplexFormLevel", strLanguage))
+                                  .CheapReplaceAsync("Overflow damage",
+                                                     () => LanguageManager.GetStringAsync(
+                                                         "String_SpellOverflowDamage", strLanguage))
+                                  .CheapReplaceAsync("Damage Value",
+                                                     () => LanguageManager.GetStringAsync(
+                                                         "String_SpellDamageValue", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage))
+                                  .CheapReplaceAsync("Disease DV",
+                                                     () => LanguageManager.GetStringAsync(
+                                                         "String_SpellDiseaseDV", strLanguage))
+                                  .CheapReplaceAsync("Radiation Power",
+                                                     () => LanguageManager.GetStringAsync(
+                                                         "String_SpellRadiationPower", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "Special", () => LanguageManager.GetStringAsync("String_Special", strLanguage));
             }
             return strReturn;
         }
@@ -521,6 +603,42 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Translated Duration.
+        /// </summary>
+        public Task<string> DisplayTargetAsync(string strLanguage)
+        {
+            switch (Target)
+            {
+                case "Persona":
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetPersona", strLanguage);
+
+                case "Device":
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetDevice", strLanguage);
+
+                case "File":
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetFile", strLanguage);
+
+                case "Self":
+                    return LanguageManager.GetStringAsync("String_SpellRangeSelf", strLanguage);
+
+                case "Sprite":
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetSprite", strLanguage);
+
+                case "Host":
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetHost", strLanguage);
+
+                case "IC":
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetIC", strLanguage);
+
+                case "Special":
+                    return LanguageManager.GetStringAsync("String_Special", strLanguage);
+
+                default:
+                    return LanguageManager.GetStringAsync("String_None", strLanguage);
+            }
+        }
+
+        /// <summary>
         /// The Complex Form's Target.
         /// </summary>
         public string Target
@@ -558,6 +676,20 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

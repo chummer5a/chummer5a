@@ -310,6 +310,7 @@
     <Compile Include="Backend\Datastructures\LockingOrderedSet.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\PropertyDependencyGraph.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeBindingList.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
@@ -321,11 +322,13 @@
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollectionWithMaxSize.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeQueue.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeStack.cs" />
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Helpers\AsyncFriendlyReaderWriterLock.cs" />
     <Compile Include="Backend\Interfaces\IHasCost.cs" />
     <Compile Include="Backend\Interfaces\IHasLockObject.cs" />
     <Compile Include="Backend\Interfaces\IHasXmlDataNode.cs" />
@@ -343,8 +346,10 @@
     <Compile Include="Backend\Static\Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\RandomExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ReaderWriterLockSlimExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\SemaphoreSlimExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\VersionExtensions.cs" />
@@ -456,7 +461,6 @@
       <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Backend\Helpers\EnterReadLock.cs" />
-    <Compile Include="Backend\Helpers\EnterUpgradeableReadLock.cs" />
     <Compile Include="Backend\Helpers\EnterWriteLock.cs" />
     <Compile Include="Backend\Helpers\FetchSafelyFromPool.cs" />
     <Compile Include="Backend\Interfaces\ICanBlackMarketDiscount.cs" />

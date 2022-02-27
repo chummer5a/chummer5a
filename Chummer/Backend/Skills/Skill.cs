@@ -127,26 +127,30 @@ namespace Chummer.Backend.Skills
         {
         }
 
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("skill");
+            await objWriter.WriteStartElementAsync("skill");
 
             int intPool = Pool;
             int intSpecPool = intPool + GetSpecializationBonus();
 
             int intRatingModifiers = RatingModifiers(Attribute);
             int intDicePoolModifiers = PoolModifiers(Attribute);
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("suid", SkillId.ToString("D", GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("skillgroup", SkillGroupObject?.DisplayName(strLanguageToPrint) ?? LanguageManager.GetString("String_None", strLanguageToPrint));
-            objWriter.WriteElementString("skillgroup_english", SkillGroupObject?.Name ?? LanguageManager.GetString("String_None", strLanguageToPrint));
-            objWriter.WriteElementString("skillcategory", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
-            objWriter.WriteElementString(
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("suid", SkillId.ToString("D", GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("skillgroup",
+                                                    SkillGroupObject != null
+                                                        ? await SkillGroupObject.DisplayNameAsync(strLanguageToPrint)
+                                                        : await LanguageManager.GetStringAsync(
+                                                            "String_None", strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("skillgroup_english", SkillGroupObject?.Name ?? await LanguageManager.GetStringAsync("String_None", strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("skillcategory", await DisplayCategoryAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("skillcategory_english", SkillCategory);  //Might exist legacy but not existing atm, will see if stuff breaks
+            await objWriter.WriteElementStringAsync(
                 "grouped",
                 CharacterObject.Created
                     ? (SkillGroupObject == null || (!SkillGroupObject.IsBroken && SkillGroupObject.Rating > 0))
@@ -154,40 +158,40 @@ namespace Chummer.Backend.Skills
                     : (SkillGroupObject == null
                        || (!SkillGroupObject.HasAnyBreakingSkills && SkillGroupObject.Rating > 0))
                     .ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("default", Default.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("requiresgroundmovement", RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("requiresswimmovement", RequiresSwimMovement.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("requiresflymovement", RequiresFlyMovement.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("rating", Rating.ToString(objCulture));
-            objWriter.WriteElementString("ratingmax", RatingMaximum.ToString(objCulture));
-            objWriter.WriteElementString("specializedrating", intSpecPool.ToString(objCulture));
-            objWriter.WriteElementString("total", intPool.ToString(objCulture));
-            objWriter.WriteElementString("knowledge", IsKnowledgeSkill.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("exotic", IsExoticSkill.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("base", Base.ToString(objCulture));
-            objWriter.WriteElementString("karma", Karma.ToString(objCulture));
-            objWriter.WriteElementString("spec", DisplaySpecialization(strLanguageToPrint));
-            objWriter.WriteElementString("attribute", Attribute);
-            objWriter.WriteElementString("displayattribute", DisplayAttributeMethod(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("default", Default.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("requiresgroundmovement", RequiresGroundMovement.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("requiresswimmovement", RequiresSwimMovement.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("requiresflymovement", RequiresFlyMovement.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("ratingmax", RatingMaximum.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("specializedrating", intSpecPool.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("total", intPool.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("knowledge", IsKnowledgeSkill.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("exotic", IsExoticSkill.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("buywithkarma", BuyWithKarma.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("base", Base.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("spec", await DisplaySpecializationAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("attribute", Attribute);
+            await objWriter.WriteElementStringAsync("displayattribute", await DisplayAttributeMethodAsync(strLanguageToPrint));
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture));
-            objWriter.WriteElementString("ratingmod", (intRatingModifiers + intDicePoolModifiers).ToString(objCulture));
-            objWriter.WriteElementString("poolmod", intDicePoolModifiers.ToString(objCulture));
-            objWriter.WriteElementString("islanguage", IsLanguage.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("isnativelanguage", IsNativeLanguage.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("bp", CurrentKarmaCost.ToString(objCulture));
-            objWriter.WriteStartElement("skillspecializations");
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("page", DisplayPage(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("attributemod", CharacterObject.GetAttribute(Attribute).TotalValue.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("ratingmod", (intRatingModifiers + intDicePoolModifiers).ToString(objCulture));
+            await objWriter.WriteElementStringAsync("poolmod", intDicePoolModifiers.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("islanguage", IsLanguage.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("isnativelanguage", IsNativeLanguage.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("bp", CurrentKarmaCost.ToString(objCulture));
+            await objWriter.WriteStartElementAsync("skillspecializations");
             foreach (SkillSpecialization objSpec in Specializations)
             {
-                objSpec.Print(objWriter, objCulture, strLanguageToPrint);
+                await objSpec.Print(objWriter, objCulture, strLanguageToPrint);
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         #region Factory
@@ -1179,6 +1183,14 @@ namespace Chummer.Backend.Skills
             return LanguageManager.GetString("String_Attribute" + Attribute + "Short", strLanguage);
         }
 
+        /// <summary>
+        /// The translated abbreviation of the linked attribute.
+        /// </summary>
+        public Task<string> DisplayAttributeMethodAsync(string strLanguage)
+        {
+            return LanguageManager.GetStringAsync("String_Attribute" + Attribute + "Short", strLanguage);
+        }
+
         public string DisplayAttribute => DisplayAttributeMethod(GlobalSettings.Language);
 
         private int _intCachedEnabled = -1;
@@ -1501,11 +1513,31 @@ namespace Chummer.Backend.Skills
             return strReturn;
         }
 
+        public virtual async ValueTask<string> DisplaySpecializationAsync(string strLanguage)
+        {
+            if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
+                return strReturn;
+            strReturn = await StringExtensions.JoinAsync(", ", Specializations.Select(x => x.DisplayNameAsync(strLanguage).AsTask()));
+
+            _dicCachedStringSpec.Add(strLanguage, strReturn);
+
+            return strReturn;
+        }
+
         public string CurrentDisplaySpecialization => DisplaySpecialization(GlobalSettings.Language);
+
+        private readonly ThreadSafeBindingList<SkillSpecialization> _lstSpecializations = new ThreadSafeBindingList<SkillSpecialization>();
 
         //TODO A unit test here?, I know we don't have them, but this would be improved by some
         //Or just ignore support for multiple specializations even if the rules say it is possible?
-        public CachedBindingList<SkillSpecialization> Specializations { get; } = new CachedBindingList<SkillSpecialization>();
+        public ThreadSafeBindingList<SkillSpecialization> Specializations
+        {
+            get
+            {
+                using (new EnterReadLock(CharacterObject.LockObject))
+                    return _lstSpecializations;
+            }
+        }
 
         public string TopMostDisplaySpecialization
         {
@@ -1956,6 +1988,14 @@ namespace Chummer.Backend.Skills
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         public string CurrentDisplayCategory => DisplayCategory(GlobalSettings.Language);
@@ -1966,6 +2006,19 @@ namespace Chummer.Backend.Skills
                 return SkillCategory;
 
             string strReturn = CharacterObject.LoadDataXPath("skills.xml", strLanguage)
+                                              .SelectSingleNode(
+                                                  "/chummer/categories/category[. = " + SkillCategory.CleanXPath()
+                                                  + "]/@translate")?.Value;
+
+            return strReturn ?? SkillCategory;
+        }
+
+        public async ValueTask<string> DisplayCategoryAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return SkillCategory;
+
+            string strReturn = (await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage))
                                               .SelectSingleNode(
                                                   "/chummer/categories/category[. = " + SkillCategory.CleanXPath()
                                                   + "]/@translate")?.Value;
@@ -3114,11 +3167,21 @@ namespace Chummer.Backend.Skills
             return strReturn;
         }
 
+        public void Remove()
+        {
+            using (new EnterWriteLock(CharacterObject.LockObject))
+            {
+                SkillGroupObject?.Remove(this);
+                Dispose();
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
                 UnbindSkill();
+                _lstSpecializations.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(_lstCachedSuggestedSpecializations);
             }

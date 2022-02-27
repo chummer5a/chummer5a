@@ -428,7 +428,7 @@ namespace Chummer.Plugins
             return returnme;
         }
 
-        public static bool MyOnSaveUpload(Character input)
+        public static async Task<bool> MyOnSaveUpload(Character input)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
@@ -438,66 +438,60 @@ namespace Chummer.Plugins
                 msg += "If you want to use SINners as online store, please register!";
                 Log.Warn(msg);
             }
-            else
+            else if (input.DoOnSaveCompletedAsync.Remove(MyOnSaveUpload)) // Makes we only run this if we haven't already triggered the callback
             {
-                if (input.DoOnSaveCompleted.Remove(MyOnSaveUpload)) // Makes we only run this if we haven't already triggered the callback
+                try
                 {
-                    Task.Run(async () =>
+                    using (new CursorWait(MainForm, true))
                     {
-                        try
+                        using (CharacterExtended ce = await GetMyCeAsync(input))
                         {
-                            using (new CursorWait(MainForm, true))
+                            //ce = new CharacterExtended(input, null);
+                            if (ce.MySINnerFile.SiNnerMetaData.Tags.All(a => a?.TagName != "Reflection"))
                             {
-                                using (CharacterExtended ce = await GetMyCeAsync(input))
-                                {
-                                    //ce = new CharacterExtended(input, null);
-                                    if (ce.MySINnerFile.SiNnerMetaData.Tags.All(a => a?.TagName != "Reflection"))
-                                    {
-                                        ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
-                                    }
-
-                                    await ce.Upload();
-                                }
-
-                                TabPage tabPage = null;
-                                CharacterShared found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
-                                switch (found)
-                                {
-                                    case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
-                                    {
-                                        int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                                        tabPage = frm.TabCharacterTabs.TabPages[index];
-                                        break;
-                                    }
-                                    case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
-                                    {
-                                        int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                                        tabPage = frm2.TabCharacterTabs.TabPages[index];
-                                        break;
-                                    }
-                                }
-
-                                if (tabPage == null)
-                                    return;
-                                Control[] ucseq = tabPage.Controls.Find("SINnersBasic", true);
-                                foreach (Control uc in ucseq)
-                                {
-                                    if (uc is ucSINnersBasic sb)
-                                        await sb.CheckSINnerStatus();
-                                }
-
-                                Control[] ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+                                ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                             }
+
+                            await ce.Upload();
                         }
-                        catch (Exception e)
+
+                        TabPage tabPage = null;
+                        CharacterShared found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
+                        switch (found)
                         {
-                            Trace.TraceError(e.ToString());
+                            case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                {
+                                    int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                    tabPage = frm.TabCharacterTabs.TabPages[index];
+                                    break;
+                                }
+                            case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                {
+                                    int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                    tabPage = frm2.TabCharacterTabs.TabPages[index];
+                                    break;
+                                }
                         }
-                        finally
+
+                        if (tabPage == null)
+                            return true;
+                        Control[] ucseq = tabPage.Controls.Find("SINnersBasic", true);
+                        foreach (Control uc in ucseq)
                         {
-                            input.DoOnSaveCompleted.Add(MyOnSaveUpload);
+                            if (uc is ucSINnersBasic sb)
+                                await sb.CheckSINnerStatus();
                         }
-                    });
+
+                        Control[] ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Trace.TraceError(e.ToString());
+                }
+                finally
+                {
+                    input.DoOnSaveCompletedAsync.Add(MyOnSaveUpload);
                 }
             }
             return true;

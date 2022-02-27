@@ -24,33 +24,33 @@ using System.Collections.Generic;
 
 namespace Chummer
 {
-    public class ThreadSafeStack<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>
+    public class ThreadSafeQueue<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>
     {
-        private readonly Stack<T> _stkData;
+        private readonly Queue<T> _queData;
 
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
-        public ThreadSafeStack()
+        public ThreadSafeQueue()
         {
-            _stkData = new Stack<T>();
+            _queData = new Queue<T>();
         }
 
-        public ThreadSafeStack(IEnumerable<T> collection)
+        public ThreadSafeQueue(IEnumerable<T> collection)
         {
-            _stkData = new Stack<T>(collection);
+            _queData = new Queue<T>(collection);
         }
 
-        public ThreadSafeStack(int capacity)
+        public ThreadSafeQueue(int capacity)
         {
-            _stkData = new Stack<T>(capacity);
+            _queData = new Queue<T>(capacity);
         }
 
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
-            objReturn.SetEnumerator(_stkData.GetEnumerator());
+            objReturn.SetEnumerator(_queData.GetEnumerator());
             return objReturn;
         }
 
@@ -60,53 +60,46 @@ namespace Chummer
             return GetEnumerator();
         }
 
-        /// <inheritdoc cref="Stack{T}.Clear"/>
+        /// <inheritdoc cref="Queue{T}.Clear" />
         public void Clear()
         {
             using (new EnterWriteLock(LockObject))
-                _stkData.Clear();
+                _queData.Clear();
         }
 
-        /// <inheritdoc cref="Stack{T}.Contains"/>
+        /// <inheritdoc cref="Queue{T}.Contains" />
         public bool Contains(T item)
         {
             using (new EnterReadLock(LockObject))
-                return _stkData.Contains(item);
+                return _queData.Contains(item);
         }
 
-        /// <inheritdoc cref="Stack{T}.TrimExcess"/>
+        /// <inheritdoc cref="Queue{T}.TrimExcess" />
         public void TrimExcess()
         {
             using (new EnterWriteLock(LockObject))
-                _stkData.TrimExcess();
+                _queData.TrimExcess();
         }
 
-        /// <inheritdoc cref="Stack{T}.Peek"/>
+        /// <inheritdoc cref="Queue{T}.Peek" />
         public T Peek()
         {
             using (new EnterReadLock(LockObject))
-                return _stkData.Peek();
+                return _queData.Peek();
         }
 
-        /// <inheritdoc cref="Stack{T}.Pop"/>
-        public T Pop()
+        /// <inheritdoc cref="Queue{T}.Dequeue" />
+        public T Dequeue()
         {
             using (new EnterWriteLock(LockObject))
-                return _stkData.Pop();
+                return _queData.Dequeue();
         }
 
-        /// <inheritdoc cref="Stack{T}.Push"/>
-        public void Push(T item)
+        /// <inheritdoc cref="Queue{T}.Enqueue" />
+        public void Enqueue(T item)
         {
             using (new EnterWriteLock(LockObject))
-                _stkData.Push(item);
-        }
-
-        /// <inheritdoc />
-        public bool TryAdd(T item)
-        {
-            Push(item);
-            return true;
+                _queData.Enqueue(item);
         }
 
         /// <inheritdoc />
@@ -115,9 +108,10 @@ namespace Chummer
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
             using (new EnterWriteLock(LockObject))
             {
-                if (_stkData.Count > 0)
+                if (_queData.Count > 0)
                 {
-                    item = _stkData.Pop();
+                    // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
+                    item = _queData.Dequeue();
                     return true;
                 }
             }
@@ -126,26 +120,33 @@ namespace Chummer
             return false;
         }
 
-        /// <inheritdoc cref="Stack{T}.ToArray"/>
+        /// <inheritdoc cref="Queue{T}.ToArray" />
         public T[] ToArray()
         {
             using (new EnterReadLock(LockObject))
-                return _stkData.ToArray();
+                return _queData.ToArray();
         }
 
-        /// <inheritdoc cref="Stack{T}.CopyTo"/>
+        /// <inheritdoc cref="Queue{T}.CopyTo" />
         public void CopyTo(T[] array, int index)
         {
             using (new EnterReadLock(LockObject))
-                _stkData.CopyTo(array, index);
+                _queData.CopyTo(array, index);
         }
 
         /// <inheritdoc />
+        public bool TryAdd(T item)
+        {
+            Enqueue(item);
+            return true;
+        }
+
+        /// <inheritdoc cref="Queue{T}.CopyTo" />
         public void CopyTo(Array array, int index)
         {
             using (new EnterReadLock(LockObject))
             {
-                foreach (T objItem in _stkData)
+                foreach (T objItem in _queData)
                 {
                     array.SetValue(objItem, index);
                     ++index;
@@ -153,17 +154,17 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc cref="Stack{T}.Count" />
+        /// <inheritdoc cref="Queue{T}.Count" />
         public int Count
         {
             get
             {
                 using (new EnterReadLock(LockObject))
-                    return _stkData.Count;
+                    return _queData.Count;
             }
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ICollection.SyncRoot" />
         public object SyncRoot => LockObject;
 
         /// <inheritdoc cref="ICollection.IsSynchronized" />

@@ -20,6 +20,7 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chummer
@@ -339,20 +340,20 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
             if (Amount != 0 || GlobalSettings.PrintFreeExpenses)
             {
-                objWriter.WriteStartElement("expense");
-                objWriter.WriteElementString("guid", InternalId);
-                objWriter.WriteElementString("date", Date.ToString(objCulture));
-                objWriter.WriteElementString("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture));
-                objWriter.WriteElementString("reason", DisplayReason(strLanguageToPrint));
-                objWriter.WriteElementString("type", Type.ToString());
-                objWriter.WriteElementString("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteEndElement();
+                await objWriter.WriteStartElementAsync("expense");
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture));
+                await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("type", Type.ToString());
+                await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteEndElementAsync();
             }
         }
 
@@ -409,6 +410,16 @@ namespace Chummer
         {
             if (Refund)
                 return Reason + LanguageManager.GetString("String_Space", strLanguage) + '(' + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ')';
+            return Reason;
+        }
+
+        /// <summary>
+        /// The Reason for the Entry expense.
+        /// </summary>
+        public async ValueTask<string> DisplayReasonAsync(string strLanguage)
+        {
+            if (Refund)
+                return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage) + ')';
             return Reason;
         }
 

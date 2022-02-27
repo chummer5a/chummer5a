@@ -90,17 +90,17 @@ namespace Chummer.Backend.Skills
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("skillspecialization");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("free", Free.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("specbonus", SpecializationBonus.ToString(objCulture));
-            objWriter.WriteEndElement();
+            await objWriter.WriteStartElementAsync("skillspecialization");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("specbonus", SpecializationBonus.ToString(objCulture));
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -121,6 +121,17 @@ namespace Chummer.Backend.Skills
                 return Name;
 
             return this.GetNodeXPath(strLanguage)?.SelectSingleNode("@translate")?.Value ?? Name;
+        }
+
+        /// <summary>
+        /// Skill Specialization's name.
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNode("@translate")?.Value ?? Name;
         }
 
         /// <summary>

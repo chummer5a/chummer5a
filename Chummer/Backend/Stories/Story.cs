@@ -30,7 +30,7 @@ namespace Chummer
     {
         private readonly LockingDictionary<string, StoryModule> _dicPersistentModules = new LockingDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
-        private readonly EnhancedObservableCollection<StoryModule> _lstStoryModules = new EnhancedObservableCollection<StoryModule>();
+        private readonly ThreadSafeObservableCollection<StoryModule> _lstStoryModules = new ThreadSafeObservableCollection<StoryModule>();
         private bool _blnNeedToRegeneratePersistents = true;
 
         // Note: as long as this is only used to generate language-agnostic information, it can be cached once when the object is created and left that way.
@@ -79,9 +79,23 @@ namespace Chummer
             }
         }
 
-        public EnhancedObservableCollection<StoryModule> Modules => _lstStoryModules;
+        public ThreadSafeObservableCollection<StoryModule> Modules
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstStoryModules;
+            }
+        }
 
-        public LockingDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
+        public LockingDictionary<string, StoryModule> PersistentModules
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _dicPersistentModules;
+            }
+        }
 
         public StoryModule GeneratePersistentModule(string strFunction)
         {
@@ -170,7 +184,8 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            _dicPersistentModules?.Dispose();
+            _dicPersistentModules.Dispose();
+            _lstStoryModules.Dispose();
         }
     }
 }

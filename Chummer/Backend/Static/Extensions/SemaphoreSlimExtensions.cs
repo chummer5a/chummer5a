@@ -17,30 +17,24 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Chummer
 {
-    /// <summary>
-    /// Syntactic Sugar for wrapping a ReaderWriterLockSlim's EnterUpgradeableReadLock() and ExitUpgradeableReadLock() methods into something that hooks into `using`
-    /// </summary>
-    public sealed class EnterUpgradeableReadLock : IDisposable
+    public static class SemaphoreSlimExtensions
     {
-        private readonly ReaderWriterLockSlim _rwlMyLock;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterUpgradeableReadLock(ReaderWriterLockSlim rwlMyLock)
+        /// <summary>
+        /// Version of SemaphoreSlim::Wait() that also processes application events if this is called on the UI thread
+        /// </summary>
+        public static void SafeWait(this SemaphoreSlim objSemaphoreSlim, bool blnForceDoEvents = false)
         {
-            _rwlMyLock = rwlMyLock;
-            _rwlMyLock.EnterUpgradeableReadLock();
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Dispose()
-        {
-            _rwlMyLock.ExitUpgradeableReadLock();
+            if (Utils.EverDoEvents)
+            {
+                while (!objSemaphoreSlim.Wait(Utils.DefaultSleepDuration))
+                    Utils.DoEventsSafe(blnForceDoEvents);
+            }
+            else
+                objSemaphoreSlim.Wait();
         }
     }
 }

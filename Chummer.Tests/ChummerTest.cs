@@ -18,10 +18,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -161,16 +163,17 @@ namespace Chummer.Tests
                 {
                     SaveCharacter(objCharacterControl, strDestinationControl);
                     // Second Load-Save cycle
-                    string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
+                    string strDestinationTest =
+                        Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
                     using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
                     {
                         SaveCharacter(objCharacterTest, strDestinationTest);
                         // Check to see that character after first load cycle is consistent with character after second
                         using (FileStream controlFileStream =
-                            File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                               File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
                         {
                             using (FileStream testFileStream =
-                                File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                                   File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
                             {
                                 try
                                 {
@@ -211,21 +214,28 @@ namespace Chummer.Tests
         public void Test04_LoadThenPrint()
         {
             Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
+            List<string> lstExportLanguages = new List<string>();
+            foreach (string strFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "lang"), "*.xml"))
+            {
+                string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
+                if (strExportLanguage.Contains("data"))
+                    continue;
+                lstExportLanguages.Add(strExportLanguage);
+            }
+            Debug.WriteLine("Started pre-loading language files");
+            foreach (string strExportLanguage in lstExportLanguages)
+            {
+                Debug.WriteLine("Pre-loading language file: " + strExportLanguage);
+                LanguageManager.LoadLanguage(strExportLanguage);
+            }
+            Debug.WriteLine("Finished pre-loading language files");
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 using (Character objCharacter = LoadCharacter(objFileInfo))
                 {
-                    string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-                    foreach (string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
+                    foreach (string strExportLanguage in lstExportLanguages)
                     {
-                        string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                        if (strExportLanguage.Contains("data"))
-                            continue;
-                        CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
-                        string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + Path.GetFileNameWithoutExtension(objFileInfo.Name) + ".xml");
-                        // ReSharper disable once AccessToDisposedClosure
-                        XmlDocument xmlCharacter = Utils.RunWithoutThreadLock(() => objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage));
-                        xmlCharacter.Save(strDestination);
+                        DoAndSaveExport(objCharacter, strExportLanguage);
                     }
                 }
             }
@@ -267,7 +277,19 @@ namespace Chummer.Tests
                                 frmCharacterForm.ShowInTaskbar = false;
                                 frmCharacterForm.WindowState = FormWindowState.Minimized;
                                 frmCharacterForm.Show();
+                                Utils.SafeSleep(true);
+                                while (frmCharacterForm.IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                {
+                                    Utils.SafeSleep(true);
+                                }
+                                frmCharacterForm.Close();
+                                Utils.SafeSleep(true);
+                                while (frmCharacterForm.IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                {
+                                    Utils.SafeSleep(true);
+                                }
                             }
+                            Utils.SafeSleep(true);
                         }
                         catch (Exception e)
                         {
@@ -294,7 +316,6 @@ namespace Chummer.Tests
         // ReSharper disable once SuggestBaseTypeForParameter
         private static Character LoadCharacter(FileInfo objFileInfo)
         {
-            Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             Character objCharacter = null;
             try
             {
@@ -305,13 +326,13 @@ namespace Chummer.Tests
                 };
                 bool blnSuccess = objCharacter.Load();
                 Assert.IsTrue(blnSuccess);
-                Debug.WriteLine("Character loaded: " + objCharacter.Name);
+                Debug.WriteLine("Character loaded: " + objCharacter.Name + ", " + objFileInfo.Name);
             }
             catch (AssertFailedException e)
             {
                 objCharacter?.Dispose();
                 objCharacter = null;
-                string strErrorMessage = "Could not load " + objFileInfo.FullName + "!";
+                string strErrorMessage = "Could not load " + objFileInfo.FullName + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -320,7 +341,7 @@ namespace Chummer.Tests
             catch (Exception e)
             {
                 objCharacter?.Dispose();
-                string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ":";
+                string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ':';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -333,17 +354,18 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests saving a given character.
         /// </summary>
-        private static void SaveCharacter(Character c, string path)
+        private static void SaveCharacter(Character objCharacter, string strPath)
         {
-            Debug.WriteLine("Unit test initialized for: SaveCharacter()");
-            Assert.IsNotNull(c);
+            Assert.IsNotNull(objCharacter);
             try
             {
-                c.Save(path, false);
+                Debug.WriteLine("Saving: " + objCharacter.Name + ", " + objCharacter.FileName);
+                objCharacter.Save(strPath, false);
+                Debug.WriteLine("Character saved: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
             {
-                string strErrorMessage = "Could not load " + c.FileName + "!";
+                string strErrorMessage = "Could not save " + objCharacter.FileName + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -351,7 +373,7 @@ namespace Chummer.Tests
             }
             catch (InvalidOperationException e)
             {
-                string strErrorMessage = "Could not save to " + path + "!";
+                string strErrorMessage = "Could not save to " + strPath + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -359,7 +381,60 @@ namespace Chummer.Tests
             }
             catch (Exception e)
             {
-                string strErrorMessage = "Exception while loading " + c.FileName + ":";
+                string strErrorMessage = "Exception while saving " + objCharacter.FileName + ':';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+            }
+        }
+
+        /// <summary>
+        /// Tests exporting a given character.
+        /// </summary>
+        private void DoAndSaveExport(Character objCharacter, string strExportLanguage)
+        {
+            Assert.IsNotNull(objCharacter);
+            string strPath = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + Path.GetFileNameWithoutExtension(objCharacter.FileName) + ".xml");
+            try
+            {
+                Debug.WriteLine("Exporting: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
+                CultureInfo objExportCultureInfo;
+                try
+                {
+                    objExportCultureInfo = new CultureInfo(strExportLanguage);
+                }
+                catch (CultureNotFoundException)
+                {
+                    objExportCultureInfo = CultureInfo.InvariantCulture;
+                }
+                Task.Run(async () =>
+                {
+                    XmlDocument xmlDocument
+                        = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
+                    xmlDocument.Save(strPath);
+                }).GetAwaiter().GetResult(); // Need this wrapper to make unit test work
+                Debug.WriteLine("Character exported: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
+            }
+            catch (AssertFailedException e)
+            {
+                string strErrorMessage = "Could not export " + objCharacter.FileName + " in " + strExportLanguage + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+            }
+            catch (InvalidOperationException e)
+            {
+                string strErrorMessage = "Could not export to " + strPath + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+            }
+            catch (Exception e)
+            {
+                string strErrorMessage = "Exception while exporting " + objCharacter.FileName + " in " + strExportLanguage + ':';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);

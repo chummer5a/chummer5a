@@ -410,43 +410,32 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strImprovedName))
                 strImprovedName = string.Empty;
 
-            // These values are needed to prevent race conditions that could cause Chummer to crash
-            Tuple<ImprovementDictionaryKey, IDictionary> tupMyValueToCheck
-                = new Tuple<ImprovementDictionaryKey, IDictionary>(
-                    new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName),
-                    dicCachedValuesToUse);
-            Tuple<ImprovementDictionaryKey, IDictionary> tupBlankValueToCheck
-                = new Tuple<ImprovementDictionaryKey, IDictionary>(
-                    new ImprovementDictionaryKey(objCharacter, eImprovementType, string.Empty), dicCachedValuesToUse);
-
-            // Only cache "default" ValueOf calls, otherwise there will be way too many values to cache
-            bool blnFetchAndCacheResults = !blnAddToRating && blnUnconditionalOnly;
-
-            // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
-            if (blnFetchAndCacheResults)
+            using (new EnterReadLock(objCharacter.LockObject))
             {
-                if (dicCachedValuesToUse != null)
+                // These values are needed to prevent race conditions that could cause Chummer to crash
+                Tuple<ImprovementDictionaryKey, IDictionary> tupMyValueToCheck
+                    = new Tuple<ImprovementDictionaryKey, IDictionary>(
+                        new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName),
+                        dicCachedValuesToUse);
+                Tuple<ImprovementDictionaryKey, IDictionary> tupBlankValueToCheck
+                    = new Tuple<ImprovementDictionaryKey, IDictionary>(
+                        new ImprovementDictionaryKey(objCharacter, eImprovementType, string.Empty),
+                        dicCachedValuesToUse);
+
+                // Only cache "default" ValueOf calls, otherwise there will be way too many values to cache
+                bool blnFetchAndCacheResults = !blnAddToRating && blnUnconditionalOnly;
+
+                // If we've got a value cached for the default ValueOf call for an improvementType, let's just return that
+                if (blnFetchAndCacheResults)
                 {
-                    // First check to make sure an existing caching for this particular value is not already running. If one is, wait for it to finish before continuing
-                    int intEmergencyRelease = 0;
-                    for (;!s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck) && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
+                    if (dicCachedValuesToUse != null)
                     {
-                        Utils.SafeSleep();
-                    }
-
-                    // Emergency exit, so break if we are debugging and return the default value (just in case)
-                    if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
-                    {
-                        Utils.BreakIfDebug();
-                        lstUsedImprovements = new List<Improvement>();
-                        return 0;
-                    }
-
-                    // Also make sure we block off the conditionless check because we will be adding cached keys that will be used by the conditionless check
-                    if (!string.IsNullOrWhiteSpace(strImprovedName) && !blnIncludeNonImproved)
-                    {
-                        intEmergencyRelease = 0;
-                        for (;!s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck) && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
+                        // First check to make sure an existing caching for this particular value is not already running. If one is, wait for it to finish before continuing
+                        int intEmergencyRelease = 0;
+                        for (;
+                             !s_SetCurrentlyCalculatingValues.TryAdd(tupMyValueToCheck)
+                             && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks;
+                             ++intEmergencyRelease)
                         {
                             Utils.SafeSleep();
                         }
@@ -456,249 +445,391 @@ namespace Chummer
                         {
                             Utils.BreakIfDebug();
                             lstUsedImprovements = new List<Improvement>();
-                            s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
                             return 0;
                         }
 
-                        ImprovementDictionaryKey objCacheKey
-                            = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName);
-                        if (dicCachedValuesToUse.TryGetValue(objCacheKey,
-                                                             out Tuple<decimal, List<Improvement>> tupCachedValue)
-                            && tupCachedValue.Item1 != decimal.MinValue)
+                        // Also make sure we block off the conditionless check because we will be adding cached keys that will be used by the conditionless check
+                        if (!string.IsNullOrWhiteSpace(strImprovedName) && !blnIncludeNonImproved)
                         {
-                            s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
-                            s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
-                            lstUsedImprovements
-                                = tupCachedValue.Item2
-                                                .ToList(); // To make sure we do not inadvertently alter the cached list
-                            return tupCachedValue.Item1;
-                        }
+                            intEmergencyRelease = 0;
+                            for (;
+                                 !s_SetCurrentlyCalculatingValues.TryAdd(tupBlankValueToCheck)
+                                 && intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks;
+                                 ++intEmergencyRelease)
+                            {
+                                Utils.SafeSleep();
+                            }
 
-                        lstUsedImprovements = new List<Improvement>();
+                            // Emergency exit, so break if we are debugging and return the default value (just in case)
+                            if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks)
+                            {
+                                Utils.BreakIfDebug();
+                                lstUsedImprovements = new List<Improvement>();
+                                s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
+                                return 0;
+                            }
+
+                            ImprovementDictionaryKey objCacheKey
+                                = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName);
+                            if (dicCachedValuesToUse.TryGetValue(objCacheKey,
+                                                                 out Tuple<decimal, List<Improvement>> tupCachedValue)
+                                && tupCachedValue.Item1 != decimal.MinValue)
+                            {
+                                s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
+                                s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
+                                lstUsedImprovements
+                                    = tupCachedValue.Item2
+                                                    .ToList(); // To make sure we do not inadvertently alter the cached list
+                                return tupCachedValue.Item1;
+                            }
+
+                            lstUsedImprovements = new List<Improvement>();
+                        }
+                        else
+                        {
+                            lstUsedImprovements = new List<Improvement>();
+                            bool blnDoRecalculate = true;
+                            decimal decCachedValue = 0;
+                            // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
+                            foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
+                                         objLoopCachedEntry in dicCachedValuesToUse)
+                            {
+                                ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
+                                if (objLoopKey.CharacterObject != objCharacter ||
+                                    objLoopKey.ImprovementType != eImprovementType)
+                                    continue;
+                                if (!string.IsNullOrWhiteSpace(strImprovedName)
+                                    && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
+                                    && strImprovedName != objLoopKey.ImprovementName)
+                                    continue;
+                                blnDoRecalculate = false;
+                                decimal decLoopCachedValue = objLoopCachedEntry.Value.Item1;
+                                if (decLoopCachedValue == decimal.MinValue)
+                                {
+                                    blnDoRecalculate = true;
+                                    break;
+                                }
+
+                                decCachedValue += decLoopCachedValue;
+                                lstUsedImprovements.AddRange(objLoopCachedEntry.Value.Item2);
+                            }
+
+                            if (!blnDoRecalculate)
+                            {
+                                s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
+                                return decCachedValue;
+                            }
+
+                            lstUsedImprovements.Clear();
+                        }
                     }
                     else
                     {
+                        // The code is breaking here to remind you (the programmer) to add in caching functionality for this type of value.
+                        // The more often this sort of value is used, the more caching is necessary and the more often we will break here,
+                        // and the annoyance of constantly having your debugger break here should push you to adding in caching functionality.
+                        Utils.BreakIfDebug();
                         lstUsedImprovements = new List<Improvement>();
-                        bool blnDoRecalculate = true;
-                        decimal decCachedValue = 0;
-                        // Only fetch based on cached values if the dictionary contains at least one element with matching characters and types and none of those elements have a "reset" value of decimal.MinValue
-                        foreach (KeyValuePair<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>
-                                     objLoopCachedEntry in dicCachedValuesToUse)
-                        {
-                            ImprovementDictionaryKey objLoopKey = objLoopCachedEntry.Key;
-                            if (objLoopKey.CharacterObject != objCharacter ||
-                                objLoopKey.ImprovementType != eImprovementType)
-                                continue;
-                            if (!string.IsNullOrWhiteSpace(strImprovedName)
-                                && !string.IsNullOrWhiteSpace(objLoopKey.ImprovementName)
-                                && strImprovedName != objLoopKey.ImprovementName)
-                                continue;
-                            blnDoRecalculate = false;
-                            decimal decLoopCachedValue = objLoopCachedEntry.Value.Item1;
-                            if (decLoopCachedValue == decimal.MinValue)
-                            {
-                                blnDoRecalculate = true;
-                                break;
-                            }
-
-                            decCachedValue += decLoopCachedValue;
-                            lstUsedImprovements.AddRange(objLoopCachedEntry.Value.Item2);
-                        }
-
-                        if (!blnDoRecalculate)
-                        {
-                            s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
-                            return decCachedValue;
-                        }
-
-                        lstUsedImprovements.Clear();
                     }
                 }
                 else
-                {
-                    // The code is breaking here to remind you (the programmer) to add in caching functionality for this type of value.
-                    // The more often this sort of value is used, the more caching is necessary and the more often we will break here,
-                    // and the annoyance of constantly having your debugger break here should push you to adding in caching functionality.
-                    Utils.BreakIfDebug();
                     lstUsedImprovements = new List<Improvement>();
-                }
-            }
-            else
-                lstUsedImprovements = new List<Improvement>();
 
-            try
-            {
-                List<Improvement> lstImprovementsToConsider = new List<Improvement>(objCharacter.Improvements.Count);
-                foreach (Improvement objImprovement in objCharacter.Improvements)
-                {
-                    if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
-                        continue;
-                    if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))
-                        continue;
-                    // Matrix initiative boosting gear does not help Living Personas
-                    if ((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
-                         || eImprovementType == Improvement.ImprovementType.MatrixInitiative
-                         || eImprovementType == Improvement.ImprovementType.MatrixInitiativeDiceAdd)
-                        && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
-                        && objCharacter.ActiveCommlink is Gear objCommlink
-                        && objCommlink.Name == "Living Persona")
-                        continue;
-                    // Ignore items that apply to a Skill's Rating.
-                    if (objImprovement.AddToRating != blnAddToRating)
-                        continue;
-                    // If an Improved Name has been passed, only retrieve values that have this Improved Name.
-                    if (!string.IsNullOrEmpty(strImprovedName))
-                    {
-                        string strLoopImprovedName = objImprovement.ImprovedName;
-                        if (strImprovedName != strLoopImprovedName
-                            && !(blnIncludeNonImproved && string.IsNullOrWhiteSpace(strLoopImprovedName)))
-                            continue;
-                    }
-
-                    lstImprovementsToConsider.Add(objImprovement);
-                }
-
-                List<Improvement> lstLoopImprovements;
-                Dictionary<string, List<Tuple<string, Improvement>>> dicUniquePairs
-                    = new Dictionary<string, List<Tuple<string, Improvement>>>(lstImprovementsToConsider.Count);
-                Dictionary<string, decimal> dicValues = new Dictionary<string, decimal>(lstImprovementsToConsider.Count);
-                Dictionary<string, List<Improvement>> dicImprovementsForValues
-                    = new Dictionary<string, List<Improvement>>(lstImprovementsToConsider.Count);
-                Dictionary<string, HashSet<string>> dicUniqueNames
-                    = new Dictionary<string, HashSet<string>>(lstImprovementsToConsider.Count);
                 try
                 {
-                    foreach (Improvement objImprovement in lstImprovementsToConsider)
+                    List<Improvement> lstImprovementsToConsider
+                        = new List<Improvement>(objCharacter.Improvements.Count);
+                    foreach (Improvement objImprovement in objCharacter.Improvements)
                     {
-                        // Count custom improvements later
-                        if (objImprovement.Custom)
+                        if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
                             continue;
-                        string strLoopImprovedName = objImprovement.ImprovedName;
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
+                        if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition))
+                            continue;
+                        // Matrix initiative boosting gear does not help Living Personas
+                        if ((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
+                             || eImprovementType == Improvement.ImprovementType.MatrixInitiative
+                             || eImprovementType == Improvement.ImprovementType.MatrixInitiativeDiceAdd)
+                            && objImprovement.ImproveSource == Improvement.ImprovementSource.Gear
+                            && objCharacter.ActiveCommlink is Gear objCommlink
+                            && objCommlink.Name == "Living Persona")
+                            continue;
+                        // Ignore items that apply to a Skill's Rating.
+                        if (objImprovement.AddToRating != blnAddToRating)
+                            continue;
+                        // If an Improved Name has been passed, only retrieve values that have this Improved Name.
+                        if (!string.IsNullOrEmpty(strImprovedName))
                         {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> setUniqueNames))
+                            string strLoopImprovedName = objImprovement.ImprovedName;
+                            if (strImprovedName != strLoopImprovedName
+                                && !(blnIncludeNonImproved && string.IsNullOrWhiteSpace(strLoopImprovedName)))
+                                continue;
+                        }
+
+                        lstImprovementsToConsider.Add(objImprovement);
+                    }
+
+                    List<Improvement> lstLoopImprovements;
+                    Dictionary<string, List<Tuple<string, Improvement>>> dicUniquePairs
+                        = new Dictionary<string, List<Tuple<string, Improvement>>>(lstImprovementsToConsider.Count);
+                    Dictionary<string, decimal> dicValues
+                        = new Dictionary<string, decimal>(lstImprovementsToConsider.Count);
+                    Dictionary<string, List<Improvement>> dicImprovementsForValues
+                        = new Dictionary<string, List<Improvement>>(lstImprovementsToConsider.Count);
+                    Dictionary<string, HashSet<string>> dicUniqueNames
+                        = new Dictionary<string, HashSet<string>>(lstImprovementsToConsider.Count);
+                    try
+                    {
+                        foreach (Improvement objImprovement in lstImprovementsToConsider)
+                        {
+                            // Count custom improvements later
+                            if (objImprovement.Custom)
+                                continue;
+                            string strLoopImprovedName = objImprovement.ImprovedName;
+                            string strUniqueName = objImprovement.UniqueName;
+                            if (!string.IsNullOrEmpty(strUniqueName))
                             {
-                                if (!setUniqueNames.Contains(strUniqueName))
-                                    setUniqueNames.Add(strUniqueName);
+                                // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                                if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> setUniqueNames))
+                                {
+                                    if (!setUniqueNames.Contains(strUniqueName))
+                                        setUniqueNames.Add(strUniqueName);
+                                }
+                                else
+                                {
+                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                    setTemp.Add(strUniqueName);
+                                    dicUniqueNames.Add(strLoopImprovedName, setTemp);
+                                }
+
+                                // Add the values to the UniquePair List so we can check them later.
+                                if (dicUniquePairs.TryGetValue(strLoopImprovedName,
+                                                               out List<Tuple<string, Improvement>> lstUniquePairs))
+                                {
+                                    lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
+                                }
+                                else
+                                {
+                                    dicUniquePairs.Add(strLoopImprovedName,
+                                                       new List<Tuple<string, Improvement>>(1)
+                                                       {
+                                                           new Tuple<string, Improvement>(strUniqueName, objImprovement)
+                                                       });
+                                }
+
+                                if (!dicValues.ContainsKey(strLoopImprovedName))
+                                {
+                                    dicValues.Add(strLoopImprovedName, 0);
+                                    dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
+                                }
+                            }
+                            else if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
+                            {
+                                dicValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
+                                dicImprovementsForValues[strLoopImprovedName].Add(objImprovement);
                             }
                             else
                             {
-                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                setTemp.Add(strUniqueName);
-                                dicUniqueNames.Add(strLoopImprovedName, setTemp);
+                                dicValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
+                                dicImprovementsForValues.Add(strLoopImprovedName,
+                                                             new List<Improvement>(objImprovement.Yield()));
                             }
+                        }
 
-                            // Add the values to the UniquePair List so we can check them later.
+                        List<Improvement> lstInnerLoopImprovements = new List<Improvement>(1);
+                        foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+                        {
+                            string strLoopImprovedName = objLoopValuePair.Key;
+                            bool blnValuesDictionaryContains
+                                = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
+                            if (blnValuesDictionaryContains)
+                                dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
+                            else
+                                lstLoopImprovements = new List<Improvement>(dicUniqueNames.Count);
                             if (dicUniquePairs.TryGetValue(strLoopImprovedName,
                                                            out List<Tuple<string, Improvement>> lstUniquePairs))
                             {
-                                lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
-                            }
-                            else
-                            {
-                                dicUniquePairs.Add(strLoopImprovedName,
-                                                   new List<Tuple<string, Improvement>>(1)
-                                                       {new Tuple<string, Improvement>(strUniqueName, objImprovement)});
-                            }
-
-                            if (!dicValues.ContainsKey(strLoopImprovedName))
-                            {
-                                dicValues.Add(strLoopImprovedName, 0);
-                                dicImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
-                            }
-                        }
-                        else if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
-                        {
-                            dicValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
-                            dicImprovementsForValues[strLoopImprovedName].Add(objImprovement);
-                        }
-                        else
-                        {
-                            dicValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
-                            dicImprovementsForValues.Add(strLoopImprovedName,
-                                                         new List<Improvement>(objImprovement.Yield()));
-                        }
-                    }
-
-                    List<Improvement> lstInnerLoopImprovements = new List<Improvement>(1);
-                    foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
-                    {
-                        string strLoopImprovedName = objLoopValuePair.Key;
-                        bool blnValuesDictionaryContains
-                            = dicValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
-                        if (blnValuesDictionaryContains)
-                            dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
-                        else
-                            lstLoopImprovements = new List<Improvement>(dicUniqueNames.Count);
-                        if (dicUniquePairs.TryGetValue(strLoopImprovedName,
-                                                       out List<Tuple<string, Improvement>> lstUniquePairs))
-                        {
-                            HashSet<string> setUniqueNames = objLoopValuePair.Value;
-                            lstInnerLoopImprovements.Clear();
-                            if (setUniqueNames.Contains("precedence0"))
-                            {
-                                // Retrieve only the highest precedence0 value.
-                                // Run through the list of UniqueNames and pick out the highest value for each one.
-                                Improvement objHighestImprovement = null;
-                                decimal decHighest = decimal.MinValue;
-                                foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                                HashSet<string> setUniqueNames = objLoopValuePair.Value;
+                                lstInnerLoopImprovements.Clear();
+                                if (setUniqueNames.Contains("precedence0"))
                                 {
-                                    if (strUnique != "precedence0")
-                                        continue;
-                                    decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
-                                    if (decHighest < decInnerLoopValue)
-                                    {
-                                        decHighest = decInnerLoopValue;
-                                        objHighestImprovement = objLoopImprovement;
-                                    }
-                                }
-
-                                if (objHighestImprovement != null)
-                                    lstInnerLoopImprovements.Add(objHighestImprovement);
-
-                                if (setUniqueNames.Contains("precedence-1"))
-                                {
+                                    // Retrieve only the highest precedence0 value.
+                                    // Run through the list of UniqueNames and pick out the highest value for each one.
+                                    Improvement objHighestImprovement = null;
+                                    decimal decHighest = decimal.MinValue;
                                     foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
                                     {
-                                        if (strUnique != "precedence-1")
+                                        if (strUnique != "precedence0")
+                                            continue;
+                                        decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                                        if (decHighest < decInnerLoopValue)
+                                        {
+                                            decHighest = decInnerLoopValue;
+                                            objHighestImprovement = objLoopImprovement;
+                                        }
+                                    }
+
+                                    if (objHighestImprovement != null)
+                                        lstInnerLoopImprovements.Add(objHighestImprovement);
+
+                                    if (setUniqueNames.Contains("precedence-1"))
+                                    {
+                                        foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                                        {
+                                            if (strUnique != "precedence-1")
+                                                continue;
+                                            decHighest += funcValueGetter(objLoopImprovement);
+                                            lstInnerLoopImprovements.Add(objLoopImprovement);
+                                        }
+                                    }
+
+                                    if (decLoopValue < decHighest)
+                                    {
+                                        decLoopValue = decHighest;
+                                        lstLoopImprovements.Clear();
+                                        lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                                    }
+                                }
+                                else if (setUniqueNames.Contains("precedence1"))
+                                {
+                                    // Retrieve all of the items that are precedence1 and nothing else.
+                                    decimal decHighest = 0;
+                                    foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                                    {
+                                        if (strUnique != "precedence1" && strUnique != "precedence-1")
                                             continue;
                                         decHighest += funcValueGetter(objLoopImprovement);
                                         lstInnerLoopImprovements.Add(objLoopImprovement);
                                     }
+
+                                    if (decLoopValue < decHighest)
+                                    {
+                                        decLoopValue = decHighest;
+                                        lstLoopImprovements.Clear();
+                                        lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                                    }
+                                }
+                                else
+                                {
+                                    // Run through the list of UniqueNames and pick out the highest value for each one.
+                                    foreach (string strUniqueName in setUniqueNames)
+                                    {
+                                        Improvement objHighestImprovement = null;
+                                        decimal decHighest = decimal.MinValue;
+                                        foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                                        {
+                                            if (strUnique != strUniqueName)
+                                                continue;
+                                            decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
+                                            if (decHighest < decInnerLoopValue)
+                                            {
+                                                decHighest = decInnerLoopValue;
+                                                objHighestImprovement = objLoopImprovement;
+                                            }
+                                        }
+
+                                        if (decHighest != decimal.MinValue)
+                                        {
+                                            decLoopValue += decHighest;
+                                            lstLoopImprovements.Add(objHighestImprovement);
+                                        }
+                                    }
                                 }
 
-                                if (decLoopValue < decHighest)
+                                if (blnValuesDictionaryContains)
+                                    dicValues[strLoopImprovedName] = decLoopValue;
+                                else
                                 {
-                                    decLoopValue = decHighest;
-                                    lstLoopImprovements.Clear();
-                                    lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                                    dicValues.Add(strLoopImprovedName, decLoopValue);
+                                    dicImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
                                 }
                             }
-                            else if (setUniqueNames.Contains("precedence1"))
+                        }
+                    }
+                    finally
+                    {
+                        foreach (HashSet<string> setToReturn in dicUniqueNames.Values)
+                            Utils.StringHashSetPool.Return(setToReturn);
+                    }
+
+                    // Factor in Custom Improvements.
+                    dicUniqueNames.Clear();
+                    dicUniquePairs.Clear();
+                    Dictionary<string, decimal> dicCustomValues
+                        = new Dictionary<string, decimal>(lstImprovementsToConsider.Count);
+                    Dictionary<string, List<Improvement>> dicCustomImprovementsForValues
+                        = new Dictionary<string, List<Improvement>>(lstImprovementsToConsider.Count);
+                    try
+                    {
+                        foreach (Improvement objImprovement in lstImprovementsToConsider)
+                        {
+                            if (!objImprovement.Custom)
+                                continue;
+                            string strLoopImprovedName = objImprovement.ImprovedName;
+                            string strUniqueName = objImprovement.UniqueName;
+                            if (!string.IsNullOrEmpty(strUniqueName))
                             {
-                                // Retrieve all of the items that are precedence1 and nothing else.
-                                decimal decHighest = 0;
-                                foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
+                                // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                                if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> setUniqueNames))
                                 {
-                                    if (strUnique != "precedence1" && strUnique != "precedence-1")
-                                        continue;
-                                    decHighest += funcValueGetter(objLoopImprovement);
-                                    lstInnerLoopImprovements.Add(objLoopImprovement);
+                                    if (!setUniqueNames.Contains(strUniqueName))
+                                        setUniqueNames.Add(strUniqueName);
+                                }
+                                else
+                                {
+                                    HashSet<string> setTemp = Utils.StringHashSetPool.Get();
+                                    setTemp.Add(strUniqueName);
+                                    dicUniqueNames.Add(strLoopImprovedName, setTemp);
                                 }
 
-                                if (decLoopValue < decHighest)
+                                // Add the values to the UniquePair List so we can check them later.
+                                if (dicUniquePairs.TryGetValue(strLoopImprovedName,
+                                                               out List<Tuple<string, Improvement>> lstUniquePairs))
                                 {
-                                    decLoopValue = decHighest;
-                                    lstLoopImprovements.Clear();
-                                    lstLoopImprovements.AddRange(lstInnerLoopImprovements);
+                                    lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
                                 }
+                                else
+                                {
+                                    dicUniquePairs.Add(strLoopImprovedName,
+                                                       new List<Tuple<string, Improvement>>(1)
+                                                       {
+                                                           new Tuple<string, Improvement>(strUniqueName, objImprovement)
+                                                       });
+                                }
+
+                                if (!dicCustomValues.ContainsKey(strLoopImprovedName))
+                                {
+                                    dicCustomValues.Add(strLoopImprovedName, 0);
+                                    dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
+                                }
+                            }
+                            else if (dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
+                            {
+                                dicCustomValues[strLoopImprovedName]
+                                    = decExistingValue + funcValueGetter(objImprovement);
+                                dicCustomImprovementsForValues[strLoopImprovedName].Add(objImprovement);
                             }
                             else
                             {
+                                dicCustomValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
+                                dicCustomImprovementsForValues.Add(strLoopImprovedName,
+                                                                   new List<Improvement>(objImprovement.Yield()));
+                            }
+                        }
+
+                        foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+                        {
+                            string strLoopImprovedName = objLoopValuePair.Key;
+                            bool blnValuesDictionaryContains
+                                = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
+                            if (blnValuesDictionaryContains)
+                                dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
+                            else
+                                lstLoopImprovements = new List<Improvement>(dicUniqueNames.Count);
+                            if (dicUniquePairs.TryGetValue(strLoopImprovedName,
+                                                           out List<Tuple<string, Improvement>> lstUniquePairs))
+                            {
                                 // Run through the list of UniqueNames and pick out the highest value for each one.
-                                foreach (string strUniqueName in setUniqueNames)
+                                foreach (string strUniqueName in objLoopValuePair.Value)
                                 {
                                     Improvement objHighestImprovement = null;
                                     decimal decHighest = decimal.MinValue;
@@ -720,198 +851,86 @@ namespace Chummer
                                         lstLoopImprovements.Add(objHighestImprovement);
                                     }
                                 }
-                            }
 
-                            if (blnValuesDictionaryContains)
-                                dicValues[strLoopImprovedName] = decLoopValue;
-                            else
-                            {
-                                dicValues.Add(strLoopImprovedName, decLoopValue);
-                                dicImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
+                                if (blnValuesDictionaryContains)
+                                    dicCustomValues[strLoopImprovedName] = decLoopValue;
+                                else
+                                {
+                                    dicCustomValues.Add(strLoopImprovedName, decLoopValue);
+                                    dicCustomImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
+                                }
                             }
                         }
                     }
-                }
-                finally
-                {
-                    foreach (HashSet<string> setToReturn in dicUniqueNames.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
-                }
-
-                // Factor in Custom Improvements.
-                dicUniqueNames.Clear();
-                dicUniquePairs.Clear();
-                Dictionary<string, decimal> dicCustomValues = new Dictionary<string, decimal>(lstImprovementsToConsider.Count);
-                Dictionary<string, List<Improvement>> dicCustomImprovementsForValues
-                    = new Dictionary<string, List<Improvement>>(lstImprovementsToConsider.Count);
-                try
-                {
-                    foreach (Improvement objImprovement in lstImprovementsToConsider)
+                    finally
                     {
-                        if (!objImprovement.Custom)
-                            continue;
-                        string strLoopImprovedName = objImprovement.ImprovedName;
-                        string strUniqueName = objImprovement.UniqueName;
-                        if (!string.IsNullOrEmpty(strUniqueName))
-                        {
-                            // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                            if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> setUniqueNames))
-                            {
-                                if (!setUniqueNames.Contains(strUniqueName))
-                                    setUniqueNames.Add(strUniqueName);
-                            }
-                            else
-                            {
-                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                setTemp.Add(strUniqueName);
-                                dicUniqueNames.Add(strLoopImprovedName, setTemp);
-                            }
-
-                            // Add the values to the UniquePair List so we can check them later.
-                            if (dicUniquePairs.TryGetValue(strLoopImprovedName,
-                                                           out List<Tuple<string, Improvement>> lstUniquePairs))
-                            {
-                                lstUniquePairs.Add(new Tuple<string, Improvement>(strUniqueName, objImprovement));
-                            }
-                            else
-                            {
-                                dicUniquePairs.Add(strLoopImprovedName,
-                                                   new List<Tuple<string, Improvement>>(1)
-                                                       {new Tuple<string, Improvement>(strUniqueName, objImprovement)});
-                            }
-
-                            if (!dicCustomValues.ContainsKey(strLoopImprovedName))
-                            {
-                                dicCustomValues.Add(strLoopImprovedName, 0);
-                                dicCustomImprovementsForValues.Add(strLoopImprovedName, new List<Improvement>());
-                            }
-                        }
-                        else if (dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
-                        {
-                            dicCustomValues[strLoopImprovedName] = decExistingValue + funcValueGetter(objImprovement);
-                            dicCustomImprovementsForValues[strLoopImprovedName].Add(objImprovement);
-                        }
-                        else
-                        {
-                            dicCustomValues.Add(strLoopImprovedName, funcValueGetter(objImprovement));
-                            dicCustomImprovementsForValues.Add(strLoopImprovedName,
-                                                               new List<Improvement>(objImprovement.Yield()));
-                        }
+                        foreach (HashSet<string> setToReturn in dicUniqueNames.Values)
+                            Utils.StringHashSetPool.Return(setToReturn);
                     }
 
-                    foreach (KeyValuePair<string, HashSet<string>> objLoopValuePair in dicUniqueNames)
+                    foreach (KeyValuePair<string, decimal> objLoopValuePair in dicCustomValues)
                     {
                         string strLoopImprovedName = objLoopValuePair.Key;
-                        bool blnValuesDictionaryContains
-                            = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
-                        if (blnValuesDictionaryContains)
-                            dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
-                        else
-                            lstLoopImprovements = new List<Improvement>(dicUniqueNames.Count);
-                        if (dicUniquePairs.TryGetValue(strLoopImprovedName,
-                                                       out List<Tuple<string, Improvement>> lstUniquePairs))
+                        if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
                         {
-                            // Run through the list of UniqueNames and pick out the highest value for each one.
-                            foreach (string strUniqueName in objLoopValuePair.Value)
-                            {
-                                Improvement objHighestImprovement = null;
-                                decimal decHighest = decimal.MinValue;
-                                foreach ((string strUnique, Improvement objLoopImprovement) in lstUniquePairs)
-                                {
-                                    if (strUnique != strUniqueName)
-                                        continue;
-                                    decimal decInnerLoopValue = funcValueGetter(objLoopImprovement);
-                                    if (decHighest < decInnerLoopValue)
-                                    {
-                                        decHighest = decInnerLoopValue;
-                                        objHighestImprovement = objLoopImprovement;
-                                    }
-                                }
-
-                                if (decHighest != decimal.MinValue)
-                                {
-                                    decLoopValue += decHighest;
-                                    lstLoopImprovements.Add(objHighestImprovement);
-                                }
-                            }
-
-                            if (blnValuesDictionaryContains)
-                                dicCustomValues[strLoopImprovedName] = decLoopValue;
-                            else
-                            {
-                                dicCustomValues.Add(strLoopImprovedName, decLoopValue);
-                                dicCustomImprovementsForValues.Add(strLoopImprovedName, lstLoopImprovements);
-                            }
+                            dicValues[strLoopImprovedName] = decExistingValue + objLoopValuePair.Value;
+                            dicImprovementsForValues[strLoopImprovedName]
+                                .AddRange(dicCustomImprovementsForValues[strLoopImprovedName]);
+                        }
+                        else
+                        {
+                            dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
+                            dicImprovementsForValues.Add(strLoopImprovedName,
+                                                         dicCustomImprovementsForValues[strLoopImprovedName]);
                         }
                     }
+
+                    decimal decReturn = 0;
+
+                    foreach (KeyValuePair<string, decimal> objLoopValuePair in dicValues)
+                    {
+                        string strLoopImprovedName = objLoopValuePair.Key;
+                        decimal decLoopValue = objLoopValuePair.Value;
+                        // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
+                        if (blnFetchAndCacheResults)
+                        {
+                            Tuple<decimal, List<Improvement>> tupNewValue =
+                                new Tuple<decimal, List<Improvement>>(decLoopValue,
+                                                                      dicImprovementsForValues[strLoopImprovedName]);
+                            if (dicCachedValuesToUse != null)
+                            {
+                                ImprovementDictionaryKey objLoopCacheKey =
+                                    new ImprovementDictionaryKey(objCharacter, eImprovementType, strLoopImprovedName);
+                                if (!dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue))
+                                {
+                                    List<Improvement> lstTemp = dicCachedValuesToUse[objLoopCacheKey].Item2;
+                                    if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
+                                    {
+                                        lstTemp.Clear();
+                                        lstTemp.AddRange(tupNewValue.Item2);
+                                        tupNewValue = new Tuple<decimal, List<Improvement>>(decLoopValue, lstTemp);
+                                    }
+
+                                    dicCachedValuesToUse[objLoopCacheKey] = tupNewValue;
+                                }
+                            }
+
+                            lstUsedImprovements.AddRange(tupNewValue.Item2);
+                        }
+                        else
+                            lstUsedImprovements.AddRange(dicImprovementsForValues[strLoopImprovedName]);
+
+                        decReturn += decLoopValue;
+                    }
+
+                    return decReturn;
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicUniqueNames.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    // As a final step, remove the tuple used to flag an improvement value as currently being cached
+                    s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
+                    s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
                 }
-
-                foreach (KeyValuePair<string, decimal> objLoopValuePair in dicCustomValues)
-                {
-                    string strLoopImprovedName = objLoopValuePair.Key;
-                    if (dicValues.TryGetValue(strLoopImprovedName, out decimal decExistingValue))
-                    {
-                        dicValues[strLoopImprovedName] = decExistingValue + objLoopValuePair.Value;
-                        dicImprovementsForValues[strLoopImprovedName]
-                            .AddRange(dicCustomImprovementsForValues[strLoopImprovedName]);
-                    }
-                    else
-                    {
-                        dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
-                        dicImprovementsForValues.Add(strLoopImprovedName,
-                                                     dicCustomImprovementsForValues[strLoopImprovedName]);
-                    }
-                }
-
-                decimal decReturn = 0;
-
-                foreach (KeyValuePair<string, decimal> objLoopValuePair in dicValues)
-                {
-                    string strLoopImprovedName = objLoopValuePair.Key;
-                    decimal decLoopValue = objLoopValuePair.Value;
-                    // If this is the default ValueOf() call, let's cache the value we've calculated so that we don't have to do this all over again unless something has changed
-                    if (blnFetchAndCacheResults)
-                    {
-                        Tuple<decimal, List<Improvement>> tupNewValue =
-                            new Tuple<decimal, List<Improvement>>(decLoopValue,
-                                                                  dicImprovementsForValues[strLoopImprovedName]);
-                        if (dicCachedValuesToUse != null)
-                        {
-                            ImprovementDictionaryKey objLoopCacheKey =
-                                new ImprovementDictionaryKey(objCharacter, eImprovementType, strLoopImprovedName);
-                            if (!dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue))
-                            {
-                                List<Improvement> lstTemp = dicCachedValuesToUse[objLoopCacheKey].Item2;
-                                if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
-                                {
-                                    lstTemp.Clear();
-                                    lstTemp.AddRange(tupNewValue.Item2);
-                                    tupNewValue = new Tuple<decimal, List<Improvement>>(decLoopValue, lstTemp);
-                                }
-
-                                dicCachedValuesToUse[objLoopCacheKey] = tupNewValue;
-                            }
-                        }
-
-                        lstUsedImprovements.AddRange(tupNewValue.Item2);
-                    }
-                    else
-                        lstUsedImprovements.AddRange(dicImprovementsForValues[strLoopImprovedName]);
-                    decReturn += decLoopValue;
-                }
-
-                return decReturn;
-            }
-            finally
-            {
-                // As a final step, remove the tuple used to flag an improvement value as currently being cached
-                s_SetCurrentlyCalculatingValues.Remove(tupMyValueToCheck);
-                s_SetCurrentlyCalculatingValues.Remove(tupBlankValueToCheck);
             }
         }
 
@@ -1104,124 +1123,128 @@ namespace Chummer
                                                out HashSet<string>
                                                    setProcessedSkillNames))
                                     {
-                                        foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
-                                                     .KnowledgeSkills)
+                                        using (new EnterReadLock(objCharacter.LockObject))
                                         {
-                                            if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false
-                                                &&
-                                                setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory)
-                                                != true &&
-                                                setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
-                                                setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute)
-                                                != false)
+                                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
+                                                         .KnowledgeSkills)
                                             {
-                                                int intSkillRating = objKnowledgeSkill.Rating;
-                                                if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
+                                                if (setAllowedCategories?.Contains(objKnowledgeSkill.SkillCategory) != false
+                                                    &&
+                                                    setForbiddenCategories?.Contains(objKnowledgeSkill.SkillCategory)
+                                                    != true &&
+                                                    setAllowedNames?.Contains(objKnowledgeSkill.Name) != false &&
+                                                    setAllowedLinkedAttributes?.Contains(objKnowledgeSkill.Attribute)
+                                                    != false)
                                                 {
-                                                    lstDropdownItems.Add(
-                                                        new ListItem(objKnowledgeSkill.Name,
-                                                                     objKnowledgeSkill.CurrentDisplayName));
+                                                    int intSkillRating = objKnowledgeSkill.Rating;
+                                                    if (intSkillRating >= intMinimumRating && intRating < intMaximumRating)
+                                                    {
+                                                        lstDropdownItems.Add(
+                                                            new ListItem(objKnowledgeSkill.Name,
+                                                                         objKnowledgeSkill.CurrentDisplayName));
+                                                    }
                                                 }
+
+                                                setProcessedSkillNames.Add(objKnowledgeSkill.Name);
                                             }
 
-                                            setProcessedSkillNames.Add(objKnowledgeSkill.Name);
-                                        }
-
-                                        if (!string.IsNullOrEmpty(strPrompt)
-                                            && !setProcessedSkillNames.Contains(strPrompt))
-                                        {
-                                            lstDropdownItems.Add(
-                                                new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
-                                            setProcessedSkillNames.Add(strPrompt);
-                                        }
-
-                                        if (intMinimumRating <= 0)
-                                        {
-                                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                       out StringBuilder sbdFilter))
+                                            if (!string.IsNullOrEmpty(strPrompt)
+                                                && !setProcessedSkillNames.Contains(strPrompt))
                                             {
-                                                if (setAllowedCategories?.Count > 0)
+                                                lstDropdownItems.Add(
+                                                    new ListItem(strPrompt, objCharacter.TranslateExtra(strPrompt)));
+                                                setProcessedSkillNames.Add(strPrompt);
+                                            }
+
+                                            if (intMinimumRating <= 0)
+                                            {
+                                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                           out StringBuilder sbdFilter))
                                                 {
-                                                    sbdFilter.Append('(');
-                                                    foreach (string strCategory in setAllowedCategories)
+                                                    if (setAllowedCategories?.Count > 0)
                                                     {
-                                                        sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
-                                                                 .Append(" or ");
+                                                        sbdFilter.Append('(');
+                                                        foreach (string strCategory in setAllowedCategories)
+                                                        {
+                                                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
+                                                                     .Append(" or ");
+                                                        }
+
+                                                        sbdFilter.Length -= 4;
+                                                        sbdFilter.Append(')');
                                                     }
 
-                                                    sbdFilter.Length -= 4;
-                                                    sbdFilter.Append(')');
-                                                }
-
-                                                if (setForbiddenCategories?.Count > 0)
-                                                {
-                                                    sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
-                                                    foreach (string strCategory in setForbiddenCategories)
+                                                    if (setForbiddenCategories?.Count > 0)
                                                     {
-                                                        sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
-                                                                 .Append(" or ");
+                                                        sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
+                                                        foreach (string strCategory in setForbiddenCategories)
+                                                        {
+                                                            sbdFilter.Append("category = ").Append(strCategory.CleanXPath())
+                                                                     .Append(" or ");
+                                                        }
+
+                                                        sbdFilter.Length -= 4;
+                                                        sbdFilter.Append(')');
                                                     }
 
-                                                    sbdFilter.Length -= 4;
-                                                    sbdFilter.Append(')');
-                                                }
-
-                                                if (setAllowedNames?.Count > 0)
-                                                {
-                                                    sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
-                                                    foreach (string strName in setAllowedNames)
+                                                    if (setAllowedNames?.Count > 0)
                                                     {
-                                                        sbdFilter.Append("name = ").Append(strName.CleanXPath())
-                                                                 .Append(" or ");
+                                                        sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
+                                                        foreach (string strName in setAllowedNames)
+                                                        {
+                                                            sbdFilter.Append("name = ").Append(strName.CleanXPath())
+                                                                     .Append(" or ");
+                                                        }
+
+                                                        sbdFilter.Length -= 4;
+                                                        sbdFilter.Append(')');
                                                     }
 
-                                                    sbdFilter.Length -= 4;
-                                                    sbdFilter.Append(')');
-                                                }
-
-                                                if (setProcessedSkillNames.Count > 0)
-                                                {
-                                                    sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
-                                                    foreach (string strName in setProcessedSkillNames)
+                                                    if (setProcessedSkillNames.Count > 0)
                                                     {
-                                                        sbdFilter.Append("name = ").Append(strName.CleanXPath())
-                                                                 .Append(" or ");
+                                                        sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
+                                                        foreach (string strName in setProcessedSkillNames)
+                                                        {
+                                                            sbdFilter.Append("name = ").Append(strName.CleanXPath())
+                                                                     .Append(" or ");
+                                                        }
+
+                                                        sbdFilter.Length -= 4;
+                                                        sbdFilter.Append(')');
                                                     }
 
-                                                    sbdFilter.Length -= 4;
-                                                    sbdFilter.Append(')');
-                                                }
-
-                                                if (setAllowedLinkedAttributes?.Count > 0)
-                                                {
-                                                    sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
-                                                    foreach (string strAttribute in setAllowedLinkedAttributes)
+                                                    if (setAllowedLinkedAttributes?.Count > 0)
                                                     {
-                                                        sbdFilter.Append("attribute = ")
-                                                                 .Append(strAttribute.CleanXPath())
-                                                                 .Append(" or ");
+                                                        sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
+                                                        foreach (string strAttribute in setAllowedLinkedAttributes)
+                                                        {
+                                                            sbdFilter.Append("attribute = ")
+                                                                     .Append(strAttribute.CleanXPath())
+                                                                     .Append(" or ");
+                                                        }
+
+                                                        sbdFilter.Length -= 4;
+                                                        sbdFilter.Append(')');
                                                     }
 
-                                                    sbdFilter.Length -= 4;
-                                                    sbdFilter.Append(')');
-                                                }
-
-                                                string strFilter = sbdFilter.Length > 0
-                                                    ? ") and (" + sbdFilter
-                                                    : string.Empty;
-                                                foreach (XPathNavigator xmlSkill in objCharacter
-                                                             .LoadDataXPath("skills.xml")
-                                                             .Select(
-                                                                 "/chummer/knowledgeskills/skill[(not(hide)"
-                                                                 + strFilter + ")]"))
-                                                {
-                                                    string strName = xmlSkill.SelectSingleNode("name")?.Value;
-                                                    if (!string.IsNullOrEmpty(strName))
-                                                        lstDropdownItems.Add(
-                                                            new ListItem(
-                                                                strName,
-                                                                xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                                                ?? strName));
+                                                    string strFilter = sbdFilter.Length > 0
+                                                        ? ") and (" + sbdFilter
+                                                        : string.Empty;
+                                                    foreach (XPathNavigator xmlSkill in objCharacter
+                                                                 .LoadDataXPath("skills.xml")
+                                                                 .Select(
+                                                                     "/chummer/knowledgeskills/skill[(not(hide)"
+                                                                     + strFilter + ")]"))
+                                                    {
+                                                        string strName = xmlSkill.SelectSingleNode("name")?.Value;
+                                                        if (!string.IsNullOrEmpty(strName))
+                                                            lstDropdownItems.Add(
+                                                                new ListItem(
+                                                                    strName,
+                                                                    xmlSkill.SelectSingleNodeAndCacheExpression("translate")
+                                                                            ?.Value
+                                                                    ?? strName));
+                                                    }
                                                 }
                                             }
                                         }
@@ -1393,9 +1416,15 @@ namespace Chummer
                             {
                                 LimitSelection = _strForcedValue;
                             }
-                            else if (objCharacter?.Pushtext.Count != 0)
+                            else if (objCharacter != null)
                             {
-                                LimitSelection = objCharacter?.Pushtext.Pop();
+                                using (new EnterWriteLock(objCharacter.LockObject))
+                                {
+                                    if (objCharacter.PushText.TryTake(out string strText))
+                                    {
+                                        LimitSelection = strText;
+                                    }
+                                }
                             }
 
                             sbdTrace.Append("SelectedValue = ").AppendLine(SelectedValue);
@@ -1642,7 +1671,8 @@ namespace Chummer
             {
                 try
                 {
-                    objImprovementMethod.Invoke(bonusNode);
+                    using (new EnterWriteLock(objCharacter.LockObject))
+                        objImprovementMethod.Invoke(bonusNode);
                 }
                 catch (AbortedException)
                 {
@@ -1686,345 +1716,353 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             if (objImprovementList == null)
                 throw new ArgumentNullException(nameof(objImprovementList));
-            foreach (Improvement objImprovement in objImprovementList)
-            {
-                // Enable the Improvement.
-                objImprovement.Enabled = true;
-            }
 
-            bool blnCharacterHasSkillsoftAccess
-                = ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0;
-            // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
-            foreach (Improvement objImprovement in objImprovementList)
+            using (new EnterWriteLock(objCharacter.LockObject))
             {
-                string strImprovedName = objImprovement.ImprovedName;
-                string strUniqueName = objImprovement.UniqueName;
-                switch (objImprovement.ImproveType)
+                foreach (Improvement objImprovement in objImprovementList)
                 {
-                    case Improvement.ImprovementType.SkillLevel:
-                        //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
-                        //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
-                        //{
-                        //    //wrote as foreach first, modify collection, not want rename
-                        //    Skill skill = _objCharacter.SkillsSection.Skills[i];
-                        //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
-                        //    {
-                        //        Skill fold = skill.Fold[i];
-                        //        if (fold.Id.ToString() == strImprovedName)
-                        //        {
-                        //            skill.Free(fold);
-                        //            _objCharacter.SkillsSection.Skills.Remove(fold);
-                        //        }
-                        //    }
+                    // Enable the Improvement.
+                    objImprovement.Enabled = true;
+                }
 
-                        //    if (skill.Id.ToString() == strImprovedName)
-                        //    {
-                        //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-                        //        //empty list, can't call clear as exposed list is RO
-
-                        //        _objCharacter.SkillsSection.Skills.Remove(skill);
-                        //    }
-                        //}
-                        break;
-
-                    case Improvement.ImprovementType.SkillsoftAccess:
-                        foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
-                        {
-                            if (!objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
-                                objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Skillsoft:
+                bool blnCharacterHasSkillsoftAccess
+                    = ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess) > 0;
+                // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
+                foreach (Improvement objImprovement in objImprovementList)
+                {
+                    string strImprovedName = objImprovement.ImprovedName;
+                    string strUniqueName = objImprovement.UniqueName;
+                    switch (objImprovement.ImproveType)
                     {
-                        foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills.Where(
-                                     x => x.InternalId == strImprovedName))
-                        {
-                            if (blnCharacterHasSkillsoftAccess
-                                && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
-                                objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
-                        }
-                    }
-                        break;
+                        case Improvement.ImprovementType.SkillLevel:
+                            //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
+                            //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+                            //{
+                            //    //wrote as foreach first, modify collection, not want rename
+                            //    Skill skill = _objCharacter.SkillsSection.Skills[i];
+                            //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
+                            //    {
+                            //        Skill fold = skill.Fold[i];
+                            //        if (fold.Id.ToString() == strImprovedName)
+                            //        {
+                            //            skill.Free(fold);
+                            //            _objCharacter.SkillsSection.Skills.Remove(fold);
+                            //        }
+                            //    }
 
-                    case Improvement.ImprovementType.Attribute:
-                        // Determine if access to any Special Attributes have been lost.
-                        if (strUniqueName == "enableattribute")
-                        {
-                            switch (strImprovedName)
+                            //    if (skill.Id.ToString() == strImprovedName)
+                            //    {
+                            //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+                            //        //empty list, can't call clear as exposed list is RO
+
+                            //        _objCharacter.SkillsSection.Skills.Remove(skill);
+                            //    }
+                            //}
+                            break;
+
+                        case Improvement.ImprovementType.SkillsoftAccess:
+                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
                             {
-                                case "MAG":
-                                    objCharacter.MAGEnabled = true;
-                                    break;
+                                if (!objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                    objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
+                            }
 
-                                case "RES":
-                                    objCharacter.RESEnabled = true;
-                                    break;
+                            break;
 
-                                case "DEP":
-                                    objCharacter.DEPEnabled = true;
-                                    break;
+                        case Improvement.ImprovementType.Skillsoft:
+                        {
+                            foreach (KnowledgeSkill objKnowledgeSkill in
+                                     objCharacter.SkillsSection.KnowsoftSkills.Where(
+                                         x => x.InternalId == strImprovedName))
+                            {
+                                if (blnCharacterHasSkillsoftAccess
+                                    && !objCharacter.SkillsSection.KnowledgeSkills.Contains(objKnowledgeSkill))
+                                    objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
                             }
                         }
+                            break;
 
-                        break;
-
-                    case Improvement.ImprovementType.SpecialTab:
-                        switch (strUniqueName)
-                        {
-                            // Determine if access to any special tabs have been lost.
-                            case "enabletab":
-                                switch (strImprovedName)
-                                {
-                                    case "Magician":
-                                        objCharacter.MagicianEnabled = true;
-                                        break;
-
-                                    case "Adept":
-                                        objCharacter.AdeptEnabled = true;
-                                        break;
-
-                                    case "Technomancer":
-                                        objCharacter.TechnomancerEnabled = true;
-                                        break;
-
-                                    case "Advanced Programs":
-                                        objCharacter.AdvancedProgramsEnabled = true;
-                                        break;
-
-                                    case "Critter":
-                                        objCharacter.CritterEnabled = true;
-                                        break;
-                                }
-
-                                break;
-                            // Determine if access to any special tabs has been regained
-                            case "disabletab":
-                                switch (strImprovedName)
-                                {
-                                    case "Cyberware":
-                                        objCharacter.CyberwareDisabled = true;
-                                        break;
-
-                                    case "Initiation":
-                                        objCharacter.InitiationForceDisabled = true;
-                                        break;
-                                }
-
-                                break;
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.PrototypeTranshuman:
-                        // Legacy compatibility
-                        if (string.IsNullOrEmpty(strImprovedName))
-                            objCharacter.PrototypeTranshuman = 1;
-                        else
-                            objCharacter.PrototypeTranshuman
-                                += Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
-                        break;
-
-                    case Improvement.ImprovementType.Adapsin:
-                        break;
-
-                    case Improvement.ImprovementType.AddContact:
-                        Contact objNewContact
-                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
-                        if (objNewContact != null)
-                        {
-                            // TODO: Add code to enable disabled contact
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Art:
-                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objArt != null)
-                        {
-                            Improvement.ImprovementSource eSource
-                                = objArt.SourceType;
-                            EnableImprovements(objCharacter,
-                                               objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == eSource
-                                                        && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Metamagic:
-                    case Improvement.ImprovementType.Echo:
-                        Metamagic objMetamagic
-                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objMetamagic != null)
-                        {
-                            Improvement.ImprovementSource eSource
-                                = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic
-                                    ? Improvement.ImprovementSource.Metamagic
-                                    : Improvement.ImprovementSource.Echo;
-                            EnableImprovements(objCharacter,
-                                               objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == eSource
-                                                        && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.CritterPower:
-                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                            x => x.InternalId == strImprovedName || (x.Name == strImprovedName
-                                && x.Extra == strUniqueName));
-                        if (objCritterPower != null)
-                        {
-                            string strPowerId = objCritterPower.InternalId;
-                            EnableImprovements(objCharacter,
-                                               objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == Improvement.ImprovementSource.CritterPower
-                                                        && x.SourceName == strPowerId && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.MentorSpirit:
-                    case Improvement.ImprovementType.Paragon:
-                        MentorSpirit objMentor
-                            = objCharacter.MentorSpirits.FirstOrDefault(
-                                x => x.InternalId == strImprovedName);
-                        if (objMentor != null)
-                        {
-                            EnableImprovements(objCharacter,
-                                               objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit
-                                                        && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Gear:
-                        Gear objGear
-                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        objGear?.ChangeEquippedStatus(true);
-                        break;
-
-                    case Improvement.ImprovementType.Weapon:
-                        Weapon objWeapon
-                            = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                      x => x.InternalId == strImprovedName)
-                              ??
-                              objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out _, out _, out _);
-                        if (objWeapon != null)
-                            objWeapon.Equipped = true;
-                        break;
-
-                    case Improvement.ImprovementType.Spell:
-                        Spell objSpell
-                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objSpell != null)
-                        {
-                            EnableImprovements(objCharacter,
-                                               objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == Improvement.ImprovementSource.Spell
-                                                        && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.ComplexForm:
-                        ComplexForm objComplexForm
-                            = objCharacter.ComplexForms.FirstOrDefault(
-                                x => x.InternalId == strImprovedName);
-                        if (objComplexForm != null)
-                        {
-                            EnableImprovements(objCharacter,
-                                               objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm
-                                                        && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.MartialArt:
-                        MartialArt objMartialArt
-                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objMartialArt != null)
-                        {
-                            EnableImprovements(objCharacter,
-                                               objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == Improvement.ImprovementSource.MartialArt
-                                                        && x.SourceName == strImprovedName && x.Enabled));
-                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                        case Improvement.ImprovementType.Attribute:
+                            // Determine if access to any Special Attributes have been lost.
+                            if (strUniqueName == "enableattribute")
                             {
-                                string strTechniqueId = objTechnique.InternalId;
+                                switch (strImprovedName)
+                                {
+                                    case "MAG":
+                                        objCharacter.MAGEnabled = true;
+                                        break;
+
+                                    case "RES":
+                                        objCharacter.RESEnabled = true;
+                                        break;
+
+                                    case "DEP":
+                                        objCharacter.DEPEnabled = true;
+                                        break;
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpecialTab:
+                            switch (strUniqueName)
+                            {
+                                // Determine if access to any special tabs have been lost.
+                                case "enabletab":
+                                    switch (strImprovedName)
+                                    {
+                                        case "Magician":
+                                            objCharacter.MagicianEnabled = true;
+                                            break;
+
+                                        case "Adept":
+                                            objCharacter.AdeptEnabled = true;
+                                            break;
+
+                                        case "Technomancer":
+                                            objCharacter.TechnomancerEnabled = true;
+                                            break;
+
+                                        case "Advanced Programs":
+                                            objCharacter.AdvancedProgramsEnabled = true;
+                                            break;
+
+                                        case "Critter":
+                                            objCharacter.CritterEnabled = true;
+                                            break;
+                                    }
+
+                                    break;
+                                // Determine if access to any special tabs has been regained
+                                case "disabletab":
+                                    switch (strImprovedName)
+                                    {
+                                        case "Cyberware":
+                                            objCharacter.CyberwareDisabled = true;
+                                            break;
+
+                                        case "Initiation":
+                                            objCharacter.InitiationForceDisabled = true;
+                                            break;
+                                    }
+
+                                    break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.PrototypeTranshuman:
+                            // Legacy compatibility
+                            if (string.IsNullOrEmpty(strImprovedName))
+                                objCharacter.PrototypeTranshuman = 1;
+                            else
+                                objCharacter.PrototypeTranshuman
+                                    += Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            break;
+
+                        case Improvement.ImprovementType.Adapsin:
+                            break;
+
+                        case Improvement.ImprovementType.AddContact:
+                            Contact objNewContact
+                                = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
+                            if (objNewContact != null)
+                            {
+                                // TODO: Add code to enable disabled contact
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Art:
+                            Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objArt != null)
+                            {
+                                Improvement.ImprovementSource eSource
+                                    = objArt.SourceType;
                                 EnableImprovements(objCharacter,
                                                    objCharacter.Improvements.Where(
-                                                       x => x.ImproveSource == Improvement.ImprovementSource
-                                                                .MartialArtTechnique
-                                                            && x.SourceName == strTechniqueId && x.Enabled));
+                                                       x => x.ImproveSource == eSource
+                                                            && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Metamagic:
+                        case Improvement.ImprovementType.Echo:
+                            Metamagic objMetamagic
+                                = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objMetamagic != null)
+                            {
+                                Improvement.ImprovementSource eSource
+                                    = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic
+                                        ? Improvement.ImprovementSource.Metamagic
+                                        : Improvement.ImprovementSource.Echo;
+                                EnableImprovements(objCharacter,
+                                                   objCharacter.Improvements.Where(
+                                                       x => x.ImproveSource == eSource
+                                                            && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.CritterPower:
+                            CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
+                                x => x.InternalId == strImprovedName || (x.Name == strImprovedName
+                                                                         && x.Extra == strUniqueName));
+                            if (objCritterPower != null)
+                            {
+                                string strPowerId = objCritterPower.InternalId;
+                                EnableImprovements(objCharacter,
+                                                   objCharacter.Improvements.Where(
+                                                       x => x.ImproveSource
+                                                            == Improvement.ImprovementSource.CritterPower
+                                                            && x.SourceName == strPowerId && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.MentorSpirit:
+                        case Improvement.ImprovementType.Paragon:
+                            MentorSpirit objMentor
+                                = objCharacter.MentorSpirits.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName);
+                            if (objMentor != null)
+                            {
+                                EnableImprovements(objCharacter,
+                                                   objCharacter.Improvements.Where(
+                                                       x => x.ImproveSource
+                                                            == Improvement.ImprovementSource.MentorSpirit
+                                                            && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Gear:
+                            Gear objGear
+                                = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            objGear?.ChangeEquippedStatus(true);
+                            break;
+
+                        case Improvement.ImprovementType.Weapon:
+                            Weapon objWeapon
+                                = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                                                          x => x.InternalId == strImprovedName)
+                                  ??
+                                  objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out _, out _, out _);
+                            if (objWeapon != null)
+                                objWeapon.Equipped = true;
+                            break;
+
+                        case Improvement.ImprovementType.Spell:
+                            Spell objSpell
+                                = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objSpell != null)
+                            {
+                                EnableImprovements(objCharacter,
+                                                   objCharacter.Improvements.Where(
+                                                       x => x.ImproveSource == Improvement.ImprovementSource.Spell
+                                                            && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.ComplexForm:
+                            ComplexForm objComplexForm
+                                = objCharacter.ComplexForms.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName);
+                            if (objComplexForm != null)
+                            {
+                                EnableImprovements(objCharacter,
+                                                   objCharacter.Improvements.Where(
+                                                       x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm
+                                                            && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.MartialArt:
+                            MartialArt objMartialArt
+                                = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objMartialArt != null)
+                            {
+                                EnableImprovements(objCharacter,
+                                                   objCharacter.Improvements.Where(
+                                                       x => x.ImproveSource == Improvement.ImprovementSource.MartialArt
+                                                            && x.SourceName == strImprovedName && x.Enabled));
+                                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                                {
+                                    string strTechniqueId = objTechnique.InternalId;
+                                    EnableImprovements(objCharacter,
+                                                       objCharacter.Improvements.Where(
+                                                           x => x.ImproveSource == Improvement.ImprovementSource
+                                                                    .MartialArtTechnique
+                                                                && x.SourceName == strTechniqueId && x.Enabled));
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpecialSkills:
+                        {
+                            SkillsSection.FilterOption eFilterOption
+                                = (SkillsSection.FilterOption) Enum.Parse(
+                                    typeof(SkillsSection.FilterOption), strImprovedName);
+                            foreach (Skill objSkill in objCharacter.SkillsSection.GetActiveSkillsFromData(
+                                         eFilterOption, false, objImprovement.Target))
+                            {
+                                objSkill.ForceDisabled = false;
                             }
                         }
+                            break;
 
-                        break;
+                        case Improvement.ImprovementType.SpecificQuality:
+                            Quality objQuality = objCharacter.Qualities.FirstOrDefault(
+                                objLoopQuality => objLoopQuality.InternalId == strImprovedName);
+                            if (objQuality != null)
+                            {
+                                EnableImprovements(objCharacter,
+                                                   objCharacter.Improvements.Where(
+                                                       x => x.ImproveSource == Improvement.ImprovementSource.Quality
+                                                            && x.SourceName == strImprovedName && x.Enabled));
+                            }
 
-                    case Improvement.ImprovementType.SpecialSkills:
-                    {
-                        SkillsSection.FilterOption eFilterOption
-                            = (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption), strImprovedName);
-                        foreach (Skill objSkill in objCharacter.SkillsSection.GetActiveSkillsFromData(
-                                     eFilterOption, false, objImprovement.Target))
+                            break;
+                        /*
+                        case Improvement.ImprovementType.SkillSpecialization:
+                            {
+                                Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                                SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
+                                //if (objSkillSpec != null)
+                                // TODO: Add temporarily remove skill specialization
+                            }
+                            break;
+                            */
+                        case Improvement.ImprovementType.AIProgram:
+                            AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
+                                objLoopProgram => objLoopProgram.InternalId == strImprovedName);
+                            if (objProgram != null)
+                            {
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
+                                                             && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.FreeWare:
                         {
-                            objSkill.ForceDisabled = false;
+                            Cyberware objCyberware
+                                = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
+                            objCyberware?.ChangeModularEquip(true);
                         }
+                            break;
                     }
-                        break;
-
-                    case Improvement.ImprovementType.SpecificQuality:
-                        Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                            objLoopQuality => objLoopQuality.InternalId == strImprovedName);
-                        if (objQuality != null)
-                        {
-                            EnableImprovements(objCharacter,
-                                               objCharacter.Improvements.Where(
-                                                   x => x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                        && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-                    /*
-                    case Improvement.ImprovementType.SkillSpecialization:
-                        {
-                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
-                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
-                            //if (objSkillSpec != null)
-                            // TODO: Add temporarily remove skill specialization
-                        }
-                        break;
-                        */
-                    case Improvement.ImprovementType.AIProgram:
-                        AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                            objLoopProgram => objLoopProgram.InternalId == strImprovedName);
-                        if (objProgram != null)
-                        {
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
-                                                         && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.FreeWare:
-                    {
-                        Cyberware objCyberware
-                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                        objCyberware?.ChangeModularEquip(true);
-                    }
-                        break;
                 }
-            }
 
-            objImprovementList.ProcessRelevantEvents();
+                objImprovementList.ProcessRelevantEvents();
+            }
         }
 
         public static void DisableImprovements(Character objCharacter, IEnumerable<Improvement> objImprovementList)
@@ -2044,376 +2082,383 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             if (objImprovementList == null)
                 throw new ArgumentNullException(nameof(objImprovementList));
-            foreach (Improvement objImprovement in objImprovementList)
-            {
-                // Disable the Improvement.
-                objImprovement.Enabled = false;
-            }
 
-            // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
-            foreach (Improvement objImprovement in objImprovementList)
+            using (new EnterWriteLock(objCharacter.LockObject))
             {
-                string strImprovedName = objImprovement.ImprovedName;
-                string strUniqueName = objImprovement.UniqueName;
-                Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
-                string strSourceName = objImprovement.SourceName;
-                bool blnHasDuplicate = objCharacter.Improvements.Any(
-                    x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
-                                                       && x.ImproveType == eImprovementType
-                                                       && x.SourceName != strSourceName
-                                                       && x.Enabled);
-
-                switch (eImprovementType)
+                foreach (Improvement objImprovement in objImprovementList)
                 {
-                    case Improvement.ImprovementType.SkillLevel:
-                        //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
-                        //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
-                        //{
-                        //    //wrote as foreach first, modify collection, not want rename
-                        //    Skill skill = _objCharacter.SkillsSection.Skills[i];
-                        //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
-                        //    {
-                        //        Skill fold = skill.Fold[i];
-                        //        if (fold.Id.ToString() == strImprovedName)
-                        //        {
-                        //            skill.Free(fold);
-                        //            _objCharacter.SkillsSection.Skills.Remove(fold);
-                        //        }
-                        //    }
+                    // Disable the Improvement.
+                    objImprovement.Enabled = false;
+                }
 
-                        //    if (skill.Id.ToString() == strImprovedName)
-                        //    {
-                        //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-                        //        //empty list, can't call clear as exposed list is RO
+                // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
+                foreach (Improvement objImprovement in objImprovementList)
+                {
+                    string strImprovedName = objImprovement.ImprovedName;
+                    string strUniqueName = objImprovement.UniqueName;
+                    Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
+                    string strSourceName = objImprovement.SourceName;
+                    bool blnHasDuplicate = objCharacter.Improvements.Any(
+                        x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                           && x.ImproveType == eImprovementType
+                                                           && x.SourceName != strSourceName
+                                                           && x.Enabled);
 
-                        //        _objCharacter.SkillsSection.Skills.Remove(skill);
-                        //    }
-                        //}
-                        break;
+                    switch (eImprovementType)
+                    {
+                        case Improvement.ImprovementType.SkillLevel:
+                            //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
+                            //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+                            //{
+                            //    //wrote as foreach first, modify collection, not want rename
+                            //    Skill skill = _objCharacter.SkillsSection.Skills[i];
+                            //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
+                            //    {
+                            //        Skill fold = skill.Fold[i];
+                            //        if (fold.Id.ToString() == strImprovedName)
+                            //        {
+                            //            skill.Free(fold);
+                            //            _objCharacter.SkillsSection.Skills.Remove(fold);
+                            //        }
+                            //    }
 
-                    case Improvement.ImprovementType.SkillsoftAccess:
-                        if (!blnHasDuplicate)
-                        {
-                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
-                            {
-                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
-                            }
-                        }
+                            //    if (skill.Id.ToString() == strImprovedName)
+                            //    {
+                            //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+                            //        //empty list, can't call clear as exposed list is RO
 
-                        break;
+                            //        _objCharacter.SkillsSection.Skills.Remove(skill);
+                            //    }
+                            //}
+                            break;
 
-                    case Improvement.ImprovementType.Skillsoft:
-                        if (!blnHasDuplicate)
-                        {
-                            objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(
-                                x => x.InternalId == strImprovedName);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Attribute:
-                        // Determine if access to any Special Attributes have been lost.
-                        if (strUniqueName == "enableattribute" && !blnHasDuplicate)
-                        {
-                            switch (strImprovedName)
-                            {
-                                case "MAG":
-                                    objCharacter.MAGEnabled = false;
-                                    break;
-
-                                case "RES":
-                                    objCharacter.RESEnabled = false;
-                                    break;
-
-                                case "DEP":
-                                    objCharacter.DEPEnabled = false;
-                                    break;
-                            }
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.SpecialTab:
-                        // Determine if access to any special tabs have been lost.
-                        if (!blnHasDuplicate)
-                        {
-                            switch (strUniqueName)
-                            {
-                                case "enabletab":
-                                    switch (strImprovedName)
-                                    {
-                                        case "Magician":
-                                            objCharacter.MagicianEnabled = false;
-                                            break;
-
-                                        case "Adept":
-                                            objCharacter.AdeptEnabled = false;
-                                            break;
-
-                                        case "Technomancer":
-                                            objCharacter.TechnomancerEnabled = false;
-                                            break;
-
-                                        case "Advanced Programs":
-                                            objCharacter.AdvancedProgramsEnabled = false;
-                                            break;
-
-                                        case "Critter":
-                                            objCharacter.CritterEnabled = false;
-                                            break;
-                                    }
-
-                                    break;
-                                // Determine if access to any special tabs has been regained
-                                case "disabletab":
-                                    switch (strImprovedName)
-                                    {
-                                        case "Cyberware":
-                                            objCharacter.CyberwareDisabled = false;
-                                            break;
-
-                                        case "Initiation":
-                                            objCharacter.InitiationForceDisabled = false;
-                                            break;
-                                    }
-
-                                    break;
-                            }
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.PrototypeTranshuman:
-                        // Legacy compatibility
-                        if (string.IsNullOrEmpty(strImprovedName))
-                        {
+                        case Improvement.ImprovementType.SkillsoftAccess:
                             if (!blnHasDuplicate)
-                                objCharacter.PrototypeTranshuman = 0;
-                        }
-                        else
-                            objCharacter.PrototypeTranshuman
-                                -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
-
-                        break;
-
-                    case Improvement.ImprovementType.Adapsin:
-                        break;
-
-                    case Improvement.ImprovementType.AddContact:
-                        Contact objNewContact
-                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
-                        if (objNewContact != null)
-                        {
-                            // TODO: Add code to disable contact
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Art:
-                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objArt != null)
-                        {
-                            Improvement.ImprovementSource eSource = objArt.SourceType;
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == eSource
-                                                         && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Metamagic:
-                    case Improvement.ImprovementType.Echo:
-                        Metamagic objMetamagic
-                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objMetamagic != null)
-                        {
-                            Improvement.ImprovementSource eSource
-                                = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic
-                                    ? Improvement.ImprovementSource.Metamagic
-                                    : Improvement.ImprovementSource.Echo;
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == eSource
-                                                         && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.CritterPower:
-                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                            x => x.InternalId == strImprovedName || (x.Name == strImprovedName
-                                && x.Extra == strUniqueName));
-                        if (objCritterPower != null)
-                        {
-                            string strPowerId = objCritterPower.InternalId;
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == Improvement.ImprovementSource.CritterPower
-                                                         && x.SourceName == strPowerId && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.MentorSpirit:
-                    case Improvement.ImprovementType.Paragon:
-                        MentorSpirit objMentor
-                            = objCharacter.MentorSpirits.FirstOrDefault(
-                                x => x.InternalId == strImprovedName);
-                        if (objMentor != null)
-                        {
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == Improvement.ImprovementSource.MentorSpirit
-                                                         && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Gear:
-                        Gear objGear
-                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        objGear?.ChangeEquippedStatus(false);
-                        break;
-
-                    case Improvement.ImprovementType.Weapon:
-                        Weapon objWeapon
-                            = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                      x => x.InternalId == strImprovedName)
-                              ??
-                              objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out _, out _, out _);
-                        if (objWeapon != null)
-                            objWeapon.Equipped = false;
-                        break;
-
-                    case Improvement.ImprovementType.Spell:
-                        Spell objSpell
-                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objSpell != null)
-                        {
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == Improvement.ImprovementSource.Spell
-                                                         && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.ComplexForm:
-                        ComplexForm objComplexForm
-                            = objCharacter.ComplexForms.FirstOrDefault(
-                                x => x.InternalId == strImprovedName);
-                        if (objComplexForm != null)
-                        {
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == Improvement.ImprovementSource.ComplexForm
-                                                         && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.MartialArt:
-                        MartialArt objMartialArt
-                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objMartialArt != null)
-                        {
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == Improvement.ImprovementSource.MartialArt
-                                                         && x.SourceName == strImprovedName && x.Enabled));
-                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
                             {
-                                string strTechniqueId = objTechnique.InternalId;
+                                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                                {
+                                    objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Skillsoft:
+                            if (!blnHasDuplicate)
+                            {
+                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAll(
+                                    x => x.InternalId == strImprovedName);
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Attribute:
+                            // Determine if access to any Special Attributes have been lost.
+                            if (strUniqueName == "enableattribute" && !blnHasDuplicate)
+                            {
+                                switch (strImprovedName)
+                                {
+                                    case "MAG":
+                                        objCharacter.MAGEnabled = false;
+                                        break;
+
+                                    case "RES":
+                                        objCharacter.RESEnabled = false;
+                                        break;
+
+                                    case "DEP":
+                                        objCharacter.DEPEnabled = false;
+                                        break;
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpecialTab:
+                            // Determine if access to any special tabs have been lost.
+                            if (!blnHasDuplicate)
+                            {
+                                switch (strUniqueName)
+                                {
+                                    case "enabletab":
+                                        switch (strImprovedName)
+                                        {
+                                            case "Magician":
+                                                objCharacter.MagicianEnabled = false;
+                                                break;
+
+                                            case "Adept":
+                                                objCharacter.AdeptEnabled = false;
+                                                break;
+
+                                            case "Technomancer":
+                                                objCharacter.TechnomancerEnabled = false;
+                                                break;
+
+                                            case "Advanced Programs":
+                                                objCharacter.AdvancedProgramsEnabled = false;
+                                                break;
+
+                                            case "Critter":
+                                                objCharacter.CritterEnabled = false;
+                                                break;
+                                        }
+
+                                        break;
+                                    // Determine if access to any special tabs has been regained
+                                    case "disabletab":
+                                        switch (strImprovedName)
+                                        {
+                                            case "Cyberware":
+                                                objCharacter.CyberwareDisabled = false;
+                                                break;
+
+                                            case "Initiation":
+                                                objCharacter.InitiationForceDisabled = false;
+                                                break;
+                                        }
+
+                                        break;
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.PrototypeTranshuman:
+                            // Legacy compatibility
+                            if (string.IsNullOrEmpty(strImprovedName))
+                            {
+                                if (!blnHasDuplicate)
+                                    objCharacter.PrototypeTranshuman = 0;
+                            }
+                            else
+                                objCharacter.PrototypeTranshuman
+                                    -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+
+                            break;
+
+                        case Improvement.ImprovementType.Adapsin:
+                            break;
+
+                        case Improvement.ImprovementType.AddContact:
+                            Contact objNewContact
+                                = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
+                            if (objNewContact != null)
+                            {
+                                // TODO: Add code to disable contact
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Art:
+                            Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objArt != null)
+                            {
+                                Improvement.ImprovementSource eSource = objArt.SourceType;
                                 DisableImprovements(objCharacter,
                                                     objCharacter.Improvements.Where(
-                                                        x => x.ImproveSource == Improvement.ImprovementSource
-                                                                 .MartialArtTechnique
-                                                             && x.SourceName == strTechniqueId && x.Enabled));
+                                                        x => x.ImproveSource == eSource
+                                                             && x.SourceName == strImprovedName && x.Enabled));
                             }
-                        }
 
-                        break;
+                            break;
 
-                    case Improvement.ImprovementType.SpecialSkills:
-                        if (!blnHasDuplicate)
-                        {
-                            SkillsSection.FilterOption eFilterOption
-                                = (SkillsSection.FilterOption) Enum.Parse(
-                                    typeof(SkillsSection.FilterOption), strImprovedName);
-                            HashSet<Skill> setSkillsToDisable
-                                = new HashSet<Skill>(objCharacter.SkillsSection.GetActiveSkillsFromData(
-                                                         eFilterOption, false, objImprovement.Target));
-                            foreach (Improvement objLoopImprovement in GetCachedImprovementListForValueOf(
-                                         objCharacter, Improvement.ImprovementType.SpecialSkills))
+                        case Improvement.ImprovementType.Metamagic:
+                        case Improvement.ImprovementType.Echo:
+                            Metamagic objMetamagic
+                                = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objMetamagic != null)
                             {
-                                if (objLoopImprovement == objImprovement)
-                                    continue;
-                                eFilterOption
+                                Improvement.ImprovementSource eSource
+                                    = objImprovement.ImproveType == Improvement.ImprovementType.Metamagic
+                                        ? Improvement.ImprovementSource.Metamagic
+                                        : Improvement.ImprovementSource.Echo;
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource == eSource
+                                                             && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.CritterPower:
+                            CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
+                                x => x.InternalId == strImprovedName || (x.Name == strImprovedName
+                                                                         && x.Extra == strUniqueName));
+                            if (objCritterPower != null)
+                            {
+                                string strPowerId = objCritterPower.InternalId;
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource
+                                                             == Improvement.ImprovementSource.CritterPower
+                                                             && x.SourceName == strPowerId && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.MentorSpirit:
+                        case Improvement.ImprovementType.Paragon:
+                            MentorSpirit objMentor
+                                = objCharacter.MentorSpirits.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName);
+                            if (objMentor != null)
+                            {
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource
+                                                             == Improvement.ImprovementSource.MentorSpirit
+                                                             && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Gear:
+                            Gear objGear
+                                = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            objGear?.ChangeEquippedStatus(false);
+                            break;
+
+                        case Improvement.ImprovementType.Weapon:
+                            Weapon objWeapon
+                                = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                                                          x => x.InternalId == strImprovedName)
+                                  ??
+                                  objCharacter.Vehicles.FindVehicleWeapon(strImprovedName, out _, out _, out _);
+                            if (objWeapon != null)
+                                objWeapon.Equipped = false;
+                            break;
+
+                        case Improvement.ImprovementType.Spell:
+                            Spell objSpell
+                                = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objSpell != null)
+                            {
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.Spell
+                                                             && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.ComplexForm:
+                            ComplexForm objComplexForm
+                                = objCharacter.ComplexForms.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName);
+                            if (objComplexForm != null)
+                            {
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource
+                                                             == Improvement.ImprovementSource.ComplexForm
+                                                             && x.SourceName == strImprovedName && x.Enabled));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.MartialArt:
+                            MartialArt objMartialArt
+                                = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objMartialArt != null)
+                            {
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.MartialArt
+                                                             && x.SourceName == strImprovedName && x.Enabled));
+                                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                                {
+                                    string strTechniqueId = objTechnique.InternalId;
+                                    DisableImprovements(objCharacter,
+                                                        objCharacter.Improvements.Where(
+                                                            x => x.ImproveSource == Improvement.ImprovementSource
+                                                                     .MartialArtTechnique
+                                                                 && x.SourceName == strTechniqueId && x.Enabled));
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpecialSkills:
+                            if (!blnHasDuplicate)
+                            {
+                                SkillsSection.FilterOption eFilterOption
                                     = (SkillsSection.FilterOption) Enum.Parse(
-                                        typeof(SkillsSection.FilterOption), objLoopImprovement.ImprovedName);
-                                setSkillsToDisable.ExceptWith(
-                                    objCharacter.SkillsSection.GetActiveSkillsFromData(
-                                        eFilterOption, false, objLoopImprovement.Target));
-                                if (setSkillsToDisable.Count == 0)
-                                    return;
+                                        typeof(SkillsSection.FilterOption), strImprovedName);
+                                HashSet<Skill> setSkillsToDisable
+                                    = new HashSet<Skill>(objCharacter.SkillsSection.GetActiveSkillsFromData(
+                                                             eFilterOption, false, objImprovement.Target));
+                                foreach (Improvement objLoopImprovement in GetCachedImprovementListForValueOf(
+                                             objCharacter, Improvement.ImprovementType.SpecialSkills))
+                                {
+                                    if (objLoopImprovement == objImprovement)
+                                        continue;
+                                    eFilterOption
+                                        = (SkillsSection.FilterOption) Enum.Parse(
+                                            typeof(SkillsSection.FilterOption), objLoopImprovement.ImprovedName);
+                                    setSkillsToDisable.ExceptWith(
+                                        objCharacter.SkillsSection.GetActiveSkillsFromData(
+                                            eFilterOption, false, objLoopImprovement.Target));
+                                    if (setSkillsToDisable.Count == 0)
+                                        return;
+                                }
+
+                                foreach (Skill objSkill in setSkillsToDisable)
+                                {
+                                    objSkill.ForceDisabled = true;
+                                }
                             }
 
-                            foreach (Skill objSkill in setSkillsToDisable)
+                            break;
+
+                        case Improvement.ImprovementType.SpecificQuality:
+                            Quality objQuality = objCharacter.Qualities.FirstOrDefault(
+                                objLoopQuality => objLoopQuality.InternalId == strImprovedName);
+                            if (objQuality != null)
                             {
-                                objSkill.ForceDisabled = true;
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.Quality
+                                                             && x.SourceName == strImprovedName && x.Enabled));
                             }
-                        }
 
-                        break;
+                            break;
+                        /*
+                        case Improvement.ImprovementType.SkillSpecialization:
+                            {
+                                Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                                SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
+                                //if (objSkillSpec != null)
+                                    // TODO: Temporarily remove skill specialization
+                            }
+                            break;
+                            */
+                        case Improvement.ImprovementType.AIProgram:
+                            AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
+                                objLoopProgram => objLoopProgram.InternalId == strImprovedName);
+                            if (objProgram != null)
+                            {
+                                DisableImprovements(objCharacter,
+                                                    objCharacter.Improvements.Where(
+                                                        x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
+                                                             && x.SourceName == strImprovedName && x.Enabled));
+                            }
 
-                    case Improvement.ImprovementType.SpecificQuality:
-                        Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                            objLoopQuality => objLoopQuality.InternalId == strImprovedName);
-                        if (objQuality != null)
+                            break;
+
+                        case Improvement.ImprovementType.FreeWare:
                         {
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == Improvement.ImprovementSource.Quality
-                                                         && x.SourceName == strImprovedName && x.Enabled));
+                            Cyberware objCyberware
+                                = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
+                            objCyberware?.ChangeModularEquip(false);
                         }
-
-                        break;
-                    /*
-                    case Improvement.ImprovementType.SkillSpecialization:
-                        {
-                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
-                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
-                            //if (objSkillSpec != null)
-                                // TODO: Temporarily remove skill specialization
-                        }
-                        break;
-                        */
-                    case Improvement.ImprovementType.AIProgram:
-                        AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                            objLoopProgram => objLoopProgram.InternalId == strImprovedName);
-                        if (objProgram != null)
-                        {
-                            DisableImprovements(objCharacter,
-                                                objCharacter.Improvements.Where(
-                                                    x => x.ImproveSource == Improvement.ImprovementSource.AIProgram
-                                                         && x.SourceName == strImprovedName && x.Enabled));
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.FreeWare:
-                    {
-                        Cyberware objCyberware
-                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                        objCyberware?.ChangeModularEquip(false);
+                            break;
                     }
-                        break;
                 }
-            }
 
-            objImprovementList.ProcessRelevantEvents();
+                objImprovementList.ProcessRelevantEvents();
+            }
         }
 
         /// <summary>
@@ -2434,25 +2479,33 @@ namespace Chummer
 
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
-            // A List of Improvements to hold all of the items that will eventually be deleted.
-            List<Improvement> objImprovementList = (string.IsNullOrEmpty(strSourceName)
-                ? objCharacter.Improvements.Where(objImprovement =>
-                                                      objImprovement.ImproveSource == objImprovementSource)
-                : objCharacter.Improvements.Where(objImprovement =>
-                                                      objImprovement.ImproveSource == objImprovementSource
-                                                      && objImprovement.SourceName == strSourceName)).ToList();
+            List<Improvement> objImprovementList;
+            using (new EnterReadLock(objCharacter.LockObject))
+            {
+                // A List of Improvements to hold all of the items that will eventually be deleted.
+                objImprovementList = (string.IsNullOrEmpty(strSourceName)
+                    ? objCharacter.Improvements.Where(objImprovement =>
+                                                          objImprovement.ImproveSource == objImprovementSource)
+                    : objCharacter.Improvements.Where(objImprovement =>
+                                                          objImprovement.ImproveSource == objImprovementSource
+                                                          && objImprovement.SourceName == strSourceName)).ToList();
+            }
+
             // Compatibility fix for when blnConcatSelectedValue was around
             if (strSourceName.IsGuid())
             {
                 string strSourceNameSpaced = strSourceName + LanguageManager.GetString("String_Space");
                 string strSourceNameSpacedInvariant = strSourceName + ' ';
-                objImprovementList.AddRange(objCharacter.Improvements.Where(
-                                                objImprovement =>
-                                                    objImprovement.ImproveSource == objImprovementSource &&
-                                                    (objImprovement.SourceName.StartsWith(
-                                                         strSourceNameSpaced, StringComparison.Ordinal)
-                                                     || objImprovement.SourceName.StartsWith(
-                                                         strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                using (new EnterReadLock(objCharacter.LockObject))
+                {
+                    objImprovementList.AddRange(objCharacter.Improvements.Where(
+                                                    objImprovement =>
+                                                        objImprovement.ImproveSource == objImprovementSource &&
+                                                        (objImprovement.SourceName.StartsWith(
+                                                             strSourceNameSpaced, StringComparison.Ordinal)
+                                                         || objImprovement.SourceName.StartsWith(
+                                                             strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                }
             }
 
             return RemoveImprovements(objCharacter, objImprovementList);
@@ -2478,427 +2531,433 @@ namespace Chummer
                 return 0;
             }
 
-            // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
-
-            // Now that we have all of the applicable Improvements, remove them from the character.
-            foreach (Improvement objImprovement in objImprovementList)
-            {
-                // Remove the Improvement.
-                objCharacter.Improvements.Remove(objImprovement);
-                ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
-            }
-
             decimal decReturn = 0;
-            // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
-            foreach (Improvement objImprovement in objImprovementList)
+            using (new EnterWriteLock(objCharacter.LockObject))
             {
-                string strImprovedName = objImprovement.ImprovedName;
-                string strUniqueName = objImprovement.UniqueName;
-                Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
-                // See if the character has anything else that is granting them the same bonus as this improvement
-                bool blnHasDuplicate;
-                if (blnAllowDuplicatesFromSameSource)
-                    blnHasDuplicate = objCharacter.Improvements.Any(
-                        x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
-                                                           && x.ImproveType == eImprovementType);
-                else
+                // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
+
+                // Now that we have all of the applicable Improvements, remove them from the character.
+                foreach (Improvement objImprovement in objImprovementList)
                 {
-                    string strSourceName = objImprovement.SourceName;
-                    blnHasDuplicate = objCharacter.Improvements.Any(
-                        x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
-                                                           && x.ImproveType == eImprovementType
-                                                           && x.SourceName != strSourceName);
+                    // Remove the Improvement.
+                    objCharacter.Improvements.Remove(objImprovement);
+                    ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
                 }
 
-                switch (eImprovementType)
+                // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
+                foreach (Improvement objImprovement in objImprovementList)
                 {
-                    case Improvement.ImprovementType.SkillLevel:
-                        //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
-                        //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
-                        //{
-                        //    //wrote as foreach first, modify collection, not want rename
-                        //    Skill skill = _objCharacter.SkillsSection.Skills[i];
-                        //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
-                        //    {
-                        //        Skill fold = skill.Fold[i];
-                        //        if (fold.Id.ToString() == strImprovedName)
-                        //        {
-                        //            skill.Free(fold);
-                        //            _objCharacter.SkillsSection.Skills.Remove(fold);
-                        //        }
-                        //    }
+                    string strImprovedName = objImprovement.ImprovedName;
+                    string strUniqueName = objImprovement.UniqueName;
+                    Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
+                    // See if the character has anything else that is granting them the same bonus as this improvement
+                    bool blnHasDuplicate;
+                    if (blnAllowDuplicatesFromSameSource)
+                        blnHasDuplicate = objCharacter.Improvements.Any(
+                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                               && x.ImproveType == eImprovementType);
+                    else
+                    {
+                        string strSourceName = objImprovement.SourceName;
+                        blnHasDuplicate = objCharacter.Improvements.Any(
+                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                               && x.ImproveType == eImprovementType
+                                                               && x.SourceName != strSourceName);
+                    }
 
-                        //    if (skill.Id.ToString() == strImprovedName)
-                        //    {
-                        //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
-                        //        //empty list, can't call clear as exposed list is RO
+                    switch (eImprovementType)
+                    {
+                        case Improvement.ImprovementType.SkillLevel:
+                            //TODO: Come back here and figure out wtf this did? Think it removed nested lifemodule skills? //Didn't this handle the collapsing knowledge skills thing?
+                            //for (int i = _objCharacter.SkillsSection.Skills.Count - 1; i >= 0; i--)
+                            //{
+                            //    //wrote as foreach first, modify collection, not want rename
+                            //    Skill skill = _objCharacter.SkillsSection.Skills[i];
+                            //    for (int j = skill.Fold.Count - 1; j >= 0; j--)
+                            //    {
+                            //        Skill fold = skill.Fold[i];
+                            //        if (fold.Id.ToString() == strImprovedName)
+                            //        {
+                            //            skill.Free(fold);
+                            //            _objCharacter.SkillsSection.Skills.Remove(fold);
+                            //        }
+                            //    }
 
-                        //        _objCharacter.SkillsSection.Skills.Remove(skill);
-                        //    }
-                        //}
-                        break;
+                            //    if (skill.Id.ToString() == strImprovedName)
+                            //    {
+                            //        while(skill.Fold.Count > 0) skill.Free(skill.Fold[0]);
+                            //        //empty list, can't call clear as exposed list is RO
 
-                    case Improvement.ImprovementType.SkillsoftAccess:
-                        if (!blnHasDuplicate)
-                        {
-                            foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
+                            //        _objCharacter.SkillsSection.Skills.Remove(skill);
+                            //    }
+                            //}
+                            break;
+
+                        case Improvement.ImprovementType.SkillsoftAccess:
+                            if (!blnHasDuplicate)
                             {
-                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
-                            }
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Skillsoft:
-                        if (!blnHasDuplicate)
-                        {
-                            objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
-                                x => x.InternalId == strImprovedName);
-                            for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
-                            {
-                                KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
-                                if (objSkill.InternalId == strImprovedName)
+                                foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection.KnowsoftSkills)
                                 {
-                                    objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
-                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                    objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Skillsoft:
+                            if (!blnHasDuplicate)
+                            {
+                                objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
+                                    x => x.InternalId == strImprovedName);
+                                for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
+                                {
+                                    KnowledgeSkill objSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                    if (objSkill.InternalId == strImprovedName)
+                                    {
+                                        objCharacter.SkillsSection.KnowledgeSkills.Remove(objSkill);
+                                        objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                    }
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Attribute:
+                            // Determine if access to any Special Attributes have been lost.
+                            if (strUniqueName == "enableattribute" && !blnHasDuplicate
+                                                                   && !blnReapplyImprovements)
+                            {
+                                switch (strImprovedName)
+                                {
+                                    case "MAG":
+                                        objCharacter.MAGEnabled = false;
+                                        break;
+
+                                    case "RES":
+                                        objCharacter.RESEnabled = false;
+                                        break;
+
+                                    case "DEP":
+                                        objCharacter.DEPEnabled = false;
+                                        break;
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpecialTab:
+                            // Determine if access to any special tabs have been lost.
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
+                            {
+                                switch (strUniqueName)
+                                {
+                                    case "enabletab":
+                                        switch (strImprovedName)
+                                        {
+                                            case "Magician":
+                                                objCharacter.MagicianEnabled = false;
+                                                break;
+
+                                            case "Adept":
+                                                objCharacter.AdeptEnabled = false;
+                                                break;
+
+                                            case "Technomancer":
+                                                objCharacter.TechnomancerEnabled = false;
+                                                break;
+
+                                            case "Advanced Programs":
+                                                objCharacter.AdvancedProgramsEnabled = false;
+                                                break;
+
+                                            case "Critter":
+                                                objCharacter.CritterEnabled = false;
+                                                break;
+                                        }
+
+                                        break;
+                                    // Determine if access to any special tabs has been regained
+                                    case "disabletab":
+                                        switch (strImprovedName)
+                                        {
+                                            case "Cyberware":
+                                                objCharacter.CyberwareDisabled = false;
+                                                break;
+
+                                            case "Initiation":
+                                                objCharacter.InitiationForceDisabled = false;
+                                                break;
+                                        }
+
+                                        break;
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.PrototypeTranshuman:
+                            // Legacy compatibility
+                            if (string.IsNullOrEmpty(strImprovedName))
+                            {
+                                if (!blnHasDuplicate)
+                                    objCharacter.PrototypeTranshuman = 0;
+                            }
+                            else
+                            {
+                                objCharacter.PrototypeTranshuman
+                                    -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Adapsin:
+                        {
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
+                            {
+                                foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(
+                                             x => x.Children, x => x.Grade.Adapsin))
+                                {
+                                    string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
+                                                                    .Trim();
+                                    // Determine which GradeList to use for the Cyberware.
+                                    objCyberware.Grade = objCharacter.GetGradeList(objCyberware.SourceType, true)
+                                                                     .FirstOrDefault(x => x.Name == strNewName);
                                 }
                             }
                         }
+                            break;
 
-                        break;
+                        case Improvement.ImprovementType.AddContact:
+                            Contact objNewContact
+                                = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
+                            if (objNewContact != null)
+                                objCharacter.Contacts.Remove(objNewContact);
+                            break;
 
-                    case Improvement.ImprovementType.Attribute:
-                        // Determine if access to any Special Attributes have been lost.
-                        if (strUniqueName == "enableattribute" && !blnHasDuplicate
-                                                               && !blnReapplyImprovements)
-                        {
-                            switch (strImprovedName)
+                        case Improvement.ImprovementType.Art:
+                            Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objArt != null)
                             {
-                                case "MAG":
-                                    objCharacter.MAGEnabled = false;
-                                    break;
-
-                                case "RES":
-                                    objCharacter.RESEnabled = false;
-                                    break;
-
-                                case "DEP":
-                                    objCharacter.DEPEnabled = false;
-                                    break;
+                                decReturn += RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId);
+                                objCharacter.Arts.Remove(objArt);
                             }
-                        }
 
-                        break;
+                            break;
 
-                    case Improvement.ImprovementType.SpecialTab:
-                        // Determine if access to any special tabs have been lost.
-                        if (!blnHasDuplicate && !blnReapplyImprovements)
-                        {
-                            switch (strUniqueName)
-                            {
-                                case "enabletab":
-                                    switch (strImprovedName)
-                                    {
-                                        case "Magician":
-                                            objCharacter.MagicianEnabled = false;
-                                            break;
-
-                                        case "Adept":
-                                            objCharacter.AdeptEnabled = false;
-                                            break;
-
-                                        case "Technomancer":
-                                            objCharacter.TechnomancerEnabled = false;
-                                            break;
-
-                                        case "Advanced Programs":
-                                            objCharacter.AdvancedProgramsEnabled = false;
-                                            break;
-
-                                        case "Critter":
-                                            objCharacter.CritterEnabled = false;
-                                            break;
-                                    }
-
-                                    break;
-                                // Determine if access to any special tabs has been regained
-                                case "disabletab":
-                                    switch (strImprovedName)
-                                    {
-                                        case "Cyberware":
-                                            objCharacter.CyberwareDisabled = false;
-                                            break;
-
-                                        case "Initiation":
-                                            objCharacter.InitiationForceDisabled = false;
-                                            break;
-                                    }
-
-                                    break;
-                            }
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.PrototypeTranshuman:
-                        // Legacy compatibility
-                        if (string.IsNullOrEmpty(strImprovedName))
-                        {
-                            if (!blnHasDuplicate)
-                                objCharacter.PrototypeTranshuman = 0;
-                        }
-                        else
-                        {
-                            objCharacter.PrototypeTranshuman
-                                -= Convert.ToDecimal(strImprovedName, GlobalSettings.InvariantCultureInfo);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Adapsin:
-                    {
-                        if (!blnHasDuplicate && !blnReapplyImprovements)
-                        {
-                            foreach (Cyberware objCyberware in objCharacter.Cyberware.DeepWhere(
-                                         x => x.Children, x => x.Grade.Adapsin))
-                            {
-                                string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)").Trim();
-                                // Determine which GradeList to use for the Cyberware.
-                                objCyberware.Grade = objCharacter.GetGradeList(objCyberware.SourceType, true)
-                                                                 .FirstOrDefault(x => x.Name == strNewName);
-                            }
-                        }
-                    }
-                        break;
-
-                    case Improvement.ImprovementType.AddContact:
-                        Contact objNewContact
-                            = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName);
-                        if (objNewContact != null)
-                            objCharacter.Contacts.Remove(objNewContact);
-                        break;
-
-                    case Improvement.ImprovementType.Art:
-                        Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objArt != null)
-                        {
-                            decReturn += RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId);
-                            objCharacter.Arts.Remove(objArt);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Metamagic:
-                    case Improvement.ImprovementType.Echo:
-                        Metamagic objMetamagic
-                            = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objMetamagic != null)
-                        {
-                            decReturn += RemoveImprovements(objCharacter,
-                                                            objImprovement.ImproveType
-                                                            == Improvement.ImprovementType.Metamagic
-                                                                ? Improvement.ImprovementSource.Metamagic
-                                                                : Improvement.ImprovementSource.Echo,
-                                                            objMetamagic.InternalId);
-                            objCharacter.Metamagics.Remove(objMetamagic);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.LimitModifier:
-                        LimitModifier limitMod
-                            = objCharacter.LimitModifiers.FirstOrDefault(
-                                x => x.InternalId == strImprovedName);
-                        if (limitMod != null)
-                        {
-                            objCharacter.LimitModifiers.Remove(limitMod);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.CritterPower:
-                        CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
-                            x => x.InternalId == strImprovedName || (x.Name == strImprovedName
-                                && x.Extra == strUniqueName));
-                        if (objCritterPower != null)
-                        {
-                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower,
-                                                            objCritterPower.InternalId);
-                            objCharacter.CritterPowers.Remove(objCritterPower);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.MentorSpirit:
-                    case Improvement.ImprovementType.Paragon:
-                        MentorSpirit objMentor
-                            = objCharacter.MentorSpirits.FirstOrDefault(
-                                x => x.InternalId == strImprovedName);
-                        if (objMentor != null)
-                        {
-                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit,
-                                                            objMentor.InternalId);
-                            objCharacter.MentorSpirits.Remove(objMentor);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Gear:
-                        Gear objGear
-                            = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objGear != null)
-                        {
-                            decReturn += objGear.TotalCost;
-                            decReturn += objGear.DeleteGear();
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.Weapon:
-                    {
-                        Weapon objWeapon
-                            = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
-                                                                      x => x.InternalId == strImprovedName)
-                              ??
-                              objCharacter.Vehicles.FindVehicleWeapon(strImprovedName);
-                        if (objWeapon != null)
-                        {
-                            decReturn += objWeapon.TotalCost;
-                            decReturn += objWeapon.DeleteWeapon();
-                        }
-                    }
-                        break;
-
-                    case Improvement.ImprovementType.Spell:
-                        Spell objSpell
-                            = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objSpell != null)
-                        {
-                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell,
-                                                            objSpell.InternalId);
-                            objCharacter.Spells.Remove(objSpell);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.ComplexForm:
-                        ComplexForm objComplexForm
-                            = objCharacter.ComplexForms.FirstOrDefault(
-                                x => x.InternalId == strImprovedName);
-                        if (objComplexForm != null)
-                        {
-                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm,
-                                                            objComplexForm.InternalId);
-                            objCharacter.ComplexForms.Remove(objComplexForm);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.MartialArt:
-                        MartialArt objMartialArt
-                            = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
-                        if (objMartialArt != null)
-                        {
-                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt,
-                                                            objMartialArt.InternalId);
-                            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                        case Improvement.ImprovementType.Metamagic:
+                        case Improvement.ImprovementType.Echo:
+                            Metamagic objMetamagic
+                                = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objMetamagic != null)
                             {
                                 decReturn += RemoveImprovements(objCharacter,
-                                                                Improvement.ImprovementSource.MartialArtTechnique,
-                                                                objTechnique.InternalId);
+                                                                objImprovement.ImproveType
+                                                                == Improvement.ImprovementType.Metamagic
+                                                                    ? Improvement.ImprovementSource.Metamagic
+                                                                    : Improvement.ImprovementSource.Echo,
+                                                                objMetamagic.InternalId);
+                                objCharacter.Metamagics.Remove(objMetamagic);
                             }
 
-                            objCharacter.MartialArts.Remove(objMartialArt);
-                        }
+                            break;
 
-                        break;
-
-                    case Improvement.ImprovementType.SpecialSkills:
-                        if (!blnHasDuplicate)
-                        {
-                            objCharacter.SkillsSection.RemoveSkills(
-                                (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
-                                                                        strImprovedName), objImprovement.Target,
-                                !blnReapplyImprovements && objCharacter.Created);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.SpecificQuality:
-                        Quality objQuality = objCharacter.Qualities.FirstOrDefault(
-                            objLoopQuality => objLoopQuality.InternalId == strImprovedName);
-                        if (objQuality != null)
-                        {
-                            // We need to add in the return cost of deleting the quality, so call this manually
-                            decReturn += objQuality.DeleteQuality();
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.SkillSpecialization:
-                    case Improvement.ImprovementType.SkillExpertise:
-                    {
-                        Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
-                        SkillSpecialization objSkillSpec = strUniqueName.IsGuid()
-                            ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == strUniqueName)
-                            // Kept for legacy reasons
-                            : objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
-                        if (objSkillSpec != null)
-                            objSkill.Specializations.Remove(objSkillSpec);
-                    }
-                        break;
-
-                    case Improvement.ImprovementType.AIProgram:
-                        AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
-                            objLoopProgram => objLoopProgram.InternalId == strImprovedName);
-                        if (objProgram != null)
-                        {
-                            decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram,
-                                                            objProgram.InternalId);
-                            objCharacter.AIPrograms.Remove(objProgram);
-                        }
-
-                        break;
-
-                    case Improvement.ImprovementType.AdeptPowerFreeLevels:
-                    case Improvement.ImprovementType.AdeptPowerFreePoints:
-                        // Get the power improved by this improvement
-                        Power objImprovedPower = objCharacter.Powers.FirstOrDefault(
-                            objPower => objPower.Name == strImprovedName &&
-                                        objPower.Extra == strUniqueName);
-                        if (objImprovedPower != null)
-                        {
-                            if (objImprovedPower.TotalRating <= 0)
+                        case Improvement.ImprovementType.LimitModifier:
+                            LimitModifier limitMod
+                                = objCharacter.LimitModifiers.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName);
+                            if (limitMod != null)
                             {
-                                objImprovedPower.DeletePower();
-                                objImprovedPower.UnbindPower();
+                                objCharacter.LimitModifiers.Remove(limitMod);
                             }
 
-                            objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
-                            objImprovedPower.OnPropertyChanged(
-                                objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
-                                    ? nameof(Power.FreeLevels)
-                                    : nameof(Power.FreePoints));
-                        }
+                            break;
 
-                        break;
+                        case Improvement.ImprovementType.CritterPower:
+                            CritterPower objCritterPower = objCharacter.CritterPowers.FirstOrDefault(
+                                x => x.InternalId == strImprovedName || (x.Name == strImprovedName
+                                                                         && x.Extra == strUniqueName));
+                            if (objCritterPower != null)
+                            {
+                                decReturn += RemoveImprovements(objCharacter,
+                                                                Improvement.ImprovementSource.CritterPower,
+                                                                objCritterPower.InternalId);
+                                objCharacter.CritterPowers.Remove(objCritterPower);
+                            }
 
-                    case Improvement.ImprovementType.FreeWare:
-                    {
-                        Cyberware objCyberware
-                            = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
-                        if (objCyberware != null)
+                            break;
+
+                        case Improvement.ImprovementType.MentorSpirit:
+                        case Improvement.ImprovementType.Paragon:
+                            MentorSpirit objMentor
+                                = objCharacter.MentorSpirits.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName);
+                            if (objMentor != null)
+                            {
+                                decReturn += RemoveImprovements(objCharacter,
+                                                                Improvement.ImprovementSource.MentorSpirit,
+                                                                objMentor.InternalId);
+                                objCharacter.MentorSpirits.Remove(objMentor);
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Gear:
+                            Gear objGear
+                                = objCharacter.Gear.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objGear != null)
+                            {
+                                decReturn += objGear.TotalCost;
+                                decReturn += objGear.DeleteGear();
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Weapon:
                         {
-                            decReturn += objCyberware.TotalCost;
-                            decReturn += objCyberware.DeleteCyberware();
+                            Weapon objWeapon
+                                = objCharacter.Weapons.DeepFirstOrDefault(x => x.Children,
+                                                                          x => x.InternalId == strImprovedName)
+                                  ??
+                                  objCharacter.Vehicles.FindVehicleWeapon(strImprovedName);
+                            if (objWeapon != null)
+                            {
+                                decReturn += objWeapon.TotalCost;
+                                decReturn += objWeapon.DeleteWeapon();
+                            }
                         }
-                    }
-                        break;
-                }
-            }
+                            break;
 
-            objImprovementList.ProcessRelevantEvents();
+                        case Improvement.ImprovementType.Spell:
+                            Spell objSpell
+                                = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objSpell != null)
+                            {
+                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell,
+                                                                objSpell.InternalId);
+                                objCharacter.Spells.Remove(objSpell);
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.ComplexForm:
+                            ComplexForm objComplexForm
+                                = objCharacter.ComplexForms.FirstOrDefault(
+                                    x => x.InternalId == strImprovedName);
+                            if (objComplexForm != null)
+                            {
+                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm,
+                                                                objComplexForm.InternalId);
+                                objCharacter.ComplexForms.Remove(objComplexForm);
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.MartialArt:
+                            MartialArt objMartialArt
+                                = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
+                            if (objMartialArt != null)
+                            {
+                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt,
+                                                                objMartialArt.InternalId);
+                                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
+                                {
+                                    decReturn += RemoveImprovements(objCharacter,
+                                                                    Improvement.ImprovementSource.MartialArtTechnique,
+                                                                    objTechnique.InternalId);
+                                }
+
+                                objCharacter.MartialArts.Remove(objMartialArt);
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpecialSkills:
+                            if (!blnHasDuplicate)
+                            {
+                                objCharacter.SkillsSection.RemoveSkills(
+                                    (SkillsSection.FilterOption) Enum.Parse(typeof(SkillsSection.FilterOption),
+                                                                            strImprovedName), objImprovement.Target,
+                                    !blnReapplyImprovements && objCharacter.Created);
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SpecificQuality:
+                            Quality objQuality = objCharacter.Qualities.FirstOrDefault(
+                                objLoopQuality => objLoopQuality.InternalId == strImprovedName);
+                            if (objQuality != null)
+                            {
+                                // We need to add in the return cost of deleting the quality, so call this manually
+                                decReturn += objQuality.DeleteQuality();
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.SkillSpecialization:
+                        case Improvement.ImprovementType.SkillExpertise:
+                        {
+                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                            SkillSpecialization objSkillSpec = strUniqueName.IsGuid()
+                                ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == strUniqueName)
+                                // Kept for legacy reasons
+                                : objSkill?.Specializations.FirstOrDefault(x => x.Name == strUniqueName);
+                            if (objSkillSpec != null)
+                                objSkill.Specializations.Remove(objSkillSpec);
+                        }
+                            break;
+
+                        case Improvement.ImprovementType.AIProgram:
+                            AIProgram objProgram = objCharacter.AIPrograms.FirstOrDefault(
+                                objLoopProgram => objLoopProgram.InternalId == strImprovedName);
+                            if (objProgram != null)
+                            {
+                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram,
+                                                                objProgram.InternalId);
+                                objCharacter.AIPrograms.Remove(objProgram);
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.AdeptPowerFreeLevels:
+                        case Improvement.ImprovementType.AdeptPowerFreePoints:
+                            // Get the power improved by this improvement
+                            Power objImprovedPower = objCharacter.Powers.FirstOrDefault(
+                                objPower => objPower.Name == strImprovedName &&
+                                            objPower.Extra == strUniqueName);
+                            if (objImprovedPower != null)
+                            {
+                                if (objImprovedPower.TotalRating <= 0)
+                                {
+                                    objImprovedPower.DeletePower();
+                                    objImprovedPower.UnbindPower();
+                                }
+
+                                objImprovedPower.OnPropertyChanged(nameof(objImprovedPower.TotalRating));
+                                objImprovedPower.OnPropertyChanged(
+                                    objImprovement.ImproveType == Improvement.ImprovementType.AdeptPowerFreeLevels
+                                        ? nameof(Power.FreeLevels)
+                                        : nameof(Power.FreePoints));
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.FreeWare:
+                        {
+                            Cyberware objCyberware
+                                = objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName);
+                            if (objCyberware != null)
+                            {
+                                decReturn += objCyberware.TotalCost;
+                                decReturn += objCyberware.DeleteCyberware();
+                            }
+                        }
+                            break;
+                    }
+                }
+
+                objImprovementList.ProcessRelevantEvents();
+            }
 
             Log.Debug("RemoveImprovements exit");
             return decReturn;
@@ -2958,41 +3017,44 @@ namespace Chummer
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
             if (objCharacter != null)
             {
-                // Record the improvement.
-                objImprovement = new Improvement(objCharacter)
+                using (new EnterWriteLock(objCharacter.LockObject))
                 {
-                    ImprovedName = strImprovedName,
-                    ImproveSource = objImprovementSource,
-                    SourceName = strSourceName,
-                    ImproveType = objImprovementType,
-                    UniqueName = strUnique,
-                    Value = decValue,
-                    Rating = intRating,
-                    Minimum = intMinimum,
-                    Maximum = intMaximum,
-                    Augmented = decAugmented,
-                    AugmentedMaximum = intAugmentedMaximum,
-                    Exclude = strExclude,
-                    AddToRating = blnAddToRating,
-                    Target = strTarget,
-                    Condition = strCondition
-                };
-                // This is initially set to false make sure no property changers are triggered by the setters in the section above
-                objImprovement.SetupComplete = true;
-                // Add the Improvement to the list.
-                objCharacter.Improvements.Add(objImprovement);
-                ClearCachedValue(objCharacter, objImprovementType, strImprovedName);
+                    // Record the improvement.
+                    objImprovement = new Improvement(objCharacter)
+                    {
+                        ImprovedName = strImprovedName,
+                        ImproveSource = objImprovementSource,
+                        SourceName = strSourceName,
+                        ImproveType = objImprovementType,
+                        UniqueName = strUnique,
+                        Value = decValue,
+                        Rating = intRating,
+                        Minimum = intMinimum,
+                        Maximum = intMaximum,
+                        Augmented = decAugmented,
+                        AugmentedMaximum = intAugmentedMaximum,
+                        Exclude = strExclude,
+                        AddToRating = blnAddToRating,
+                        Target = strTarget,
+                        Condition = strCondition
+                    };
+                    // This is initially set to false make sure no property changers are triggered by the setters in the section above
+                    objImprovement.SetupComplete = true;
+                    // Add the Improvement to the list.
+                    objCharacter.Improvements.Add(objImprovement);
+                    ClearCachedValue(objCharacter, objImprovementType, strImprovedName);
 
-                // Add the Improvement to the Transaction List.
-                List<Improvement> lstTransactions;
-                while (!s_DictionaryTransactions.TryGetValue(objCharacter, out lstTransactions))
-                {
-                    lstTransactions = new List<Improvement>(1);
-                    if (s_DictionaryTransactions.TryAdd(objCharacter, lstTransactions))
-                        break;
+                    // Add the Improvement to the Transaction List.
+                    List<Improvement> lstTransactions;
+                    while (!s_DictionaryTransactions.TryGetValue(objCharacter, out lstTransactions))
+                    {
+                        lstTransactions = new List<Improvement>(1);
+                        if (s_DictionaryTransactions.TryAdd(objCharacter, lstTransactions))
+                            break;
+                    }
+
+                    lstTransactions.Add(objImprovement);
                 }
-
-                lstTransactions.Add(objImprovement);
             }
 
             Log.Debug("CreateImprovement exit");
@@ -3022,13 +3084,16 @@ namespace Chummer
             Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
-                // Remove all of the Improvements that were added.
-                foreach (Improvement objTransactingImprovement in lstTransactions)
+                using (new EnterWriteLock(objCharacter.LockObject))
                 {
-                    RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource,
-                                       objTransactingImprovement.SourceName);
-                    ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType,
-                                     objTransactingImprovement.ImprovedName);
+                    // Remove all of the Improvements that were added.
+                    foreach (Improvement objTransactingImprovement in lstTransactions)
+                    {
+                        RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource,
+                                           objTransactingImprovement.SourceName);
+                        ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType,
+                                         objTransactingImprovement.ImprovedName);
+                    }
                 }
 
                 lstTransactions.Clear();
@@ -3057,22 +3122,20 @@ namespace Chummer
                         foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
                                      .GetRelevantPropertyChangers())
                         {
-                            if (dicChangedProperties.TryGetValue(objToNotify,
-                                                                 out HashSet<string> setLoopPropertiesChanged))
-                                setLoopPropertiesChanged.Add(strProperty);
-                            else
+                            if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                                  out HashSet<string> setLoopPropertiesChanged))
                             {
-                                HashSet<string> setTemp = Utils.StringHashSetPool.Get();
-                                setTemp.Add(strProperty);
-                                dicChangedProperties.Add(objToNotify, setTemp);
+                                setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                                dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
                             }
+                            setLoopPropertiesChanged.Add(strProperty);
                         }
                     }
 
                     // Fire each event once
                     foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpChangedProperties in
                              dicChangedProperties)
-                        kvpChangedProperties.Key.OnMultiplePropertyChanged(kvpChangedProperties.Value);
+                        kvpChangedProperties.Key.OnMultiplePropertyChanged(kvpChangedProperties.Value.ToList());
                 }
                 finally
                 {

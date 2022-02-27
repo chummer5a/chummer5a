@@ -33,7 +33,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove
+    public class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -189,83 +189,83 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("drug");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("category_english", Category);
+            await objWriter.WriteStartElementAsync("drug");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("name_english", Name);
+            await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("category_english", Category);
             if (Grade != null)
-                objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("qty", Quantity.ToString("#,0.##", objCulture));
-            objWriter.WriteElementString("addictionthreshold", AddictionThreshold.ToString(objCulture));
-            objWriter.WriteElementString("addictionrating", AddictionRating.ToString(objCulture));
-            objWriter.WriteElementString("initiative", Initiative.ToString(objCulture));
-            objWriter.WriteElementString("initiativedice", InitiativeDice.ToString(objCulture));
-            objWriter.WriteElementString("speed", Speed.ToString(objCulture));
-            objWriter.WriteElementString("duration", Duration.ToString(objCulture));
-            objWriter.WriteElementString("crashdamage", CrashDamage.ToString(objCulture));
-            objWriter.WriteElementString("avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint));
-            objWriter.WriteElementString("avail_english", TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage));
-            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("qty", Quantity.ToString("#,0.##", objCulture));
+            await objWriter.WriteElementStringAsync("addictionthreshold", AddictionThreshold.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("addictionrating", AddictionRating.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("initiative", Initiative.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("initiativedice", InitiativeDice.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("speed", Speed.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("duration", Duration.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("crashdamage", CrashDamage.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint));
+            await objWriter.WriteElementStringAsync("avail_english", TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage));
+            await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
 
-            objWriter.WriteStartElement("attributes");
+            await objWriter.WriteStartElementAsync("attributes");
             foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
             {
                 if (objAttribute.Value != 0)
                 {
-                    objWriter.WriteStartElement("attribute");
-                    objWriter.WriteElementString("name", LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short", strLanguageToPrint));
-                    objWriter.WriteElementString("name_english", objAttribute.Key);
-                    objWriter.WriteElementString("value", objAttribute.Value.ToString("+#.#;-#.#", objCulture));
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteStartElementAsync("attribute");
+                    await objWriter.WriteElementStringAsync("name", await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("name_english", objAttribute.Key);
+                    await objWriter.WriteElementStringAsync("value", objAttribute.Value.ToString("+#.#;-#.#", objCulture));
+                    await objWriter.WriteEndElementAsync();
                 }
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
-            objWriter.WriteStartElement("limits");
+            await objWriter.WriteStartElementAsync("limits");
             foreach (KeyValuePair<string, int> objLimit in Limits)
             {
                 if (objLimit.Value != 0)
                 {
-                    objWriter.WriteStartElement("limit");
-                    objWriter.WriteElementString("name", LanguageManager.GetString("Node_" + objLimit.Key, strLanguageToPrint));
-                    objWriter.WriteElementString("name_english", objLimit.Key);
-                    objWriter.WriteElementString("value", objLimit.Value.ToString("+#;-#", objCulture));
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteStartElementAsync("limit");
+                    await objWriter.WriteElementStringAsync("name", await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("name_english", objLimit.Key);
+                    await objWriter.WriteElementStringAsync("value", objLimit.Value.ToString("+#;-#", objCulture));
+                    await objWriter.WriteEndElementAsync();
                 }
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
-            objWriter.WriteStartElement("qualities");
+            await objWriter.WriteStartElementAsync("qualities");
             foreach (string strQualityText in Qualities.Select(x => x.InnerText))
             {
-                objWriter.WriteStartElement("quality");
-                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(strQualityText, strLanguageToPrint));
-                objWriter.WriteElementString("name_english", strQualityText);
-                objWriter.WriteEndElement();
+                await objWriter.WriteStartElementAsync("quality");
+                await objWriter.WriteElementStringAsync("name", await _objCharacter.TranslateExtraAsync(strQualityText, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", strQualityText);
+                await objWriter.WriteEndElementAsync();
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
-            objWriter.WriteStartElement("infos");
+            await objWriter.WriteStartElementAsync("infos");
             foreach (string strInfo in Infos)
             {
-                objWriter.WriteStartElement("info");
-                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(strInfo, strLanguageToPrint));
-                objWriter.WriteElementString("name_english", strInfo);
-                objWriter.WriteEndElement();
+                await objWriter.WriteStartElementAsync("info");
+                await objWriter.WriteElementStringAsync("name", await _objCharacter.TranslateExtraAsync(strInfo, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", strInfo);
+                await objWriter.WriteEndElementAsync();
             }
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
 
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
+                await objWriter.WriteElementStringAsync("notes", Notes);
 
-            objWriter.WriteEndElement();
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -313,7 +313,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Components of the Drug.
         /// </summary>
-        public EnhancedObservableCollection<DrugComponent> Components { get; } = new EnhancedObservableCollection<DrugComponent>();
+        public ThreadSafeObservableCollection<DrugComponent> Components
+        {
+            get
+            {
+                using (new EnterReadLock(_objCharacter.LockObject))
+                    return _lstComponents;
+            }
+        }
 
         /// <summary>
         /// Name of the Drug.
@@ -333,6 +340,17 @@ namespace Chummer.Backend.Equipment
                 return Category;
 
             return _objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+        }
+
+        /// <summary>
+        /// Translated Category.
+        /// </summary>
+        public async ValueTask<string> DisplayCategoryAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Category;
+
+            return (await _objCharacter.LoadDataXPathAsync("gear.xml")).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -686,6 +704,16 @@ namespace Chummer.Backend.Equipment
                 : _objCharacter.TranslateExtra(Name, strLanguage);
         }
 
+        /// <summary>
+        /// The name of the object as it should appear on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Name
+                : await _objCharacter.TranslateExtraAsync(Name, strLanguage);
+        }
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
@@ -696,6 +724,17 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
             if (Quantity != 1)
                 strReturn = Quantity.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_Space", strLanguage) + strReturn;
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+            if (Quantity != 1)
+                strReturn = Quantity.ToString("#,0.##", objCulture) + await LanguageManager.GetStringAsync("String_Space", strLanguage) + strReturn;
             return strReturn;
         }
 
@@ -1106,6 +1145,7 @@ namespace Chummer.Backend.Equipment
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
+        private readonly ThreadSafeObservableCollection<DrugComponent> _lstComponents = new ThreadSafeObservableCollection<DrugComponent>();
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
@@ -1136,10 +1176,19 @@ namespace Chummer.Backend.Equipment
             }
             _objCharacter.Drugs.Remove(this);
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Drug, InternalId);
+
+            Dispose();
+
             return true;
         }
 
         #endregion Methods
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstComponents.Dispose();
+        }
     }
 
     /// <summary>

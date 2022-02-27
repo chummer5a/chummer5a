@@ -60,7 +60,7 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(LockObject))
+            using (new EnterReadLock(LockObject))
             {
                 if (_blnSkipCollectionChanged)
                     return;

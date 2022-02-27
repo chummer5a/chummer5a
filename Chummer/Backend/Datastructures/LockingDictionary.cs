@@ -22,7 +22,6 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace Chummer
 {
@@ -37,7 +36,7 @@ namespace Chummer
     public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject
     {
         private readonly Dictionary<TKey, TValue> _dicData;
-        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public LockingDictionary()
         {
@@ -347,7 +346,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (_dicData.TryGetValue(key, out TValue objValue) && objValue.Equals(value))
                         return;
@@ -435,8 +434,10 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
+            if (IsDisposed)
+                return;
             IsDisposed = true;
-            while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
+            while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
                 Utils.SafeSleep();
             LockObject.Dispose();
         }

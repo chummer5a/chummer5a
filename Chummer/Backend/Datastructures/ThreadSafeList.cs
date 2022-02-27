@@ -22,13 +22,12 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading;
 
 namespace Chummer
 {
     public class ThreadSafeList<T> : List<T>, IList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject
     {
-        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public ThreadSafeList()
         {
@@ -52,7 +51,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (base.Capacity == value)
                         return;
@@ -93,7 +92,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (base[index].Equals(value))
                         return;
@@ -456,7 +455,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
+                while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
                     Utils.SafeSleep();
                 LockObject.Dispose();
             }

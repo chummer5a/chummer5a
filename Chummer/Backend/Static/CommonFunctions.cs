@@ -83,35 +83,46 @@ namespace Chummer
 
             object objReturn;
             bool blnIsSuccess;
-            try
+            if (strXPath == "-")
             {
-                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
-                {
-                    lock (s_ObjXPathNavigatorDocumentLock)
-                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
-                }
+                objReturn = 0.0;
+                blnIsSuccess = true;
+            }
+            else
+            {
                 try
                 {
-                    objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                    if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
+                    {
+                        lock (s_ObjXPathNavigatorDocumentLock)
+                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                    }
+
+                    try
+                    {
+                        objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                    }
+                    finally
+                    {
+                        s_StkXPathNavigatorPool.Push(objEvaluator);
+                    }
+
+                    blnIsSuccess = objReturn != null;
                 }
-                finally
+                catch (ArgumentException)
                 {
-                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
                 }
-                blnIsSuccess = objReturn != null;
+                catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
+                }
             }
-            catch (ArgumentException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strXPath;
-                blnIsSuccess = false;
-            }
-            catch (XPathException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strXPath;
-                blnIsSuccess = false;
-            }
+
             s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
@@ -146,34 +157,44 @@ namespace Chummer
             }
 
             object objReturn;
-            try
+            if (strXPath == "-")
             {
-                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
-                {
-                    lock (s_ObjXPathNavigatorDocumentLock)
-                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
-                }
+                objReturn = 0.0;
+                blnIsSuccess = true;
+            }
+            else
+            {
                 try
                 {
-                    objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                    if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
+                    {
+                        lock (s_ObjXPathNavigatorDocumentLock)
+                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                    }
+
+                    try
+                    {
+                        objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                    }
+                    finally
+                    {
+                        s_StkXPathNavigatorPool.Push(objEvaluator);
+                    }
+
+                    blnIsSuccess = objReturn != null;
                 }
-                finally
+                catch (ArgumentException)
                 {
-                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
                 }
-                blnIsSuccess = objReturn != null;
-            }
-            catch (ArgumentException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strXPath;
-                blnIsSuccess = false;
-            }
-            catch (XPathException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strXPath;
-                blnIsSuccess = false;
+                catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
+                }
             }
             s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
@@ -867,13 +888,17 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Enhancement objEnhancement in objCharacter.Enhancements)
+                using (new EnterReadLock(objCharacter.LockObject))
                 {
-                    if (objEnhancement.InternalId == strGuid)
-                        return objEnhancement;
-                }
+                    foreach (Enhancement objEnhancement in objCharacter.Enhancements)
+                    {
+                        if (objEnhancement.InternalId == strGuid)
+                            return objEnhancement;
+                    }
 
-                return objCharacter.Powers.SelectMany(objPower => objPower.Enhancements).FirstOrDefault(objEnhancement => objEnhancement.InternalId == strGuid);
+                    return objCharacter.Powers.SelectMany(objPower => objPower.Enhancements)
+                                       .FirstOrDefault(objEnhancement => objEnhancement.InternalId == strGuid);
+                }
             }
 
             return null;
@@ -1017,23 +1042,28 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            string strGearNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
+            using (new EnterReadLock(objCharacter.LockObject))
+            {
+                string strGearNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
 
-            if (!string.IsNullOrEmpty(strGearNotes) || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                return strGearNotes;
-            string strTranslatedNameOnPage = strDisplayName;
+                if (!string.IsNullOrEmpty(strGearNotes)
+                    || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                      StringComparison.OrdinalIgnoreCase))
+                    return strGearNotes;
+                string strTranslatedNameOnPage = strDisplayName;
 
-            // don't check again it is not translated
-            if (strTranslatedNameOnPage == strName)
-                return strGearNotes;
+                // don't check again it is not translated
+                if (strTranslatedNameOnPage == strName)
+                    return strGearNotes;
 
-            // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
-            if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
-                && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
-                strTranslatedNameOnPage = strNameOnPage;
+                // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                    && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                    strTranslatedNameOnPage = strNameOnPage;
 
-            return GetTextFromPdf(strSource + ' ' + strDisplayPage,
-                                  strTranslatedNameOnPage, objCharacter);
+                return GetTextFromPdf(strSource + ' ' + strDisplayPage,
+                                      strTranslatedNameOnPage, objCharacter);
+            }
         }
 
         /// <summary>
@@ -1252,10 +1282,10 @@ namespace Chummer
                     // Finish the document and flush the Writer and Stream.
                     await objWriter.WriteEndDocumentAsync();
                     await objWriter.FlushAsync();
-
-                    if (objToken.IsCancellationRequested)
-                        return objReturn;
                 }
+
+                if (objToken.IsCancellationRequested)
+                    return objReturn;
 
                 // Read the stream.
                 objStream.Position = 0;

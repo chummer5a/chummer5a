@@ -20,27 +20,52 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
     /// <summary>
-    /// Syntactic Sugar for wrapping a ReaderWriterLockSlim's EnterWriteLock() and ExitWriteLock() methods into something that hooks into `using`
+    /// Syntactic Sugar for wrapping a AsyncFriendlyReaderWriterLock's EnterWriteLock() and ExitWriteLock() methods into something that hooks into `using`
     /// </summary>
-    public sealed class EnterWriteLock : IDisposable
+    public sealed class EnterWriteLock : IDisposable, IAsyncDisposable
     {
-        private readonly ReaderWriterLockSlim _rwlMyLock;
+        private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
+        private AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease _rwlMyWriteRelease;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterWriteLock(ReaderWriterLockSlim rwlMyLock)
+        public EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, bool blnEnterLockSync = true, CancellationToken token = default)
         {
             _rwlMyLock = rwlMyLock;
-            _rwlMyLock.EnterWriteLock();
+            if (blnEnterLockSync)
+                _rwlMyWriteRelease = _rwlMyLock.EnterWriteLock(token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public EnterWriteLock(IHasLockObject rwlMyLock, bool blnEnterLockSync = true, CancellationToken token = default)
+        {
+            _rwlMyLock = rwlMyLock.LockObject;
+            if (blnEnterLockSync)
+                _rwlMyWriteRelease = _rwlMyLock.EnterWriteLock(token);
+        }
+
+        public async Task<EnterWriteLock> EnterLockAsync(CancellationToken token = default)
+        {
+            _rwlMyWriteRelease = await _rwlMyLock.EnterWriteLockAsync(token);
+            return this;
+        }
+
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            _rwlMyLock.ExitWriteLock();
+            _rwlMyLock.ExitWriteLock(_rwlMyWriteRelease);
+        }
+
+        /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public ValueTask DisposeAsync()
+        {
+            return _rwlMyLock.ExitWriteLockAsync(_rwlMyWriteRelease);
         }
     }
 }

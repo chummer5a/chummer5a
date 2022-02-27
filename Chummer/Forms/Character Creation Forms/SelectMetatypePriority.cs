@@ -894,7 +894,7 @@ namespace Chummer
                     {
                         case "Aspected Magician":
                         case "Enchanter":
-                            _objCharacter.Pushtext.Push(strSkill1);
+                            _objCharacter.PushText.Push(strSkill1);
                             break;
                     }
 

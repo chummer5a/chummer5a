@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -136,20 +137,20 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print</param>
-        public void Print(XmlWriter objWriter, CultureInfo objCulture)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("initiationgrade");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("grade", Grade.ToString(objCulture));
-            objWriter.WriteElementString("group", Group.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteStartElementAsync("initiationgrade");
+            await objWriter.WriteElementStringAsync("guid", InternalId);
+            await objWriter.WriteElementStringAsync("grade", Grade.ToString(objCulture));
+            await objWriter.WriteElementStringAsync("group", Group.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo));
+            await objWriter.WriteElementStringAsync("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo));
             if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("notes", Notes);
+            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, and Load Methods
