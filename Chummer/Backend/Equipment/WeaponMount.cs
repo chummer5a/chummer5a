@@ -359,25 +359,8 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
             }
             objNode.TryGetInt32FieldQuickly("weaponcapacity", ref _intWeaponCapacity);
-            XmlNode xmlChildrenNode = objNode["weapons"];
-            using (XmlNodeList xmlWeaponList = xmlChildrenNode?.SelectNodes("weapon"))
-            {
-                if (xmlWeaponList != null)
-                {
-                    foreach (XmlNode xmlWeaponNode in xmlWeaponList)
-                    {
-                        Weapon objWeapon = new Weapon(_objCharacter)
-                        {
-                            ParentVehicle = Parent,
-                            ParentMount = this
-                        };
-                        objWeapon.Load(xmlWeaponNode, blnCopy);
-                        Weapons.Add(objWeapon);
-                    }
-                }
-            }
 
-            xmlChildrenNode = objNode["weaponmountoptions"];
+            XmlNode xmlChildrenNode = objNode["weaponmountoptions"];
             using (XmlNodeList xmlWeaponMountOptionList = xmlChildrenNode?.SelectNodes("weaponmountoption"))
             {
                 if (xmlWeaponMountOptionList != null)
@@ -401,6 +384,24 @@ namespace Chummer.Backend.Equipment
                         VehicleMod objMod = new VehicleMod(_objCharacter);
                         objMod.Load(xmlModNode);
                         Mods.Add(objMod);
+                    }
+                }
+            }
+
+            xmlChildrenNode = objNode["weapons"];
+            using (XmlNodeList xmlWeaponList = xmlChildrenNode?.SelectNodes("weapon"))
+            {
+                if (xmlWeaponList != null)
+                {
+                    foreach (XmlNode xmlWeaponNode in xmlWeaponList)
+                    {
+                        Weapon objWeapon = new Weapon(_objCharacter)
+                        {
+                            ParentVehicle = Parent,
+                            ParentMount = this
+                        };
+                        objWeapon.Load(xmlWeaponNode, blnCopy);
+                        Weapons.Add(objWeapon);
                     }
                 }
             }
