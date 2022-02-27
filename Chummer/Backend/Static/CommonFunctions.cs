@@ -83,35 +83,46 @@ namespace Chummer
 
             object objReturn;
             bool blnIsSuccess;
-            try
+            if (strXPath == "-")
             {
-                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
-                {
-                    lock (s_ObjXPathNavigatorDocumentLock)
-                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
-                }
+                objReturn = 0.0;
+                blnIsSuccess = true;
+            }
+            else
+            {
                 try
                 {
-                    objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                    if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
+                    {
+                        lock (s_ObjXPathNavigatorDocumentLock)
+                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                    }
+
+                    try
+                    {
+                        objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                    }
+                    finally
+                    {
+                        s_StkXPathNavigatorPool.Push(objEvaluator);
+                    }
+
+                    blnIsSuccess = objReturn != null;
                 }
-                finally
+                catch (ArgumentException)
                 {
-                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
                 }
-                blnIsSuccess = objReturn != null;
+                catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
+                }
             }
-            catch (ArgumentException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strXPath;
-                blnIsSuccess = false;
-            }
-            catch (XPathException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strXPath;
-                blnIsSuccess = false;
-            }
+
             s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
@@ -148,7 +159,7 @@ namespace Chummer
             object objReturn;
             if (strXPath == "-")
             {
-                objReturn = 0;
+                objReturn = 0.0;
                 blnIsSuccess = true;
             }
             else
