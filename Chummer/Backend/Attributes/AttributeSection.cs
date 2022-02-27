@@ -101,8 +101,7 @@ namespace Chummer.Backend.Attributes
                         }
                     }
 
-                    using (new EnterReadLock(_lstAttributes.LockObject))
-                        return _lstAttributes;
+                    return _lstAttributes;
                 }
             }
         }
@@ -1480,7 +1479,6 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (new EnterReadLock(LockObject))
-                using (new EnterReadLock(_lstNormalAttributes.LockObject))
                     return _lstNormalAttributes;
             }
         }
@@ -1493,7 +1491,6 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (new EnterReadLock(LockObject))
-                using (new EnterReadLock(_lstSpecialAttributes.LockObject))
                     return _lstSpecialAttributes;
             }
         }

@@ -1143,8 +1143,7 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    using (new EnterReadLock(_lstSkills.LockObject))
-                        return _lstSkills;
+                    return _lstSkills;
                 }
             }
         }
@@ -1205,7 +1204,6 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (new EnterReadLock(LockObject))
-                using (new EnterReadLock(_lstKnowledgeSkills.LockObject))
                     return _lstKnowledgeSkills;
             }
         }
@@ -1218,7 +1216,6 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (new EnterReadLock(LockObject))
-                using (new EnterReadLock(_lstKnowsoftSkills.LockObject))
                     return _lstKnowsoftSkills;
             }
         }
@@ -1231,7 +1228,6 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (new EnterReadLock(LockObject))
-                using (new EnterReadLock(_lstSkillGroups.LockObject))
                     return _lstSkillGroups;
             }
         }
