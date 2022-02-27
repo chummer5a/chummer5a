@@ -250,7 +250,8 @@ namespace Chummer.Backend.Uniques
 
             xmlNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             xmlNode.TryGetStringFieldQuickly("spiritform", ref _strSpiritForm);
-            xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+            if (!xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression))
+                objMyNode.Value?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
             // Legacy catch for if a drain expression is not empty but has no attributes associated with it.
             if (_objCharacter.LastSavedVersion < new Version(5, 214, 77) &&
                 !string.IsNullOrEmpty(_strDrainExpression) && !_strDrainExpression.Contains('{') &&
@@ -292,10 +293,11 @@ namespace Chummer.Backend.Uniques
         /// <param name="xpathCharacterNode">XPathNavigator of the Character from which to load.</param>
         public void LegacyLoad(XPathNavigator xpathCharacterNode)
         {
+            bool blnDoDrainSweep;
             if (_eTraditionType == TraditionType.RES)
             {
                 xpathCharacterNode.TryGetStringFieldQuickly("stream", ref _strName);
-                xpathCharacterNode.TryGetStringFieldQuickly("streamfading", ref _strDrainExpression);
+                blnDoDrainSweep = xpathCharacterNode.TryGetStringFieldQuickly("streamfading", ref _strDrainExpression);
             }
             else
             {
@@ -310,11 +312,15 @@ namespace Chummer.Backend.Uniques
                 }
                 else
                     xpathCharacterNode.TryGetStringFieldQuickly("tradition", ref _strName);
-                xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
+                blnDoDrainSweep = xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
             }
-            foreach (string strAttribute in AttributeSection.AttributeStrings)
-                _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
-            _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
+
+            if (blnDoDrainSweep)
+            {
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+                _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
+            }
         }
 
         public void LoadFromHeroLab(XPathNavigator xmlHeroLabNode)
