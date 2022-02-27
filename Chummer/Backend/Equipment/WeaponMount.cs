@@ -395,13 +395,23 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (XmlNode xmlWeaponNode in xmlWeaponList)
                     {
-                        Weapon objWeapon = new Weapon(_objCharacter)
+                        if (WeaponCapacity >= Weapons.Count)
                         {
-                            ParentVehicle = Parent,
-                            ParentMount = this
-                        };
-                        objWeapon.Load(xmlWeaponNode, blnCopy);
-                        Weapons.Add(objWeapon);
+                            // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
+                            Weapon objWeapon = new Weapon(_objCharacter);
+                            objWeapon.Load(xmlWeaponNode, blnCopy);
+                            _objCharacter.Weapons.Add(objWeapon);
+                        }
+                        else
+                        {
+                            Weapon objWeapon = new Weapon(_objCharacter)
+                            {
+                                ParentVehicle = Parent,
+                                ParentMount = this
+                            };
+                            objWeapon.Load(xmlWeaponNode, blnCopy);
+                            Weapons.Add(objWeapon);
+                        }
                     }
                 }
             }
