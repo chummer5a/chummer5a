@@ -334,12 +334,12 @@ namespace Chummer
         /// <summary>
         /// Is there anything holding the read lock? Note that write locks will also cause this to return true.
         /// </summary>
-        public bool IsReadLockHeld => _intCountActiveReaders > 0 || _objReaderSemaphore.CurrentCount == 0;
+        public bool IsReadLockHeld => !IsDisposed && (_intCountActiveReaders > 0 || _objReaderSemaphore.CurrentCount == 0);
 
         /// <summary>
         /// Is there anything holding the write lock?
         /// </summary>
-        public bool IsWriteLockHeld => _objTopLevelWriterSemaphore.CurrentCount == 0;
+        public bool IsWriteLockHeld => !IsDisposed && _objTopLevelWriterSemaphore.CurrentCount == 0;
 
         /// <summary>
         /// Is the locker object already disposed and its allocatable semaphores returned to the semaphore pool?

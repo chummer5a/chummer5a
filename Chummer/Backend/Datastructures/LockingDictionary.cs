@@ -434,6 +434,8 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
+            if (IsDisposed)
+                return;
             IsDisposed = true;
             while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
                 Utils.SafeSleep();
