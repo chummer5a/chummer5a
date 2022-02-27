@@ -18,10 +18,12 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -212,16 +214,27 @@ namespace Chummer.Tests
         public void Test04_LoadThenPrint()
         {
             Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
+            List<string> lstExportLanguages = new List<string>();
+            foreach (string strFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "lang"), "*.xml"))
+            {
+                string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
+                if (strExportLanguage.Contains("data"))
+                    continue;
+                lstExportLanguages.Add(strExportLanguage);
+            }
+            Debug.WriteLine("Started pre-loading language files");
+            foreach (string strExportLanguage in lstExportLanguages)
+            {
+                Debug.WriteLine("Pre-loading language file: " + strExportLanguage);
+                LanguageManager.LoadLanguage(strExportLanguage);
+            }
+            Debug.WriteLine("Finished pre-loading language files");
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 using (Character objCharacter = LoadCharacter(objFileInfo))
                 {
-                    string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-                    foreach (string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
+                    foreach (string strExportLanguage in lstExportLanguages)
                     {
-                        string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                        if (strExportLanguage.Contains("data"))
-                            continue;
                         DoAndSaveExport(objCharacter, strExportLanguage);
                     }
                 }
@@ -383,8 +396,12 @@ namespace Chummer.Tests
                 {
                     objExportCultureInfo = CultureInfo.InvariantCulture;
                 }
-                XmlDocument xmlDocument = objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage).GetAwaiter().GetResult();
-                xmlDocument.Save(strPath);
+                Task.Run(async () =>
+                {
+                    XmlDocument xmlDocument
+                        = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
+                    xmlDocument.Save(strPath);
+                }).GetAwaiter().GetResult(); // Need this wrapper to make unit test work
                 Debug.WriteLine("Character exported: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
