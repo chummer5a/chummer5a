@@ -1418,7 +1418,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstVehicleMods.LockObject))
                     return _lstVehicleMods;
             }
         }
@@ -1431,7 +1430,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstGear.LockObject))
                     return _lstGear;
             }
         }
@@ -1444,7 +1442,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstWeapons.LockObject))
                     return _lstWeapons;
             }
         }
@@ -1457,7 +1454,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstWeaponMounts.LockObject))
                     return _lstWeaponMounts;
             }
         }
@@ -1692,7 +1688,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstLocations.LockObject))
                     return _lstLocations;
             }
         }

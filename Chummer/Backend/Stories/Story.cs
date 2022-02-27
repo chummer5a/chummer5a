@@ -84,7 +84,6 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstStoryModules.LockObject))
                     return _lstStoryModules;
             }
         }
@@ -94,7 +93,6 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_dicPersistentModules.LockObject))
                     return _dicPersistentModules;
             }
         }

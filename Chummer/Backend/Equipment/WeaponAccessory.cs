@@ -1196,7 +1196,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstGear.LockObject))
                     return _lstGear;
             }
         }

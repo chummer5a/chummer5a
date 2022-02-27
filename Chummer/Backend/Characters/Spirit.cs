@@ -1108,11 +1108,7 @@ namespace Chummer
             {
                 using (new EnterReadLock(CharacterObject.LockObject))
                 {
-                    if (LinkedCharacter != null)
-                        return LinkedCharacter.Mugshots;
-
-                    using (new EnterReadLock(_lstMugshots.LockObject))
-                        return _lstMugshots;
+                    return LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
                 }
             }
         }

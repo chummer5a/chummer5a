@@ -568,7 +568,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstWeapons.LockObject))
                     return _lstWeapons;
             }
         }
@@ -1048,7 +1047,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstMods.LockObject))
                     return _lstMods;
             }
         }

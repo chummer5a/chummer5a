@@ -1552,7 +1552,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstAccessories.LockObject))
                     return _lstAccessories;
             }
         }
@@ -1565,7 +1564,6 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstUnderbarrel.LockObject))
                     return _lstUnderbarrel;
             }
         }

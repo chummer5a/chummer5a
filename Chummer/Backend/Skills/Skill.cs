@@ -1535,7 +1535,6 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (new EnterReadLock(CharacterObject.LockObject))
-                using (new EnterReadLock(_lstSpecializations.LockObject))
                     return _lstSpecializations;
             }
         }

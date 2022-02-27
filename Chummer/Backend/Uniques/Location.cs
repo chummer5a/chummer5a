@@ -191,7 +191,6 @@ namespace Chummer
             get
             {
                 using (new EnterReadLock(_objCharacter.LockObject))
-                using (new EnterReadLock(_lstChildren.LockObject))
                     return _lstChildren;
             }
         }
