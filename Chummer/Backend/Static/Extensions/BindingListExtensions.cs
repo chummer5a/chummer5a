@@ -305,7 +305,7 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
-            using (new EnterUpgradeableReadLock(lstCollection.LockObject))
+            using (new EnterReadLock(lstCollection.LockObject))
             {
                 if (index + length > lstCollection.Count)
                     throw new InvalidOperationException(nameof(length));
@@ -395,7 +395,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (new EnterUpgradeableReadLock(lstCollection.LockObject))
+            using (new EnterReadLock(lstCollection.LockObject))
             {
                 T[] aobjSorted = new T[lstCollection.Count];
                 for (int i = 0; i < lstCollection.Count; ++i)
@@ -482,7 +482,7 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            using (new EnterUpgradeableReadLock(lstCollection.LockObject))
+            using (new EnterReadLock(lstCollection.LockObject))
             {
                 T[] aobjSorted = new T[lstCollection.Count];
                 for (int i = 0; i < lstCollection.Count; ++i)

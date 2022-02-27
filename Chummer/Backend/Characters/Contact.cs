@@ -1311,7 +1311,7 @@ namespace Chummer
                         }
                     }
 
-                    using (new EnterUpgradeableReadLock(_objCharacter.LockObject))
+                    using (new EnterReadLock(_objCharacter.LockObject))
                     {
                         if (_intMainMugshotIndex == value)
                             return;

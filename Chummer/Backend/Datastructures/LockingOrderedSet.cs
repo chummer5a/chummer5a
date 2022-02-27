@@ -23,7 +23,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Threading;
 
 namespace Chummer
 {
@@ -31,7 +30,7 @@ namespace Chummer
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
-        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public LockingOrderedSet()
         {
@@ -291,7 +290,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
+                while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
                     Utils.SafeSleep();
                 LockObject.Dispose();
             }
@@ -344,7 +343,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     T objOldItem = _lstOrderedData[index];
                     if (objOldItem.Equals(value))

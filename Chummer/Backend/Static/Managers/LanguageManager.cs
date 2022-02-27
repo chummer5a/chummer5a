@@ -197,7 +197,7 @@ namespace Chummer
             SemaphoreSlim objLockerObject;
             while (!s_DicLanguageDataLockers.TryGetValue(strKey, out objLockerObject))
             {
-                objLockerObject = new SemaphoreSlim(1);
+                objLockerObject = Utils.SemaphorePool.Get();
                 if (s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject))
                     break;
                 objLockerObject.Dispose();

@@ -22,14 +22,13 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace Chummer
 {
     public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IProducerConsumerCollection<T>, IHasLockObject
     {
         private readonly HashSet<T> _setData;
-        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public LockingHashSet()
         {
@@ -267,7 +266,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
+                while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
                     Utils.SafeSleep();
                 LockObject.Dispose();
             }

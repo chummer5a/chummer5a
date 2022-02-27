@@ -95,7 +95,7 @@ namespace Chummer
         private static readonly LockingDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
             new LockingDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
         private static bool s_blnSetDataDirectoriesLoaded = true;
-        private static readonly SemaphoreSlim s_objDataDirectoriesSemaphore = new SemaphoreSlim(1);
+        private static readonly SemaphoreSlim s_objDataDirectoriesSemaphore = Utils.SemaphorePool.Get();
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(s_StrBaseDataPath.Yield());
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
 

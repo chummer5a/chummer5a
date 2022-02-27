@@ -328,6 +328,7 @@
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Helpers\AsyncFriendlyReaderWriterLock.cs" />
     <Compile Include="Backend\Interfaces\IHasCost.cs" />
     <Compile Include="Backend\Interfaces\IHasLockObject.cs" />
     <Compile Include="Backend\Interfaces\IHasXmlDataNode.cs" />
@@ -460,7 +461,6 @@
       <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Backend\Helpers\EnterReadLock.cs" />
-    <Compile Include="Backend\Helpers\EnterUpgradeableReadLock.cs" />
     <Compile Include="Backend\Helpers\EnterWriteLock.cs" />
     <Compile Include="Backend\Helpers\FetchSafelyFromPool.cs" />
     <Compile Include="Backend\Interfaces\ICanBlackMarketDiscount.cs" />

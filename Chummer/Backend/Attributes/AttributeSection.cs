@@ -93,14 +93,18 @@ namespace Chummer.Backend.Attributes
             {
                 using (new EnterReadLock(LockObject))
                 {
-                    using (new EnterUpgradeableReadLock(_objAttributesInitializerLock))
+                    _objAttributesInitializerLock.EnterUpgradeableReadLock();
+                    try
                     {
                         if (!_blnAttributesInitialized)
                         {
                             InitializeAttributesList();
                         }
                     }
-
+                    finally
+                    {
+                        _objAttributesInitializerLock.ExitUpgradeableReadLock();
+                    }
                     return _lstAttributes;
                 }
             }
@@ -109,37 +113,44 @@ namespace Chummer.Backend.Attributes
         private void InitializeAttributesList()
         {
             using (new EnterReadLock(_objCharacter.LockObject))
-            using (new EnterWriteLock(_objAttributesInitializerLock))
             {
-                _blnAttributesInitialized = true;
-
-                // Not creating a new collection here so that CollectionChanged events from previous list are kept
-                _lstAttributes.Clear();
-                _lstAttributes.Add(_objCharacter.BOD);
-                _lstAttributes.Add(_objCharacter.AGI);
-                _lstAttributes.Add(_objCharacter.REA);
-                _lstAttributes.Add(_objCharacter.STR);
-                _lstAttributes.Add(_objCharacter.CHA);
-                _lstAttributes.Add(_objCharacter.INT);
-                _lstAttributes.Add(_objCharacter.LOG);
-                _lstAttributes.Add(_objCharacter.WIL);
-                _lstAttributes.Add(_objCharacter.EDG);
-
-                if (_objCharacter.MAGEnabled)
+                _objAttributesInitializerLock.EnterWriteLock();
+                try
                 {
-                    _lstAttributes.Add(_objCharacter.MAG);
-                    if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
-                        _lstAttributes.Add(_objCharacter.MAGAdept);
+                    _blnAttributesInitialized = true;
+
+                    // Not creating a new collection here so that CollectionChanged events from previous list are kept
+                    _lstAttributes.Clear();
+                    _lstAttributes.Add(_objCharacter.BOD);
+                    _lstAttributes.Add(_objCharacter.AGI);
+                    _lstAttributes.Add(_objCharacter.REA);
+                    _lstAttributes.Add(_objCharacter.STR);
+                    _lstAttributes.Add(_objCharacter.CHA);
+                    _lstAttributes.Add(_objCharacter.INT);
+                    _lstAttributes.Add(_objCharacter.LOG);
+                    _lstAttributes.Add(_objCharacter.WIL);
+                    _lstAttributes.Add(_objCharacter.EDG);
+
+                    if (_objCharacter.MAGEnabled)
+                    {
+                        _lstAttributes.Add(_objCharacter.MAG);
+                        if (_objCharacter.Settings.MysAdeptSecondMAGAttribute && _objCharacter.IsMysticAdept)
+                            _lstAttributes.Add(_objCharacter.MAGAdept);
+                    }
+
+                    if (_objCharacter.RESEnabled)
+                    {
+                        _lstAttributes.Add(_objCharacter.RES);
+                    }
+
+                    if (_objCharacter.DEPEnabled)
+                    {
+                        _lstAttributes.Add(_objCharacter.DEP);
+                    }
                 }
-
-                if (_objCharacter.RESEnabled)
+                finally
                 {
-                    _lstAttributes.Add(_objCharacter.RES);
-                }
-
-                if (_objCharacter.DEPEnabled)
-                {
-                    _lstAttributes.Add(_objCharacter.DEP);
+                    _objAttributesInitializerLock.ExitWriteLock();
                 }
             }
         }
@@ -1504,7 +1515,7 @@ namespace Chummer.Backend.Attributes
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (_eAttributeCategory == value)
                         return;
@@ -1525,7 +1536,6 @@ namespace Chummer.Backend.Attributes
 
         #endregion Properties
 
-        public ReaderWriterLockSlim LockObject { get; } =
-            new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

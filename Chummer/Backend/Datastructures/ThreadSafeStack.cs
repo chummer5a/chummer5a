@@ -21,7 +21,6 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace Chummer
 {
@@ -30,7 +29,7 @@ namespace Chummer
         private readonly Stack<T> _stkData;
 
         /// <inheritdoc />
-        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public ThreadSafeStack()
         {
@@ -174,7 +173,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
+                while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
                     Utils.SafeSleep();
                 LockObject.Dispose();
             }

@@ -1230,7 +1230,8 @@ namespace Chummer
             return s_strTempPath;
         }
 
-        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider();
+        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider()
+            {MaximumRetained = byte.MaxValue};
 
         /// <summary>
         /// Memory Pool for empty StringBuilder objects. A bit slower up-front than a simple allocation, but reduces memory allocations, which saves on CPU used for Garbage Collection.
@@ -1262,5 +1263,30 @@ namespace Chummer
             = s_ObjObjectPoolProvider.Create(
                 new CollectionPooledObjectPolicy<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>,
                     KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>>>());
+
+        /// <summary>
+        /// Memory Pool for SemaphoreSlim with one allowed semaphore that is used for async-friendly thread safety stuff. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static ObjectPool<SemaphoreSlim> SemaphorePool { get; }
+            = s_ObjObjectPoolProvider.Create(new SemaphoreSlimPooledObjectPolicy());
+
+        private sealed class SemaphoreSlimPooledObjectPolicy : PooledObjectPolicy<SemaphoreSlim>
+        {
+            public override SemaphoreSlim Create()
+            {
+                return new SemaphoreSlim(1);
+            }
+
+            public override bool Return(SemaphoreSlim obj)
+            {
+                if (obj.CurrentCount != 1)
+                {
+                    throw new InvalidOperationException("Shouldn't be returning semaphore with a count != 1");
+                }
+
+                return true;
+            }
+        }
     }
 }

@@ -2,14 +2,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Threading;
 
 namespace Chummer
 {
     public class ThreadSafeBindingList<T> : CachedBindingList<T>, IHasLockObject, IProducerConsumerCollection<T>
     {
         /// <inheritdoc />
-        public ReaderWriterLockSlim LockObject { get; } = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         /// <inheritdoc />
         public override event EventHandler<RemovingOldEventArgs> BeforeRemove
@@ -59,14 +58,14 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnAddingNew(AddingNewEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(LockObject))
+            using (new EnterReadLock(LockObject))
                 base.OnAddingNew(e);
         }
 
         /// <inheritdoc />
         protected override void OnListChanged(ListChangedEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(LockObject))
+            using (new EnterReadLock(LockObject))
                 base.OnListChanged(e);
         }
 
@@ -89,7 +88,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (base[index].Equals(value))
                         return;
@@ -109,7 +108,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (base.RaiseListChangedEvents.Equals(value))
                         return;
@@ -129,7 +128,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (base.AllowNew.Equals(value))
                         return;
@@ -149,7 +148,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (base.AllowEdit.Equals(value))
                         return;
@@ -169,7 +168,7 @@ namespace Chummer
             }
             set
             {
-                using (new EnterUpgradeableReadLock(LockObject))
+                using (new EnterReadLock(LockObject))
                 {
                     if (base.AllowRemove.Equals(value))
                         return;
@@ -289,7 +288,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockObject.IsReadLockHeld || LockObject.IsUpgradeableReadLockHeld || LockObject.IsUpgradeableReadLockHeld)
+                while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
                     Utils.SafeSleep();
                 LockObject.Dispose();
             }
