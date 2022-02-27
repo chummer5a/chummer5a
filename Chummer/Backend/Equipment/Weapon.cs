@@ -3249,7 +3249,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = await strReturn
                                           .CheapReplaceAsync(
                                               " or ",
-                                              () => strSpace + LanguageManager.GetStringAsync("String_Or", strLanguage)
+                                              async () => strSpace + await LanguageManager.GetStringAsync("String_Or", strLanguage)
                                                              + strSpace,
                                               StringComparison.OrdinalIgnoreCase)
                                           .CheapReplaceAsync(

@@ -484,36 +484,36 @@ namespace Chummer
                         strDisplayRange = await strDisplayRange
                             .CheapReplaceAsync(
                                 "Self",
-                                () => LanguageManager.GetString(
+                                () => LanguageManager.GetStringAsync(
                                     "String_SpellRangeSelf", strLanguageToPrint))
                             .CheapReplaceAsync(
                                 "Special",
-                                () => LanguageManager.GetString(
+                                () => LanguageManager.GetStringAsync(
                                     "String_SpellDurationSpecial", strLanguageToPrint))
                             .CheapReplaceAsync(
                                 "LOS",
-                                () => LanguageManager.GetString(
+                                () => LanguageManager.GetStringAsync(
                                     "String_SpellRangeLineOfSight", strLanguageToPrint))
                             .CheapReplaceAsync(
                                 "LOI",
-                                () => LanguageManager.GetString(
+                                () => LanguageManager.GetStringAsync(
                                     "String_SpellRangeLineOfInfluence", strLanguageToPrint))
                             .CheapReplaceAsync(
                                 "Touch",
-                                () => LanguageManager.GetString(
+                                () => LanguageManager.GetStringAsync(
                                     "String_SpellRangeTouch",
                                     strLanguageToPrint)) // Short form to remain export-friendly
                             .CheapReplaceAsync(
                                 "T",
-                                () => LanguageManager.GetString(
+                                () => LanguageManager.GetStringAsync(
                                     "String_SpellRangeTouch", strLanguageToPrint))
                             .CheapReplaceAsync(
                                 "(A)",
-                                () => '(' + LanguageManager.GetString(
+                                async () => '(' + await LanguageManager.GetStringAsync(
                                     "String_SpellRangeArea", strLanguageToPrint) + ')')
                             .CheapReplaceAsync(
                                 "MAG",
-                                () => LanguageManager.GetString(
+                                () => LanguageManager.GetStringAsync(
                                     "String_AttributeMAGShort", strLanguageToPrint));
                     }
                 }

@@ -1227,10 +1227,10 @@ namespace Chummer.Backend.Attributes
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
                     strReturn = await strReturn
-                                      .CheapReplaceAsync('{' + strCharAttributeName + '}', () =>
+                                      .CheapReplaceAsync('{' + strCharAttributeName + '}', async () =>
                                       {
-                                          string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
-                                                                               .DisplayNameShort(strLanguage);
+                                          string strInnerReturn = await _objCharacter.GetAttribute(strCharAttributeName)
+                                              .DisplayNameShortAsync(strLanguage);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1247,8 +1247,8 @@ namespace Chummer.Backend.Attributes
                                       })
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Unaug}", async () =>
                                       {
-                                          string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
-                                                                               .DisplayNameShort(strLanguage);
+                                          string strInnerReturn = await _objCharacter.GetAttribute(strCharAttributeName)
+                                              .DisplayNameShortAsync(strLanguage);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1268,8 +1268,8 @@ namespace Chummer.Backend.Attributes
                                       })
                                       .CheapReplaceAsync('{' + strCharAttributeName + "Base}", async () =>
                                       {
-                                          string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
-                                                                               .DisplayNameShort(strLanguage);
+                                          string strInnerReturn = await _objCharacter.GetAttribute(strCharAttributeName)
+                                              .DisplayNameShortAsync(strLanguage);
                                           if (blnShowValues)
                                           {
                                               if (dicValueOverrides == null
@@ -1308,10 +1308,10 @@ namespace Chummer.Backend.Attributes
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
-                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', () =>
+                    await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + '}', async () =>
                     {
-                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
-                                                             .DisplayNameShort(strLanguage);
+                        string strInnerReturn = await _objCharacter.GetAttribute(strCharAttributeName)
+                                                                   .DisplayNameShortAsync(strLanguage);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
@@ -1324,8 +1324,8 @@ namespace Chummer.Backend.Attributes
                     });
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Unaug}", async () =>
                     {
-                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
-                                                             .DisplayNameShort(strLanguage);
+                        string strInnerReturn = await _objCharacter.GetAttribute(strCharAttributeName)
+                                                                   .DisplayNameShortAsync(strLanguage);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null
@@ -1341,8 +1341,8 @@ namespace Chummer.Backend.Attributes
                     });
                     await sbdInput.CheapReplaceAsync(strOriginal, '{' + strCharAttributeName + "Base}", async () =>
                     {
-                        string strInnerReturn = _objCharacter.GetAttribute(strCharAttributeName)
-                                                             .DisplayNameShort(strLanguage);
+                        string strInnerReturn = await _objCharacter.GetAttribute(strCharAttributeName)
+                                                                   .DisplayNameShortAsync(strLanguage);
                         if (blnShowValues)
                         {
                             if (dicValueOverrides == null

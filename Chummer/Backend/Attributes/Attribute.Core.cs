@@ -784,11 +784,23 @@ namespace Chummer.Backend.Attributes
             return GetDisplayAbbrev(strLanguage);
         }
 
+        public Task<string> DisplayNameShortAsync(string strLanguage)
+        {
+            return GetDisplayAbbrevAsync(strLanguage);
+        }
+
         public string DisplayNameLong(string strLanguage)
         {
             return Abbrev == "MAGAdept"
                 ? LanguageManager.MAGAdeptString(strLanguage, true)
                 : LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
+        }
+
+        public Task<string> DisplayNameLongAsync(string strLanguage)
+        {
+            return Abbrev == "MAGAdept"
+                ? LanguageManager.MAGAdeptStringAsync(strLanguage, true).AsTask()
+                : LanguageManager.GetStringAsync("String_Attribute" + Abbrev + "Long", strLanguage);
         }
 
         public string DisplayNameFormatted => GetDisplayNameFormatted(GlobalSettings.Language);
@@ -801,6 +813,16 @@ namespace Chummer.Backend.Attributes
                        + strSpace + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
 
             return DisplayNameLong(strLanguage) + strSpace + '(' + DisplayNameShort(strLanguage) + ')';
+        }
+
+        public async Task<string> GetDisplayNameFormattedAsync(string strLanguage)
+        {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            if (Abbrev == "MAGAdept")
+                return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage) + strSpace + '(' + await LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage) + ')'
+                       + strSpace + '(' + await LanguageManager.GetStringAsync("String_DescAdept", strLanguage) + ')';
+
+            return await DisplayNameLongAsync(strLanguage) + strSpace + '(' + await DisplayNameShortAsync(strLanguage) + ')';
         }
 
         /// <summary>

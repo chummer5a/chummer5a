@@ -189,7 +189,7 @@ namespace Chummer
                                 () => LanguageManager.GetStringAsync("String_SpellDurationSpecial"))
                             .CheapReplaceAsync("LOS", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight"))
                             .CheapReplaceAsync("LOI",
-                                () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"))
+                                () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence"))
                             .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong"))
                             .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch"))
                             .CheapReplaceAsync("(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea") + ')')
