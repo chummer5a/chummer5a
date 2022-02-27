@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using System.Threading;
 
 namespace Chummer
 {
@@ -31,7 +32,24 @@ namespace Chummer
         public LockingDictionaryEnumerator(IHasLockObject objMyParent)
         {
             _objMyParent = objMyParent;
+#if DEBUG
+            try
+            {
+                _objMyParent.LockObject.EnterReadLock();
+            }
+            catch (LockRecursionException ex)
+            {
+                Utils.BreakIfDebug();
+                throw;
+            }
+            catch (ObjectDisposedException ex)
+            {
+                Utils.BreakIfDebug();
+                throw;
+            }
+#else
             _objMyParent.LockObject.EnterReadLock();
+#endif
         }
 
         public void SetEnumerator(IDictionaryEnumerator objInternalEnumerator)
@@ -44,7 +62,19 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
+#if DEBUG
+            try
+            {
+                _objMyParent.LockObject.ExitReadLock();
+            }
+            catch (SynchronizationLockException ex)
+            {
+                Utils.BreakIfDebug();
+                throw;
+            }
+#else
             _objMyParent.LockObject.ExitReadLock();
+#endif
         }
 
         /// <inheritdoc />

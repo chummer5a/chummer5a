@@ -39,7 +39,12 @@ namespace Chummer
             {
                 _rwlMyLock.EnterWriteLock();
             }
-            catch (Exception ex)
+            catch (LockRecursionException ex)
+            {
+                Utils.BreakIfDebug();
+                throw;
+            }
+            catch (ObjectDisposedException ex)
             {
                 Utils.BreakIfDebug();
                 throw;
@@ -58,7 +63,12 @@ namespace Chummer
             {
                 _rwlMyLock.EnterWriteLock();
             }
-            catch (Exception ex)
+            catch (LockRecursionException ex)
+            {
+                Utils.BreakIfDebug();
+                throw;
+            }
+            catch (ObjectDisposedException ex)
             {
                 Utils.BreakIfDebug();
                 throw;
@@ -71,7 +81,19 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
+#if DEBUG
+            try
+            {
+                _rwlMyLock.ExitWriteLock();
+            }
+            catch (SynchronizationLockException ex)
+            {
+                Utils.BreakIfDebug();
+                throw;
+            }
+#else
             _rwlMyLock.ExitWriteLock();
+#endif
         }
     }
 }
