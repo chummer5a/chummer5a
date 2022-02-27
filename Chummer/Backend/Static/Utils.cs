@@ -1230,8 +1230,7 @@ namespace Chummer
             return s_strTempPath;
         }
 
-        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider()
-            {MaximumRetained = byte.MaxValue};
+        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider();
 
         /// <summary>
         /// Memory Pool for empty StringBuilder objects. A bit slower up-front than a simple allocation, but reduces memory allocations, which saves on CPU used for Garbage Collection.
@@ -1273,11 +1272,13 @@ namespace Chummer
 
         private sealed class SemaphoreSlimPooledObjectPolicy : PooledObjectPolicy<SemaphoreSlim>
         {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public override SemaphoreSlim Create()
             {
-                return new SemaphoreSlim(1);
+                return new SemaphoreSlim(1, 1);
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public override bool Return(SemaphoreSlim obj)
             {
                 if (obj.CurrentCount != 1)
