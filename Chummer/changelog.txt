@@ -16,6 +16,7 @@ Application Changes:
 - Characters with natural weapons can now be saved properly.
 - If a user has some custom PACKS already created, creating new custom PACKS now properly lists all PACKS under one `packs` XML node instead of under multiple different versions of it.
 - The skills used by different spell categories have now been unhardcoded.
+- Chummer now treats items with an availability or cost defined as just a hyphen as them having 0 in these values instead of crashing.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
