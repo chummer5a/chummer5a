@@ -37,7 +37,7 @@ namespace Chummer
 #if DEBUG
             try
             {
-                _rwlMyLock.EnterUpgradeableReadLock();
+                _rwlMyLock.SafeEnterUpgradeableReadLock();
             }
             catch (LockRecursionException ex)
             {
@@ -50,7 +50,7 @@ namespace Chummer
                 throw;
             }
 #else
-            _rwlMyLock.EnterUpgradeableReadLock();
+            _rwlMyLock.SafeEnterUpgradeableReadLock();
 #endif
         }
 
@@ -61,7 +61,7 @@ namespace Chummer
 #if DEBUG
             try
             {
-                _rwlMyLock.EnterUpgradeableReadLock();
+                _rwlMyLock.SafeEnterUpgradeableReadLock();
             }
             catch (LockRecursionException ex)
             {
@@ -74,7 +74,7 @@ namespace Chummer
                 throw;
             }
 #else
-            _rwlMyLock.EnterUpgradeableReadLock();
+            _rwlMyLock.SafeEnterUpgradeableReadLock();
 #endif
         }
 

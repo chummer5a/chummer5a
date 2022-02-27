@@ -345,6 +345,7 @@
     <Compile Include="Backend\Static\Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\RandomExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ReaderWriterLockSlimExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyListExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\SemaphoreSlimExtensions.cs" />

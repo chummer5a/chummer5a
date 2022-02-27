@@ -37,7 +37,7 @@ namespace Chummer
 #if DEBUG
             try
             {
-                _rwlMyLock.EnterWriteLock();
+                _rwlMyLock.SafeEnterWriteLock();
             }
             catch (LockRecursionException ex)
             {
@@ -50,7 +50,7 @@ namespace Chummer
                 throw;
             }
 #else
-            _rwlMyLock.EnterWriteLock();
+            _rwlMyLock.SafeEnterWriteLock();
 #endif
         }
 
@@ -61,7 +61,7 @@ namespace Chummer
 #if DEBUG
             try
             {
-                _rwlMyLock.EnterWriteLock();
+                _rwlMyLock.SafeEnterWriteLock();
             }
             catch (LockRecursionException ex)
             {
@@ -74,7 +74,7 @@ namespace Chummer
                 throw;
             }
 #else
-            _rwlMyLock.EnterWriteLock();
+            _rwlMyLock.SafeEnterWriteLock();
 #endif
         }
 

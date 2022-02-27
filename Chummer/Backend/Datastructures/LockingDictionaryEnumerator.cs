@@ -35,7 +35,7 @@ namespace Chummer
 #if DEBUG
             try
             {
-                _objMyParent.LockObject.EnterReadLock();
+                _objMyParent.LockObject.SafeEnterReadLock();
             }
             catch (LockRecursionException ex)
             {
@@ -48,7 +48,7 @@ namespace Chummer
                 throw;
             }
 #else
-            _objMyParent.LockObject.EnterReadLock();
+            _objMyParent.LockObject.SafeEnterReadLock();
 #endif
         }
 
