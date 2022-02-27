@@ -35,7 +35,11 @@ namespace Chummer
     /// </summary>
     public sealed class AsyncFriendlyReaderWriterLock : IAsyncDisposable, IDisposable
     {
+        // Because readers are always recursive and it's fine that way, we only need to deploy complicated stuff on the writer side
         private SemaphoreSlim _objReaderSemaphore = Utils.SemaphorePool.Get();
+        // In order to properly allow writers to be recursive but still make them work properly as writer locks, we need to set up something
+        // that is a bit like a singly-linked list. Each write lock creates a disposable SafeSemaphoreWriterRelease, and only disposing it
+        // frees the write lock.
         private SemaphoreSlim _objTopLevelWriterSemaphore = Utils.SemaphorePool.Get();
         private readonly AsyncLocal<SemaphoreSlim> _objCurrentWriterSemaphore = new AsyncLocal<SemaphoreSlim>();
         private int _intCountActiveReaders;
@@ -43,6 +47,7 @@ namespace Chummer
 
         /// <summary>
         /// Try to synchronously obtain a lock for writing.
+        /// The returned SafeSemaphoreWriterRelease must be stored for when the write lock is to be released.
         /// </summary>
         public SafeSemaphoreWriterRelease EnterWriteLock(CancellationToken token = default)
         {
@@ -123,6 +128,7 @@ namespace Chummer
 
         /// <summary>
         /// Try to asynchronously obtain a lock for writing.
+        /// The returned SafeSemaphoreWriterRelease must be stored for when the write lock is to be released.
         /// </summary>
         public Task<SafeSemaphoreWriterRelease> EnterWriteLockAsync(CancellationToken token = default)
         {
@@ -166,6 +172,7 @@ namespace Chummer
 
         /// <summary>
         /// Synchronously release a lock held for writing.
+        /// Use the SafeSemaphoreWriterRelease object gotten after obtaining a write lock as this method's argument.
         /// </summary>
         public void ExitWriteLock(SafeSemaphoreWriterRelease objRelease)
         {
@@ -179,6 +186,7 @@ namespace Chummer
 
         /// <summary>
         /// Asynchronously release a lock held for writing.
+        /// Use the SafeSemaphoreWriterRelease object gotten after obtaining a write lock as this method's argument.
         /// </summary>
         public ValueTask ExitWriteLockAsync(SafeSemaphoreWriterRelease objRelease)
         {
@@ -323,10 +331,19 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Is there anything holding the read lock? Note that write locks will also cause this to return true.
+        /// </summary>
         public bool IsReadLockHeld => _intCountActiveReaders > 0 || _objReaderSemaphore.CurrentCount == 0;
 
+        /// <summary>
+        /// Is there anything holding the write lock?
+        /// </summary>
         public bool IsWriteLockHeld => _objTopLevelWriterSemaphore.CurrentCount == 0;
 
+        /// <summary>
+        /// Is the locker object already disposed and its allocatable semaphores returned to the semaphore pool?
+        /// </summary>
         public bool IsDisposed => _blnIsDisposed;
 
         /// <inheritdoc />
@@ -363,6 +380,11 @@ namespace Chummer
             _objReaderSemaphore = null;
         }
 
+        /// <summary>
+        /// This class is used to ensure proper tracking and releasing of recursive write locks regardless of which threads start or resume the
+        /// tasks handled by async/await operations. An instance is created whenever a write lock is obtained and the same instance should be
+        /// disposed to release the aforementioned write lock.
+        /// </summary>
         public readonly struct SafeSemaphoreWriterRelease : IAsyncDisposable, IDisposable
         {
             private readonly SemaphoreSlim _objCurrentWriterSemaphore;
