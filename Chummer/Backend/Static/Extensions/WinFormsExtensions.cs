@@ -301,7 +301,7 @@ namespace Chummer
                             objResult.AsyncWaitHandle.Close();
                         }
                         else
-                            myControlCopy.BeginInvoke(funcToRun);
+                            myControlCopy.BeginInvoke(funcToRun, myControlCopy);
                     }
                     else
                         funcToRun.Invoke(myControlCopy);
