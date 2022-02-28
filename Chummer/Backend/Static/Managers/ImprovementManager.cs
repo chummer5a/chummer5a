@@ -1251,10 +1251,8 @@ namespace Chummer
                                     }
 
                                     lstDropdownItems.Sort(CompareListItems.CompareNames);
-
-                                    Form frmToUse = Program.GetFormForDialog(objCharacter);
-
-                                    DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                                    
+                                    DialogResult eResult = Program.GetFormForDialog(objCharacter).DoThreadSafeFunc(x =>
                                     {
                                         using (SelectItem frmPickSkill = new SelectItem
                                                {
@@ -1267,7 +1265,7 @@ namespace Chummer
                                             else
                                                 frmPickSkill.SetDropdownItemsMode(lstDropdownItems);
 
-                                            frmPickSkill.ShowDialogSafe(frmToUse);
+                                            frmPickSkill.ShowDialogSafe(x);
 
                                             if (frmPickSkill.DialogResult != DialogResult.Cancel)
                                             {
@@ -1287,8 +1285,7 @@ namespace Chummer
             }
             else
             {
-                Form frmToUse = Program.GetFormForDialog(objCharacter);
-                DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                DialogResult eResult = Program.GetFormForDialog(objCharacter).DoThreadSafeFunc(x =>
                 {
                     // Display the Select Skill window and record which Skill was selected.
                     using (SelectSkill frmPickSkill = new SelectSkill(objCharacter, strFriendlyName)
@@ -1338,7 +1335,7 @@ namespace Chummer
                             frmPickSkill.Opacity = 0;
                         }
 
-                        frmPickSkill.ShowDialogSafe(frmToUse);
+                        frmPickSkill.ShowDialogSafe(x);
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickSkill.DialogResult != DialogResult.Cancel)
@@ -1436,8 +1433,7 @@ namespace Chummer
                             }
                             else if (nodBonus["selecttext"].Attributes.Count == 0)
                             {
-                                Form frmToUse = Program.GetFormForDialog(objCharacter);
-                                DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                                DialogResult eResult = Program.GetFormForDialog(objCharacter).DoThreadSafeFunc(x =>
                                 {
                                     // Display the Select Text window and record the value that was entered.
                                     using (SelectText frmPickText = new SelectText
@@ -1449,7 +1445,7 @@ namespace Chummer
                                                                  strFriendlyName)
                                            })
                                     {
-                                        frmPickText.ShowDialogSafe(frmToUse);
+                                        frmPickText.ShowDialogSafe(x);
 
                                         // Make sure the dialogue window was not canceled.
                                         if (frmPickText.DialogResult != DialogResult.Cancel)
@@ -1470,8 +1466,7 @@ namespace Chummer
                             }
                             else if (objCharacter != null)
                             {
-                                Form frmToUse = Program.GetFormForDialog(objCharacter);
-                                DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                                DialogResult eResult = Program.GetFormForDialog(objCharacter).DoThreadSafeFunc(x =>
                                 {
                                     using (SelectItem frmSelect = new SelectItem
                                            {
@@ -1545,7 +1540,7 @@ namespace Chummer
                                                 frmSelect.SetGeneralItemsMode(lstItems);
                                             }
 
-                                            frmSelect.ShowDialogSafe(frmToUse);
+                                            frmSelect.ShowDialogSafe(x);
 
                                             if (frmSelect.DialogResult != DialogResult.Cancel)
                                             {

@@ -1311,7 +1311,7 @@ namespace Chummer
             {
                 if (!s_RtbRtfManipulator.IsHandleCreated)
                     s_RtbRtfManipulator.CreateControl();
-                s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Text = strInput);
+                s_RtbRtfManipulator.DoThreadSafe(x => x.Text = strInput);
                 return s_RtbRtfManipulator.Rtf;
             }
         }
@@ -1335,7 +1335,7 @@ namespace Chummer
                         s_RtbRtfManipulator.CreateControl();
                     try
                     {
-                        s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
+                        s_RtbRtfManipulator.DoThreadSafe(x => ((RichTextBox)x).Rtf = strInput);
                     }
                     catch (ArgumentException)
                     {
@@ -1374,7 +1374,7 @@ namespace Chummer
                             s_RtbRtfManipulator.CreateControl();
                         try
                         {
-                            s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
+                            s_RtbRtfManipulator.DoThreadSafe(x => ((RichTextBox)x).Rtf = strInput);
                         }
                         catch (ArgumentException)
                         {

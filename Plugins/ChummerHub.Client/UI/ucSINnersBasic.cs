@@ -83,7 +83,7 @@ namespace ChummerHub.Client.UI
             {
                 if (myUC?.MyCE?.MySINnerFile?.Id == null || myUC.MyCE.MySINnerFile.Id == Guid.Empty)
                 {
-                    await bUpload.DoThreadSafeAsync(() => bUpload.Text = "SINless Character/Error" );
+                    await bUpload.DoThreadSafeAsync(x => x.Text = "SINless Character/Error" );
                     return false;
                 }
 
@@ -134,7 +134,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                await bUpload.DoThreadSafeAsync(() => bUpload.Text = "Unknown Status");
+                await bUpload.DoThreadSafeAsync(x => x.Text = "Unknown Status");
                 return false;
             }
             return true;

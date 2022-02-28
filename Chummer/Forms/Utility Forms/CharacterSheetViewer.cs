@@ -401,8 +401,8 @@ namespace Chummer
                         tsPrintPreview.Enabled = false;
                         tsSaveAsHtml.Enabled = false;
                     }),
-                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
-                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false));
+                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
+                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
             }
             else
             {
@@ -411,8 +411,8 @@ namespace Chummer
                         tsPrintPreview.Enabled = true;
                         tsSaveAsHtml.Enabled = true;
                     }),
-                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = true));
+                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
+                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true));
             }
         }
 
@@ -425,7 +425,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask SetDocumentText(string strText)
         {
-            int intHeight = await webViewer.DoThreadSafeFuncAsync(() => webViewer.Height);
+            int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height);
             string strDocumentText
                 = "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:"
                   +
@@ -433,7 +433,7 @@ namespace Chummer
                   ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">"
                   +
                   strText.CleanForHtml() + "</body></html>";
-            await webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = strDocumentText);
+            await webViewer.DoThreadSafeAsync(x => ((WebBrowser)x).DocumentText = strDocumentText);
         }
 
         /// <summary>
@@ -487,8 +487,8 @@ namespace Chummer
                         tsPrintPreview.Enabled = false;
                         tsSaveAsHtml.Enabled = false;
                     }),
-                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
-                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false));
+                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
+                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
                 _objCharacterXml = _lstCharacters.Count > 0
                     ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
                                                                         _objRefresherCancellationTokenSource.Token,
@@ -513,8 +513,8 @@ namespace Chummer
                         tsPrintPreview.Enabled = false;
                         tsSaveAsHtml.Enabled = false;
                     }),
-                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
-                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false));
+                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
+                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
                 await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet"));
                 string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
                 if (!File.Exists(strXslPath))
@@ -600,7 +600,7 @@ namespace Chummer
 
                         await this.DoThreadSafeAsync(() => UseWaitCursor = true);
                         await webViewer.DoThreadSafeAsync(
-                            () => webViewer.Url = new Uri("file:///" + _strTempSheetFilePath));
+                            x => ((WebBrowser)x).Url = new Uri("file:///" + _strTempSheetFilePath));
                     }
                     else
                     {
@@ -609,7 +609,7 @@ namespace Chummer
                         {
                             string strOutput = await objReader.ReadToEndAsync();
                             await this.DoThreadSafeAsync(() => UseWaitCursor = true);
-                            await webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = strOutput);
+                            await webViewer.DoThreadSafeAsync(x => ((WebBrowser)x).DocumentText = strOutput);
                         }
                     }
                 }
@@ -626,8 +626,8 @@ namespace Chummer
                         tsPrintPreview.Enabled = true;
                         tsSaveAsHtml.Enabled = true;
                     }),
-                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = true));
+                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
+                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = true));
             }
         }
 

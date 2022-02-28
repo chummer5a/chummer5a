@@ -1213,17 +1213,19 @@ namespace Chummer.Plugins
                     await Task.Delay(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
                 if (!MainForm.Visible)
                 {
-                    await MainForm.DoThreadSafeAsync(() =>
+                    await MainForm.DoThreadSafeAsync(x =>
                     {
-                        if (MainForm.WindowState == FormWindowState.Minimized)
-                            MainForm.WindowState = FormWindowState.Normal;
+                        ChummerMainForm objMainForm = (ChummerMainForm) x;
+                        if (objMainForm.WindowState == FormWindowState.Minimized)
+                            objMainForm.WindowState = FormWindowState.Normal;
                     });
                 }
 
-                await MainForm.DoThreadSafeAsync(() =>
+                await MainForm.DoThreadSafeAsync(x =>
                 {
-                    MainForm.Activate();
-                    MainForm.BringToFront();
+                    ChummerMainForm objMainForm = (ChummerMainForm)x;
+                    objMainForm.Activate();
+                    objMainForm.BringToFront();
                 });
                 SinnersClient client = StaticUtils.GetClient();
                 while (!MainForm.Visible)

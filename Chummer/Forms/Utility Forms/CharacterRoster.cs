@@ -452,14 +452,15 @@ namespace Chummer
                 return;
 
             Log.Trace("Populating CharacterRosterTreeNode MRUs (MainThread).");
-            await treCharacterList.DoThreadSafeAsync(() =>
+            await treCharacterList.DoThreadSafeAsync(x =>
             {
-                treCharacterList.SuspendLayout();
+                TreeView treList = (TreeView) x;
+                treList.SuspendLayout();
                 if (blnRefreshFavorites && objFavoriteNode != null)
                 {
                     if (blnAddFavoriteNode)
                     {
-                        treCharacterList.Nodes.Insert(0, objFavoriteNode);
+                        treList.Nodes.Insert(0, objFavoriteNode);
                     }
                     else if (lstFavoritesNodes != null)
                     {
@@ -477,7 +478,7 @@ namespace Chummer
                 {
                     if (blnAddRecentNode)
                     {
-                        treCharacterList.Nodes.Insert(objFavoriteNode != null ? 1 : 0, objRecentNode);
+                        treList.Nodes.Insert(objFavoriteNode != null ? 1 : 0, objRecentNode);
                     }
                     else if (lstRecentsNodes != null)
                     {
@@ -498,7 +499,7 @@ namespace Chummer
                     }
                     objRecentNode.ExpandAll();
                 }
-                treCharacterList.ResumeLayout();
+                treList.ResumeLayout();
             });
         }
 
@@ -628,9 +629,10 @@ namespace Chummer
                 return;
 
             Log.Trace("Populating CharacterRosterTreeNode Watch Folder (MainThread).");
-            await treCharacterList.DoThreadSafeAsync(() =>
+            await treCharacterList.DoThreadSafeAsync(x =>
             {
-                treCharacterList.SuspendLayout();
+                TreeView treList = (TreeView)x;
+                treList.SuspendLayout();
                 if (objWatchNode != null)
                 {
                     if (objWatchNode.TreeView == null)
@@ -638,15 +640,15 @@ namespace Chummer
                         TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
                         TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
                         if (objFavoriteNode != null && objRecentNode != null)
-                            treCharacterList.Nodes.Insert(2, objWatchNode);
+                            treList.Nodes.Insert(2, objWatchNode);
                         else if (objFavoriteNode != null || objRecentNode != null)
-                            treCharacterList.Nodes.Insert(1, objWatchNode);
+                            treList.Nodes.Insert(1, objWatchNode);
                         else
-                            treCharacterList.Nodes.Insert(0, objWatchNode);
+                            treList.Nodes.Insert(0, objWatchNode);
                     }
                     objWatchNode.ExpandAll();
                 }
-                treCharacterList.ResumeLayout();
+                treList.ResumeLayout();
             });
         }
 
@@ -675,40 +677,41 @@ namespace Chummer
                             TreeNode node = lstNodes[i];
                             string strNodeText = node.Text;
                             object objNodeTag = node.Tag;
-                            TreeNode objExistingNode = await treCharacterList.DoThreadSafeFuncAsync(() =>
-                                treCharacterList.Nodes.Cast<TreeNode>()
-                                                .FirstOrDefault(x => x.Text == strNodeText && x.Tag == objNodeTag));
+                            TreeNode objExistingNode = await treCharacterList.DoThreadSafeFuncAsync(x =>
+                                ((TreeView)x).Nodes.Cast<TreeNode>()
+                                                .FirstOrDefault(y => y.Text == strNodeText && y.Tag == objNodeTag));
                             try
                             {
-                                await treCharacterList.DoThreadSafeAsync(() =>
+                                await treCharacterList.DoThreadSafeAsync(x =>
                                 {
+                                    TreeView treList = (TreeView)x;
                                     if (objExistingNode != null)
                                     {
-                                        treCharacterList.Nodes.Remove(objExistingNode);
+                                        treList.Nodes.Remove(objExistingNode);
                                     }
 
                                     if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
                                                              || objNodeTag != null)
                                     {
-                                        if (treCharacterList.Nodes.ContainsKey(node.Name))
-                                            treCharacterList.Nodes.RemoveByKey(node.Name);
-                                        TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
-                                        TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
-                                        TreeNode objWatchNode = treCharacterList.FindNode("Watch", false);
+                                        if (treList.Nodes.ContainsKey(node.Name))
+                                            treList.Nodes.RemoveByKey(node.Name);
+                                        TreeNode objFavoriteNode = treList.FindNode("Favorite", false);
+                                        TreeNode objRecentNode = treList.FindNode("Recent", false);
+                                        TreeNode objWatchNode = treList.FindNode("Watch", false);
                                         if (objFavoriteNode != null && objRecentNode != null && objWatchNode != null)
-                                            treCharacterList.Nodes.Insert(i + intNodeOffset + 3, node);
+                                            treList.Nodes.Insert(i + intNodeOffset + 3, node);
                                         else if (objFavoriteNode != null || objRecentNode != null
                                                                          || objWatchNode != null)
                                         {
                                             if ((objFavoriteNode != null && objRecentNode != null) ||
                                                 (objFavoriteNode != null && objWatchNode != null) ||
                                                 (objRecentNode != null && objWatchNode != null))
-                                                treCharacterList.Nodes.Insert(i + intNodeOffset + 2, node);
+                                                treList.Nodes.Insert(i + intNodeOffset + 2, node);
                                             else
-                                                treCharacterList.Nodes.Insert(i + intNodeOffset + 1, node);
+                                                treList.Nodes.Insert(i + intNodeOffset + 1, node);
                                         }
                                         else
-                                            treCharacterList.Nodes.Insert(i + intNodeOffset, node);
+                                            treList.Nodes.Insert(i + intNodeOffset, node);
                                     }
 
                                     node.Expand();

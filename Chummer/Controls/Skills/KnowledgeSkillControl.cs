@@ -415,11 +415,11 @@ namespace Chummer.UI.Skills
 
             Form frmToUse = ParentForm ?? Program.MainForm;
 
-            DialogResult eResult = await frmToUse.DoThreadSafeFunc(async () =>
+            DialogResult eResult = await frmToUse.DoThreadSafeFunc(async x =>
             {
                 using (SelectSpec selectForm = new SelectSpec(_objSkill) {Mode = "Knowledge"})
                 {
-                    await selectForm.ShowDialogSafeAsync(frmToUse);
+                    await selectForm.ShowDialogSafeAsync(x);
 
                     if (selectForm.DialogResult == DialogResult.OK)
                         _objSkill.AddSpecialization(selectForm.SelectedItem);

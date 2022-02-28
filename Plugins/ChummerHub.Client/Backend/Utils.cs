@@ -654,11 +654,8 @@ namespace ChummerHub.Client.Backend
                     if (rb.ErrorText.Length > 600)
                         rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
                     frmSIN.SINnerResponseUI.Result = rb;
-                    frmSIN.DoThreadSafe(() =>
-                    {
-                        Log.Trace("Showing Dialog for frmSINnerResponse()");
-                        frmSIN.Show();
-                    });
+                    Log.Trace("Showing Dialog for frmSINnerResponse()");
+                    frmSIN.Show();
                 });
             }
             return rb;
@@ -1098,9 +1095,9 @@ namespace ChummerHub.Client.Backend
                         }
                     }
                 }
-                await PluginHandler.MainForm.CharacterRoster.DoThreadSafeFunc(async () =>
+                await PluginHandler.MainForm.CharacterRoster.DoThreadSafeFunc(async x =>
                 {
-                    await PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
+                    await ((CharacterRoster)x).UpdateCharacter(objCache);
                 });
 
                 treeViewEventArgs.Node.Text = objCache.CalculatedName();
@@ -1112,14 +1109,12 @@ namespace ChummerHub.Client.Backend
             string filepath = await DownloadFileTask(sinner, objCache);
             PluginHandler.MySINnerLoading = sinner;
             PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
-            await PluginHandler.MainForm.DoThreadSafeFunc(async () =>
+            Character c = await Program.LoadCharacterAsync(filepath);
+            if (c != null)
+                await SwitchToCharacter(c);
+            await PluginHandler.MainForm.DoThreadSafeAsync(x =>
             {
-                Character c = await Program.LoadCharacterAsync(filepath);
-                if (c != null)
-                {
-                    await SwitchToCharacter(c);
-                }
-                PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers();
+                ((ChummerMainForm)x).CharacterRoster.SetMyEventHandlers();
                 PluginHandler.MySINnerLoading = null;
             });
         }
@@ -1471,10 +1466,10 @@ namespace ChummerHub.Client.Backend
 
         private static void wc_DownloadProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            PluginHandler.MainForm.DoThreadSafe(x =>
             {
                 string substring = "Downloading: " + e.ProgressPercentage;
-                PluginHandler.MainForm.Text = PluginHandler.MainForm.MainTitle + ' ' + substring;
+                x.Text = ((ChummerMainForm)x).MainTitle + ' ' + substring;
             });
         }
 

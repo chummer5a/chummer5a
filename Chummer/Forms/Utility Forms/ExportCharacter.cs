@@ -81,8 +81,7 @@ namespace Chummer
             cboXSLT.EndUpdate();
             _blnLoading = false;
             await Task.WhenAll(
-                this.DoThreadSafeAsync(async () =>
-                    Text = Text + await LanguageManager.GetStringAsync("String_Space") + _objCharacter?.Name),
+                this.DoThreadSafeAsync(async x => x.Text += await LanguageManager.GetStringAsync("String_Space") + _objCharacter?.Name),
                 DoLanguageUpdate().AsTask());
         }
 
@@ -141,8 +140,8 @@ namespace Chummer
 
                 _objCharacterXml = null;
                 await Task.WhenAll(
-                    imgSheetLanguageFlag.DoThreadSafeAsync(() =>
-                                                               imgSheetLanguageFlag.Image
+                    imgSheetLanguageFlag.DoThreadSafeAsync(x =>
+                                                               ((PictureBox)x).Image
                                                                    = Math.Min(imgSheetLanguageFlag.Width,
                                                                               imgSheetLanguageFlag.Height) >= 32
                                                                        ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
@@ -165,11 +164,11 @@ namespace Chummer
                         using (new CursorWait(this))
                         {
                             await txtText.DoThreadSafeAsync(
-                                async () => txtText.Text = await LanguageManager.GetStringAsync("String_Generating_Data"));
+                                async x => x.Text = await LanguageManager.GetStringAsync("String_Generating_Data"));
                             if (_dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
                                                       out Tuple<string, string> strBoxText))
                             {
-                                await txtText.DoThreadSafeAsync(() => txtText.Text = strBoxText.Item2);
+                                await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2);
                             }
                             else
                             {
@@ -245,9 +244,10 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                await Task.WhenAll(cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false),
-                    txtText.DoThreadSafeAsync(async () =>
-                        txtText.Text = await LanguageManager.GetStringAsync("String_Generating_Data")));
+                await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false),
+                                   txtText.DoThreadSafeAsync(
+                                       async x => x.Text
+                                           = await LanguageManager.GetStringAsync("String_Generating_Data")));
                 _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                          _objCharacterXmlGeneratorCancellationTokenSource
                                                                              .Token);
@@ -306,7 +306,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false);
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
                 {
                     string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
@@ -375,7 +375,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = true);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
                 }
             }
         }
@@ -384,7 +384,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false);
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
                 {
                     string strText = JsonConvert.SerializeXmlNode(_objCharacterXml, Formatting.Indented);
@@ -394,7 +394,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = true);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
                 }
             }
         }
@@ -409,7 +409,7 @@ namespace Chummer
             _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
                 new Tuple<string, string>(strText, strDisplayText),
                 (a, b) => new Tuple<string, string>(strText, strDisplayText));
-            txtText.DoThreadSafe(() => txtText.Text = strDisplayText);
+            txtText.DoThreadSafe(x => x.Text = strDisplayText);
         }
 
         #endregion XML

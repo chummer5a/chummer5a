@@ -98,11 +98,11 @@ namespace Chummer
             try
             {
                 if (_tskPrinter?.IsCompleted == false)
-                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
+                                       prgProgress.DoThreadSafeAsync(x => ((ProgressBar)x).Value = 0));
                 else
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
+                                       prgProgress.DoThreadSafeAsync(x => ((ProgressBar)x).Value = 0));
             }
             catch (TaskCanceledException)
             {
@@ -124,11 +124,12 @@ namespace Chummer
             {
                 try
                 {
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
-                        prgProgress.DoThreadSafeAsync(() =>
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
+                        prgProgress.DoThreadSafeAsync(x =>
                         {
-                            prgProgress.Value = 0;
-                            prgProgress.Maximum = treCharacters.Nodes.Count;
+                            ProgressBar objBar = (ProgressBar) x;
+                            objBar.Value = 0;
+                            objBar.Maximum = treCharacters.Nodes.Count;
                         }));
                     Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
                     // Parallelized load because this is one major bottleneck.
@@ -184,8 +185,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                        prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
+                        prgProgress.DoThreadSafeAsync(x => ((ProgressBar)x).Value = 0));
                 }
             }
         }

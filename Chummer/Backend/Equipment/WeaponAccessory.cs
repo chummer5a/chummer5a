@@ -198,9 +198,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (decMax > 1000000)
                             decMax = 1000000;
-                        Form frmToUse = Program.GetFormForDialog(_objCharacter);
-
-                        DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                        DialogResult eResult = Program.GetFormForDialog(_objCharacter).DoThreadSafeFunc(x =>
                         {
                             using (SelectNumber frmPickNumber
                                    = new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
@@ -214,7 +212,7 @@ namespace Chummer.Backend.Equipment
                                        AllowCancel = false
                                    })
                             {
-                                if (frmPickNumber.ShowDialogSafe(frmToUse) != DialogResult.Cancel)
+                                if (frmPickNumber.ShowDialogSafe(x) != DialogResult.Cancel)
                                     _strCost = frmPickNumber.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                                 return frmPickNumber.DialogResult;
                             }

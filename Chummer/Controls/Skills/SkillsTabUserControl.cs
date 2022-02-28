@@ -756,7 +756,7 @@ namespace Chummer.UI.Skills
 
                 Form frmToUse = ParentForm ?? Program.MainForm;
 
-                DialogResult eResult = await frmToUse.DoThreadSafeFunc(async () =>
+                DialogResult eResult = await frmToUse.DoThreadSafeFunc(async x =>
                 {
                     using (SelectItem form = new SelectItem
                            {
@@ -765,7 +765,7 @@ namespace Chummer.UI.Skills
                     {
                         form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
 
-                        await form.ShowDialogSafeAsync(frmToUse);
+                        await form.ShowDialogSafeAsync(x);
 
                         if (form.DialogResult == DialogResult.OK)
                             strSelectedSkill = form.SelectedItem;

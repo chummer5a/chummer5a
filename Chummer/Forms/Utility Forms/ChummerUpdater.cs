@@ -155,11 +155,11 @@ namespace Chummer
             if (!_blnFormClosing)
             {
                 if (!_clientDownloader.IsBusy)
-                    await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
+                    await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = true);
                 if (File.Exists(_strTempLatestVersionChangelogPath))
                 {
                     string strUpdateLog = File.ReadAllText(_strTempLatestVersionChangelogPath).CleanForHtml();
-                    await webNotes.DoThreadSafeAsync(() => webNotes.DocumentText
+                    await webNotes.DoThreadSafeAsync(x => ((WebBrowser)x).DocumentText
                                                          = "<font size=\"-1\" face=\"Courier New,Serif\">"
                                                            + strUpdateLog + "</font>");
                 }
@@ -382,10 +382,10 @@ namespace Chummer
         public async ValueTask DoVersionTextUpdate()
         {
             string strLatestVersion = LatestVersion.TrimStartOnce("Nightly-v");
-            await lblUpdaterStatus.DoThreadSafeAsync(() => lblUpdaterStatus.Left = lblUpdaterStatusLabel.Left + lblUpdaterStatusLabel.Width + 6);
+            await lblUpdaterStatus.DoThreadSafeAsync(x => x.Left = x.Left + x.Width + 6);
             if (!_blnIsConnected || strLatestVersion == (await LanguageManager.GetStringAsync("String_Error")).Trim())
             {
-                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeFunc(async () => lblUpdaterStatus.Text
+                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeFunc(async x => x.Text
                                                                          = string.IsNullOrEmpty(_strExceptionString)
                                                                              ? await LanguageManager.GetStringAsync(
                                                                                  "Warning_Update_CouldNotConnect")
@@ -396,10 +396,10 @@ namespace Chummer
                                                                                  .NormalizeWhiteSpace(),
                                                                                  _strExceptionString)),
                                    cmdUpdate.DoThreadSafeFunc(
-                                       async () => cmdUpdate.Text
+                                       async x => x.Text
                                            = await LanguageManager.GetStringAsync("Button_Reconnect")),
-                                   cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
-                                   cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false));
+                                   cmdRestart.DoThreadSafeAsync(x => x.Enabled = false),
+                                   cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false));
                 return;
             }
 
@@ -426,19 +426,19 @@ namespace Chummer
                                                                              : "String_Stable"), strLatestVersion);
                 if (intResult < 0)
                 {
-                    await cmdRestart.DoThreadSafeFunc(async () =>
+                    await cmdRestart.DoThreadSafeFunc(async x =>
                     {
-                        cmdRestart.Text = await LanguageManager.GetStringAsync("Button_Up_To_Date");
-                        cmdRestart.Enabled = false;
+                        x.Text = await LanguageManager.GetStringAsync("Button_Up_To_Date");
+                        x.Enabled = false;
                     });
                 }
             }
             if (_blnPreferNightly)
                 strStatusText += strSpace + await LanguageManager.GetStringAsync("String_Nightly_Changelog_Warning");
 
-            await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(() => lblUpdaterStatus.Text = strStatusText),
+            await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strStatusText),
                                cmdUpdate.DoThreadSafeFunc(
-                                   async () => cmdUpdate.Text
+                                   async x => x.Text
                                        = await LanguageManager.GetStringAsync(
                                            intResult > 0 ? "Button_Download" : "Button_Redownload")));
         }
@@ -772,9 +772,9 @@ namespace Chummer
             if (Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
             {
                 Log.Debug("DownloadUpdates");
-                await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false),
-                                   cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
-                                   cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false),
+                await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false),
+                                   cmdRestart.DoThreadSafeAsync(x => x.Enabled = false),
+                                   cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false),
                                    Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode));
                 try
                 {
@@ -796,7 +796,7 @@ namespace Chummer
                                           await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"),
                                           strException), Application.ProductName, MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
-                    await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
+                    await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = true);
                 }
             }
         }
@@ -818,15 +818,15 @@ namespace Chummer
         private async void wc_DownloadCompleted(object sender, AsyncCompletedEventArgs e)
         {
             Log.Info("wc_DownloadExeFileCompleted enter");
-            cmdUpdate.QueueThreadSafe(async () =>
+            cmdUpdate.QueueThreadSafe(async x =>
             {
-                cmdUpdate.Text = await LanguageManager.GetStringAsync("Button_Redownload");
-                cmdUpdate.Enabled = true;
+                x.Text = await LanguageManager.GetStringAsync("Button_Redownload");
+                x.Enabled = true;
             });
-            cmdRestart.QueueThreadSafe(async () =>
+            cmdRestart.QueueThreadSafe(async x =>
             {
-                if (_blnIsConnected && cmdRestart.Text != await LanguageManager.GetStringAsync("Button_Up_To_Date"))
-                    cmdRestart.Enabled = true;
+                if (_blnIsConnected && x.Text != await LanguageManager.GetStringAsync("Button_Up_To_Date"))
+                    x.Enabled = true;
             });
             cmdCleanReinstall.QueueThreadSafe(() => cmdCleanReinstall.Enabled = true);
             Log.Info("wc_DownloadExeFileCompleted exit");

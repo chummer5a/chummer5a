@@ -5439,16 +5439,16 @@ namespace Chummer
                                                         DialogResult ePickItemResult = DialogResult.Cancel;
                                                         if (blnSync)
                                                             // ReSharper disable once MethodHasAsyncOverload
-                                                            Program.MainForm.DoThreadSafe(DoSelectItem);
+                                                            Program.GetFormForDialog(this).DoThreadSafe(x => DoSelectItem(x));
                                                         else
-                                                            await Program.MainForm.DoThreadSafeAsync(DoSelectItem);
+                                                            await Program.GetFormForDialog(this).DoThreadSafeAsync(x => DoSelectItem(x));
 
-                                                        void DoSelectItem()
+                                                        void DoSelectItem(Control frmParent)
                                                         {
                                                             using (SelectItem frmPickItem = new SelectItem())
                                                             {
                                                                 frmPickItem.SetDropdownItemsMode(lstContacts);
-                                                                frmPickItem.ShowDialogSafe(this);
+                                                                frmPickItem.ShowDialogSafe(frmParent);
 
                                                                 ePickItemResult = frmPickItem.DialogResult;
                                                                 selectedContactUniqueId = frmPickItem.SelectedItem;
