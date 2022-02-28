@@ -145,6 +145,7 @@ namespace Chummer
 
             foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
                 objCache.Dispose();
+            _dicSavedCharacterCaches.Dispose();
 
             DisposeTagNodes(treCharacterList.Nodes);
 
