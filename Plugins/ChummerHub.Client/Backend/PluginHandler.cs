@@ -1300,35 +1300,29 @@ namespace Chummer.Plugins
         private static async ValueTask MainFormLoadChar(string fileToLoad)
         {
             //already open
-            Character objCharacter = MainForm.OpenCharacters.FirstOrDefault(a => a.FileName == fileToLoad);
+            Character objCharacter = Program.OpenCharacters.FirstOrDefault(a => a.FileName == fileToLoad);
             if (objCharacter == null)
             {
                 objCharacter = new Character
                 {
                     FileName = fileToLoad
                 };
-                using (LoadingBar frmLoadingForm = await ChummerMainForm.CreateAndShowProgressBarAsync(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
                 {
                     if (await objCharacter.LoadAsync(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening))
-                        MainForm.OpenCharacters.Add(objCharacter);
+                        Program.OpenCharacters.Add(objCharacter);
                     else
                         return;
                 }
             }
             using (new CursorWait(MainForm))
             {
-                await MainForm.DoThreadSafeFunc(async () =>
+                await MainForm.DoThreadSafeFunc(async x =>
                 {
-                    if (MainForm.OpenCharacterForms.Any(a => a.CharacterObject == objCharacter))
-                    {
-                        await MainForm.SwitchToOpenCharacter(objCharacter, false);
-                    }
-                    else
-                    {
-                        await MainForm.OpenCharacter(objCharacter, false);
-                    }
-
-                    MainForm.BringToFront();
+                    ChummerMainForm frmMain = (ChummerMainForm) x;
+                    if (!frmMain.SwitchToOpenCharacter(objCharacter))
+                        await frmMain.OpenCharacter(objCharacter, false);
+                    frmMain.BringToFront();
                 });
             }
         }

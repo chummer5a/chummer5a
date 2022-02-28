@@ -1258,9 +1258,9 @@ namespace Chummer
                     }
 
                     // Trash the global variables and dispose of the Form.
-                    if (Program.MainForm.OpenCharacters.All(
+                    if (Program.OpenCharacters.All(
                             x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
-                        Program.MainForm.OpenCharacters.Remove(CharacterObject);
+                        Program.OpenCharacters.Remove(CharacterObject);
                 }
                 finally
                 {
@@ -2325,9 +2325,9 @@ namespace Chummer
                 Character[] lstClones = new Character[intClones];
                 // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
                 await Task.Run(() => Parallel.For(0, intClones,
-                    i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName,
+                    i => lstClones[i] = Program.LoadCharacter(CharacterObject.FileName,
                         CharacterObject.Alias + strSpace + i.ToString(GlobalSettings.CultureInfo), true)));
-                await Program.MainForm.OpenCharacterList(lstClones, false);
+                await Program.OpenCharacterList(lstClones, false);
             }
         }
 
@@ -2931,7 +2931,7 @@ namespace Chummer
                 {
                     using (Character objVessel = new Character { FileName = strFileName })
                     {
-                        using (LoadingBar frmLoadingForm = await ChummerMainForm.CreateAndShowProgressBarAsync(Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
+                        using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
                         {
                             bool blnSuccess = await objVessel.LoadAsync(frmLoadingForm);
                             if (!blnSuccess)
@@ -3072,7 +3072,7 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
+                        using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
                             frmProgressBar.PerformStep(objMerge.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
@@ -3090,8 +3090,8 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacterAsync(strOpenFile);
-                    await Program.MainForm.OpenCharacter(objOpenCharacter);
+                    Character objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile);
+                    await Program.OpenCharacter(objOpenCharacter);
                 }
             }
         }
@@ -3240,7 +3240,7 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
+                        using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
                             frmProgressBar.PerformStep(objMerge.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
@@ -3258,8 +3258,8 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacterAsync(strOpenFile);
-                    await Program.MainForm.OpenCharacter(objOpenCharacter);
+                    Character objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile);
+                    await Program.OpenCharacter(objOpenCharacter);
                 }
             }
         }
@@ -12925,7 +12925,7 @@ namespace Chummer
             // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = Program.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
                     await CharacterObject.LoadAsync(frmLoadingForm);
                     frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));

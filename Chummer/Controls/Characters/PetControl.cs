@@ -118,16 +118,15 @@ namespace Chummer
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = Program.MainForm.OpenCharacters.Contains(_objContact.LinkedCharacter)
+                Character objOpenCharacter = Program.OpenCharacters.Contains(_objContact.LinkedCharacter)
                     ? _objContact.LinkedCharacter
                     : null;
                 using (new CursorWait(this))
                 {
-                    if (objOpenCharacter == null || !await Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
-                    {
-                        objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
-                        await Program.MainForm.OpenCharacter(objOpenCharacter);
-                    }
+                    if (objOpenCharacter == null)
+                        objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
+                    if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+                        await Program.OpenCharacter(objOpenCharacter);
                 }
             }
             else

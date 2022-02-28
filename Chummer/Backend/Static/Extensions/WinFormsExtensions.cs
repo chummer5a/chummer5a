@@ -127,7 +127,31 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DoThreadSafe(this Control objControl, Action<Control> funcToRun)
+        {
+            objControl.DoThreadSafeCore(true, funcToRun);
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner and waits for it to complete.
+        /// If you do not want to wait for the code to complete before moving on, use QueueThreadSafe instead.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoThreadSafe(this Control objControl, Func<Task> funcToRun)
+        {
+            objControl.DoThreadSafeCore(true, funcToRun);
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner and waits for it to complete.
+        /// If you do not want to wait for the code to complete before moving on, use QueueThreadSafe instead.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DoThreadSafe(this Control objControl, Func<Control, Task> funcToRun)
         {
             objControl.DoThreadSafeCore(true, funcToRun);
         }
@@ -151,7 +175,31 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void QueueThreadSafe(this Control objControl, Action<Control> funcToRun)
+        {
+            objControl.DoThreadSafeCore(false, funcToRun);
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner without waiting for the code to complete before continuing.
+        /// If you want to wait for the code to complete, use DoThreadSafe or DoThreadSafeAsync instead.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void QueueThreadSafe(this Control objControl, Func<Task> funcToRun)
+        {
+            objControl.DoThreadSafeCore(false, funcToRun);
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner without waiting for the code to complete before continuing.
+        /// If you want to wait for the code to complete, use DoThreadSafe or DoThreadSafeAsync instead.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void QueueThreadSafe(this Control objControl, Func<Control, Task> funcToRun)
         {
             objControl.DoThreadSafeCore(false, funcToRun);
         }
@@ -194,6 +242,69 @@ namespace Chummer
                     }
                     else
                         funcToRun.Invoke();
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner, but using a void means that this method is not awaitable.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void DoThreadSafeCore(this Control objControl, bool blnSync, Action<Control> funcToRun)
+        {
+            if (funcToRun == null)
+                return;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                {
+                    if (blnSync)
+                        funcToRun.Invoke(objControl);
+                    else
+                        Task.Run(() => funcToRun(objControl));
+                }
+                else
+                {
+                    // ReSharper disable once InlineTemporaryVariable
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        if (blnSync)
+                        {
+                            IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                            myControlCopy.BeginInvoke(funcToRun);
+                    }
+                    else
+                        funcToRun.Invoke(myControlCopy);
                 }
             }
             catch (ObjectDisposedException) // e)
@@ -322,6 +433,108 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner, but using a void means that this method is not awaitable.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void DoThreadSafeCore(this Control objControl, bool blnSync, Func<Control, Task> funcToRun)
+        {
+            if (funcToRun == null)
+                return;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                {
+                    if (blnSync)
+                    {
+                        Task tskRunning = funcToRun.Invoke(objControl);
+                        if (tskRunning.Status == TaskStatus.Created)
+                            tskRunning.RunSynchronously();
+                        while (!tskRunning.IsCompleted)
+                            Utils.SafeSleep();
+                        if (tskRunning.Exception != null)
+                            throw tskRunning.Exception;
+                    }
+                    else
+                    {
+                        Task.Run(() => funcToRun.Invoke(objControl).ContinueWith(x =>
+                        {
+                            if (x.Exception != null)
+                                throw x.Exception;
+                        }));
+                    }
+                }
+                else
+                {
+                    // ReSharper disable once InlineTemporaryVariable
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                        // funcToRun actually creates a Task that performs what is being run, so we need to get that task and then work with the task instead of the IAsyncResult
+                        objResult.AsyncWaitHandle.WaitOne();
+                        object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                        if (objReturnRaw is Task tskRunning)
+                        {
+                            if (blnSync)
+                            {
+                                if (tskRunning.Status == TaskStatus.Created)
+                                    tskRunning.RunSynchronously();
+                                while (!tskRunning.IsCompleted)
+                                    Utils.SafeSleep();
+                                if (tskRunning.Exception != null)
+                                    throw tskRunning.Exception;
+                            }
+                            else
+                            {
+                                Task.Run(() => tskRunning.ContinueWith(x =>
+                                {
+                                    if (x.Exception != null)
+                                        throw x.Exception;
+                                }));
+                            }
+                        }
+
+                        objResult.AsyncWaitHandle.Close();
+                    }
+                    else
+                    {
+                        Task tskRunning = funcToRun.Invoke(myControlCopy);
+                        if (tskRunning.Status == TaskStatus.Created)
+                            tskRunning.RunSynchronously();
+                        while (!tskRunning.IsCompleted)
+                            Utils.SafeSleep();
+                        if (tskRunning.Exception != null)
+                            throw tskRunning.Exception;
+                    }
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+        }
+
+        /// <summary>
         /// Runs code on a WinForms control in a thread-safe manner and in a way where it can get awaited.
         /// If you do not want to wait for the code to complete before moving on, use QueueThreadSafe instead.
         /// </summary>
@@ -346,6 +559,56 @@ namespace Chummer
                     }
                     else
                         funcToRun.Invoke();
+                }
+                catch (ObjectDisposedException) // e)
+                {
+                    //we really don't need to care about that.
+                    //Log.Trace(e);
+                }
+                catch (InvalidAsynchronousStateException e)
+                {
+                    //we really don't need to care about that.
+                    Log.Trace(e);
+                }
+                catch (System.Threading.ThreadAbortException)
+                {
+                    //no need to do anything here - actually we can't anyway...
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+#if DEBUG
+                    Program.ShowMessageBox(objControl, e.ToString());
+#endif
+                }
+            }
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner and in a way where it can get awaited.
+        /// If you do not want to wait for the code to complete before moving on, use QueueThreadSafe instead.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task DoThreadSafeAsync(this Control objControl, Action<Control> funcToRun)
+        {
+            if (funcToRun == null)
+                return;
+            if (objControl.IsNullOrDisposed())
+                await Task.Run(() => funcToRun(objControl));
+            else
+            {
+                try
+                {
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                        await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                    }
+                    else
+                        funcToRun.Invoke(myControlCopy);
                 }
                 catch (ObjectDisposedException) // e)
                 {
@@ -422,6 +685,56 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner and in a way where it can get awaited.
+        /// If you do not want to wait for the code to complete before moving on, use QueueThreadSafe instead.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task DoThreadSafeAsync(this Control objControl, Func<Control, Task> funcToRun)
+        {
+            if (funcToRun == null)
+                return;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                    await funcToRun.Invoke(objControl);
+                else
+                {
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                        await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                    }
+                    else
+                        await funcToRun.Invoke(myControlCopy);
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+        }
+
+        /// <summary>
         /// Runs code that returns a value on a WinForms control in a thread-safe manner.
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
@@ -441,7 +754,32 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T DoThreadSafeFunc<T>(this Control objControl, Func<Control, T> funcToRun)
+        {
+            Task<T> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<T> DoThreadSafeFuncAsync<T>(this Control objControl, Func<T> funcToRun)
+        {
+            return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun);
+        }
+
+        /// <summary>
+        /// Runs code that returns a value on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<T> DoThreadSafeFuncAsync<T>(this Control objControl, Func<Control, T> funcToRun)
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun);
         }
@@ -489,6 +827,76 @@ namespace Chummer
                     }
                     else
                         objReturn = funcToRun.Invoke();
+                }
+            }
+            catch (ObjectDisposedException) // e)
+            {
+                //we really don't need to care about that.
+                //Log.Trace(e);
+            }
+            catch (InvalidAsynchronousStateException e)
+            {
+                //we really don't need to care about that.
+                Log.Trace(e);
+            }
+            catch (System.Threading.ThreadAbortException)
+            {
+                //no need to do anything here - actually we can't anyway...
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+#if DEBUG
+                Program.ShowMessageBox(objControl, e.ToString());
+#endif
+            }
+
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Runs code on a WinForms control in a thread-safe manner.
+        /// </summary>
+        /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
+        /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static async Task<T> DoThreadSafeFuncCoreAsync<T>(this Control objControl, bool blnSync, Func<Control, T> funcToRun)
+        {
+            if (funcToRun == null)
+                return default;
+            T objReturn = default;
+            try
+            {
+                if (objControl.IsNullOrDisposed())
+                    objReturn = blnSync ? funcToRun.Invoke(objControl) : await Task.Run(() => funcToRun(objControl));
+                else
+                {
+                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    if (myControlCopy.InvokeRequired)
+                    {
+                        IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
+                        if (blnSync)
+                        {
+                            // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                            objResult.AsyncWaitHandle.WaitOne();
+                            object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                            if (objReturnRaw is T objReturnRawCast)
+                                objReturn = objReturnRawCast;
+                            objResult.AsyncWaitHandle.Close();
+                        }
+                        else
+                        {
+                            await Task.Factory.FromAsync(objResult, x =>
+                            {
+                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                if (objReturnRaw is T objReturnRawCast)
+                                    objReturn = objReturnRawCast;
+                            });
+                        }
+                    }
+                    else
+                        objReturn = funcToRun.Invoke(myControlCopy);
                 }
             }
             catch (ObjectDisposedException) // e)

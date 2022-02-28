@@ -143,7 +143,7 @@ namespace Chummer
                             return;
                         }
 
-                        lstCharacters[i] = Program.MainForm.LoadCharacter(treCharacters.Nodes[i].Tag.ToString(), string.Empty, false, false, false);
+                        lstCharacters[i] = Program.LoadCharacter(treCharacters.Nodes[i].Tag.ToString(), string.Empty, false, false, false);
                         bool blnLoadSuccessful = lstCharacters[i] != null;
                         if (_objPrinterCancellationTokenSource.IsCancellationRequested ||
                             objState.ShouldExitCurrentIteration)
@@ -201,12 +201,12 @@ namespace Chummer
                 blnAnyChanges = false;
                 foreach (Character objCharacter in _aobjCharacters)
                 {
-                    if (!Program.MainForm.OpenCharacters.Contains(objCharacter) ||
+                    if (!Program.OpenCharacters.Contains(objCharacter) ||
                         Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == objCharacter) ||
-                        Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objCharacter)))
+                        Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;
-                    Program.MainForm.OpenCharacters.Remove(objCharacter);
+                    Program.OpenCharacters.Remove(objCharacter);
                     objCharacter.Dispose();
                 }
             }

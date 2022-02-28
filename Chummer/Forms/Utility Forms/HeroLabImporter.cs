@@ -535,7 +535,7 @@ namespace Chummer
                 Character objCharacter = new Character();
                 try
                 {
-                    Program.MainForm.OpenCharacters.Add(objCharacter);
+                    Program.OpenCharacters.Add(objCharacter);
 
                     CharacterSettings objHeroLabSettings =
                         SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
@@ -579,14 +579,14 @@ namespace Chummer
                         return;
                     blnLoaded = true;
                     //Timekeeper.Finish("load_file");
-                    await Program.MainForm.OpenCharacter(objCharacter);
+                    await Program.OpenCharacter(objCharacter);
                 }
                 finally
                 {
                     cmdImport.Enabled = true;
                     cmdSelectFile.Enabled = true;
                     if (!blnLoaded)
-                        Program.MainForm.OpenCharacters.Remove(objCharacter);
+                        Program.OpenCharacters.Remove(objCharacter);
                 }
             }
 

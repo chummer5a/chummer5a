@@ -163,16 +163,15 @@ namespace Chummer
         {
             if (_objSpirit.LinkedCharacter != null)
             {
-                Character objOpenCharacter = Program.MainForm.OpenCharacters.Contains(_objSpirit.LinkedCharacter)
+                Character objOpenCharacter = Program.OpenCharacters.Contains(_objSpirit.LinkedCharacter)
                     ? _objSpirit.LinkedCharacter
                     : null;
                 using (new CursorWait(this))
                 {
-                    if (objOpenCharacter == null || !await Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
-                    {
-                        objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName);
-                        await Program.MainForm.OpenCharacter(objOpenCharacter);
-                    }
+                    if (objOpenCharacter == null)
+                        objOpenCharacter = await Program.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName);
+                    if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+                        await Program.OpenCharacter(objOpenCharacter);
                 }
             }
             else
@@ -562,7 +561,7 @@ namespace Chummer
 
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText, string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
-                    using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
+                    using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                     {
                         frmProgressBar.PerformStep(objCharacter.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!await objCharacter.SaveAsync())
@@ -573,7 +572,7 @@ namespace Chummer
                     cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                    await Program.MainForm.OpenCharacter(objCharacter);
+                    await Program.OpenCharacter(objCharacter);
                 }
             }
         }

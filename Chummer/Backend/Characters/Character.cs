@@ -7859,8 +7859,8 @@ namespace Chummer
             {
                 if (IsDisposed)
                     return;
-                if (Program.MainForm.OpenCharacters.Contains(this)
-                    || Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
+                if (Program.OpenCharacters.Contains(this)
+                    || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
                     return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
                 using (new EnterWriteLock(LockObject)) // Wait for all pending locks to get freed before disposing
                 {
@@ -24519,7 +24519,7 @@ namespace Chummer
 
             if (Program.MainForm == null || IsLoading)
                 return;
-            foreach(Character objLoopOpenCharacter in Program.MainForm.OpenCharacters)
+            foreach(Character objLoopOpenCharacter in Program.OpenCharacters)
             {
                 if(objLoopOpenCharacter != this && objLoopOpenCharacter.LinkedCharacters.Contains(this))
                 {

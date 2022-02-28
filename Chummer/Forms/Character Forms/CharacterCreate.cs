@@ -1060,9 +1060,9 @@ namespace Chummer
 
                     // Trash the global variables and dispose of the Form.
                     if (!_blnIsReopenQueued
-                        && Program.MainForm.OpenCharacters.All(
+                        && Program.OpenCharacters.All(
                             x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
-                        Program.MainForm.OpenCharacters.Remove(CharacterObject);
+                        Program.OpenCharacters.Remove(CharacterObject);
                 }
                 finally
                 {
@@ -1081,7 +1081,7 @@ namespace Chummer
 
         private async void ReopenCharacter(object sender, FormClosedEventArgs e)
         {
-            await Program.MainForm.OpenCharacter(CharacterObject);
+            await Program.OpenCharacter(CharacterObject);
             FormClosed -= ReopenCharacter;
         }
 
@@ -9646,7 +9646,7 @@ namespace Chummer
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = Program.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
                     await CharacterObject.LoadAsync(frmLoadingForm);
                     frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
@@ -11342,7 +11342,7 @@ namespace Chummer
 
                 CharacterObject.Created = true;
 
-                using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
+                using (LoadingBar frmProgressBar = Program.CreateAndShowProgressBar())
                 {
                     frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                     if (!await CharacterObject.SaveAsync())
@@ -13961,7 +13961,7 @@ namespace Chummer
 
                     using (new CursorWait(this))
                     {
-                        using (LoadingBar frmProgressBar = await ChummerMainForm.CreateAndShowProgressBarAsync())
+                        using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
                             frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                             if (!await CharacterObject.SaveAsync(strNewName))

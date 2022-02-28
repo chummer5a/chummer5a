@@ -28,6 +28,7 @@ using System.Linq;
 using System.Runtime;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Backend;
 using Chummer.Plugins;
@@ -679,32 +680,25 @@ namespace Chummer
                 if (value != null)
                 {
                     foreach (Action<ChummerMainForm> funcToRun in MainFormOnAssignActions)
-                        funcToRun(_frmMainForm);
+                        funcToRun(value);
                     MainFormOnAssignActions.Clear();
+                    foreach (Func<ChummerMainForm, Task> funcAsyncToRun in MainFormOnAssignAsyncActions)
+                        Task.Run(() => funcAsyncToRun(value));
+                    MainFormOnAssignAsyncActions.Clear();
                 }
             }
         }
+
+#if DEBUG
+        private static bool _blnShowDevWarningAboutDebuggingOnlyOnce = true;
+#endif
 
         /// <summary>
         /// Shows a dialog box centered on the Chummer main form window, or otherwise queues up such a box to be displayed
         /// </summary>
         public static DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
-            if (MainForm != null)
-                return MainForm.ShowMessageBox(null, message, caption, buttons, icon, defaultButton);
-            if (Utils.IsUnitTest)
-            {
-                if (icon == MessageBoxIcon.Error || buttons != MessageBoxButtons.OK)
-                {
-                    Utils.BreakIfDebug();
-                    string strMessage = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine +
-                                        "Caption: " + caption + Environment.NewLine + "Message: " + message;
-                    throw new InvalidOperationException(strMessage);
-                }
-                return DialogResult.OK;
-            }
-            MainFormOnAssignActions.Add(x => x.ShowMessageBox(null, message, caption, buttons, icon, defaultButton));
-            return DialogResult.Cancel;
+            return ShowMessageBox(null, message, caption, buttons, icon, defaultButton);
         }
 
         /// <summary>
@@ -712,8 +706,6 @@ namespace Chummer
         /// </summary>
         public static DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
         {
-            if (MainForm != null)
-                return MainForm.ShowMessageBox(owner, message, caption, buttons, icon, defaultButton);
             if (Utils.IsUnitTest)
             {
                 if (icon == MessageBoxIcon.Error || buttons != MessageBoxButtons.OK)
@@ -725,14 +717,65 @@ namespace Chummer
                 }
                 return DialogResult.OK;
             }
-            MainFormOnAssignActions.Add(x => x.ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
+            if (owner == null)
+                owner = MainProgressBar.IsNullOrDisposed() ? MainForm as Control : MainProgressBar;
+            if (owner != null)
+            {
+                if (owner.InvokeRequired)
+                {
+#if DEBUG
+                    if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
+                    {
+                        _blnShowDevWarningAboutDebuggingOnlyOnce = false;
+                        //it works on my installation even in the debugger, so maybe we can ignore that...
+                        //WARNING from the link above (you can edit that out if it's not causing problem):
+                        //
+                        //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
+                        //other than the main/application thread, YOU NEED TO TURN OFF
+                        //the "Enable property evaluation and other implicit function calls" option, or else VS will
+                        //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
+                        //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
+                        //that setting off.
+                        Debugger.Break();
+                    }
+#endif
+
+                    try
+                    {
+                        return (DialogResult)owner.Invoke(new PassControlStringStringReturnDialogResultDelegate(ShowMessageBox),
+                            owner, message, caption, buttons, icon, defaultButton);
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //if the main form is disposed, we really don't need to bother anymore...
+                    }
+                    catch (Exception e)
+                    {
+                        string msg = "Could not show a MessageBox " + caption + ':' + Environment.NewLine + message
+                                     + Environment.NewLine + Environment.NewLine + "Exception: " + e;
+                        Log.Fatal(e, msg);
+                    }
+                }
+
+                return CenterableMessageBox.Show(MainProgressBar.IsNullOrDisposed() ? owner.FindForm() : MainProgressBar, message, caption, buttons, icon, defaultButton);
+            }
+            MainFormOnAssignActions.Add(x => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
             return DialogResult.Cancel;
         }
+
+        private delegate DialogResult PassControlStringStringReturnDialogResultDelegate(
+            Control owner, string s1, string s2, MessageBoxButtons buttons,
+            MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
 
         /// <summary>
         /// Queue of Actions to run after MainForm is assigned
         /// </summary>
         public static List<Action<ChummerMainForm>> MainFormOnAssignActions { get; } = new List<Action<ChummerMainForm>>();
+
+        /// <summary>
+        /// Queue of Async Actions to run after MainForm is assigned
+        /// </summary>
+        public static List<Func<ChummerMainForm, Task>> MainFormOnAssignAsyncActions { get; } = new List<Func<ChummerMainForm, Task>>();
 
         /// <summary>
         /// Gets the form to use for creating sub-forms and displaying them as dialogs
@@ -747,6 +790,247 @@ namespace Chummer
                 return MainForm;
             return MainForm.OpenCharacterForms.FirstOrDefault(
                 x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form ?? MainForm;
+        }
+
+        /// <summary>
+        /// List of all currently loaded characters (either in an open form or linked to a character in an open form via contact, spirit, or pet)
+        /// </summary>
+        public static ThreadSafeObservableCollection<Character> OpenCharacters { get; } = new ThreadSafeObservableCollection<Character>();
+
+        /// <summary>
+        /// Load a Character from a file and return it (thread-safe).
+        /// </summary>
+        /// <param name="strFileName">File to load.</param>
+        /// <param name="strNewName">New name for the character.</param>
+        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
+        /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
+        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
+        public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
+        {
+            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, blnShowProgressBar).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Load a Character from a file and return it (thread-safe).
+        /// </summary>
+        /// <param name="strFileName">File to load.</param>
+        /// <param name="strNewName">New name for the character.</param>
+        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
+        /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
+        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
+        public static Task<Character> LoadCharacterAsync(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
+        {
+            return LoadCharacterCoreAsync(false, strFileName, strNewName, blnClearFileName, blnShowErrors, blnShowProgressBar);
+        }
+
+        /// <summary>
+        /// Load a Character from a file and return it (thread-safe).
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strFileName">File to load.</param>
+        /// <param name="strNewName">New name for the character.</param>
+        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
+        /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
+        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
+        private static async Task<Character> LoadCharacterCoreAsync(bool blnSync, string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
+        {
+            if (string.IsNullOrEmpty(strFileName))
+                return null;
+            Character objCharacter = null;
+            if (File.Exists(strFileName) && strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+            {
+                //Timekeeper.Start("loading");
+                bool blnLoadAutosave = false;
+                string strAutosavesPath = Utils.GetAutosavesFolderPath;
+                if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
+                {
+                    objCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFileName);
+                    if (objCharacter != null)
+                        return objCharacter;
+                }
+                objCharacter = new Character
+                {
+                    FileName = strFileName
+                };
+                if (blnShowErrors) // Only do the autosave prompt if we will show prompts
+                {
+                    if (!strFileName.StartsWith(strAutosavesPath))
+                    {
+                        string strNewAutosaveName = Path.GetFileName(strFileName);
+                        if (!string.IsNullOrEmpty(strNewAutosaveName))
+                        {
+                            strNewAutosaveName = Path.Combine(strAutosavesPath, strNewAutosaveName);
+                            if (File.Exists(strNewAutosaveName) && File.GetLastWriteTimeUtc(strNewAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                            {
+                                blnLoadAutosave = true;
+                                objCharacter.FileName = strNewAutosaveName;
+                            }
+                        }
+
+                        if (!blnLoadAutosave && !string.IsNullOrEmpty(strNewName))
+                        {
+                            string strOldAutosaveName = strNewName;
+                            foreach (char invalidChar in Path.GetInvalidFileNameChars())
+                            {
+                                strOldAutosaveName = strOldAutosaveName.Replace(invalidChar, '_');
+                            }
+
+                            if (!string.IsNullOrEmpty(strOldAutosaveName))
+                            {
+                                strOldAutosaveName = Path.Combine(strAutosavesPath, strOldAutosaveName);
+                                if (File.Exists(strOldAutosaveName) && File.GetLastWriteTimeUtc(strOldAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
+                                {
+                                    blnLoadAutosave = true;
+                                    objCharacter.FileName = strOldAutosaveName;
+                                }
+                            }
+                        }
+                    }
+                    if (blnLoadAutosave && ShowMessageBox(
+                        string.Format(GlobalSettings.CultureInfo,
+                                      // ReSharper disable once MethodHasAsyncOverload
+                                      blnSync ? LanguageManager.GetString("Message_AutosaveFound") : await LanguageManager.GetStringAsync("Message_AutosaveFound"),
+                            Path.GetFileName(strFileName),
+                            File.GetLastWriteTimeUtc(objCharacter.FileName).ToLocalTime(),
+                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                        // ReSharper disable once MethodHasAsyncOverload
+                        blnSync ? LanguageManager.GetString("MessageTitle_AutosaveFound") : await LanguageManager.GetStringAsync("MessageTitle_AutosaveFound"),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    {
+                        blnLoadAutosave = false;
+                        objCharacter.FileName = strFileName;
+                    }
+                }
+                if (blnShowProgressBar && MainProgressBar.IsNullOrDisposed())
+                {
+                    using (MainProgressBar = await CreateAndShowProgressBarAsync(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
+                    {
+                        OpenCharacters.Add(objCharacter);
+                        //Timekeeper.Start("load_file");
+                        bool blnLoaded = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.Load(MainProgressBar, blnShowErrors)
+                            : await objCharacter.LoadAsync(MainProgressBar, blnShowErrors);
+                        //Timekeeper.Finish("load_file");
+                        if (!blnLoaded)
+                        {
+                            OpenCharacters.Remove(objCharacter);
+                            return null;
+                        }
+                    }
+                }
+                else
+                {
+                    OpenCharacters.Add(objCharacter);
+                    //Timekeeper.Start("load_file");
+                    bool blnLoaded;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        blnLoaded = objCharacter.Load(blnShowProgressBar ? MainProgressBar : null, blnShowErrors);
+                    else
+                        blnLoaded = await objCharacter.LoadAsync(blnShowProgressBar ? MainProgressBar : null,
+                            blnShowErrors);
+                    //Timekeeper.Finish("load_file");
+                    if (!blnLoaded)
+                    {
+                        OpenCharacters.Remove(objCharacter);
+                        return null;
+                    }
+                }
+
+                // If a new name is given, set the character's name to match (used in cloning).
+                if (!string.IsNullOrEmpty(strNewName))
+                    objCharacter.Name = strNewName;
+                // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                if (blnClearFileName)
+                    objCharacter.FileName = string.Empty;
+                // Restore original filename if we loaded from an autosave
+                if (blnLoadAutosave)
+                    objCharacter.FileName = strFileName;
+                // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
+                if (objCharacter.FileName.StartsWith(strAutosavesPath))
+                    objCharacter.FileName = string.Empty;
+            }
+            else if (blnShowErrors)
+            {
+                ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                        blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? LanguageManager.GetString("Message_FileNotFound")
+                            : await LanguageManager.GetStringAsync("Message_FileNotFound"),
+                        strFileName),
+                    blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? LanguageManager.GetString("MessageTitle_FileNotFound")
+                        : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return objCharacter;
+        }
+
+        public static bool SwitchToOpenCharacter(Character objCharacter)
+        {
+            if (objCharacter == null || MainForm == null)
+                return false;
+            return MainForm.DoThreadSafeFunc(x => ((ChummerMainForm) x).SwitchToOpenCharacter(objCharacter));
+        }
+
+        /// <summary>
+        /// Opens the correct window for a single character in the main form, queues the command to open on the main form if it is not assigned (thread-safe).
+        /// </summary>
+        public static Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
+        {
+            return objCharacter == null ? Task.CompletedTask : OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
+        }
+
+        /// <summary>
+        /// Open the correct windows for a list of characters in the main form, queues the command to open on the main form if it is not assigned (thread-safe).
+        /// </summary>
+        /// <param name="lstCharacters">Characters for which windows should be opened.</param>
+        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
+        public static Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
+        {
+            if (lstCharacters == null)
+                return Task.CompletedTask;
+            if (MainForm != null)
+                return MainForm.DoThreadSafeFunc(async x => await ((ChummerMainForm)x).OpenCharacterList(lstCharacters, blnIncludeInMru));
+            return Task.Run(() => MainFormOnAssignAsyncActions.Add(
+                                x => x.DoThreadSafeFunc(
+                                          async y => await ((ChummerMainForm)y).OpenCharacterList(lstCharacters, blnIncludeInMru))));
+        }
+
+        public static LoadingBar MainProgressBar { get; set; }
+
+        /// <summary>
+        /// Syntactic sugar for creating and displaying a LoadingBar screen with specific text and progress bar size.
+        /// </summary>
+        /// <param name="strFile"></param>
+        /// <param name="intCount"></param>
+        /// <returns></returns>
+        public static LoadingBar CreateAndShowProgressBar(string strFile = "", int intCount = 1)
+        {
+            LoadingBar frmReturn = new LoadingBar { CharacterFile = strFile };
+            if (intCount > 0)
+                frmReturn.Reset(intCount);
+            frmReturn.Show();
+            return frmReturn;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for creating and displaying a LoadingBar screen with specific text and progress bar size.
+        /// </summary>
+        /// <param name="strFile"></param>
+        /// <param name="intCount"></param>
+        /// <returns></returns>
+        public static async ValueTask<LoadingBar> CreateAndShowProgressBarAsync(string strFile = "", int intCount = 1)
+        {
+            LoadingBar frmReturn = new LoadingBar { CharacterFile = strFile };
+            if (intCount > 0)
+                await frmReturn.ResetAsync(intCount);
+            frmReturn.Show();
+            return frmReturn;
         }
 
         /// <summary>

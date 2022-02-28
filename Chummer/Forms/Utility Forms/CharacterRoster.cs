@@ -1177,7 +1177,7 @@ namespace Chummer
             string strFile = objSelectedNode.Tag.ToString();
             if (string.IsNullOrEmpty(strFile))
                 return;
-            Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+            Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
             if (objOpenCharacter != null)
             {
                 using (new CursorWait(this))

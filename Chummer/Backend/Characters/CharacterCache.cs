@@ -173,13 +173,10 @@ namespace Chummer
 
         public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
-            Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == FileName);
-
-            if (objOpenCharacter == null || !await Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
-            {
-                objOpenCharacter = await Program.MainForm.LoadCharacterAsync(FilePath);
-                await Program.MainForm.OpenCharacter(objOpenCharacter);
-            }
+            Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == FileName)
+                                         ?? await Program.LoadCharacterAsync(FilePath);
+            if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+                await Program.OpenCharacter(objOpenCharacter);
         }
 
         public void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)

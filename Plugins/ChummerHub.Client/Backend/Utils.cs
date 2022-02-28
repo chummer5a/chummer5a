@@ -968,7 +968,7 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Trace("Loading: " + fileName);
                 objCharacter = new Character {FileName = fileName};
-                using (LoadingBar frmLoadingForm = await ChummerMainForm.CreateAndShowProgressBarAsync(Path.GetFileName(fileName), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileName), Character.NumLoadingSections))
                 {
                     if (!await objCharacter.LoadAsync(frmLoadingForm, false))
                         return null;
@@ -1114,7 +1114,7 @@ namespace ChummerHub.Client.Backend
             PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
             await PluginHandler.MainForm.DoThreadSafeFunc(async () =>
             {
-                Character c = await PluginHandler.MainForm.LoadCharacterAsync(filepath);
+                Character c = await Program.LoadCharacterAsync(filepath);
                 if (c != null)
                 {
                     await SwitchToCharacter(c);
@@ -1154,29 +1154,17 @@ namespace ChummerHub.Client.Backend
 
         private static async ValueTask SwitchToCharacter(Character objOpenCharacter)
         {
-            using (new CursorWait(PluginHandler.MainForm, true))
-            {
-                await PluginHandler.MainForm.DoThreadSafeFunc(async () =>
-                {
-                    if (objOpenCharacter == null
-                        || !await PluginHandler.MainForm.SwitchToOpenCharacter(objOpenCharacter, false))
-                    {
-                        await PluginHandler.MainForm.OpenCharacter(objOpenCharacter, false);
-                    }
-                });
-            }
+            if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+                await Program.OpenCharacter(objOpenCharacter);
         }
 
         private static async ValueTask SwitchToCharacter(CharacterCache objCache)
         {
             using (new CursorWait(PluginHandler.MainForm, true))
             {
-                Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
-                                             ?? await PluginHandler.MainForm.LoadCharacterAsync(objCache.FilePath);
-                await PluginHandler.MainForm.DoThreadSafeFunc(async () =>
-                {
-                    await SwitchToCharacter(objOpenCharacter);
-                });
+                Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
+                                             ?? await Program.LoadCharacterAsync(objCache.FilePath);
+                await SwitchToCharacter(objOpenCharacter);
             }
         }
 
@@ -1395,7 +1383,7 @@ namespace ChummerHub.Client.Backend
                 {
                     Directory.CreateDirectory(zipPath);
                 }
-                Character objOpenCharacter = PluginHandler.MainForm?.OpenCharacters?.FirstOrDefault(x => x.FileName == loadFilePath);
+                Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == loadFilePath);
                 if (objOpenCharacter != null)
                 {
                     return loadFilePath;

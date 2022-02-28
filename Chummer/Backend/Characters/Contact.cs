@@ -1160,8 +1160,8 @@ namespace Chummer
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
                 if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                 {
-                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
+                    Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    _objLinkedCharacter = objOpenCharacter ?? Program.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -1171,11 +1171,11 @@ namespace Chummer
                 if (objOldLinkedCharacter != null)
                 {
                     objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
-                    if (Program.MainForm.OpenCharacters.Contains(objOldLinkedCharacter))
+                    if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                     {
-                        if (Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
+                        if (Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
                             && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != objOldLinkedCharacter))
-                            Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
+                            Program.OpenCharacters.Remove(objOldLinkedCharacter);
                     }
                     else
                         objOldLinkedCharacter.Dispose();
@@ -1466,10 +1466,10 @@ namespace Chummer
             if (_lstCachedContactArchetypes != null)
                 Utils.ListItemListPool.Return(_lstCachedContactArchetypes);
             if (_objLinkedCharacter != null && !Utils.IsUnitTest
-                                            && Program.MainForm.OpenCharacters.Contains(_objLinkedCharacter)
-                                            && Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
+                                            && Program.OpenCharacters.Contains(_objLinkedCharacter)
+                                            && Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
                                             && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
-                Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
+                Program.OpenCharacters.Remove(_objLinkedCharacter);
             foreach (Image imgMugshot in _lstMugshots)
                 imgMugshot.Dispose();
             _lstMugshots.Dispose();

@@ -156,7 +156,7 @@ namespace ChummerHub.Client.UI
                             using (_ = Timekeeper.StartSyncron("Loading Chummerfile", parentActivity,
                                 CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
                             {
-                                Character c = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(a => a.FileName == MyCharacterCache.FilePath);
+                                Character c = Program.OpenCharacters.FirstOrDefault(a => a.FileName == MyCharacterCache.FilePath);
                                 bool blnSuccess = true;
                                 if (c == null)
                                 {

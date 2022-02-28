@@ -201,7 +201,7 @@ namespace Chummer
                     SettingsManager.LoadedCharacterSettings.First(x => x.Value.BuiltInOption
                                                                      && x.Value.BuildMethod ==
                                                                      _objReferenceCharacterSettings.BuildMethod);
-                foreach (Character objCharacter in Program.MainForm.OpenCharacters.Where(x =>
+                foreach (Character objCharacter in Program.OpenCharacters.Where(x =>
                     x.SettingsKey == _objReferenceCharacterSettings.FileName))
                     objCharacter.SettingsKey = kvpReplacementOption.Key;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -357,7 +357,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdConflictingCharacters))
                     {
-                        foreach (Character objCharacter in Program.MainForm.OpenCharacters)
+                        foreach (Character objCharacter in Program.OpenCharacters)
                         {
                             if (!objCharacter.Created
                                 && ReferenceEquals(objCharacter.Settings, _objReferenceCharacterSettings))
