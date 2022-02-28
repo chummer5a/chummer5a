@@ -374,7 +374,9 @@ namespace Chummer
             // Ensure the locks aren't held. If they are, wait for them to be released
             // before completing the dispose.
             _objTopLevelWriterSemaphore.Wait();
+            _objReaderSemaphore.Wait();
             _objTopLevelWriterSemaphore.Release();
+            _objReaderSemaphore.Release();
             if (_blnSemaphoresFromPool)
             {
                 Utils.SemaphorePool.Return(_objTopLevelWriterSemaphore);
@@ -399,7 +401,9 @@ namespace Chummer
             // Ensure the locks aren't held. If they are, wait for them to be released
             // before completing the dispose.
             await _objTopLevelWriterSemaphore.WaitAsync();
+            await _objReaderSemaphore.WaitAsync();
             _objTopLevelWriterSemaphore.Release();
+            _objReaderSemaphore.Release();
             if (_blnSemaphoresFromPool)
             {
                 Utils.SemaphorePool.Return(_objTopLevelWriterSemaphore);
