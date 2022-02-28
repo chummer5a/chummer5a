@@ -117,7 +117,7 @@ on_failure:
     Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
     if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true)
     {
-      #Webhook throws errors during build. Commenting out for testing purposes to see if it's masking another issue. 
-      #Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
-      #./send.ps1 failure $env:DISCORD_WEBHOOK_URL
+      # Webhook throws errors during build.
+      Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
+      ./send.ps1 failure $env:DISCORD_WEBHOOK_URL
     }
