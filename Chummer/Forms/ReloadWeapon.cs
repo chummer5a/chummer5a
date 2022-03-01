@@ -51,7 +51,7 @@ namespace Chummer
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstAmmo)
                 {
-                    string strName = objGear.DisplayNameShort(GlobalSettings.Language) + " x"
+                    string strName = await objGear.DisplayNameShortAsync(GlobalSettings.Language) + " x"
                         + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
                     if (objGear.Rating > 0)
                         strName += strSpace + '(' + await LanguageManager.GetStringAsync(objGear.RatingLabel) + strSpace
@@ -59,9 +59,9 @@ namespace Chummer
 
                     if (objGear.Parent is Gear objParent)
                     {
-                        if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalSettings.Language)))
+                        if (!string.IsNullOrEmpty(await objParent.DisplayNameShortAsync(GlobalSettings.Language)))
                         {
-                            strName += strSpace + '(' + objParent.DisplayNameShort(GlobalSettings.Language);
+                            strName += strSpace + '(' + await objParent.DisplayNameShortAsync(GlobalSettings.Language);
                             if (objParent.Location != null)
                                 strName += strSpace + '@' + strSpace + objParent.Location.DisplayName();
                             strName += ')';

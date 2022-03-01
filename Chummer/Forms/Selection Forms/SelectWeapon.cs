@@ -346,7 +346,7 @@ namespace Chummer
                                 sbdAccessories.Length -= Environment.NewLine.Length;
                             AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
                             SourceString strSource = new SourceString(objWeapon.Source,
-                                                                      objWeapon.DisplayPage(GlobalSettings.Language),
+                                                                      await objWeapon.DisplayPageAsync(GlobalSettings.Language),
                                                                       GlobalSettings.Language,
                                                                       GlobalSettings.CultureInfo,
                                                                       _objCharacter);
