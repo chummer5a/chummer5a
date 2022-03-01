@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -67,10 +68,24 @@ namespace Chummer
                 _stkData.Clear();
         }
 
+        /// <inheritdoc cref="Stack{T}.Clear"/>
+        public async ValueTask ClearAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _stkData.Clear();
+        }
+
         /// <inheritdoc cref="Stack{T}.Contains"/>
         public bool Contains(T item)
         {
             using (EnterReadLock.Enter(LockObject))
+                return _stkData.Contains(item);
+        }
+
+        /// <inheritdoc cref="Stack{T}.Contains"/>
+        public async ValueTask<bool> ContainsAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _stkData.Contains(item);
         }
 
@@ -81,10 +96,24 @@ namespace Chummer
                 _stkData.TrimExcess();
         }
 
+        /// <inheritdoc cref="Stack{T}.TrimExcess"/>
+        public async ValueTask TrimExcessAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _stkData.TrimExcess();
+        }
+
         /// <inheritdoc cref="Stack{T}.Peek"/>
         public T Peek()
         {
             using (EnterReadLock.Enter(LockObject))
+                return _stkData.Peek();
+        }
+
+        /// <inheritdoc cref="Stack{T}.Peek"/>
+        public async ValueTask<T> PeekAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _stkData.Peek();
         }
 
@@ -95,6 +124,13 @@ namespace Chummer
                 return _stkData.Pop();
         }
 
+        /// <inheritdoc cref="Stack{T}.Pop"/>
+        public async ValueTask<T> PopAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                return _stkData.Pop();
+        }
+
         /// <inheritdoc cref="Stack{T}.Push"/>
         public void Push(T item)
         {
@@ -102,10 +138,23 @@ namespace Chummer
                 _stkData.Push(item);
         }
 
+        /// <inheritdoc cref="Stack{T}.Push"/>
+        public async ValueTask PushAsync(T item)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _stkData.Push(item);
+        }
+
         /// <inheritdoc />
         public bool TryAdd(T item)
         {
             Push(item);
+            return true;
+        }
+
+        public async ValueTask<bool> TryAddAsync(T item)
+        {
+            await PushAsync(item);
             return true;
         }
 
@@ -133,6 +182,13 @@ namespace Chummer
                 return _stkData.ToArray();
         }
 
+        /// <inheritdoc cref="Stack{T}.ToArray"/>
+        public async ValueTask<T[]> ToArrayAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _stkData.ToArray();
+        }
+
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
         public void CopyTo(T[] array, int index)
         {
@@ -144,6 +200,26 @@ namespace Chummer
         public void CopyTo(Array array, int index)
         {
             using (EnterReadLock.Enter(LockObject))
+            {
+                foreach (T objItem in _stkData)
+                {
+                    array.SetValue(objItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        /// <inheritdoc cref="Stack{T}.CopyTo"/>
+        public async ValueTask CopyToAsync(T[] array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                _stkData.CopyTo(array, index);
+        }
+
+        /// <inheritdoc cref="Stack{T}.CopyTo"/>
+        public async ValueTask CopyToAsync(Array array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (T objItem in _stkData)
                 {

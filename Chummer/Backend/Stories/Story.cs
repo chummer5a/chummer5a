@@ -162,7 +162,7 @@ namespace Chummer
             }
 
             foreach (string strKey in lstPersistentKeysToRemove)
-                _dicPersistentModules.Remove(strKey);
+                await _dicPersistentModules.RemoveAsync(strKey);
 
             foreach (StoryModule objModule in Modules)
                 await objModule.TestRunToGeneratePersistents(objCulture, strLanguage);

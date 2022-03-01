@@ -946,7 +946,7 @@ namespace Chummer
                                     strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
                                     dicChangedProperties.Add(this, strTemp);
                                     using (await EnterReadLock.EnterAsync(LockObject))
-                                            {
+                                    {
                                         foreach (Power objPower in Powers)
                                         {
                                             if (!dicChangedProperties.TryGetValue(objPower,
@@ -4934,8 +4934,8 @@ namespace Chummer
                                     !string.IsNullOrEmpty(_strMetavariant))
                                 {
                                     _guiMetavariant
-                                        // ReSharper disable once MethodHasAsyncOverload
                                         = Guid.Parse(
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             (blnSync ? this.GetNodeXPath() : await this.GetNodeXPathAsync())
                                             ?.SelectSingleNode("id")?.Value);
                                 }
@@ -4999,13 +4999,22 @@ namespace Chummer
                                                                                ref _strPriorityResources);
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("prioritytalent",
                                                                                ref _strPriorityTalent);
-                                _lstPrioritySkills.Clear();
+
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    _lstPrioritySkills.Clear();
+                                else
+                                    await _lstPrioritySkills.ClearAsync();
                                 foreach (XPathNavigator xmlSkillName in xmlCharacterNavigator
                                              .SelectAndCacheExpression(
                                                  "priorityskills/priorityskill")
                                         )
                                 {
-                                    _lstPrioritySkills.Add(xmlSkillName.Value);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstPrioritySkills.Add(xmlSkillName.Value);
+                                    else
+                                        await _lstPrioritySkills.AddAsync(xmlSkillName.Value);
                                 }
 
                                 string strSkill1 = string.Empty;
@@ -5013,11 +5022,24 @@ namespace Chummer
                                 if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill1",
                                         ref strSkill1) &&
                                     !string.IsNullOrEmpty(strSkill1))
-                                    _lstPrioritySkills.Add(strSkill1);
+                                {
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstPrioritySkills.Add(strSkill1);
+                                    else
+                                        await _lstPrioritySkills.AddAsync(strSkill1);
+                                }
+
                                 if (xmlCharacterNavigator.TryGetStringFieldQuickly("priorityskill2",
                                         ref strSkill2) &&
                                     !string.IsNullOrEmpty(strSkill2))
-                                    _lstPrioritySkills.Add(strSkill2);
+                                {
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstPrioritySkills.Add(strSkill2);
+                                    else
+                                        await _lstPrioritySkills.AddAsync(strSkill2);
+                                }
 
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("possessed", ref _blnPossessed);
 
@@ -5121,7 +5143,12 @@ namespace Chummer
 
                             List<Improvement> lstCyberadeptSweepGrades =
                                 new List<Improvement>(InitiationGrades.Count);
-                            _lstInternalIdsNeedingReapplyImprovements.Clear();
+
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                _lstInternalIdsNeedingReapplyImprovements.Clear();
+                            else
+                                await _lstInternalIdsNeedingReapplyImprovements.ClearAsync();
 
                             frmLoadingForm?.PerformStep(blnSync
                                                             // ReSharper disable once MethodHasAsyncOverload
@@ -5229,8 +5256,13 @@ namespace Chummer
                                             Improvement.ImprovementType.SkillsoftAccess &&
                                             objImprovement.Value == 0)
                                         {
-                                            _lstInternalIdsNeedingReapplyImprovements.Add(objImprovement
-                                                .SourceName);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _lstInternalIdsNeedingReapplyImprovements.Add(objImprovement
+                                                    .SourceName);
+                                            else
+                                                await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objImprovement
+                                                    .SourceName);
                                         }
                                         // Cyberadept fix
                                         else if (LastSavedVersion <= new Version(5, 212, 78)
@@ -5251,8 +5283,13 @@ namespace Chummer
                                     }
                                     catch (ArgumentException)
                                     {
-                                        _lstInternalIdsNeedingReapplyImprovements.Add(
-                                            objXmlImprovement["sourcename"]?.InnerText);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstInternalIdsNeedingReapplyImprovements.Add(
+                                                objXmlImprovement["sourcename"]?.InnerText);
+                                        else
+                                            await _lstInternalIdsNeedingReapplyImprovements.AddAsync(
+                                                objXmlImprovement["sourcename"]?.InnerText);
                                     }
                                 }
 
@@ -5386,8 +5423,11 @@ namespace Chummer
                                                 else
                                                 {
                                                     // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                                                    _lstInternalIdsNeedingReapplyImprovements
-                                                        .Add(objQuality.InternalId);
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                                                    else
+                                                        await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId);
                                                 }
 
                                                 objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
@@ -5505,8 +5545,11 @@ namespace Chummer
                                                 // Old handling of SASS' Inspired quality was both hardcoded and wrong
                                                 // Since SASS' Inspired requires the player to choose a specialization, we always need a prompt,
                                                 // so add the quality to the list for processing when the character is opened.
-                                                _lstInternalIdsNeedingReapplyImprovements
-                                                    .Add(objQuality.InternalId);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                                                else
+                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId);
                                             }
 
                                             if (LastSavedVersion <= new Version(5, 212, 56)
@@ -5514,8 +5557,11 @@ namespace Chummer
                                                 && objQuality.Bonus == null)
                                             {
                                                 // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
-                                                _lstInternalIdsNeedingReapplyImprovements
-                                                    .Add(objQuality.InternalId);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstInternalIdsNeedingReapplyImprovements.Add(objQuality.InternalId);
+                                                else
+                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objQuality.InternalId);
                                             }
 
                                             if (LastSavedVersion <= new Version(5, 212, 78)
@@ -5817,7 +5863,11 @@ namespace Chummer
                                 {
                                     StackedFocus objStack = new StackedFocus(this);
                                     objStack.Load(objXmlStack);
-                                    _lstStackedFoci.Add(objStack);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstStackedFoci.Add(objStack);
+                                    else
+                                        await _lstStackedFoci.AddAsync(objStack);
                                 }
 
                                 //Timekeeper.Finish("load_char_sfoci");
@@ -5958,10 +6008,11 @@ namespace Chummer
                                                     dicPairableCyberwares.Add(objCyberware, 1);
                                             }
                                         }
-                                        else
-                                        {
+                                        else if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
-                                        }
+                                        else
+                                            await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objCyberware.InternalId);
                                     }
                                 }
 
@@ -6036,11 +6087,11 @@ namespace Chummer
                                                         dicPairableCyberwares.Add(objCyberware, 1);
                                                 }
                                             }
+                                            else if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                             else
-                                            {
-                                                _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware
-                                                    .InternalId);
-                                            }
+                                                await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objCyberware.InternalId);
                                         }
                                     }
                                 }
@@ -6148,7 +6199,11 @@ namespace Chummer
                                             if (blnDoEnhancedAccuracyRefresh
                                                 && strPowerName == "Enhanced Accuracy (skill)")
                                             {
-                                                _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
+                                                else
+                                                    await _lstInternalIdsNeedingReapplyImprovements.AddAsync(strGuid);
                                             }
 
                                             if (!string.IsNullOrEmpty(strGuid))
@@ -6382,8 +6437,7 @@ namespace Chummer
                                                     objLivingPersonaQuality.InternalId,
                                                     objLivingPersonaQuality.FirstLevelBonus,
                                                     1,
-                                                    objLivingPersonaQuality.DisplayNameShort(
-                                                        GlobalSettings.Language));
+                                                    objLivingPersonaQuality.CurrentDisplayNameShort);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                 {
                                                     objLivingPersonaQuality.Extra =
@@ -6395,8 +6449,11 @@ namespace Chummer
                                     else
                                     {
                                         // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                                        _lstInternalIdsNeedingReapplyImprovements.Add(
-                                            objLivingPersonaQuality.InternalId);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstInternalIdsNeedingReapplyImprovements.Add(objLivingPersonaQuality.InternalId);
+                                        else
+                                            await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objLivingPersonaQuality.InternalId);
                                     }
 
                                     objLivingPersonaQuality.NaturalWeaponsNode = objNode["naturalweapons"];
@@ -6408,8 +6465,7 @@ namespace Chummer
                                                                               objLivingPersonaQuality.InternalId,
                                                                               objLivingPersonaQuality
                                                                                   .NaturalWeaponsNode, 1,
-                                                                              objLivingPersonaQuality.DisplayNameShort(
-                                                                                  GlobalSettings.Language));
+                                                                              objLivingPersonaQuality.CurrentDisplayNameShort);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -6531,7 +6587,11 @@ namespace Chummer
                                 {
                                     Focus objFocus = new Focus(this);
                                     objFocus.Load(objXmlFocus);
-                                    _lstFoci.Add(objFocus);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstFoci.Add(objFocus);
+                                    else
+                                        await _lstFoci.AddAsync(objFocus);
                                 }
 
                                 //Timekeeper.Finish("load_char_foci");
@@ -6775,7 +6835,11 @@ namespace Chummer
                                         !string.IsNullOrEmpty(imp.ImprovedName)))
                                 {
                                     // Selecting bonuses for a mentor spirit mid-load is confusing, so just show the error and let the player manually re-apply
-                                    _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
+                                    else
+                                        await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objMentorQuality.InternalId);
                                 }
 
                                 //Timekeeper.Finish("load_char_mentorspiritfix");
@@ -6923,7 +6987,11 @@ namespace Chummer
                             foreach (Func<bool> funcToCall in PostLoadMethods)
                                 if (!funcToCall.Invoke())
                                     return false;
-                            PostLoadMethods.Clear();
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                PostLoadMethods.Clear();
+                            else
+                                await PostLoadMethods.ClearAsync();
                             //Timekeeper.Finish("load_char_improvementrefreshers");
                         }
 
@@ -16768,12 +16836,13 @@ namespace Chummer
         {
             get
             {
-                return CurrentCounterspellingDice == 0
-                    ? SpellDefenseDirectSoakMana.ToString(GlobalSettings.CultureInfo)
-                    : SpellDefenseDirectSoakMana.ToString(GlobalSettings.CultureInfo) +
-                      LanguageManager.GetString("String_Space") + '(' +
-                      (SpellDefenseDirectSoakMana + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
-                      + ')';
+                using (EnterReadLock.Enter(LockObject))
+                    return CurrentCounterspellingDice == 0
+                        ? SpellDefenseDirectSoakMana.ToString(GlobalSettings.CultureInfo)
+                        : SpellDefenseDirectSoakMana.ToString(GlobalSettings.CultureInfo) +
+                          LanguageManager.GetString("String_Space") + '(' +
+                          (SpellDefenseDirectSoakMana + CurrentCounterspellingDice).ToString(GlobalSettings.CultureInfo)
+                          + ')';
             }
         }
 
@@ -24969,7 +25038,13 @@ namespace Chummer
                                              "images/image/@filename"))
                                 {
                                     if (dicImages.TryGetValue(xmlImageFileNameNode.Value, out Bitmap objOutput))
-                                        _lstMugshots.Add(objOutput);
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstMugshots.Add(objOutput);
+                                        else
+                                            await _lstMugshots.AddAsync(objOutput);
+                                    }
                                 }
 
                                 if (_lstMugshots.Count > 0)
@@ -25117,14 +25192,22 @@ namespace Chummer
                                                 break;
                                         }
 
-                                        _lstPrioritySkills.Clear();
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _lstPrioritySkills.Clear();
+                                        else
+                                            await _lstPrioritySkills.ClearAsync();
                                         foreach (XPathNavigator xmlField in xmlPriorityTalentPick
                                                      .SelectAndCacheExpression("field"))
                                         {
                                             string strInnerText = xmlField.Value;
                                             if (!string.IsNullOrEmpty(strInnerText))
                                             {
-                                                _lstPrioritySkills.Add(strInnerText);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    _lstPrioritySkills.Add(strInnerText);
+                                                else
+                                                    await _lstPrioritySkills.AddAsync(strInnerText);
                                             }
                                         }
                                     }

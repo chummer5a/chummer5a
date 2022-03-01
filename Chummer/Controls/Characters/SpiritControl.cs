@@ -163,7 +163,7 @@ namespace Chummer
         {
             if (_objSpirit.LinkedCharacter != null)
             {
-                Character objOpenCharacter = Program.OpenCharacters.Contains(_objSpirit.LinkedCharacter)
+                Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objSpirit.LinkedCharacter)
                     ? _objSpirit.LinkedCharacter
                     : null;
                 using (new CursorWait(this))

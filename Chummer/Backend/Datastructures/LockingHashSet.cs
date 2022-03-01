@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -75,6 +76,12 @@ namespace Chummer
         public bool Add(T item)
         {
             using (EnterWriteLock.Enter(LockObject))
+                return _setData.Add(item);
+        }
+
+        public async ValueTask<bool> AddAsync(T item)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
                 return _setData.Add(item);
         }
 
@@ -147,6 +154,66 @@ namespace Chummer
             using (EnterReadLock.Enter(LockObject))
                 return _setData.SetEquals(other);
         }
+        
+        public async ValueTask UnionWithAsync(IEnumerable<T> other)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _setData.UnionWith(other);
+        }
+        
+        public async ValueTask IntersectWithAsync(IEnumerable<T> other)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _setData.IntersectWith(other);
+        }
+        
+        public async ValueTask ExceptWithAsync(IEnumerable<T> other)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _setData.ExceptWith(other);
+        }
+        
+        public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _setData.SymmetricExceptWith(other);
+        }
+        
+        public async ValueTask<bool> IsSubsetOfAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.IsSubsetOf(other);
+        }
+        
+        public async ValueTask<bool> IsSupersetOfAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.IsSupersetOf(other);
+        }
+        
+        public async ValueTask<bool> IsProperSupersetOfAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.IsProperSupersetOf(other);
+        }
+        
+        public async ValueTask<bool> IsProperSubsetOfAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.IsProperSubsetOf(other);
+        }
+        
+        public async ValueTask<bool> OverlapsAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.Overlaps(other);
+        }
+        
+        public async ValueTask<bool> SetEqualsAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.SetEquals(other);
+        }
 
         /// <inheritdoc />
         void ICollection<T>.Add(T item)
@@ -162,10 +229,22 @@ namespace Chummer
                 _setData.Clear();
         }
 
+        public async ValueTask ClearAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _setData.Clear();
+        }
+
         /// <inheritdoc />
         public bool Contains(T item)
         {
             using (EnterReadLock.Enter(LockObject))
+                return _setData.Contains(item);
+        }
+
+        public async ValueTask<bool> ContainsAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _setData.Contains(item);
         }
 
@@ -182,10 +261,29 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc cref="ICollection.CopyTo" />
+        public async ValueTask CopyToAsync(T[] array, int arrayIndex)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                foreach (T objItem in _setData)
+                {
+                    array[arrayIndex] = objItem;
+                    ++arrayIndex;
+                }
+            }
+        }
+
         /// <inheritdoc />
         public bool TryAdd(T item)
         {
             using (EnterWriteLock.Enter(LockObject))
+                return _setData.Add(item);
+        }
+
+        public async ValueTask<bool> TryAddAsync(T item)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
                 return _setData.Add(item);
         }
 
@@ -223,6 +321,21 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<T[]> ToArrayAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                T[] aobjReturn = new T[_setData.Count];
+                int i = 0;
+                foreach (T objLoop in _setData)
+                {
+                    aobjReturn[i] = objLoop;
+                    ++i;
+                }
+                return aobjReturn;
+            }
+        }
+
         /// <inheritdoc />
         public bool Remove(T item)
         {
@@ -230,10 +343,28 @@ namespace Chummer
                 return _setData.Remove(item);
         }
 
+        public async ValueTask<bool> RemoveAsync(T item)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                return _setData.Remove(item);
+        }
+
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
             using (EnterReadLock.Enter(LockObject))
+            {
+                foreach (T objItem in _setData)
+                {
+                    array.SetValue(objItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        public async ValueTask CopyToAsync(Array array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (T objItem in _setData)
                 {

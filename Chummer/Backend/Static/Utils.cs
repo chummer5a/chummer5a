@@ -624,7 +624,7 @@ namespace Chummer
                                     return;
                                 // We saved a character as created, which closed the current form and added a new one
                                 // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                                if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                                if (!await Program.MainForm.OpenCharacterForms.ContainsAsync(objOpenCharacterForm))
                                     --i;
                                 break;
                             }

@@ -83,13 +83,21 @@ namespace Chummer
                 objReturn = new XslCompiledTransform();
 #endif
                 if (blnSync)
+                {
                     objReturn.Load(strXslFilePath);
+                    // ReSharper disable once MethodHasAsyncOverload
+                    s_dicCompiledTransforms.Remove(strXslFilePath);
+                    // ReSharper disable once MethodHasAsyncOverload
+                    s_dicCompiledTransforms.TryAdd(
+                        strXslFilePath, new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn));
+                }
                 else
+                {
                     await Task.Run(() => objReturn.Load(strXslFilePath));
-
-                s_dicCompiledTransforms.Remove(strXslFilePath);
-                s_dicCompiledTransforms.TryAdd(
-                    strXslFilePath, new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn));
+                    await s_dicCompiledTransforms.RemoveAsync(strXslFilePath);
+                    await s_dicCompiledTransforms.TryAddAsync(
+                        strXslFilePath, new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn));
+                }
             }
             else
                 objReturn = tupCachedData.Item2;

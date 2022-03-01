@@ -362,7 +362,7 @@ namespace Chummer
             List<VehicleMod> lstNewVehicleMods = new List<VehicleMod>(_lstMods.Count);
             foreach (VehicleMod objMod in _lstMods)
             {
-                if (_objMount.Mods.Contains(objMod))
+                if (await _objMount.Mods.ContainsAsync(objMod))
                     continue;
                 lstNewVehicleMods.Add(objMod);
                 _objMount.Mods.Add(objMod);

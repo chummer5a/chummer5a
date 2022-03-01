@@ -237,7 +237,11 @@ namespace Chummer
                 astrRelevantCustomDataPaths = CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths).ToArray();
                 if (astrRelevantCustomDataPaths.Length > 0 && !Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
                 {
-                    await s_objDataDirectoriesSemaphore.WaitAsync();
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        s_objDataDirectoriesSemaphore.Wait();
+                    else
+                        await s_objDataDirectoriesSemaphore.WaitAsync();
                     try
                     {
                         if (!s_DicPathsWithCustomFiles.TryGetValue(strFileName, out HashSet<string> setLoop))
@@ -261,9 +265,16 @@ namespace Chummer
 
             // Look to see if this XmlDocument is already loaded.
             XmlDocument xmlDocumentOfReturn = null;
-            if (blnLoadFile
-                || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml")
-                || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
+            XmlReference xmlReferenceOfReturn = null;
+            bool blnDoLoad = blnLoadFile || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml");
+            if (!blnDoLoad)
+            {
+                if (blnSync)
+                    blnDoLoad = !s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
+                else
+                    (blnDoLoad, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey);
+            }
+            if (blnDoLoad)
             {
                 // The file was not found in the reference list, so it must be loaded.
                 bool blnLoadSuccess;
@@ -279,7 +290,9 @@ namespace Chummer
                     // Need this conditional so that we actually await the line above before we check to see if the load was successful or not
                     // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
                     if (xmlDocumentOfReturn != null)
-                        blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
+                    {
+                        (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey);
+                    }
                     else
                     {
                         xmlReferenceOfReturn = null;
@@ -397,29 +410,72 @@ namespace Chummer
             // Create a new document that everything will be merged into.
             XmlDocument xmlScratchpad = new XmlDocument { XmlResolver = null };
             // Look to see if this XmlDocument is already loaded.
-            if (!s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
+            XmlReference xmlReferenceOfReturn;
+            if (blnSync)
             {
-                int intEmergencyRelease = 0;
-                xmlReferenceOfReturn = new XmlReference();
-                // We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
-                for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
+                // ReSharper disable MethodHasAsyncOverload
+                if (!s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
                 {
-                    // The file was not found in the reference list, so it must be loaded.
-                    if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
-                    {
-                        blnLoadFile = true;
-                        break;
-                    }
-                    // It somehow got added in the meantime, so let's fetch it again
-                    if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
-                        break;
-                    // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
+                    int intEmergencyRelease = 0;
                     xmlReferenceOfReturn = new XmlReference();
+                    // We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
+                    for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
+                    {
+                        // The file was not found in the reference list, so it must be loaded.
+                        if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
+                        {
+                            blnLoadFile = true;
+                            break;
+                        }
+
+                        // It somehow got added in the meantime, so let's fetch it again
+                        if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
+                            break;
+                        // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
+                        xmlReferenceOfReturn = new XmlReference();
+                    }
+
+                    if (intEmergencyRelease >
+                        Utils.SleepEmergencyReleaseMaxTicks) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
+                    {
+                        Utils.BreakIfDebug();
+                        return new XmlDocument { XmlResolver = null };
+                    }
                 }
-                if (intEmergencyRelease > Utils.SleepEmergencyReleaseMaxTicks) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
+                // ReSharper restore MethodHasAsyncOverload
+            }
+            else
+            {
+                bool blnSuccess;
+                (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey);
+                if (!blnSuccess)
                 {
-                    Utils.BreakIfDebug();
-                    return new XmlDocument { XmlResolver = null };
+                    int intEmergencyRelease = 0;
+                    xmlReferenceOfReturn = new XmlReference();
+                    // We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
+                    for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
+                    {
+                        // The file was not found in the reference list, so it must be loaded.
+                        if (await s_DicXmlDocuments.TryAddAsync(objDataKey, xmlReferenceOfReturn))
+                        {
+                            blnLoadFile = true;
+                            break;
+                        }
+
+                        // It somehow got added in the meantime, so let's fetch it again
+                        (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey);
+                        if (blnSuccess)
+                            break;
+                        // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
+                        xmlReferenceOfReturn = new XmlReference();
+                    }
+
+                    if (intEmergencyRelease >
+                        Utils.SleepEmergencyReleaseMaxTicks) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
+                    {
+                        Utils.BreakIfDebug();
+                        return new XmlDocument { XmlResolver = null };
+                    }
                 }
             }
 

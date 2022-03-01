@@ -1373,7 +1373,7 @@ namespace Chummer
                         i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
                         continue;
                     string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
-                    if (GlobalSettings.FavoriteCharacters.Contains(strFile))
+                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile))
                         continue;
                     DpiFriendlyToolStripMenuItem objItem;
                     switch (i2)

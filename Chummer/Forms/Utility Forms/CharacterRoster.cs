@@ -779,7 +779,7 @@ namespace Chummer
                     while (!_dicSavedCharacterCaches.TryGetValue(strFile, out objCache))
                     {
                         objCache = await CharacterCache.CreateFromFileAsync(strFile);
-                        if (_dicSavedCharacterCaches.TryAdd(strFile, objCache))
+                        if (await _dicSavedCharacterCaches.TryAddAsync(strFile, objCache))
                             break;
                         objCache.Dispose();
                     }

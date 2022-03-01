@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -78,10 +79,23 @@ namespace Chummer
                 return base.Contains(item);
         }
 
+        /// <inheritdoc cref="List{T}.Contains" />
+        public async ValueTask<bool> ContainsAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.Contains(item);
+        }
+
         /// <inheritdoc />
         public new void CopyTo(T[] array, int index)
         {
             using (EnterReadLock.Enter(LockObject))
+                base.CopyTo(array, index);
+        }
+
+        public async ValueTask CopyToAsync(T[] array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 base.CopyTo(array, index);
         }
 
@@ -125,6 +139,19 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<T[]> ToArrayAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                T[] aobjReturn = new T[Count];
+                for (int i = 0; i < Count; ++i)
+                {
+                    aobjReturn[i] = base[i];
+                }
+                return aobjReturn;
+            }
+        }
+
         /// <inheritdoc />
         public new IEnumerator<T> GetEnumerator()
         {
@@ -137,6 +164,13 @@ namespace Chummer
         public new int IndexOf(T item)
         {
             using (EnterReadLock.Enter(LockObject))
+                return base.IndexOf(item);
+        }
+
+        /// <inheritdoc cref="List{T}.IndexOf(T)" />
+        public async ValueTask<int> IndexOfAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return base.IndexOf(item);
         }
 

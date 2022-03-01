@@ -906,7 +906,7 @@ namespace Chummer
                             MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
                         await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
-                        CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
+                        await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
                     }
 
                     IsDirty = CharacterObject.LoadAsDirty;
@@ -1195,7 +1195,7 @@ namespace Chummer
                             cmdAddMetamagic.SetToolTip(strInitTip);
                             chkJoinGroup.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup");
 
-                            if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
+                            if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG))
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
                             }
@@ -1203,7 +1203,7 @@ namespace Chummer
                             {
                                 CharacterAttrib objMAGAdept =
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
-                                if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
                                 }
@@ -1268,7 +1268,7 @@ namespace Chummer
                             cmdAddMetamagic.SetToolTip(strInitTip);
                             chkJoinGroup.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork");
 
-                            if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.RES) == false)
+                            if (!(await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.RES)))
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
                             }
@@ -1278,7 +1278,7 @@ namespace Chummer
                             if (!CharacterObject.MAGEnabled)
                                 tabCharacterTabs.TabPages.Remove(tabInitiation);
 
-                            if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.RES) == true)
+                            if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.RES))
                             {
                                 CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.RES);
                             }
@@ -1292,12 +1292,12 @@ namespace Chummer
                     {
                         if (CharacterObject.DEPEnabled)
                         {
-                            if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.DEP) == false)
+                            if (!(await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.DEP)))
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.DEP);
                             }
                         }
-                        else if (CharacterObject.AttributeSection.Attributes?.Contains(CharacterObject.DEP) == true)
+                        else if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.DEP))
                         {
                             CharacterObject.AttributeSection.Attributes.Remove(CharacterObject.DEP);
                         }
@@ -1349,7 +1349,7 @@ namespace Chummer
                             {
                                 CharacterAttrib objMAGAdept =
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
-                                if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
                                 }
@@ -1363,7 +1363,7 @@ namespace Chummer
                             {
                                 CharacterAttrib objMAGAdept =
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
-                                if (CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                                if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
                                 }
@@ -1386,7 +1386,7 @@ namespace Chummer
                             {
                                 CharacterAttrib objMAGAdept =
                                     CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
-                                if (!CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                                if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                 {
                                     CharacterObject.AttributeSection.Attributes.Add(objMAGAdept);
                                 }
@@ -1405,7 +1405,7 @@ namespace Chummer
                                 {
                                     CharacterAttrib objMAGAdept =
                                         CharacterObject.AttributeSection.GetAttributeByName("MAGAdept");
-                                    if (CharacterObject.AttributeSection.Attributes.Contains(objMAGAdept))
+                                    if (await CharacterObject.AttributeSection.Attributes.ContainsAsync(objMAGAdept))
                                     {
                                         CharacterObject.AttributeSection.Attributes.Remove(objMAGAdept);
                                     }
@@ -4220,7 +4220,7 @@ namespace Chummer
             StackedFocus objStack = new StackedFocus(CharacterObject);
             foreach (Gear objGear in lstStack)
                 objStack.Gear.Add(objGear);
-            CharacterObject.StackedFoci.Add(objStack);
+            await CharacterObject.StackedFoci.AddAsync(objStack);
 
             // Remove the Gear from the character and replace it with a Stacked Focus item.
             decimal decCost = 0;
@@ -7127,7 +7127,7 @@ namespace Chummer
 
             string strGuid = objLifestyle.InternalId;
             int intMonths = objLifestyle.Increments;
-            int intPosition = CharacterObject.Lifestyles.IndexOf(CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId));
+            int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId));
 
             if (objLifestyle.StyleType != LifestyleType.Standard)
             {
@@ -9668,7 +9668,7 @@ namespace Chummer
                     await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
                 await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
-                CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
+                await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
             }
         }
         

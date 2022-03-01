@@ -195,16 +195,31 @@ namespace Chummer
                 return true;
             string strKey = strLanguage.ToUpperInvariant();
             SemaphoreSlim objLockerObject;
-            while (!s_DicLanguageDataLockers.TryGetValue(strKey, out objLockerObject))
+            if (blnSync)
             {
-                objLockerObject = Utils.SemaphorePool.Get();
-                if (s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject))
-                    break;
-                objLockerObject.Dispose();
-                if (blnSync)
+                while (!s_DicLanguageDataLockers.TryGetValue(strKey, out objLockerObject))
+                {
+                    objLockerObject = Utils.SemaphorePool.Get();
+                    // ReSharper disable once MethodHasAsyncOverload
+                    if (s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject))
+                        break;
+                    objLockerObject.Dispose();
                     Utils.SafeSleep();
-                else
+                }
+            }
+            else
+            {
+                bool blnSuccess;
+                (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
+                while (!blnSuccess)
+                {
+                    objLockerObject = Utils.SemaphorePool.Get();
+                    if (await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject))
+                        break;
+                    objLockerObject.Dispose();
                     await Utils.SafeSleepAsync();
+                    (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
+                }
             }
 
             LanguageData objNewLanguage;
@@ -215,14 +230,29 @@ namespace Chummer
                 await objLockerObject.WaitAsync();
             try
             {
-                if (!s_DicLanguageData.TryGetValue(strKey, out objNewLanguage) || objNewLanguage == null)
+                if (blnSync)
                 {
-                    if (s_DicLanguageData.ContainsKey(strKey))
-                        s_DicLanguageData.Remove(strKey);
-                    objNewLanguage = blnSync
-                        ? new LanguageData(strLanguage)
-                        : await Task.Run(() => new LanguageData(strLanguage));
-                    s_DicLanguageData.Add(strKey, objNewLanguage);
+                    // ReSharper disable MethodHasAsyncOverload
+                    if (!s_DicLanguageData.TryGetValue(strKey, out objNewLanguage) || objNewLanguage == null)
+                    {
+                        if (s_DicLanguageData.ContainsKey(strKey))
+                            s_DicLanguageData.Remove(strKey);
+                        objNewLanguage = new LanguageData(strLanguage);
+                        s_DicLanguageData.Add(strKey, objNewLanguage);
+                    }
+                    // ReSharper restore MethodHasAsyncOverload
+                }
+                else
+                {
+                    bool blnSuccess;
+                    (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey);
+                    if (!blnSuccess || objNewLanguage == null)
+                    {
+                        if (await s_DicLanguageData.ContainsKeyAsync(strKey))
+                            await s_DicLanguageData.RemoveAsync(strKey);
+                        objNewLanguage = await Task.Run(() => new LanguageData(strLanguage));
+                        await s_DicLanguageData.AddAsync(strKey, objNewLanguage);
+                    }
                 }
             }
             finally

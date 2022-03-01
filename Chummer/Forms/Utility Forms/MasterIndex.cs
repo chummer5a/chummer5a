@@ -184,7 +184,7 @@ namespace Chummer
             using (CustomActivity opLoadMasterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
                 CustomActivity.OperationType.RequestOperation, null))
             {
-                _dicCachedNotes.Clear();
+                await _dicCachedNotes.ClearAsync();
                 foreach (MasterIndexEntry objExistingEntry in _lstItems.Select(x => x.Value))
                     objExistingEntry.Dispose();
                 _lstItems.Clear();
@@ -258,7 +258,7 @@ namespace Chummer
                                     strTranslatedNameOnPage);
                                 lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
                                 if (!string.IsNullOrEmpty(strNotes))
-                                    _dicCachedNotes.TryAdd(objEntry, Task.FromResult(strNotes));
+                                    await _dicCachedNotes.TryAddAsync(objEntry, Task.FromResult(strNotes));
                             }
 
                             if (blnLoopFileNameHasItems)
@@ -489,7 +489,7 @@ namespace Chummer
                                     objEntry.EnglishNameOnPage));
                         }
 
-                        _dicCachedNotes.TryAdd(objEntry, tskNotes);
+                        await _dicCachedNotes.TryAddAsync(objEntry, tskNotes);
                     }
 
                     txtNotes.Text = await tskNotes;

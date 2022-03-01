@@ -94,7 +94,7 @@ namespace Chummer
                     .First(x => ReferenceEquals(x.Value, objSelectedGameplayOption)).Key;
                 // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
                 if (_objCharacter.IsLoading)
-                    _objCharacter.PostLoadMethods.Enqueue(() => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey));
+                    await _objCharacter.PostLoadMethods.EnqueueAsync(() => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey));
                 else if (!_objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey))
                     return;
             }

@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -67,10 +68,24 @@ namespace Chummer
                 _queData.Clear();
         }
 
+        /// <inheritdoc cref="Queue{T}.Clear" />
+        public async ValueTask ClearAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _queData.Clear();
+        }
+
         /// <inheritdoc cref="Queue{T}.Contains" />
         public bool Contains(T item)
         {
             using (EnterReadLock.Enter(LockObject))
+                return _queData.Contains(item);
+        }
+
+        /// <inheritdoc cref="Queue{T}.Contains" />
+        public async ValueTask<bool> ContainsAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _queData.Contains(item);
         }
 
@@ -81,10 +96,24 @@ namespace Chummer
                 _queData.TrimExcess();
         }
 
+        /// <inheritdoc cref="Queue{T}.TrimExcess" />
+        public async ValueTask TrimExcessAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                _queData.TrimExcess();
+        }
+
         /// <inheritdoc cref="Queue{T}.Peek" />
         public T Peek()
         {
             using (EnterReadLock.Enter(LockObject))
+                return _queData.Peek();
+        }
+
+        /// <inheritdoc cref="Queue{T}.Peek" />
+        public async ValueTask<T> PeekAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _queData.Peek();
         }
 
@@ -95,10 +124,24 @@ namespace Chummer
                 return _queData.Dequeue();
         }
 
+        /// <inheritdoc cref="Queue{T}.Dequeue" />
+        public async ValueTask<T> DequeueAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                return _queData.Dequeue();
+        }
+
         /// <inheritdoc cref="Queue{T}.Enqueue" />
         public void Enqueue(T item)
         {
             using (EnterWriteLock.Enter(LockObject))
+                _queData.Enqueue(item);
+        }
+
+        /// <inheritdoc cref="Queue{T}.Enqueue" />
+        public async ValueTask EnqueueAsync(T item)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
                 _queData.Enqueue(item);
         }
 
@@ -127,10 +170,24 @@ namespace Chummer
                 return _queData.ToArray();
         }
 
+        /// <inheritdoc cref="Queue{T}.ToArray" />
+        public async ValueTask<T[]> ToArrayAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _queData.ToArray();
+        }
+
         /// <inheritdoc cref="Queue{T}.CopyTo" />
         public void CopyTo(T[] array, int index)
         {
             using (EnterReadLock.Enter(LockObject))
+                _queData.CopyTo(array, index);
+        }
+
+        /// <inheritdoc cref="Queue{T}.CopyTo" />
+        public async ValueTask CopyToAsync(T[] array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 _queData.CopyTo(array, index);
         }
 
@@ -141,10 +198,29 @@ namespace Chummer
             return true;
         }
 
+        public async ValueTask<bool> TryAddAsync(T item)
+        {
+            await EnqueueAsync(item);
+            return true;
+        }
+
         /// <inheritdoc cref="Queue{T}.CopyTo" />
         public void CopyTo(Array array, int index)
         {
             using (EnterReadLock.Enter(LockObject))
+            {
+                foreach (T objItem in _queData)
+                {
+                    array.SetValue(objItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        /// <inheritdoc cref="Queue{T}.CopyTo" />
+        public async ValueTask CopyToAsync(Array array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (T objItem in _queData)
                 {

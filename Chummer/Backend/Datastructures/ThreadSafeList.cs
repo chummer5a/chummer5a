@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -109,6 +110,12 @@ namespace Chummer
                 base.Add(item);
         }
 
+        public async ValueTask AddAsync(T item)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.Add(item);
+        }
+
         /// <inheritdoc cref="List{T}.AddRange" />
         public new void AddRange(IEnumerable<T> collection)
         {
@@ -116,10 +123,23 @@ namespace Chummer
                 base.AddRange(collection);
         }
 
+        public async ValueTask AddRangeAsync(IEnumerable<T> collection)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.AddRange(collection);
+        }
+
         /// <inheritdoc cref="List{T}.AsReadOnly" />
         public new ReadOnlyCollection<T> AsReadOnly()
         {
             using (EnterReadLock.Enter(LockObject))
+                return base.AsReadOnly();
+        }
+
+        /// <inheritdoc cref="List{T}.AsReadOnly" />
+        public async ValueTask<ReadOnlyCollection<T>> AsReadOnlyAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return base.AsReadOnly();
         }
 
@@ -144,10 +164,38 @@ namespace Chummer
                 return base.BinarySearch(item, comparer);
         }
 
+        /// <inheritdoc cref="List{T}.BinarySearch(int, int, T, IComparer{T})" />
+        public async ValueTask<int> BinarySearchAsync(int index, int count, T item, IComparer<T> comparer)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.BinarySearch(index, count, item, comparer);
+        }
+
+        /// <inheritdoc cref="List{T}.BinarySearch(T)" />
+        public async ValueTask<int> BinarySearchAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.BinarySearch(item);
+        }
+
+        /// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
+        public async ValueTask<int> BinarySearchAsync(T item, IComparer<T> comparer)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.BinarySearch(item, comparer);
+        }
+
         /// <inheritdoc cref="List{T}.Clear" />
         public new void Clear()
         {
             using (EnterWriteLock.Enter(LockObject))
+                base.Clear();
+        }
+
+        /// <inheritdoc cref="List{T}.Clear" />
+        public async ValueTask ClearAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
                 base.Clear();
         }
 
@@ -158,10 +206,24 @@ namespace Chummer
                 return base.Contains(item);
         }
 
+        /// <inheritdoc cref="List{T}.Contains" />
+        public async ValueTask<bool> ContainsAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.Contains(item);
+        }
+
         /// <inheritdoc cref="List{T}.ConvertAll{TOutput}" />
         public new List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
         {
             using (EnterReadLock.Enter(LockObject))
+                return base.ConvertAll(converter);
+        }
+
+        /// <inheritdoc cref="List{T}.ConvertAll{TOutput}" />
+        public async ValueTask<List<TOutput>> ConvertAllAsync<TOutput>(Converter<T, TOutput> converter)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return base.ConvertAll(converter);
         }
 
@@ -186,10 +248,37 @@ namespace Chummer
                 base.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc cref="List{T}.CopyTo(T[])" />
+        public async ValueTask CopyToAsync(T[] array)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                base.CopyTo(array);
+        }
+
+        /// <inheritdoc cref="List{T}.CopyTo(int, T[], int, int)" />
+        public async ValueTask CopyToAsync(int index, T[] array, int arrayIndex, int count)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                base.CopyTo(index, array, arrayIndex, count);
+        }
+
+        /// <inheritdoc cref="List{T}.CopyTo(T[], int)" />
+        public async ValueTask CopyToAsync(T[] array, int arrayIndex)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                base.CopyTo(array, arrayIndex);
+        }
+
         /// <inheritdoc />
         public bool TryAdd(T item)
         {
             Add(item);
+            return true;
+        }
+
+        public async ValueTask<bool> TryAddAsync(T item)
+        {
+            await AddAsync(item);
             return true;
         }
 
@@ -219,6 +308,13 @@ namespace Chummer
                 return base.Exists(match);
         }
 
+        /// <inheritdoc cref="List{T}.Exists" />
+        public async ValueTask<bool> ExistsAsync(Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.Exists(match);
+        }
+
         /// <inheritdoc cref="List{T}.Find" />
         public new T Find(Predicate<T> match)
         {
@@ -226,10 +322,24 @@ namespace Chummer
                 return base.Find(match);
         }
 
+        /// <inheritdoc cref="List{T}.Find" />
+        public async ValueTask<T> FindAsync(Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.Find(match);
+        }
+
         /// <inheritdoc cref="List{T}.FindAll" />
         public new List<T> FindAll(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
+                return base.FindAll(match);
+        }
+
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public async ValueTask<List<T>> FindAllAsync(Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return base.FindAll(match);
         }
 
@@ -254,10 +364,38 @@ namespace Chummer
                 return base.FindIndex(startIndex, count, match);
         }
 
+        /// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
+        public async ValueTask<int> FindIndexAsync(Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.FindIndex(match);
+        }
+
+        /// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
+        public async ValueTask<int> FindIndexAsync(int startIndex, Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.FindIndex(startIndex, match);
+        }
+
+        /// <inheritdoc cref="List{T}.FindIndex(int, int, Predicate{T})" />
+        public async ValueTask<int> FindIndexAsync(int startIndex, int count, Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.FindIndex(startIndex, count, match);
+        }
+
         /// <inheritdoc cref="List{T}.FindLast" />
         public new T FindLast(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
+                return base.FindLast(match);
+        }
+
+        /// <inheritdoc cref="List{T}.FindLast" />
+        public async ValueTask<T> FindLastAsync(Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return base.FindLast(match);
         }
 
@@ -282,11 +420,46 @@ namespace Chummer
                 return base.FindLastIndex(startIndex, count, match);
         }
 
+        /// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
+        public async ValueTask<int> FindLastIndexAsync(Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.FindIndex(match);
+        }
+
+        /// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
+        public async ValueTask<int> FindLastIndexAsync(int startIndex, Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.FindIndex(startIndex, match);
+        }
+
+        /// <inheritdoc cref="List{T}.FindLastIndex(int, int, Predicate{T})" />
+        public async ValueTask<int> FindLastIndexAsync(int startIndex, int count, Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.FindLastIndex(startIndex, count, match);
+        }
+
         /// <inheritdoc cref="List{T}.ForEach" />
         public new void ForEach(Action<T> action)
         {
             using (EnterWriteLock.Enter(LockObject))
                 base.ForEach(action);
+        }
+
+        /// <inheritdoc cref="List{T}.ForEach" />
+        public async ValueTask ForEachAsync(Action<T> action)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.ForEach(action);
+        }
+
+        /// <inheritdoc cref="List{T}.ForEach" />
+        public async ValueTask ForEachAsync(Task<Action<T>> action)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.ForEach(await action);
         }
 
         /// <inheritdoc cref="List{T}.GetEnumerator" />
@@ -301,6 +474,13 @@ namespace Chummer
         public new List<T> GetRange(int index, int count)
         {
             using (EnterReadLock.Enter(LockObject))
+                return base.GetRange(index, count);
+        }
+
+        /// <inheritdoc cref="List{T}.GetRange" />
+        public async ValueTask<List<T>> GetRangeAsync(int index, int count)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return base.GetRange(index, count);
         }
 
@@ -325,6 +505,27 @@ namespace Chummer
                 return base.IndexOf(item, index, count);
         }
 
+        /// <inheritdoc cref="List{T}.IndexOf(T)" />
+        public async ValueTask<int> IndexOfAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.IndexOf(item);
+        }
+
+        /// <inheritdoc cref="List{T}.IndexOf(T, int)" />
+        public async ValueTask<int> IndexOfAsync(T item, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.IndexOf(item, index);
+        }
+
+        /// <inheritdoc cref="List{T}.IndexOf(T, int, int)" />
+        public async ValueTask<int> IndexOfAsync(T item, int index, int count)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.IndexOf(item, index, count);
+        }
+
         /// <inheritdoc cref="List{T}.Insert" />
         public new void Insert(int index, T item)
         {
@@ -332,10 +533,24 @@ namespace Chummer
                 base.Insert(index, item);
         }
 
+        /// <inheritdoc cref="List{T}.Insert" />
+        public async ValueTask InsertAsync(int index, T item)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.Insert(index, item);
+        }
+
         /// <inheritdoc cref="List{T}.InsertRange" />
         public new void InsertRange(int index, IEnumerable<T> collection)
         {
             using (EnterWriteLock.Enter(LockObject))
+                base.InsertRange(index, collection);
+        }
+
+        /// <inheritdoc cref="List{T}.InsertRange" />
+        public async ValueTask InsertRangeAsync(int index, IEnumerable<T> collection)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
                 base.InsertRange(index, collection);
         }
 
@@ -360,10 +575,37 @@ namespace Chummer
                 return base.LastIndexOf(item, index, count);
         }
 
+        /// <inheritdoc cref="List{T}.LastIndexOf(T)" />
+        public async ValueTask<int> LastIndexOfAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.LastIndexOf(item);
+        }
+
+        /// <inheritdoc cref="List{T}.LastIndexOf(T, int)" />
+        public async ValueTask<int> LastIndexOfAsync(T item, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.LastIndexOf(item, index);
+        }
+
+        /// <inheritdoc cref="List{T}.LastIndexOf(T, int, int)" />
+        public async ValueTask<int> LastIndexOfAsync(T item, int index, int count)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.LastIndexOf(item, index, count);
+        }
+
         /// <inheritdoc />
         public new bool Remove(T item)
         {
             using (EnterReadLock.Enter(LockObject))
+                return base.Remove(item);
+        }
+
+        public async ValueTask<bool> RemoveAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return base.Remove(item);
         }
 
@@ -374,6 +616,13 @@ namespace Chummer
                 return base.RemoveAll(match);
         }
 
+        /// <inheritdoc cref="List{T}.RemoveAll" />
+        public async ValueTask<int> RemoveAllAsync(Predicate<T> match)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                return base.RemoveAll(match);
+        }
+
         /// <inheritdoc cref="List{T}.RemoveAt" />
         public new void RemoveAt(int index)
         {
@@ -381,10 +630,24 @@ namespace Chummer
                 base.RemoveAt(index);
         }
 
+        /// <inheritdoc cref="List{T}.RemoveAt" />
+        public async ValueTask RemoveAtAsync(int index)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.RemoveAt(index);
+        }
+
         /// <inheritdoc cref="List{T}.RemoveRange" />
         public new void RemoveRange(int index, int count)
         {
             using (EnterWriteLock.Enter(LockObject))
+                base.RemoveRange(index, count);
+        }
+
+        /// <inheritdoc cref="List{T}.RemoveRange" />
+        public async ValueTask RemoveRangeAsync(int index, int count)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
                 base.RemoveRange(index, count);
         }
 
@@ -399,6 +662,20 @@ namespace Chummer
         public new void Reverse(int index, int count)
         {
             using (EnterWriteLock.Enter(LockObject))
+                base.Reverse(index, count);
+        }
+
+        /// <inheritdoc cref="List{T}.Reverse()" />
+        public async ValueTask ReverseAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.Reverse();
+        }
+
+        /// <inheritdoc cref="List{T}.Reverse(int, int)" />
+        public async ValueTask ReverseAsync(int index, int count)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
                 base.Reverse(index, count);
         }
 
@@ -430,10 +707,44 @@ namespace Chummer
                 base.Sort(comparison);
         }
 
+        /// <inheritdoc cref="List{T}.Sort()" />
+        public async ValueTask SortAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.Sort();
+        }
+
+        /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
+        public async ValueTask SortAsync(IComparer<T> comparer)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.Sort(comparer);
+        }
+
+        /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
+        public async ValueTask SortAsync(int index, int count, IComparer<T> comparer)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.Sort(index, count, comparer);
+        }
+
+        /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
+        public async ValueTask SortAsync(Comparison<T> comparison)
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.Sort(comparison);
+        }
+
         /// <inheritdoc />
         public new T[] ToArray()
         {
             using (EnterReadLock.Enter(LockObject))
+                return base.ToArray();
+        }
+
+        public async ValueTask<T[]> ToArrayAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return base.ToArray();
         }
 
@@ -444,11 +755,32 @@ namespace Chummer
                 base.TrimExcess();
         }
 
+        /// <inheritdoc cref="List{T}.TrimExcess" />
+        public async ValueTask TrimExcessAsync()
+        {
+            using (await EnterWriteLock.EnterAsync(LockObject))
+                base.TrimExcess();
+        }
+
         /// <inheritdoc cref="List{T}.TrueForAll" />
         public new bool TrueForAll(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
                 return base.TrueForAll(match);
+        }
+
+        /// <inheritdoc cref="List{T}.TrueForAll" />
+        public async ValueTask<bool> TrueForAllAsync(Predicate<T> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.TrueForAll(match);
+        }
+
+        /// <inheritdoc cref="List{T}.TrueForAll" />
+        public async ValueTask<bool> TrueForAllAsync(Task<Predicate<T>> match)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.TrueForAll(await match);
         }
 
         protected virtual void Dispose(bool disposing)

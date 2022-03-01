@@ -133,9 +133,11 @@ namespace Chummer
                                     Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
                                         ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
                                         : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                    while (!_dicImages.TryAdd(strKey, bmpNewMugshot))
+                                    while (!await _dicImages.TryAddAsync(strKey, bmpNewMugshot))
                                     {
-                                        if (_dicImages.TryRemove(strKey, out Bitmap bmpOldMugshot))
+                                        (bool blnSuccess, Bitmap bmpOldMugshot) =
+                                            await _dicImages.TryRemoveAsync(strKey);
+                                        if (blnSuccess)
                                             bmpOldMugshot?.Dispose();
                                     }
                                 }
@@ -324,8 +326,8 @@ namespace Chummer
                         };
                         nodRootNode.Nodes.Add(objNode);
 
-                        _lstCharacterCache.Add(objCache);
-                        objNode.Tag = _lstCharacterCache.IndexOf(objCache);
+                        await _lstCharacterCache.AddAsync(objCache);
+                        objNode.Tag = await _lstCharacterCache.IndexOfAsync(objCache);
                     }
                 }
 

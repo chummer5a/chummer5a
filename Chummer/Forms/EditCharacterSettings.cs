@@ -191,7 +191,7 @@ namespace Chummer
                         Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
                 {
                     // Revert removal of setting if we cannot delete the file
-                    SettingsManager.LoadedCharacterSettingsAsModifiable.Add(objDeletedSettings.DictionaryKey, objDeletedSettings);
+                    await SettingsManager.LoadedCharacterSettingsAsModifiable.AddAsync(objDeletedSettings.DictionaryKey, objDeletedSettings);
                     return;
                 }
 
@@ -316,7 +316,7 @@ namespace Chummer
                 try
                 {
                     CharacterSettings objNewCharacterSettings = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
-                    if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryAdd(
+                    if (!await SettingsManager.LoadedCharacterSettingsAsModifiable.TryAddAsync(
                             objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
                     {
                         objNewCharacterSettings.Dispose();
@@ -326,7 +326,7 @@ namespace Chummer
                     if (!_objCharacterSettings.Save(strSelectedFullFileName, true))
                     {
                         // Revert addition of settings if we cannot create a file
-                        SettingsManager.LoadedCharacterSettingsAsModifiable.Remove(
+                        await SettingsManager.LoadedCharacterSettingsAsModifiable.RemoveAsync(
                             objNewCharacterSettings.DictionaryKey);
                         objNewCharacterSettings.Dispose();
                         return;
