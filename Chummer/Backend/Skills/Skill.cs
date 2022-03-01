@@ -1534,7 +1534,7 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                using (new EnterReadLock(CharacterObject.LockObject))
+                using (EnterReadLock.Enter(CharacterObject.LockObject))
                     return _lstSpecializations;
             }
         }
@@ -3169,7 +3169,7 @@ namespace Chummer.Backend.Skills
 
         public void Remove()
         {
-            using (new EnterWriteLock(CharacterObject.LockObject))
+            using (EnterWriteLock.Enter(CharacterObject.LockObject))
             {
                 SkillGroupObject?.Remove(this);
                 Dispose();

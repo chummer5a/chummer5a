@@ -63,42 +63,42 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Clear"/>
         public void Clear()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 _stkData.Clear();
         }
 
         /// <inheritdoc cref="Stack{T}.Contains"/>
         public bool Contains(T item)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return _stkData.Contains(item);
         }
 
         /// <inheritdoc cref="Stack{T}.TrimExcess"/>
         public void TrimExcess()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 _stkData.TrimExcess();
         }
 
         /// <inheritdoc cref="Stack{T}.Peek"/>
         public T Peek()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return _stkData.Peek();
         }
 
         /// <inheritdoc cref="Stack{T}.Pop"/>
         public T Pop()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 return _stkData.Pop();
         }
 
         /// <inheritdoc cref="Stack{T}.Push"/>
         public void Push(T item)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 _stkData.Push(item);
         }
 
@@ -113,7 +113,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (_stkData.Count > 0)
                 {
@@ -129,21 +129,21 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.ToArray"/>
         public T[] ToArray()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return _stkData.ToArray();
         }
 
         /// <inheritdoc cref="Stack{T}.CopyTo"/>
         public void CopyTo(T[] array, int index)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 _stkData.CopyTo(array, index);
         }
 
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 foreach (T objItem in _stkData)
                 {
@@ -158,7 +158,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _stkData.Count;
             }
         }

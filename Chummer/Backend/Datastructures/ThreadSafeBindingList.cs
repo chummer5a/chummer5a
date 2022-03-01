@@ -15,12 +15,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.BeforeRemove += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.BeforeRemove -= value;
             }
         }
@@ -30,12 +30,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.AddingNew += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.AddingNew -= value;
             }
         }
@@ -45,12 +45,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.ListChanged += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.ListChanged -= value;
             }
         }
@@ -58,14 +58,14 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnAddingNew(AddingNewEventArgs e)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 base.OnAddingNew(e);
         }
 
         /// <inheritdoc />
         protected override void OnListChanged(ListChangedEventArgs e)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 base.OnListChanged(e);
         }
 
@@ -74,7 +74,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return base.Count;
             }
         }
@@ -83,16 +83,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return base[index];
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (base[index].Equals(value))
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                         base[index] = value;
                 }
             }
@@ -103,16 +103,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return base.RaiseListChangedEvents;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (base.RaiseListChangedEvents.Equals(value))
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                         base.RaiseListChangedEvents = value;
                 }
             }
@@ -123,16 +123,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return base.AllowNew;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (base.AllowNew.Equals(value))
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                         base.AllowNew = value;
                 }
             }
@@ -143,16 +143,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return base.AllowEdit;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (base.AllowEdit.Equals(value))
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                         base.AllowEdit = value;
                 }
             }
@@ -163,16 +163,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return base.AllowRemove;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (base.AllowRemove.Equals(value))
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                         base.AllowRemove = value;
                 }
             }
@@ -189,98 +189,98 @@ namespace Chummer
         /// <inheritdoc cref="BindingList{T}.IndexOf" />
         public new int IndexOf(T item)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 return base.IndexOf(item);
         }
 
         /// <inheritdoc cref="BindingList{T}.ResetBindings" />
         public new void ResetBindings()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.ResetBindings();
         }
 
         /// <inheritdoc cref="BindingList{T}.ResetItem" />
         public new void ResetItem(int position)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.ResetItem(position);
         }
 
         /// <inheritdoc cref="BindingList{T}.AddNew" />
         public new T AddNew()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 return base.AddNew();
         }
 
         /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.InsertItem(index, item);
         }
 
         /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.RemoveItem(index);
         }
 
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.ClearItems();
         }
 
         /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.SetItem(index, item);
         }
 
         /// <inheritdoc />
         public override void CancelNew(int itemIndex)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.CancelNew(itemIndex);
         }
 
         /// <inheritdoc />
         public override void EndNew(int itemIndex)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.EndNew(itemIndex);
         }
 
         /// <inheritdoc />
         protected override object AddNewCore()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 return base.AddNewCore();
         }
 
         /// <inheritdoc />
         protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.ApplySortCore(prop, direction);
         }
 
         /// <inheritdoc />
         protected override void RemoveSortCore()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.RemoveSortCore();
         }
 
         /// <inheritdoc />
         protected override int FindCore(PropertyDescriptor prop, object key)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 return base.FindCore(prop, key);
         }
 
@@ -312,7 +312,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (base.Count > 0)
                 {
@@ -330,7 +330,7 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 T[] aobjReturn = new T[base.Count];
                 for (int i = 0; i < aobjReturn.Length; ++i)

@@ -1225,7 +1225,7 @@ namespace Chummer.Backend.Attributes
         }
 
         // Caching the value prevents calling the event multiple times.
-        private int _intCachedCanUpgradeCareer = -1;
+        private int _intCachedCanUpgradeCareer = int.MinValue;
 
         public bool CanUpgradeCareer
         {
@@ -1340,7 +1340,7 @@ namespace Chummer.Backend.Attributes
                     return;
 
                 if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
-                    _intCachedCanUpgradeCareer = -1;
+                    _intCachedCanUpgradeCareer = int.MinValue;
                 if (setNamesOfChangedProperties.Contains(nameof(Value)))
                     _intCachedValue = int.MinValue;
                 if (setNamesOfChangedProperties.Contains(nameof(TotalValue)))

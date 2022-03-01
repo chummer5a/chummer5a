@@ -888,7 +888,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                using (new EnterReadLock(objCharacter.LockObject))
+                using (EnterReadLock.Enter(objCharacter.LockObject))
                 {
                     foreach (Enhancement objEnhancement in objCharacter.Enhancements)
                     {
@@ -1042,7 +1042,7 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            using (new EnterReadLock(objCharacter.LockObject))
+            using (EnterReadLock.Enter(objCharacter.LockObject))
             {
                 string strGearNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
 

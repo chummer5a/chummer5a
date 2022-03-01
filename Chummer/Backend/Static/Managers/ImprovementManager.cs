@@ -410,7 +410,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strImprovedName))
                 strImprovedName = string.Empty;
 
-            using (new EnterReadLock(objCharacter.LockObject))
+            using (EnterReadLock.Enter(objCharacter.LockObject))
             {
                 // These values are needed to prevent race conditions that could cause Chummer to crash
                 Tuple<ImprovementDictionaryKey, IDictionary> tupMyValueToCheck
@@ -1123,7 +1123,7 @@ namespace Chummer
                                                out HashSet<string>
                                                    setProcessedSkillNames))
                                     {
-                                        using (new EnterReadLock(objCharacter.LockObject))
+                                        using (EnterReadLock.Enter(objCharacter.LockObject))
                                         {
                                             foreach (KnowledgeSkill objKnowledgeSkill in objCharacter.SkillsSection
                                                          .KnowledgeSkills)
@@ -1415,7 +1415,7 @@ namespace Chummer
                             }
                             else if (objCharacter != null)
                             {
-                                using (new EnterWriteLock(objCharacter.LockObject))
+                                using (EnterWriteLock.Enter(objCharacter.LockObject))
                                 {
                                     if (objCharacter.PushText.TryTake(out string strText))
                                     {
@@ -1666,7 +1666,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (new EnterWriteLock(objCharacter.LockObject))
+                    using (EnterWriteLock.Enter(objCharacter.LockObject))
                         objImprovementMethod.Invoke(bonusNode);
                 }
                 catch (AbortedException)
@@ -1712,7 +1712,7 @@ namespace Chummer
             if (objImprovementList == null)
                 throw new ArgumentNullException(nameof(objImprovementList));
 
-            using (new EnterWriteLock(objCharacter.LockObject))
+            using (EnterWriteLock.Enter(objCharacter.LockObject))
             {
                 foreach (Improvement objImprovement in objImprovementList)
                 {
@@ -2078,7 +2078,7 @@ namespace Chummer
             if (objImprovementList == null)
                 throw new ArgumentNullException(nameof(objImprovementList));
 
-            using (new EnterWriteLock(objCharacter.LockObject))
+            using (EnterWriteLock.Enter(objCharacter.LockObject))
             {
                 foreach (Improvement objImprovement in objImprovementList)
                 {
@@ -2475,7 +2475,7 @@ namespace Chummer
             Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
                      + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
             List<Improvement> objImprovementList;
-            using (new EnterReadLock(objCharacter.LockObject))
+            using (EnterReadLock.Enter(objCharacter.LockObject))
             {
                 // A List of Improvements to hold all of the items that will eventually be deleted.
                 objImprovementList = (string.IsNullOrEmpty(strSourceName)
@@ -2491,7 +2491,7 @@ namespace Chummer
             {
                 string strSourceNameSpaced = strSourceName + LanguageManager.GetString("String_Space");
                 string strSourceNameSpacedInvariant = strSourceName + ' ';
-                using (new EnterReadLock(objCharacter.LockObject))
+                using (EnterReadLock.Enter(objCharacter.LockObject))
                 {
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
                                                     objImprovement =>
@@ -2527,7 +2527,7 @@ namespace Chummer
             }
 
             decimal decReturn = 0;
-            using (new EnterWriteLock(objCharacter.LockObject))
+            using (EnterWriteLock.Enter(objCharacter.LockObject))
             {
                 // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
 
@@ -3012,7 +3012,7 @@ namespace Chummer
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
             if (objCharacter != null)
             {
-                using (new EnterWriteLock(objCharacter.LockObject))
+                using (EnterWriteLock.Enter(objCharacter.LockObject))
                 {
                     // Record the improvement.
                     objImprovement = new Improvement(objCharacter)
@@ -3079,7 +3079,7 @@ namespace Chummer
             Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
-                using (new EnterWriteLock(objCharacter.LockObject))
+                using (EnterWriteLock.Enter(objCharacter.LockObject))
                 {
                     // Remove all of the Improvements that were added.
                     foreach (Improvement objTransactingImprovement in lstTransactions)

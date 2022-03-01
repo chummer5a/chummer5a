@@ -46,7 +46,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return base.Count;
             }
         }
@@ -56,16 +56,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return base[index];
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (base[index].Equals(value))
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                         base[index] = value;
                 }
             }
@@ -74,14 +74,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Contains" />
         public new bool Contains(T item)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return base.Contains(item);
         }
 
         /// <inheritdoc />
         public new void CopyTo(T[] array, int index)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 base.CopyTo(array, index);
         }
 
@@ -96,7 +96,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (base.Count > 0)
                 {
@@ -114,7 +114,7 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 T[] aobjReturn = new T[Count];
                 for (int i = 0; i < Count; ++i)
@@ -136,7 +136,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.IndexOf(T)" />
         public new int IndexOf(T item)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return base.IndexOf(item);
         }
 
@@ -145,12 +145,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.CollectionChanged += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.CollectionChanged -= value;
             }
         }
@@ -160,12 +160,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.BeforeClearCollectionChanged += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.BeforeClearCollectionChanged -= value;
             }
         }
@@ -175,12 +175,12 @@ namespace Chummer
         {
             add
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.PropertyChanged += value;
             }
             remove
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     base.PropertyChanged -= value;
             }
         }
@@ -188,49 +188,49 @@ namespace Chummer
         /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.InsertItem(index, item);
         }
 
         /// <inheritdoc />
         protected override void MoveItem(int oldIndex, int newIndex)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.MoveItem(oldIndex, newIndex);
         }
 
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.ClearItems();
         }
 
         /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.RemoveItem(index);
         }
 
         /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 base.SetItem(index, item);
         }
 
         /// <inheritdoc />
         protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 base.OnPropertyChanged(e);
         }
 
         /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 base.OnCollectionChanged(e);
         }
 

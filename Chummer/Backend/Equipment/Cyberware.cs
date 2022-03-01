@@ -3324,7 +3324,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (EnterReadLock.Enter(_objCharacter.LockObject))
                     return _lstChildren;
             }
         }
@@ -3336,7 +3336,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                using (new EnterReadLock(_objCharacter.LockObject))
+                using (EnterReadLock.Enter(_objCharacter.LockObject))
                     return _lstGear;
             }
         }

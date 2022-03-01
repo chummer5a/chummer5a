@@ -35,7 +35,7 @@ namespace Chummer
         {
             _intMaxSize = intMaxSize;
             _blnSkipCollectionChanged = true;
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 while (Count > _intMaxSize)
                     RemoveAt(Count - 1);
@@ -47,7 +47,7 @@ namespace Chummer
         {
             _intMaxSize = intMaxSize;
             _blnSkipCollectionChanged = true;
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 while (Count > _intMaxSize)
                     RemoveAt(Count - 1);
@@ -60,14 +60,14 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (_blnSkipCollectionChanged)
                     return;
                 if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     _blnSkipCollectionChanged = true;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         // Remove all entries greater than the allowed size
                         while (Count > _intMaxSize)
@@ -83,7 +83,7 @@ namespace Chummer
         protected override void InsertItem(int index, T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (index >= _intMaxSize)
                     return;
@@ -97,7 +97,7 @@ namespace Chummer
         public override bool TryAdd(T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (Count >= _intMaxSize)
                     return false;

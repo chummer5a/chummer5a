@@ -271,7 +271,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _setDoOnSaveCompleted;
             }
         }
@@ -287,7 +287,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _setDoOnSaveCompletedAsync;
             }
         }
@@ -334,7 +334,7 @@ namespace Chummer
         }
 
         private bool _blnClearingInitiations;
-        private void InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (_blnClearingInitiations || IsLoading)
                 return;
@@ -418,7 +418,7 @@ namespace Chummer
                     int intSubmersion = 0;
                     int intInitiation = 0;
 
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         foreach (InitiationGrade objItem in InitiationGrades)
                         {
@@ -484,7 +484,7 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
         {
-            using (blnSync ? new EnterReadLock(LockObject) : await EnterReadLock.EnterAsync(LockObject))
+            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
                 XmlDocument xmlDoc = blnSync
@@ -541,7 +541,7 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
         {
-            using (blnSync ? new EnterReadLock(LockObject) : await EnterReadLock.EnterAsync(LockObject))
+            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
                 XPathNavigator xmlDoc = blnSync
@@ -573,7 +573,7 @@ namespace Chummer
 
         public void RefreshAttributeBindings()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // First remove all existing bindings
                 foreach (CharacterAttrib objAttribute in AttributeSection.Attributes)
@@ -2041,7 +2041,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _objAttributeSection;
             }
         }
@@ -2053,7 +2053,7 @@ namespace Chummer
         /// </summary>
         public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null, XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null, string strSelectedPossessionMethod = "")
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (objXmlMetatype == null)
                     throw new ArgumentNullException(nameof(objXmlMetatype));
@@ -2605,7 +2605,7 @@ namespace Chummer
                 }
             }
 
-            using (blnSync ? new EnterReadLock(LockObject) : await EnterReadLock.EnterAsync(LockObject))
+            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 bool blnErrorFree = true;
 
@@ -4106,7 +4106,7 @@ namespace Chummer
                 if (addToMRU)
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
 
-                using (blnSync ? new EnterWriteLock(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
+                using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
                     _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
                 if (callOnSaveCallBack)
@@ -4248,16 +4248,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnIsLoading;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnIsLoading == value)
                         return;
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         _blnIsLoading = true;
                         OnPropertyChanged();
@@ -4306,7 +4306,7 @@ namespace Chummer
             if (!File.Exists(_strFileName))
                 return false;
 
-            using (blnSync ? new EnterWriteLock(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
+            using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
             {
                 LoadAsDirty = false;
                 using (CustomActivity loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
@@ -7855,14 +7855,14 @@ namespace Chummer
             if (LockObject.IsDisposed)
                 return;
 
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsDisposed)
                     return;
                 if (Program.OpenCharacters.Contains(this)
                     || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
                     return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
-                using (new EnterWriteLock(LockObject)) // Wait for all pending locks to get freed before disposing
+                using (EnterWriteLock.Enter(LockObject)) // Wait for all pending locks to get freed before disposing
                 {
                     IsDisposed = true;
                     ImprovementManager.ClearCachedValues(this);
@@ -7951,7 +7951,7 @@ namespace Chummer
         /// </summary>
         public void ResetCharacter()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 _intFreeSpells = 0;
                 _intCFPLimit = 0;
@@ -8114,7 +8114,7 @@ namespace Chummer
             }
 
             Improvement.ImprovementSource eSource = objImprovement.ImproveSource;
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 switch (eSource)
                 {
@@ -8674,7 +8674,7 @@ namespace Chummer
 
         public void CleanUpOrphanedImprovements()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 int intNewImprovementCount = 0;
                 int intOldImprovementCount = Improvements.Count;
@@ -8695,7 +8695,7 @@ namespace Chummer
                 return;
             sbdToolTip.Append(strSpace).Append('+').Append(strSpace).Append(LanguageManager.GetString("Tip_Modifiers"));
             bool blnFirstModifier = true;
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 foreach (Improvement.ImprovementType eType in improvements)
                 {
@@ -8726,7 +8726,7 @@ namespace Chummer
         public IEnumerable<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
             string strXPath;
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
@@ -8775,7 +8775,7 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
 
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (Metatype == "Free Spirit" && !IsCritter)
                 {
@@ -8845,7 +8845,7 @@ namespace Chummer
             // Free Sprite Power Points.
             int intUsedPowerPoints = 0;
 
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 foreach (CritterPower objPower in CritterPowers)
                 {
@@ -8876,7 +8876,7 @@ namespace Chummer
 
             string strSpace = LanguageManager.GetString("String_Space");
 
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 foreach (Cyberware objLoopCyberware in Cyberware.GetAllDescendants(x => x.Children))
                 {
@@ -8974,7 +8974,7 @@ namespace Chummer
                 });
             }
 
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (eResult != DialogResult.OK)
                 {
@@ -9005,7 +9005,7 @@ namespace Chummer
             string strKarmaString = LanguageManager.GetString("String_Karma", strLanguage);
             int intExtraKarmaToRemoveForPointBuyComparison = 0;
 
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 intReturn = Settings.BuildKarma;
 
@@ -9293,7 +9293,7 @@ namespace Chummer
         {
             if (xmlCategoryList == null)
                 yield break;
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 // Character has no Black Market discount qualities. Fail out early.
                 if (!BlackMarketDiscount)
@@ -9480,7 +9480,7 @@ namespace Chummer
             if(!blnAllowMove)
                 return;
 
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Remove the Gear from the character.
                 if (objGear.Parent is IHasChildren<Gear> parent)
@@ -9521,7 +9521,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 switch (objNewParent.Tag)
                 {
@@ -9562,7 +9562,7 @@ namespace Chummer
 
             if(!(nodOldNode.Tag is Location objLocation))
                 return;
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -9589,7 +9589,7 @@ namespace Chummer
 
             if (!(nodLifestyleNode.Tag is Lifestyle objLifestyle))
                 return;
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
         }
 
@@ -9609,7 +9609,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 switch (objNewParent.Tag)
                 {
@@ -9650,7 +9650,7 @@ namespace Chummer
 
             if (!(nodOldNode.Tag is Location objLocation))
                 return;
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -9670,7 +9670,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 switch (objNewParent.Tag)
                 {
@@ -9711,7 +9711,7 @@ namespace Chummer
 
             if (!(nodOldNode.Tag is Location objLocation))
                 return;
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -9731,7 +9731,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 switch (objNewParent.Tag)
                 {
@@ -9766,7 +9766,7 @@ namespace Chummer
                     return;
             if (!(nodGearNode.Tag is IHasInternalId nodeId))
                 return;
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 // Locate the currently selected piece of Gear.
                 //TODO: Better interface for determining what the parent of a bit of gear is.
@@ -9777,7 +9777,7 @@ namespace Chummer
                 if (objGear == null)
                     return;
 
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                 {
                     if (nodDestination.Tag is Gear objDestinationGear)
                     {
@@ -9848,7 +9848,7 @@ namespace Chummer
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
 
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 objImprovement.CustomGroup = objNewParent.Tag.ToString() == "Node_SelectedImprovements"
                     ? string.Empty
@@ -9879,7 +9879,7 @@ namespace Chummer
                 return;
 
             string strLocation = nodOldNode.Tag.ToString();
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
         }
 
@@ -9892,7 +9892,7 @@ namespace Chummer
         /// </summary>
         public void ClearMagic(bool blnKeepAdeptEligible)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (ImprovementManager.GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.FreeSpells)
                         .Count > 0
@@ -9903,7 +9903,7 @@ namespace Chummer
                     0)
                 {
                     // Run through all of the Spells and remove their Improvements.
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         for (int i = Spells.Count - 1; i >= 0; --i)
                         {
@@ -9925,7 +9925,7 @@ namespace Chummer
                     }
                 }
 
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                 {
                     for (int i = Spirits.Count - 1; i >= 0; --i)
                     {
@@ -9947,7 +9947,7 @@ namespace Chummer
         /// </summary>
         public void ClearAdeptPowers()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Run through all powers and remove the ones not added by improvements or foci
                 for (int i = Powers.Count - 1; i >= 0; --i)
@@ -9974,7 +9974,7 @@ namespace Chummer
         /// </summary>
         public void ClearResonance()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Run through all of the Complex Forms and remove their Improvements.
                 for (int i = ComplexForms.Count - 1; i >= 0; --i)
@@ -10011,7 +10011,7 @@ namespace Chummer
         /// </summary>
         public void ClearAdvancedPrograms()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Run through all advanced programs and remove the ones not added by improvements
                 for (int i = AIPrograms.Count - 1; i >= 0; --i)
@@ -10036,7 +10036,7 @@ namespace Chummer
         /// </summary>
         public void ClearCyberwareTab()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 string strDisabledSource = string.Empty;
                 if (Created)
@@ -10056,7 +10056,7 @@ namespace Chummer
                     }
                 }
 
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                 {
                     foreach (Cyberware objCyberware in Cyberware
                                  .Where(x => x.SourceID != Backend.Equipment.Cyberware.EssenceHoleGUID
@@ -10097,7 +10097,7 @@ namespace Chummer
         /// </summary>
         public void ClearCritterPowers()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 for (int i = CritterPowers.Count - 1; i >= 0; --i)
                 {
@@ -10121,7 +10121,7 @@ namespace Chummer
         /// </summary>
         public void ClearInitiations()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Do not update grade numbers until after we're done processing everything
                 _blnClearingInitiations = true;
@@ -10152,16 +10152,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _objSettings;
             }
             private set // Private to make sure this is always in sync with GameplayOption
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (ReferenceEquals(_objSettings, value))
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         bool blnActuallyDifferentSettings = !_objSettings.HasIdenticalSettings(value);
                         if (_objSettings != null)
@@ -10183,16 +10183,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strFileName;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strFileName == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strFileName = value;
                         OnPropertyChanged();
@@ -10208,7 +10208,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _dateFileLastWriteTime > DateTime.MinValue ? _dateFileLastWriteTime : DateTime.UtcNow;
             }
         }
@@ -10221,16 +10221,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnCreated;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnCreated == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnCreated = value;
                         OnPropertyChanged();
@@ -10247,16 +10247,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strName;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strName == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strName = value;
                         OnPropertyChanged();
@@ -10272,7 +10272,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstMugshots;
             }
         }
@@ -10284,7 +10284,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (MainMugshotIndex >= Mugshots.Count || MainMugshotIndex < 0)
                         return null;
@@ -10300,7 +10300,7 @@ namespace Chummer
                     return;
                 }
 
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intNewMainMugshotIndex = Mugshots.IndexOf(value);
                     if (intNewMainMugshotIndex != -1)
@@ -10309,7 +10309,7 @@ namespace Chummer
                     }
                     else
                     {
-                        using (new EnterWriteLock(LockObject))
+                        using (EnterWriteLock.Enter(LockObject))
                             Mugshots.Add(value);
                         MainMugshotIndex = Mugshots.Count - 1;
                     }
@@ -10324,7 +10324,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intMainMugshotIndex;
             }
             set
@@ -10333,18 +10333,18 @@ namespace Chummer
                     value = -1;
                 else if (value >= 0)
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (value >= Mugshots.Count)
                             value = -1;
                     }
                 }
 
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intMainMugshotIndex == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intMainMugshotIndex = value;
                         OnPropertyChanged();
@@ -10367,7 +10367,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (blnSync ? new EnterReadLock(LockObject) : await EnterReadLock.EnterAsync(LockObject))
+            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 if (blnSync)
                 {
@@ -10407,7 +10407,7 @@ namespace Chummer
         public void LoadMugshots(XPathNavigator xmlSavedNode)
         {
             // Mugshots
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
@@ -10528,19 +10528,19 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strSettingsKey;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strSettingsKey == value)
                         return;
                     if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
                             value, out CharacterSettings objNewSettings))
                         throw new InvalidOperationException(nameof(SettingsKey));
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strSettingsKey = value;
                         OnPropertyChanged();
@@ -10558,16 +10558,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPriorityMetatype;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPriorityMetatype == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPriorityMetatype = value;
                         OnPropertyChanged();
@@ -10584,16 +10584,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPriorityAttributes;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPriorityAttributes == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPriorityAttributes = value;
                         OnPropertyChanged();
@@ -10610,16 +10610,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPrioritySpecial;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPrioritySpecial == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPrioritySpecial = value;
                         OnPropertyChanged();
@@ -10636,16 +10636,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPrioritySkills;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPrioritySkills == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPrioritySkills = value;
                         OnPropertyChanged();
@@ -10662,16 +10662,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPriorityResources;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPriorityResources == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPriorityResources = value;
                         OnPropertyChanged();
@@ -10688,16 +10688,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPriorityTalent;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPriorityTalent == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPriorityTalent = value;
                         OnPropertyChanged();
@@ -10713,7 +10713,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstPrioritySkills;
             }
         }
@@ -10725,16 +10725,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strGender;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strGender == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strGender = value;
                         OnPropertyChanged();
@@ -10749,7 +10749,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (!string.IsNullOrEmpty(_strCachedCharacterGrammaticGender))
                         return _strCachedCharacterGrammaticGender;
@@ -10785,16 +10785,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strAge;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strAge == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strAge = value;
                         OnPropertyChanged();
@@ -10810,16 +10810,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strEyes;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strEyes == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strEyes = value;
                         OnPropertyChanged();
@@ -10835,16 +10835,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strHeight;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strHeight == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strHeight = value;
                         OnPropertyChanged();
@@ -10860,16 +10860,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strWeight;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strWeight == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strWeight = value;
                         OnPropertyChanged();
@@ -10885,16 +10885,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strSkin;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strSkin == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strSkin = value;
                         OnPropertyChanged();
@@ -10910,16 +10910,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strHair;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strHair == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strHair = value;
                         OnPropertyChanged();
@@ -10935,16 +10935,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strDescription;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strDescription == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         string strOldText = _strDescription.RtfToPlainText();
                         string strOldHtml = _strDescription.RtfToHtml();
@@ -10968,16 +10968,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strBackground;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strBackground == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         string strOldText = _strBackground.RtfToPlainText();
                         string strOldHtml = _strBackground.RtfToHtml();
@@ -11001,16 +11001,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strConcept;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strConcept == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         string strOldText = _strConcept.RtfToPlainText();
                         string strOldHtml = _strConcept.RtfToHtml();
@@ -11034,16 +11034,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strNotes;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strNotes == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         string strOldText = _strNotes.RtfToPlainText();
                         string strOldHtml = _strNotes.RtfToHtml();
@@ -11067,16 +11067,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strGameNotes;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strGameNotes == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         string strOldText = _strGameNotes.RtfToPlainText();
                         string strOldHtml = _strGameNotes.RtfToHtml();
@@ -11100,16 +11100,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPrimaryArm;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPrimaryArm == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPrimaryArm = value;
                         OnPropertyChanged();
@@ -11126,16 +11126,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPlayerName;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPlayerName == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPlayerName = value;
                         OnPropertyChanged();
@@ -11152,16 +11152,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strAlias;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strAlias == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strAlias = value;
                         OnPropertyChanged();
@@ -11177,7 +11177,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (!string.IsNullOrWhiteSpace(Alias))
                         return Alias;
@@ -11196,16 +11196,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intStreetCred;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intStreetCred == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intStreetCred = value;
                         OnPropertyChanged();
@@ -11221,16 +11221,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intBurntStreetCred;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intBurntStreetCred == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intBurntStreetCred = value;
                         OnPropertyChanged();
@@ -11247,16 +11247,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intNotoriety;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intNotoriety == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intNotoriety = value;
                         OnPropertyChanged();
@@ -11272,16 +11272,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intPublicAwareness;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intPublicAwareness == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intPublicAwareness = value;
                         OnPropertyChanged();
@@ -11292,7 +11292,7 @@ namespace Chummer
 
         private bool RefreshAstralReputationImprovements()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
                 {
@@ -11301,7 +11301,7 @@ namespace Chummer
                     return true;
                 }
 
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                 {
                     int intCurrentTotalAstralReputation = TotalAstralReputation;
                     List<Improvement> lstCurrentAstralReputationImprovements = Improvements
@@ -11357,7 +11357,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdReturn.Append(AstralReputation.ToString(GlobalSettings.CultureInfo));
 
@@ -11383,7 +11383,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Math.Max(
                         0,
                         AstralReputation + ImprovementManager
@@ -11399,16 +11399,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intBaseAstralReputation;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intBaseAstralReputation == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intBaseAstralReputation = value;
                         OnPropertyChanged();
@@ -11428,7 +11428,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdReturn.Append(WildReputation.ToString(GlobalSettings.CultureInfo));
 
@@ -11454,7 +11454,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Math.Max(0,
                                     WildReputation
                                     + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild)
@@ -11469,16 +11469,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intBaseWildReputation;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intBaseWildReputation == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intBaseWildReputation = value;
                         OnPropertyChanged();
@@ -11494,7 +11494,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (HomeNode is Vehicle objVehicle)
                         return objVehicle.PhysicalCMFilled;
@@ -11504,13 +11504,13 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (HomeNode is Vehicle objVehicle)
                     {
                         if (objVehicle.PhysicalCMFilled != value)
                         {
-                            using (new EnterWriteLock(LockObject))
+                            using (EnterWriteLock.Enter(LockObject))
                             {
                                 objVehicle.PhysicalCMFilled = value;
                                 OnPropertyChanged();
@@ -11519,7 +11519,7 @@ namespace Chummer
                     }
                     else if (_intPhysicalCMFilled != value)
                     {
-                        using (new EnterWriteLock(LockObject))
+                        using (EnterWriteLock.Enter(LockObject))
                         {
                             _intPhysicalCMFilled = value;
                             OnPropertyChanged();
@@ -11536,7 +11536,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI && HomeNode != null)
                     {
@@ -11549,14 +11549,14 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI && HomeNode != null)
                     {
                         // A.I. do not have a Stun Condition Monitor, but they do have a Matrix Condition Monitor if they are in their home node.
                         if (HomeNode.MatrixCMFilled != value)
                         {
-                            using (new EnterWriteLock(LockObject))
+                            using (EnterWriteLock.Enter(LockObject))
                             {
                                 HomeNode.MatrixCMFilled = value;
                                 OnPropertyChanged();
@@ -11565,7 +11565,7 @@ namespace Chummer
                     }
                     else if (_intStunCMFilled != value)
                     {
-                        using (new EnterWriteLock(LockObject))
+                        using (EnterWriteLock.Enter(LockObject))
                         {
                             _intStunCMFilled = value;
                             OnPropertyChanged();
@@ -11579,7 +11579,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Created || IgnoreRules || Settings.AllowInitiationInCreateMode;
             }
         }
@@ -11592,16 +11592,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnIgnoreRules;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnIgnoreRules == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnIgnoreRules = value;
                         OnPropertyChanged();
@@ -11617,7 +11617,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedContactPoints == int.MinValue)
                     {
@@ -11654,16 +11654,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intContactPointsUsed;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intContactPointsUsed == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intContactPointsUsed = value;
                         OnPropertyChanged();
@@ -11679,7 +11679,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return BaseCarryLimit + CurrentLiftCarryHits * 10m;
             }
         }
@@ -11691,7 +11691,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedBaseCarryLimit == decimal.MinValue)
                     {
@@ -11727,7 +11727,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return BaseLiftLimit + CurrentLiftCarryHits * 10m;
             }
         }
@@ -11739,7 +11739,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedBaseLiftLimit == decimal.MinValue)
                     {
@@ -11775,7 +11775,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedEncumbranceInterval == decimal.MinValue)
                     {
@@ -11816,16 +11816,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intCFPLimit;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCFPLimit == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intCFPLimit = value;
                         OnPropertyChanged();
@@ -11841,16 +11841,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intAINormalProgramLimit;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intAINormalProgramLimit == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intAINormalProgramLimit = value;
                         OnPropertyChanged();
@@ -11866,16 +11866,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intAIAdvancedProgramLimit;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intAIAdvancedProgramLimit == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intAIAdvancedProgramLimit = value;
                         OnPropertyChanged();
@@ -11891,16 +11891,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intFreeSpells;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intFreeSpells == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intFreeSpells = value;
                         OnPropertyChanged();
@@ -11916,16 +11916,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intKarma;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intKarma == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intKarma = value;
                         OnPropertyChanged();
@@ -11938,7 +11938,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Karma.ToString(GlobalSettings.CultureInfo);
             }
         }
@@ -11950,16 +11950,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intSpecial;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intSpecial == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intSpecial = value;
                         OnPropertyChanged();
@@ -11975,16 +11975,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intTotalSpecial;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intTotalSpecial == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intTotalSpecial = value;
                         OnPropertyChanged();
@@ -12000,16 +12000,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intAttributes;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intAttributes == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intAttributes = value;
                         OnPropertyChanged();
@@ -12025,16 +12025,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intTotalAttributes;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intTotalAttributes == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intTotalAttributes = value;
                         OnPropertyChanged();
@@ -12053,7 +12053,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedCareerKarma != int.MinValue)
                         return _intCachedCareerKarma;
@@ -12077,7 +12077,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CareerKarma.ToString(GlobalSettings.CultureInfo);
             }
         }
@@ -12091,7 +12091,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedCareerNuyen != decimal.MinValue)
                         return _decCachedCareerNuyen;
@@ -12114,7 +12114,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CareerNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             }
         }
@@ -12126,16 +12126,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intEdgeUsed;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intEdgeUsed == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intEdgeUsed = value;
                         OnPropertyChanged();
@@ -12148,7 +12148,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return EDG.TotalValue - EdgeUsed;
             }
         }
@@ -12157,7 +12157,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return EdgeRemaining.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Of")
                                                                               + EDG.TotalValue.ToString(
                                                                                   GlobalSettings.CultureInfo)
@@ -12176,16 +12176,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnIsCritter;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnIsCritter == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnIsCritter = value;
                         OnPropertyChanged();
@@ -12202,7 +12202,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return MetagenicLimit > 0;
             }
         }
@@ -12227,16 +12227,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnPossessed;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnPossessed == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnPossessed = value;
                         OnPropertyChanged();
@@ -12247,7 +12247,7 @@ namespace Chummer
 
         public int SpellKarmaCost(string strCategory = "")
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 decimal decReturn = Settings.KarmaSpell;
 
@@ -12316,7 +12316,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     decimal decReturn = Settings.KarmaNewComplexForm;
 
@@ -12351,7 +12351,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     decimal decReturn = Settings.KarmaNewAIProgram;
 
@@ -12386,7 +12386,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     decimal decReturn = Settings.KarmaNewAIAdvancedProgram;
 
@@ -12432,7 +12432,7 @@ namespace Chummer
         /// Mostly expected to be used for gutting Mystic Adept power points.</param>
         public CharacterAttrib GetAttribute(string strAttribute, bool blnExplicit = false)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute)
                                                && !blnExplicit)
@@ -12449,7 +12449,7 @@ namespace Chummer
         /// Mostly expected to be used for gutting Mystic Adept power points.</param>
         public IEnumerable<CharacterAttrib> GetAllAttributes(string strAttribute, bool blnExplicit = false)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute)
                                                && !blnExplicit)
@@ -12475,7 +12475,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("BOD");
             }
         }
@@ -12487,7 +12487,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("AGI");
             }
         }
@@ -12499,7 +12499,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("REA");
             }
         }
@@ -12511,7 +12511,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("STR");
             }
         }
@@ -12523,7 +12523,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("CHA");
             }
         }
@@ -12535,7 +12535,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("INT");
             }
         }
@@ -12547,7 +12547,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("LOG");
             }
         }
@@ -12559,7 +12559,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("WIL");
             }
         }
@@ -12571,7 +12571,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("EDG");
             }
         }
@@ -12583,7 +12583,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("MAG");
             }
         }
@@ -12596,7 +12596,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return MAGEnabled ? MAG : null;
             }
         }
@@ -12608,7 +12608,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (Settings.MysAdeptSecondMAGAttribute && IsMysticAdept)
                         return AttributeSection.GetAttributeByName("MAGAdept");
@@ -12625,7 +12625,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return MAGEnabled ? MAGAdept : null;
             }
         }
@@ -12637,7 +12637,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("RES");
             }
         }
@@ -12650,7 +12650,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return RESEnabled ? RES : null;
             }
         }
@@ -12662,7 +12662,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.GetAttributeByName("DEP");
             }
         }
@@ -12675,7 +12675,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return DEPEnabled ? DEP : null;
             }
         }
@@ -12693,16 +12693,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnMAGEnabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnMAGEnabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnMAGEnabled = value;
                         if (IsLoading)
@@ -12936,7 +12936,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intReturn = Settings.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value;
                     if (intReturn <= 0)
@@ -12952,7 +12952,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intBoundSpiritLimit == int.MinValue)
                     {
@@ -12989,7 +12989,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intReturn = RES.TotalValue;
                     if (intReturn <= 0)
@@ -13005,7 +13005,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intRegisteredSpriteLimit == int.MinValue)
                     {
@@ -13042,17 +13042,17 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intMAGAdept;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intNewValue = Math.Min(value, MAG.TotalValue);
                     if (_intMAGAdept == intNewValue)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intMAGAdept = intNewValue;
                         OnPropertyChanged();
@@ -13068,7 +13068,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     decimal decMAG = UseMysticAdeptPPs ? MysticAdeptPowerPoints : MAGAdept.TotalValue;
 
@@ -13086,7 +13086,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedPowerPointsUsed != decimal.MinValue)
                         return _decCachedPowerPointsUsed;
@@ -13100,7 +13100,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return PowerPointsTotal.ToString(GlobalSettings.CultureInfo) + strSpace + '(' +
                            (PowerPointsTotal - PowerPointsUsed).ToString(GlobalSettings.CultureInfo) + strSpace +
                            LanguageManager.GetString("String_Remaining") + ')';
@@ -13111,7 +13111,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Powers.Any(objPower => objPower.AdeptWayDiscountEnabled);
             }
         }
@@ -13124,16 +13124,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _objTradition;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_objTradition == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _objTradition = value;
                         OnPropertyChanged();
@@ -13150,17 +13150,17 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intInitiateGrade;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intInitiateGrade == value)
                         return;
                     bool blnFirstInitiation = _intInitiateGrade == 0;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intInitiateGrade = value;
                         // Remove any existing Initiation Improvements.
@@ -13271,16 +13271,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnRESEnabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnRESEnabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnRESEnabled = value;
                         if (IsLoading)
@@ -13539,16 +13539,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnDEPEnabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnDEPEnabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnDEPEnabled = value;
                         if (IsLoading)
@@ -13751,7 +13751,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return DEPEnabled && BOD.MetatypeMaximum == 0;
             }
         }
@@ -13764,17 +13764,17 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intSubmersionGrade;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intSubmersionGrade == value)
                         return;
                     bool blnFirstSubmersion = _intSubmersionGrade == 0;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intSubmersionGrade = value;
                         // Remove any existing Submersion Improvements.
@@ -13875,16 +13875,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnGroupMember;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnGroupMember == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnGroupMember = value;
                         OnPropertyChanged();
@@ -13901,16 +13901,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strGroupName;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strGroupName == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strGroupName = value;
                         OnPropertyChanged();
@@ -13926,16 +13926,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strGroupNotes;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strGroupNotes == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strGroupNotes = value;
                         OnPropertyChanged();
@@ -13951,16 +13951,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _decEssenceAtSpecialStart;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decEssenceAtSpecialStart == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _decEssenceAtSpecialStart = value;
                         RefreshEssenceLossImprovements();
@@ -13973,7 +13973,7 @@ namespace Chummer
 
         public void ResetCachedEssence()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 _decCachedEssence = decimal.MinValue;
         }
 
@@ -13983,7 +13983,7 @@ namespace Chummer
         /// <param name="blnForMAGPenalty">Whether fetched Essence is to be used to calculate the penalty MAG should receive from lost Essence (true) or not (false).</param>
         public decimal Essence(bool blnForMAGPenalty = false)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (!blnForMAGPenalty && _decCachedEssence != decimal.MinValue)
                     return _decCachedEssence;
@@ -14024,7 +14024,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedCyberwareEssence != decimal.MinValue)
                         return _decCachedCyberwareEssence;
@@ -14051,7 +14051,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedBiowareEssence != decimal.MinValue)
                         return _decCachedBiowareEssence;
@@ -14078,7 +14078,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedEssenceHole != decimal.MinValue)
                         return _decCachedEssenceHole;
@@ -14101,7 +14101,7 @@ namespace Chummer
 
         public void IncreaseEssenceHole(int intCentiessence, bool blnOverflowIntoHole = true)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 Cyberware objAntiHole
                     = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
@@ -14175,7 +14175,7 @@ namespace Chummer
         /// <param name="blnOverflowIntoAntiHole">Should we increase or create an Essence Antihole to handle any overflow. Remember, Essence Holes are consumed first.</param>
         public void DecreaseEssenceHole(int intCentiessence, bool blnOverflowIntoAntiHole = true)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 Cyberware objHole
                     = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID);
@@ -14247,7 +14247,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedPrototypeTranshumanEssenceUsed != decimal.MinValue)
                         return _decCachedPrototypeTranshumanEssenceUsed;
@@ -14268,7 +14268,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return EssenceDecimal.ToString(Settings.EssenceFormat, GlobalSettings.CultureInfo);
             }
         }
@@ -14283,7 +14283,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CyberwareEssence.ToString(Settings.EssenceFormat, GlobalSettings.CultureInfo);
             }
         }
@@ -14292,7 +14292,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return BiowareEssence.ToString(Settings.EssenceFormat, GlobalSettings.CultureInfo);
             }
         }
@@ -14301,7 +14301,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return EssenceHole.ToString(Settings.EssenceFormat, GlobalSettings.CultureInfo);
             }
         }
@@ -14311,7 +14311,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return PrototypeTranshumanEssenceUsed.ToString(Settings.EssenceFormat, GlobalSettings.CultureInfo)
                            + strSpace + '/' + strSpace +
                            PrototypeTranshuman.ToString(Settings.EssenceFormat, GlobalSettings.CultureInfo);
@@ -14329,14 +14329,14 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return GetInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
             }
         }
 
         public string GetInitiative(CultureInfo objCulture, string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguage),
                                      InitiativeValue.ToString(objCulture),
                                      InitiativeDice.ToString(objCulture));
@@ -14346,7 +14346,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intINTAttributeModifiers = INT.AttributeModifiers;
                     int intREAAttributeModifiers = REA.AttributeModifiers;
@@ -14380,7 +14380,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intExtraIP = _intInitiativeDice
                                      + ImprovementManager.ValueOf(this, Improvement.ImprovementType.InitiativeDice)
@@ -14398,7 +14398,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if ((INT == null) || (REA == null))
                     {
@@ -14426,14 +14426,14 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return GetAstralInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
             }
         }
 
         public string GetAstralInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
                                      AstralInitiativeValue.ToString(objCulture),
                                      AstralInitiativeDice.ToString(objCulture));
@@ -14443,7 +14443,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (!MAGEnabled)
                         return string.Empty;
@@ -14468,7 +14468,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return (INT.TotalValue * 2) + WoundModifier;
             }
         }
@@ -14480,7 +14480,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intReturn = Settings.MinAstralInitiativeDice;
                     return Math.Min(intReturn, Settings.MaxAstralInitiativeDice);
@@ -14501,14 +14501,14 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return GetMatrixInitiative(GlobalSettings.CultureInfo, GlobalSettings.Language);
             }
         }
 
         public string GetMatrixInitiative(CultureInfo objCulture, string strLanguageToPrint)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return string.Format(objCulture, LanguageManager.GetString("String_Initiative", strLanguageToPrint),
                                      MatrixInitiativeValue, MatrixInitiativeDice);
         }
@@ -14518,7 +14518,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intINTAttributeModifiers = INT.AttributeModifiers;
 
@@ -14583,7 +14583,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -14616,7 +14616,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intReturn;
                     // A.I.s always have 4 Matrix Initiative Dice.
@@ -14649,14 +14649,14 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return GetMatrixInitiativeCold(GlobalSettings.CultureInfo, GlobalSettings.Language);
             }
         }
 
         public string GetMatrixInitiativeCold(CultureInfo objCulture, string strLanguageToPrint)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI)
                 {
@@ -14675,7 +14675,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -14722,7 +14722,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -14744,7 +14744,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -14772,14 +14772,14 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return GetMatrixInitiativeHot(GlobalSettings.CultureInfo, GlobalSettings.Language);
             }
         }
 
         public string GetMatrixInitiativeHot(CultureInfo objCulture, string strLanguageToPrint)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI)
                 {
@@ -14798,7 +14798,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -14845,7 +14845,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -14867,7 +14867,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -14897,7 +14897,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             string strReturn = strInput;
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
                 {
@@ -14921,7 +14921,7 @@ namespace Chummer
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 foreach (string strAttributeName in MatrixAttributes.MatrixAttributeStrings)
                 {
@@ -14954,7 +14954,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return WIL.TotalValue + CHA.TotalValue +
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure).StandardRound()
                            + WoundModifier
@@ -14970,7 +14970,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -15007,7 +15007,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return INT.TotalValue + CHA.TotalValue +
                            (ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions)
                             + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense))
@@ -15025,7 +15025,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -15072,7 +15072,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CHA.TotalValue + WIL.TotalValue +
                            (ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions)
                             + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsDefense))
@@ -15088,7 +15088,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -15128,7 +15128,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return STR.TotalValue + BOD.TotalValue +
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry).StandardRound()
                            + WoundModifier
@@ -15144,7 +15144,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -15178,7 +15178,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return string.Format(GlobalSettings.CultureInfo,
                                          LanguageManager.GetString("Label_OtherLiftAndCarryLimitsFormat"),
                                          LiftLimit.ToString(
@@ -15195,7 +15195,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return LOG.TotalValue + WIL.TotalValue +
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory).StandardRound()
                            + WoundModifier
@@ -15211,7 +15211,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -15248,7 +15248,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return BOD.TotalValue + WIL.TotalValue +
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.FatigueResist).StandardRound();
             }
@@ -15261,7 +15261,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return BOD.TotalValue + WIL.TotalValue +
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.RadiationResist)
                                              .StandardRound();
@@ -15275,7 +15275,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return WIL.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.SonicResist)
                                                               .StandardRound();
             }
@@ -15286,7 +15286,7 @@ namespace Chummer
         /// </summary>
         public string ToxinContactResist(string strLanguage, CultureInfo objCulture)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI || ImprovementManager
                             .GetCachedImprovementListForValueOf(
@@ -15304,7 +15304,7 @@ namespace Chummer
         /// </summary>
         public string ToxinIngestionResist(string strLanguage, CultureInfo objCulture)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI || ImprovementManager
                             .GetCachedImprovementListForValueOf(
@@ -15322,7 +15322,7 @@ namespace Chummer
         /// </summary>
         public string ToxinInhalationResist(string strLanguage, CultureInfo objCulture)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI || ImprovementManager
                             .GetCachedImprovementListForValueOf(
@@ -15340,7 +15340,7 @@ namespace Chummer
         /// </summary>
         public string ToxinInjectionResist(string strLanguage, CultureInfo objCulture)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI || ImprovementManager
                             .GetCachedImprovementListForValueOf(
@@ -15358,7 +15358,7 @@ namespace Chummer
         /// </summary>
         public string PathogenContactResist(string strLanguage, CultureInfo objCulture)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI || ImprovementManager
                             .GetCachedImprovementListForValueOf(
@@ -15376,7 +15376,7 @@ namespace Chummer
         /// </summary>
         public string PathogenIngestionResist(string strLanguage, CultureInfo objCulture)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI || ImprovementManager
                             .GetCachedImprovementListForValueOf(
@@ -15394,7 +15394,7 @@ namespace Chummer
         /// </summary>
         public string PathogenInhalationResist(string strLanguage, CultureInfo objCulture)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI || ImprovementManager
                             .GetCachedImprovementListForValueOf(
@@ -15412,7 +15412,7 @@ namespace Chummer
         /// </summary>
         public string PathogenInjectionResist(string strLanguage, CultureInfo objCulture)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (IsAI || ImprovementManager
                             .GetCachedImprovementListForValueOf(
@@ -15432,7 +15432,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this,
                                                                                    Improvement.ImprovementType
                                                                                        .PhysiologicalAddictionFirstTime)
@@ -15447,7 +15447,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this,
                                                                                    Improvement.ImprovementType
                                                                                        .PsychologicalAddictionFirstTime)
@@ -15462,7 +15462,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return BOD.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this,
                                                                                    Improvement.ImprovementType
                                                                                        .PhysiologicalAddictionAlreadyAddicted)
@@ -15477,7 +15477,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return LOG.TotalValue + WIL.TotalValue + ImprovementManager.ValueOf(this,
                                                                                    Improvement.ImprovementType
                                                                                        .PsychologicalAddictionAlreadyAddicted)
@@ -15492,7 +15492,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     // Matrix damage for A.I.s is not naturally repaired
                     if (IsAI)
@@ -15517,7 +15517,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -15562,7 +15562,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     // Street Cred = Career Karma / 10, rounded down
                     int intReturn = CareerKarma /
@@ -15585,7 +15585,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Math.Max(
                         CalculatedStreetCred + StreetCred +
                         ImprovementManager.ValueOf(this, Improvement.ImprovementType.StreetCred).StandardRound(), 0);
@@ -15596,7 +15596,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intTotalStreetCred = TotalStreetCred;
                     int intCalculatedStreetCred = intTotalStreetCred - StreetCred;
@@ -15612,7 +15612,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Created && TotalStreetCred >= 2;
             }
         }
@@ -15628,7 +15628,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdReturn.Append(StreetCred.ToString(GlobalSettings.CultureInfo));
 
@@ -15672,7 +15672,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     // Notoriety is simply the total value of Notoriety Improvements + the number of Enemies they have.
                     int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.Notoriety)
@@ -15691,7 +15691,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CalculatedNotoriety + Notoriety;
             }
         }
@@ -15701,7 +15701,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intCalculatedNotoriety = CalculatedNotoriety;
                     return (intCalculatedNotoriety >= 0
@@ -15725,7 +15725,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdReturn.Append(Notoriety.ToString(GlobalSettings.CultureInfo));
 
@@ -15757,7 +15757,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intReturn = ImprovementManager.ValueOf(this, Improvement.ImprovementType.PublicAwareness)
                                                       .StandardRound();
@@ -15779,7 +15779,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intReturn = PublicAwareness + CalculatedPublicAwareness;
                     if (Erased && intReturn >= 1)
@@ -15794,7 +15794,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intTotalPublicAwareness = TotalPublicAwareness;
                     int intCalculatedPublicAwareness = intTotalPublicAwareness - PublicAwareness;
@@ -15819,7 +15819,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdReturn))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdReturn.Append(PublicAwareness.ToString(GlobalSettings.CultureInfo));
 
@@ -15889,7 +15889,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstImprovements;
             }
         }
@@ -15902,7 +15902,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstMentorSpirits;
             }
         }
@@ -15914,7 +15914,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstContacts;
             }
         }
@@ -15926,7 +15926,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstSpirits;
             }
         }
@@ -15939,7 +15939,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstSpells;
             }
         }
@@ -15951,7 +15951,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstSustainedObjects;
             }
         }
@@ -15963,7 +15963,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstFoci;
             }
         }
@@ -15975,7 +15975,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstStackedFoci;
             }
         }
@@ -15988,7 +15988,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstPowers;
             }
         }
@@ -16001,7 +16001,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstComplexForms;
             }
         }
@@ -16014,7 +16014,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstAIPrograms;
             }
         }
@@ -16026,7 +16026,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstMartialArts;
             }
         }
@@ -16038,7 +16038,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstLimitModifiers;
             }
         }
@@ -16051,7 +16051,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstArmor;
             }
         }
@@ -16064,7 +16064,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstCyberware;
             }
         }
@@ -16077,7 +16077,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstWeapons;
             }
         }
@@ -16089,7 +16089,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstLifestyles;
             }
         }
@@ -16102,7 +16102,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstGear;
             }
         }
@@ -16115,7 +16115,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstVehicles;
             }
         }
@@ -16128,7 +16128,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstMetamagics;
             }
         }
@@ -16140,7 +16140,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstEnhancements;
             }
         }
@@ -16152,7 +16152,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstArts;
             }
         }
@@ -16165,7 +16165,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstCritterPowers;
             }
         }
@@ -16177,7 +16177,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstInitiationGrades;
             }
         }
@@ -16189,7 +16189,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstExpenseLog;
             }
         }
@@ -16202,7 +16202,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstQualities;
             }
         }
@@ -16224,7 +16224,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstGearLocations;
             }
         }
@@ -16236,7 +16236,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstArmorLocations;
             }
         }
@@ -16248,7 +16248,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstVehicleLocations;
             }
         }
@@ -16260,7 +16260,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstWeaponLocations;
             }
         }
@@ -16272,7 +16272,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstImprovementGroups;
             }
         }
@@ -16284,7 +16284,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstCalendar;
             }
         }
@@ -16296,7 +16296,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstInternalIdsNeedingReapplyImprovements;
             }
         }
@@ -16319,7 +16319,7 @@ namespace Chummer
                 return 0;
             }
 
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 List<Armor> lstArmorsToConsider = Armor.Where(objArmor => objArmor.Equipped).ToList();
                 decimal decBaseArmorImprovement
@@ -16435,7 +16435,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intBody = 0;
                     if (IsAI)
@@ -16461,7 +16461,7 @@ namespace Chummer
                 string strSpace = LanguageManager.GetString("String_Space");
                 int intBody;
                 string strBodyAbbrev;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -16503,16 +16503,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intCurrentCounterspellingDice;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCurrentCounterspellingDice == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intCurrentCounterspellingDice = value;
                         OnPropertyChanged();
@@ -16525,16 +16525,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intCurrentLiftCarryHits;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCurrentLiftCarryHits == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intCurrentLiftCarryHits = value;
                         OnPropertyChanged();
@@ -16548,7 +16548,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating + WoundModifier + SustainingPenalty;
             }
         }
@@ -16557,7 +16557,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Dodge.ToString(GlobalSettings.CultureInfo);
             }
         }
@@ -16570,7 +16570,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -16608,7 +16608,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Dodge;
             }
         }
@@ -16617,7 +16617,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseIndirectDodge.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseIndirectDodge.ToString(GlobalSettings.CultureInfo) +
@@ -16631,7 +16631,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     string strToolTip = DodgeToolTip;
 
@@ -16655,7 +16655,7 @@ namespace Chummer
             get
             {
                 int intAttributes = 0;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -16677,7 +16677,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseIndirectSoak.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseIndirectSoak.ToString(GlobalSettings.CultureInfo) +
@@ -16694,7 +16694,7 @@ namespace Chummer
                 string strSpace = LanguageManager.GetString("String_Space");
                 int intBody;
                 string strBodyAbbrev;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -16750,7 +16750,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return WIL.TotalValue
                            + (ImprovementManager.ValueOf(this, Improvement.ImprovementType.SpellResistance)
                               + ImprovementManager.ValueOf(this, Improvement.ImprovementType.DirectManaSpellResist))
@@ -16779,7 +16779,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')');
@@ -16817,7 +16817,7 @@ namespace Chummer
             get
             {
                 int intAttributes = 0;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -16839,7 +16839,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDirectSoakPhysical.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDirectSoakPhysical.ToString(GlobalSettings.CultureInfo) +
@@ -16858,7 +16858,7 @@ namespace Chummer
 
                 int intBody;
                 string strBodyAbbrev;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -16914,7 +16914,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return LOG.TotalValue + WIL.TotalValue + SpellResistance +
                            ImprovementManager.ValueOf(this, Improvement.ImprovementType.DetectionSpellResist)
                                              .StandardRound();
@@ -16925,7 +16925,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDetection.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDetection.ToString(GlobalSettings.CultureInfo) +
@@ -16943,7 +16943,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -16987,7 +16987,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return BOD.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17001,7 +17001,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDecreaseBOD.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDecreaseBOD.ToString(GlobalSettings.CultureInfo) +
@@ -17019,7 +17019,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(BOD.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(BOD.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17062,7 +17062,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AGI.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17076,7 +17076,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDecreaseAGI.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDecreaseAGI.ToString(GlobalSettings.CultureInfo) +
@@ -17094,7 +17094,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(AGI.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(AGI.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17137,7 +17137,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return REA.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17151,7 +17151,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDecreaseREA.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDecreaseREA.ToString(GlobalSettings.CultureInfo) +
@@ -17169,7 +17169,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17212,7 +17212,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return STR.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17226,7 +17226,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDecreaseSTR.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDecreaseSTR.ToString(GlobalSettings.CultureInfo) +
@@ -17244,7 +17244,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(STR.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(STR.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17283,7 +17283,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CHA.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17297,7 +17297,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDecreaseCHA.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDecreaseCHA.ToString(GlobalSettings.CultureInfo) +
@@ -17315,7 +17315,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(CHA.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(CHA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17358,7 +17358,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return INT.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17372,7 +17372,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDecreaseINT.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDecreaseINT.ToString(GlobalSettings.CultureInfo) +
@@ -17390,7 +17390,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(INT.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(INT.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17433,7 +17433,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return LOG.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17447,7 +17447,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDecreaseLOG.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDecreaseLOG.ToString(GlobalSettings.CultureInfo) +
@@ -17465,7 +17465,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(LOG.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(LOG.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17508,7 +17508,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return WIL.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17522,7 +17522,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseDecreaseWIL.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseDecreaseWIL.ToString(GlobalSettings.CultureInfo) +
@@ -17540,7 +17540,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(WIL.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(WIL.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17585,7 +17585,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return REA.TotalValue + INT.TotalValue
                                           + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise)
                                                               .StandardRound()
@@ -17602,7 +17602,7 @@ namespace Chummer
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         sbdToolTip.Append(REA.DisplayAbbrev).Append(strSpace).Append('(')
                                   .Append(REA.TotalValue.ToString(GlobalSettings.CultureInfo)).Append(')')
@@ -17650,7 +17650,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedTotalArmorRating == int.MinValue)
                         _intCachedTotalArmorRating = GetArmorRating();
@@ -17664,7 +17664,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intArmor
                         = GetArmorRatingWithImprovement(Improvement.ImprovementType.Armor,
@@ -17703,7 +17703,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedTotalFireArmorRating == int.MinValue)
                         _intCachedTotalFireArmorRating = GetArmorRating(Improvement.ImprovementType.FireArmor);
@@ -17719,7 +17719,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedTotalColdArmorRating == int.MinValue)
                         _intCachedTotalColdArmorRating = GetArmorRating(Improvement.ImprovementType.ColdArmor);
@@ -17735,7 +17735,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedTotalElectricityArmorRating == int.MinValue)
                         _intCachedTotalElectricityArmorRating
@@ -17752,7 +17752,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedTotalAcidArmorRating == int.MinValue)
                         _intCachedTotalAcidArmorRating = GetArmorRating(Improvement.ImprovementType.AcidArmor);
@@ -17768,7 +17768,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedTotalFallingArmorRating == int.MinValue)
                         _intCachedTotalFallingArmorRating = GetArmorRating(Improvement.ImprovementType.FallingArmor);
@@ -17789,7 +17789,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     decimal decCarryLimit = CarryLimit;
 
@@ -17809,7 +17809,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedTotalCarriedWeight == decimal.MinValue)
                     {
@@ -17833,7 +17833,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return TotalCarriedWeight.ToString(Settings.WeightFormat, GlobalSettings.CultureInfo) + strSpace
                         + "kg"
                         + strSpace + '/' + strSpace
@@ -17848,7 +17848,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (Settings.NoArmorEncumbrance)
                         return 0;
@@ -17938,7 +17938,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return LOG.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -17952,7 +17952,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseIllusionMana.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseIllusionMana.ToString(GlobalSettings.CultureInfo) +
@@ -17967,7 +17967,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
@@ -18009,7 +18009,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return LOG.TotalValue + INT.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -18023,7 +18023,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseIllusionPhysical.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseIllusionPhysical.ToString(GlobalSettings.CultureInfo) +
@@ -18039,7 +18039,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
@@ -18080,7 +18080,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return LOG.TotalValue + WIL.TotalValue
                                           + (ImprovementManager.ValueOf(
                                                  this, Improvement.ImprovementType.SpellResistance)
@@ -18094,7 +18094,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseManipulationMental.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseManipulationMental.ToString(GlobalSettings.CultureInfo) +
@@ -18110,7 +18110,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdToolTip))
                 {
@@ -18153,7 +18153,7 @@ namespace Chummer
             get
             {
                 int intAttributes = 0;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18175,7 +18175,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return CurrentCounterspellingDice == 0
                         ? SpellDefenseManipulationPhysical.ToString(GlobalSettings.CultureInfo)
                         : SpellDefenseManipulationPhysical.ToString(GlobalSettings.CultureInfo) +
@@ -18194,7 +18194,7 @@ namespace Chummer
                 int intStrength;
                 string strBodyAbbrev;
                 string strStrengthAbbrev;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18257,7 +18257,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstDrugs;
             }
         }
@@ -18272,7 +18272,7 @@ namespace Chummer
             get
             {
                 int intCMPhysical = 8;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18304,7 +18304,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return IsAI
                         ? LanguageManager.GetString(HomeNode is Vehicle ? "Label_OtherPhysicalCM" : "Label_OtherCoreCM")
                         : LanguageManager.GetString("Label_OtherPhysicalCM");
@@ -18319,7 +18319,7 @@ namespace Chummer
                 string strModifiers = LanguageManager.GetString("Tip_Modifiers");
                 string strCM;
                 int intBonus;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18378,7 +18378,7 @@ namespace Chummer
             get
             {
                 int intCMStun = 0;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18405,7 +18405,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return !IsAI || HomeNode != null;
             }
         }
@@ -18414,7 +18414,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18434,7 +18434,7 @@ namespace Chummer
                 string strModifiers = LanguageManager.GetString("Tip_Modifiers");
                 string strCM;
                 int intBonus;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18476,7 +18476,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intCMThreshold = 3 + ImprovementManager.ValueOf(this, Improvement.ImprovementType.CMThreshold)
                                                                .StandardRound();
@@ -18492,7 +18492,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return new Tuple<int, int>(PhysicalCMThresholdOffset, StunCMThresholdOffset);
             }
         }
@@ -18504,7 +18504,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (ImprovementManager
                         .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical)
@@ -18538,7 +18538,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     // A.I.s don't get wound penalties from Matrix damage
                     if (IsAI)
@@ -18575,7 +18575,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intCMOverflow = 0;
                     // A.I. do not have an Overflow Condition Monitor.
@@ -18603,7 +18603,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return IsCritter ? CharacterBuildMethod.Karma : Settings.BuildMethod;
             }
         }
@@ -18612,7 +18612,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return EffectiveBuildMethod.UsesPriorityTables();
             }
         }
@@ -18621,7 +18621,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return EffectiveBuildMethod == CharacterBuildMethod.LifeModule;
             }
         }
@@ -18630,7 +18630,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return EffectiveBuildMethodIsLifeModule && Settings.AutomaticBackstory;
             }
         }
@@ -18642,16 +18642,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _decNuyen;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decNuyen == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _decNuyen = value;
                         OnPropertyChanged();
@@ -18664,16 +18664,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _decStolenNuyen;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decStolenNuyen == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _decStolenNuyen = value;
                         OnPropertyChanged();
@@ -18686,7 +18686,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Nuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             }
         }
@@ -18695,7 +18695,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return StolenNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             }
         }
@@ -18707,16 +18707,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _decStartingNuyen;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decStartingNuyen == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _decStartingNuyen = value;
                         OnPropertyChanged();
@@ -18731,7 +18731,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decCachedTotalStartingNuyen == decimal.MinValue)
                     {
@@ -18752,7 +18752,7 @@ namespace Chummer
 
         private decimal CalculateStartingNuyenFromKarma(decimal decKarma, decimal decStartingNuyen)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 decimal decFromKarma = 0.0m;
                 string strExpression = Settings.ChargenKarmaToNuyenExpression
@@ -18786,7 +18786,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return '=' + LanguageManager.GetString("String_Space") +
                            TotalStartingNuyen.ToString(Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             }
@@ -18799,17 +18799,17 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _decNuyenBP;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     decimal decNewValue = Math.Max(Math.Min(value, TotalNuyenMaximumBP), 0);
                     if (_decNuyenBP == decNewValue)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _decNuyenBP = decNewValue;
                         OnPropertyChanged();
@@ -18822,7 +18822,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     const decimal decMaxValue = int.MaxValue;
                     // If UnrestrictedNuyen is enabled, return the maximum possible value
@@ -18846,7 +18846,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Math.Max(LimitMental, LimitSocial);
             }
         }
@@ -18856,7 +18856,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return string.Concat(LanguageManager.GetString("Label_Options_Maximum"),
                                          strSpace, "(", LanguageManager.GetString("String_LimitMentalShort"),
                                          strSpace, "[", LimitMental.ToString(GlobalSettings.CultureInfo), "],",
@@ -18872,7 +18872,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18892,7 +18892,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (IsAI)
                     {
@@ -18941,7 +18941,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intLimit = (LOG.TotalValue * 2 + INT.TotalValue + WIL.TotalValue + 2) / 3;
                     if (IsAI && HomeNode != null)
@@ -18973,7 +18973,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
@@ -19041,7 +19041,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     int intLimit;
                     if (IsAI && HomeNode != null)
@@ -19074,7 +19074,7 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdToolTip))
@@ -19135,7 +19135,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return MentorSpirits.Count > 0;
             }
         }
@@ -19144,7 +19144,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return MentorSpirits.Count > 0
                         ? MentorSpirits[0].DisplayNameShort(GlobalSettings.Language)
                         : string.Empty;
@@ -19155,7 +19155,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (MentorSpirits.Count == 0)
                         return string.Empty;
@@ -19182,16 +19182,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strMetatype;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strMetatype == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strMetatype = value;
                         OnPropertyChanged();
@@ -19204,16 +19204,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _guiMetatype;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_guiMetatype == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _guiMetatype = value;
                         OnPropertyChanged();
@@ -19227,7 +19227,7 @@ namespace Chummer
         /// </summary>
         public string DisplayMetatype(string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Metatype;
@@ -19259,16 +19259,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strMetavariant;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strMetavariant == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strMetavariant = value;
                         OnPropertyChanged();
@@ -19281,16 +19281,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _guiMetavariant;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_guiMetavariant == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _guiMetavariant = value;
                         OnPropertyChanged();
@@ -19304,7 +19304,7 @@ namespace Chummer
         /// </summary>
         public string DisplayMetavariant(string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Metavariant;
@@ -19337,7 +19337,7 @@ namespace Chummer
         /// <param name="strLanguage">Language to be used. Defaults to GlobalSettings.Language</param>
         public string FormattedMetatypeMethod(string strLanguage = "")
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;
@@ -19382,17 +19382,17 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strMetatypeCategory;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strMetatypeCategory == value)
                         return;
                     bool blnDoCyberzombieRefresh = _strMetatypeCategory == "Cyberzombie" || value == "Cyberzombie";
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strMetatypeCategory = value;
                         OnPropertyChanged();
@@ -19405,7 +19405,7 @@ namespace Chummer
 
         public int LimbCount(string strLimbSlot = "")
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (string.IsNullOrEmpty(strLimbSlot))
                 {
@@ -19426,7 +19426,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return GetMovement(GlobalSettings.CultureInfo, GlobalSettings.Language);
             }
         }
@@ -19436,7 +19436,7 @@ namespace Chummer
         /// </summary>
         public string GetMovement(CultureInfo objCulture, string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
                 return Movement == "Special"
                     ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
@@ -19450,7 +19450,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (string.IsNullOrWhiteSpace(_strMovement))
                     {
@@ -19464,11 +19464,11 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strMovement == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strMovement = value;
                         OnPropertyChanged();
@@ -19484,7 +19484,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (string.IsNullOrWhiteSpace(_strRun))
                     {
@@ -19498,11 +19498,11 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strRun == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strRun = value;
                         OnPropertyChanged();
@@ -19518,7 +19518,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (string.IsNullOrWhiteSpace(_strRunAlt))
                     {
@@ -19534,11 +19534,11 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strRunAlt == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strRunAlt = value;
                         OnPropertyChanged();
@@ -19554,7 +19554,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (string.IsNullOrWhiteSpace(_strWalk))
                     {
@@ -19568,11 +19568,11 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strWalk == value)
                         return;
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         _strWalk = value;
                         OnPropertyChanged();
@@ -19588,7 +19588,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (string.IsNullOrWhiteSpace(_strWalkAlt))
                     {
@@ -19604,11 +19604,11 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strWalkAlt == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strWalkAlt = value;
                         OnPropertyChanged();
@@ -19624,7 +19624,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (string.IsNullOrWhiteSpace(_strSprint))
                     {
@@ -19638,11 +19638,11 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strSprint == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strSprint = value;
                         OnPropertyChanged();
@@ -19658,7 +19658,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (string.IsNullOrWhiteSpace(_strSprintAlt))
                     {
@@ -19674,11 +19674,11 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strSprintAlt == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strSprintAlt = value;
                         OnPropertyChanged();
@@ -19691,7 +19691,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard
                         ? WalkString
                         : WalkAltString;
@@ -19702,7 +19702,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard
                         ? RunString
                         : RunAltString;
@@ -19713,7 +19713,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Standard
                         ? SprintString
                         : SprintAltString;
@@ -19726,7 +19726,7 @@ namespace Chummer
         /// </summary>
         public decimal WalkingRate(string strType = "Ground")
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 decimal decTmp = decimal.MinValue;
                 foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
@@ -19762,7 +19762,7 @@ namespace Chummer
         /// </summary>
         public decimal RunningRate(string strType = "Ground")
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 decimal decTmp = decimal.MinValue;
                 foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
@@ -19798,7 +19798,7 @@ namespace Chummer
         /// </summary>
         public decimal SprintingRate(string strType = "Ground")
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 decimal decTmp = decimal.MinValue;
                 foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
@@ -19831,7 +19831,7 @@ namespace Chummer
         public string CalculatedMovement(string strMovementType, bool blnUseCyberlegs = false,
             CultureInfo objCulture = null, string strLanguage = "")
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 decimal decSprint = SprintingRate(strMovementType) +
                                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.SprintBonus, false,
@@ -19918,7 +19918,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return GetSwim(GlobalSettings.CultureInfo, GlobalSettings.Language);
             }
         }
@@ -19928,7 +19928,7 @@ namespace Chummer
         /// </summary>
         public string GetSwim(CultureInfo objCulture, string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
                 return Movement == "Special"
                     ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
@@ -19939,7 +19939,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return GetFly(GlobalSettings.CultureInfo, GlobalSettings.Language);
             }
         }
@@ -19949,7 +19949,7 @@ namespace Chummer
         /// </summary>
         public string GetFly(CultureInfo objCulture, string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
                 return Movement == "Special"
                     ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
@@ -19964,7 +19964,7 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     string strGroundMovement = GetMovement(objCulture, strLanguage);
                     string strSwimMovement = GetSwim(objCulture, strLanguage);
@@ -19994,16 +19994,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intMetatypeBP;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intMetatypeBP == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intMetatypeBP = value;
                         OnPropertyChanged();
@@ -20021,7 +20021,7 @@ namespace Chummer
             get
             {
                 string s = string.Empty;
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     switch (EffectiveBuildMethod)
                     {
@@ -20049,7 +20049,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return MetatypeCategory.EndsWith("Sprites", StringComparison.Ordinal) && !IsFreeSprite;
             }
         }
@@ -20061,7 +20061,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return MetatypeCategory == "Free Sprite";
             }
         }
@@ -20077,16 +20077,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnAdeptEnabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnAdeptEnabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnAdeptEnabled = value;
                         if (!value)
@@ -20107,16 +20107,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnMagicianEnabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnMagicianEnabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnMagicianEnabled = value;
                         if (!value)
@@ -20137,16 +20137,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnTechnomancerEnabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnTechnomancerEnabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnTechnomancerEnabled = value;
                         if (!value)
@@ -20167,16 +20167,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnPsycheActive;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnPsycheActive == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnPsycheActive = value;
                         OnPropertyChanged();
@@ -20192,16 +20192,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnAdvancedProgramsEnabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnAdvancedProgramsEnabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnAdvancedProgramsEnabled = value;
                         if (!value)
@@ -20222,16 +20222,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnCyberwareDisabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnCyberwareDisabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnCyberwareDisabled = value;
                         if (value)
@@ -20247,7 +20247,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return !CyberwareDisabled && !IsAI
                                               && ImprovementManager
                                                  .GetCachedImprovementListForValueOf(
@@ -20260,7 +20260,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return !CyberwareDisabled && !IsAI
                                               && ImprovementManager
                                                  .GetCachedImprovementListForValueOf(
@@ -20278,7 +20278,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedInitiationEnabled < 0)
                     {
@@ -20294,16 +20294,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnInitiationDisabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnInitiationDisabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnInitiationDisabled = value;
                         if (value)
@@ -20324,16 +20324,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnCritterEnabled;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnCritterEnabled == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnCritterEnabled = value;
                         if (!value)
@@ -20356,7 +20356,7 @@ namespace Chummer
 
         public void RefreshDealerConnectionDiscounts()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -20377,7 +20377,7 @@ namespace Chummer
                         setDealerConnectionMaps.Add(objImprovement.UniqueName);
                     }
 
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         foreach (Vehicle objVehicle in Vehicles)
                         {
@@ -20400,7 +20400,7 @@ namespace Chummer
 
         public void RefreshBlackMarketDiscounts()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -20452,7 +20452,7 @@ namespace Chummer
                         setWeaponBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("weapons.xml")
                                                               .SelectSingleNodeAndCacheExpression("/chummer")));
 
-                        using (new EnterWriteLock(LockObject))
+                        using (EnterWriteLock.Enter(LockObject))
                         {
                             foreach (Armor objArmor in Armor)
                             {
@@ -20604,7 +20604,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         // Forcefully disable all Black Market Discounts that don't apply.
                         foreach (Armor objArmor in Armor)
@@ -20720,16 +20720,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _decPrototypeTranshuman;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_decPrototypeTranshuman == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _decPrototypeTranshuman = value;
                         OnPropertyChanged();
@@ -20762,7 +20762,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedTrustFund != int.MinValue)
                         return _intCachedTrustFund;
@@ -20785,7 +20785,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedRestrictedGear < 0)
                     {
@@ -20889,7 +20889,7 @@ namespace Chummer
         private string GetAvailTestString(decimal decCost, int intAvailValue)
         {
             string strSpace = LanguageManager.GetString("String_Space");
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 // Find the character's Negotiation total.
                 int intPool = SkillsSection.GetActiveSkill("Negotiation")?.Pool ?? 0;
@@ -20947,7 +20947,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstLinkedCharacters;
             }
         }
@@ -20961,7 +20961,7 @@ namespace Chummer
         /// </summary>
         private void ConvertOldQualities(XmlNodeList objXmlQualityList)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 XmlNode xmlRootQualitiesNode = LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
 
@@ -20990,14 +20990,14 @@ namespace Chummer
                                             && objImprovement.Enabled)
                                         {
                                             strForceValue = objImprovement.ImprovedName;
-                                            using (new EnterWriteLock(LockObject))
+                                            using (EnterWriteLock.Enter(LockObject))
                                                 Improvements.Remove(objImprovement);
                                             break;
                                         }
                                     }
                                 }
 
-                                using (new EnterWriteLock(LockObject))
+                                using (EnterWriteLock.Enter(LockObject))
                                 {
                                     // Convert the item to the new Quality class.
                                     Quality objQuality = new Quality(this);
@@ -21043,7 +21043,7 @@ namespace Chummer
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.SelectSingleNode(
                                                 "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
-                                        using (new EnterWriteLock(LockObject))
+                                        using (EnterWriteLock.Enter(LockObject))
                                         {
                                             Quality objQuality = new Quality(this);
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
@@ -21082,7 +21082,7 @@ namespace Chummer
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.SelectSingleNode(
                                                 "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
-                                        using (new EnterWriteLock(LockObject))
+                                        using (EnterWriteLock.Enter(LockObject))
                                         {
                                             Quality objQuality = new Quality(this);
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
@@ -21132,7 +21132,7 @@ namespace Chummer
                                                     xmlRootQualitiesNode.SelectSingleNode(
                                                         "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath()
                                                                           + ']');
-                                                using (new EnterWriteLock(LockObject))
+                                                using (EnterWriteLock.Enter(LockObject))
                                                 {
                                                     Quality objQuality = new Quality(this);
                                                     objQuality.Create(objXmlQuality, QualitySource.Metatype,
@@ -21174,7 +21174,7 @@ namespace Chummer
                                                     xmlRootQualitiesNode.SelectSingleNode(
                                                         "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath()
                                                                           + ']');
-                                                using (new EnterWriteLock(LockObject))
+                                                using (EnterWriteLock.Enter(LockObject))
                                                 {
                                                     Quality objQuality = new Quality(this);
                                                     objQuality.Create(objXmlQuality, QualitySource.Metatype,
@@ -21645,7 +21645,7 @@ namespace Chummer
 
             if(intRanks > 0)
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                 {
                     for (int i = 0; i < intRanks; ++i)
                     {
@@ -21694,7 +21694,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intInitPasses == int.MinValue)
                         _intInitPasses = InitiativeDice;
@@ -21703,11 +21703,11 @@ namespace Chummer
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intInitPasses == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intInitPasses = value;
                         OnPropertyChanged();
@@ -21731,7 +21731,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return Name + " : " + InitRoll.ToString(GlobalSettings.CultureInfo);
             }
         }
@@ -21807,7 +21807,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _stkPushText.Value;
             }
         }
@@ -21821,16 +21821,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _objActiveCommlink;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_objActiveCommlink == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _objActiveCommlink = value;
                         OnPropertyChanged();
@@ -21848,16 +21848,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _objHomeNode;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_objHomeNode == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _objHomeNode = value;
                         OnPropertyChanged();
@@ -21871,7 +21871,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _objSkillsSection;
             }
         }
@@ -21880,7 +21880,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedRedlinerBonus == int.MinValue)
                         RefreshRedlinerImprovements();
@@ -21891,7 +21891,7 @@ namespace Chummer
 
         private bool RefreshRedlinerImprovements()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
@@ -21981,7 +21981,7 @@ namespace Chummer
 
         public void RefreshEssenceLossImprovements()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -22515,7 +22515,7 @@ namespace Chummer
         private void ProcessSettingsExpressionsForDependentProperties(ICollection<string> lstPropertyChangedHolder,
                                                                       string strExpressionToFind)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (!Created)
                 {
@@ -22564,7 +22564,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BOD}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{BOD}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22577,7 +22577,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{BODUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{BODUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22587,7 +22587,7 @@ namespace Chummer
                 }
                 case nameof(CharacterAttrib.MetatypeMaximum):
                 {
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (DEPEnabled)
                             OnPropertyChanged(nameof(IsAI));
@@ -22611,7 +22611,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGI}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{AGI}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22624,7 +22624,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{AGIUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{AGIUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22651,7 +22651,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REA}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{REA}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22664,7 +22664,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{REAUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{REAUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22692,7 +22692,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STR}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{STR}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22705,7 +22705,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{STRUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{STRUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22732,7 +22732,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHA}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{CHA}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22745,7 +22745,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{CHAUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{CHAUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22778,7 +22778,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INT}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{INT}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22791,7 +22791,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{INTUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{INTUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22822,7 +22822,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOG}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{LOG}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22835,7 +22835,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{LOGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{LOGUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22883,7 +22883,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WIL}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{WIL}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22896,7 +22896,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{WILUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{WILUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22914,7 +22914,7 @@ namespace Chummer
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(3);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (EdgeUsed > EDG.TotalValue)
                             EdgeUsed = EDG.TotalValue;
@@ -22923,7 +22923,7 @@ namespace Chummer
                     }
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDG}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{EDG}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22936,7 +22936,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{EDGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{EDGUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22954,7 +22954,7 @@ namespace Chummer
                 case nameof(CharacterAttrib.TotalValue):
                 {
                     List<string> lstProperties = new List<string>(5);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!IsLoading && MysticAdeptPowerPoints > 0)
                         {
@@ -22974,7 +22974,7 @@ namespace Chummer
                     }
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAG}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{MAG}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -22987,7 +22987,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23012,7 +23012,7 @@ namespace Chummer
                         lstProperties.Add(nameof(MaxSpiritForce));
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdept}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdept}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23025,7 +23025,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{MAGAdeptUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23048,7 +23048,7 @@ namespace Chummer
                     };
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RES}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{RES}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23061,7 +23061,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{RESUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{RESUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23083,7 +23083,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEP}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{DEP}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23096,7 +23096,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{DEPUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{DEPUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23120,7 +23120,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESS}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{ESS}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23133,7 +23133,7 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(4);
                     ProcessSettingsExpressionsForDependentProperties(lstProperties, "{ESSUnaug}");
                     OnMultiplePropertyChanged(lstProperties);
-                    using (new EnterReadLock(LockObject))
+                    using (EnterReadLock.Enter(LockObject))
                     {
                         if (!Created && Settings.KnowledgePointsExpression.Contains("{ESSUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
@@ -23146,7 +23146,7 @@ namespace Chummer
 
         public void RefreshEncumbrance()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -23221,7 +23221,7 @@ namespace Chummer
 
         public void RefreshArmorEncumbrance()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -23245,7 +23245,7 @@ namespace Chummer
 
         public void RefreshWoundPenalties()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -23278,7 +23278,7 @@ namespace Chummer
         /// </summary>
         public bool RefreshSustainingPenalties()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
@@ -23369,7 +23369,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intWoundModifier;
             }
         }
@@ -23381,16 +23381,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _intSustainingPenalty;
             }
             private set //Private set instead of read only, to allow inclusion of OnPropertyChanged
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (value == _intSustainingPenalty)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _intSustainingPenalty = value;
                         OnPropertyChanged();
@@ -23408,16 +23408,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnLoadAsDirty;
             }
             private set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_blnLoadAsDirty == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _blnLoadAsDirty = value;
                         OnPropertyChanged();
@@ -23430,7 +23430,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _verSavedVersion;
             }
         }
@@ -23442,7 +23442,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return AdeptEnabled && MagicianEnabled;
             }
         }
@@ -23454,7 +23454,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return IsMysticAdept && !Settings.MysAdeptSecondMAGAttribute;
             }
         }
@@ -23466,7 +23466,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return UseMysticAdeptPPs && Settings.MysAdeptAllowPpCareer;
             }
         }
@@ -23478,7 +23478,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     return MysAdeptAllowPPCareer
                            && Karma >= Settings.KarmaMysticAdeptPowerPoint
@@ -23494,7 +23494,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
                     //in Career Mode. Create mode manages itself.
@@ -24260,7 +24260,7 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 HashSet<string> setNamesOfChangedProperties = null;
                 try
@@ -24282,7 +24282,7 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
                         {
@@ -24487,7 +24487,7 @@ namespace Chummer
                         // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
                         if (setNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
                         {
-                            using (new EnterWriteLock(LockObject))
+                            using (EnterWriteLock.Enter(LockObject))
                             {
                                 foreach (Spirit objSpirit in Spirits)
                                 {
@@ -24499,7 +24499,7 @@ namespace Chummer
 
                         if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
                         {
-                            using (new EnterWriteLock(LockObject))
+                            using (EnterWriteLock.Enter(LockObject))
                             {
                                 foreach (Spirit objSpirit in Spirits)
                                 {
@@ -24569,7 +24569,7 @@ namespace Chummer
         {
             if(!File.Exists(strPorFile))
                 return false;
-            using (blnSync ? new EnterWriteLock(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
+            using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
             {
                 Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>(1);
                 XPathNavigator xmlStatBlockDocument = null;
@@ -26782,7 +26782,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedPositiveQualities == int.MinValue)
                     {
@@ -26826,7 +26826,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedPositiveQualitiesTotal == int.MinValue)
                     {
@@ -26899,7 +26899,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (PositiveQualityKarma != PositiveQualityKarmaTotal)
                     {
@@ -26925,7 +26925,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedNegativeQualities == int.MinValue)
                     {
@@ -26966,7 +26966,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedNegativeQualityLimitKarma == int.MinValue)
                     {
@@ -27005,7 +27005,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (NegativeQualityLimitKarma != NegativeQualityKarma)
                     {
@@ -27032,7 +27032,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedMetagenicPositiveQualities == int.MinValue)
                     {
@@ -27052,7 +27052,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedMetagenicNegativeQualities == int.MinValue)
                     {
@@ -27078,7 +27078,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     string strReturn = string.Format(GlobalSettings.CultureInfo,
                         LanguageManager.GetString("Label_MetagenicKarmaValue"), MetagenicPositiveQualityKarma,
@@ -27096,7 +27096,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_intCachedEnemyKarma != int.MinValue)
                         return _intCachedEnemyKarma;
@@ -27126,11 +27126,11 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_objCachedSourceDetail == default || _objCachedSourceDetail.Language != GlobalSettings.Language)
                     {
-                        using (new EnterWriteLock(LockObject))
+                        using (EnterWriteLock.Enter(LockObject))
                         {
                             _objCachedSourceDetail = new SourceString(Source,
                                 DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
@@ -27150,16 +27150,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strSource;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strSource == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strSource = value;
                         OnPropertyChanged();
@@ -27175,16 +27175,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _strPage;
             }
             set
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     if (_strPage == value)
                         return;
-                    using (new EnterWriteLock(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strPage = value;
                         OnPropertyChanged();
@@ -27197,7 +27197,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     decimal decMAG;
                     if (IsMysticAdept && Settings.MysAdeptSecondMAGAttribute)
@@ -27228,7 +27228,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;

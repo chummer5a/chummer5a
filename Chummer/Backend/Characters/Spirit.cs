@@ -1106,7 +1106,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(CharacterObject.LockObject))
+                using (EnterReadLock.Enter(CharacterObject.LockObject))
                 {
                     return LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
                 }
@@ -1167,18 +1167,18 @@ namespace Chummer
                         value = -1;
                     else if (value >= 0)
                     {
-                        using (new EnterReadLock(CharacterObject.LockObject))
+                        using (EnterReadLock.Enter(CharacterObject.LockObject))
                         {
                             if (value >= Mugshots.Count)
                                 value = -1;
                         }
                     }
 
-                    using (new EnterReadLock(CharacterObject.LockObject))
+                    using (EnterReadLock.Enter(CharacterObject.LockObject))
                     {
                         if (_intMainMugshotIndex == value)
                             return;
-                        using (new EnterWriteLock(CharacterObject.LockObject))
+                        using (EnterWriteLock.Enter(CharacterObject.LockObject))
                         {
                             _intMainMugshotIndex = value;
                             OnPropertyChanged();

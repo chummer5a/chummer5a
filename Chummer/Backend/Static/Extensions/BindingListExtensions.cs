@@ -305,7 +305,7 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
-            using (new EnterReadLock(lstCollection.LockObject))
+            using (EnterReadLock.Enter(lstCollection.LockObject))
             {
                 if (index + length > lstCollection.Count)
                     throw new InvalidOperationException(nameof(length));
@@ -318,7 +318,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (new EnterWriteLock(lstCollection.LockObject))
+                using (EnterWriteLock.Enter(lstCollection.LockObject))
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     lstCollection.RaiseListChangedEvents = false;
@@ -395,7 +395,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (new EnterReadLock(lstCollection.LockObject))
+            using (EnterReadLock.Enter(lstCollection.LockObject))
             {
                 T[] aobjSorted = new T[lstCollection.Count];
                 for (int i = 0; i < lstCollection.Count; ++i)
@@ -404,7 +404,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (new EnterWriteLock(lstCollection.LockObject))
+                using (EnterWriteLock.Enter(lstCollection.LockObject))
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     lstCollection.RaiseListChangedEvents = false;
@@ -482,7 +482,7 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            using (new EnterReadLock(lstCollection.LockObject))
+            using (EnterReadLock.Enter(lstCollection.LockObject))
             {
                 T[] aobjSorted = new T[lstCollection.Count];
                 for (int i = 0; i < lstCollection.Count; ++i)
@@ -491,7 +491,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (new EnterWriteLock(lstCollection.LockObject))
+                using (EnterWriteLock.Enter(lstCollection.LockObject))
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     lstCollection.RaiseListChangedEvents = false;
@@ -558,7 +558,7 @@ namespace Chummer
 
         public static void Move<T>(this ThreadSafeBindingList<T> lstCollection, int intOldIndex, int intNewIndex)
         {
-            using (new EnterWriteLock(lstCollection.LockObject))
+            using (EnterWriteLock.Enter(lstCollection.LockObject))
             {
                 bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
                 try

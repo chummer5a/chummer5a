@@ -64,12 +64,12 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _blnIsLoadMethodRunning;
             }
             set
             {
-                using (new EnterWriteLock(LockObject))
+                using (EnterWriteLock.Enter(LockObject))
                     _blnIsLoadMethodRunning = value;
             }
         }

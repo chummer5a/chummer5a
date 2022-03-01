@@ -33,17 +33,17 @@ namespace Chummer
         private readonly AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease _rwlMyWriteRelease;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
+        public static EnterWriteLock Enter(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
-            _rwlMyLock = rwlMyLock;
-            _rwlMyWriteRelease = _rwlMyLock.EnterWriteLock(token);
+            AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease rwlMyWriteRelease = rwlMyLock.EnterWriteLock(token);
+            return new EnterWriteLock(rwlMyLock, rwlMyWriteRelease);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterWriteLock(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
+        public static EnterWriteLock Enter(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
         {
-            _rwlMyLock = rwlMyLockCarrier.LockObject;
-            _rwlMyWriteRelease = _rwlMyLock.EnterWriteLock(token);
+            AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
+            return Enter(rwlMyLock, token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -61,7 +61,7 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease rwlMyWriteRelease)
+        private EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease rwlMyWriteRelease)
         {
             if (!rwlMyWriteRelease.IsMyLock(rwlMyLock))
                 throw new ArgumentException("Semaphore releaser object's lock is different from the lock provided",

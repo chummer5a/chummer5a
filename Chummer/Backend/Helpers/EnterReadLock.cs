@@ -32,26 +32,24 @@ namespace Chummer
         private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterReadLock(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default, bool blnEnterLock = true)
+        public static EnterReadLock Enter(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
-            _rwlMyLock = rwlMyLock;
-            if (blnEnterLock)
-                _rwlMyLock.EnterReadLock(token);
+            rwlMyLock.EnterReadLock(token);
+            return new EnterReadLock(rwlMyLock);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterReadLock(IHasLockObject rwlMyLock, CancellationToken token = default, bool blnEnterLock = true)
+        public static EnterReadLock Enter(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
         {
-            _rwlMyLock = rwlMyLock.LockObject;
-            if (blnEnterLock)
-                _rwlMyLock.EnterReadLock(token);
+            AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
+            return Enter(rwlMyLock, token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async ValueTask<EnterReadLock> EnterAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
             await rwlMyLock.EnterReadLockAsync(token);
-            return new EnterReadLock(rwlMyLock, token, false);
+            return new EnterReadLock(rwlMyLock);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -59,6 +57,12 @@ namespace Chummer
         {
             AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
             return EnterAsync(rwlMyLock, token);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private EnterReadLock(AsyncFriendlyReaderWriterLock rwlMyLock)
+        {
+            _rwlMyLock = rwlMyLock;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

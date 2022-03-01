@@ -63,42 +63,42 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Clear" />
         public void Clear()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 _queData.Clear();
         }
 
         /// <inheritdoc cref="Queue{T}.Contains" />
         public bool Contains(T item)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return _queData.Contains(item);
         }
 
         /// <inheritdoc cref="Queue{T}.TrimExcess" />
         public void TrimExcess()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 _queData.TrimExcess();
         }
 
         /// <inheritdoc cref="Queue{T}.Peek" />
         public T Peek()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return _queData.Peek();
         }
 
         /// <inheritdoc cref="Queue{T}.Dequeue" />
         public T Dequeue()
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 return _queData.Dequeue();
         }
 
         /// <inheritdoc cref="Queue{T}.Enqueue" />
         public void Enqueue(T item)
         {
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
                 _queData.Enqueue(item);
         }
 
@@ -106,7 +106,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (EnterWriteLock.Enter(LockObject))
             {
                 if (_queData.Count > 0)
                 {
@@ -123,14 +123,14 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.ToArray" />
         public T[] ToArray()
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return _queData.ToArray();
         }
 
         /// <inheritdoc cref="Queue{T}.CopyTo" />
         public void CopyTo(T[] array, int index)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 _queData.CopyTo(array, index);
         }
 
@@ -144,7 +144,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.CopyTo" />
         public void CopyTo(Array array, int index)
         {
-            using (new EnterReadLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 foreach (T objItem in _queData)
                 {
@@ -159,7 +159,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _queData.Count;
             }
         }
