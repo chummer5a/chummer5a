@@ -1176,6 +1176,8 @@ namespace Chummer
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
         /// <summary>
         /// Does the spell cost Karma? Typically provided by improvements.
         /// </summary>

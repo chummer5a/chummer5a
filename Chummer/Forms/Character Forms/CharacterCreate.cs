@@ -2237,7 +2237,7 @@ namespace Chummer
                                     ImprovementManager.CreateImprovements(
                                         CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                         objQuality.FirstLevelBonus, 1,
-                                        objQuality.DisplayNameShort(GlobalSettings.Language));
+                                        objQuality.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2252,7 +2252,7 @@ namespace Chummer
                             if (objQuality.NaturalWeaponsNode != null)
                             {
                                 ImprovementManager.ForcedValue = strSelected;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.NaturalWeaponsNode, 1, objQuality.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.NaturalWeaponsNode, 1, objQuality.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2415,13 +2415,13 @@ namespace Chummer
                                     objProgram.Extra = ImprovementManager.SelectedValue;
                                     TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
                                     if (objProgramNode != null)
-                                        objProgramNode.Text = objProgram.DisplayName;
+                                        objProgramNode.Text = objProgram.CurrentDisplayNameShort;
                                 }
                             }
                         }
                         else
                         {
-                            sbdOutdatedItems.AppendLine(objProgram.DisplayName);
+                            sbdOutdatedItems.AppendLine(objProgram.CurrentDisplayNameShort);
                         }
                     }
 
@@ -2513,7 +2513,7 @@ namespace Chummer
                                     ImprovementManager.CreateImprovements(
                                         CharacterObject, objCyberware.SourceType, objCyberware.InternalId,
                                         objCyberware.Bonus, objCyberware.Rating,
-                                        objCyberware.DisplayNameShort(GlobalSettings.Language));
+                                        objCyberware.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                 }
@@ -2633,7 +2633,7 @@ namespace Chummer
                                     ImprovementManager.CreateImprovements(
                                         CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId,
                                         objArmor.Bonus, objArmor.Rating,
-                                        objArmor.DisplayNameShort(GlobalSettings.Language));
+                                        objArmor.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objArmor.Extra = ImprovementManager.SelectedValue;
@@ -2666,7 +2666,7 @@ namespace Chummer
                                         ImprovementManager.CreateImprovements(
                                             CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId,
                                             objMod.Bonus, objMod.Rating,
-                                            objMod.DisplayNameShort(GlobalSettings.Language));
+                                            objMod.CurrentDisplayNameShort);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objMod.Extra = ImprovementManager.SelectedValue;
@@ -2730,7 +2730,7 @@ namespace Chummer
 
                     IsCharacterUpdateRequested = true;
                     // Immediately call character update because it re-applies essence loss improvements
-                    DoUpdateCharacterInfo();
+                    await DoUpdateCharacterInfoAsync();
 
                     if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                     {
@@ -6873,9 +6873,9 @@ namespace Chummer
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             ImprovementManager.RemoveImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId);
                             if (objCyberware.Bonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort);
                             if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort);
 
                             if (objCyberware.PairBonus != null)
                             {
@@ -6902,7 +6902,7 @@ namespace Chummer
                                     // Go down the list and create pair bonuses for every second item
                                     if (intCyberwaresCount > 0 && (intCyberwaresCount & 1) == 0)
                                     {
-                                        ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
+                                        ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, objLoopCyberware.CurrentDisplayNameShort);
                                     }
                                     --intCyberwaresCount;
                                 }
@@ -6940,9 +6940,9 @@ namespace Chummer
                                 ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                             }
                             if (objGear.Bonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
 
                             if (!objGear.Equipped)
                                 objGear.ChangeEquippedStatus(false);
@@ -7305,9 +7305,9 @@ namespace Chummer
                 if (objGear.Bonded || (objGear.Category != "Foci" && objGear.Category != "Metamagic Foci" && objGear.Category != "Stacked Focus"))
                 {
                     if (objGear.Bonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
                     if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language));
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
                 }
 
                 if (!objGear.Equipped)
@@ -8180,7 +8180,7 @@ namespace Chummer
                         ImprovementManager.ForcedValue = objSelectedFocus.Extra;
                     if (objSelectedFocus.Bonus != null)
                     {
-                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalSettings.Language)))
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
                         {
                             // Clear created improvements
                             objSelectedFocus.ChangeEquippedStatus(false);
@@ -8192,7 +8192,7 @@ namespace Chummer
                     }
                     if (objSelectedFocus.WirelessOn
                         && objSelectedFocus.WirelessBonus != null
-                        && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalSettings.Language)))
+                        && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
                     {
                         // Clear created improvements
                         objSelectedFocus.ChangeEquippedStatus(false);
@@ -8223,7 +8223,7 @@ namespace Chummer
                                 ImprovementManager.ForcedValue = objGear.Extra;
                             if (objGear.Bonus != null)
                             {
-                                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language)))
+                                if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort))
                                 {
                                     // Clear created improvements
                                     objStackGear.ChangeEquippedStatus(false);
@@ -8235,7 +8235,7 @@ namespace Chummer
                             }
                             if (objGear.WirelessOn
                                 && objGear.WirelessBonus != null
-                                && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language)))
+                                && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStack.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort))
                             {
                                 // Clear created improvements
                                 objStackGear.ChangeEquippedStatus(false);
@@ -8273,9 +8273,9 @@ namespace Chummer
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId);
                             if (objMod.Bonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.CurrentDisplayNameShort);
                             if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, objMod.Rating, objMod.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.WirelessBonus, objMod.Rating, objMod.CurrentDisplayNameShort);
                         }
 
                         break;
@@ -8302,9 +8302,9 @@ namespace Chummer
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId);
                             if (objGear.Bonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort);
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort);
 
                             if (!objGear.Equipped)
                                 objGear.ChangeEquippedStatus(false);
@@ -9646,7 +9646,7 @@ namespace Chummer
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (LoadingBar frmLoadingForm = Program.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
                     await CharacterObject.LoadAsync(frmLoadingForm);
                     frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
@@ -11342,7 +11342,7 @@ namespace Chummer
 
                 CharacterObject.Created = true;
 
-                using (LoadingBar frmProgressBar = Program.CreateAndShowProgressBar())
+                using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                 {
                     frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
                     if (!await CharacterObject.SaveAsync())
@@ -11844,7 +11844,7 @@ namespace Chummer
                         if (objExistingGear.Location == objLocation
                             && objGear.IsIdenticalToOtherGear(objExistingGear, true)
                             && Program.ShowMessageBox(this,
-                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_MergeIdentical"), objGear.DisplayNameShort(GlobalSettings.Language)),
+                                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_MergeIdentical"), objGear.CurrentDisplayNameShort),
                                 await LanguageManager.GetStringAsync("MessageTitle_MergeIdentical"),
                                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                         {
@@ -12196,7 +12196,7 @@ namespace Chummer
                         cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objVehicle.ParentID);
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objVehicle.DisplayNameShort(GlobalSettings.Language);
+                        lblVehicleName.Text = objVehicle.CurrentDisplayNameShort;
                         lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalSettings.Language);
                         lblVehicleRatingLabel.Visible = false;
                         nudVehicleRating.Visible = false;

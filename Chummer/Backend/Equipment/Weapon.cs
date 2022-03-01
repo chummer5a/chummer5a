@@ -1592,6 +1592,8 @@ namespace Chummer.Backend.Equipment
             return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
@@ -4127,7 +4129,10 @@ namespace Chummer.Backend.Equipment
                         if (lstLoopRCGroup[objAccessory.RCGroup - 1].Item2 < intItemRC)
                         {
                             lstLoopRCGroup[objAccessory.RCGroup - 1]
-                                = new Tuple<string, int>(objAccessory.DisplayName(strLanguage), intItemRC);
+                                = new Tuple<string, int>(
+                                    blnSync
+                                        ? objAccessory.DisplayName(strLanguage)
+                                        : await objAccessory.DisplayNameAsync(strLanguage), intItemRC);
                         }
 
                         if (objAccessory.RCDeployable)
@@ -4150,8 +4155,10 @@ namespace Chummer.Backend.Equipment
 
                         if (blnRefreshRCToolTip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
-                                    .Append(objAccessory.DisplayName(strLanguage)).Append(strSpace).Append('(')
-                                    .Append(objAccessory.RC).Append(')');
+                                .Append(blnSync
+                                    ? objAccessory.DisplayName(strLanguage)
+                                    : await objAccessory.DisplayNameAsync(strLanguage)).Append(strSpace).Append('(')
+                                .Append(objAccessory.RC).Append(')');
                     }
                 }
 

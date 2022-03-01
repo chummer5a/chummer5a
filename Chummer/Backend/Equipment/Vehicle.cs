@@ -1661,6 +1661,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Display name.
         /// </summary>
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        /// <summary>
+        /// Display name.
+        /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         /// <summary>

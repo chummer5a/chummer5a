@@ -90,7 +90,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(Notes))
             {
-                Notes = CommonFunctions.GetBookNotes(objXmlProgramNode, Name, DisplayName, Source, Page,
+                Notes = CommonFunctions.GetBookNotes(objXmlProgramNode, Name, CurrentDisplayNameShort, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);
             }
 
@@ -183,7 +183,7 @@ namespace Chummer
             await objWriter.WriteElementStringAsync("guid", InternalId);
             await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
             await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("fullname", DisplayName);
+            await objWriter.WriteElementStringAsync("fullname", CurrentDisplayNameShort);
             await objWriter.WriteElementStringAsync("name_english", Name);
             if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == await LanguageManager.GetStringAsync("String_None", strLanguageToPrint))
                 await objWriter.WriteElementStringAsync("requiresprogram", await LanguageManager.GetStringAsync("String_None", strLanguageToPrint));
@@ -240,6 +240,16 @@ namespace Chummer
             set => _strExtra = _objCharacter.ReverseTranslateExtra(value);
         }
 
+        public string DisplayName(string strLanguage)
+        {
+            return DisplayNameShort(strLanguage);
+        }
+
+        public ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            return DisplayNameShortAsync(strLanguage);
+        }
+
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
@@ -280,10 +290,12 @@ namespace Chummer
             return strReturn;
         }
 
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName => DisplayNameShort(GlobalSettings.Language);
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
         /// AI Advanced Program's requirement program.
@@ -458,7 +470,7 @@ namespace Chummer
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = DisplayName,
+                Text = CurrentDisplayNameShort,
                 Tag = this,
                 ContextMenuStrip = cmsAIProgram,
                 ForeColor = PreferredColor,

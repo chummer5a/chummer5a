@@ -484,6 +484,7 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
         {
+            // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
@@ -541,6 +542,7 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
         {
+            // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
@@ -2605,6 +2607,7 @@ namespace Chummer
                 }
             }
 
+            // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 bool blnErrorFree = true;
@@ -4106,6 +4109,7 @@ namespace Chummer
                 if (addToMRU)
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
 
+                // ReSharper disable once MethodHasAsyncOverload
                 using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
                     _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
@@ -4306,6 +4310,7 @@ namespace Chummer
             if (!File.Exists(_strFileName))
                 return false;
 
+            // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
             {
                 LoadAsDirty = false;
@@ -5338,7 +5343,7 @@ namespace Chummer
                                                         ImprovementManager.CreateImprovements(this,
                                                             Improvement.ImprovementSource.Quality,
                                                             objQuality.InternalId, objQuality.Bonus, 1,
-                                                            objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                            objQuality.CurrentDisplayNameShort);
                                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                         {
                                                             objQuality.Extra = ImprovementManager.SelectedValue;
@@ -5369,8 +5374,7 @@ namespace Chummer
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 objQuality.FirstLevelBonus, 1,
-                                                                objQuality.DisplayNameShort(GlobalSettings
-                                                                    .Language));
+                                                                objQuality.CurrentDisplayNameShort);
                                                             if (!string.IsNullOrEmpty(ImprovementManager
                                                                     .SelectedValue))
                                                             {
@@ -5393,7 +5397,7 @@ namespace Chummer
                                                     ImprovementManager.CreateImprovements(this,
                                                         Improvement.ImprovementSource.Quality,
                                                         objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
-                                                        objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                        objQuality.CurrentDisplayNameShort);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                     {
                                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -5473,23 +5477,23 @@ namespace Chummer
                                                 ImprovementManager.CreateImprovement(this, string.Empty,
                                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                     Improvement.ImprovementType.MadeMan,
-                                                    objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                    objQuality.CurrentDisplayNameShort);
                                                 ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
                                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                     Improvement.ImprovementType.AddContact,
-                                                    objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                    objQuality.CurrentDisplayNameShort);
                                                 ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
                                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                     Improvement.ImprovementType.ContactForcedLoyalty,
-                                                    objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                    objQuality.CurrentDisplayNameShort);
                                                 ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
                                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                     Improvement.ImprovementType.ContactForceGroup,
-                                                    objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                    objQuality.CurrentDisplayNameShort);
                                                 ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
                                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                     Improvement.ImprovementType.ContactMakeFree,
-                                                    objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                    objQuality.CurrentDisplayNameShort);
                                                 ImprovementManager.Commit(this);
                                             }
 
@@ -5527,7 +5531,7 @@ namespace Chummer
                                                 ImprovementManager.CreateImprovement(this, string.Empty,
                                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                     Improvement.ImprovementType.CyberadeptDaemon,
-                                                    objQuality.DisplayNameShort(GlobalSettings.Language));
+                                                    objQuality.CurrentDisplayNameShort);
                                                 ImprovementManager.Commit(this);
                                             }
                                         }
@@ -5923,7 +5927,7 @@ namespace Chummer
                                                 ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                                     objCyberware.InternalId, objCyberware.Bonus,
                                                     objCyberware.Rating,
-                                                    objCyberware.DisplayNameShort(GlobalSettings.Language));
+                                                    objCyberware.CurrentDisplayNameShort);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
                                             }
@@ -5933,7 +5937,7 @@ namespace Chummer
                                                 ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                                     objCyberware.InternalId, objCyberware.WirelessBonus,
                                                     objCyberware.Rating,
-                                                    objCyberware.DisplayNameShort(GlobalSettings.Language));
+                                                    objCyberware.CurrentDisplayNameShort);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                     string.IsNullOrEmpty(objCyberware.Extra))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -6000,7 +6004,7 @@ namespace Chummer
                                                         objCyberware.SourceType,
                                                         objCyberware.InternalId, objCyberware.Bonus,
                                                         objCyberware.Rating,
-                                                        objCyberware.DisplayNameShort(GlobalSettings.Language));
+                                                        objCyberware.CurrentDisplayNameShort);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                                 }
@@ -6011,7 +6015,7 @@ namespace Chummer
                                                         objCyberware.SourceType,
                                                         objCyberware.InternalId, objCyberware.WirelessBonus,
                                                         objCyberware.Rating,
-                                                        objCyberware.DisplayNameShort(GlobalSettings.Language));
+                                                        objCyberware.CurrentDisplayNameShort);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                         string.IsNullOrEmpty(objCyberware.Extra))
                                                         objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -6085,7 +6089,7 @@ namespace Chummer
                                                     objLoopCyberware.InternalId + "Pair",
                                                     objLoopCyberware.PairBonus,
                                                     objLoopCyberware.Rating,
-                                                    objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
+                                                    objLoopCyberware.CurrentDisplayNameShort);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                     string.IsNullOrEmpty(objCyberware.Extra))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -6345,7 +6349,7 @@ namespace Chummer
                                                 Improvement.ImprovementSource.Quality,
                                                 objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus,
                                                 1,
-                                                objLivingPersonaQuality.DisplayNameShort(GlobalSettings.Language));
+                                                objLivingPersonaQuality.CurrentDisplayNameShort);
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                             {
                                                 objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -8725,9 +8729,9 @@ namespace Chummer
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
         public IEnumerable<Grade> GetGradeList(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false)
         {
-            string strXPath;
             using (EnterReadLock.Enter(LockObject))
             {
+                string strXPath;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
                     if (Settings != null)
@@ -10083,7 +10087,7 @@ namespace Chummer
                                     : "String_ExpenseSoldBioware");
                             objExpense.Create(0,
                                 strEntry + strDisabledSource
-                                         + objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                         + objCyberware.CurrentDisplayNameShort,
                                 ExpenseType.Nuyen, DateTime.Now);
                             ExpenseEntries.AddWithSort(objExpense);
                         }
@@ -10367,6 +10371,8 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
+
+            // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 if (blnSync)
@@ -15851,7 +15857,7 @@ namespace Chummer
                             if (intTotalPublicAwareness > 1)
                             {
                                 string strErasedString = Qualities.FirstOrDefault(x => x.Name == "Erased")
-                                                                  ?.DisplayNameShort(GlobalSettings.Language);
+                                                                  ?.CurrentDisplayNameShort;
                                 if (string.IsNullOrEmpty(strErasedString))
                                 {
                                     XPathNavigator xmlErasedQuality = LoadDataXPath("qualities.xml")
@@ -16459,10 +16465,10 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                int intBody;
-                string strBodyAbbrev;
                 using (EnterReadLock.Enter(LockObject))
                 {
+                    int intBody;
+                    string strBodyAbbrev;
                     if (IsAI)
                     {
                         intBody = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
@@ -16692,10 +16698,10 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                int intBody;
-                string strBodyAbbrev;
                 using (EnterReadLock.Enter(LockObject))
                 {
+                    int intBody;
+                    string strBodyAbbrev;
                     if (IsAI)
                     {
                         intBody = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
@@ -16855,11 +16861,10 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-
-                int intBody;
-                string strBodyAbbrev;
                 using (EnterReadLock.Enter(LockObject))
                 {
+                    int intBody;
+                    string strBodyAbbrev;
                     if (IsAI)
                     {
                         intBody = HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0;
@@ -18190,12 +18195,12 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                int intBody;
-                int intStrength;
-                string strBodyAbbrev;
-                string strStrengthAbbrev;
                 using (EnterReadLock.Enter(LockObject))
                 {
+                    int intBody;
+                    int intStrength;
+                    string strBodyAbbrev;
+                    string strStrengthAbbrev;
                     if (IsAI)
                     {
                         intBody = intStrength = (HomeNode is Vehicle objVehicle ? objVehicle.TotalBody : 0);
@@ -18318,9 +18323,9 @@ namespace Chummer
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strModifiers = LanguageManager.GetString("Tip_Modifiers");
                 string strCM;
-                int intBonus;
                 using (EnterReadLock.Enter(LockObject))
                 {
+                    int intBonus;
                     if (IsAI)
                     {
                         if (HomeNode is Vehicle objVehicleHomeNode)
@@ -18433,9 +18438,9 @@ namespace Chummer
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strModifiers = LanguageManager.GetString("Tip_Modifiers");
                 string strCM;
-                int intBonus;
                 using (EnterReadLock.Enter(LockObject))
                 {
+                    int intBonus;
                     if (IsAI)
                     {
                         if (HomeNode == null)
@@ -19146,7 +19151,7 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                     return MentorSpirits.Count > 0
-                        ? MentorSpirits[0].DisplayNameShort(GlobalSettings.Language)
+                        ? MentorSpirits[0].CurrentDisplayNameShort
                         : string.Empty;
             }
         }
@@ -24569,6 +24574,8 @@ namespace Chummer
         {
             if(!File.Exists(strPorFile))
                 return false;
+
+            // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
             {
                 Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>(1);

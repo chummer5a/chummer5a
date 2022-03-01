@@ -614,6 +614,8 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
         /// <summary>
         /// Translated Category.
         /// </summary>

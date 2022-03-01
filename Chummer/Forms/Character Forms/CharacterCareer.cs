@@ -1710,7 +1710,7 @@ namespace Chummer
                                     string strEntry = await LanguageManager.GetStringAsync("String_ExpenseSoldBioware");
                                     objExpense.Create(0,
                                                       strEntry + strBiowareDisabledSource +
-                                                      objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                                      objCyberware.CurrentDisplayNameShort,
                                                       ExpenseType.Nuyen,
                                                       DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
@@ -1759,7 +1759,7 @@ namespace Chummer
                                     string strEntry = await LanguageManager.GetStringAsync("String_ExpenseSoldCyberware");
                                     objExpense.Create(0,
                                                       strEntry + strCyberwareDisabledSource +
-                                                      objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                                      objCyberware.CurrentDisplayNameShort,
                                                       ExpenseType.Nuyen,
                                                       DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
@@ -1814,7 +1814,7 @@ namespace Chummer
                                             : "String_ExpenseSoldBioware");
                                     objExpense.Create(0,
                                                       strEntry + strExConString
-                                                               + objCyberware.DisplayNameShort(GlobalSettings.Language),
+                                                               + objCyberware.CurrentDisplayNameShort,
                                                       ExpenseType.Nuyen, DateTime.Now);
                                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                 }
@@ -2414,7 +2414,7 @@ namespace Chummer
                             if (objQuality.Bonus != null)
                             {
                                 ImprovementManager.ForcedValue = strSelected;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, 1, objQuality.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, 1, objQuality.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2447,7 +2447,7 @@ namespace Chummer
                                 if (blnDoFirstLevel)
                                 {
                                     ImprovementManager.ForcedValue = strSelected;
-                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, 1, objQuality.DisplayNameShort(GlobalSettings.Language));
+                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, 1, objQuality.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2462,7 +2462,7 @@ namespace Chummer
                             if (objQuality.NaturalWeaponsNode != null)
                             {
                                 ImprovementManager.ForcedValue = strSelected;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.NaturalWeaponsNode, 1, objQuality.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.NaturalWeaponsNode, 1, objQuality.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2520,7 +2520,7 @@ namespace Chummer
                             if (objNode["bonus"] != null)
                             {
                                 ImprovementManager.ForcedValue = objSpell.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], 1, objSpell.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], 1, objSpell.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objSpell.Extra = ImprovementManager.SelectedValue;
@@ -2547,7 +2547,7 @@ namespace Chummer
                             {
                                 ImprovementManager.ForcedValue = objPower.Extra;
                                 ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, objPower.TotalRating,
-                                    objPower.DisplayNameShort(GlobalSettings.Language));
+                                    objPower.CurrentDisplayNameShort);
                             }
                         }
                         else
@@ -2565,7 +2565,7 @@ namespace Chummer
                             if (objNode["bonus"] != null)
                             {
                                 ImprovementManager.ForcedValue = objComplexForm.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], 1, objComplexForm.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], 1, objComplexForm.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objComplexForm.Extra = ImprovementManager.SelectedValue;
@@ -2590,19 +2590,19 @@ namespace Chummer
                             if (objNode["bonus"] != null)
                             {
                                 ImprovementManager.ForcedValue = objProgram.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], 1, objProgram.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], 1, objProgram.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objProgram.Extra = ImprovementManager.SelectedValue;
                                     TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
                                     if (objProgramNode != null)
-                                        objProgramNode.Text = objProgram.DisplayName;
+                                        objProgramNode.Text = objProgram.CurrentDisplayNameShort;
                                 }
                             }
                         }
                         else
                         {
-                            sbdOutdatedItems.AppendLine(objProgram.DisplayName);
+                            sbdOutdatedItems.AppendLine(objProgram.CurrentDisplayNameShort);
                         }
                     }
 
@@ -2622,7 +2622,7 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = strSelected;
                                 }
 
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, intRating, objPower.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, intRating, objPower.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objPower.Extra = ImprovementManager.SelectedValue;
@@ -2655,7 +2655,7 @@ namespace Chummer
                             objMetamagic.Bonus = objNode["bonus"];
                             if (objMetamagic.Bonus != null)
                             {
-                                ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, 1, objMetamagic.DisplayNameShort(GlobalSettings.Language));
+                                ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, 1, objMetamagic.CurrentDisplayNameShort);
                             }
                         }
                         else
@@ -2681,7 +2681,7 @@ namespace Chummer
                                     ImprovementManager.ForcedValue = objCyberware.Forced;
                                 if (objCyberware.Bonus != null)
                                 {
-                                    ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.DisplayNameShort(GlobalSettings.Language));
+                                    ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                 }
@@ -2751,7 +2751,7 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
                                         ImprovementManager.ForcedValue = objCyberware.Forced;
                                     ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
-                                        objLoopCyberware.DisplayNameShort(GlobalSettings.Language));
+                                        objLoopCyberware.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                     TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
@@ -2781,7 +2781,7 @@ namespace Chummer
                                 if (objArmor.Bonus != null && objArmor.Equipped)
                                 {
                                     ImprovementManager.ForcedValue = objArmor.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, objArmor.Rating, objArmor.DisplayNameShort(GlobalSettings.Language));
+                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, objArmor.Rating, objArmor.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objArmor.Extra = ImprovementManager.SelectedValue;
@@ -2811,7 +2811,7 @@ namespace Chummer
                                     if (objMod.Bonus != null && objMod.Equipped)
                                     {
                                         ImprovementManager.ForcedValue = objMod.Extra;
-                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.DisplayNameShort(GlobalSettings.Language));
+                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.CurrentDisplayNameShort);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objMod.Extra = ImprovementManager.SelectedValue;
@@ -2884,7 +2884,7 @@ namespace Chummer
 
                     IsCharacterUpdateRequested = true;
                     // Immediately call character update because it re-applies essence loss improvements
-                    DoUpdateCharacterInfo();
+                    await DoUpdateCharacterInfoAsync();
 
                     if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                     {
@@ -3618,7 +3618,7 @@ namespace Chummer
 
                 CharacterObject.ComplexForms.Add(objComplexForm);
 
-                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend"), objComplexForm.DisplayNameShort(GlobalSettings.Language), intComplexFormKarmaCost.ToString(GlobalSettings.CultureInfo))))
+                if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend"), objComplexForm.CurrentDisplayNameShort, intComplexFormKarmaCost.ToString(GlobalSettings.CultureInfo))))
                 {
                     // Remove the Improvements created by the Complex Form.
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
@@ -3627,7 +3627,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intComplexFormKarmaCost * -1, await LanguageManager.GetStringAsync("String_ExpenseLearnComplexForm") + await LanguageManager.GetStringAsync("String_Space") + objComplexForm.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intComplexFormKarmaCost * -1, await LanguageManager.GetStringAsync("String_ExpenseLearnComplexForm") + await LanguageManager.GetStringAsync("String_Space") + objComplexForm.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intComplexFormKarmaCost;
 
@@ -3719,7 +3719,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon") + await LanguageManager.GetStringAsync("String_Space") + objWeapon.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon") + await LanguageManager.GetStringAsync("String_Space") + objWeapon.CurrentDisplayNameShort, ExpenseType.Nuyen,
                         DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
@@ -3874,7 +3874,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicle") + await LanguageManager.GetStringAsync("String_Space") + objVehicle.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicle") + await LanguageManager.GetStringAsync("String_Space") + objVehicle.CurrentDisplayNameShort, ExpenseType.Nuyen,
                         DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
@@ -4415,7 +4415,7 @@ namespace Chummer
                 return;
 
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(0, LanguageManager.GetString("String_ExpenseDecreaseLifestyle") + LanguageManager.GetString("String_Space") + objLifestyle.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(0, LanguageManager.GetString("String_ExpenseDecreaseLifestyle") + LanguageManager.GetString("String_Space") + objLifestyle.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
             --objLifestyle.Increments;
@@ -4472,7 +4472,7 @@ namespace Chummer
                         continue;
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(objPower.Karma * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCritterPower") + await LanguageManager.GetStringAsync("String_Space") + objPower.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma,
+                    objExpense.Create(objPower.Karma * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCritterPower") + await LanguageManager.GetStringAsync("String_Space") + objPower.CurrentDisplayNameShort, ExpenseType.Karma,
                         DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
@@ -4911,7 +4911,7 @@ namespace Chummer
             do
             {
                 // Select the root Gear node then open the Select Gear window.
-                blnAddAgain = await PickGear(objGear.Parent as IHasChildren<Gear>, objGear.Location, objGear, objGear.DisplayNameShort(GlobalSettings.Language));
+                blnAddAgain = await PickGear(objGear.Parent as IHasChildren<Gear>, objGear.Location, objGear, objGear.CurrentDisplayNameShort);
             }
             while (blnAddAgain);
         }
@@ -5093,7 +5093,7 @@ namespace Chummer
                             objExpense.Create(intKarmaCost * -1,
                                 await LanguageManager.GetStringAsync("String_ExpenseAddPositiveQuality") +
                                 await LanguageManager.GetStringAsync("String_Space") +
-                                objQuality.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                                objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Karma -= intKarmaCost;
 
@@ -5109,7 +5109,7 @@ namespace Chummer
                         objExpense.Create(0,
                             await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality") +
                             await LanguageManager.GetStringAsync("String_Space") +
-                            objQuality.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                            objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
@@ -5256,7 +5256,7 @@ namespace Chummer
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intKarmaCost, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseSwapPositiveQuality")
-                        , objSelectedQuality.DisplayNameShort(GlobalSettings.Language)
+                        , objSelectedQuality.CurrentDisplayNameShort
                         , await LanguageManager.GetStringAsync("String_Karma")), ExpenseType.Karma, DateTime.Now, true);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Karma += intKarmaCost;
@@ -5291,12 +5291,12 @@ namespace Chummer
                 if (!blnMetatypeQuality && blnConfirmDelete && !CommonFunctions.ConfirmKarmaExpense(
                     string.Format(GlobalSettings.CultureInfo, blnCompleteDelete
                         ? await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseRemove") : await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLowerLevel"),
-                        objSelectedQuality.DisplayNameShort(GlobalSettings.Language), intTotalKarmaCost)))
+                        objSelectedQuality.CurrentDisplayNameShort, intTotalKarmaCost)))
                     return false;
 
                 // Create the Karma expense.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intTotalKarmaCost, await LanguageManager.GetStringAsync("String_ExpenseRemoveNegativeQuality") + await LanguageManager.GetStringAsync("String_Space") + objSelectedQuality.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intTotalKarmaCost, await LanguageManager.GetStringAsync("String_ExpenseRemoveNegativeQuality") + await LanguageManager.GetStringAsync("String_Space") + objSelectedQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intTotalKarmaCost;
 
@@ -5462,7 +5462,7 @@ namespace Chummer
                     {
                         // Create the Karma expense.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(intKarmaCost * -1, await LanguageManager.GetStringAsync("String_ExpenseAddPositiveQuality") + await LanguageManager.GetStringAsync("String_Space") + objQuality.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                        objExpense.Create(intKarmaCost * -1, await LanguageManager.GetStringAsync("String_ExpenseAddPositiveQuality") + await LanguageManager.GetStringAsync("String_Space") + objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Karma -= intKarmaCost;
 
@@ -5474,7 +5474,7 @@ namespace Chummer
                     {
                         // Create a Karma Expense for the Negative Quality.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(0, await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality") + await LanguageManager.GetStringAsync("String_Space") + objQuality.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                        objExpense.Create(0, await LanguageManager.GetStringAsync("String_ExpenseAddNegativeQuality") + await LanguageManager.GetStringAsync("String_Space") + objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
@@ -6349,7 +6349,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmor") + await LanguageManager.GetStringAsync("String_Space") + objArmor.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmor") + await LanguageManager.GetStringAsync("String_Space") + objArmor.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -6490,7 +6490,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmorMod") + await LanguageManager.GetStringAsync("String_Space") + objMod.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmorMod") + await LanguageManager.GetStringAsync("String_Space") + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
                             DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen -= decCost;
@@ -6676,7 +6676,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod") + await LanguageManager.GetStringAsync("String_Space") + objMod.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod") + await LanguageManager.GetStringAsync("String_Space") + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
                         DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
@@ -6793,7 +6793,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon") + await LanguageManager.GetStringAsync("String_Space") + objWeapon.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon") + await LanguageManager.GetStringAsync("String_Space") + objWeapon.CurrentDisplayNameShort, ExpenseType.Nuyen,
                         DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
@@ -6859,7 +6859,7 @@ namespace Chummer
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
             objExpense.Create(decCost * -1,
-                              await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeaponAccessory") + await LanguageManager.GetStringAsync("String_Space") + objNewWeaponMount.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                              await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeaponAccessory") + await LanguageManager.GetStringAsync("String_Space") + objNewWeaponMount.CurrentDisplayNameShort, ExpenseType.Nuyen,
                               DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
@@ -7026,7 +7026,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, strExpenseString + await LanguageManager.GetStringAsync("String_Space") + objWeapon.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, strExpenseString + await LanguageManager.GetStringAsync("String_Space") + objWeapon.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                     CharacterObject.Nuyen -= decCost;
 
@@ -7231,7 +7231,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9068,7 +9068,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9186,7 +9186,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9308,7 +9308,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9418,7 +9418,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9530,7 +9530,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9643,7 +9643,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9792,7 +9792,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -9904,7 +9904,7 @@ namespace Chummer
 
                             // Create the Expense Log Entry.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                            objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeaponGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                 DateTime.Now);
                             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                             CharacterObject.Nuyen -= decCost;
@@ -11404,7 +11404,7 @@ namespace Chummer
                         ImprovementManager.ForcedValue = objSelectedFocus.Extra;
                     if (objSelectedFocus.Bonus != null)
                     {
-                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalSettings.Language)))
+                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.Bonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
                         {
                             // Clear created improvements
                             objSelectedFocus.ChangeEquippedStatus(false);
@@ -11415,7 +11415,7 @@ namespace Chummer
                         }
                         objSelectedFocus.Extra = ImprovementManager.SelectedValue;
                     }
-                    if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalSettings.Language)))
+                    if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.CurrentDisplayNameShort))
                     {
                         // Clear created improvements
                         objSelectedFocus.ChangeEquippedStatus(false);
@@ -11440,7 +11440,7 @@ namespace Chummer
 
                 if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseFocus")
                     , intKarmaExpense.ToString(GlobalSettings.CultureInfo)
-                    , objSelectedFocus.DisplayNameShort(GlobalSettings.Language))))
+                    , objSelectedFocus.CurrentDisplayNameShort)))
                 {
                     // Clear created improvements
                     objSelectedFocus.ChangeEquippedStatus(false);
@@ -11452,7 +11452,7 @@ namespace Chummer
 
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound") + LanguageManager.GetString("String_Space") + objSelectedFocus.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(intKarmaExpense * -1, LanguageManager.GetString("String_ExpenseBound") + LanguageManager.GetString("String_Space") + objSelectedFocus.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                 CharacterObject.Karma -= intKarmaExpense;
 
@@ -11493,14 +11493,14 @@ namespace Chummer
                             ImprovementManager.ForcedValue = objGear.Extra;
                         if (objGear.Bonus != null)
                         {
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language)))
+                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.Bonus, objGear.Rating, objGear.CurrentDisplayNameShort))
                             {
                                 e.Cancel = true;
                                 break;
                             }
                             objGear.Extra = ImprovementManager.SelectedValue;
                         }
-                        if (objGear.WirelessOn && objGear.WirelessBonus != null && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalSettings.Language)))
+                        if (objGear.WirelessOn && objGear.WirelessBonus != null && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.CurrentDisplayNameShort))
                         {
                             e.Cancel = true;
                             break;
@@ -12925,7 +12925,7 @@ namespace Chummer
             // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (LoadingBar frmLoadingForm = Program.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
                     await CharacterObject.LoadAsync(frmLoadingForm);
                     frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
@@ -13088,7 +13088,7 @@ namespace Chummer
                         cmdDeleteCyberware.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
 
                         // gpbCyberwareCommon
-                        lblCyberwareName.Text = objCyberware.DisplayNameShort(GlobalSettings.Language);
+                        lblCyberwareName.Text = objCyberware.CurrentDisplayNameShort;
                         lblCyberwareCategory.Text = objCyberware.DisplayCategory(GlobalSettings.Language);
                         lblCyberwareGradeLabel.Visible = true;
                         lblCyberwareGrade.Visible = true;
@@ -13498,7 +13498,7 @@ namespace Chummer
                                     if (objWeapon.RequireAmmo)
                                     {
                                         Gear objGear = CharacterObject.Gear.DeepFindById(objWeapon.AmmoLoaded);
-                                        strAmmoName = objGear?.DisplayNameShort(GlobalSettings.Language) ??
+                                        strAmmoName = objGear?.CurrentDisplayNameShort ??
                                                       LanguageManager.GetString(objWeapon.AmmoRemaining > 0
                                                           ? "String_ExternalSource"
                                                           : "String_Empty");
@@ -14930,7 +14930,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                             DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen -= decCost;
@@ -15172,7 +15172,7 @@ namespace Chummer
 
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmorGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                        objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmorGear") + await LanguageManager.GetStringAsync("String_Space") + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                             DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                         CharacterObject.Nuyen -= decCost;
@@ -15744,7 +15744,7 @@ namespace Chummer
                                     objWeapon.ActiveAmmoSlot = i;
                                     Gear objVehicleGear
                                         = objWeapon.ParentVehicle.GearChildren.DeepFindById(objWeapon.AmmoLoaded);
-                                    string strAmmoName = objVehicleGear?.DisplayNameShort(GlobalSettings.Language)
+                                    string strAmmoName = objVehicleGear?.CurrentDisplayNameShort
                                                          ?? LanguageManager.GetString(
                                                              objWeapon.AmmoRemaining == 0
                                                                  ? "String_Empty"
@@ -15765,7 +15765,7 @@ namespace Chummer
                                                 continue;
                                             foreach (Gear objChild in objCurrentAmmo.Children)
                                             {
-                                                sbdPlugins.Append(objChild.DisplayNameShort(GlobalSettings.Language))
+                                                sbdPlugins.Append(objChild.CurrentDisplayNameShort)
                                                           .Append(',').Append(strSpace);
                                             }
                                         }
@@ -15978,7 +15978,7 @@ namespace Chummer
                         cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objCyberware.DisplayNameShort(GlobalSettings.Language);
+                        lblVehicleName.Text = objCyberware.CurrentDisplayNameShort;
                         lblVehicleCategory.Text = objCyberware.DisplayCategory(GlobalSettings.Language);
                         if (objCyberware.MaxRating == 0)
                         {
@@ -16030,7 +16030,7 @@ namespace Chummer
                         cmdDeleteVehicle.Enabled = !objGear.IncludedInParent;
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objGear.DisplayNameShort(GlobalSettings.Language);
+                        lblVehicleName.Text = objGear.CurrentDisplayNameShort;
                         lblVehicleCategory.Text = objGear.DisplayCategory(GlobalSettings.Language);
                         lblVehicleRatingLabel.Visible = true;
                         lblVehicleRating.Visible = true;
@@ -16928,7 +16928,7 @@ namespace Chummer
                     string strType = await LanguageManager.GetStringAsync(objNewMetamagic.SourceType == Improvement.ImprovementSource.Echo ? "String_Echo" : "String_Metamagic");
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + await LanguageManager.GetStringAsync("String_Space") + objNewMetamagic.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                    objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + await LanguageManager.GetStringAsync("String_Space") + objNewMetamagic.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -16985,7 +16985,7 @@ namespace Chummer
                     string strType = LanguageManager.GetString("String_Art");
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + objArt.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                    objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + objArt.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -17072,7 +17072,7 @@ namespace Chummer
                 string strType = await LanguageManager.GetStringAsync("String_Enhancement");
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intSpellKarmaCost, strType + await LanguageManager.GetStringAsync("String_Space") + objNewSpell.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intSpellKarmaCost, strType + await LanguageManager.GetStringAsync("String_Space") + objNewSpell.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -17146,7 +17146,7 @@ namespace Chummer
                 string strType = await LanguageManager.GetStringAsync("String_Ritual");
                 // Create the Expense Log Entry.
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                objExpense.Create(-intSpellKarmaCost, strType + await LanguageManager.GetStringAsync("String_Space") + objNewSpell.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+                objExpense.Create(-intSpellKarmaCost, strType + await LanguageManager.GetStringAsync("String_Space") + objNewSpell.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
@@ -17229,7 +17229,7 @@ namespace Chummer
             string strType = await LanguageManager.GetStringAsync("String_Enhancement");
             // Create the Expense Log Entry.
             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-            objExpense.Create(CharacterObjectSettings.KarmaEnhancement * -1, strType + await LanguageManager.GetStringAsync("String_Space") + objEnhancement.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma, DateTime.Now);
+            objExpense.Create(CharacterObjectSettings.KarmaEnhancement * -1, strType + await LanguageManager.GetStringAsync("String_Space") + objEnhancement.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
             ExpenseUndo objUndo = new ExpenseUndo();
@@ -17349,7 +17349,7 @@ namespace Chummer
 
                     bool boolIsAdvancedProgram = objProgram.IsAdvancedProgram;
                     if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend")
-                        , objProgram.DisplayName
+                        , objProgram.CurrentDisplayNameShort
                         , (boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost).ToString(GlobalSettings.CultureInfo))))
                         continue;
 
@@ -17774,7 +17774,7 @@ namespace Chummer
             objExpense.Create(decCost * -1,
                 await LanguageManager.GetStringAsync("String_ExpensePurchaseDrug") +
                 await LanguageManager.GetStringAsync("String_Space") +
-                selectedDrug.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen, DateTime.Now);
+                selectedDrug.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             CharacterObject.ExpenseEntries.AddWithSort(objExpense);
             CharacterObject.Nuyen -= decCost;
             selectedDrug.Quantity++;
@@ -17893,7 +17893,7 @@ namespace Chummer
 
                     using (SelectCyberware pickCyber = new SelectCyberware(CharacterObject, objCyberware.SourceType)
                     {
-                        DefaultSearchText = objCyberware.DisplayNameShort(GlobalSettings.Language),
+                        DefaultSearchText = objCyberware.CurrentDisplayNameShort,
                         Upgrading = true
                     })
                     {

@@ -103,7 +103,7 @@ namespace Chummer
             }
             if (string.IsNullOrEmpty(Notes))
             {
-                Notes = CommonFunctions.GetBookNotes(objXmlArtNode, Name, DisplayName(GlobalSettings.Language), Source, Page,
+                Notes = CommonFunctions.GetBookNotes(objXmlArtNode, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);
             }
         }
@@ -293,6 +293,8 @@ namespace Chummer
             return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
@@ -310,6 +312,8 @@ namespace Chummer
         {
             return DisplayNameShortAsync(strLanguage);
         }
+
+        public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
         /// <summary>
         /// The initiate grade where the enhancement was learned.
@@ -446,7 +450,7 @@ namespace Chummer
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 return null;
 
-            string strText = DisplayName(GlobalSettings.Language);
+            string strText = CurrentDisplayName;
             if (blnAddCategory)
                 strText = LanguageManager.GetString("Label_Enhancement") + LanguageManager.GetString("String_Space") + strText;
             TreeNode objNode = new TreeNode

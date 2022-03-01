@@ -7127,7 +7127,7 @@ namespace Chummer
                             decimal decCost = objGear.TotalCost;
 
                             // Multiply the cost if applicable.
-                            char chrAvail = objGear.TotalAvailTuple().Suffix;
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                             switch (chrAvail)
                             {
                                 case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -7157,7 +7157,7 @@ namespace Chummer
                                 objExpense.Create(decCost * -1,
                                     await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleGear") +
                                     await LanguageManager.GetStringAsync("String_Space") +
-                                    objGear.DisplayNameShort(GlobalSettings.Language), ExpenseType.Nuyen,
+                                    objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
                                     DateTime.Now);
                                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                 CharacterObject.Nuyen -= decCost;

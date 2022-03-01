@@ -882,6 +882,8 @@ namespace Chummer
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
         /// <summary>
         /// Returns how many instances of this quality there are in the character's quality list
         /// TODO: Actually implement a proper rating system for qualities that plays nice with the Improvements Manager.
