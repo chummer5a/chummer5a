@@ -922,7 +922,7 @@ namespace Chummer.Backend.Attributes
 
         internal async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (_objCharacter.MetatypeCategory == "Shapeshifter")
                 {
@@ -1232,7 +1232,7 @@ namespace Chummer.Backend.Attributes
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
             string strReturn = strInput;
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {
@@ -1314,7 +1314,7 @@ namespace Chummer.Backend.Attributes
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (string strCharAttributeName in AttributeStrings)
                 {

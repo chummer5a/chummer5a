@@ -484,7 +484,7 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (blnSync ? new EnterReadLock(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
                 XmlDocument xmlDoc = blnSync
@@ -541,7 +541,7 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, bool blnReturnMetatypeOnly, string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (blnSync ? new EnterReadLock(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 string strFile = IsCritter ? "critters.xml" : "metatypes.xml";
                 XPathNavigator xmlDoc = blnSync
@@ -643,7 +643,7 @@ namespace Chummer
             }
         }
 
-        private void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e?.PropertyName)
             {
@@ -730,16 +730,16 @@ namespace Chummer
                     OnPropertyChanged(nameof(SustainingPenalty));
                     break;
                 case nameof(CharacterSettings.KarmaSpell):
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         if (FreeSpells > 0)
                             OnPropertyChanged(nameof(PositiveQualityKarma));
                     }
                     break;
                 case nameof(CharacterSettings.MinInitiativeDice):
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
-                        if (this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("initiativedice") == null)
+                        if ((await this.GetNodeXPathAsync())?.SelectSingleNodeAndCacheExpression("initiativedice") == null)
                         {
                             _intInitiativeDice = Settings.MinInitiativeDice;
                             OnPropertyChanged(nameof(InitiativeDice));
@@ -758,7 +758,7 @@ namespace Chummer
                     OnPropertyChanged(nameof(MatrixInitiativeColdDice));
                     break;
                 case nameof(CharacterSettings.MinHotSimInitiativeDice):
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         if (IsAI)
                             this.OnMultiplePropertyChanged(nameof(MatrixInitiativeDice),
@@ -794,14 +794,14 @@ namespace Chummer
                         OnPropertyChanged(nameof(Encumbrance));
                     break;
                 case nameof(CharacterSettings.EncumbrancePenaltyAgility):
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         if (Settings.DoEncumbrancePenaltyAgility)
                             OnPropertyChanged(nameof(Encumbrance));
                     }
                     break;
                 case nameof(CharacterSettings.EncumbrancePenaltyReaction):
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         if (Settings.DoEncumbrancePenaltyReaction)
                             OnPropertyChanged(nameof(Encumbrance));
@@ -811,7 +811,7 @@ namespace Chummer
                     this.OnMultiplePropertyChanged(nameof(WoundModifier), nameof(Encumbrance));
                     break;
                 case nameof(CharacterSettings.EncumbrancePenaltyWoundModifier):
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         if (Settings.DoEncumbrancePenaltyWoundModifier)
                             this.OnMultiplePropertyChanged(nameof(WoundModifier), nameof(Encumbrance));
@@ -842,9 +842,9 @@ namespace Chummer
             }
         }
 
-        private void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        private async void PowersOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (Powers[e.OldIndex].AdeptWayDiscountEnabled)
                     this.OnMultiplePropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled),
@@ -852,7 +852,7 @@ namespace Chummer
             }
         }
 
-        private void PowersOnListChanged(object sender, ListChangedEventArgs e)
+        private async void PowersOnListChanged(object sender, ListChangedEventArgs e)
         {
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
                        Utils.DictionaryForMultiplePropertyChangedPool,
@@ -876,7 +876,7 @@ namespace Chummer
                             HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                             strTemp.Add(nameof(PowerPointsUsed));
                             dicChangedProperties.Add(this, strTemp);
-                            using (new EnterReadLock(LockObject))
+                            using (await EnterReadLock.EnterAsync(LockObject))
                             {
                                 Power objNewPower = Powers[e.NewIndex];
                                 if (!IsLoading)
@@ -943,8 +943,8 @@ namespace Chummer
                                     strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
                                     strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
                                     dicChangedProperties.Add(this, strTemp);
-                                    using (new EnterReadLock(LockObject))
-                                    {
+                                    using (await EnterReadLock.EnterAsync(LockObject))
+                                            {
                                         foreach (Power objPower in Powers)
                                         {
                                             if (!dicChangedProperties.TryGetValue(objPower,
@@ -985,7 +985,7 @@ namespace Chummer
             }
         }
 
-        private void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void MentorSpiritsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (IsLoading)
                 return;
@@ -1020,7 +1020,7 @@ namespace Chummer
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(MentorSpirits));
                     dicChangedProperties.Add(this, strTemp);
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         foreach (MentorSpirit objNewItem in lstImprovementSourcesToProcess)
                         {
@@ -1061,7 +1061,7 @@ namespace Chummer
             }
         }
 
-        private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (IsLoading)
                 return;
@@ -1090,7 +1090,7 @@ namespace Chummer
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(Qualities));
                     dicChangedProperties.Add(this, strTemp);
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         foreach (Power objPower in Powers)
                         {
@@ -1142,7 +1142,7 @@ namespace Chummer
             }
         }
 
-        private void MartialArtsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void MartialArtsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (IsLoading)
                 return;
@@ -1177,7 +1177,7 @@ namespace Chummer
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(MartialArts));
                     dicChangedProperties.Add(this, strTemp);
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         foreach (MartialArt objNewItem in lstImprovementSourcesToProcess)
                         {
@@ -1218,7 +1218,7 @@ namespace Chummer
             }
         }
 
-        private void MetamagicsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void MetamagicsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (IsLoading)
                 return;
@@ -1253,7 +1253,7 @@ namespace Chummer
                     HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                     strTemp.Add(nameof(Metamagics));
                     dicChangedProperties.Add(this, strTemp);
-                    using (new EnterReadLock(LockObject))
+                    using (await EnterReadLock.EnterAsync(LockObject))
                     {
                         foreach (Metamagic objNewItem in lstImprovementSourcesToProcess)
                         {
@@ -1358,7 +1358,7 @@ namespace Chummer
             }
         }
 
-        private void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
@@ -1379,7 +1379,7 @@ namespace Chummer
                                     blnDoEncumbranceRefresh = true;
                                 }
 
-                                using (new EnterReadLock(LockObject))
+                                using (await EnterReadLock.EnterAsync(LockObject))
                                 {
                                     if (!IsLoading)
                                     {
@@ -1440,7 +1440,7 @@ namespace Chummer
                                     blnDoEncumbranceRefresh = true;
                                 }
 
-                                using (new EnterReadLock(LockObject))
+                                using (await EnterReadLock.EnterAsync(LockObject))
                                 {
                                     if (!IsLoading)
                                     {
@@ -1501,7 +1501,7 @@ namespace Chummer
             }
         }
 
-        private void WeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void WeaponsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
@@ -1522,7 +1522,7 @@ namespace Chummer
                                     blnDoEncumbranceRefresh = true;
                                 }
 
-                                using (new EnterReadLock(LockObject))
+                                using (await EnterReadLock.EnterAsync(LockObject))
                                 {
                                     if (!IsLoading)
                                     {
@@ -1583,7 +1583,7 @@ namespace Chummer
                                     blnDoEncumbranceRefresh = true;
                                 }
 
-                                using (new EnterReadLock(LockObject))
+                                using (await EnterReadLock.EnterAsync(LockObject))
                                 {
                                     if (!IsLoading)
                                     {
@@ -1644,7 +1644,7 @@ namespace Chummer
             }
         }
 
-        private void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ArmorOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
@@ -1668,7 +1668,7 @@ namespace Chummer
                                         blnDoArmorEncumbranceRefresh = true;
                                 }
 
-                                using (new EnterReadLock(LockObject))
+                                using (await EnterReadLock.EnterAsync(LockObject))
                                 {
                                     if (!IsLoading)
                                     {
@@ -1739,7 +1739,7 @@ namespace Chummer
                                         blnDoArmorEncumbranceRefresh = true;
                                 }
 
-                                using (new EnterReadLock(LockObject))
+                                using (await EnterReadLock.EnterAsync(LockObject))
                                 {
                                     if (!IsLoading)
                                     {
@@ -1811,7 +1811,7 @@ namespace Chummer
             }
         }
 
-        private void CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void CyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
@@ -1835,7 +1835,7 @@ namespace Chummer
                                 if (objNewItem.IsModularCurrentlyEquipped)
                                     blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objNewItem.EssencePropertyName);
-                                using (new EnterReadLock(LockObject))
+                                using (await EnterReadLock.EnterAsync(LockObject))
                                 {
                                     if (!IsLoading)
                                     {
@@ -1886,7 +1886,7 @@ namespace Chummer
                                 if (objOldItem.IsModularCurrentlyEquipped)
                                     blnDoEncumbranceRefresh = true;
                                 dicChangedProperties[this].Add(objOldItem.EssencePropertyName);
-                                using (new EnterReadLock(LockObject))
+                                using (await EnterReadLock.EnterAsync(LockObject))
                                 {
                                     if (!blnDoCyberlimbAttributesRefresh && !Settings.DontUseCyberlimbCalculation &&
                                         objOldItem.Category == "Cyberlimb" && objOldItem.Parent == null &&
@@ -1906,7 +1906,7 @@ namespace Chummer
                             HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                             strTemp.Add(nameof(RedlinerBonus));
                             dicChangedProperties.Add(this, strTemp);
-                            using (new EnterReadLock(LockObject))
+                            using (await EnterReadLock.EnterAsync(LockObject))
                             {
                                 if (!Settings.DontUseCyberlimbCalculation)
                                 {
@@ -1947,7 +1947,7 @@ namespace Chummer
                         case NotifyCollectionChangedAction.Reset:
                         {
                             blnDoEncumbranceRefresh = true;
-                            using (new EnterReadLock(LockObject))
+                            using (await EnterReadLock.EnterAsync(LockObject))
                                 blnDoCyberlimbAttributesRefresh = !Settings.DontUseCyberlimbCalculation;
                             if (!dicChangedProperties.TryGetValue(this,
                                                                   out HashSet<string> setChangedProperties))
@@ -1976,7 +1976,7 @@ namespace Chummer
 
                     if (blnDoCyberlimbAttributesRefresh)
                     {
-                        using (new EnterReadLock(LockObject))
+                        using (await EnterReadLock.EnterAsync(LockObject))
                         {
                             foreach (string strAbbrev in Backend.Equipment.Cyberware.CyberlimbAttributeAbbrevs)
                             {
@@ -2605,7 +2605,7 @@ namespace Chummer
                 }
             }
 
-            using (new EnterReadLock(LockObject))
+            using (blnSync ? new EnterReadLock(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 bool blnErrorFree = true;
 
@@ -4106,7 +4106,7 @@ namespace Chummer
                 if (addToMRU)
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
 
-                using (blnSync ? new EnterWriteLock(LockObject) : await new EnterWriteLock(LockObject, false).EnterLockAsync())
+                using (blnSync ? new EnterWriteLock(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
                     _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
                 if (callOnSaveCallBack)
@@ -4306,7 +4306,7 @@ namespace Chummer
             if (!File.Exists(_strFileName))
                 return false;
 
-            using (blnSync ? new EnterWriteLock(LockObject) : await new EnterWriteLock(LockObject, false).EnterLockAsync())
+            using (blnSync ? new EnterWriteLock(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
             {
                 LoadAsDirty = false;
                 using (CustomActivity loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
@@ -6969,7 +6969,7 @@ namespace Chummer
                 objCulture = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguageToPrint))
                 strLanguageToPrint = GlobalSettings.Language;
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 // <character>
                 await objWriter.WriteStartElementAsync("character");
@@ -10367,7 +10367,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (new EnterReadLock(LockObject))
+            using (blnSync ? new EnterReadLock(LockObject) : await EnterReadLock.EnterAsync(LockObject))
             {
                 if (blnSync)
                 {
@@ -10451,7 +10451,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (Mugshots.Count > 0)
                 {
@@ -19242,7 +19242,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayMetatypeAsync(string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Metatype;
@@ -19319,7 +19319,7 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayMetavariantAsync(string strLanguage)
         {
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Metavariant;
@@ -19359,7 +19359,7 @@ namespace Chummer
         /// <param name="strLanguage">Language to be used. Defaults to GlobalSettings.Language</param>
         public async ValueTask<string> FormattedMetatypeMethodAsync(string strLanguage = "")
         {
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (string.IsNullOrEmpty(strLanguage))
                     strLanguage = GlobalSettings.Language;
@@ -24569,7 +24569,7 @@ namespace Chummer
         {
             if(!File.Exists(strPorFile))
                 return false;
-            using (blnSync ? new EnterWriteLock(LockObject) : await new EnterWriteLock(LockObject, false).EnterLockAsync())
+            using (blnSync ? new EnterWriteLock(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
             {
                 Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>(1);
                 XPathNavigator xmlStatBlockDocument = null;
@@ -27251,7 +27251,7 @@ namespace Chummer
 
         public async Task<bool> ConvertCyberzombie()
         {
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 bool blnEssence = true;
                 string strMessage = await LanguageManager.GetStringAsync("Message_CyberzombieRequirements");
@@ -27309,7 +27309,7 @@ namespace Chummer
                     intResult = (intThreshold - intWILResult) * 10;
                 }
 
-                using (await new EnterWriteLock(LockObject, false).EnterLockAsync())
+                using (await EnterWriteLock.EnterAsync(LockObject))
                 {
                     ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Cyberzombie,
                         string.Empty, Improvement.ImprovementType.FreeNegativeQualities, string.Empty, intResult * -1);

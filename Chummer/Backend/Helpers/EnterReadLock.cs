@@ -27,12 +27,12 @@ namespace Chummer
     /// <summary>
     /// Syntactic Sugar for wrapping a AsyncFriendlyReaderWriterLock's EnterReadLock() and ExitReadLock() methods into something that hooks into `using`
     /// </summary>
-    public sealed class EnterReadLock : IDisposable
+    public readonly struct EnterReadLock : IDisposable
     {
         private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterReadLock(AsyncFriendlyReaderWriterLock rwlMyLock, bool blnEnterLock = true, CancellationToken token = default)
+        public EnterReadLock(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default, bool blnEnterLock = true)
         {
             _rwlMyLock = rwlMyLock;
             if (blnEnterLock)
@@ -40,19 +40,25 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<EnterReadLock> EnterReadLockAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
-        {
-            EnterReadLock objReturn = new EnterReadLock(rwlMyLock, false);
-            await rwlMyLock.EnterReadLockAsync(token);
-            return objReturn;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterReadLock(IHasLockObject rwlMyLock, bool blnEnterLock = true, CancellationToken token = default)
+        public EnterReadLock(IHasLockObject rwlMyLock, CancellationToken token = default, bool blnEnterLock = true)
         {
             _rwlMyLock = rwlMyLock.LockObject;
             if (blnEnterLock)
                 _rwlMyLock.EnterReadLock(token);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<EnterReadLock> EnterAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
+        {
+            await rwlMyLock.EnterReadLockAsync(token);
+            return new EnterReadLock(rwlMyLock, token, false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ValueTask<EnterReadLock> EnterAsync(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
+        {
+            AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
+            return EnterAsync(rwlMyLock, token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

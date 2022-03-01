@@ -1625,7 +1625,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
-            using (new EnterReadLock(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (Skill objSkill in Skills)
                 {

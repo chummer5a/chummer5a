@@ -2091,7 +2091,7 @@ namespace Chummer
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
             using (new CursorWait(this))
-            using (await new EnterWriteLock(CharacterObject.LockObject, false).EnterLockAsync())
+            using (await EnterWriteLock.EnterAsync(CharacterObject.LockObject))
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdOutdatedItems))

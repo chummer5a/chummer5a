@@ -27,31 +27,47 @@ namespace Chummer
     /// <summary>
     /// Syntactic Sugar for wrapping a AsyncFriendlyReaderWriterLock's EnterWriteLock() and ExitWriteLock() methods into something that hooks into `using`
     /// </summary>
-    public sealed class EnterWriteLock : IDisposable, IAsyncDisposable
+    public readonly struct EnterWriteLock : IDisposable, IAsyncDisposable
     {
         private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
-        private AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease _rwlMyWriteRelease;
+        private readonly AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease _rwlMyWriteRelease;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, bool blnEnterLockSync = true, CancellationToken token = default)
+        public EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
             _rwlMyLock = rwlMyLock;
-            if (blnEnterLockSync)
-                _rwlMyWriteRelease = _rwlMyLock.EnterWriteLock(token);
+            _rwlMyWriteRelease = _rwlMyLock.EnterWriteLock(token);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterWriteLock(IHasLockObject rwlMyLock, bool blnEnterLockSync = true, CancellationToken token = default)
+        public EnterWriteLock(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
         {
-            _rwlMyLock = rwlMyLock.LockObject;
-            if (blnEnterLockSync)
-                _rwlMyWriteRelease = _rwlMyLock.EnterWriteLock(token);
+            _rwlMyLock = rwlMyLockCarrier.LockObject;
+            _rwlMyWriteRelease = _rwlMyLock.EnterWriteLock(token);
         }
 
-        public async Task<EnterWriteLock> EnterLockAsync(CancellationToken token = default)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<EnterWriteLock> EnterAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
-            _rwlMyWriteRelease = await _rwlMyLock.EnterWriteLockAsync(token);
-            return this;
+            AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease rwlMyWriteRelease = await rwlMyLock.EnterWriteLockAsync(token);
+            return new EnterWriteLock(rwlMyLock, rwlMyWriteRelease);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ValueTask<EnterWriteLock> EnterAsync(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
+        {
+            AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
+            return EnterAsync(rwlMyLock, token);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease rwlMyWriteRelease)
+        {
+            if (!rwlMyWriteRelease.IsMyLock(rwlMyLock))
+                throw new ArgumentException("Semaphore releaser object's lock is different from the lock provided",
+                    nameof(rwlMyWriteRelease));
+            _rwlMyLock = rwlMyLock;
+            _rwlMyWriteRelease = rwlMyWriteRelease;
         }
 
         /// <inheritdoc />
