@@ -5162,7 +5162,7 @@ namespace Chummer
                     return;
                 // Neither can qualities from Improvements
                 case QualitySource.Improvement:
-                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ImprovementQuality"), objQuality.GetSourceName(GlobalSettings.Language)),
+                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ImprovementQuality"), await objQuality.GetSourceNameAsync(GlobalSettings.Language)),
                         await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
             }
@@ -5213,7 +5213,7 @@ namespace Chummer
                     return false;
 
                 case QualitySource.Improvement:
-                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ImprovementQuality"), objSelectedQuality.GetSourceName(GlobalSettings.Language)), await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ImprovementQuality"), await objSelectedQuality.GetSourceNameAsync(GlobalSettings.Language)), await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return false;
 
                 case QualitySource.MetatypeRemovable:
@@ -9044,7 +9044,7 @@ namespace Chummer
                         decimal decCost = objGear.TotalCost;
 
                         // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                         switch (chrAvail)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9162,7 +9162,7 @@ namespace Chummer
                         decimal decCost = objGear.TotalCost;
 
                         // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                         switch (chrAvail)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9284,7 +9284,7 @@ namespace Chummer
                         decimal decCost = objGear.TotalCost;
 
                         // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                         switch (chrAvail)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9394,7 +9394,7 @@ namespace Chummer
                         decimal decCost = objGear.TotalCost;
 
                         // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                         switch (chrAvail)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9506,7 +9506,7 @@ namespace Chummer
                         decimal decCost = objGear.TotalCost;
 
                         // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                         switch (chrAvail)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9619,7 +9619,7 @@ namespace Chummer
                         decimal decCost = objGear.TotalCost;
 
                         // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                         switch (chrAvail)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9768,7 +9768,7 @@ namespace Chummer
                         decimal decCost = objGear.TotalCost;
 
                         // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                         switch (chrAvail)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9880,7 +9880,7 @@ namespace Chummer
                         decimal decCost = objGear.TotalCost;
 
                         // Multiply the cost if applicable.
-                        char chrAvail = objGear.TotalAvailTuple().Suffix;
+                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                         switch (chrAvail)
                         {
                             case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -14889,7 +14889,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
+                    char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -15088,7 +15088,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = objGear.TotalAvailTuple().Suffix;
+                    char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:

@@ -2200,8 +2200,7 @@ namespace Chummer
                                 ImprovementManager.CreateImprovements(CharacterObject,
                                                                       Improvement.ImprovementSource.Quality,
                                                                       objQuality.InternalId, objQuality.Bonus, 1,
-                                                                      objQuality.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objQuality.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2282,8 +2281,7 @@ namespace Chummer
                                                                       Improvement.ImprovementSource.MartialArt,
                                                                       objMartialArt.InternalId,
                                                                       objMartialArtNode["bonus"], 1,
-                                                                      objMartialArt.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objMartialArt.CurrentDisplayNameShort);
                             }
                         }
                         else
@@ -2323,8 +2321,7 @@ namespace Chummer
                                 ImprovementManager.CreateImprovements(CharacterObject,
                                                                       Improvement.ImprovementSource.Spell,
                                                                       objSpell.InternalId, objNode["bonus"], 1,
-                                                                      objSpell.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objSpell.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objSpell.Extra = ImprovementManager.SelectedValue;
@@ -2355,8 +2352,7 @@ namespace Chummer
                                                                       Improvement.ImprovementSource.Power,
                                                                       objPower.InternalId, objPower.Bonus,
                                                                       objPower.TotalRating,
-                                                                      objPower.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objPower.CurrentDisplayNameShort);
                             }
                         }
                         else
@@ -2378,8 +2374,7 @@ namespace Chummer
                                 ImprovementManager.CreateImprovements(CharacterObject,
                                                                       Improvement.ImprovementSource.ComplexForm,
                                                                       objComplexForm.InternalId, objNode["bonus"], 1,
-                                                                      objComplexForm.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objComplexForm.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objComplexForm.Extra = ImprovementManager.SelectedValue;
@@ -2408,8 +2403,7 @@ namespace Chummer
                                 ImprovementManager.CreateImprovements(CharacterObject,
                                                                       Improvement.ImprovementSource.AIProgram,
                                                                       objProgram.InternalId, objNode["bonus"], 1,
-                                                                      objProgram.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objProgram.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objProgram.Extra = ImprovementManager.SelectedValue;
@@ -2445,8 +2439,7 @@ namespace Chummer
                                 ImprovementManager.CreateImprovements(CharacterObject,
                                                                       Improvement.ImprovementSource.CritterPower,
                                                                       objPower.InternalId, objPower.Bonus, intRating,
-                                                                      objPower.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objPower.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                 {
                                     objPower.Extra = ImprovementManager.SelectedValue;
@@ -2481,8 +2474,7 @@ namespace Chummer
                             {
                                 ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType,
                                                                       objMetamagic.InternalId, objMetamagic.Bonus, 1,
-                                                                      objMetamagic.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objMetamagic.CurrentDisplayNameShort);
                             }
                         }
                         else
@@ -2598,8 +2590,7 @@ namespace Chummer
                                                                       objLoopCyberware.InternalId + "Pair",
                                                                       objLoopCyberware.PairBonus,
                                                                       objLoopCyberware.Rating,
-                                                                      objLoopCyberware.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objLoopCyberware.CurrentDisplayNameShort);
                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
                                     && string.IsNullOrEmpty(objCyberware.Extra))
                                     objCyberware.Extra = ImprovementManager.SelectedValue;

@@ -4131,6 +4131,7 @@ namespace Chummer.Backend.Equipment
                             lstLoopRCGroup[objAccessory.RCGroup - 1]
                                 = new Tuple<string, int>(
                                     blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? objAccessory.DisplayName(strLanguage)
                                         : await objAccessory.DisplayNameAsync(strLanguage), intItemRC);
                         }
@@ -4156,6 +4157,7 @@ namespace Chummer.Backend.Equipment
                         if (blnRefreshRCToolTip)
                             sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
                                 .Append(blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
                                     ? objAccessory.DisplayName(strLanguage)
                                     : await objAccessory.DisplayNameAsync(strLanguage)).Append(strSpace).Append('(')
                                 .Append(objAccessory.RC).Append(')');

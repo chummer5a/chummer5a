@@ -3015,6 +3015,7 @@ namespace Chummer
                 using (EnterWriteLock.Enter(objCharacter.LockObject))
                 {
                     // Record the improvement.
+                    // ReSharper disable once UseObjectOrCollectionInitializer
                     objImprovement = new Improvement(objCharacter)
                     {
                         ImprovedName = strImprovedName,
