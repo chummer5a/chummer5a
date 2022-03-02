@@ -357,6 +357,26 @@ namespace Chummer.Backend.Attributes
             LockObject.Dispose();
         }
 
+        public async ValueTask DisposeAsync()
+        {
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
+                foreach (BindingSource objSource in _dicBindings.Values)
+                    objSource.Dispose();
+                await _dicBindings.DisposeAsync();
+                await _lstNormalAttributes.DisposeAsync();
+                await _lstSpecialAttributes.DisposeAsync();
+                await _lstAttributes.DisposeAsync();
+                _objAttributesInitializerLock.Dispose();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            await LockObject.DisposeAsync();
+        }
+
         internal void Save(XmlWriter objWriter)
         {
             using (EnterReadLock.Enter(LockObject))

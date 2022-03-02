@@ -1799,6 +1799,38 @@ namespace Chummer.Backend.Skills
             LockObject.Dispose();
         }
 
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
+                UnbindSkillsSection();
+                foreach (Skill objSkill in _lstSkills)
+                    objSkill.Dispose();
+                await _lstSkills.DisposeAsync();
+                foreach (KnowledgeSkill objSkill in _lstKnowledgeSkills)
+                    objSkill.Dispose();
+                await _lstKnowledgeSkills.DisposeAsync();
+                _lstKnowsoftSkills.Clear();
+                await _lstKnowsoftSkills.DisposeAsync();
+                _lstSkillGroups.Clear();
+                await _lstSkillGroups.DisposeAsync();
+                await _dicSkills.DisposeAsync();
+                await _dicSkillBackups.DisposeAsync();
+                _objSkillsInitializerLock.Dispose();
+                if (_lstDefaultKnowledgeSkills != null)
+                    Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);
+                if (_lstKnowledgeTypes != null)
+                    Utils.ListItemListPool.Return(_lstKnowledgeTypes);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            await LockObject.DisposeAsync();
+        }
+
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

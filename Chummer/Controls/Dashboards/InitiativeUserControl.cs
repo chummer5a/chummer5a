@@ -74,7 +74,7 @@ namespace Chummer
          * Removes the chosen chummer from the list
          */
 
-        private void btnRemove_Click(object sender, EventArgs e)
+        private async void btnRemove_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
@@ -85,7 +85,7 @@ namespace Chummer
                 chkBoxChummer.Items.RemoveAt(index);
                 if (chkBoxChummer.Items.Count > 0)
                     chkBoxChummer.SelectedIndex = 0; // reset the selected item to the first item in the list
-                _lstCharacters[index].Dispose();
+                await _lstCharacters[index].DisposeAsync();
                 _lstCharacters.RemoveAt(index);
             }
         }

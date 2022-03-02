@@ -30,12 +30,13 @@ namespace Chummer
     public readonly struct EnterWriteLock : IDisposable, IAsyncDisposable
     {
         private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
-        private readonly AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease _rwlMyWriteRelease;
+        private readonly IDisposable _rwlMyWriteRelease;
+        private readonly IAsyncDisposable _rwlMyAsyncWriteRelease;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EnterWriteLock Enter(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
-            AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease rwlMyWriteRelease = rwlMyLock.EnterWriteLock(token);
+            IDisposable rwlMyWriteRelease = rwlMyLock.EnterWriteLock(token);
             return new EnterWriteLock(rwlMyLock, rwlMyWriteRelease);
         }
 
@@ -49,7 +50,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async ValueTask<EnterWriteLock> EnterAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
         {
-            AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease rwlMyWriteRelease = await rwlMyLock.EnterWriteLockAsync(token);
+            IAsyncDisposable rwlMyWriteRelease = await rwlMyLock.EnterWriteLockAsync(token);
             return new EnterWriteLock(rwlMyLock, rwlMyWriteRelease);
         }
 
@@ -61,19 +62,27 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, AsyncFriendlyReaderWriterLock.SafeSemaphoreWriterRelease rwlMyWriteRelease)
+        private EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, IDisposable rwlMyWriteRelease)
         {
-            if (!rwlMyWriteRelease.IsMyLock(rwlMyLock))
-                throw new ArgumentException("Semaphore releaser object's lock is different from the lock provided",
-                    nameof(rwlMyWriteRelease));
             _rwlMyLock = rwlMyLock;
             _rwlMyWriteRelease = rwlMyWriteRelease;
+            _rwlMyAsyncWriteRelease = null;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, IAsyncDisposable rwlMyAsyncWriteRelease)
+        {
+            _rwlMyLock = rwlMyLock;
+            _rwlMyWriteRelease = null;
+            _rwlMyAsyncWriteRelease = rwlMyAsyncWriteRelease;
         }
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
+            if (_rwlMyWriteRelease == null)
+                throw new InvalidOperationException("Write lock was created synchronously, it must be disposed of synchronously");
             _rwlMyLock.ExitWriteLock(_rwlMyWriteRelease);
         }
 
@@ -81,7 +90,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ValueTask DisposeAsync()
         {
-            return _rwlMyLock.ExitWriteLockAsync(_rwlMyWriteRelease);
+            if (_rwlMyAsyncWriteRelease == null)
+                throw new InvalidOperationException("Write lock was created asynchronously, it must be disposed of asynchronously");
+            return _rwlMyLock.ExitWriteLockAsync(_rwlMyAsyncWriteRelease);
         }
     }
 }

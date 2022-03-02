@@ -533,7 +533,7 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // The Critter should use the same settings file as the character.
-                using (Character objCharacter = new Character
+                Character objCharacter = new Character
                 {
                     SettingsKey = _objSpirit.CharacterObject.SettingsKey,
                     // Override the defaults for the setting.
@@ -541,17 +541,21 @@ namespace Chummer
                     IsCritter = true,
                     Alias = strCritterName,
                     Created = true
-                })
+                };
+                try
                 {
                     if (!string.IsNullOrEmpty(txtCritterName.Text))
                         objCharacter.Name = txtCritterName.Text;
 
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                    {
-                        Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All"),
-                        FileName = strCritterName + strSpace + '(' + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo) + ").chum5"
-                    })
+                           {
+                               Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                                   + await LanguageManager.GetStringAsync("DialogFilter_All"),
+                               FileName = strCritterName + strSpace + '('
+                                          + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel) + strSpace
+                                          + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo) + ").chum5"
+                           })
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
@@ -559,20 +563,27 @@ namespace Chummer
                         objCharacter.FileName = strFileName;
                     }
 
-                    objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText, string.Empty, objXmlMetatype, intForce);
+                    objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText,
+                                        string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
                     using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                     {
-                        frmProgressBar.PerformStep(objCharacter.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
+                        frmProgressBar.PerformStep(objCharacter.CharacterName,
+                                                   LoadingBar.ProgressBarTextPatterns.Saving);
                         if (!await objCharacter.SaveAsync())
                             return;
                     }
 
                     // Link the newly-created Critter to the Spirit.
-                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync(
+                        _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
                     await Program.OpenCharacter(objCharacter);
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
             }
         }

@@ -81,8 +81,15 @@ namespace Chummer
 
         public async ValueTask<bool> AddAsync(T item)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 return _setData.Add(item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc />
@@ -157,26 +164,54 @@ namespace Chummer
         
         public async ValueTask UnionWithAsync(IEnumerable<T> other)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _setData.UnionWith(other);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
         
         public async ValueTask IntersectWithAsync(IEnumerable<T> other)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _setData.IntersectWith(other);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
         
         public async ValueTask ExceptWithAsync(IEnumerable<T> other)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _setData.ExceptWith(other);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
         
         public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _setData.SymmetricExceptWith(other);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
         
         public async ValueTask<bool> IsSubsetOfAsync(IEnumerable<T> other)
@@ -231,8 +266,15 @@ namespace Chummer
 
         public async ValueTask ClearAsync()
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _setData.Clear();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc />
@@ -283,8 +325,15 @@ namespace Chummer
 
         public async ValueTask<bool> TryAddAsync(T item)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 return _setData.Add(item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc />
@@ -323,7 +372,8 @@ namespace Chummer
 
         public async ValueTask<T[]> ToArrayAsync()
         {
-            using (await EnterReadLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 T[] aobjReturn = new T[_setData.Count];
                 int i = 0;
@@ -333,6 +383,10 @@ namespace Chummer
                     ++i;
                 }
                 return aobjReturn;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -345,8 +399,15 @@ namespace Chummer
 
         public async ValueTask<bool> RemoveAsync(T item)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 return _setData.Remove(item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc />
@@ -397,8 +458,6 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
-                    Utils.SafeSleep();
                 LockObject.Dispose();
             }
         }
@@ -407,6 +466,21 @@ namespace Chummer
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await LockObject.DisposeAsync();
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
     }

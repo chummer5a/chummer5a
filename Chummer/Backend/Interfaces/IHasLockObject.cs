@@ -21,7 +21,7 @@ using System;
 
 namespace Chummer
 {
-    public interface IHasLockObject : IDisposable
+    public interface IHasLockObject : IDisposable, IAsyncDisposable
     {
         AsyncFriendlyReaderWriterLock LockObject { get; }
     }

@@ -2344,110 +2344,193 @@ namespace Chummer
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
             using (new CursorWait(this))
-            using (await EnterWriteLock.EnterAsync(CharacterObject.LockObject))
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdOutdatedItems))
+                EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(CharacterObject.LockObject);
+                try
                 {
-                    // Record the status of any flags that normally trigger character events.
-                    bool blnMAGEnabled = CharacterObject.MAGEnabled;
-                    bool blnRESEnabled = CharacterObject.RESEnabled;
-                    bool blnDEPEnabled = CharacterObject.DEPEnabled;
-                    decimal decEssenceAtSpecialStart = CharacterObject.EssenceAtSpecialStart;
-
-                    _blnReapplyImprovements = true;
-
-                    // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
-                    if (lstInternalIdFilter == null)
-                        ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x =>
-                            x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
-                            x.ImproveSource == Improvement.ImprovementSource.Armor ||
-                            x.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
-                            x.ImproveSource == Improvement.ImprovementSource.Bioware ||
-                            x.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
-                            x.ImproveSource == Improvement.ImprovementSource.CritterPower ||
-                            x.ImproveSource == Improvement.ImprovementSource.Cyberware ||
-                            x.ImproveSource == Improvement.ImprovementSource.Echo ||
-                            x.ImproveSource == Improvement.ImprovementSource.Gear ||
-                            x.ImproveSource == Improvement.ImprovementSource.MartialArt ||
-                            x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique ||
-                            x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
-                            x.ImproveSource == Improvement.ImprovementSource.Power ||
-                            x.ImproveSource == Improvement.ImprovementSource.Quality ||
-                            x.ImproveSource == Improvement.ImprovementSource.Spell ||
-                            x.ImproveSource == Improvement.ImprovementSource.StackedFocus).ToList(), _blnReapplyImprovements);
-                    else
-                        ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(x => lstInternalIdFilter.Contains(x.SourceName) &&
-                                                                                                                       (x.ImproveSource == Improvement.ImprovementSource.AIProgram ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Armor ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.ArmorMod ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Bioware ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.ComplexForm ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.CritterPower ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Cyberware ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Echo ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Gear ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArt ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.MartialArtTechnique ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Metamagic ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Power ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Quality ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.Spell ||
-                                                                                                                        x.ImproveSource == Improvement.ImprovementSource.StackedFocus)).ToList(), _blnReapplyImprovements);
-
-                    // Refresh Qualities.
-                    // We cannot use foreach because qualities can add more qualities
-                    for (int j = 0; j < CharacterObject.Qualities.Count; j++)
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdOutdatedItems))
                     {
-                        Quality objQuality = CharacterObject.Qualities[j];
-                        if (objQuality.OriginSource == QualitySource.Improvement || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
-                            continue;
-                        // We're only re-apply improvements a list of items, not all of them
-                        if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
-                            continue;
+                        // Record the status of any flags that normally trigger character events.
+                        bool blnMAGEnabled = CharacterObject.MAGEnabled;
+                        bool blnRESEnabled = CharacterObject.RESEnabled;
+                        bool blnDEPEnabled = CharacterObject.DEPEnabled;
+                        decimal decEssenceAtSpecialStart = CharacterObject.EssenceAtSpecialStart;
 
-                        XmlNode objNode = await objQuality.GetNodeAsync();
-                        if (objNode != null)
+                        _blnReapplyImprovements = true;
+
+                        // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
+                        if (lstInternalIdFilter == null)
+                            ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(
+                                                                          x =>
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.AIProgram
+                                                                              ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Armor ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.ArmorMod
+                                                                              ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Bioware
+                                                                              ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource
+                                                                                  .ComplexForm
+                                                                              ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource
+                                                                                  .CritterPower
+                                                                              ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Cyberware
+                                                                              ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Echo ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Gear ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource
+                                                                                  .MartialArt ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource
+                                                                                  .MartialArtTechnique ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Metamagic
+                                                                              ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Power ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Quality
+                                                                              ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource.Spell ||
+                                                                              x.ImproveSource
+                                                                              == Improvement.ImprovementSource
+                                                                                  .StackedFocus)
+                                                                      .ToList(), _blnReapplyImprovements);
+                        else
+                            ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(
+                                                                      x => lstInternalIdFilter.Contains(x.SourceName) &&
+                                                                           (x.ImproveSource
+                                                                            == Improvement.ImprovementSource.AIProgram
+                                                                            ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Armor ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.ArmorMod ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Bioware ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.ComplexForm
+                                                                            ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource
+                                                                                .CritterPower ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Cyberware
+                                                                            ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Echo ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Gear ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.MartialArt
+                                                                            ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource
+                                                                                .MartialArtTechnique ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Metamagic
+                                                                            ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Power ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Quality ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource.Spell ||
+                                                                            x.ImproveSource
+                                                                            == Improvement.ImprovementSource
+                                                                                .StackedFocus)).ToList(),
+                                                                  _blnReapplyImprovements);
+
+                        // Refresh Qualities.
+                        // We cannot use foreach because qualities can add more qualities
+                        for (int j = 0; j < CharacterObject.Qualities.Count; j++)
                         {
-                            string strSelected = objQuality.Extra;
-                            objQuality.Bonus = objNode["bonus"];
-                            if (objQuality.Bonus != null)
-                            {
-                                ImprovementManager.ForcedValue = strSelected;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.Bonus, 1, objQuality.CurrentDisplayNameShort);
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                {
-                                    objQuality.Extra = ImprovementManager.SelectedValue;
-                                    TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
-                                    if (objTreeNode != null)
-                                        objTreeNode.Text = objQuality.CurrentDisplayName;
-                                }
-                            }
+                            Quality objQuality = CharacterObject.Qualities[j];
+                            if (objQuality.OriginSource == QualitySource.Improvement
+                                || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                                continue;
+                            // We're only re-apply improvements a list of items, not all of them
+                            if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
+                                continue;
 
-                            objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
-                            if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                            XmlNode objNode = await objQuality.GetNodeAsync();
+                            if (objNode != null)
                             {
-                                bool blnDoFirstLevel = true;
-                                for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
+                                string strSelected = objQuality.Extra;
+                                objQuality.Bonus = objNode["bonus"];
+                                if (objQuality.Bonus != null)
                                 {
-                                    Quality objCheckQuality = CharacterObject.Qualities[k];
-                                    if (j != k
-                                        && objCheckQuality.SourceIDString == objQuality.SourceIDString
-                                        && objCheckQuality.Extra == objQuality.Extra
-                                        && objCheckQuality.SourceName == objQuality.SourceName
-                                        && (k < j
-                                            || objCheckQuality.OriginSource == QualitySource.Improvement
-                                            || (lstInternalIdFilter?.Contains(objCheckQuality.InternalId) == false)))
+                                    ImprovementManager.ForcedValue = strSelected;
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                        objQuality.Bonus, 1, objQuality.CurrentDisplayNameShort);
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
-                                        blnDoFirstLevel = false;
-                                        break;
+                                        objQuality.Extra = ImprovementManager.SelectedValue;
+                                        TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
+                                        if (objTreeNode != null)
+                                            objTreeNode.Text = objQuality.CurrentDisplayName;
                                     }
                                 }
 
-                                if (blnDoFirstLevel)
+                                objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                                if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                                {
+                                    bool blnDoFirstLevel = true;
+                                    for (int k = 0; k < CharacterObject.Qualities.Count; ++k)
+                                    {
+                                        Quality objCheckQuality = CharacterObject.Qualities[k];
+                                        if (j != k
+                                            && objCheckQuality.SourceIDString == objQuality.SourceIDString
+                                            && objCheckQuality.Extra == objQuality.Extra
+                                            && objCheckQuality.SourceName == objQuality.SourceName
+                                            && (k < j
+                                                || objCheckQuality.OriginSource == QualitySource.Improvement
+                                                || (lstInternalIdFilter?.Contains(objCheckQuality.InternalId)
+                                                    == false)))
+                                        {
+                                            blnDoFirstLevel = false;
+                                            break;
+                                        }
+                                    }
+
+                                    if (blnDoFirstLevel)
+                                    {
+                                        ImprovementManager.ForcedValue = strSelected;
+                                        ImprovementManager.CreateImprovements(
+                                            CharacterObject, Improvement.ImprovementSource.Quality,
+                                            objQuality.InternalId, objQuality.FirstLevelBonus, 1,
+                                            objQuality.CurrentDisplayNameShort);
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                        {
+                                            objQuality.Extra = ImprovementManager.SelectedValue;
+                                            TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
+                                            if (objTreeNode != null)
+                                                objTreeNode.Text = objQuality.CurrentDisplayName;
+                                        }
+                                    }
+                                }
+
+                                objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                                if (objQuality.NaturalWeaponsNode != null)
                                 {
                                     ImprovementManager.ForcedValue = strSelected;
-                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.FirstLevelBonus, 1, objQuality.CurrentDisplayNameShort);
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                        objQuality.NaturalWeaponsNode, 1, objQuality.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2457,442 +2540,493 @@ namespace Chummer
                                     }
                                 }
                             }
-
-                            objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
-                            if (objQuality.NaturalWeaponsNode != null)
+                            else
                             {
-                                ImprovementManager.ForcedValue = strSelected;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId, objQuality.NaturalWeaponsNode, 1, objQuality.CurrentDisplayNameShort);
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                sbdOutdatedItems.AppendLine(objQuality.CurrentDisplayName);
+                            }
+                        }
+
+                        // Refresh Martial Art Techniques.
+                        foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
+                        {
+                            XmlNode objMartialArtNode = await objMartialArt.GetNodeAsync();
+                            if (objMartialArtNode != null)
+                            {
+                                // We're only re-apply improvements a list of items, not all of them
+                                if (lstInternalIdFilter?.Contains(objMartialArt.InternalId) != false
+                                    && objMartialArtNode["bonus"] != null)
                                 {
-                                    objQuality.Extra = ImprovementManager.SelectedValue;
-                                    TreeNode objTreeNode = treQualities.FindNodeByTag(objQuality);
-                                    if (objTreeNode != null)
-                                        objTreeNode.Text = objQuality.CurrentDisplayName;
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.MartialArt,
+                                        objMartialArt.InternalId, objMartialArtNode["bonus"], 1,
+                                        objMartialArt.CurrentDisplayName);
                                 }
-                            }
-                        }
-                        else
-                        {
-                            sbdOutdatedItems.AppendLine(objQuality.CurrentDisplayName);
-                        }
-                    }
-
-                    // Refresh Martial Art Techniques.
-                    foreach (MartialArt objMartialArt in CharacterObject.MartialArts)
-                    {
-                        XmlNode objMartialArtNode = await objMartialArt.GetNodeAsync();
-                        if (objMartialArtNode != null)
-                        {
-                            // We're only re-apply improvements a list of items, not all of them
-                            if (lstInternalIdFilter?.Contains(objMartialArt.InternalId) != false
-                                && objMartialArtNode["bonus"] != null)
-                            {
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId, objMartialArtNode["bonus"], 1, objMartialArt.CurrentDisplayName);
-                            }
-                        }
-                        else
-                        {
-                            sbdOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
-                        }
-
-                        foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
-                        {
-                            XmlNode objNode = await objTechnique.GetNodeAsync();
-                            if (objNode != null)
-                            {
-                                if (objNode["bonus"] != null)
-                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.MartialArtTechnique, objTechnique.InternalId, objNode["bonus"], 1, objTechnique.CurrentDisplayName);
                             }
                             else
                             {
                                 sbdOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
                             }
-                        }
-                    }
 
-                    // Refresh Spells.
-                    foreach (Spell objSpell in CharacterObject.Spells.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
-                    {
-                        XmlNode objNode = await objSpell.GetNodeAsync();
-                        if (objNode != null)
-                        {
-                            if (objNode["bonus"] != null)
+                            foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques.Where(
+                                         x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                             {
-                                ImprovementManager.ForcedValue = objSpell.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], 1, objSpell.CurrentDisplayNameShort);
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                XmlNode objNode = await objTechnique.GetNodeAsync();
+                                if (objNode != null)
                                 {
-                                    objSpell.Extra = ImprovementManager.SelectedValue;
-                                    TreeNode objSpellNode = treSpells.FindNode(objSpell.InternalId);
-                                    if (objSpellNode != null)
-                                        objSpellNode.Text = objSpell.CurrentDisplayName;
+                                    if (objNode["bonus"] != null)
+                                        ImprovementManager.CreateImprovements(
+                                            CharacterObject, Improvement.ImprovementSource.MartialArtTechnique,
+                                            objTechnique.InternalId, objNode["bonus"], 1,
+                                            objTechnique.CurrentDisplayName);
                                 }
-                            }
-                        }
-                        else
-                        {
-                            sbdOutdatedItems.AppendLine(objSpell.CurrentDisplayName);
-                        }
-                    }
-
-                    // Refresh Adept Powers.
-                    foreach (Power objPower in CharacterObject.Powers.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
-                    {
-                        XmlNode objNode = await objPower.GetNodeAsync();
-                        if (objNode != null)
-                        {
-                            objPower.Bonus = objNode["bonus"];
-                            if (objPower.Bonus != null)
-                            {
-                                ImprovementManager.ForcedValue = objPower.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, objPower.TotalRating,
-                                    objPower.CurrentDisplayNameShort);
-                            }
-                        }
-                        else
-                        {
-                            sbdOutdatedItems.AppendLine(objPower.CurrentDisplayName);
-                        }
-                    }
-
-                    // Refresh Complex Forms.
-                    foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
-                    {
-                        XmlNode objNode = await objComplexForm.GetNodeAsync();
-                        if (objNode != null)
-                        {
-                            if (objNode["bonus"] != null)
-                            {
-                                ImprovementManager.ForcedValue = objComplexForm.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId, objNode["bonus"], 1, objComplexForm.CurrentDisplayNameShort);
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                {
-                                    objComplexForm.Extra = ImprovementManager.SelectedValue;
-                                    TreeNode objCFNode = treComplexForms.FindNode(objComplexForm.InternalId);
-                                    if (objCFNode != null)
-                                        objCFNode.Text = objComplexForm.CurrentDisplayName;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            sbdOutdatedItems.AppendLine(objComplexForm.CurrentDisplayName);
-                        }
-                    }
-
-                    // Refresh AI Programs and Advanced Programs
-                    foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
-                    {
-                        XmlNode objNode = await objProgram.GetNodeAsync();
-                        if (objNode != null)
-                        {
-                            if (objNode["bonus"] != null)
-                            {
-                                ImprovementManager.ForcedValue = objProgram.Extra;
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId, objNode["bonus"], 1, objProgram.CurrentDisplayNameShort);
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                {
-                                    objProgram.Extra = ImprovementManager.SelectedValue;
-                                    TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
-                                    if (objProgramNode != null)
-                                        objProgramNode.Text = objProgram.CurrentDisplayNameShort;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            sbdOutdatedItems.AppendLine(objProgram.CurrentDisplayNameShort);
-                        }
-                    }
-
-                    // Refresh Critter Powers.
-                    foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(x => lstInternalIdFilter?.Contains(x.InternalId) != false))
-                    {
-                        XmlNode objNode = await objPower.GetNodeAsync();
-                        if (objNode != null)
-                        {
-                            objPower.Bonus = objNode["bonus"];
-                            if (objPower.Bonus != null)
-                            {
-                                string strSelected = objPower.Extra;
-                                if (!int.TryParse(strSelected, out int intRating))
-                                {
-                                    intRating = 1;
-                                    ImprovementManager.ForcedValue = strSelected;
-                                }
-
-                                ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.CritterPower, objPower.InternalId, objPower.Bonus, intRating, objPower.CurrentDisplayNameShort);
-                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                {
-                                    objPower.Extra = ImprovementManager.SelectedValue;
-                                    TreeNode objPowerNode = treCritterPowers.FindNode(objPower.InternalId);
-                                    if (objPowerNode != null)
-                                        objPowerNode.Text = objPower.CurrentDisplayName;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            sbdOutdatedItems.AppendLine(objPower.CurrentDisplayName);
-                        }
-                    }
-
-                    // Refresh Metamagics and Echoes.
-                    // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int j = 0; j < CharacterObject.Metamagics.Count; j++)
-                    {
-                        Metamagic objMetamagic = CharacterObject.Metamagics[j];
-                        if (objMetamagic.Grade < 0)
-                            continue;
-                        // We're only re-apply improvements a list of items, not all of them
-                        if (lstInternalIdFilter?.Contains(objMetamagic.InternalId) == false)
-                            continue;
-                        XmlNode objNode = await objMetamagic.GetNodeAsync();
-                        if (objNode != null)
-                        {
-                            objMetamagic.Bonus = objNode["bonus"];
-                            if (objMetamagic.Bonus != null)
-                            {
-                                ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId, objMetamagic.Bonus, 1, objMetamagic.CurrentDisplayNameShort);
-                            }
-                        }
-                        else
-                        {
-                            sbdOutdatedItems.AppendLine(objMetamagic.CurrentDisplayName);
-                        }
-                    }
-
-                    // Refresh Cyberware and Bioware.
-                    Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>(CharacterObject.Cyberware.Count);
-                    foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
-                    {
-                        // We're only re-apply improvements a list of items, not all of them
-                        if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)
-                        {
-                            XmlNode objNode = await objCyberware.GetNodeAsync();
-                            if (objNode != null)
-                            {
-                                objCyberware.Bonus = objNode["bonus"];
-                                objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                                objCyberware.PairBonus = objNode["pairbonus"];
-                                if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
-                                    ImprovementManager.ForcedValue = objCyberware.Forced;
-                                if (objCyberware.Bonus != null)
-                                {
-                                    ImprovementManager.CreateImprovements(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort);
-                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                }
-
-                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                    objCyberware.ChangeModularEquip(false);
                                 else
                                 {
-                                    objCyberware.RefreshWirelessBonuses();
-                                    if (objCyberware.PairBonus != null)
-                                    {
-                                        Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra);
-                                        if (objMatchingCyberware != null)
-                                            ++dicPairableCyberwares[objMatchingCyberware];
-                                        else
-                                            dicPairableCyberwares.Add(objCyberware, 1);
-                                    }
+                                    sbdOutdatedItems.AppendLine(objMartialArt.CurrentDisplayName);
                                 }
-
-                                TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                    ? treCyberware.FindNode(objCyberware.SourceIDString)
-                                    : treCyberware.FindNode(objCyberware.InternalId);
-                                if (objWareNode != null)
-                                    objWareNode.Text = objCyberware.CurrentDisplayName;
-                            }
-                            else
-                            {
-                                sbdOutdatedItems.AppendLine(objCyberware.CurrentDisplayName);
                             }
                         }
 
-                        foreach (Gear objGear in objCyberware.GearChildren)
+                        // Refresh Spells.
+                        foreach (Spell objSpell in CharacterObject.Spells.Where(
+                                     x => lstInternalIdFilter?.Contains(x.InternalId) != false))
                         {
-                            objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter);
-                        }
-                    }
-
-                    // Separate Pass for PairBonuses
-                    foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
-                    {
-                        Cyberware objCyberware = objItem.Key;
-                        int intCyberwaresCount = objItem.Value;
-                        List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware.DeepWhere(x => x.Children, x => objCyberware.IncludePair.Contains(x.Name) && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped).ToList();
-                        // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
-                        if (!string.IsNullOrEmpty(objCyberware.Location) && objCyberware.IncludePair.All(x => x == objCyberware.Name))
-                        {
-                            int intMatchLocationCount = 0;
-                            int intNotMatchLocationCount = 0;
-                            foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
-                            {
-                                if (objPairableCyberware.Location != objCyberware.Location)
-                                    ++intNotMatchLocationCount;
-                                else
-                                    ++intMatchLocationCount;
-                            }
-
-                            // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
-                            intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) * 2;
-                        }
-
-                        if (intCyberwaresCount > 0)
-                        {
-                            foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
-                            {
-                                if ((intCyberwaresCount & 1) == 0)
-                                {
-                                    if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right" && objCyberware.Forced != "Left")
-                                        ImprovementManager.ForcedValue = objCyberware.Forced;
-                                    ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating,
-                                        objLoopCyberware.CurrentDisplayNameShort);
-                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
-                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                    TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
-                                        ? treCyberware.FindNode(objCyberware.SourceIDString)
-                                        : treCyberware.FindNode(objLoopCyberware.InternalId);
-                                    if (objNode != null)
-                                        objNode.Text = objLoopCyberware.CurrentDisplayName;
-                                }
-
-                                --intCyberwaresCount;
-                                if (intCyberwaresCount <= 0)
-                                    break;
-                            }
-                        }
-                    }
-
-                    // Refresh Armors.
-                    foreach (Armor objArmor in CharacterObject.Armor)
-                    {
-                        // We're only re-apply improvements a list of items, not all of them
-                        if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
-                        {
-                            XmlNode objNode = await objArmor.GetNodeAsync();
+                            XmlNode objNode = await objSpell.GetNodeAsync();
                             if (objNode != null)
                             {
-                                objArmor.Bonus = objNode["bonus"];
-                                if (objArmor.Bonus != null && objArmor.Equipped)
+                                if (objNode["bonus"] != null)
                                 {
-                                    ImprovementManager.ForcedValue = objArmor.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId, objArmor.Bonus, objArmor.Rating, objArmor.CurrentDisplayNameShort);
+                                    ImprovementManager.ForcedValue = objSpell.Extra;
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.Spell, objSpell.InternalId,
+                                        objNode["bonus"], 1, objSpell.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
-                                        objArmor.Extra = ImprovementManager.SelectedValue;
-
-                                        TreeNode objArmorNode = treArmor.FindNode(objArmor.InternalId);
-                                        if (objArmorNode != null)
-                                            objArmorNode.Text = objArmor.CurrentDisplayName;
+                                        objSpell.Extra = ImprovementManager.SelectedValue;
+                                        TreeNode objSpellNode = treSpells.FindNode(objSpell.InternalId);
+                                        if (objSpellNode != null)
+                                            objSpellNode.Text = objSpell.CurrentDisplayName;
                                     }
                                 }
                             }
                             else
                             {
-                                sbdOutdatedItems.AppendLine(objArmor.CurrentDisplayName);
+                                sbdOutdatedItems.AppendLine(objSpell.CurrentDisplayName);
                             }
                         }
 
-                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                        // Refresh Adept Powers.
+                        foreach (Power objPower in CharacterObject.Powers.Where(
+                                     x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                        {
+                            XmlNode objNode = await objPower.GetNodeAsync();
+                            if (objNode != null)
+                            {
+                                objPower.Bonus = objNode["bonus"];
+                                if (objPower.Bonus != null)
+                                {
+                                    ImprovementManager.ForcedValue = objPower.Extra;
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId,
+                                        objPower.Bonus, objPower.TotalRating,
+                                        objPower.CurrentDisplayNameShort);
+                                }
+                            }
+                            else
+                            {
+                                sbdOutdatedItems.AppendLine(objPower.CurrentDisplayName);
+                            }
+                        }
+
+                        // Refresh Complex Forms.
+                        foreach (ComplexForm objComplexForm in CharacterObject.ComplexForms.Where(
+                                     x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                        {
+                            XmlNode objNode = await objComplexForm.GetNodeAsync();
+                            if (objNode != null)
+                            {
+                                if (objNode["bonus"] != null)
+                                {
+                                    ImprovementManager.ForcedValue = objComplexForm.Extra;
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.ComplexForm,
+                                        objComplexForm.InternalId, objNode["bonus"], 1,
+                                        objComplexForm.CurrentDisplayNameShort);
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    {
+                                        objComplexForm.Extra = ImprovementManager.SelectedValue;
+                                        TreeNode objCFNode = treComplexForms.FindNode(objComplexForm.InternalId);
+                                        if (objCFNode != null)
+                                            objCFNode.Text = objComplexForm.CurrentDisplayName;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                sbdOutdatedItems.AppendLine(objComplexForm.CurrentDisplayName);
+                            }
+                        }
+
+                        // Refresh AI Programs and Advanced Programs
+                        foreach (AIProgram objProgram in CharacterObject.AIPrograms.Where(
+                                     x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                        {
+                            XmlNode objNode = await objProgram.GetNodeAsync();
+                            if (objNode != null)
+                            {
+                                if (objNode["bonus"] != null)
+                                {
+                                    ImprovementManager.ForcedValue = objProgram.Extra;
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.AIProgram, objProgram.InternalId,
+                                        objNode["bonus"], 1, objProgram.CurrentDisplayNameShort);
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    {
+                                        objProgram.Extra = ImprovementManager.SelectedValue;
+                                        TreeNode objProgramNode = treAIPrograms.FindNode(objProgram.InternalId);
+                                        if (objProgramNode != null)
+                                            objProgramNode.Text = objProgram.CurrentDisplayNameShort;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                sbdOutdatedItems.AppendLine(objProgram.CurrentDisplayNameShort);
+                            }
+                        }
+
+                        // Refresh Critter Powers.
+                        foreach (CritterPower objPower in CharacterObject.CritterPowers.Where(
+                                     x => lstInternalIdFilter?.Contains(x.InternalId) != false))
+                        {
+                            XmlNode objNode = await objPower.GetNodeAsync();
+                            if (objNode != null)
+                            {
+                                objPower.Bonus = objNode["bonus"];
+                                if (objPower.Bonus != null)
+                                {
+                                    string strSelected = objPower.Extra;
+                                    if (!int.TryParse(strSelected, out int intRating))
+                                    {
+                                        intRating = 1;
+                                        ImprovementManager.ForcedValue = strSelected;
+                                    }
+
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, Improvement.ImprovementSource.CritterPower,
+                                        objPower.InternalId, objPower.Bonus, intRating,
+                                        objPower.CurrentDisplayNameShort);
+                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                    {
+                                        objPower.Extra = ImprovementManager.SelectedValue;
+                                        TreeNode objPowerNode = treCritterPowers.FindNode(objPower.InternalId);
+                                        if (objPowerNode != null)
+                                            objPowerNode.Text = objPower.CurrentDisplayName;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                sbdOutdatedItems.AppendLine(objPower.CurrentDisplayName);
+                            }
+                        }
+
+                        // Refresh Metamagics and Echoes.
+                        // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
+                        // ReSharper disable once ForCanBeConvertedToForeach
+                        for (int j = 0; j < CharacterObject.Metamagics.Count; j++)
+                        {
+                            Metamagic objMetamagic = CharacterObject.Metamagics[j];
+                            if (objMetamagic.Grade < 0)
+                                continue;
+                            // We're only re-apply improvements a list of items, not all of them
+                            if (lstInternalIdFilter?.Contains(objMetamagic.InternalId) == false)
+                                continue;
+                            XmlNode objNode = await objMetamagic.GetNodeAsync();
+                            if (objNode != null)
+                            {
+                                objMetamagic.Bonus = objNode["bonus"];
+                                if (objMetamagic.Bonus != null)
+                                {
+                                    ImprovementManager.CreateImprovements(
+                                        CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId,
+                                        objMetamagic.Bonus, 1, objMetamagic.CurrentDisplayNameShort);
+                                }
+                            }
+                            else
+                            {
+                                sbdOutdatedItems.AppendLine(objMetamagic.CurrentDisplayName);
+                            }
+                        }
+
+                        // Refresh Cyberware and Bioware.
+                        Dictionary<Cyberware, int> dicPairableCyberwares
+                            = new Dictionary<Cyberware, int>(CharacterObject.Cyberware.Count);
+                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
                         {
                             // We're only re-apply improvements a list of items, not all of them
-                            if (lstInternalIdFilter?.Contains(objMod.InternalId) != false)
+                            if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)
                             {
-                                XmlNode objChild = await objMod.GetNodeAsync();
-
-                                if (objChild != null)
+                                XmlNode objNode = await objCyberware.GetNodeAsync();
+                                if (objNode != null)
                                 {
-                                    objMod.Bonus = objChild["bonus"];
-                                    if (objMod.Bonus != null && objMod.Equipped)
+                                    objCyberware.Bonus = objNode["bonus"];
+                                    objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                                    objCyberware.PairBonus = objNode["pairbonus"];
+                                    if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right"
+                                        && objCyberware.Forced != "Left")
+                                        ImprovementManager.ForcedValue = objCyberware.Forced;
+                                    if (objCyberware.Bonus != null)
                                     {
-                                        ImprovementManager.ForcedValue = objMod.Extra;
-                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId, objMod.Bonus, objMod.Rating, objMod.CurrentDisplayNameShort);
+                                        ImprovementManager.CreateImprovements(
+                                            CharacterObject, objCyberware.SourceType, objCyberware.InternalId,
+                                            objCyberware.Bonus, objCyberware.Rating,
+                                            objCyberware.CurrentDisplayNameShort);
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                    }
+
+                                    if (!objCyberware.IsModularCurrentlyEquipped)
+                                        objCyberware.ChangeModularEquip(false);
+                                    else
+                                    {
+                                        objCyberware.RefreshWirelessBonuses();
+                                        if (objCyberware.PairBonus != null)
+                                        {
+                                            Cyberware objMatchingCyberware
+                                                = dicPairableCyberwares.Keys.FirstOrDefault(
+                                                    x => objCyberware.IncludePair.Contains(x.Name)
+                                                         && x.Extra == objCyberware.Extra);
+                                            if (objMatchingCyberware != null)
+                                                ++dicPairableCyberwares[objMatchingCyberware];
+                                            else
+                                                dicPairableCyberwares.Add(objCyberware, 1);
+                                        }
+                                    }
+
+                                    TreeNode objWareNode = objCyberware.SourceID == Cyberware.EssenceHoleGUID
+                                                           || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
+                                        ? treCyberware.FindNode(objCyberware.SourceIDString)
+                                        : treCyberware.FindNode(objCyberware.InternalId);
+                                    if (objWareNode != null)
+                                        objWareNode.Text = objCyberware.CurrentDisplayName;
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(objCyberware.CurrentDisplayName);
+                                }
+                            }
+
+                            foreach (Gear objGear in objCyberware.GearChildren)
+                            {
+                                objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter);
+                            }
+                        }
+
+                        // Separate Pass for PairBonuses
+                        foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
+                        {
+                            Cyberware objCyberware = objItem.Key;
+                            int intCyberwaresCount = objItem.Value;
+                            List<Cyberware> lstPairableCyberwares = CharacterObject.Cyberware
+                                .DeepWhere(x => x.Children,
+                                           x => objCyberware.IncludePair.Contains(x.Name)
+                                                && x.Extra == objCyberware.Extra && x.IsModularCurrentlyEquipped)
+                                .ToList();
+                            // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                            if (!string.IsNullOrEmpty(objCyberware.Location)
+                                && objCyberware.IncludePair.All(x => x == objCyberware.Name))
+                            {
+                                int intMatchLocationCount = 0;
+                                int intNotMatchLocationCount = 0;
+                                foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                                {
+                                    if (objPairableCyberware.Location != objCyberware.Location)
+                                        ++intNotMatchLocationCount;
+                                    else
+                                        ++intMatchLocationCount;
+                                }
+
+                                // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                                intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) * 2;
+                            }
+
+                            if (intCyberwaresCount > 0)
+                            {
+                                foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                                {
+                                    if ((intCyberwaresCount & 1) == 0)
+                                    {
+                                        if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right"
+                                            && objCyberware.Forced != "Left")
+                                            ImprovementManager.ForcedValue = objCyberware.Forced;
+                                        ImprovementManager.CreateImprovements(
+                                            CharacterObject, objLoopCyberware.SourceType,
+                                            objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus,
+                                            objLoopCyberware.Rating,
+                                            objLoopCyberware.CurrentDisplayNameShort);
+                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
+                                            && string.IsNullOrEmpty(objCyberware.Extra))
+                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                        TreeNode objNode = objLoopCyberware.SourceID == Cyberware.EssenceHoleGUID
+                                                           || objCyberware.SourceID == Cyberware.EssenceAntiHoleGUID
+                                            ? treCyberware.FindNode(objCyberware.SourceIDString)
+                                            : treCyberware.FindNode(objLoopCyberware.InternalId);
+                                        if (objNode != null)
+                                            objNode.Text = objLoopCyberware.CurrentDisplayName;
+                                    }
+
+                                    --intCyberwaresCount;
+                                    if (intCyberwaresCount <= 0)
+                                        break;
+                                }
+                            }
+                        }
+
+                        // Refresh Armors.
+                        foreach (Armor objArmor in CharacterObject.Armor)
+                        {
+                            // We're only re-apply improvements a list of items, not all of them
+                            if (lstInternalIdFilter?.Contains(objArmor.InternalId) != false)
+                            {
+                                XmlNode objNode = await objArmor.GetNodeAsync();
+                                if (objNode != null)
+                                {
+                                    objArmor.Bonus = objNode["bonus"];
+                                    if (objArmor.Bonus != null && objArmor.Equipped)
+                                    {
+                                        ImprovementManager.ForcedValue = objArmor.Extra;
+                                        ImprovementManager.CreateImprovements(
+                                            CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId,
+                                            objArmor.Bonus, objArmor.Rating, objArmor.CurrentDisplayNameShort);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
-                                            objMod.Extra = ImprovementManager.SelectedValue;
+                                            objArmor.Extra = ImprovementManager.SelectedValue;
 
-                                            TreeNode objPluginNode = treArmor.FindNode(objMod.InternalId);
-                                            if (objPluginNode != null)
-                                                objPluginNode.Text = objMod.CurrentDisplayName;
+                                            TreeNode objArmorNode = treArmor.FindNode(objArmor.InternalId);
+                                            if (objArmorNode != null)
+                                                objArmorNode.Text = objArmor.CurrentDisplayName;
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    sbdOutdatedItems.AppendLine(objMod.CurrentDisplayName);
+                                    sbdOutdatedItems.AppendLine(objArmor.CurrentDisplayName);
                                 }
                             }
 
-                            foreach (Gear objGear in objMod.GearChildren)
+                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                            {
+                                // We're only re-apply improvements a list of items, not all of them
+                                if (lstInternalIdFilter?.Contains(objMod.InternalId) != false)
+                                {
+                                    XmlNode objChild = await objMod.GetNodeAsync();
+
+                                    if (objChild != null)
+                                    {
+                                        objMod.Bonus = objChild["bonus"];
+                                        if (objMod.Bonus != null && objMod.Equipped)
+                                        {
+                                            ImprovementManager.ForcedValue = objMod.Extra;
+                                            ImprovementManager.CreateImprovements(
+                                                CharacterObject, Improvement.ImprovementSource.ArmorMod,
+                                                objMod.InternalId, objMod.Bonus, objMod.Rating,
+                                                objMod.CurrentDisplayNameShort);
+                                            if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                            {
+                                                objMod.Extra = ImprovementManager.SelectedValue;
+
+                                                TreeNode objPluginNode = treArmor.FindNode(objMod.InternalId);
+                                                if (objPluginNode != null)
+                                                    objPluginNode.Text = objMod.CurrentDisplayName;
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        sbdOutdatedItems.AppendLine(objMod.CurrentDisplayName);
+                                    }
+                                }
+
+                                foreach (Gear objGear in objMod.GearChildren)
+                                {
+                                    objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
+                                }
+                            }
+
+                            foreach (Gear objGear in objArmor.GearChildren)
                             {
                                 objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
                             }
+
+                            objArmor.RefreshWirelessBonuses();
                         }
 
-                        foreach (Gear objGear in objArmor.GearChildren)
+                        // Refresh Gear.
+                        foreach (Gear objGear in CharacterObject.Gear)
                         {
-                            objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
+                            objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter);
+                            objGear.RefreshWirelessBonuses();
                         }
-                        objArmor.RefreshWirelessBonuses();
-                    }
 
-                    // Refresh Gear.
-                    foreach (Gear objGear in CharacterObject.Gear)
-                    {
-                        objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter);
-                        objGear.RefreshWirelessBonuses();
-                    }
-
-                    // Refresh Weapons Gear
-                    foreach (Weapon objWeapon in CharacterObject.Weapons)
-                    {
-                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                        // Refresh Weapons Gear
+                        foreach (Weapon objWeapon in CharacterObject.Weapons)
                         {
-                            foreach (Gear objGear in objAccessory.GearChildren)
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
-                                objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter);
+                                foreach (Gear objGear in objAccessory.GearChildren)
+                                {
+                                    objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter);
+                                }
                             }
+
+                            objWeapon.RefreshWirelessBonuses();
                         }
-                        objWeapon.RefreshWirelessBonuses();
+
+                        _blnReapplyImprovements = false;
+
+                        // If the status of any Character Event flags has changed, manually trigger those events.
+                        if (blnMAGEnabled != CharacterObject.MAGEnabled)
+                        {
+                            CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
+                            await DoOnCharacterPropertyChanged(
+                                new PropertyChangedEventArgs(nameof(Character.MAGEnabled)));
+                        }
+
+                        if (blnRESEnabled != CharacterObject.RESEnabled)
+                        {
+                            CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
+                            await DoOnCharacterPropertyChanged(
+                                new PropertyChangedEventArgs(nameof(Character.RESEnabled)));
+                        }
+
+                        if (blnDEPEnabled != CharacterObject.DEPEnabled)
+                        {
+                            CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
+                            await DoOnCharacterPropertyChanged(
+                                new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
+                        }
+
+                        IsCharacterUpdateRequested = true;
+                        // Immediately call character update because it re-applies essence loss improvements
+                        await DoUpdateCharacterInfoAsync();
+
+                        if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
+                        {
+                            Program.ShowMessageBox(
+                                this, await LanguageManager.GetStringAsync(
+                                          "Message_ReapplyImprovementsFoundOutdatedItems_Top") +
+                                      sbdOutdatedItems +
+                                      await LanguageManager.GetStringAsync(
+                                          "Message_ReapplyImprovementsFoundOutdatedItems_Bottom"),
+                                await LanguageManager.GetStringAsync("MessageTitle_ConfirmReapplyImprovements"),
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
                     }
-
-                    _blnReapplyImprovements = false;
-
-                    // If the status of any Character Event flags has changed, manually trigger those events.
-                    if (blnMAGEnabled != CharacterObject.MAGEnabled)
-                    {
-                        CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.MAGEnabled)));
-                    }
-
-                    if (blnRESEnabled != CharacterObject.RESEnabled)
-                    {
-                        CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.RESEnabled)));
-                    }
-
-                    if (blnDEPEnabled != CharacterObject.DEPEnabled)
-                    {
-                        CharacterObject.EssenceAtSpecialStart = decEssenceAtSpecialStart;
-                        await DoOnCharacterPropertyChanged(new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
-                    }
-
-                    IsCharacterUpdateRequested = true;
-                    // Immediately call character update because it re-applies essence loss improvements
-                    await DoUpdateCharacterInfoAsync();
-
-                    if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
-                    {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ReapplyImprovementsFoundOutdatedItems_Top") +
-                                                              sbdOutdatedItems +
-                                                              await LanguageManager.GetStringAsync("Message_ReapplyImprovementsFoundOutdatedItems_Bottom"), await LanguageManager.GetStringAsync("MessageTitle_ConfirmReapplyImprovements"), MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
                 }
             }
 
@@ -2927,28 +3061,37 @@ namespace Chummer
             string strOpenFile = string.Empty;
             using (new CursorWait(this))
             {
-                using (Character objMerge = new Character { FileName = CharacterObject.FileName })
+                Character objMerge = new Character {FileName = CharacterObject.FileName};
+                try
                 {
-                    using (Character objVessel = new Character { FileName = strFileName })
+                    Character objVessel = new Character {FileName = strFileName};
+                    try
                     {
-                        using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
+                        using (LoadingBar frmLoadingForm
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
                         {
                             bool blnSuccess = await objVessel.LoadAsync(frmLoadingForm);
                             if (!blnSuccess)
                             {
                                 Program.ShowMessageBox(this,
-                                    await LanguageManager.GetStringAsync("Message_Load_Error_Warning"),
-                                    await LanguageManager.GetStringAsync("String_Error"), MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
+                                                       await LanguageManager.GetStringAsync(
+                                                           "Message_Load_Error_Warning"),
+                                                       await LanguageManager.GetStringAsync("String_Error"),
+                                                       MessageBoxButtons.OK,
+                                                       MessageBoxIcon.Error);
                                 return;
                             }
+
                             // Make sure the Vessel is in Career Mode.
                             if (!objVessel.Created)
                             {
                                 Program.ShowMessageBox(this,
-                                    await LanguageManager.GetStringAsync("Message_VesselInCareerMode"),
-                                    await LanguageManager.GetStringAsync("MessageTitle_Possession"), MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
+                                                       await LanguageManager.GetStringAsync(
+                                                           "Message_VesselInCareerMode"),
+                                                       await LanguageManager.GetStringAsync("MessageTitle_Possession"),
+                                                       MessageBoxButtons.OK,
+                                                       MessageBoxIcon.Error);
                                 return;
                             }
 
@@ -2958,13 +3101,18 @@ namespace Chummer
                             if (!blnSuccess)
                             {
                                 Program.ShowMessageBox(this,
-                                    await LanguageManager.GetStringAsync("Message_Load_Error_Warning"),
-                                    await LanguageManager.GetStringAsync("String_Error"), MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
+                                                       await LanguageManager.GetStringAsync(
+                                                           "Message_Load_Error_Warning"),
+                                                       await LanguageManager.GetStringAsync("String_Error"),
+                                                       MessageBoxButtons.OK,
+                                                       MessageBoxIcon.Error);
                                 return;
                             }
+
                             objMerge.Possessed = true;
-                            objMerge.Alias = objVessel.CharacterName + await LanguageManager.GetStringAsync("String_Space") + '(' + await LanguageManager.GetStringAsync("String_Possessed") + ')';
+                            objMerge.Alias = objVessel.CharacterName
+                                             + await LanguageManager.GetStringAsync("String_Space") + '('
+                                             + await LanguageManager.GetStringAsync("String_Possessed") + ')';
 
                             // Give the Critter the Immunity to Normal Weapons Power if they don't already have it.
                             bool blnHasImmunity = false;
@@ -2980,7 +3128,8 @@ namespace Chummer
                             if (!blnHasImmunity)
                             {
                                 XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml");
-                                XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
+                                XmlNode objPower
+                                    = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
                                 objCritterPower.Create(objPower, 0, "Normal Weapons");
@@ -3000,7 +3149,8 @@ namespace Chummer
                             objMerge.STR.Value = objVessel.STR.Value + objMerge.MAG.TotalValue;
                             */
 
-                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
+                            frmLoadingForm.PerformStep(
+                                await LanguageManager.GetStringAsync("String_SelectPACKSKit_Lifestyles"));
                             // Copy any Lifestyles the Vessel has.
                             foreach (Lifestyle objLifestyle in objVessel.Lifestyles)
                                 objMerge.Lifestyles.Add(objLifestyle);
@@ -3057,24 +3207,32 @@ namespace Chummer
                                 await objMerge.Mugshots.AddAsync(objMugshot);
                         }
                     }
+                    finally
+                    {
+                        await objVessel.DisposeAsync();
+                    }
 
                     string strShowFileName = Path.GetFileName(objMerge.FileName);
                     if (string.IsNullOrEmpty(strShowFileName))
                         strShowFileName = objMerge.CharacterName;
-                    strShowFileName = strShowFileName.TrimEndOnce(".chum5") + await LanguageManager.GetStringAsync("String_Space") + '(' + await LanguageManager.GetStringAsync("String_Possessed") + ')';
+                    strShowFileName = strShowFileName.TrimEndOnce(".chum5")
+                                      + await LanguageManager.GetStringAsync("String_Space") + '('
+                                      + await LanguageManager.GetStringAsync("String_Possessed") + ')';
 
                     // Now that everything is done, save the merged character and open them.
                     using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                    {
-                        Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All"),
-                        FileName = strShowFileName
-                    })
+                           {
+                               Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|'
+                                   + await LanguageManager.GetStringAsync("DialogFilter_All"),
+                               FileName = strShowFileName
+                           })
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
                         using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
-                            frmProgressBar.PerformStep(objMerge.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
+                            frmProgressBar.PerformStep(objMerge.CharacterName,
+                                                       LoadingBar.ProgressBarTextPatterns.Saving);
                             objMerge.FileName = saveFileDialog.FileName;
                             if (await objMerge.SaveAsync())
                             {
@@ -3083,6 +3241,10 @@ namespace Chummer
                             }
                         }
                     }
+                }
+                finally
+                {
+                    await objMerge.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
             }
 
@@ -3148,7 +3310,8 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 // Load the Spirit's save file into a new Merge character.
-                using (Character objMerge = new Character { FileName = CharacterObject.FileName })
+                Character objMerge = new Character {FileName = CharacterObject.FileName};
+                try
                 {
                     using (LoadingBar frmLoadingForm = new LoadingBar { CharacterFile = objMerge.FileName })
                     {
@@ -3251,6 +3414,10 @@ namespace Chummer
                             }
                         }
                     }
+                }
+                finally
+                {
+                    await objMerge.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
             }
 

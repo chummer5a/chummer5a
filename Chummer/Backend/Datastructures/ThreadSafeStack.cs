@@ -71,8 +71,15 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Clear"/>
         public async ValueTask ClearAsync()
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _stkData.Clear();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc cref="Stack{T}.Contains"/>
@@ -99,8 +106,15 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.TrimExcess"/>
         public async ValueTask TrimExcessAsync()
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _stkData.TrimExcess();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc cref="Stack{T}.Peek"/>
@@ -127,8 +141,15 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Pop"/>
         public async ValueTask<T> PopAsync()
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 return _stkData.Pop();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc cref="Stack{T}.Push"/>
@@ -141,8 +162,15 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Push"/>
         public async ValueTask PushAsync(T item)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _stkData.Push(item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc />
@@ -249,8 +277,6 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
-                    Utils.SafeSleep();
                 LockObject.Dispose();
             }
         }
@@ -259,6 +285,21 @@ namespace Chummer
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await LockObject.DisposeAsync();
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
     }

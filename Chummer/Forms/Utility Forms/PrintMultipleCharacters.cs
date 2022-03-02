@@ -48,11 +48,11 @@ namespace Chummer
                                  await LanguageManager.GetStringAsync("DialogFilter_All");
         }
 
-        private void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)
+        private async void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objPrinterCancellationTokenSource?.Cancel(false);
 
-            CleanUpOldCharacters();
+            await CleanUpOldCharacters();
         }
 
         private async void cmdSelectCharacter_Click(object sender, EventArgs e)
@@ -159,7 +159,7 @@ namespace Chummer
                     });
                     if (_objPrinterCancellationTokenSource.IsCancellationRequested)
                         return;
-                    CleanUpOldCharacters();
+                    await CleanUpOldCharacters();
                     if (_objPrinterCancellationTokenSource.IsCancellationRequested)
                         return;
                     _aobjCharacters = lstCharacters;
@@ -191,7 +191,7 @@ namespace Chummer
             }
         }
 
-        private void CleanUpOldCharacters()
+        private async ValueTask CleanUpOldCharacters()
         {
             if (!(_aobjCharacters?.Length > 0))
                 return;
@@ -202,13 +202,13 @@ namespace Chummer
                 blnAnyChanges = false;
                 foreach (Character objCharacter in _aobjCharacters)
                 {
-                    if (!Program.OpenCharacters.Contains(objCharacter) ||
+                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter) ||
                         Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == objCharacter) ||
                         Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;
                     Program.OpenCharacters.Remove(objCharacter);
-                    objCharacter.Dispose();
+                    await objCharacter.DisposeAsync();
                 }
             }
         }

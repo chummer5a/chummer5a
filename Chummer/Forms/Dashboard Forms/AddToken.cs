@@ -71,7 +71,7 @@ namespace Chummer
                     if (!await objCharacter.LoadAsync())
                     {
                         // TODO edward setup error page
-                        objCharacter.Dispose();
+                        await objCharacter.DisposeAsync();
                         return; // we obviously cannot init
                     }
 
@@ -81,7 +81,7 @@ namespace Chummer
                         nudInitStart.Value = intTemp;
                     if (_character != null)
                     {
-                        _character.Dispose();
+                        await _character.DisposeAsync();
                         _blnCharacterAdded = false;
                     }
 

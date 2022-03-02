@@ -93,12 +93,17 @@ namespace Chummer
 
         public async ValueTask<bool> AddAsync(T item)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 if (!_setData.Add(item))
                     return false;
                 _lstOrderedData.Add(item);
                 return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -191,42 +196,62 @@ namespace Chummer
         
         public async ValueTask UnionWithAsync(IEnumerable<T> other)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 List<T> lstOther = other.ToList();
                 _lstOrderedData.AddRange(lstOther.Where(objItem => !_setData.Contains(objItem)));
                 _setData.UnionWith(lstOther);
             }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
         
         public async ValueTask IntersectWithAsync(IEnumerable<T> other)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => !setOther.Contains(objItem));
                 _setData.IntersectWith(setOther);
             }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
         
         public async ValueTask ExceptWithAsync(IEnumerable<T> other)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
                 _setData.ExceptWith(setOther);
             }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
         
         public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
                 _lstOrderedData.AddRange(setOther.Where(objItem => !_setData.Contains(objItem)));
                 _setData.SymmetricExceptWith(setOther);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
         
@@ -285,10 +310,15 @@ namespace Chummer
 
         public async ValueTask ClearAsync()
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 _setData.Clear();
                 _lstOrderedData.Clear();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -377,12 +407,17 @@ namespace Chummer
 
         public async ValueTask<bool> RemoveAsync(T item)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 if (!_setData.Remove(item))
                     return false;
                 _lstOrderedData.Remove(item);
                 return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -434,8 +469,6 @@ namespace Chummer
         {
             if (disposing)
             {
-                while (LockObject.IsReadLockHeld || LockObject.IsWriteLockHeld)
-                    Utils.SafeSleep();
                 LockObject.Dispose();
             }
         }
@@ -444,6 +477,21 @@ namespace Chummer
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await LockObject.DisposeAsync();
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
 
@@ -473,11 +521,16 @@ namespace Chummer
 
         public async ValueTask InsertAsync(int index, T item)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 if (!_setData.Add(item))
                     return;
                 _lstOrderedData.Insert(index, item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -494,11 +547,16 @@ namespace Chummer
 
         public async ValueTask RemoveAtAsync(int index)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 T objToRemove = _lstOrderedData[index];
                 if (_setData.Remove(objToRemove))
                     _lstOrderedData.RemoveAt(index);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -578,34 +636,60 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort()" />
         public async ValueTask SortAsync()
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                     _lstOrderedData.Sort(comparer);
                 else
                     _lstOrderedData.Sort();
             }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
         public async ValueTask SortAsync(Comparison<T> comparison)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _lstOrderedData.Sort(comparison);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
         public async ValueTask SortAsync(IComparer<T> comparer)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _lstOrderedData.Sort(comparer);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
         public async ValueTask SortAsync(int index, int count, IComparer<T> comparer)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _lstOrderedData.Sort(index, count, comparer);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc cref="List{T}.Reverse(int, int)" />
@@ -618,8 +702,15 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Reverse(int, int)" />
         public async ValueTask ReverseAsync(int index, int count)
         {
-            using (await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
                 _lstOrderedData.Reverse(index, count);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />

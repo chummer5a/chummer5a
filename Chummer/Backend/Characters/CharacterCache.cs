@@ -409,10 +409,30 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            Mugshot?.Dispose();
-            DownLoadRunning?.Dispose();
-            MyPluginDataDic.Dispose();
+            using (EnterWriteLock.Enter(LockObject))
+            {
+                Mugshot?.Dispose();
+                DownLoadRunning?.Dispose();
+                MyPluginDataDic.Dispose();
+            }
             LockObject.Dispose();
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            try
+            {
+                Mugshot?.Dispose();
+                DownLoadRunning?.Dispose();
+                await MyPluginDataDic.DisposeAsync();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+            await LockObject.DisposeAsync();
         }
 
         public override string ToString()

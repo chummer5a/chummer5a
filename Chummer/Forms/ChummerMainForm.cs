@@ -392,7 +392,7 @@ namespace Chummer
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
-        private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -407,7 +407,7 @@ namespace Chummer
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
                         {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
-                            objCharacter.Dispose();
+                            await objCharacter.DisposeAsync();
                         }
                         break;
                     }
@@ -417,7 +417,7 @@ namespace Chummer
                         {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
                             if (!notifyCollectionChangedEventArgs.NewItems.Contains(objCharacter))
-                                objCharacter.Dispose();
+                                await objCharacter.DisposeAsync();
                         }
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
                             objCharacter.PropertyChanged += UpdateCharacterTabTitle;
@@ -694,7 +694,8 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                using (Character objCharacter = new Character()) // Using is fine here because Dispose() code is skipped if the character is open in a form
+                Character objCharacter = new Character();
+                try
                 {
                     using (SelectBuildMethod frmPickSetting = new SelectBuildMethod(objCharacter))
                     {
@@ -709,7 +710,8 @@ namespace Chummer
                     objCharacter.Created = true;
 
                     // Show the Metatype selection window.
-                    using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(objCharacter, "critters.xml"))
+                    using (SelectMetatypeKarma frmSelectMetatype
+                           = new SelectMetatypeKarma(objCharacter, "critters.xml"))
                     {
                         await frmSelectMetatype.ShowDialogSafeAsync(this);
 
@@ -719,6 +721,10 @@ namespace Chummer
 
                     Program.OpenCharacters.Add(objCharacter);
                     await OpenCharacter(objCharacter, false);
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
             }
         }
@@ -1082,7 +1088,8 @@ namespace Chummer
         /// </summary>
         private async void ShowNewForm(object sender, EventArgs e)
         {
-            using (Character objCharacter = new Character())
+            Character objCharacter = new Character();
+            try
             {
                 using (new CursorWait(this))
                 {
@@ -1132,6 +1139,10 @@ namespace Chummer
                     if (MdiChildren.Length > 1)
                         frmNewCharacter.WindowState = FormWindowState.Maximized;
                 }
+            }
+            finally
+            {
+                await objCharacter.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
             }
         }
 

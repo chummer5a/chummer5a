@@ -4110,8 +4110,19 @@ namespace Chummer
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
 
                 // ReSharper disable once MethodHasAsyncOverload
-                using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
+                EnterWriteLock objLocker = blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject);
+                try
+                {
                     _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
+                }
+                finally
+                {
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objLocker.Dispose();
+                    else
+                        await objLocker.DisposeAsync();
+                }
 
                 if (callOnSaveCallBack)
                 {
@@ -4310,8 +4321,8 @@ namespace Chummer
             if (!File.Exists(_strFileName))
                 return false;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 LoadAsDirty = false;
                 using (CustomActivity loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
@@ -7014,6 +7025,14 @@ namespace Chummer
 
                 return true;
             }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLocker.DisposeAsync();
+            }
         }
 
         public Task<XmlDocument> GenerateExportXml(CultureInfo objCultureInfo, string strLanguage)
@@ -8016,6 +8035,110 @@ namespace Chummer
             }
 
             LockObject.Dispose();
+        }
+
+        /// <summary>
+        /// Remove stray event handlers and clear all info used by this character
+        /// </summary>
+        public async ValueTask DisposeAsync()
+        {
+            if (LockObject.IsDisposed)
+                return;
+
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                if (IsDisposed)
+                    return;
+                if (await Program.OpenCharacters.ContainsAsync(this)
+                    || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
+                    return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
+                EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                try
+                {
+                    IsDisposed = true;
+                    ImprovementManager.ClearCachedValues(this);
+                    await _lstLinkedCharacters.ClearAsync(); // Clear this list because it relates to Contacts and Spirits disposal
+                    await _lstLinkedCharacters.DisposeAsync();
+                    foreach (Image imgMugshot in _lstMugshots)
+                        imgMugshot.Dispose();
+                    await _lstMugshots.DisposeAsync();
+                    foreach (Contact objContact in _lstContacts)
+                        objContact.Dispose();
+                    await _lstContacts.DisposeAsync();
+                    foreach (Spirit objSpirit in _lstSpirits)
+                        objSpirit.Dispose();
+                    await _lstSpirits.DisposeAsync();
+                    foreach (Armor objItem in _lstArmor)
+                        objItem.Dispose();
+                    await _lstArmor.DisposeAsync();
+                    foreach (Weapon objItem in _lstWeapons)
+                        objItem.Dispose();
+                    await _lstWeapons.DisposeAsync();
+                    foreach (Gear objItem in _lstGear)
+                        objItem.Dispose();
+                    await _lstGear.DisposeAsync();
+                    foreach (Cyberware objItem in _lstCyberware)
+                        objItem.Dispose();
+                    await _lstCyberware.DisposeAsync();
+                    foreach (Vehicle objItem in _lstVehicles)
+                        objItem.Dispose();
+                    await _lstVehicles.DisposeAsync();
+                    foreach (Lifestyle objItem in _lstLifestyles)
+                        objItem.Dispose();
+                    await _lstLifestyles.DisposeAsync();
+                    foreach (Spell objItem in _lstSpells)
+                        objItem.Dispose();
+                    await _lstSpells.DisposeAsync();
+                    foreach (MartialArt objItem in _lstMartialArts)
+                        objItem.Dispose();
+                    await _lstMartialArts.DisposeAsync();
+                    await _lstComplexForms.DisposeAsync();
+                    await _lstAIPrograms.DisposeAsync();
+                    await _lstPowers.DisposeAsync();
+                    await _lstCritterPowers.DisposeAsync();
+                    await _lstFoci.DisposeAsync();
+                    await _lstStackedFoci.DisposeAsync();
+                    await _lstMetamagics.DisposeAsync();
+                    await _lstArts.DisposeAsync();
+                    await _lstEnhancements.DisposeAsync();
+                    await _lstImprovements.DisposeAsync();
+                    await _lstInitiationGrades.DisposeAsync();
+                    await _lstInternalIdsNeedingReapplyImprovements.DisposeAsync();
+                    await _lstCalendar.DisposeAsync();
+                    foreach (Drug objItem in _lstDrugs)
+                        objItem.Dispose();
+                    await _lstDrugs.DisposeAsync();
+                    await _lstExpenseLog.DisposeAsync();
+                    foreach (Location objItem in _lstArmorLocations)
+                        objItem.Dispose();
+                    await _lstArmorLocations.DisposeAsync();
+                    foreach (Location objItem in _lstGearLocations)
+                        objItem.Dispose();
+                    await _lstGearLocations.DisposeAsync();
+                    foreach (Location objItem in _lstWeaponLocations)
+                        objItem.Dispose();
+                    await _lstWeaponLocations.DisposeAsync();
+                    foreach (Location objItem in _lstVehicleLocations)
+                        objItem.Dispose();
+                    await _lstVehicleLocations.DisposeAsync();
+                    await _lstImprovementGroups.DisposeAsync();
+                    await _objSkillsSection.DisposeAsync();
+                    await _objAttributeSection.DisposeAsync();
+                    await PostLoadMethods.DisposeAsync();
+                    await DoOnSaveCompleted.DisposeAsync();
+                    await DoOnSaveCompletedAsync.DisposeAsync();
+                    if (_stkPushText.IsValueCreated)
+                        await _stkPushText.Value.DisposeAsync();
+                    if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
+                        _objSettings.Dispose();
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+
+            await LockObject.DisposeAsync();
         }
 
         /// <summary>
@@ -24644,8 +24767,8 @@ namespace Chummer
             if(!File.Exists(strPorFile))
                 return false;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject))
+            EnterWriteLock objLocker = blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject);
+            try
             {
                 Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>(1);
                 XPathNavigator xmlStatBlockDocument = null;
@@ -26860,6 +26983,14 @@ namespace Chummer
 
                 return true;
             }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLocker.DisposeAsync();
+            }
         }
         #endregion
 
@@ -27399,10 +27530,13 @@ namespace Chummer
                     intResult = (intThreshold - intWILResult) * 10;
                 }
 
-                using (await EnterWriteLock.EnterAsync(LockObject))
+                EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                try
                 {
                     ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Cyberzombie,
-                        string.Empty, Improvement.ImprovementType.FreeNegativeQualities, string.Empty, intResult * -1);
+                                                         string.Empty,
+                                                         Improvement.ImprovementType.FreeNegativeQualities,
+                                                         string.Empty, intResult * -1);
                     ImprovementManager.Commit(this);
 
                     // Convert the character.
@@ -27412,6 +27546,10 @@ namespace Chummer
                     // Gain MAG that is permanently set to 1.
                     MAGEnabled = true;
                     MAG.AssignLimits(1, 1, 1);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
                 }
 
                 // Add the Cyberzombie Lifestyle if it is not already taken.
