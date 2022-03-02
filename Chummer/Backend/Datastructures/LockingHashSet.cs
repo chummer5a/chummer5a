@@ -372,8 +372,7 @@ namespace Chummer
 
         public async ValueTask<T[]> ToArrayAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 T[] aobjReturn = new T[_setData.Count];
                 int i = 0;
@@ -383,10 +382,6 @@ namespace Chummer
                     ++i;
                 }
                 return aobjReturn;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync();
             }
         }
 

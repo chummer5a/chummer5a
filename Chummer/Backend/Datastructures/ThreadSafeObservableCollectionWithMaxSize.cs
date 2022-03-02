@@ -35,11 +35,8 @@ namespace Chummer
         {
             _intMaxSize = intMaxSize;
             _blnSkipCollectionChanged = true;
-            using (EnterWriteLock.Enter(LockObject))
-            {
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
-            }
+            while (Count > _intMaxSize)
+                RemoveAt(Count - 1);
             _blnSkipCollectionChanged = false;
         }
 
@@ -47,11 +44,8 @@ namespace Chummer
         {
             _intMaxSize = intMaxSize;
             _blnSkipCollectionChanged = true;
-            using (EnterWriteLock.Enter(LockObject))
-            {
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
-            }
+            while (Count > _intMaxSize)
+                RemoveAt(Count - 1);
             _blnSkipCollectionChanged = false;
         }
 
@@ -67,12 +61,9 @@ namespace Chummer
                 if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     _blnSkipCollectionChanged = true;
-                    using (EnterWriteLock.Enter(LockObject))
-                    {
-                        // Remove all entries greater than the allowed size
-                        while (Count > _intMaxSize)
-                            RemoveItem(Count - 1);
-                    }
+                    // Remove all entries greater than the allowed size
+                    while (Count > _intMaxSize)
+                        RemoveItem(Count - 1);
                     _blnSkipCollectionChanged = false;
                 }
             }
@@ -82,22 +73,20 @@ namespace Chummer
         /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (index >= _intMaxSize)
                     return;
                 while (Count >= _intMaxSize)
                     RemoveItem(Count - 1);
-                base.InsertItem(index, item);
             }
+            base.InsertItem(index, item);
         }
 
         /// <inheritdoc />
         public override bool TryAdd(T item)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (Count >= _intMaxSize)
                     return false;

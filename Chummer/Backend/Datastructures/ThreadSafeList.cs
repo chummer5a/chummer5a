@@ -26,49 +26,77 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : List<T>, IList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject
     {
+        private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public ThreadSafeList()
         {
+            _lstData = new List<T>();
         }
 
-        public ThreadSafeList(int capacity) : base(capacity)
+        public ThreadSafeList(int capacity)
         {
+            _lstData = new List<T>(capacity);
         }
 
-        public ThreadSafeList(IEnumerable<T> collection) : base(collection)
+        public ThreadSafeList(IEnumerable<T> collection)
         {
+            _lstData = new List<T>(collection);
         }
 
         /// <inheritdoc cref="List{T}.Capacity" />
-        public new int Capacity
+        public int Capacity
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return base.Capacity;
+                    return _lstData.Capacity;
             }
             set
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (base.Capacity == value)
+                    if (_lstData.Capacity == value)
                         return;
                     using (EnterWriteLock.Enter(LockObject))
-                        base.Capacity = value;
+                        _lstData.Capacity = value;
+                }
+            }
+        }
+        
+        public void CopyTo(Array array, int index)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                foreach (T objItem in _lstData)
+                {
+                    array.SetValue(objItem, index);
+                    ++index;
+                }
+            }
+        }
+        
+        public async ValueTask CopyToAsync(Array array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                foreach (T objItem in _lstData)
+                {
+                    array.SetValue(objItem, index);
+                    ++index;
                 }
             }
         }
 
         /// <inheritdoc cref="List{T}.Count" />
-        public new int Count
+        public int Count
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return base.Count;
+                    return _lstData.Count;
             }
         }
 
@@ -82,32 +110,50 @@ namespace Chummer
         bool ICollection.IsSynchronized => true;
         /// <inheritdoc />
         object ICollection.SyncRoot => LockObject;
-
-        /// <inheritdoc />
-        public new T this[int index]
+        
+        public T this[int index]
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return base[index];
+                    return _lstData[index];
             }
             set
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (base[index].Equals(value))
+                    if (_lstData[index].Equals(value))
                         return;
                     using (EnterWriteLock.Enter(LockObject))
-                        base[index] = value;
+                        _lstData[index] = value;
+                }
+            }
+        }
+
+        object IList.this[int index]
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _lstData[index];
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_lstData[index].Equals(value))
+                        return;
+                    using (EnterWriteLock.Enter(LockObject))
+                        _lstData[index] = (T)value;
                 }
             }
         }
 
         /// <inheritdoc />
-        public new void Add(T item)
+        public void Add(T item)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Add(item);
+                _lstData.Add(item);
         }
 
         public async ValueTask AddAsync(T item)
@@ -115,7 +161,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Add(item);
+                _lstData.Add(item);
             }
             finally
             {
@@ -124,10 +170,10 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.AddRange" />
-        public new void AddRange(IEnumerable<T> collection)
+        public void AddRange(IEnumerable<T> collection)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.AddRange(collection);
+                _lstData.AddRange(collection);
         }
 
         public async ValueTask AddRangeAsync(IEnumerable<T> collection)
@@ -135,7 +181,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.AddRange(collection);
+                _lstData.AddRange(collection);
             }
             finally
             {
@@ -144,66 +190,105 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.AsReadOnly" />
-        public new ReadOnlyCollection<T> AsReadOnly()
+        public ReadOnlyCollection<T> AsReadOnly()
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.AsReadOnly();
+                return _lstData.AsReadOnly();
         }
 
         /// <inheritdoc cref="List{T}.AsReadOnly" />
         public async ValueTask<ReadOnlyCollection<T>> AsReadOnlyAsync()
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.AsReadOnly();
+                return _lstData.AsReadOnly();
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(int, int, T, IComparer{T})" />
-        public new int BinarySearch(int index, int count, T item, IComparer<T> comparer)
+        public int BinarySearch(int index, int count, T item, IComparer<T> comparer)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.BinarySearch(index, count, item, comparer);
+                return _lstData.BinarySearch(index, count, item, comparer);
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(T)" />
-        public new int BinarySearch(T item)
+        public int BinarySearch(T item)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.BinarySearch(item);
+                return _lstData.BinarySearch(item);
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
-        public new int BinarySearch(T item, IComparer<T> comparer)
+        public int BinarySearch(T item, IComparer<T> comparer)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.BinarySearch(item, comparer);
+                return _lstData.BinarySearch(item, comparer);
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(int, int, T, IComparer{T})" />
         public async ValueTask<int> BinarySearchAsync(int index, int count, T item, IComparer<T> comparer)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.BinarySearch(index, count, item, comparer);
+                return _lstData.BinarySearch(index, count, item, comparer);
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(T)" />
         public async ValueTask<int> BinarySearchAsync(T item)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.BinarySearch(item);
+                return _lstData.BinarySearch(item);
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
         public async ValueTask<int> BinarySearchAsync(T item, IComparer<T> comparer)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.BinarySearch(item, comparer);
+                return _lstData.BinarySearch(item, comparer);
+        }
+
+        public int Add(object value)
+        {
+            if (!(value is T objValue))
+                return -1;
+            using (EnterReadLock.Enter(LockObject))
+            {
+                Add(objValue);
+                return _lstData.Count - 1;
+            }
+        }
+
+        public bool Contains(object value)
+        {
+            if (!(value is T objValue))
+                return false;
+            return Contains(objValue);
         }
 
         /// <inheritdoc cref="List{T}.Clear" />
-        public new void Clear()
+        public void Clear()
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Clear();
+                _lstData.Clear();
+        }
+
+        public int IndexOf(object value)
+        {
+            if (!(value is T objValue))
+                return -1;
+            return IndexOf(objValue);
+        }
+
+        public void Insert(int index, object value)
+        {
+            if (!(value is T objValue))
+                return;
+            Insert(index, objValue);
+        }
+
+        public void Remove(object value)
+        {
+            if (!(value is T objValue))
+                return;
+            Remove(objValue);
         }
 
         /// <inheritdoc cref="List{T}.Clear" />
@@ -212,7 +297,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Clear();
+                _lstData.Clear();
             }
             finally
             {
@@ -221,73 +306,73 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Contains" />
-        public new bool Contains(T item)
+        public bool Contains(T item)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.Contains(item);
+                return _lstData.Contains(item);
         }
 
         /// <inheritdoc cref="List{T}.Contains" />
         public async ValueTask<bool> ContainsAsync(T item)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.Contains(item);
+                return _lstData.Contains(item);
         }
 
         /// <inheritdoc cref="List{T}.ConvertAll{TOutput}" />
-        public new List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
+        public List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.ConvertAll(converter);
+                return _lstData.ConvertAll(converter);
         }
 
         /// <inheritdoc cref="List{T}.ConvertAll{TOutput}" />
         public async ValueTask<List<TOutput>> ConvertAllAsync<TOutput>(Converter<T, TOutput> converter)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.ConvertAll(converter);
+                return _lstData.ConvertAll(converter);
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(T[])" />
-        public new void CopyTo(T[] array)
+        public void CopyTo(T[] array)
         {
             using (EnterReadLock.Enter(LockObject))
-                base.CopyTo(array);
+                _lstData.CopyTo(array);
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(int, T[], int, int)" />
-        public new void CopyTo(int index, T[] array, int arrayIndex, int count)
+        public void CopyTo(int index, T[] array, int arrayIndex, int count)
         {
             using (EnterReadLock.Enter(LockObject))
-                base.CopyTo(index, array, arrayIndex, count);
+                _lstData.CopyTo(index, array, arrayIndex, count);
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(T[], int)" />
-        public new void CopyTo(T[] array, int arrayIndex)
+        public void CopyTo(T[] array, int arrayIndex)
         {
             using (EnterReadLock.Enter(LockObject))
-                base.CopyTo(array, arrayIndex);
+                _lstData.CopyTo(array, arrayIndex);
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(T[])" />
         public async ValueTask CopyToAsync(T[] array)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                base.CopyTo(array);
+                _lstData.CopyTo(array);
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(int, T[], int, int)" />
         public async ValueTask CopyToAsync(int index, T[] array, int arrayIndex, int count)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                base.CopyTo(index, array, arrayIndex, count);
+                _lstData.CopyTo(index, array, arrayIndex, count);
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(T[], int)" />
         public async ValueTask CopyToAsync(T[] array, int arrayIndex)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                base.CopyTo(array, arrayIndex);
+                _lstData.CopyTo(array, arrayIndex);
         }
 
         /// <inheritdoc />
@@ -309,11 +394,11 @@ namespace Chummer
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
             using (EnterWriteLock.Enter(LockObject))
             {
-                if (base.Count > 0)
+                if (_lstData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    item = base[0];
-                    base.RemoveAt(0);
+                    item = _lstData[0];
+                    _lstData.RemoveAt(0);
                     return true;
                 }
             }
@@ -323,249 +408,235 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Exists" />
-        public new bool Exists(Predicate<T> match)
+        public bool Exists(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.Exists(match);
+                return _lstData.Exists(match);
         }
 
         /// <inheritdoc cref="List{T}.Exists" />
         public async ValueTask<bool> ExistsAsync(Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.Exists(match);
+                return _lstData.Exists(match);
         }
 
         /// <inheritdoc cref="List{T}.Find" />
-        public new T Find(Predicate<T> match)
+        public T Find(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.Find(match);
+                return _lstData.Find(match);
         }
 
         /// <inheritdoc cref="List{T}.Find" />
         public async ValueTask<T> FindAsync(Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.Find(match);
+                return _lstData.Find(match);
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />
-        public new List<T> FindAll(Predicate<T> match)
+        public List<T> FindAll(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.FindAll(match);
+                return _lstData.FindAll(match);
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />
         public async ValueTask<List<T>> FindAllAsync(Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.FindAll(match);
+                return _lstData.FindAll(match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
-        public new int FindIndex(Predicate<T> match)
+        public int FindIndex(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.FindIndex(match);
+                return _lstData.FindIndex(match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
-        public new int FindIndex(int startIndex, Predicate<T> match)
+        public int FindIndex(int startIndex, Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.FindIndex(startIndex, match);
+                return _lstData.FindIndex(startIndex, match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, int, Predicate{T})" />
-        public new int FindIndex(int startIndex, int count, Predicate<T> match)
+        public int FindIndex(int startIndex, int count, Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.FindIndex(startIndex, count, match);
+                return _lstData.FindIndex(startIndex, count, match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
         public async ValueTask<int> FindIndexAsync(Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.FindIndex(match);
+                return _lstData.FindIndex(match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
         public async ValueTask<int> FindIndexAsync(int startIndex, Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.FindIndex(startIndex, match);
+                return _lstData.FindIndex(startIndex, match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, int, Predicate{T})" />
         public async ValueTask<int> FindIndexAsync(int startIndex, int count, Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.FindIndex(startIndex, count, match);
+                return _lstData.FindIndex(startIndex, count, match);
         }
 
         /// <inheritdoc cref="List{T}.FindLast" />
-        public new T FindLast(Predicate<T> match)
+        public T FindLast(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.FindLast(match);
+                return _lstData.FindLast(match);
         }
 
         /// <inheritdoc cref="List{T}.FindLast" />
         public async ValueTask<T> FindLastAsync(Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.FindLast(match);
+                return _lstData.FindLast(match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
-        public new int FindLastIndex(Predicate<T> match)
+        public int FindLastIndex(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.FindIndex(match);
+                return _lstData.FindIndex(match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
-        public new int FindLastIndex(int startIndex, Predicate<T> match)
+        public int FindLastIndex(int startIndex, Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.FindIndex(startIndex, match);
+                return _lstData.FindIndex(startIndex, match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, int, Predicate{T})" />
-        public new int FindLastIndex(int startIndex, int count, Predicate<T> match)
+        public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.FindLastIndex(startIndex, count, match);
+                return _lstData.FindLastIndex(startIndex, count, match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
         public async ValueTask<int> FindLastIndexAsync(Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.FindIndex(match);
+                return _lstData.FindIndex(match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
         public async ValueTask<int> FindLastIndexAsync(int startIndex, Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.FindIndex(startIndex, match);
+                return _lstData.FindIndex(startIndex, match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, int, Predicate{T})" />
         public async ValueTask<int> FindLastIndexAsync(int startIndex, int count, Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.FindLastIndex(startIndex, count, match);
+                return _lstData.FindLastIndex(startIndex, count, match);
         }
 
         /// <inheritdoc cref="List{T}.ForEach" />
-        public new void ForEach(Action<T> action)
+        public void ForEach(Action<T> action)
         {
-            using (EnterWriteLock.Enter(LockObject))
-                base.ForEach(action);
+            using (EnterReadLock.Enter(LockObject))
+                _lstData.ForEach(action);
         }
 
         /// <inheritdoc cref="List{T}.ForEach" />
         public async ValueTask ForEachAsync(Action<T> action)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
-            try
-            {
-                base.ForEach(action);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync();
-            }
+            using (await EnterReadLock.EnterAsync(LockObject))
+                _lstData.ForEach(action);
         }
 
         /// <inheritdoc cref="List{T}.ForEach" />
         public async ValueTask ForEachAsync(Task<Action<T>> action)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
-            try
-            {
-                base.ForEach(await action);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync();
-            }
+            using (await EnterReadLock.EnterAsync(LockObject))
+                _lstData.ForEach(await action);
         }
 
         /// <inheritdoc cref="List{T}.GetEnumerator" />
-        public new IEnumerator<T> GetEnumerator()
+        public IEnumerator<T> GetEnumerator()
         {
             LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
-            objReturn.SetEnumerator(base.GetEnumerator());
+            objReturn.SetEnumerator(_lstData.GetEnumerator());
             return objReturn;
         }
 
         /// <inheritdoc cref="List{T}.GetRange" />
-        public new List<T> GetRange(int index, int count)
+        public List<T> GetRange(int index, int count)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.GetRange(index, count);
+                return _lstData.GetRange(index, count);
         }
 
         /// <inheritdoc cref="List{T}.GetRange" />
         public async ValueTask<List<T>> GetRangeAsync(int index, int count)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.GetRange(index, count);
+                return _lstData.GetRange(index, count);
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T)" />
-        public new int IndexOf(T item)
+        public int IndexOf(T item)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.IndexOf(item);
+                return _lstData.IndexOf(item);
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T, int)" />
-        public new int IndexOf(T item, int index)
+        public int IndexOf(T item, int index)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.IndexOf(item, index);
+                return _lstData.IndexOf(item, index);
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T, int, int)" />
-        public new int IndexOf(T item, int index, int count)
+        public int IndexOf(T item, int index, int count)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.IndexOf(item, index, count);
+                return _lstData.IndexOf(item, index, count);
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T)" />
         public async ValueTask<int> IndexOfAsync(T item)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.IndexOf(item);
+                return _lstData.IndexOf(item);
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T, int)" />
         public async ValueTask<int> IndexOfAsync(T item, int index)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.IndexOf(item, index);
+                return _lstData.IndexOf(item, index);
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T, int, int)" />
         public async ValueTask<int> IndexOfAsync(T item, int index, int count)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.IndexOf(item, index, count);
+                return _lstData.IndexOf(item, index, count);
         }
 
         /// <inheritdoc cref="List{T}.Insert" />
-        public new void Insert(int index, T item)
+        public void Insert(int index, T item)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Insert(index, item);
+                _lstData.Insert(index, item);
         }
 
         /// <inheritdoc cref="List{T}.Insert" />
@@ -574,7 +645,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Insert(index, item);
+                _lstData.Insert(index, item);
             }
             finally
             {
@@ -583,10 +654,10 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.InsertRange" />
-        public new void InsertRange(int index, IEnumerable<T> collection)
+        public void InsertRange(int index, IEnumerable<T> collection)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.InsertRange(index, collection);
+                _lstData.InsertRange(index, collection);
         }
 
         /// <inheritdoc cref="List{T}.InsertRange" />
@@ -595,7 +666,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.InsertRange(index, collection);
+                _lstData.InsertRange(index, collection);
             }
             finally
             {
@@ -604,65 +675,65 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.LastIndexOf(T)" />
-        public new int LastIndexOf(T item)
+        public int LastIndexOf(T item)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.LastIndexOf(item);
+                return _lstData.LastIndexOf(item);
         }
 
         /// <inheritdoc cref="List{T}.LastIndexOf(T, int)" />
-        public new int LastIndexOf(T item, int index)
+        public int LastIndexOf(T item, int index)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.LastIndexOf(item, index);
+                return _lstData.LastIndexOf(item, index);
         }
 
         /// <inheritdoc cref="List{T}.LastIndexOf(T, int, int)" />
-        public new int LastIndexOf(T item, int index, int count)
+        public int LastIndexOf(T item, int index, int count)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.LastIndexOf(item, index, count);
+                return _lstData.LastIndexOf(item, index, count);
         }
 
         /// <inheritdoc cref="List{T}.LastIndexOf(T)" />
         public async ValueTask<int> LastIndexOfAsync(T item)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.LastIndexOf(item);
+                return _lstData.LastIndexOf(item);
         }
 
         /// <inheritdoc cref="List{T}.LastIndexOf(T, int)" />
         public async ValueTask<int> LastIndexOfAsync(T item, int index)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.LastIndexOf(item, index);
+                return _lstData.LastIndexOf(item, index);
         }
 
         /// <inheritdoc cref="List{T}.LastIndexOf(T, int, int)" />
         public async ValueTask<int> LastIndexOfAsync(T item, int index, int count)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.LastIndexOf(item, index, count);
+                return _lstData.LastIndexOf(item, index, count);
         }
 
         /// <inheritdoc />
-        public new bool Remove(T item)
+        public bool Remove(T item)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.Remove(item);
+                return _lstData.Remove(item);
         }
 
         public async ValueTask<bool> RemoveAsync(T item)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.Remove(item);
+                return _lstData.Remove(item);
         }
 
         /// <inheritdoc cref="List{T}.RemoveAll" />
-        public new int RemoveAll(Predicate<T> match)
+        public int RemoveAll(Predicate<T> match)
         {
             using (EnterWriteLock.Enter(LockObject))
-                return base.RemoveAll(match);
+                return _lstData.RemoveAll(match);
         }
 
         /// <inheritdoc cref="List{T}.RemoveAll" />
@@ -671,7 +742,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                return base.RemoveAll(match);
+                return _lstData.RemoveAll(match);
             }
             finally
             {
@@ -685,7 +756,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                return base.RemoveAll(await match);
+                return _lstData.RemoveAll(await match);
             }
             finally
             {
@@ -694,10 +765,10 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.RemoveAt" />
-        public new void RemoveAt(int index)
+        public void RemoveAt(int index)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.RemoveAt(index);
+                _lstData.RemoveAt(index);
         }
 
         /// <inheritdoc cref="List{T}.RemoveAt" />
@@ -706,7 +777,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.RemoveAt(index);
+                _lstData.RemoveAt(index);
             }
             finally
             {
@@ -715,10 +786,10 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.RemoveRange" />
-        public new void RemoveRange(int index, int count)
+        public void RemoveRange(int index, int count)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.RemoveRange(index, count);
+                _lstData.RemoveRange(index, count);
         }
 
         /// <inheritdoc cref="List{T}.RemoveRange" />
@@ -727,7 +798,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.RemoveRange(index, count);
+                _lstData.RemoveRange(index, count);
             }
             finally
             {
@@ -736,17 +807,17 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Reverse()" />
-        public new void Reverse()
+        public void Reverse()
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Reverse();
+                _lstData.Reverse();
         }
 
         /// <inheritdoc cref="List{T}.Reverse(int, int)" />
-        public new void Reverse(int index, int count)
+        public void Reverse(int index, int count)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Reverse(index, count);
+                _lstData.Reverse(index, count);
         }
 
         /// <inheritdoc cref="List{T}.Reverse()" />
@@ -755,7 +826,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Reverse();
+                _lstData.Reverse();
             }
             finally
             {
@@ -769,7 +840,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Reverse(index, count);
+                _lstData.Reverse(index, count);
             }
             finally
             {
@@ -778,31 +849,31 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Sort()" />
-        public new void Sort()
+        public void Sort()
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Sort();
+                _lstData.Sort();
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
-        public new void Sort(IComparer<T> comparer)
+        public void Sort(IComparer<T> comparer)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Sort(comparer);
+                _lstData.Sort(comparer);
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
-        public new void Sort(int index, int count, IComparer<T> comparer)
+        public void Sort(int index, int count, IComparer<T> comparer)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Sort(index, count, comparer);
+                _lstData.Sort(index, count, comparer);
         }
 
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
-        public new void Sort(Comparison<T> comparison)
+        public void Sort(Comparison<T> comparison)
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.Sort(comparison);
+                _lstData.Sort(comparison);
         }
 
         /// <inheritdoc cref="List{T}.Sort()" />
@@ -811,7 +882,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Sort();
+                _lstData.Sort();
             }
             finally
             {
@@ -825,7 +896,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Sort(comparer);
+                _lstData.Sort(comparer);
             }
             finally
             {
@@ -839,7 +910,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Sort(index, count, comparer);
+                _lstData.Sort(index, count, comparer);
             }
             finally
             {
@@ -853,7 +924,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.Sort(comparison);
+                _lstData.Sort(comparison);
             }
             finally
             {
@@ -862,23 +933,23 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public new T[] ToArray()
+        public T[] ToArray()
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.ToArray();
+                return _lstData.ToArray();
         }
 
         public async ValueTask<T[]> ToArrayAsync()
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.ToArray();
+                return _lstData.ToArray();
         }
 
         /// <inheritdoc cref="List{T}.TrimExcess" />
-        public new void TrimExcess()
+        public void TrimExcess()
         {
             using (EnterWriteLock.Enter(LockObject))
-                base.TrimExcess();
+                _lstData.TrimExcess();
         }
 
         /// <inheritdoc cref="List{T}.TrimExcess" />
@@ -887,7 +958,7 @@ namespace Chummer
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                base.TrimExcess();
+                _lstData.TrimExcess();
             }
             finally
             {
@@ -896,24 +967,24 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.TrueForAll" />
-        public new bool TrueForAll(Predicate<T> match)
+        public bool TrueForAll(Predicate<T> match)
         {
             using (EnterReadLock.Enter(LockObject))
-                return base.TrueForAll(match);
+                return _lstData.TrueForAll(match);
         }
 
         /// <inheritdoc cref="List{T}.TrueForAll" />
         public async ValueTask<bool> TrueForAllAsync(Predicate<T> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.TrueForAll(match);
+                return _lstData.TrueForAll(match);
         }
 
         /// <inheritdoc cref="List{T}.TrueForAll" />
         public async ValueTask<bool> TrueForAllAsync(Task<Predicate<T>> match)
         {
             using (await EnterReadLock.EnterAsync(LockObject))
-                return base.TrueForAll(await match);
+                return _lstData.TrueForAll(await match);
         }
 
         protected virtual void Dispose(bool disposing)
@@ -944,6 +1015,11 @@ namespace Chummer
         {
             await DisposeAsync(true);
             GC.SuppressFinalize(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

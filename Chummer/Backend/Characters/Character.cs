@@ -4321,6 +4321,7 @@ namespace Chummer
             if (!File.Exists(_strFileName))
                 return false;
 
+            // ReSharper disable once MethodHasAsyncOverload
             EnterWriteLock objLocker = blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject);
             try
             {
@@ -27530,27 +27531,19 @@ namespace Chummer
                     intResult = (intThreshold - intWILResult) * 10;
                 }
 
-                EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
-                try
-                {
-                    ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Cyberzombie,
-                                                         string.Empty,
-                                                         Improvement.ImprovementType.FreeNegativeQualities,
-                                                         string.Empty, intResult * -1);
-                    ImprovementManager.Commit(this);
+                ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Cyberzombie,
+                    string.Empty,
+                    Improvement.ImprovementType.FreeNegativeQualities,
+                    string.Empty, intResult * -1);
+                ImprovementManager.Commit(this);
 
-                    // Convert the character.
-                    // Characters lose access to Resonance.
-                    RESEnabled = false;
+                // Convert the character.
+                // Characters lose access to Resonance.
+                RESEnabled = false;
 
-                    // Gain MAG that is permanently set to 1.
-                    MAGEnabled = true;
-                    MAG.AssignLimits(1, 1, 1);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync();
-                }
+                // Gain MAG that is permanently set to 1.
+                MAGEnabled = true;
+                MAG.AssignLimits(1, 1, 1);
 
                 // Add the Cyberzombie Lifestyle if it is not already taken.
                 if (Lifestyles.All(x => x.BaseLifestyle != "Cyberzombie Lifestyle Addition"))

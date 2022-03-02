@@ -303,9 +303,7 @@ namespace Chummer
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
             using (EnterWriteLock.Enter(LockObject))
-            {
                 return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
-            }
         }
 
         public async ValueTask<Tuple<bool, TValue>> TryRemoveAsync(TKey key)
@@ -459,17 +457,19 @@ namespace Chummer
                                   Func<TKey, TValue, TValue> updateValueFactory)
         {
             TValue objReturn;
-            using (EnterWriteLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    _dicData[key] = objReturn;
+                    using (EnterWriteLock.Enter(LockObject))
+                        _dicData[key] = objReturn;
                 }
                 else
                 {
                     objReturn = addValueFactory(key);
-                    _dicData.Add(key, objReturn);
+                    using (EnterWriteLock.Enter(LockObject))
+                        _dicData.Add(key, objReturn);
                 }
             }
             return objReturn;
@@ -484,16 +484,17 @@ namespace Chummer
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
         public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    _dicData[key] = objNewValue;
+                    using (EnterWriteLock.Enter(LockObject))
+                        _dicData[key] = objNewValue;
                     return objNewValue;
                 }
-
-                _dicData.Add(key, addValue);
+                using (EnterWriteLock.Enter(LockObject))
+                    _dicData.Add(key, addValue);
                 return addValue;
             }
         }
@@ -509,23 +510,34 @@ namespace Chummer
                                   Func<TKey, TValue, TValue> updateValueFactory)
         {
             TValue objReturn;
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    _dicData[key] = objReturn;
+                    EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    try
+                    {
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
                 }
                 else
                 {
                     objReturn = addValueFactory(key);
-                    _dicData.Add(key, objReturn);
+                    EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    try
+                    {
+                        _dicData.Add(key, objReturn);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync();
             }
             return objReturn;
         }
@@ -539,22 +551,33 @@ namespace Chummer
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
         public async ValueTask<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
+                EnterWriteLock objLocker;
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    _dicData[key] = objNewValue;
+                    objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    try
+                    {
+                        _dicData[key] = objNewValue;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
                     return objNewValue;
                 }
-
-                _dicData.Add(key, addValue);
+                objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                try
+                {
+                    _dicData.Add(key, addValue);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
                 return addValue;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync();
             }
         }
 

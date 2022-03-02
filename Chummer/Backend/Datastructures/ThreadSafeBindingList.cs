@@ -190,29 +190,8 @@ namespace Chummer
         /// <inheritdoc cref="BindingList{T}.IndexOf" />
         public new int IndexOf(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject))
                 return base.IndexOf(item);
-        }
-
-        /// <inheritdoc cref="BindingList{T}.ResetBindings" />
-        public new void ResetBindings()
-        {
-            using (EnterWriteLock.Enter(LockObject))
-                base.ResetBindings();
-        }
-
-        /// <inheritdoc cref="BindingList{T}.ResetItem" />
-        public new void ResetItem(int position)
-        {
-            using (EnterWriteLock.Enter(LockObject))
-                base.ResetItem(position);
-        }
-
-        /// <inheritdoc cref="BindingList{T}.AddNew" />
-        public new T AddNew()
-        {
-            using (EnterWriteLock.Enter(LockObject))
-                return base.AddNew();
         }
 
         /// <inheritdoc />

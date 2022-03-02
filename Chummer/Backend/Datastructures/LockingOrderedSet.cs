@@ -87,8 +87,8 @@ namespace Chummer
                 if (!_setData.Add(item))
                     return false;
                 _lstOrderedData.Add(item);
-                return true;
             }
+            return true;
         }
 
         public async ValueTask<bool> AddAsync(T item)
@@ -99,20 +99,20 @@ namespace Chummer
                 if (!_setData.Add(item))
                     return false;
                 _lstOrderedData.Add(item);
-                return true;
             }
             finally
             {
                 await objLocker.DisposeAsync();
             }
+            return true;
         }
 
         /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
+            List<T> lstOther = other.ToList();
             using (EnterWriteLock.Enter(LockObject))
             {
-                List<T> lstOther = other.ToList();
                 _lstOrderedData.AddRange(lstOther.Where(objItem => !_setData.Contains(objItem)));
                 _setData.UnionWith(lstOther);
             }
@@ -121,9 +121,9 @@ namespace Chummer
         /// <inheritdoc />
         public void IntersectWith(IEnumerable<T> other)
         {
+            HashSet<T> setOther = other.ToHashSet();
             using (EnterWriteLock.Enter(LockObject))
             {
-                HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => !setOther.Contains(objItem));
                 _setData.IntersectWith(setOther);
             }
@@ -132,9 +132,9 @@ namespace Chummer
         /// <inheritdoc />
         public void ExceptWith(IEnumerable<T> other)
         {
+            HashSet<T> setOther = other.ToHashSet();
             using (EnterWriteLock.Enter(LockObject))
             {
-                HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
                 _setData.ExceptWith(setOther);
             }
@@ -143,9 +143,9 @@ namespace Chummer
         /// <inheritdoc />
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
+            HashSet<T> setOther = other.ToHashSet();
             using (EnterWriteLock.Enter(LockObject))
             {
-                HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
                 _lstOrderedData.AddRange(setOther.Where(objItem => !_setData.Contains(objItem)));
                 _setData.SymmetricExceptWith(setOther);
@@ -196,10 +196,10 @@ namespace Chummer
         
         public async ValueTask UnionWithAsync(IEnumerable<T> other)
         {
+            List<T> lstOther = other.ToList();
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                List<T> lstOther = other.ToList();
                 _lstOrderedData.AddRange(lstOther.Where(objItem => !_setData.Contains(objItem)));
                 _setData.UnionWith(lstOther);
             }
@@ -211,10 +211,10 @@ namespace Chummer
         
         public async ValueTask IntersectWithAsync(IEnumerable<T> other)
         {
+            HashSet<T> setOther = other.ToHashSet();
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => !setOther.Contains(objItem));
                 _setData.IntersectWith(setOther);
             }
@@ -226,10 +226,10 @@ namespace Chummer
         
         public async ValueTask ExceptWithAsync(IEnumerable<T> other)
         {
+            HashSet<T> setOther = other.ToHashSet();
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
                 _setData.ExceptWith(setOther);
             }
@@ -241,10 +241,10 @@ namespace Chummer
         
         public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other)
         {
+            HashSet<T> setOther = other.ToHashSet();
             EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
             try
             {
-                HashSet<T> setOther = other.ToHashSet();
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
                 _lstOrderedData.AddRange(setOther.Where(objItem => !_setData.Contains(objItem)));
                 _setData.SymmetricExceptWith(setOther);
@@ -401,8 +401,8 @@ namespace Chummer
                 if (!_setData.Remove(item))
                     return false;
                 _lstOrderedData.Remove(item);
-                return true;
             }
+            return true;
         }
 
         public async ValueTask<bool> RemoveAsync(T item)
@@ -413,12 +413,12 @@ namespace Chummer
                 if (!_setData.Remove(item))
                     return false;
                 _lstOrderedData.Remove(item);
-                return true;
             }
             finally
             {
                 await objLocker.DisposeAsync();
             }
+            return true;
         }
 
         /// <inheritdoc />
@@ -603,12 +603,18 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort()" />
         public void Sort()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (_setData.Comparer is IComparer<T> comparer)
-                    _lstOrderedData.Sort(comparer);
+                {
+                    using (EnterWriteLock.Enter(LockObject))
+                        _lstOrderedData.Sort(comparer);
+                }
                 else
-                    _lstOrderedData.Sort();
+                {
+                    using (EnterWriteLock.Enter(LockObject))
+                        _lstOrderedData.Sort();
+                }
             }
         }
 
@@ -636,17 +642,32 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort()" />
         public async ValueTask SortAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (_setData.Comparer is IComparer<T> comparer)
-                    _lstOrderedData.Sort(comparer);
+                {
+                    EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    try
+                    {
+                        _lstOrderedData.Sort(comparer);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
+                }
                 else
-                    _lstOrderedData.Sort();
-            }
-            finally
-            {
-                await objLocker.DisposeAsync();
+                {
+                    EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    try
+                    {
+                        _lstOrderedData.Sort();
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
+                }
             }
         }
 
