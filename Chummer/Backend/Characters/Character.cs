@@ -9758,8 +9758,7 @@ namespace Chummer
 
             if(!(nodOldNode.Tag is Location objLocation))
                 return;
-            using (EnterWriteLock.Enter(LockObject))
-                GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
+            GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -9785,8 +9784,7 @@ namespace Chummer
 
             if (!(nodLifestyleNode.Tag is Lifestyle objLifestyle))
                 return;
-            using (EnterWriteLock.Enter(LockObject))
-                Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
+            Lifestyles.Move(Lifestyles.IndexOf(objLifestyle), intNewIndex);
         }
 
         /// <summary>
@@ -9846,8 +9844,7 @@ namespace Chummer
 
             if (!(nodOldNode.Tag is Location objLocation))
                 return;
-            using (EnterWriteLock.Enter(LockObject))
-                ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
+            ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -9907,8 +9904,7 @@ namespace Chummer
 
             if (!(nodOldNode.Tag is Location objLocation))
                 return;
-            using (EnterWriteLock.Enter(LockObject))
-                WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
+            WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
         }
 
         /// <summary>
@@ -10075,8 +10071,7 @@ namespace Chummer
                 return;
 
             string strLocation = nodOldNode.Tag.ToString();
-            using (EnterWriteLock.Enter(LockObject))
-                ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
+            ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);
         }
 
         #endregion
@@ -10907,7 +10902,7 @@ namespace Chummer
         /// <summary>
         /// Character's list of priority bonus skills.
         /// </summary>
-        public List<string> PriorityBonusSkillList
+        public ThreadSafeList<string> PriorityBonusSkillList
         {
             get
             {
@@ -19770,7 +19765,7 @@ namespace Chummer
                 {
                     if (_strWalk == value)
                         return;
-                    using (EnterReadLock.Enter(LockObject))
+                    using (EnterWriteLock.Enter(LockObject))
                     {
                         _strWalk = value;
                         OnPropertyChanged();
