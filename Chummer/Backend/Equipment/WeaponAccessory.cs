@@ -69,6 +69,7 @@ namespace Chummer.Backend.Equipment
         private string _strDicePool = string.Empty;
         private string _strRatingLabel = "String_Rating";
         private int _intAccuracy;
+        private int _intBonusDice;
         private int _intMaxRating;
         private int _intRating;
         private int _intRCGroup;
@@ -250,6 +251,7 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
             objXmlAccessory.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
             objXmlAccessory.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+            objXmlAccessory.TryGetInt32FieldQuickly("bonusdice", ref _intBonusDice);
             objXmlAccessory.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
             objXmlAccessory.TryGetStringFieldQuickly("damagetype", ref _strDamageType);
             objXmlAccessory.TryGetStringFieldQuickly("damage", ref _strDamage);
@@ -393,6 +395,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("bonusdice", _intBonusDice.ToString(GlobalSettings.InvariantCultureInfo));
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
@@ -468,6 +471,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
             objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+            objNode.TryGetInt32FieldQuickly("bonusdice", ref _intBonusDice);
             if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
             {
                 // Loading older save before maxrating was tracked for Weapon Accessories
@@ -743,6 +747,11 @@ namespace Chummer.Backend.Equipment
         /// Accuracy.
         /// </summary>
         public int Accuracy => _intAccuracy;
+
+        /// <summary>
+        /// Bonus Dice.
+        /// </summary>
+        public int BonusDice => _intBonusDice;
 
         /// <summary>
         /// Accessory modifies Reach by this value.
@@ -1407,10 +1416,10 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (string.IsNullOrEmpty(DicePoolString))
-                    return 0;
+                    return _intBonusDice;
                 int.TryParse(DicePoolString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                     out int intReturn);
-                return intReturn;
+                return intReturn + _intBonusDice;
             }
         }
 

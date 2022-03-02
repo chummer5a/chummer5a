@@ -60,6 +60,7 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoCategory = string.Empty;
         private string _strWeaponType = string.Empty;
         private int _intConceal;
+        private int _intBonusDice;
         private readonly List<Clip> _lstAmmo = new List<Clip>(1);
 
         //private int _intAmmoRemaining = 0;
@@ -372,6 +373,7 @@ namespace Chummer.Backend.Equipment
                 _intAmmoSlots = 1;
             objXmlWeapon.TryGetStringFieldQuickly("rc", ref _strRC);
             objXmlWeapon.TryGetInt32FieldQuickly("conceal", ref _intConceal);
+            objXmlWeapon.TryGetInt32FieldQuickly("bonusdice", ref _intBonusDice);
             objXmlWeapon.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlWeapon.TryGetStringFieldQuickly("cost", ref _strCost);
             objXmlWeapon.TryGetStringFieldQuickly("weight", ref _strWeight);
@@ -729,6 +731,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
 
             objWriter.WriteElementString("conceal", _intConceal.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("bonusdice", _intBonusDice.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("avail", _strAvail);
             objWriter.WriteElementString("cost", _strCost);
             objWriter.WriteElementString("weight", _strWeight);
@@ -964,6 +967,7 @@ namespace Chummer.Backend.Equipment
                 _intAmmoSlots = 1;
             objNode.TryGetStringFieldQuickly("sizecategory", ref _strSizeCategory);
             objNode.TryGetInt32FieldQuickly("conceal", ref _intConceal);
+            objNode.TryGetInt32FieldQuickly("bonusdice", ref _intBonusDice);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
@@ -1984,6 +1988,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _intConceal;
             set => _intConceal = value;
+        }
+
+        /// <summary>
+        /// Bonus Dice.
+        /// </summary>
+        public int BonusDice
+        {
+            get => _intBonusDice;
+            set => _intBonusDice = value;
         }
 
         /// <summary>
@@ -4905,7 +4918,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intDicePool = 0;
+                int intDicePool = _intBonusDice;
                 decimal decDicePoolModifier = WeaponAccessories.Where(a => a.Equipped).Sum(a => a.DicePool);
                 switch (FireMode)
                 {
@@ -6694,7 +6707,7 @@ namespace Chummer.Backend.Equipment
                                 if (xmlTestNode != null)
                                 {
                                     //Add to set for O(N log M) runtime instead of O(N * M)
-                                    
+
                                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> setForbiddenAccessory))
                                     {
@@ -7208,7 +7221,7 @@ namespace Chummer.Backend.Equipment
 
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty))
                 return false;
-            
+
             XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
             if (xmlTestNode != null)
             {
