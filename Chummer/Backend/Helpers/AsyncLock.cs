@@ -170,12 +170,16 @@ namespace Chummer
                 if (_objNextSemaphore != _objAsyncLock._objCurrentSemaphore.Value)
                 {
                     if (_objAsyncLock._objCurrentSemaphore.Value == _objCurrentSemaphore)
-                        throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
+                        throw new InvalidOperationException(
+                            "_objNextSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
                     if (_objAsyncLock._objCurrentSemaphore.Value == null)
-                        throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
-                                                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                                                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
+                        throw new InvalidOperationException(
+                            "_objNextSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
+                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
+                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
                     throw new InvalidOperationException("_objNextSemaphore was expected to be the current semaphore");
+                }
+
                 _objAsyncLock._objCurrentSemaphore.Value
                     = _objCurrentSemaphore == _objAsyncLock._objTopLevelSemaphore ? null : _objCurrentSemaphore;
                 if (Utils.EverDoEvents)
