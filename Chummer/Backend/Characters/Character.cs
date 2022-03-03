@@ -575,7 +575,7 @@ namespace Chummer
 
         public void RefreshAttributeBindings()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // First remove all existing bindings
                 foreach (CharacterAttrib objAttribute in AttributeSection.Attributes)
@@ -2055,7 +2055,7 @@ namespace Chummer
         /// </summary>
         public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null, XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null, string strSelectedPossessionMethod = "")
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (objXmlMetatype == null)
                     throw new ArgumentNullException(nameof(objXmlMetatype));
@@ -7971,7 +7971,7 @@ namespace Chummer
                 if (Program.OpenCharacters.Contains(this)
                     || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
                     return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
-                using (EnterWriteLock.Enter(LockObject)) // Wait for all pending locks to get freed before disposing
+                using (LockObject.EnterWriteLock()) // Wait for all pending locks to get freed before disposing
                 {
                     IsDisposed = true;
                     ImprovementManager.ClearCachedValues(this);
@@ -8164,7 +8164,7 @@ namespace Chummer
         /// </summary>
         public void ResetCharacter()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 _intFreeSpells = 0;
                 _intCFPLimit = 0;
@@ -8887,7 +8887,7 @@ namespace Chummer
 
         public void CleanUpOrphanedImprovements()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 int intNewImprovementCount = 0;
                 int intOldImprovementCount = Improvements.Count;
@@ -9187,7 +9187,7 @@ namespace Chummer
                 });
             }
 
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (eResult != DialogResult.OK)
                 {
@@ -9693,7 +9693,7 @@ namespace Chummer
             if(!blnAllowMove)
                 return;
 
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Remove the Gear from the character.
                 if (objGear.Parent is IHasChildren<Gear> parent)
@@ -9734,7 +9734,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 switch (objNewParent.Tag)
                 {
@@ -9820,7 +9820,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 switch (objNewParent.Tag)
                 {
@@ -9880,7 +9880,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 switch (objNewParent.Tag)
                 {
@@ -9940,7 +9940,7 @@ namespace Chummer
             while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                 objNewParent = objNewParent.Parent;
 
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 switch (objNewParent.Tag)
                 {
@@ -9986,7 +9986,7 @@ namespace Chummer
                 if (objGear == null)
                     return;
 
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     if (nodDestination.Tag is Gear objDestinationGear)
                     {
@@ -10057,7 +10057,7 @@ namespace Chummer
             while (objNewParent.Level > 0)
                 objNewParent = objNewParent.Parent;
 
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 objImprovement.CustomGroup = objNewParent.Tag.ToString() == "Node_SelectedImprovements"
                     ? string.Empty
@@ -10111,7 +10111,7 @@ namespace Chummer
                     0)
                 {
                     // Run through all of the Spells and remove their Improvements.
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         for (int i = Spells.Count - 1; i >= 0; --i)
                         {
@@ -10133,7 +10133,7 @@ namespace Chummer
                     }
                 }
 
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     for (int i = Spirits.Count - 1; i >= 0; --i)
                     {
@@ -10155,7 +10155,7 @@ namespace Chummer
         /// </summary>
         public void ClearAdeptPowers()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Run through all powers and remove the ones not added by improvements or foci
                 for (int i = Powers.Count - 1; i >= 0; --i)
@@ -10182,7 +10182,7 @@ namespace Chummer
         /// </summary>
         public void ClearResonance()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Run through all of the Complex Forms and remove their Improvements.
                 for (int i = ComplexForms.Count - 1; i >= 0; --i)
@@ -10219,7 +10219,7 @@ namespace Chummer
         /// </summary>
         public void ClearAdvancedPrograms()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Run through all advanced programs and remove the ones not added by improvements
                 for (int i = AIPrograms.Count - 1; i >= 0; --i)
@@ -10264,7 +10264,7 @@ namespace Chummer
                     }
                 }
 
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     foreach (Cyberware objCyberware in Cyberware
                                  .Where(x => x.SourceID != Backend.Equipment.Cyberware.EssenceHoleGUID
@@ -10305,7 +10305,7 @@ namespace Chummer
         /// </summary>
         public void ClearCritterPowers()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 for (int i = CritterPowers.Count - 1; i >= 0; --i)
                 {
@@ -10329,7 +10329,7 @@ namespace Chummer
         /// </summary>
         public void ClearInitiations()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Do not update grade numbers until after we're done processing everything
                 _blnClearingInitiations = true;
@@ -10369,7 +10369,7 @@ namespace Chummer
                 {
                     if (ReferenceEquals(_objSettings, value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         bool blnActuallyDifferentSettings = !_objSettings.HasIdenticalSettings(value);
                         if (_objSettings != null)
@@ -10400,7 +10400,7 @@ namespace Chummer
                 {
                     if (_strFileName == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strFileName = value;
                         OnPropertyChanged();
@@ -10438,7 +10438,7 @@ namespace Chummer
                 {
                     if (_blnCreated == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnCreated = value;
                         OnPropertyChanged();
@@ -10464,7 +10464,7 @@ namespace Chummer
                 {
                     if (_strName == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strName = value;
                         OnPropertyChanged();
@@ -10517,7 +10517,7 @@ namespace Chummer
                     }
                     else
                     {
-                        using (EnterWriteLock.Enter(LockObject))
+                        using (LockObject.EnterWriteLock())
                             Mugshots.Add(value);
                         MainMugshotIndex = Mugshots.Count - 1;
                     }
@@ -10552,7 +10552,7 @@ namespace Chummer
                 {
                     if (_intMainMugshotIndex == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intMainMugshotIndex = value;
                         OnPropertyChanged();
@@ -10617,7 +10617,7 @@ namespace Chummer
         public void LoadMugshots(XPathNavigator xmlSavedNode)
         {
             // Mugshots
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
@@ -10750,7 +10750,7 @@ namespace Chummer
                     if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
                             value, out CharacterSettings objNewSettings))
                         throw new InvalidOperationException(nameof(SettingsKey));
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strSettingsKey = value;
                         OnPropertyChanged();
@@ -10777,7 +10777,7 @@ namespace Chummer
                 {
                     if (_strPriorityMetatype == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPriorityMetatype = value;
                         OnPropertyChanged();
@@ -10803,7 +10803,7 @@ namespace Chummer
                 {
                     if (_strPriorityAttributes == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPriorityAttributes = value;
                         OnPropertyChanged();
@@ -10829,7 +10829,7 @@ namespace Chummer
                 {
                     if (_strPrioritySpecial == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPrioritySpecial = value;
                         OnPropertyChanged();
@@ -10855,7 +10855,7 @@ namespace Chummer
                 {
                     if (_strPrioritySkills == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPrioritySkills = value;
                         OnPropertyChanged();
@@ -10881,7 +10881,7 @@ namespace Chummer
                 {
                     if (_strPriorityResources == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPriorityResources = value;
                         OnPropertyChanged();
@@ -10907,7 +10907,7 @@ namespace Chummer
                 {
                     if (_strPriorityTalent == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPriorityTalent = value;
                         OnPropertyChanged();
@@ -10944,7 +10944,7 @@ namespace Chummer
                 {
                     if (_strGender == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strGender = value;
                         OnPropertyChanged();
@@ -11004,7 +11004,7 @@ namespace Chummer
                 {
                     if (_strAge == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strAge = value;
                         OnPropertyChanged();
@@ -11029,7 +11029,7 @@ namespace Chummer
                 {
                     if (_strEyes == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strEyes = value;
                         OnPropertyChanged();
@@ -11054,7 +11054,7 @@ namespace Chummer
                 {
                     if (_strHeight == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strHeight = value;
                         OnPropertyChanged();
@@ -11079,7 +11079,7 @@ namespace Chummer
                 {
                     if (_strWeight == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strWeight = value;
                         OnPropertyChanged();
@@ -11104,7 +11104,7 @@ namespace Chummer
                 {
                     if (_strSkin == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strSkin = value;
                         OnPropertyChanged();
@@ -11129,7 +11129,7 @@ namespace Chummer
                 {
                     if (_strHair == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strHair = value;
                         OnPropertyChanged();
@@ -11154,7 +11154,7 @@ namespace Chummer
                 {
                     if (_strDescription == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         string strOldText = _strDescription.RtfToPlainText();
                         string strOldHtml = _strDescription.RtfToHtml();
@@ -11187,7 +11187,7 @@ namespace Chummer
                 {
                     if (_strBackground == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         string strOldText = _strBackground.RtfToPlainText();
                         string strOldHtml = _strBackground.RtfToHtml();
@@ -11220,7 +11220,7 @@ namespace Chummer
                 {
                     if (_strConcept == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         string strOldText = _strConcept.RtfToPlainText();
                         string strOldHtml = _strConcept.RtfToHtml();
@@ -11253,7 +11253,7 @@ namespace Chummer
                 {
                     if (_strNotes == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         string strOldText = _strNotes.RtfToPlainText();
                         string strOldHtml = _strNotes.RtfToHtml();
@@ -11286,7 +11286,7 @@ namespace Chummer
                 {
                     if (_strGameNotes == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         string strOldText = _strGameNotes.RtfToPlainText();
                         string strOldHtml = _strGameNotes.RtfToHtml();
@@ -11319,7 +11319,7 @@ namespace Chummer
                 {
                     if (_strPrimaryArm == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPrimaryArm = value;
                         OnPropertyChanged();
@@ -11345,7 +11345,7 @@ namespace Chummer
                 {
                     if (_strPlayerName == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPlayerName = value;
                         OnPropertyChanged();
@@ -11371,7 +11371,7 @@ namespace Chummer
                 {
                     if (_strAlias == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strAlias = value;
                         OnPropertyChanged();
@@ -11415,7 +11415,7 @@ namespace Chummer
                 {
                     if (_intStreetCred == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intStreetCred = value;
                         OnPropertyChanged();
@@ -11440,7 +11440,7 @@ namespace Chummer
                 {
                     if (_intBurntStreetCred == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intBurntStreetCred = value;
                         OnPropertyChanged();
@@ -11466,7 +11466,7 @@ namespace Chummer
                 {
                     if (_intNotoriety == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intNotoriety = value;
                         OnPropertyChanged();
@@ -11491,7 +11491,7 @@ namespace Chummer
                 {
                     if (_intPublicAwareness == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intPublicAwareness = value;
                         OnPropertyChanged();
@@ -11511,7 +11511,7 @@ namespace Chummer
                     return true;
                 }
 
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     int intCurrentTotalAstralReputation = TotalAstralReputation;
                     List<Improvement> lstCurrentAstralReputationImprovements = Improvements
@@ -11618,7 +11618,7 @@ namespace Chummer
                 {
                     if (_intBaseAstralReputation == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intBaseAstralReputation = value;
                         OnPropertyChanged();
@@ -11688,7 +11688,7 @@ namespace Chummer
                 {
                     if (_intBaseWildReputation == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intBaseWildReputation = value;
                         OnPropertyChanged();
@@ -11720,7 +11720,7 @@ namespace Chummer
                     {
                         if (objVehicle.PhysicalCMFilled != value)
                         {
-                            using (EnterWriteLock.Enter(LockObject))
+                            using (LockObject.EnterWriteLock())
                             {
                                 objVehicle.PhysicalCMFilled = value;
                                 OnPropertyChanged();
@@ -11729,7 +11729,7 @@ namespace Chummer
                     }
                     else if (_intPhysicalCMFilled != value)
                     {
-                        using (EnterWriteLock.Enter(LockObject))
+                        using (LockObject.EnterWriteLock())
                         {
                             _intPhysicalCMFilled = value;
                             OnPropertyChanged();
@@ -11766,7 +11766,7 @@ namespace Chummer
                         // A.I. do not have a Stun Condition Monitor, but they do have a Matrix Condition Monitor if they are in their home node.
                         if (HomeNode.MatrixCMFilled != value)
                         {
-                            using (EnterWriteLock.Enter(LockObject))
+                            using (LockObject.EnterWriteLock())
                             {
                                 HomeNode.MatrixCMFilled = value;
                                 OnPropertyChanged();
@@ -11775,7 +11775,7 @@ namespace Chummer
                     }
                     else if (_intStunCMFilled != value)
                     {
-                        using (EnterWriteLock.Enter(LockObject))
+                        using (LockObject.EnterWriteLock())
                         {
                             _intStunCMFilled = value;
                             OnPropertyChanged();
@@ -11811,7 +11811,7 @@ namespace Chummer
                 {
                     if (_blnIgnoreRules == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnIgnoreRules = value;
                         OnPropertyChanged();
@@ -11873,7 +11873,7 @@ namespace Chummer
                 {
                     if (_intContactPointsUsed == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intContactPointsUsed = value;
                         OnPropertyChanged();
@@ -12035,7 +12035,7 @@ namespace Chummer
                 {
                     if (_intCFPLimit == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intCFPLimit = value;
                         OnPropertyChanged();
@@ -12060,7 +12060,7 @@ namespace Chummer
                 {
                     if (_intAINormalProgramLimit == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intAINormalProgramLimit = value;
                         OnPropertyChanged();
@@ -12085,7 +12085,7 @@ namespace Chummer
                 {
                     if (_intAIAdvancedProgramLimit == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intAIAdvancedProgramLimit = value;
                         OnPropertyChanged();
@@ -12110,7 +12110,7 @@ namespace Chummer
                 {
                     if (_intFreeSpells == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intFreeSpells = value;
                         OnPropertyChanged();
@@ -12135,7 +12135,7 @@ namespace Chummer
                 {
                     if (_intKarma == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intKarma = value;
                         OnPropertyChanged();
@@ -12169,7 +12169,7 @@ namespace Chummer
                 {
                     if (_intSpecial == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intSpecial = value;
                         OnPropertyChanged();
@@ -12194,7 +12194,7 @@ namespace Chummer
                 {
                     if (_intTotalSpecial == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intTotalSpecial = value;
                         OnPropertyChanged();
@@ -12219,7 +12219,7 @@ namespace Chummer
                 {
                     if (_intAttributes == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intAttributes = value;
                         OnPropertyChanged();
@@ -12244,7 +12244,7 @@ namespace Chummer
                 {
                     if (_intTotalAttributes == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intTotalAttributes = value;
                         OnPropertyChanged();
@@ -12345,7 +12345,7 @@ namespace Chummer
                 {
                     if (_intEdgeUsed == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intEdgeUsed = value;
                         OnPropertyChanged();
@@ -12395,7 +12395,7 @@ namespace Chummer
                 {
                     if (_blnIsCritter == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnIsCritter = value;
                         OnPropertyChanged();
@@ -12446,7 +12446,7 @@ namespace Chummer
                 {
                     if (_blnPossessed == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnPossessed = value;
                         OnPropertyChanged();
@@ -12912,7 +12912,7 @@ namespace Chummer
                 {
                     if (_blnMAGEnabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnMAGEnabled = value;
                         if (IsLoading)
@@ -13262,7 +13262,7 @@ namespace Chummer
                     int intNewValue = Math.Min(value, MAG.TotalValue);
                     if (_intMAGAdept == intNewValue)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intMAGAdept = intNewValue;
                         OnPropertyChanged();
@@ -13343,7 +13343,7 @@ namespace Chummer
                 {
                     if (_objTradition == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _objTradition = value;
                         OnPropertyChanged();
@@ -13370,7 +13370,7 @@ namespace Chummer
                     if (_intInitiateGrade == value)
                         return;
                     bool blnFirstInitiation = _intInitiateGrade == 0;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intInitiateGrade = value;
                         // Remove any existing Initiation Improvements.
@@ -13490,7 +13490,7 @@ namespace Chummer
                 {
                     if (_blnRESEnabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnRESEnabled = value;
                         if (IsLoading)
@@ -13758,7 +13758,7 @@ namespace Chummer
                 {
                     if (_blnDEPEnabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnDEPEnabled = value;
                         if (IsLoading)
@@ -13984,7 +13984,7 @@ namespace Chummer
                     if (_intSubmersionGrade == value)
                         return;
                     bool blnFirstSubmersion = _intSubmersionGrade == 0;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intSubmersionGrade = value;
                         // Remove any existing Submersion Improvements.
@@ -14094,7 +14094,7 @@ namespace Chummer
                 {
                     if (_blnGroupMember == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnGroupMember = value;
                         OnPropertyChanged();
@@ -14120,7 +14120,7 @@ namespace Chummer
                 {
                     if (_strGroupName == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strGroupName = value;
                         OnPropertyChanged();
@@ -14145,7 +14145,7 @@ namespace Chummer
                 {
                     if (_strGroupNotes == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strGroupNotes = value;
                         OnPropertyChanged();
@@ -14170,7 +14170,7 @@ namespace Chummer
                 {
                     if (_decEssenceAtSpecialStart == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _decEssenceAtSpecialStart = value;
                         RefreshEssenceLossImprovements();
@@ -14183,7 +14183,7 @@ namespace Chummer
 
         public void ResetCachedEssence()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _decCachedEssence = decimal.MinValue;
         }
 
@@ -14311,7 +14311,7 @@ namespace Chummer
 
         public void IncreaseEssenceHole(int intCentiessence, bool blnOverflowIntoHole = true)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 Cyberware objAntiHole
                     = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
@@ -14385,7 +14385,7 @@ namespace Chummer
         /// <param name="blnOverflowIntoAntiHole">Should we increase or create an Essence Antihole to handle any overflow. Remember, Essence Holes are consumed first.</param>
         public void DecreaseEssenceHole(int intCentiessence, bool blnOverflowIntoAntiHole = true)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 Cyberware objHole
                     = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceHoleGUID);
@@ -16722,7 +16722,7 @@ namespace Chummer
                 {
                     if (_intCurrentCounterspellingDice == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intCurrentCounterspellingDice = value;
                         OnPropertyChanged();
@@ -16744,7 +16744,7 @@ namespace Chummer
                 {
                     if (_intCurrentLiftCarryHits == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intCurrentLiftCarryHits = value;
                         OnPropertyChanged();
@@ -18861,7 +18861,7 @@ namespace Chummer
                 {
                     if (_decNuyen == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _decNuyen = value;
                         OnPropertyChanged();
@@ -18883,7 +18883,7 @@ namespace Chummer
                 {
                     if (_decStolenNuyen == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _decStolenNuyen = value;
                         OnPropertyChanged();
@@ -18926,7 +18926,7 @@ namespace Chummer
                 {
                     if (_decStartingNuyen == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _decStartingNuyen = value;
                         OnPropertyChanged();
@@ -19019,7 +19019,7 @@ namespace Chummer
                     decimal decNewValue = Math.Max(Math.Min(value, TotalNuyenMaximumBP), 0);
                     if (_decNuyenBP == decNewValue)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _decNuyenBP = decNewValue;
                         OnPropertyChanged();
@@ -19401,7 +19401,7 @@ namespace Chummer
                 {
                     if (_strMetatype == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strMetatype = value;
                         OnPropertyChanged();
@@ -19423,7 +19423,7 @@ namespace Chummer
                 {
                     if (_guiMetatype == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _guiMetatype = value;
                         OnPropertyChanged();
@@ -19478,7 +19478,7 @@ namespace Chummer
                 {
                     if (_strMetavariant == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strMetavariant = value;
                         OnPropertyChanged();
@@ -19500,7 +19500,7 @@ namespace Chummer
                 {
                     if (_guiMetavariant == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _guiMetavariant = value;
                         OnPropertyChanged();
@@ -19602,7 +19602,7 @@ namespace Chummer
                     if (_strMetatypeCategory == value)
                         return;
                     bool blnDoCyberzombieRefresh = _strMetatypeCategory == "Cyberzombie" || value == "Cyberzombie";
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strMetatypeCategory = value;
                         OnPropertyChanged();
@@ -19678,7 +19678,7 @@ namespace Chummer
                 {
                     if (_strMovement == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strMovement = value;
                         OnPropertyChanged();
@@ -19712,7 +19712,7 @@ namespace Chummer
                 {
                     if (_strRun == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strRun = value;
                         OnPropertyChanged();
@@ -19748,7 +19748,7 @@ namespace Chummer
                 {
                     if (_strRunAlt == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strRunAlt = value;
                         OnPropertyChanged();
@@ -19782,7 +19782,7 @@ namespace Chummer
                 {
                     if (_strWalk == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strWalk = value;
                         OnPropertyChanged();
@@ -19818,7 +19818,7 @@ namespace Chummer
                 {
                     if (_strWalkAlt == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strWalkAlt = value;
                         OnPropertyChanged();
@@ -19852,7 +19852,7 @@ namespace Chummer
                 {
                     if (_strSprint == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strSprint = value;
                         OnPropertyChanged();
@@ -19888,7 +19888,7 @@ namespace Chummer
                 {
                     if (_strSprintAlt == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strSprintAlt = value;
                         OnPropertyChanged();
@@ -20213,7 +20213,7 @@ namespace Chummer
                 {
                     if (_intMetatypeBP == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intMetatypeBP = value;
                         OnPropertyChanged();
@@ -20296,7 +20296,7 @@ namespace Chummer
                 {
                     if (_blnAdeptEnabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAdeptEnabled = value;
                         if (!value)
@@ -20326,7 +20326,7 @@ namespace Chummer
                 {
                     if (_blnMagicianEnabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnMagicianEnabled = value;
                         if (!value)
@@ -20356,7 +20356,7 @@ namespace Chummer
                 {
                     if (_blnTechnomancerEnabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnTechnomancerEnabled = value;
                         if (!value)
@@ -20386,7 +20386,7 @@ namespace Chummer
                 {
                     if (_blnPsycheActive == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnPsycheActive = value;
                         OnPropertyChanged();
@@ -20411,7 +20411,7 @@ namespace Chummer
                 {
                     if (_blnAdvancedProgramsEnabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnAdvancedProgramsEnabled = value;
                         if (!value)
@@ -20441,7 +20441,7 @@ namespace Chummer
                 {
                     if (_blnCyberwareDisabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnCyberwareDisabled = value;
                         if (value)
@@ -20513,7 +20513,7 @@ namespace Chummer
                 {
                     if (_blnInitiationDisabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnInitiationDisabled = value;
                         if (value)
@@ -20543,7 +20543,7 @@ namespace Chummer
                 {
                     if (_blnCritterEnabled == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnCritterEnabled = value;
                         if (!value)
@@ -20587,7 +20587,7 @@ namespace Chummer
                         setDealerConnectionMaps.Add(objImprovement.UniqueName);
                     }
 
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         foreach (Vehicle objVehicle in Vehicles)
                         {
@@ -20662,7 +20662,7 @@ namespace Chummer
                         setWeaponBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("weapons.xml")
                                                               .SelectSingleNodeAndCacheExpression("/chummer")));
 
-                        using (EnterWriteLock.Enter(LockObject))
+                        using (LockObject.EnterWriteLock())
                         {
                             foreach (Armor objArmor in Armor)
                             {
@@ -20814,7 +20814,7 @@ namespace Chummer
                 }
                 else
                 {
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         // Forcefully disable all Black Market Discounts that don't apply.
                         foreach (Armor objArmor in Armor)
@@ -20939,7 +20939,7 @@ namespace Chummer
                 {
                     if (_decPrototypeTranshuman == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _decPrototypeTranshuman = value;
                         OnPropertyChanged();
@@ -21200,14 +21200,14 @@ namespace Chummer
                                             && objImprovement.Enabled)
                                         {
                                             strForceValue = objImprovement.ImprovedName;
-                                            using (EnterWriteLock.Enter(LockObject))
+                                            using (LockObject.EnterWriteLock())
                                                 Improvements.Remove(objImprovement);
                                             break;
                                         }
                                     }
                                 }
 
-                                using (EnterWriteLock.Enter(LockObject))
+                                using (LockObject.EnterWriteLock())
                                 {
                                     // Convert the item to the new Quality class.
                                     Quality objQuality = new Quality(this);
@@ -21253,7 +21253,7 @@ namespace Chummer
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.SelectSingleNode(
                                                 "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
-                                        using (EnterWriteLock.Enter(LockObject))
+                                        using (LockObject.EnterWriteLock())
                                         {
                                             Quality objQuality = new Quality(this);
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
@@ -21292,7 +21292,7 @@ namespace Chummer
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.SelectSingleNode(
                                                 "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
-                                        using (EnterWriteLock.Enter(LockObject))
+                                        using (LockObject.EnterWriteLock())
                                         {
                                             Quality objQuality = new Quality(this);
                                             objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
@@ -21342,7 +21342,7 @@ namespace Chummer
                                                     xmlRootQualitiesNode.SelectSingleNode(
                                                         "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath()
                                                                           + ']');
-                                                using (EnterWriteLock.Enter(LockObject))
+                                                using (LockObject.EnterWriteLock())
                                                 {
                                                     Quality objQuality = new Quality(this);
                                                     objQuality.Create(objXmlQuality, QualitySource.Metatype,
@@ -21384,7 +21384,7 @@ namespace Chummer
                                                     xmlRootQualitiesNode.SelectSingleNode(
                                                         "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath()
                                                                           + ']');
-                                                using (EnterWriteLock.Enter(LockObject))
+                                                using (LockObject.EnterWriteLock())
                                                 {
                                                     Quality objQuality = new Quality(this);
                                                     objQuality.Create(objXmlQuality, QualitySource.Metatype,
@@ -21855,7 +21855,7 @@ namespace Chummer
 
             if(intRanks > 0)
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     for (int i = 0; i < intRanks; ++i)
                     {
@@ -21917,7 +21917,7 @@ namespace Chummer
                 {
                     if (_intInitPasses == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intInitPasses = value;
                         OnPropertyChanged();
@@ -22040,7 +22040,7 @@ namespace Chummer
                 {
                     if (_objActiveCommlink == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _objActiveCommlink = value;
                         OnPropertyChanged();
@@ -22067,7 +22067,7 @@ namespace Chummer
                 {
                     if (_objHomeNode == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _objHomeNode = value;
                         OnPropertyChanged();
@@ -22101,7 +22101,7 @@ namespace Chummer
 
         private bool RefreshRedlinerImprovements()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
@@ -22191,7 +22191,7 @@ namespace Chummer
 
         public void RefreshEssenceLossImprovements()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -23356,7 +23356,7 @@ namespace Chummer
 
         public void RefreshEncumbrance()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -23431,7 +23431,7 @@ namespace Chummer
 
         public void RefreshArmorEncumbrance()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -23455,7 +23455,7 @@ namespace Chummer
 
         public void RefreshWoundPenalties()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -23488,7 +23488,7 @@ namespace Chummer
         /// </summary>
         public bool RefreshSustainingPenalties()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
@@ -23600,7 +23600,7 @@ namespace Chummer
                 {
                     if (value == _intSustainingPenalty)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _intSustainingPenalty = value;
                         OnPropertyChanged();
@@ -23627,7 +23627,7 @@ namespace Chummer
                 {
                     if (_blnLoadAsDirty == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _blnLoadAsDirty = value;
                         OnPropertyChanged();
@@ -24492,7 +24492,7 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         if (setNamesOfChangedProperties.Contains(nameof(CharacterGrammaticGender)))
                         {
@@ -24697,7 +24697,7 @@ namespace Chummer
                         // If in create mode, update the Force for Spirits and Sprites (equal to Magician MAG Rating or RES Rating).
                         if (setNamesOfChangedProperties.Contains(nameof(MaxSpriteLevel)))
                         {
-                            using (EnterWriteLock.Enter(LockObject))
+                            using (LockObject.EnterWriteLock())
                             {
                                 foreach (Spirit objSpirit in Spirits)
                                 {
@@ -24709,7 +24709,7 @@ namespace Chummer
 
                         if (setNamesOfChangedProperties.Contains(nameof(MaxSpiritForce)))
                         {
-                            using (EnterWriteLock.Enter(LockObject))
+                            using (LockObject.EnterWriteLock())
                             {
                                 foreach (Spirit objSpirit in Spirits)
                                 {
@@ -27370,7 +27370,7 @@ namespace Chummer
                 {
                     if (_objCachedSourceDetail == default || _objCachedSourceDetail.Language != GlobalSettings.Language)
                     {
-                        using (EnterWriteLock.Enter(LockObject))
+                        using (LockObject.EnterWriteLock())
                         {
                             _objCachedSourceDetail = new SourceString(Source,
                                 DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
@@ -27399,7 +27399,7 @@ namespace Chummer
                 {
                     if (_strSource == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strSource = value;
                         OnPropertyChanged();
@@ -27424,7 +27424,7 @@ namespace Chummer
                 {
                     if (_strPage == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _strPage = value;
                         OnPropertyChanged();

@@ -64,7 +64,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Clear" />
         public void Clear()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _queData.Clear();
         }
 
@@ -99,7 +99,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.TrimExcess" />
         public void TrimExcess()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _queData.TrimExcess();
         }
 
@@ -134,7 +134,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Dequeue" />
         public T Dequeue()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _queData.Dequeue();
         }
 
@@ -155,7 +155,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Enqueue" />
         public void Enqueue(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _queData.Enqueue(item);
         }
 
@@ -177,7 +177,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (_queData.Count > 0)
                 {

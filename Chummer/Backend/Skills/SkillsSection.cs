@@ -52,7 +52,7 @@ namespace Chummer.Backend.Skills
 
         private void SkillGroupsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 SkillGroups[e.OldIndex].UnbindSkillGroup();
         }
 
@@ -61,7 +61,7 @@ namespace Chummer.Backend.Skills
             using (EnterReadLock.Enter(LockObject))
             {
                 Skill objSkill = Skills[e.OldIndex];
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     _dicSkills.Remove(objSkill.DictionaryKey);
                     if (!_dicSkillBackups.Values.Contains(objSkill))
@@ -75,7 +75,7 @@ namespace Chummer.Backend.Skills
             using (EnterReadLock.Enter(LockObject))
             {
                 KnowledgeSkill objSkill = KnowledgeSkills[e.OldIndex];
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     objSkill.PropertyChanged -= OnKnowledgeSkillPropertyChanged;
                     if (!_dicSkillBackups.Values.Contains(objSkill) && !KnowsoftSkills.Contains(objSkill))
@@ -98,7 +98,7 @@ namespace Chummer.Backend.Skills
 
         private void SkillsOnListChanged(object sender, ListChangedEventArgs e)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 switch (e.ListChangedType)
                 {
@@ -126,14 +126,14 @@ namespace Chummer.Backend.Skills
             switch (e.ListChangedType)
             {
                 case ListChangedType.Reset:
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
                             objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
                     }
                     goto case ListChangedType.ItemDeleted;
                 case ListChangedType.ItemAdded:
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         KnowledgeSkills[e.NewIndex].PropertyChanged += OnKnowledgeSkillPropertyChanged;
                     goto case ListChangedType.ItemDeleted;
                 case ListChangedType.ItemDeleted:
@@ -292,7 +292,7 @@ namespace Chummer.Backend.Skills
         internal void AddSkills(FilterOption eFilterOption, string strName = "")
         {
             List<Skill> lstSkillsToAdd = GetActiveSkillsFromData(eFilterOption, true, strName).ToList();
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 foreach (Skill objSkill in lstSkillsToAdd)
                 {
@@ -319,7 +319,7 @@ namespace Chummer.Backend.Skills
                 XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml")
                                                     .SelectSingleNode(
                                                         "/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
                     {
@@ -365,7 +365,7 @@ namespace Chummer.Backend.Skills
                     });
                 }
 
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                 {
                     for (int i = Skills.Count - 1; i >= 0; --i)
                     {
@@ -421,7 +421,7 @@ namespace Chummer.Backend.Skills
         {
             if (xmlSkillNode == null)
                 return;
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 using (CustomActivity opLoadCharSkills
                        = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
@@ -697,7 +697,7 @@ namespace Chummer.Backend.Skills
 
         internal void LoadFromHeroLab(XPathNavigator xmlSkillNode, CustomActivity parentActivity)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
                 {
@@ -943,7 +943,7 @@ namespace Chummer.Backend.Skills
 
         private void UpdateUndoList(XmlDocument xmlSkillOwnerDocument)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 //Hacky way of converting Expense entries to guid based skill identification
                 //specs already did?
@@ -1065,7 +1065,7 @@ namespace Chummer.Backend.Skills
 
         internal void Reset()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 _dicSkills.Clear();
                 _lstSkills.Clear();
@@ -1775,7 +1775,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public void Dispose()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 UnbindSkillsSection();
                 foreach (Skill objSkill in _lstSkills)

@@ -91,7 +91,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _dicData.Add(item.Key, item.Value);
         }
 
@@ -128,7 +128,7 @@ namespace Chummer
         /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
         public void Clear()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _dicData.Clear();
         }
 
@@ -246,7 +246,7 @@ namespace Chummer
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
                                                                            && _dicData.Remove(item.Key);
@@ -256,7 +256,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(TKey key)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _dicData.Remove(key);
         }
 
@@ -302,7 +302,7 @@ namespace Chummer
         public bool TryRemove(TKey key, out TValue value)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
         }
 
@@ -328,7 +328,7 @@ namespace Chummer
             TKey objKeyToTake = default;
             TValue objValue = default;
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (_dicData.Count > 0)
                 {
@@ -389,7 +389,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Add(TKey key, TValue value)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _dicData.Add(key, value);
         }
 
@@ -409,7 +409,7 @@ namespace Chummer
         public bool TryAdd(TKey key, TValue value)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (_dicData.ContainsKey(key))
                     return false;
@@ -462,13 +462,13 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _dicData[key] = objReturn;
                 }
                 else
                 {
                     objReturn = addValueFactory(key);
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _dicData.Add(key, objReturn);
                 }
             }
@@ -489,11 +489,11 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _dicData[key] = objNewValue;
                     return objNewValue;
                 }
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     _dicData.Add(key, addValue);
                 return addValue;
             }
@@ -613,7 +613,7 @@ namespace Chummer
                 {
                     if (_dicData.TryGetValue(key, out TValue objValue) && objValue.Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _dicData[key] = value;
                 }
             }

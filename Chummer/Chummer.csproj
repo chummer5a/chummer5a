@@ -462,7 +462,6 @@
       <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Backend\Helpers\EnterReadLock.cs" />
-    <Compile Include="Backend\Helpers\EnterWriteLock.cs" />
     <Compile Include="Backend\Helpers\FetchSafelyFromPool.cs" />
     <Compile Include="Backend\Interfaces\ICanBlackMarketDiscount.cs" />
     <Compile Include="Backend\Interfaces\ITranslatable.cs" />

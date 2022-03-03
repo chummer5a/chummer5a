@@ -1415,7 +1415,7 @@ namespace Chummer
                             }
                             else if (objCharacter != null)
                             {
-                                using (EnterWriteLock.Enter(objCharacter.LockObject))
+                                using (objCharacter.LockObject.EnterWriteLock())
                                 {
                                     if (objCharacter.PushText.TryTake(out string strText))
                                     {
@@ -1666,7 +1666,7 @@ namespace Chummer
             {
                 try
                 {
-                    using (EnterWriteLock.Enter(objCharacter.LockObject))
+                    using (objCharacter.LockObject.EnterWriteLock())
                         objImprovementMethod.Invoke(bonusNode);
                 }
                 catch (AbortedException)
@@ -1712,7 +1712,7 @@ namespace Chummer
             if (objImprovementList == null)
                 throw new ArgumentNullException(nameof(objImprovementList));
 
-            using (EnterWriteLock.Enter(objCharacter.LockObject))
+            using (objCharacter.LockObject.EnterWriteLock())
             {
                 foreach (Improvement objImprovement in objImprovementList)
                 {
@@ -2078,7 +2078,7 @@ namespace Chummer
             if (objImprovementList == null)
                 throw new ArgumentNullException(nameof(objImprovementList));
 
-            using (EnterWriteLock.Enter(objCharacter.LockObject))
+            using (objCharacter.LockObject.EnterWriteLock())
             {
                 foreach (Improvement objImprovement in objImprovementList)
                 {
@@ -2527,7 +2527,7 @@ namespace Chummer
             }
 
             decimal decReturn = 0;
-            using (EnterWriteLock.Enter(objCharacter.LockObject))
+            using (objCharacter.LockObject.EnterWriteLock())
             {
                 // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
 
@@ -3012,7 +3012,7 @@ namespace Chummer
             // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
             if (objCharacter != null)
             {
-                using (EnterWriteLock.Enter(objCharacter.LockObject))
+                using (objCharacter.LockObject.EnterWriteLock())
                 {
                     // Record the improvement.
                     // ReSharper disable once UseObjectOrCollectionInitializer
@@ -3080,7 +3080,7 @@ namespace Chummer
             Log.Debug("Rollback enter");
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
-                using (EnterWriteLock.Enter(objCharacter.LockObject))
+                using (objCharacter.LockObject.EnterWriteLock())
                 {
                     // Remove all of the Improvements that were added.
                     foreach (Improvement objTransactingImprovement in lstTransactions)

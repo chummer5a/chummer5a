@@ -3169,7 +3169,7 @@ namespace Chummer.Backend.Skills
 
         public void Remove()
         {
-            using (EnterWriteLock.Enter(CharacterObject.LockObject))
+            using (CharacterObject.LockObject.EnterWriteLock())
             {
                 SkillGroupObject?.Remove(this);
                 Dispose();

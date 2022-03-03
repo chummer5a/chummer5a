@@ -66,7 +66,7 @@ namespace Chummer
                 {
                     if (base[index].Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         base[index] = value;
                 }
             }
@@ -110,7 +110,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (base.Count > 0)
                 {
@@ -179,12 +179,12 @@ namespace Chummer
         {
             add
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.CollectionChanged += value;
             }
             remove
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.CollectionChanged -= value;
             }
         }
@@ -194,12 +194,12 @@ namespace Chummer
         {
             add
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.BeforeClearCollectionChanged += value;
             }
             remove
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.BeforeClearCollectionChanged -= value;
             }
         }
@@ -209,12 +209,12 @@ namespace Chummer
         {
             add
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.PropertyChanged += value;
             }
             remove
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.PropertyChanged -= value;
             }
         }
@@ -222,35 +222,35 @@ namespace Chummer
         /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.InsertItem(index, item);
         }
 
         /// <inheritdoc />
         protected override void MoveItem(int oldIndex, int newIndex)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.MoveItem(oldIndex, newIndex);
         }
 
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.ClearItems();
         }
 
         /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.RemoveItem(index);
         }
 
         /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.SetItem(index, item);
         }
 

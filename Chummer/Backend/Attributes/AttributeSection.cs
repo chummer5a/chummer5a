@@ -344,7 +344,7 @@ namespace Chummer.Backend.Attributes
 
         public void Dispose()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 foreach (BindingSource objSource in _dicBindings.Values)
                     objSource.Dispose();
@@ -397,8 +397,8 @@ namespace Chummer.Backend.Attributes
         {
             if (charNode == null)
                 return;
-            using (EnterWriteLock.Enter(_objCharacter.LockObject))
-            using (EnterWriteLock.Enter(LockObject))
+            using (_objCharacter.LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock())
             {
                 bool blnOldLoading = _blnLoading;
                 try
@@ -574,7 +574,7 @@ namespace Chummer.Backend.Attributes
         {
             if (xmlSavedCharacterNode == null)
                 return;
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 bool blnOldLoading = _blnLoading;
                 try
@@ -673,7 +673,7 @@ namespace Chummer.Backend.Attributes
         {
             if (xmlStatBlockBaseNode == null)
                 return;
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 using (_ = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
                 {
@@ -1392,7 +1392,7 @@ namespace Chummer.Backend.Attributes
 
         internal void Reset(bool blnFirstTime = false)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 bool blnOldLoading = !blnFirstTime && _blnLoading;
                 try
@@ -1462,8 +1462,8 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public void ResetBindings()
         {
-            using (EnterWriteLock.Enter(_objCharacter.LockObject))
-            using (EnterWriteLock.Enter(LockObject))
+            using (_objCharacter.LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock())
             {
                 foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)
                 {
@@ -1539,7 +1539,7 @@ namespace Chummer.Backend.Attributes
                 {
                     if (_eAttributeCategory == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _eAttributeCategory = value;
                         if (_objCharacter.Created)

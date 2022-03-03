@@ -318,7 +318,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (EnterWriteLock.Enter(lstCollection.LockObject))
+                using (lstCollection.LockObject.EnterWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     lstCollection.RaiseListChangedEvents = false;
@@ -404,7 +404,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (EnterWriteLock.Enter(lstCollection.LockObject))
+                using (lstCollection.LockObject.EnterWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     lstCollection.RaiseListChangedEvents = false;
@@ -491,7 +491,7 @@ namespace Chummer
                 bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
                 // Not BitArray because read/write performance is much more important here than memory footprint
                 bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (EnterWriteLock.Enter(lstCollection.LockObject))
+                using (lstCollection.LockObject.EnterWriteLock())
                 {
                     // We're going to disable events while we work with the list, then call them all at once at the end
                     lstCollection.RaiseListChangedEvents = false;
@@ -558,7 +558,7 @@ namespace Chummer
 
         public static void Move<T>(this ThreadSafeBindingList<T> lstCollection, int intOldIndex, int intNewIndex)
         {
-            using (EnterWriteLock.Enter(lstCollection.LockObject))
+            using (lstCollection.LockObject.EnterWriteLock())
             {
                 bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
                 try

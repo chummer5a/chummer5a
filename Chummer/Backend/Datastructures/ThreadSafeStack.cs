@@ -64,7 +64,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Clear"/>
         public void Clear()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _stkData.Clear();
         }
 
@@ -99,7 +99,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.TrimExcess"/>
         public void TrimExcess()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _stkData.TrimExcess();
         }
 
@@ -134,7 +134,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Pop"/>
         public T Pop()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _stkData.Pop();
         }
 
@@ -155,7 +155,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Push"/>
         public void Push(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _stkData.Push(item);
         }
 
@@ -190,7 +190,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (_stkData.Count > 0)
                 {

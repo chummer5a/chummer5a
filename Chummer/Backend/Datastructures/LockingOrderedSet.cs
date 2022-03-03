@@ -82,7 +82,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Add(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (!_setData.Add(item))
                     return false;
@@ -111,7 +111,7 @@ namespace Chummer
         public void UnionWith(IEnumerable<T> other)
         {
             List<T> lstOther = other.ToList();
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 _lstOrderedData.AddRange(lstOther.Where(objItem => !_setData.Contains(objItem)));
                 _setData.UnionWith(lstOther);
@@ -122,7 +122,7 @@ namespace Chummer
         public void IntersectWith(IEnumerable<T> other)
         {
             HashSet<T> setOther = other.ToHashSet();
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 _lstOrderedData.RemoveAll(objItem => !setOther.Contains(objItem));
                 _setData.IntersectWith(setOther);
@@ -133,7 +133,7 @@ namespace Chummer
         public void ExceptWith(IEnumerable<T> other)
         {
             HashSet<T> setOther = other.ToHashSet();
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
                 _setData.ExceptWith(setOther);
@@ -144,7 +144,7 @@ namespace Chummer
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
             HashSet<T> setOther = other.ToHashSet();
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
                 _lstOrderedData.AddRange(setOther.Where(objItem => !_setData.Contains(objItem)));
@@ -301,7 +301,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Clear()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 _setData.Clear();
                 _lstOrderedData.Clear();
@@ -363,7 +363,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (_setData.Count > 0)
                 {
@@ -396,7 +396,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (!_setData.Remove(item))
                     return false;
@@ -511,7 +511,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Insert(int index, T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (!_setData.Add(item))
                     return;
@@ -537,7 +537,7 @@ namespace Chummer
         /// <inheritdoc />
         public void RemoveAt(int index)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 T objToRemove = _lstOrderedData[index];
                 if (_setData.Remove(objToRemove))
@@ -576,7 +576,7 @@ namespace Chummer
                     T objOldItem = _lstOrderedData[index];
                     if (objOldItem.Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         _setData.Remove(objOldItem);
                         _setData.Add(value);
@@ -596,7 +596,7 @@ namespace Chummer
         /// <inheritdoc />
         public void OnDeserialization(object sender)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _setData.OnDeserialization(sender);
         }
 
@@ -607,12 +607,12 @@ namespace Chummer
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                 {
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _lstOrderedData.Sort(comparer);
                 }
                 else
                 {
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _lstOrderedData.Sort();
                 }
             }
@@ -621,21 +621,21 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
         public void Sort(Comparison<T> comparison)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstOrderedData.Sort(comparison);
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
         public void Sort(IComparer<T> comparer)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstOrderedData.Sort(comparer);
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
         public void Sort(int index, int count, IComparer<T> comparer)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstOrderedData.Sort(index, count, comparer);
         }
 
@@ -716,7 +716,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Reverse(int, int)" />
         public void Reverse(int index, int count)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstOrderedData.Reverse(index, count);
         }
 

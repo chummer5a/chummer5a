@@ -60,7 +60,7 @@ namespace Chummer
                 {
                     if (_lstData.Capacity == value)
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _lstData.Capacity = value;
                 }
             }
@@ -124,7 +124,7 @@ namespace Chummer
                 {
                     if (_lstData[index].Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _lstData[index] = value;
                 }
             }
@@ -143,7 +143,7 @@ namespace Chummer
                 {
                     if (_lstData[index].Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         _lstData[index] = (T)value;
                 }
             }
@@ -152,7 +152,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Add(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Add(item);
         }
 
@@ -172,7 +172,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.AddRange" />
         public void AddRange(IEnumerable<T> collection)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.AddRange(collection);
         }
 
@@ -266,7 +266,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Clear" />
         public void Clear()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Clear();
         }
 
@@ -392,7 +392,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (_lstData.Count > 0)
                 {
@@ -635,7 +635,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Insert" />
         public void Insert(int index, T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Insert(index, item);
         }
 
@@ -656,7 +656,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.InsertRange" />
         public void InsertRange(int index, IEnumerable<T> collection)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.InsertRange(index, collection);
         }
 
@@ -732,7 +732,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.RemoveAll" />
         public int RemoveAll(Predicate<T> match)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _lstData.RemoveAll(match);
         }
 
@@ -767,7 +767,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.RemoveAt" />
         public void RemoveAt(int index)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.RemoveAt(index);
         }
 
@@ -788,7 +788,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.RemoveRange" />
         public void RemoveRange(int index, int count)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.RemoveRange(index, count);
         }
 
@@ -809,14 +809,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Reverse()" />
         public void Reverse()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Reverse();
         }
 
         /// <inheritdoc cref="List{T}.Reverse(int, int)" />
         public void Reverse(int index, int count)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Reverse(index, count);
         }
 
@@ -851,28 +851,28 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort()" />
         public void Sort()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Sort();
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
         public void Sort(IComparer<T> comparer)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Sort(comparer);
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
         public void Sort(int index, int count, IComparer<T> comparer)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Sort(index, count, comparer);
         }
 
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
         public void Sort(Comparison<T> comparison)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.Sort(comparison);
         }
 
@@ -948,7 +948,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.TrimExcess" />
         public void TrimExcess()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _lstData.TrimExcess();
         }
 

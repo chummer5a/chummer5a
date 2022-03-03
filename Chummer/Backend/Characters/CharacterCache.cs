@@ -69,7 +69,7 @@ namespace Chummer
             }
             set
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     _blnIsLoadMethodRunning = value;
             }
         }
@@ -409,7 +409,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 Mugshot?.Dispose();
                 DownLoadRunning?.Dispose();

@@ -49,7 +49,7 @@ namespace Chummer
                 if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     _blnSkipCollectionChanged = true;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                     {
                         // Remove all duplicate entries
                         for (int intLastIndex = Count - 1; intLastIndex >= 0; --intLastIndex)
@@ -72,7 +72,7 @@ namespace Chummer
         protected override void InsertItem(int index, T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 int intExistingIndex = IndexOf(item);
                 if (intExistingIndex == -1)

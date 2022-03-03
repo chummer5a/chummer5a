@@ -1315,7 +1315,7 @@ namespace Chummer
                     {
                         if (_intMainMugshotIndex == value)
                             return;
-                        using (EnterWriteLock.Enter(_objCharacter.LockObject))
+                        using (_objCharacter.LockObject.EnterWriteLock())
                         {
                             _intMainMugshotIndex = value;
                             OnPropertyChanged();

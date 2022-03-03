@@ -75,7 +75,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Add(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _setData.Add(item);
         }
 
@@ -95,28 +95,28 @@ namespace Chummer
         /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _setData.UnionWith(other);
         }
 
         /// <inheritdoc />
         public void IntersectWith(IEnumerable<T> other)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _setData.IntersectWith(other);
         }
 
         /// <inheritdoc />
         public void ExceptWith(IEnumerable<T> other)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _setData.ExceptWith(other);
         }
 
         /// <inheritdoc />
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _setData.SymmetricExceptWith(other);
         }
 
@@ -260,7 +260,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Clear()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 _setData.Clear();
         }
 
@@ -319,7 +319,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryAdd(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _setData.Add(item);
         }
 
@@ -340,7 +340,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (_setData.Count > 0)
                 {
@@ -388,7 +388,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return _setData.Remove(item);
         }
 

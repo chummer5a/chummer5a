@@ -16,12 +16,12 @@ namespace Chummer
         {
             add
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.BeforeRemove += value;
             }
             remove
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.BeforeRemove -= value;
             }
         }
@@ -31,12 +31,12 @@ namespace Chummer
         {
             add
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.AddingNew += value;
             }
             remove
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.AddingNew -= value;
             }
         }
@@ -46,12 +46,12 @@ namespace Chummer
         {
             add
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.ListChanged += value;
             }
             remove
             {
-                using (EnterWriteLock.Enter(LockObject))
+                using (LockObject.EnterWriteLock())
                     base.ListChanged -= value;
             }
         }
@@ -93,7 +93,7 @@ namespace Chummer
                 {
                     if (base[index].Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         base[index] = value;
                 }
             }
@@ -113,7 +113,7 @@ namespace Chummer
                 {
                     if (base.RaiseListChangedEvents.Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         base.RaiseListChangedEvents = value;
                 }
             }
@@ -133,7 +133,7 @@ namespace Chummer
                 {
                     if (base.AllowNew.Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         base.AllowNew = value;
                 }
             }
@@ -153,7 +153,7 @@ namespace Chummer
                 {
                     if (base.AllowEdit.Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         base.AllowEdit = value;
                 }
             }
@@ -173,7 +173,7 @@ namespace Chummer
                 {
                     if (base.AllowRemove.Equals(value))
                         return;
-                    using (EnterWriteLock.Enter(LockObject))
+                    using (LockObject.EnterWriteLock())
                         base.AllowRemove = value;
                 }
             }
@@ -197,70 +197,70 @@ namespace Chummer
         /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.InsertItem(index, item);
         }
 
         /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.RemoveItem(index);
         }
 
         /// <inheritdoc />
         protected override void ClearItems()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.ClearItems();
         }
 
         /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.SetItem(index, item);
         }
 
         /// <inheritdoc />
         public override void CancelNew(int itemIndex)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.CancelNew(itemIndex);
         }
 
         /// <inheritdoc />
         public override void EndNew(int itemIndex)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.EndNew(itemIndex);
         }
 
         /// <inheritdoc />
         protected override object AddNewCore()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return base.AddNewCore();
         }
 
         /// <inheritdoc />
         protected override void ApplySortCore(PropertyDescriptor prop, ListSortDirection direction)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.ApplySortCore(prop, direction);
         }
 
         /// <inheritdoc />
         protected override void RemoveSortCore()
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 base.RemoveSortCore();
         }
 
         /// <inheritdoc />
         protected override int FindCore(PropertyDescriptor prop, object key)
         {
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
                 return base.FindCore(prop, key);
         }
 
@@ -305,7 +305,7 @@ namespace Chummer
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (EnterWriteLock.Enter(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (base.Count > 0)
                 {
