@@ -81,7 +81,7 @@ namespace Chummer
 
         public async ValueTask<bool> AddAsync(T item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _setData.Add(item);
@@ -164,7 +164,7 @@ namespace Chummer
         
         public async ValueTask UnionWithAsync(IEnumerable<T> other)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _setData.UnionWith(other);
@@ -177,7 +177,7 @@ namespace Chummer
         
         public async ValueTask IntersectWithAsync(IEnumerable<T> other)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _setData.IntersectWith(other);
@@ -190,7 +190,7 @@ namespace Chummer
         
         public async ValueTask ExceptWithAsync(IEnumerable<T> other)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _setData.ExceptWith(other);
@@ -203,7 +203,7 @@ namespace Chummer
         
         public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _setData.SymmetricExceptWith(other);
@@ -266,7 +266,7 @@ namespace Chummer
 
         public async ValueTask ClearAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _setData.Clear();
@@ -325,7 +325,7 @@ namespace Chummer
 
         public async ValueTask<bool> TryAddAsync(T item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _setData.Add(item);
@@ -394,7 +394,7 @@ namespace Chummer
 
         public async ValueTask<bool> RemoveAsync(T item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _setData.Remove(item);

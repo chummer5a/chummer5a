@@ -71,7 +71,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Clear"/>
         public async ValueTask ClearAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _stkData.Clear();
@@ -106,7 +106,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.TrimExcess"/>
         public async ValueTask TrimExcessAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _stkData.TrimExcess();
@@ -141,7 +141,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Pop"/>
         public async ValueTask<T> PopAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _stkData.Pop();
@@ -162,7 +162,7 @@ namespace Chummer
         /// <inheritdoc cref="Stack{T}.Push"/>
         public async ValueTask PushAsync(T item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _stkData.Push(item);

@@ -20,18 +20,16 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Chummer
 {
     /// <summary>
     /// Syntactic Sugar for wrapping a AsyncFriendlyReaderWriterLock's EnterWriteLock() and ExitWriteLock() methods into something that hooks into `using`
     /// </summary>
-    public readonly struct EnterWriteLock : IDisposable, IAsyncDisposable
+    public readonly struct EnterWriteLock : IDisposable
     {
         private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
         private readonly IDisposable _rwlMyWriteRelease;
-        private readonly IAsyncDisposable _rwlMyAsyncWriteRelease;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static EnterWriteLock Enter(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
@@ -41,58 +39,17 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static EnterWriteLock Enter(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
-        {
-            AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
-            return Enter(rwlMyLock, token);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<EnterWriteLock> EnterAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
-        {
-            IAsyncDisposable rwlMyWriteRelease = await rwlMyLock.EnterWriteLockAsync(token);
-            return new EnterWriteLock(rwlMyLock, rwlMyWriteRelease);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ValueTask<EnterWriteLock> EnterAsync(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
-        {
-            AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
-            return EnterAsync(rwlMyLock, token);
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, IDisposable rwlMyWriteRelease)
         {
             _rwlMyLock = rwlMyLock;
             _rwlMyWriteRelease = rwlMyWriteRelease;
-            _rwlMyAsyncWriteRelease = null;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private EnterWriteLock(AsyncFriendlyReaderWriterLock rwlMyLock, IAsyncDisposable rwlMyAsyncWriteRelease)
-        {
-            _rwlMyLock = rwlMyLock;
-            _rwlMyWriteRelease = null;
-            _rwlMyAsyncWriteRelease = rwlMyAsyncWriteRelease;
         }
 
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            if (_rwlMyWriteRelease == null)
-                throw new InvalidOperationException("Write lock was created synchronously, it must be disposed of synchronously");
             _rwlMyLock.ExitWriteLock(_rwlMyWriteRelease);
-        }
-
-        /// <inheritdoc />
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ValueTask DisposeAsync()
-        {
-            if (_rwlMyAsyncWriteRelease == null)
-                throw new InvalidOperationException("Write lock was created asynchronously, it must be disposed of asynchronously");
-            return _rwlMyLock.ExitWriteLockAsync(_rwlMyAsyncWriteRelease);
         }
     }
 }

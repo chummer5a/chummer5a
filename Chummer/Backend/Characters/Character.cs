@@ -4109,19 +4109,31 @@ namespace Chummer
                 if (addToMRU)
                     GlobalSettings.MostRecentlyUsedCharacters.Insert(0, FileName);
 
-                // ReSharper disable once MethodHasAsyncOverload
-                EnterWriteLock objLocker = blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject);
-                try
+                if (blnSync)
                 {
-                    _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
-                }
-                finally
-                {
-                    if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    IDisposable objLocker = LockObject.EnterWriteLock();
+                    try
+                    {
+                        _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
+                    }
+                    finally
+                    {
                         // ReSharper disable once MethodHasAsyncOverload
                         objLocker.Dispose();
-                    else
+                    }
+                }
+                else
+                {
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+                    try
+                    {
+                        _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
+                    }
+                    finally
+                    {
                         await objLocker.DisposeAsync();
+                    }
                 }
 
                 if (callOnSaveCallBack)
@@ -4321,8 +4333,13 @@ namespace Chummer
             if (!File.Exists(_strFileName))
                 return false;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            EnterWriteLock objLocker = blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject);
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterWriteLock();
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync();
             try
             {
                 LoadAsDirty = false;
@@ -7032,7 +7049,7 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     objLocker.Dispose();
                 else
-                    await objLocker.DisposeAsync();
+                    await objLockerAsync.DisposeAsync();
             }
         }
 
@@ -8053,7 +8070,7 @@ namespace Chummer
                 if (await Program.OpenCharacters.ContainsAsync(this)
                     || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
                     return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
-                EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
                 try
                 {
                     IsDisposed = true;
@@ -24763,7 +24780,13 @@ namespace Chummer
             if(!File.Exists(strPorFile))
                 return false;
 
-            EnterWriteLock objLocker = blnSync ? EnterWriteLock.Enter(LockObject) : await EnterWriteLock.EnterAsync(LockObject);
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterWriteLock();
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync();
             try
             {
                 Dictionary<string, Bitmap> dicImages = new Dictionary<string, Bitmap>(1);
@@ -26985,7 +27008,7 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     objLocker.Dispose();
                 else
-                    await objLocker.DisposeAsync();
+                    await objLockerAsync.DisposeAsync();
             }
         }
         #endregion

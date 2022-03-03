@@ -93,7 +93,7 @@ namespace Chummer
 
         public async ValueTask<bool> AddAsync(T item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 if (!_setData.Add(item))
@@ -197,7 +197,7 @@ namespace Chummer
         public async ValueTask UnionWithAsync(IEnumerable<T> other)
         {
             List<T> lstOther = other.ToList();
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstOrderedData.AddRange(lstOther.Where(objItem => !_setData.Contains(objItem)));
@@ -212,7 +212,7 @@ namespace Chummer
         public async ValueTask IntersectWithAsync(IEnumerable<T> other)
         {
             HashSet<T> setOther = other.ToHashSet();
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstOrderedData.RemoveAll(objItem => !setOther.Contains(objItem));
@@ -227,7 +227,7 @@ namespace Chummer
         public async ValueTask ExceptWithAsync(IEnumerable<T> other)
         {
             HashSet<T> setOther = other.ToHashSet();
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
@@ -242,7 +242,7 @@ namespace Chummer
         public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other)
         {
             HashSet<T> setOther = other.ToHashSet();
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstOrderedData.RemoveAll(objItem => setOther.Contains(objItem));
@@ -310,7 +310,7 @@ namespace Chummer
 
         public async ValueTask ClearAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _setData.Clear();
@@ -407,7 +407,7 @@ namespace Chummer
 
         public async ValueTask<bool> RemoveAsync(T item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 if (!_setData.Remove(item))
@@ -521,7 +521,7 @@ namespace Chummer
 
         public async ValueTask InsertAsync(int index, T item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 if (!_setData.Add(item))
@@ -547,7 +547,7 @@ namespace Chummer
 
         public async ValueTask RemoveAtAsync(int index)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 T objToRemove = _lstOrderedData[index];
@@ -646,7 +646,7 @@ namespace Chummer
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                 {
-                    EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
                     try
                     {
                         _lstOrderedData.Sort(comparer);
@@ -658,7 +658,7 @@ namespace Chummer
                 }
                 else
                 {
-                    EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
                     try
                     {
                         _lstOrderedData.Sort();
@@ -674,7 +674,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
         public async ValueTask SortAsync(Comparison<T> comparison)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstOrderedData.Sort(comparison);
@@ -688,7 +688,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
         public async ValueTask SortAsync(IComparer<T> comparer)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstOrderedData.Sort(comparer);
@@ -702,7 +702,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
         public async ValueTask SortAsync(int index, int count, IComparer<T> comparer)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstOrderedData.Sort(index, count, comparer);
@@ -723,7 +723,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Reverse(int, int)" />
         public async ValueTask ReverseAsync(int index, int count)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _lstOrderedData.Reverse(index, count);

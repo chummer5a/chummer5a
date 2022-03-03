@@ -359,7 +359,7 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask DisposeAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 foreach (BindingSource objSource in _dicBindings.Values)

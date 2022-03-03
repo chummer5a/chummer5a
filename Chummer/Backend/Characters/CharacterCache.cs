@@ -421,7 +421,7 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 Mugshot?.Dispose();

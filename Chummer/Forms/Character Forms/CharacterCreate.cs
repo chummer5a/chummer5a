@@ -2092,7 +2092,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(CharacterObject.LockObject);
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync();
                 try
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,

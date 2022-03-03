@@ -97,7 +97,7 @@ namespace Chummer
 
         public async ValueTask AddAsync(KeyValuePair<TKey, TValue> item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _dicData.Add(item.Key, item.Value);
@@ -135,7 +135,7 @@ namespace Chummer
         /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
         public async ValueTask ClearAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _dicData.Clear();
@@ -269,7 +269,7 @@ namespace Chummer
         public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
@@ -283,7 +283,7 @@ namespace Chummer
         
         public async ValueTask<bool> RemoveAsync(TKey key)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _dicData.Remove(key);
@@ -309,7 +309,7 @@ namespace Chummer
         public async ValueTask<Tuple<bool, TValue>> TryRemoveAsync(TKey key)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value) && _dicData.Remove(key);
@@ -395,7 +395,7 @@ namespace Chummer
 
         public async ValueTask AddAsync(TKey key, TValue value)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _dicData.Add(key, value);
@@ -421,7 +421,7 @@ namespace Chummer
         public async ValueTask<bool> TryAddAsync(TKey key, TValue value)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 if (_dicData.ContainsKey(key))
@@ -515,7 +515,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
                     try
                     {
                         _dicData[key] = objReturn;
@@ -528,7 +528,7 @@ namespace Chummer
                 else
                 {
                     objReturn = addValueFactory(key);
-                    EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
                     try
                     {
                         _dicData.Add(key, objReturn);
@@ -553,11 +553,11 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject))
             {
-                EnterWriteLock objLocker;
+                IAsyncDisposable objLocker;
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                    objLocker = await LockObject.EnterWriteLockAsync();
                     try
                     {
                         _dicData[key] = objNewValue;
@@ -568,7 +568,7 @@ namespace Chummer
                     }
                     return objNewValue;
                 }
-                objLocker = await EnterWriteLock.EnterAsync(LockObject);
+                objLocker = await LockObject.EnterWriteLockAsync();
                 try
                 {
                     _dicData.Add(key, addValue);

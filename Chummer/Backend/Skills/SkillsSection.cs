@@ -1802,7 +1802,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 UnbindSkillsSection();

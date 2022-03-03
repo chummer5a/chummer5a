@@ -71,7 +71,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Clear" />
         public async ValueTask ClearAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _queData.Clear();
@@ -106,7 +106,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.TrimExcess" />
         public async ValueTask TrimExcessAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _queData.TrimExcess();
@@ -141,7 +141,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Dequeue" />
         public async ValueTask<T> DequeueAsync()
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 return _queData.Dequeue();
@@ -162,7 +162,7 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Enqueue" />
         public async ValueTask EnqueueAsync(T item)
         {
-            EnterWriteLock objLocker = await EnterWriteLock.EnterAsync(LockObject);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
                 _queData.Enqueue(item);
