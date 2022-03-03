@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -130,12 +131,12 @@ namespace Chummer
         {
             try
             {
-                await objCurrentSemaphore.WaitAsync(token);
+                await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1 && !IsWriteLockHeldRecursively)
                 {
                     try
                     {
-                        await _objReaderSemaphore.WaitAsync(token);
+                        await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -146,7 +147,7 @@ namespace Chummer
             }
             catch
             {
-                await objRelease.DisposeAsync();
+                await objRelease.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
             return objRelease;
@@ -235,14 +236,14 @@ namespace Chummer
 
         private async Task TakeReadLockCoreAsync(SemaphoreSlim objCurrentSemaphore, SafeWriterSemaphoreRelease objRelease, CancellationToken token = default)
         {
-            await objCurrentSemaphore.WaitAsync(token);
+            await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
                     try
                     {
-                        await _objReaderSemaphore.WaitAsync(token);
+                        await _objReaderSemaphore.WaitAsync(token).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -253,7 +254,7 @@ namespace Chummer
             }
             finally
             {
-                await objRelease.DisposeAsync();
+                await objRelease.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -303,24 +304,26 @@ namespace Chummer
             {
                 while (!_objTopLevelWriterSemaphore.Wait(Utils.DefaultSleepDuration))
                     Utils.DoEventsSafe();
-                while (!_objReaderSemaphore.Wait(Utils.DefaultSleepDuration))
-                    Utils.DoEventsSafe();
             }
             else
-            {
                 _objTopLevelWriterSemaphore.Wait();
-                _objReaderSemaphore.Wait();
-            }
-            _objReaderSemaphore.Release();
-            if (_blnSemaphoresFromPool)
-                Utils.SemaphorePool.Return(_objReaderSemaphore);
-            else
-                _objReaderSemaphore.Dispose();
             _objTopLevelWriterSemaphore.Release();
             if (_blnSemaphoresFromPool)
                 Utils.SemaphorePool.Return(_objTopLevelWriterSemaphore);
             else
                 _objTopLevelWriterSemaphore.Dispose();
+            if (Utils.EverDoEvents)
+            {
+                while (!_objReaderSemaphore.Wait(Utils.DefaultSleepDuration))
+                    Utils.DoEventsSafe();
+            }
+            else
+                _objReaderSemaphore.Wait();
+            _objReaderSemaphore.Release();
+            if (_blnSemaphoresFromPool)
+                Utils.SemaphorePool.Return(_objReaderSemaphore);
+            else
+                _objReaderSemaphore.Dispose();
         }
 
         /// <inheritdoc />
@@ -333,18 +336,19 @@ namespace Chummer
             
             // Ensure the locks aren't held. If they are, wait for them to be released
             // before completing the dispose.
-            await _objTopLevelWriterSemaphore.WaitAsync();
-            await _objReaderSemaphore.WaitAsync();
-            _objReaderSemaphore.Release();
-            if (_blnSemaphoresFromPool)
-                Utils.SemaphorePool.Return(_objReaderSemaphore);
-            else
-                _objReaderSemaphore.Dispose();
+            await _objTopLevelWriterSemaphore.WaitAsync().ConfigureAwait(false);
+            ConfiguredTaskAwaitable tskReaderLock = _objReaderSemaphore.WaitAsync().ConfigureAwait(false);
             _objTopLevelWriterSemaphore.Release();
             if (_blnSemaphoresFromPool)
                 Utils.SemaphorePool.Return(_objTopLevelWriterSemaphore);
             else
                 _objTopLevelWriterSemaphore.Dispose();
+            await tskReaderLock;
+            _objReaderSemaphore.Release();
+            if (_blnSemaphoresFromPool)
+                Utils.SemaphorePool.Return(_objReaderSemaphore);
+            else
+                _objReaderSemaphore.Dispose();
         }
 
         private readonly struct SafeWriterSemaphoreRelease : IAsyncDisposable, IDisposable
@@ -388,7 +392,7 @@ namespace Chummer
 
             private async ValueTask DisposeCoreAsync()
             {
-                await _objNextWriterSemaphore.WaitAsync();
+                await _objNextWriterSemaphore.WaitAsync().ConfigureAwait(false);
                 _objCurrentWriterSemaphore.Release();
                 _objNextWriterSemaphore.Release();
                 Utils.SemaphorePool.Return(_objNextWriterSemaphore);
