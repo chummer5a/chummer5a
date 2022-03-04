@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows.Forms;
 using NLog;
 
@@ -29,7 +30,8 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static readonly object s_ObjApplicationWaitCursorsLock = new object();
         private static int _intApplicationWaitCursors;
-        private static readonly LockingDictionary<Control, ThreadSafeList<CursorWait>> s_DicWaitingControls = new LockingDictionary<Control, ThreadSafeList<CursorWait>>();
+        private static readonly LockingDictionary<Control, int> s_DicWaitCursorControls = new LockingDictionary<Control, int>();
+        private static readonly LockingDictionary<Control, int> s_DicApplicationStartingControls = new LockingDictionary<Control, int>();
         private readonly Control _objControl;
         private readonly Form _frmControlTopParent;
         private readonly Stopwatch _objTimer = new Stopwatch();
@@ -40,10 +42,10 @@ namespace Chummer
             if (objControl.IsNullOrDisposed())
             {
                 _objControl = null;
-                lock (s_ObjApplicationWaitCursorsLock)
+                Interlocked.Increment(ref _intApplicationWaitCursors);
+                if (_intApplicationWaitCursors > 0)
                 {
-                    ++_intApplicationWaitCursors;
-                    if (_intApplicationWaitCursors > 0)
+                    lock (s_ObjApplicationWaitCursorsLock)
                         Application.UseWaitCursor = true;
                 }
                 return;
@@ -52,7 +54,6 @@ namespace Chummer
             Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + _guidInstance + "\".");
             _objControl = objControl;
             Form frmControl = _objControl as Form;
-            CursorToUse = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
             if (frmControl?.IsMdiChild != false)
             {
                 if (frmControl != null)
@@ -75,58 +76,37 @@ namespace Chummer
                     }
                 }
             }
-            ThreadSafeList<CursorWait> lstNew = new ThreadSafeList<CursorWait>(1);
-            while (_objControl != null && !s_DicWaitingControls.TryAdd(_objControl, lstNew))
+            if (!blnAppStarting)
             {
-                if (!s_DicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstExisting))
-                    continue;
-                lstNew.Dispose();
-                CursorWait objLastCursorWait = null;
-                // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
-                bool blnDoLoop = true;
-                while (blnDoLoop)
+                CursorToUse = Cursors.WaitCursor;
+                if (_objControl != null)
                 {
-                    blnDoLoop = false;
-                    int intIndex = lstExisting.Count - 1;
-                    if (intIndex >= 0)
-                    {
-                        try
-                        {
-                            objLastCursorWait = lstExisting[intIndex];
-                        }
-                        catch (ArgumentOutOfRangeException)
-                        {
-                            blnDoLoop = true;
-                        }
-                    }
-                }
-                lstExisting.Add(this);
-                if (blnAppStarting)
-                {
-                    if (objLastCursorWait == null)
-                        SetControlCursor(CursorToUse);
-                    else if (objLastCursorWait.CursorToUse == Cursors.WaitCursor)
-                        CursorToUse = Cursors.WaitCursor;
-                }
-                else if (objLastCursorWait == null || objLastCursorWait.CursorToUse == Cursors.AppStarting)
+                    s_DicWaitCursorControls.AddOrUpdate(_objControl, 1, (x, y) => Interlocked.Increment(ref y));
                     SetControlCursor(CursorToUse);
-                return;
+                }
+            }
+            else
+            {
+                CursorToUse = Cursors.AppStarting;
+                if (_objControl != null)
+                {
+                    s_DicApplicationStartingControls.AddOrUpdate(_objControl, 1, (x, y) => Interlocked.Increment(ref y));
+                    if (!s_DicWaitCursorControls.TryGetValue(_objControl, out int intExitingWaits) || intExitingWaits == 0)
+                        SetControlCursor(CursorToUse);
+                }
             }
             // Here for safety purposes
             if (_objControl.IsNullOrDisposed())
             {
                 _objControl = null;
                 _frmControlTopParent = null;
-                lock (s_ObjApplicationWaitCursorsLock)
+                Interlocked.Increment(ref _intApplicationWaitCursors);
+                if (_intApplicationWaitCursors > 0)
                 {
-                    ++_intApplicationWaitCursors;
-                    if (_intApplicationWaitCursors > 0)
+                    lock (s_ObjApplicationWaitCursorsLock)
                         Application.UseWaitCursor = true;
                 }
-                return;
             }
-            lstNew.Add(this);
-            SetControlCursor(CursorToUse);
         }
 
         private void SetControlCursor(Cursor objCursor)
@@ -163,57 +143,35 @@ namespace Chummer
             _blnDisposed = true;
             if (_objControl == null)
             {
-                lock (s_ObjApplicationWaitCursorsLock)
+                Interlocked.Decrement(ref _intApplicationWaitCursors);
+                if (_intApplicationWaitCursors <= 0)
                 {
-                    --_intApplicationWaitCursors;
-                    if (_intApplicationWaitCursors <= 0)
+                    lock (s_ObjApplicationWaitCursorsLock)
                         Application.UseWaitCursor = false;
                 }
                 return;
             }
             Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + _guidInstance + "\" after " + _objTimer.ElapsedMilliseconds + "ms.");
             _objTimer.Stop();
-            if (!s_DicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstCursorWaits) || lstCursorWaits == null || lstCursorWaits.Count == 0)
+            if (CursorToUse == Cursors.AppStarting)
             {
-                Utils.BreakIfDebug();
-                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + _guidInstance + "\" somehow does not have a CursorWait list defined for it");
-                throw new InvalidOperationException(nameof(lstCursorWaits));
+                if (s_DicApplicationStartingControls.RemoveOrUpdate(_objControl, (x, y) => y <= 1,
+                                                                    (x, y) => Interlocked.Decrement(ref y))
+                    && (!s_DicWaitCursorControls.TryGetValue(_objControl, out int intExitingWaits)
+                        || intExitingWaits == 0))
+                    SetControlCursor(null);
             }
-
-            int intMyIndex = lstCursorWaits.FindLastIndex(x => x.Equals(this));
-            if (intMyIndex < 0 || !lstCursorWaits.Remove(this))
+            else if (CursorToUse == Cursors.WaitCursor)
             {
-                Utils.BreakIfDebug();
-                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + _guidInstance + "\" somehow is not in the CursorWait list defined for it");
-                throw new InvalidOperationException(nameof(intMyIndex));
-            }
-            if (intMyIndex >= lstCursorWaits.Count)
-            {
-                CursorWait objPreviousCursorWait = null;
-                // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
-                bool blnDoLoop = true;
-                while (blnDoLoop)
+                if (s_DicWaitCursorControls.RemoveOrUpdate(_objControl, (x, y) => y <= 1,
+                                                           (x, y) => Interlocked.Decrement(ref y)))
                 {
-                    blnDoLoop = false;
-                    int intIndex = lstCursorWaits.Count - 1;
-                    if (intIndex >= 0)
-                    {
-                        try
-                        {
-                            objPreviousCursorWait = lstCursorWaits[intIndex];
-                        }
-                        catch (ArgumentOutOfRangeException)
-                        {
-                            blnDoLoop = true;
-                        }
-                    }
+                    if (s_DicApplicationStartingControls.TryGetValue(_objControl, out int intExitingWaits) && intExitingWaits > 0)
+                        SetControlCursor(Cursors.AppStarting);
+                    else
+                        SetControlCursor(null);
                 }
-                SetControlCursor(objPreviousCursorWait?.CursorToUse);
             }
-            if (lstCursorWaits.Count != 0)
-                return;
-            s_DicWaitingControls.Remove(_objControl);
-            lstCursorWaits.Dispose();
         }
     }
 }

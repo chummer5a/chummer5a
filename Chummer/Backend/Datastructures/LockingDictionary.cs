@@ -581,6 +581,89 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Uses the specified functions to remove a key/value pair from the dictionary if the key exists and passes a condition, or to update a key/value pair in the dictionary if the key exists but does not.
+        /// </summary>
+        /// <param name="key">The key to be removed or whose value should be updated</param>
+        /// <param name="removalConditionFunc">The function used to check if a key should be removed or updated.</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <returns>Whether the key was found and successfully removed or not.</returns>
+        public bool RemoveOrUpdate(TKey key, Func<TKey, TValue, bool> removalConditionFunc,
+                                   Func<TKey, TValue, TValue> updateValueFactory)
+        {
+            bool blnReturn;
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    blnReturn = removalConditionFunc(key, objExistingValue);
+                    if (blnReturn)
+                    {
+                        using (LockObject.EnterWriteLock())
+                            blnReturn = _dicData.Remove(key);
+                    }
+                    if (!blnReturn) // Not an else in case we somehow fail at removing a key that still passes the condition
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _dicData[key] = updateValueFactory(key, objExistingValue);
+                    }
+                }
+                else
+                {
+                    blnReturn = false;
+                }
+            }
+            return blnReturn;
+        }
+
+        /// <summary>
+        /// Uses the specified functions to remove a key/value pair from the dictionary if the key exists and passes a condition, or to update a key/value pair in the dictionary if the key exists but does not.
+        /// </summary>
+        /// <param name="key">The key to be removed or whose value should be updated</param>
+        /// <param name="removalConditionFunc">The function used to check if a key should be removed or updated.</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        public async ValueTask<bool> RemoveOrUpdateAsync(TKey key, Func<TKey, TValue, bool> removalConditionFunc,
+                                                    Func<TKey, TValue, TValue> updateValueFactory)
+        {
+            bool blnReturn;
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    blnReturn = removalConditionFunc(key, objExistingValue);
+                    if (blnReturn)
+                    {
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+                        try
+                        {
+                            blnReturn = _dicData.Remove(key);
+                        }
+                        catch
+                        {
+                            await objLocker.DisposeAsync();
+                        }
+                    }
+                    if (!blnReturn) // Not an else in case we somehow fail at removing a key that still passes the condition
+                    {
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+                        try
+                        {
+                            _dicData[key] = updateValueFactory(key, objExistingValue);
+                        }
+                        catch
+                        {
+                            await objLocker.DisposeAsync();
+                        }
+                    }
+                }
+                else
+                {
+                    blnReturn = false;
+                }
+            }
+            return blnReturn;
+        }
+
         /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
         public bool TryGetValue(TKey key, out TValue value)
         {
