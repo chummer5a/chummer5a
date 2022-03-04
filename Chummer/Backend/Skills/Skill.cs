@@ -208,39 +208,73 @@ namespace Chummer.Backend.Skills
             {
                 return null;
             }
+
+            Guid guidSkillId = xmlSkillNode.TryGetField("id", Guid.TryParse, out Guid guiTemp) ? guiTemp : suid;
             Skill objLoadingSkill = null;
             bool blnIsKnowledgeSkill = false;
             if (xmlSkillNode.TryGetBoolFieldQuickly("isknowledge", ref blnIsKnowledgeSkill) && blnIsKnowledgeSkill)
             {
-                if (xmlSkillNode["forced"] != null)
-                    objLoadingSkill = new KnowledgeSkill(objCharacter, xmlSkillNode["name"]?.InnerText ?? string.Empty,
-                                                         !Convert.ToBoolean(
-                                                             xmlSkillNode["disableupgrades"]?.InnerText,
-                                                             GlobalSettings.InvariantCultureInfo));
-                else
+                KnowledgeSkill objKnowledgeSkill = null;
+                if (guidSkillId != Guid.Empty)
+                    objKnowledgeSkill = objCharacter.SkillsSection.KnowledgeSkills.Find(x => x.SkillId == guidSkillId);
+                if (objKnowledgeSkill == null)
                 {
-                    KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter);
-                    objKnowledgeSkill.Load(xmlSkillNode);
-                    objLoadingSkill = objKnowledgeSkill;
+                    if (xmlSkillNode["forced"] != null)
+                        objKnowledgeSkill = new KnowledgeSkill(objCharacter,
+                                                               xmlSkillNode["name"]?.InnerText ?? string.Empty,
+                                                               !Convert.ToBoolean(
+                                                                   xmlSkillNode["disableupgrades"]?.InnerText,
+                                                                   GlobalSettings.InvariantCultureInfo));
+                    else
+                    {
+                        objKnowledgeSkill = new KnowledgeSkill(objCharacter);
+                    }
                 }
+                objKnowledgeSkill.Load(xmlSkillNode);
+                objLoadingSkill = objKnowledgeSkill;
             }
             else if (suid != Guid.Empty)
             {
-                XmlDocument xmlSkills = objCharacter.LoadData("skills.xml");
-                XmlNode xmlSkillDataNode = xmlSkills.SelectSingleNode("/chummer/skills/skill[id = '" + xmlSkillNode["suid"]?.InnerText + "']");
-
-                if (xmlSkillDataNode == null)
-                    return null;
-
-                if (xmlSkillDataNode["exotic"]?.InnerText == bool.TrueString)
+                if (guidSkillId != Guid.Empty)
                 {
-                    ExoticSkill exotic = new ExoticSkill(objCharacter, xmlSkillDataNode);
-                    exotic.Load(xmlSkillNode);
-                    objLoadingSkill = exotic;
+                    objLoadingSkill
+                        = objCharacter.SkillsSection.Skills.Find(x => x.SkillId == guidSkillId);
+                    if (objLoadingSkill?.IsExoticSkill == true)
+                    {
+                        objLoadingSkill = null;
+                        string strSpecific = string.Empty;
+                        if (xmlSkillNode.TryGetStringFieldQuickly("specific", ref strSpecific))
+                        {
+                            objLoadingSkill
+                                = objCharacter.SkillsSection.Skills.Find(x => x.SkillId == guidSkillId && x is ExoticSkill y && y.Specific == strSpecific);
+                            if (objLoadingSkill is ExoticSkill objLoadingExoticSkill)
+                            {
+                                objLoadingExoticSkill.Load(xmlSkillNode);
+                            }
+                        }
+                    }
                 }
-                else
+
+                if (objLoadingSkill == null)
                 {
-                    objLoadingSkill = new Skill(objCharacter, xmlSkillDataNode);
+                    XmlNode xmlSkillDataNode
+                        = objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skills/skill[id = " + suid.ToString("D").CleanXPath() + ']');
+
+                    if (xmlSkillDataNode == null)
+                        return null;
+
+                    bool blnExotic = false;
+                    xmlSkillDataNode.TryGetBoolFieldQuickly("exotic", ref blnExotic);
+                    if (blnExotic)
+                    {
+                        ExoticSkill exotic = new ExoticSkill(objCharacter, xmlSkillDataNode);
+                        exotic.Load(xmlSkillNode);
+                        objLoadingSkill = exotic;
+                    }
+                    else
+                    {
+                        objLoadingSkill = new Skill(objCharacter, xmlSkillDataNode);
+                    }
                 }
             }
             /*
@@ -273,7 +307,8 @@ namespace Chummer.Backend.Skills
                     objLoadingSkill = objKnowledgeSkill;
                 }
             }
-            if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
+
+            if (xmlSkillNode.TryGetField("guid", Guid.TryParse, out guiTemp))
                 objLoadingSkill.Id = guiTemp;
 
             if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
@@ -296,7 +331,7 @@ namespace Chummer.Backend.Skills
                     {
                         SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
                         if (objSpec != null)
-                            objLoadingSkill.Specializations.Add(objSpec);
+                            objLoadingSkill._lstSpecializations.Add(objSpec);
                     }
                 }
             }

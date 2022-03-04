@@ -466,37 +466,30 @@ namespace Chummer.Backend.Skills
 
                         using (_ = Timekeeper.StartSyncron("load_char_skills_normal", opLoadCharSkills))
                         {
-                            //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
-                            List<Skill> lstLoadingSkills;
+                            //Load skills. Because sorting a BindingList is complicated we use a temporary normal list
+                            List<Skill> lstNewSkills;
                             using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skills/skill"))
                             {
-                                lstLoadingSkills = new List<Skill>(xmlSkillsList?.Count ?? 0);
+                                lstNewSkills = new List<Skill>(xmlSkillsList?.Count ?? 0);
                                 if (xmlSkillsList?.Count > 0)
                                 {
                                     foreach (XmlNode xmlNode in xmlSkillsList)
                                     {
                                         Skill objSkill = Skill.Load(_objCharacter, xmlNode);
-                                        if (objSkill != null)
-                                            lstLoadingSkills.Add(objSkill);
+                                        if (objSkill != null && !Skills.Contains(objSkill))
+                                            lstNewSkills.Add(objSkill);
                                     }
                                 }
                             }
 
-                            lstLoadingSkills.Sort(CompareSkills);
-
-                            foreach (Skill objSkill in lstLoadingSkills)
+                            if (lstNewSkills.Count > 0)
                             {
-                                if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
-                                {
-                                    Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
-                                    if (objExistingSkill != null)
-                                    {
-                                        MergeSkills(objExistingSkill, objSkill);
-                                        continue;
-                                    }
-                                }
+                                lstNewSkills.Sort(CompareSkills);
 
-                                Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                foreach (Skill objSkill in lstNewSkills)
+                                {
+                                    Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                }
                             }
 
                             // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
@@ -518,11 +511,13 @@ namespace Chummer.Backend.Skills
                                     {
                                         Skill objUncastSkill = Skill.Load(_objCharacter, xmlNode);
                                         if (objUncastSkill is KnowledgeSkill objSkill)
-                                            KnowledgeSkills.Add(objSkill);
+                                        {
+                                            if (!KnowledgeSkills.Contains(objSkill))
+                                                KnowledgeSkills.Add(objSkill);
+                                        }
                                         else
                                         {
-                                            Utils
-                                                .BreakIfDebug(); // Somehow, a non-knowledge skill got into a knowledge skill block
+                                            Utils.BreakIfDebug(); // Somehow, a non-knowledge skill got into a knowledge skill block
                                             objUncastSkill.Remove();
                                         }
                                     }

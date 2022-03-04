@@ -511,6 +511,10 @@ namespace Chummer.Backend.Skills
             else if (xmlNode.TryGetField("suid", Guid.TryParse, out Guid guiTemp2))
                 SkillId = guiTemp2;
 
+            bool blnTemp = false;
+            if (xmlNode.TryGetBoolFieldQuickly("disableupgrades", ref blnTemp))
+                _blnAllowUpgrade = !blnTemp;
+
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
