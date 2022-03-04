@@ -119,25 +119,36 @@ namespace Chummer
 
         private async void CharacterRoster_Load(object sender, EventArgs e)
         {
-            SetMyEventHandlers();
-            _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
-            _tskMostRecentlyUsedsRefresh = LoadMruCharacters(true, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
-            _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
-            _tskWatchFolderRefresh = LoadWatchFolderCharacters();
-            try
+            using (new CursorWait(this))
             {
-                await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
-                                   Task.WhenAll(Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
+                SetMyEventHandlers();
+                _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
+                _tskMostRecentlyUsedsRefresh
+                    = LoadMruCharacters(true, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
+                _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
+                _tskWatchFolderRefresh = LoadWatchFolderCharacters();
+                try
+                {
+                    await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
+                                       Task.WhenAll(Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
+                }
+                catch (TaskCanceledException)
+                {
+                    //swallow this
+                }
+
+                await this.DoThreadSafeAsync(
+                    () => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
             }
-            catch (TaskCanceledException)
-            {
-                //swallow this
-            }
-            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
         }
+
+        private bool _blnIsClosing;
 
         private void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (_blnIsClosing)
+                return;
+            _blnIsClosing = true; // Needed to prevent crashes on disposal
             _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
             _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
 

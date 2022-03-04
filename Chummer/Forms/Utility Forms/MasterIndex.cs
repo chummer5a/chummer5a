@@ -134,8 +134,11 @@ namespace Chummer
 
         private async void MasterIndex_Load(object sender, EventArgs e)
         {
-            await LoadContent();
-            _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+            using (new CursorWait(this))
+            {
+                await LoadContent();
+                _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+            }
         }
 
         private void MasterIndex_FormClosing(object sender, FormClosingEventArgs e)

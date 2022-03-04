@@ -272,7 +272,11 @@ namespace Chummer
                 if (blnSync)
                     blnDoLoad = !s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                 else
-                    (blnDoLoad, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey);
+                {
+                    bool blnLoadSuccess;
+                    (blnLoadSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey);
+                    blnDoLoad = !blnLoadSuccess;
+                }
             }
             if (blnDoLoad)
             {
