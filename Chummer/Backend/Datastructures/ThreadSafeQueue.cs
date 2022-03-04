@@ -71,14 +71,14 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Clear" />
         public async ValueTask ClearAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 _queData.Clear();
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -106,14 +106,14 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.TrimExcess" />
         public async ValueTask TrimExcessAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 _queData.TrimExcess();
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -141,14 +141,14 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Dequeue" />
         public async ValueTask<T> DequeueAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 return _queData.Dequeue();
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -162,14 +162,14 @@ namespace Chummer
         /// <inheritdoc cref="Queue{T}.Enqueue" />
         public async ValueTask EnqueueAsync(T item)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 _queData.Enqueue(item);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

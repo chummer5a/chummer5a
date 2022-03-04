@@ -359,7 +359,7 @@ namespace Chummer.Backend.Attributes
 
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 foreach (BindingSource objSource in _dicBindings.Values)
@@ -372,7 +372,7 @@ namespace Chummer.Backend.Attributes
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             await LockObject.DisposeAsync();
         }

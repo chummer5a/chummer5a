@@ -97,14 +97,14 @@ namespace Chummer
 
         public async ValueTask AddAsync(KeyValuePair<TKey, TValue> item)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 _dicData.Add(item.Key, item.Value);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -135,14 +135,14 @@ namespace Chummer
         /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
         public async ValueTask ClearAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 _dicData.Clear();
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -269,7 +269,7 @@ namespace Chummer
         public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
@@ -277,20 +277,20 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
         
         public async ValueTask<bool> RemoveAsync(TKey key)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 return _dicData.Remove(key);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
         
@@ -309,7 +309,7 @@ namespace Chummer
         public async ValueTask<Tuple<bool, TValue>> TryRemoveAsync(TKey key)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value) && _dicData.Remove(key);
@@ -317,7 +317,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -395,14 +395,14 @@ namespace Chummer
 
         public async ValueTask AddAsync(TKey key, TValue value)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 _dicData.Add(key, value);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -421,7 +421,7 @@ namespace Chummer
         public async ValueTask<bool> TryAddAsync(TKey key, TValue value)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
                 if (_dicData.ContainsKey(key))
@@ -430,7 +430,7 @@ namespace Chummer
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             return true;
         }
@@ -515,27 +515,27 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
                         _dicData[key] = objReturn;
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 else
                 {
                     objReturn = addValueFactory(key);
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
                         _dicData.Add(key, objReturn);
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -557,25 +557,25 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    objLocker = await LockObject.EnterWriteLockAsync();
+                    objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
                         _dicData[key] = objNewValue;
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                     return objNewValue;
                 }
-                objLocker = await LockObject.EnterWriteLockAsync();
+                objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     _dicData.Add(key, addValue);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync();
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
                 return addValue;
             }
@@ -633,26 +633,26 @@ namespace Chummer
                     blnReturn = removalConditionFunc(key, objExistingValue);
                     if (blnReturn)
                     {
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
                             blnReturn = _dicData.Remove(key);
                         }
                         catch
                         {
-                            await objLocker.DisposeAsync();
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     if (!blnReturn) // Not an else in case we somehow fail at removing a key that still passes the condition
                     {
-                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                         try
                         {
                             _dicData[key] = updateValueFactory(key, objExistingValue);
                         }
                         catch
                         {
-                            await objLocker.DisposeAsync();
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
