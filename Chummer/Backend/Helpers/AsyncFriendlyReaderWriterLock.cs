@@ -124,7 +124,7 @@ namespace Chummer
             SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = objNextSemaphore;
             SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
-            return TakeWriteLockCoreAsync(objNextSemaphore, objRelease, token);
+            return TakeWriteLockCoreAsync(objCurrentSemaphore, objRelease, token);
         }
 
         private async Task<IAsyncDisposable> TakeWriteLockCoreAsync(SemaphoreSlim objCurrentSemaphore, SafeWriterSemaphoreRelease objRelease, CancellationToken token)
@@ -366,6 +366,9 @@ namespace Chummer
 
             public ValueTask DisposeAsync()
             {
+                if (_objReaderWriterLock.IsDisposed)
+                    throw new InvalidOperationException(
+                        "Lock object was disposed before a writer lock release object assigned to it");
                 if (_objNextWriterSemaphore != _objReaderWriterLock._objCurrentWriterSemaphore.Value)
                 {
                     if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == _objCurrentWriterSemaphore)
@@ -400,6 +403,9 @@ namespace Chummer
 
             public void Dispose()
             {
+                if (_objReaderWriterLock.IsDisposed)
+                    throw new InvalidOperationException(
+                        "Lock object was disposed before a writer lock release object assigned to it");
                 if (_objNextWriterSemaphore != _objReaderWriterLock._objCurrentWriterSemaphore.Value)
                 {
                     if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == _objCurrentWriterSemaphore)
