@@ -39,56 +39,435 @@ namespace Chummer
     [DebuggerDisplay("{CharacterName} ({FileName})")]
     public sealed class CharacterCache : IHasLockObject
     {
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        private string _strFilePath;
+        private string _strFileName;
+        private string _strErrorText;
+        private string _strDescription;
+        private string _strBackground;
+        private string _strGameNotes;
+        private string _strCharacterNotes;
+        private string _strConcept;
+        private string _strKarma;
+        private string _strMetatype;
+        private string _strMetavariant;
+        private string _strPlayerName;
+        private string _strCharacterName;
+        private string _strCharacterAlias;
+        private string _strBuildMethod;
+        private string _strEssence;
+        private Image _imgMugshot;
+        private bool _blnCreated;
+        private string _strSettingsFile;
+        private readonly LockingDictionary<string, object> _dicMyPluginData = new LockingDictionary<string, object>();
+        private readonly AsyncFriendlyReaderWriterLock _lockObject = new AsyncFriendlyReaderWriterLock();
+        private Task<string> _tskRunningDownloadTask;
+        private EventHandler _onMyDoubleClick;
+        private EventHandler _onMyContextMenuDeleteClick;
+        private EventHandler<TreeViewEventArgs> _onMyAfterSelect;
+        private EventHandler<Tuple<KeyEventArgs, TreeNode>> _onMyKeyDown;
 
-        public string FilePath { get; set; }
-        public string FileName { get; set; }
-        public string ErrorText { get; set; }
-        public string Description { get; set; }
-        public string Background { get; set; }
-        public string GameNotes { get; set; }
-        public string CharacterNotes { get; set; }
-        public string Concept { get; set; }
-        public string Karma { get; set; }
-        public string Metatype { get; set; }
-        public string Metavariant { get; set; }
-        public string PlayerName { get; set; }
-        public string CharacterName { get; set; }
-        public string CharacterAlias { get; set; }
-        public string BuildMethod { get; set; }
-        public string Essence { get; set; }
+        public AsyncFriendlyReaderWriterLock LockObject
+        {
+            get { return _lockObject; }
+        }
 
-        private bool _blnIsLoadMethodRunning;
-
-        public bool IsLoadMethodRunning
+        public string FilePath
         {
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return _blnIsLoadMethodRunning;
+                    return _strFilePath;
             }
             set
             {
-                using (LockObject.EnterWriteLock())
-                    _blnIsLoadMethodRunning = value;
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strFilePath == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strFilePath = value;
+                }
+            }
+        }
+
+        public string FileName
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strFileName;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strFileName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strFileName = value;
+                }
+            }
+        }
+
+        public string ErrorText
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strErrorText;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strErrorText == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strErrorText = value;
+                }
+            }
+        }
+
+        public string Description
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strDescription;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strDescription == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strDescription = value;
+                }
+            }
+        }
+
+        public string Background
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strBackground;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strBackground == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strBackground = value;
+                }
+            }
+        }
+
+        public string GameNotes
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strGameNotes;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strGameNotes == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strGameNotes = value;
+                }
+            }
+        }
+
+        public string CharacterNotes
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strCharacterNotes;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strCharacterNotes == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strCharacterNotes = value;
+                }
+            }
+        }
+
+        public string Concept
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strConcept;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strConcept == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strConcept = value;
+                }
+            }
+        }
+
+        public string Karma
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strKarma;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strKarma == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strKarma = value;
+                }
+            }
+        }
+
+        public string Metatype
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strMetatype;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strMetatype == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strMetatype = value;
+                }
+            }
+        }
+
+        public string Metavariant
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strMetavariant;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strMetavariant == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strMetavariant = value;
+                }
+            }
+        }
+
+        public string PlayerName
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strPlayerName;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strPlayerName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strPlayerName = value;
+                }
+            }
+        }
+
+        public string CharacterName
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strCharacterName;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strCharacterName == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strCharacterName = value;
+                }
+            }
+        }
+
+        public string CharacterAlias
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strCharacterAlias;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strCharacterAlias == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strCharacterAlias = value;
+                }
+            }
+        }
+
+        public string BuildMethod
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strBuildMethod;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strBuildMethod == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strBuildMethod = value;
+                }
+            }
+        }
+
+        public string Essence
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strEssence;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strEssence == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strEssence = value;
+                }
             }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public Image Mugshot { get; private set; }
+        public Image Mugshot
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _imgMugshot;
+            }
+            private set
+            {
+                Image imgOldValue;
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    imgOldValue = _imgMugshot;
+                    if (imgOldValue == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _imgMugshot = value;
+                }
+                imgOldValue?.Dispose();
+            }
+        }
 
-        public bool Created { get; set; }
+        public bool Created
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnCreated;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_blnCreated == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _blnCreated = value;
+                }
+            }
+        }
 
-        public string SettingsFile { get; set; }
+        public string SettingsFile
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strSettingsFile;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_strSettingsFile == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _strSettingsFile = value;
+                }
+            }
+        }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public LockingDictionary<string, object> MyPluginDataDic { get; } = new LockingDictionary<string, object>();
+        public LockingDictionary<string, object> MyPluginDataDic
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _dicMyPluginData;
+            }
+        }
 
-        public Task<string> DownLoadRunning { get; set; }
+        public Task<string> RunningDownloadTask
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _tskRunningDownloadTask;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_tskRunningDownloadTask == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _tskRunningDownloadTask = value;
+                }
+            }
+        }
 
         public CharacterCache()
         {
@@ -122,54 +501,126 @@ namespace Chummer
 
         public void CopyFrom(CharacterCache objExistingCache)
         {
-            Background = objExistingCache.Background;
-            BuildMethod = objExistingCache.BuildMethod;
-            CharacterAlias = objExistingCache.CharacterAlias;
-            CharacterName = objExistingCache.CharacterName;
-            CharacterNotes = objExistingCache.CharacterNotes;
-            Concept = objExistingCache.Concept;
-            Created = objExistingCache.Created;
-            Description = objExistingCache.Description;
-            Essence = objExistingCache.Essence;
-            GameNotes = objExistingCache.GameNotes;
-            Karma = objExistingCache.Karma;
-            FileName = objExistingCache.FileName;
-            Metatype = objExistingCache.Metatype;
-            Metavariant = objExistingCache.Metavariant;
-            PlayerName = objExistingCache.PlayerName;
-            SettingsFile = objExistingCache.SettingsFile;
-
-            Image imgNewMugshot = objExistingCache.Mugshot.Clone() as Image;
-            Mugshot?.Dispose();
-            Mugshot = imgNewMugshot;
+            using (LockObject.EnterWriteLock())
+            using (EnterReadLock.Enter(objExistingCache.LockObject))
+            {
+                _strBackground = objExistingCache.Background;
+                _strBuildMethod = objExistingCache.BuildMethod;
+                _strCharacterAlias = objExistingCache.CharacterAlias;
+                _strCharacterName = objExistingCache.CharacterName;
+                _strCharacterNotes = objExistingCache.CharacterNotes;
+                _strConcept = objExistingCache.Concept;
+                _blnCreated = objExistingCache.Created;
+                _strDescription = objExistingCache.Description;
+                _strEssence = objExistingCache.Essence;
+                _strGameNotes = objExistingCache.GameNotes;
+                _strKarma = objExistingCache.Karma;
+                _strFileName = objExistingCache.FileName;
+                _strMetatype = objExistingCache.Metatype;
+                _strMetavariant = objExistingCache.Metavariant;
+                _strPlayerName = objExistingCache.PlayerName;
+                _strSettingsFile = objExistingCache.SettingsFile;
+                _imgMugshot = objExistingCache.Mugshot.Clone() as Image;
+            }
         }
 
         private void SetDefaultEventHandlers()
         {
-            OnMyDoubleClick += OnDefaultDoubleClick;
-            OnMyKeyDown += OnDefaultKeyDown;
-            OnMyContextMenuDeleteClick += OnDefaultContextMenuDeleteClick;
+            using (LockObject.EnterWriteLock())
+            {
+                _onMyDoubleClick += OnDefaultDoubleClick;
+                _onMyKeyDown += OnDefaultKeyDown;
+                _onMyContextMenuDeleteClick += OnDefaultContextMenuDeleteClick;
+            }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler OnMyDoubleClick { get; set; }
+        public EventHandler OnMyDoubleClick
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _onMyDoubleClick;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_onMyDoubleClick == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _onMyDoubleClick = value;
+                }
+            }
+        }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler OnMyContextMenuDeleteClick { get; set; }
+        public EventHandler OnMyContextMenuDeleteClick
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _onMyContextMenuDeleteClick;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_onMyContextMenuDeleteClick == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _onMyContextMenuDeleteClick = value;
+                }
+            }
+        }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<TreeViewEventArgs> OnMyAfterSelect { get; set; }
+        public EventHandler<TreeViewEventArgs> OnMyAfterSelect
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _onMyAfterSelect;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_onMyAfterSelect == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _onMyAfterSelect = value;
+                }
+            }
+        }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown { get; set; }
+        public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _onMyKeyDown;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_onMyKeyDown == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _onMyKeyDown = value;
+                }
+            }
+        }
 
         public async void OnDefaultDoubleClick(object sender, EventArgs e)
         {
@@ -207,18 +658,10 @@ namespace Chummer
 
         private async Task<bool> LoadFromFileCoreAsync(bool blnSync, string strFile)
         {
-            while (IsLoadMethodRunning)
-            {
-                if (blnSync)
-                    Utils.SafeSleep();
-                else
-                    await Utils.SafeSleepAsync();
-            }
-
-            IsLoadMethodRunning = true;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
             try
             {
-                DownLoadRunning = null;
+                _tskRunningDownloadTask = null;
                 string strErrorText = string.Empty;
                 XPathNavigator xmlSourceNode;
                 if (!File.Exists(strFile))
@@ -259,26 +702,26 @@ namespace Chummer
 
                 if (xmlSourceNode != null)
                 {
-                    Description = xmlSourceNode.SelectSingleNodeAndCacheExpression("description")?.Value;
-                    BuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod")?.Value;
-                    Background = xmlSourceNode.SelectSingleNodeAndCacheExpression("background")?.Value;
-                    CharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes")?.Value;
-                    GameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes")?.Value;
-                    Concept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept")?.Value;
-                    Karma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma")?.Value;
-                    Metatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype")?.Value;
-                    Metavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant")?.Value;
-                    PlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername")?.Value;
-                    CharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                    CharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias")?.Value;
-                    Created = xmlSourceNode.SelectSingleNodeAndCacheExpression("created")?.Value == bool.TrueString;
-                    Essence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless")?.Value;
+                    _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description")?.Value;
+                    _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod")?.Value;
+                    _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background")?.Value;
+                    _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes")?.Value;
+                    _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes")?.Value;
+                    _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept")?.Value;
+                    _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma")?.Value;
+                    _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype")?.Value;
+                    _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant")?.Value;
+                    _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername")?.Value;
+                    _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias")?.Value;
+                    _blnCreated = xmlSourceNode.SelectSingleNodeAndCacheExpression("created")?.Value == bool.TrueString;
+                    _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless")?.Value;
                     string strSettings = xmlSourceNode.SelectSingleNodeAndCacheExpression("settings")?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSettings))
                     {
                         if (SettingsManager.LoadedCharacterSettings.TryGetValue(
                             strSettings, out CharacterSettings objSettings))
-                            SettingsFile = objSettings.DisplayName;
+                            _strSettingsFile = objSettings.DisplayName;
                         else
                         {
                             string strTemp = blnSync
@@ -288,11 +731,11 @@ namespace Chummer
                                   LanguageManager.GetString("String_Space")
                                 : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound") +
                                   await LanguageManager.GetStringAsync("String_Space");
-                            SettingsFile = strTemp + '[' + strSettings + ']';
+                            _strSettingsFile = strTemp + '[' + strSettings + ']';
                         }
                     }
                     else
-                        SettingsFile = string.Empty;
+                        _strSettingsFile = string.Empty;
                     string strMugshotBase64 = xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot")?.Value ?? string.Empty;
                     if (string.IsNullOrEmpty(strMugshotBase64))
                     {
@@ -326,33 +769,33 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             using (Image imgMugshot = strMugshotBase64.ToImage())
                                 // ReSharper disable once MethodHasAsyncOverload
-                                Mugshot = imgMugshot.GetCompressedImage();
+                                _imgMugshot = imgMugshot.GetCompressedImage();
                         }
                         else
                         {
                             using (Image imgMugshot = await strMugshotBase64.ToImageAsync())
-                                Mugshot = await imgMugshot.GetCompressedImageAsync();
+                                _imgMugshot = await imgMugshot.GetCompressedImageAsync();
                         }
                     }
                 }
                 else
                 {
-                    ErrorText = strErrorText;
+                    _strErrorText = strErrorText;
                 }
 
-                FilePath = strFile;
+                _strFilePath = strFile;
                 if (!string.IsNullOrEmpty(strFile))
                 {
                     int last = strFile.LastIndexOf(Path.DirectorySeparatorChar) + 1;
                     if (strFile.Length > last)
-                        FileName = strFile.Substring(last);
+                        _strFileName = strFile.Substring(last);
                 }
 
                 return string.IsNullOrEmpty(strErrorText);
             }
             finally
             {
-                IsLoadMethodRunning = false;
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -411,9 +854,9 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
             {
-                Mugshot?.Dispose();
-                DownLoadRunning?.Dispose();
-                MyPluginDataDic.Dispose();
+                _imgMugshot?.Dispose();
+                _tskRunningDownloadTask?.Dispose();
+                _dicMyPluginData.Dispose();
             }
             LockObject.Dispose();
         }
@@ -424,9 +867,9 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                Mugshot?.Dispose();
-                DownLoadRunning?.Dispose();
-                await MyPluginDataDic.DisposeAsync();
+                _imgMugshot?.Dispose();
+                _tskRunningDownloadTask?.Dispose();
+                await _dicMyPluginData.DisposeAsync();
             }
             finally
             {

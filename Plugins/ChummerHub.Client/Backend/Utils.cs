@@ -1478,8 +1478,8 @@ namespace ChummerHub.Client.Backend
         {
             try
             {
-                if (objCache?.DownLoadRunning != null && objCache.DownLoadRunning.Status == TaskStatus.Running)
-                    return objCache.DownLoadRunning;
+                if (objCache?.RunningDownloadTask != null && objCache.RunningDownloadTask.Status == TaskStatus.Running)
+                    return objCache.RunningDownloadTask;
                 Log.Info("Downloading SINner: " + sinner?.Id);
                 Task<string> returntask = Task.Run(async () =>
                 {
@@ -1489,7 +1489,7 @@ namespace ChummerHub.Client.Backend
                     return filepath;
                 });
                 if (objCache != null)
-                    objCache.DownLoadRunning = returntask;
+                    objCache.RunningDownloadTask = returntask;
                 return returntask;
             }
             catch(Exception ex)
