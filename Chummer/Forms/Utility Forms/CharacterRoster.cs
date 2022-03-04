@@ -139,34 +139,39 @@ namespace Chummer
 
                 await this.DoThreadSafeAsync(
                     () => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
+
+                IsFinishedLoading = true;
             }
         }
 
         private bool _blnIsClosing;
 
-        private void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
+        private async void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_blnIsClosing)
-                return;
-            _blnIsClosing = true; // Needed to prevent crashes on disposal
-            _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
-            _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
-
-            SetMyEventHandlers(true);
-
-            foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
-                objCache.Dispose();
-            _dicSavedCharacterCaches.Dispose();
-
-            DisposeTagNodes(treCharacterList.Nodes);
-
-            void DisposeTagNodes(TreeNodeCollection lstNodes)
+            using (new CursorWait(this))
             {
-                foreach (TreeNode nodNode in lstNodes)
+                if (_blnIsClosing)
+                    return;
+                _blnIsClosing = true; // Needed to prevent crashes on disposal
+                _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
+                _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
+
+                SetMyEventHandlers(true);
+
+                foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
+                    await objCache.DisposeAsync();
+                await _dicSavedCharacterCaches.DisposeAsync();
+
+                await DisposeTagNodes(treCharacterList.Nodes);
+
+                async ValueTask DisposeTagNodes(TreeNodeCollection lstNodes)
                 {
-                    if (nodNode.Tag is CharacterCache objCache)
-                        objCache.Dispose();
-                    DisposeTagNodes(nodNode.Nodes);
+                    foreach (TreeNode nodNode in lstNodes)
+                    {
+                        if (nodNode.Tag is CharacterCache objCache)
+                            await objCache.DisposeAsync();
+                        await DisposeTagNodes(nodNode.Nodes);
+                    }
                 }
             }
         }
@@ -1324,5 +1329,10 @@ namespace Chummer
 
             return cmsRoster;
         }
+
+        /// <summary>
+        /// Set to True at the end of the OnLoad method. Useful because the load method is executed asynchronously, so form might end up getting closed before it fully loads.
+        /// </summary>
+        public bool IsFinishedLoading { get; private set; }
     }
 }

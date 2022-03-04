@@ -59,17 +59,13 @@ namespace Chummer
         private bool _blnCreated;
         private string _strSettingsFile;
         private readonly LockingDictionary<string, object> _dicMyPluginData = new LockingDictionary<string, object>();
-        private readonly AsyncFriendlyReaderWriterLock _lockObject = new AsyncFriendlyReaderWriterLock();
         private Task<string> _tskRunningDownloadTask;
         private EventHandler _onMyDoubleClick;
         private EventHandler _onMyContextMenuDeleteClick;
         private EventHandler<TreeViewEventArgs> _onMyAfterSelect;
         private EventHandler<Tuple<KeyEventArgs, TreeNode>> _onMyKeyDown;
 
-        public AsyncFriendlyReaderWriterLock LockObject
-        {
-            get { return _lockObject; }
-        }
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public string FilePath
         {
