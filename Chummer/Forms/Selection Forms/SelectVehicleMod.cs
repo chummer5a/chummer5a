@@ -727,8 +727,8 @@ namespace Chummer
                         await LanguageManager.GetStringAsync(xmlVehicleMod.SelectSingleNode("ratinglabel").Value));
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                string strPage = xmlVehicleMod.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                SourceString objSourceString = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                string strPage = (await xmlVehicleMod.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 tlpRight.Visible = true;

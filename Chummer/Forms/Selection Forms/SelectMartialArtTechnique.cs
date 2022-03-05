@@ -117,8 +117,8 @@ namespace Chummer
                 if (xmlTechnique != null)
                 {
                     string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    string strPage = xmlTechnique.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    SourceString objSourceString = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                    string strPage = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;

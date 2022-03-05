@@ -382,9 +382,9 @@ namespace Chummer
             lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
 
             string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            string strPage = objXmlMod.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
-                GlobalSettings.CultureInfo, _objCharacter);
+            string strPage = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
+                                                                             GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
             lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);

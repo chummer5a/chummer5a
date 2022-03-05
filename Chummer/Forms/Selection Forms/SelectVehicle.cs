@@ -319,9 +319,9 @@ namespace Chummer
             UpdateSelectedVehicleCost();
 
             string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            string strPage = objXmlVehicle.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
-                GlobalSettings.CultureInfo, _objCharacter);
+            string strPage = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
+                                                                             GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
             lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -460,13 +460,13 @@ namespace Chummer
                             decCostMultiplier -= (nudUsedVehicleDiscount.Value / 100.0m);
                         decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                         if (chkBlackMarketDiscount.Checked
-                            && _setBlackMarketMaps.Contains(objXmlVehicle
-                                .SelectSingleNodeAndCacheExpression("category")
+                            && _setBlackMarketMaps.Contains((await objXmlVehicle
+                                                                .SelectSingleNodeAndCacheExpressionAsync("category"))
                                 ?.Value))
                             decCostMultiplier *= 0.9m;
                         if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
-                                objXmlVehicle
-                                    .SelectSingleNodeAndCacheExpression("category")
+                                (await objXmlVehicle
+                                    .SelectSingleNodeAndCacheExpressionAsync("category"))
                                     ?.Value))
                             decCostMultiplier *= 0.9m;
                         if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
@@ -532,7 +532,7 @@ namespace Chummer
                                             sbdWeaponMounts.Length -= Environment.NewLine.Length;
 
                                         AvailabilityValue objAvail = objVehicle.TotalAvailTuple();
-                                        SourceString strSource = SourceString.GetSourceString(objVehicle.Source,
+                                        SourceString strSource = await SourceString.GetSourceStringAsync(objVehicle.Source,
                                             objVehicle.DisplayPage(GlobalSettings.Language),
                                             GlobalSettings.Language, GlobalSettings.CultureInfo,
                                             _objCharacter);
@@ -579,13 +579,13 @@ namespace Chummer
                                 decCostMultiplier -= (nudUsedVehicleDiscount.Value / 100.0m);
                             decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
                             if (chkBlackMarketDiscount.Checked
-                                && _setBlackMarketMaps.Contains(objXmlVehicle
-                                    .SelectSingleNodeAndCacheExpression("category")
+                                && _setBlackMarketMaps.Contains((await objXmlVehicle
+                                                                    .SelectSingleNodeAndCacheExpressionAsync("category"))
                                     ?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
-                                    objXmlVehicle
-                                        .SelectSingleNodeAndCacheExpression("category")
+                                    (await objXmlVehicle
+                                        .SelectSingleNodeAndCacheExpressionAsync("category"))
                                         ?.Value))
                                 decCostMultiplier *= 0.9m;
                             if (!objXmlVehicle.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier))
@@ -595,13 +595,13 @@ namespace Chummer
                             }
                         }
 
-                        string strDisplayname = objXmlVehicle.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                                ?? objXmlVehicle.SelectSingleNodeAndCacheExpression("name")?.Value
+                        string strDisplayname = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                                ?? (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                                 ?? await LanguageManager.GetStringAsync("String_Unknown");
 
                         if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
                         {
-                            string strCategory = objXmlVehicle.SelectSingleNodeAndCacheExpression("category")?.Value;
+                            string strCategory = (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value;
                             if (!string.IsNullOrEmpty(strCategory))
                             {
                                 ListItem objFoundItem
@@ -614,7 +614,7 @@ namespace Chummer
                         }
 
                         lstVehicles.Add(new ListItem(
-                            objXmlVehicle.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
+                            (await objXmlVehicle.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty,
                             strDisplayname));
                     }
 

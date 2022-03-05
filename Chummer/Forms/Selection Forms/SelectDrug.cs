@@ -184,10 +184,23 @@ namespace Chummer
                     // Not a simple integer, so we need to start mucking around with strings
                     if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                     {
-                        strMinRating = await (await (await (await strMinRating.CheapReplaceAsync("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo)))
-                                    .CheapReplaceAsync("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo)))
-                                .CheapReplaceAsync("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo)))
-                            .CheapReplaceAsync("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
+                        strMinRating = await strMinRating
+                                             .CheapReplaceAsync("MaximumSTR",
+                                                                () => (ParentVehicle != null
+                                                                        ? Math.Max(1, ParentVehicle.TotalBody * 2)
+                                                                        : _objCharacter.STR.TotalMaximum)
+                                                                    .ToString(GlobalSettings.InvariantCultureInfo))
+                                             .CheapReplaceAsync("MaximumAGI",
+                                                                () => (ParentVehicle != null
+                                                                        ? Math.Max(1, ParentVehicle.Pilot * 2)
+                                                                        : _objCharacter.AGI.TotalMaximum)
+                                                                    .ToString(GlobalSettings.InvariantCultureInfo))
+                                             .CheapReplaceAsync("MinimumSTR",
+                                                                () => (ParentVehicle?.TotalBody ?? 3).ToString(
+                                                                    GlobalSettings.InvariantCultureInfo))
+                                             .CheapReplaceAsync("MinimumAGI",
+                                                                () => (ParentVehicle?.Pilot ?? 3).ToString(
+                                                                    GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
                         intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
@@ -199,10 +212,23 @@ namespace Chummer
                     // Not a simple integer, so we need to start mucking around with strings
                     if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
                     {
-                        strMaxRating = await (await (await (await strMaxRating.CheapReplaceAsync("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo)))
-                                    .CheapReplaceAsync("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo)))
-                                .CheapReplaceAsync("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo)))
-                            .CheapReplaceAsync("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
+                        strMaxRating = await strMaxRating
+                                             .CheapReplaceAsync("MaximumSTR",
+                                                                () => (ParentVehicle != null
+                                                                        ? Math.Max(1, ParentVehicle.TotalBody * 2)
+                                                                        : _objCharacter.STR.TotalMaximum)
+                                                                    .ToString(GlobalSettings.InvariantCultureInfo))
+                                             .CheapReplaceAsync("MaximumAGI",
+                                                                () => (ParentVehicle != null
+                                                                        ? Math.Max(1, ParentVehicle.Pilot * 2)
+                                                                        : _objCharacter.AGI.TotalMaximum)
+                                                                    .ToString(GlobalSettings.InvariantCultureInfo))
+                                             .CheapReplaceAsync("MinimumSTR",
+                                                                () => (ParentVehicle?.TotalBody ?? 3).ToString(
+                                                                    GlobalSettings.InvariantCultureInfo))
+                                             .CheapReplaceAsync("MinimumAGI",
+                                                                () => (ParentVehicle?.Pilot ?? 3).ToString(
+                                                                    GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out bool blnIsSuccess);
                         intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
@@ -243,8 +269,8 @@ namespace Chummer
                 }
 
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                string strPage = xmlDrug.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
+                string strPage = (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);

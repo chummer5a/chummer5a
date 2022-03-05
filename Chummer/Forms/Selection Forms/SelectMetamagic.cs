@@ -85,7 +85,7 @@ namespace Chummer
             await BuildMetamagicList();
         }
 
-        private void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -99,8 +99,8 @@ namespace Chummer
                 if (objXmlMetamagic != null)
                 {
                     string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value;
-                    string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
-                    SourceString objSourceString = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                    string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
+                    SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;

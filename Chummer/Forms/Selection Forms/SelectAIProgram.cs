@@ -224,10 +224,10 @@ namespace Chummer
                     string strSource = objXmlProgram.SelectSingleNode("source")?.Value;
                     if (!string.IsNullOrEmpty(strSource))
                     {
-                        string strPage = objXmlProgram.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
+                        string strPage = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
                         if (!string.IsNullOrEmpty(strPage))
                         {
-                            SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                            SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                             lblSource.Text = objSource.ToString();
                             lblSource.SetToolTip(objSource.LanguageBookTooltip);
                         }

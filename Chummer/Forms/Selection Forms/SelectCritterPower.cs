@@ -136,9 +136,9 @@ namespace Chummer
                 XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedPower.CleanXPath() + ']');
                 if (objXmlPower != null)
                 {
-                    lblCritterPowerCategory.Text = objXmlPower.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
+                    lblCritterPowerCategory.Text = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value ?? string.Empty;
 
-                    switch (objXmlPower.SelectSingleNodeAndCacheExpression("type")?.Value)
+                    switch ((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("type"))?.Value)
                     {
                         case "M":
                             lblCritterPowerType.Text = await LanguageManager.GetStringAsync("String_SpellTypeMana");
@@ -197,7 +197,7 @@ namespace Chummer
                     }
                     lblCritterPowerRange.Text = strRange;
 
-                    string strDuration = objXmlPower.SelectSingleNodeAndCacheExpression("duration")?.Value ?? string.Empty;
+                    string strDuration = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("duration"))?.Value ?? string.Empty;
                     switch (strDuration)
                     {
                         case "Instant":
@@ -221,16 +221,16 @@ namespace Chummer
                             break;
                     }
 
-                    string strSource = objXmlPower.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
+                    string strSource = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strPage = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     lblCritterPowerSource.Text = objSource.ToString();
                     lblCritterPowerSource.SetToolTip(objSource.LanguageBookTooltip);
 
-                    nudCritterPowerRating.Visible = objXmlPower.SelectSingleNodeAndCacheExpression("rating") != null;
+                    nudCritterPowerRating.Visible = await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("rating") != null;
 
-                    lblKarma.Text = objXmlPower.SelectSingleNodeAndCacheExpression("karma")?.Value ?? "0";
+                    lblKarma.Text = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value ?? "0";
 
                     // If the character is a Free Spirit, populate the Power Points Cost as well.
                     if (_objCharacter.Metatype == "Free Spirit")

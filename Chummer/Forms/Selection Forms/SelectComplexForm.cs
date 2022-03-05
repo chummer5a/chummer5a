@@ -157,11 +157,11 @@ namespace Chummer
 
             string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ??
                                await LanguageManager.GetStringAsync("String_Unknown");
-            string strPage = xmlComplexForm.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
+            string strPage = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ??
                              xmlComplexForm.SelectSingleNode("page")?.Value ??
                              await LanguageManager.GetStringAsync("String_Unknown");
-            SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
-                GlobalSettings.CultureInfo, _objCharacter);
+            SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
+                                                                             GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
             lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);

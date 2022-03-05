@@ -100,16 +100,16 @@ namespace Chummer
 
                 if (objXmlArt != null)
                 {
-                    lblKarmaCost.Text = objXmlArt.SelectSingleNodeAndCacheExpression("cost")?.Value ?? 7.ToString(GlobalSettings.CultureInfo);
+                    lblKarmaCost.Text = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("cost"))?.Value ?? 7.ToString(GlobalSettings.CultureInfo);
                     lblKarmaCostLabel.Visible = !string.IsNullOrEmpty(lblKarmaCost.Text);
 
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTechniques))
                     {
-                        foreach (XPathNavigator xmlMartialArtsTechnique in objXmlArt.SelectAndCacheExpression(
+                        foreach (XPathNavigator xmlMartialArtsTechnique in await objXmlArt.SelectAndCacheExpressionAsync(
                                      "techniques/technique"))
                         {
                             string strLoopTechniqueName
-                                = xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpression("name")?.Value
+                                = (await xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                   ?? string.Empty;
                             if (!string.IsNullOrEmpty(strLoopTechniqueName))
                             {
@@ -124,7 +124,7 @@ namespace Chummer
                                     sbdTechniques.Append(
                                         !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                         StringComparison.OrdinalIgnoreCase)
-                                            ? xmlTechniqueNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                            ? (await xmlTechniqueNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                               ?? strLoopTechniqueName
                                             : strLoopTechniqueName);
                                 }
@@ -136,9 +136,9 @@ namespace Chummer
 
                     gpbIncludedTechniques.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
 
-                    string strSource = objXmlArt.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    string strPage = objXmlArt.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlArt.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    SourceString objSourceString = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                    string strSource = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strPage = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;

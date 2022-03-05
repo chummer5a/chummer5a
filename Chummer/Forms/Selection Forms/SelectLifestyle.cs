@@ -251,7 +251,7 @@ namespace Chummer
             await CalculateValues();
         }
 
-        private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             string strSource = string.Empty;
             string strPage = string.Empty;
@@ -268,7 +268,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
+                SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);
@@ -407,7 +407,7 @@ namespace Chummer
                     string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText;
                     if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
-                        SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
+                        SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                             GlobalSettings.CultureInfo, _objCharacter);
                         lblSource.Text = objSource.ToString();
                         lblSource.SetToolTip(objSource.LanguageBookTooltip);

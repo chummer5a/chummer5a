@@ -95,7 +95,7 @@ namespace Chummer
             await BuildList();
         }
 
-        private void lstArt_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstArt_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -116,10 +116,10 @@ namespace Chummer
                 return;
             }
 
-            string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
-                GlobalSettings.CultureInfo, _objCharacter);
+            string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
+                                                                             GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
             lblSource.SetToolTip(objSource.LanguageBookTooltip);
             tlpRight.Visible = true;

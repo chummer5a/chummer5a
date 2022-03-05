@@ -345,11 +345,11 @@ namespace Chummer
                             if (sbdAccessories.Length > 0)
                                 sbdAccessories.Length -= Environment.NewLine.Length;
                             AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
-                            SourceString strSource = SourceString.GetSourceString(objWeapon.Source,
-                                                                      await objWeapon.DisplayPageAsync(GlobalSettings.Language),
-                                                                      GlobalSettings.Language,
-                                                                      GlobalSettings.CultureInfo,
-                                                                      _objCharacter);
+                            SourceString strSource = await SourceString.GetSourceStringAsync(objWeapon.Source,
+                                await objWeapon.DisplayPageAsync(GlobalSettings.Language),
+                                GlobalSettings.Language,
+                                GlobalSettings.CultureInfo,
+                                _objCharacter);
                             NuyenString strCost = new NuyenString(objWeapon.DisplayCost(out decimal _));
 
                             tabWeapons.Rows.Add(strID, strWeaponName, strDice, strAccuracy, strDamage, strAP, strRC,

@@ -665,10 +665,10 @@ namespace Chummer
             if (xmlAspect != null)
             {
                 string strSource = xmlAspect.SelectSingleNode("source")?.Value ?? string.Empty;
-                string strPage = xmlAspect.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlAspect.SelectSingleNode("page")?.Value ?? string.Empty;
+                string strPage = (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlAspect.SelectSingleNode("page")?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
-                    SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
+                    SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     lblSource.Text = objSource.ToString();
                     lblSource.SetToolTip(objSource.LanguageBookTooltip);

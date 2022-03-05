@@ -356,8 +356,8 @@ namespace Chummer
                     : await LanguageManager.GetStringAsync("Label_Rating");
 
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                string strPage = xmlCyberware.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
+                string strPage = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);
