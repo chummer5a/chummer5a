@@ -4603,7 +4603,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Evalulate and return the requested Range for the Weapon.
+        /// Evaluate and return the requested Range for the Weapon.
         /// </summary>
         /// <param name="strFindRange">Range node to use.</param>
         /// <param name="blnUseAlternateRange">Use alternate range instead of the weapon's main range.</param>
@@ -4618,6 +4618,47 @@ namespace Chummer.Backend.Equipment
             }
             else if (!string.IsNullOrEmpty(Range))
                 strRangeCategory = Range;
+
+            // Check if the Weapon has Ammunition loaded and look for any range replacement.
+            if (!string.IsNullOrEmpty(AmmoLoaded))
+            {
+                // Look for Ammo on the character.
+                Gear objGear = _objCharacter.Gear.DeepFindById(AmmoLoaded)
+                               ?? _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
+                if (objGear != null)
+                {
+                    string strNewRange = string.Empty;
+
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                    {
+                        if (objGear.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                        {
+                            strRangeCategory = strNewRange;
+                        }
+                    }
+                    else if (objGear.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                    {
+                        strRangeCategory = strNewRange;
+                    }
+
+                    // Do the same for any plugins.
+                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                    {
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                   && objChild.FlechetteWeaponBonus != null)
+                        {
+                            if (objChild.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                            {
+                                strRangeCategory = strNewRange;
+                            }
+                        }
+                        else if (objChild.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                        {
+                            strRangeCategory = strNewRange;
+                        }
+                    }
+                }
+            }
 
             XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml");
             XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRangeCategory.CleanXPath() + ']');
@@ -4684,7 +4725,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
-            int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNode($"chummer/modifiers/{strRange.ToLowerInvariant()}")?.ValueAsInt ?? 0;
+            int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNode("chummer/modifiers/" + strRange.ToLowerInvariant())?.ValueAsInt ?? 0;
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
 
             string strNameUpper = Name.ToUpperInvariant();
