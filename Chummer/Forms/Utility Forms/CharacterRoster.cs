@@ -158,10 +158,6 @@ namespace Chummer
 
                 SetMyEventHandlers(true);
 
-                foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
-                    await objCache.DisposeAsync();
-                await _dicSavedCharacterCaches.DisposeAsync();
-
                 await DisposeTagNodes(treCharacterList.Nodes);
 
                 async ValueTask DisposeTagNodes(TreeNodeCollection lstNodes)
@@ -169,10 +165,22 @@ namespace Chummer
                     foreach (TreeNode nodNode in lstNodes)
                     {
                         if (nodNode.Tag is CharacterCache objCache)
-                            await objCache.DisposeAsync();
+                        {
+                            nodNode.Tag = null;
+                            if (!objCache.IsDisposed)
+                            {
+                                await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath);
+                                await objCache.DisposeAsync();
+                            }
+                        }
+
                         await DisposeTagNodes(nodNode.Nodes);
                     }
                 }
+
+                foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
+                    await objCache.DisposeAsync();
+                await _dicSavedCharacterCaches.DisposeAsync();
             }
         }
 

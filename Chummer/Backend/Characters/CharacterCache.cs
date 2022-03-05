@@ -846,11 +846,18 @@ namespace Chummer
             }
         }
 
+        private bool _blnIsDisposed;
+
+        public bool IsDisposed => _blnIsDisposed;
+
         /// <inheritdoc />
         public void Dispose()
         {
+            if (_blnIsDisposed)
+                return;
             using (LockObject.EnterWriteLock())
             {
+                _blnIsDisposed = true;
                 _imgMugshot?.Dispose();
                 _tskRunningDownloadTask?.Dispose();
                 _dicMyPluginData.Dispose();
@@ -861,9 +868,12 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
+            if (_blnIsDisposed)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
+                _blnIsDisposed = true;
                 _imgMugshot?.Dispose();
                 _tskRunningDownloadTask?.Dispose();
                 await _dicMyPluginData.DisposeAsync();
