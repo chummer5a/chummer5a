@@ -401,7 +401,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNodeAndCacheExpression("/chummer");
+                            await (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNodeAndCacheExpressionAsync("/chummer");
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstTraditions))
                         {
@@ -410,13 +410,13 @@ namespace Chummer
                                 foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                              "traditions/tradition[" + CharacterObjectSettings.BookXPath() + ']'))
                                 {
-                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    string strName = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                         lstTraditions.Add(new ListItem(
-                                                              xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                              (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("id"))
                                                                           ?.Value ?? strName,
-                                                              xmlTradition
-                                                                  .SelectSingleNodeAndCacheExpression("translate")
+                                                              (await xmlTradition
+                                                                  .SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                   ?.Value ?? strName));
                                 }
                             }
@@ -447,11 +447,11 @@ namespace Chummer
                                 foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode.Select(
                                              "drainattributes/drainattribute"))
                                 {
-                                    string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    string strName = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                         lstDrainAttributes.Add(new ListItem(strName,
-                                                                            xmlDrain.SelectSingleNodeAndCacheExpression(
-                                                                                "translate")?.Value ?? strName));
+                                                                            (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync(
+                                                                                "translate"))?.Value ?? strName));
                                 }
                             }
 
@@ -501,17 +501,17 @@ namespace Chummer
                                 lstSpirit.Add(ListItem.Blank);
                                 if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
-                                                 .SelectAndCacheExpression("spirits/spirit"))
+                                    foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
+                                                 .SelectAndCacheExpressionAsync("spirits/spirit"))
                                     {
                                         string strSpiritName
-                                            = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                            = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                         if (!string.IsNullOrEmpty(strSpiritName)
                                             && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                         {
                                             lstSpirit.Add(new ListItem(strSpiritName,
-                                                                       xmlSpirit.SelectSingleNodeAndCacheExpression(
-                                                                           "translate")?.Value ?? strSpiritName));
+                                                                       (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync(
+                                                                           "translate"))?.Value ?? strSpiritName));
                                         }
                                     }
                                 }
@@ -569,7 +569,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNodeAndCacheExpression("/chummer");
+                            await (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNodeAndCacheExpressionAsync("/chummer");
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstStreams))
                         {
@@ -578,12 +578,12 @@ namespace Chummer
                                 foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                              "traditions/tradition[" + CharacterObjectSettings.BookXPath() + ']'))
                                 {
-                                    string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    string strName = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                         lstStreams.Add(new ListItem(
-                                                           xmlTradition.SelectSingleNodeAndCacheExpression("id")?.Value
+                                                           (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value
                                                            ?? strName,
-                                                           xmlTradition.SelectSingleNodeAndCacheExpression("translate")
+                                                           (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                        ?.Value ?? strName));
                                 }
                             }
@@ -1743,8 +1743,8 @@ namespace Chummer
                             treCritterPowers.SortCustomOrder();
 
                             XPathNavigator xmlTraditionsBaseChummerNode =
-                                (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
-                                               .SelectSingleNodeAndCacheExpression("/chummer");
+                                await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
+                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstTraditions))
                             {
@@ -1753,13 +1753,13 @@ namespace Chummer
                                     foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
                                                  "traditions/tradition[" + CharacterObjectSettings.BookXPath() + ']'))
                                     {
-                                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        string strName = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                         if (!string.IsNullOrEmpty(strName))
                                             lstTraditions.Add(new ListItem(
-                                                                  xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                                  (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("id"))
                                                                               ?.Value ?? strName,
-                                                                  xmlTradition
-                                                                      .SelectSingleNodeAndCacheExpression("translate")
+                                                                  (await xmlTradition
+                                                                      .SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                       ?.Value ?? strName));
                                     }
                                 }
@@ -1794,15 +1794,15 @@ namespace Chummer
                                 lstDrainAttributes.Add(ListItem.Blank);
                                 if (xmlTraditionsBaseChummerNode != null)
                                 {
-                                    foreach (XPathNavigator xmlDrain in xmlTraditionsBaseChummerNode
-                                                 .SelectAndCacheExpression(
+                                    foreach (XPathNavigator xmlDrain in await xmlTraditionsBaseChummerNode
+                                                 .SelectAndCacheExpressionAsync(
                                                      "drainattributes/drainattribute"))
                                     {
-                                        string strName = xmlDrain.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                        string strName = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                         if (!string.IsNullOrEmpty(strName))
                                             lstDrainAttributes.Add(new ListItem(strName,
-                                                                       xmlDrain.SelectSingleNodeAndCacheExpression(
-                                                                           "translate")?.Value ?? strName));
+                                                                       (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync(
+                                                                           "translate"))?.Value ?? strName));
                                     }
                                 }
 
@@ -1831,17 +1831,17 @@ namespace Chummer
                                     lstSpirit.Add(ListItem.Blank);
                                     if (xmlTraditionsBaseChummerNode != null)
                                     {
-                                        foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode
-                                                     .SelectAndCacheExpression("spirits/spirit"))
+                                        foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
+                                                     .SelectAndCacheExpressionAsync("spirits/spirit"))
                                         {
                                             string strSpiritName
-                                                = xmlSpirit.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                                = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                             if (!string.IsNullOrEmpty(strSpiritName)
                                                 && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                             {
                                                 lstSpirit.Add(new ListItem(strSpiritName,
-                                                                           xmlSpirit.SelectSingleNodeAndCacheExpression(
-                                                                               "translate")?.Value ?? strSpiritName));
+                                                                           (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync(
+                                                                               "translate"))?.Value ?? strSpiritName));
                                             }
                                         }
                                     }
@@ -1874,8 +1874,8 @@ namespace Chummer
 
                             // Populate the Technomancer Streams list.
                             xmlTraditionsBaseChummerNode =
-                                (await CharacterObject.LoadDataXPathAsync("streams.xml"))
-                                               .SelectSingleNodeAndCacheExpression("/chummer");
+                                await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
+                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstStreams))
                             {
@@ -1885,14 +1885,14 @@ namespace Chummer
                                                  "traditions/tradition[" + CharacterObjectSettings.BookXPath()
                                                                          + ']'))
                                     {
-                                        string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name")
+                                        string strName = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                                      ?.Value;
                                         if (!string.IsNullOrEmpty(strName))
                                             lstStreams.Add(new ListItem(
-                                                               xmlTradition.SelectSingleNodeAndCacheExpression("id")
+                                                               (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("id"))
                                                                            ?.Value ?? strName,
-                                                               xmlTradition
-                                                                   .SelectSingleNodeAndCacheExpression("translate")
+                                                               (await xmlTradition
+                                                                   .SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                    ?.Value ?? strName));
                                     }
                                 }
@@ -3222,9 +3222,9 @@ namespace Chummer
             AddPet();
         }
 
-        private void tsAddFromFile_Click(object sender, EventArgs e)
+        private async void tsAddFromFile_Click(object sender, EventArgs e)
         {
-            AddContactsFromFile();
+            await AddContactsFromFile();
         }
 
         private async void cmdAddCyberware_Click(object sender, EventArgs e)
@@ -9802,7 +9802,7 @@ namespace Chummer
                 {
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
-                        AutoSaveCharacter();
+                        await AutoSaveCharacterAsync();
                     else
                         await AutoSaveCharacterAsync();
                 }

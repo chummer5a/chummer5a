@@ -6328,7 +6328,7 @@ namespace Chummer
 
         #region Additional Relationships Tab Control Events
 
-        protected void AddContactsFromFile()
+        protected async ValueTask AddContactsFromFile()
         {
             using (new CursorWait(this))
             {
@@ -6336,8 +6336,8 @@ namespace Chummer
                 // Displays an OpenFileDialog so the user can select the XML to read.
                 using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
                 {
-                    Filter = LanguageManager.GetString("DialogFilter_Xml") + '|' +
-                             LanguageManager.GetString("DialogFilter_All")
+                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml") + '|' +
+                             await LanguageManager.GetStringAsync("DialogFilter_All")
                 })
                 {
                     // Show the Dialog.
@@ -6365,7 +6365,7 @@ namespace Chummer
                     }
                 }
 
-                foreach (XPathNavigator xmlContact in xmlDoc.CreateNavigator().SelectAndCacheExpression("/chummer/contacts/contact"))
+                foreach (XPathNavigator xmlContact in await xmlDoc.CreateNavigator().SelectAndCacheExpressionAsync("/chummer/contacts/contact"))
                 {
                     Contact objContact = new Contact(CharacterObject);
                     objContact.Load(xmlContact);

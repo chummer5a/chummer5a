@@ -899,8 +899,10 @@ namespace Chummer
                                 "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
                         }
 
-                        string strMetatype = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                             ?? objCache.Metatype;
+                        string strMetatype = objMetatypeNode != null
+                            ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                              ?? objCache.Metatype
+                            : objCache.Metatype;
 
                         if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                         {
@@ -908,8 +910,11 @@ namespace Chummer
                                 "metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
 
                             strMetatype += await LanguageManager.GetStringAsync("String_Space") + '('
-                                + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                   ?? objCache.Metavariant) + ')';
+                                + (objMetatypeNode != null
+                                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                      ?.Value
+                                      ?? objCache.Metavariant
+                                    : objCache.Metavariant) + ')';
                         }
 
                         lblMetatype.Text = strMetatype;

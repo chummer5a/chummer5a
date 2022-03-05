@@ -201,9 +201,9 @@ namespace Chummer
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setValidCodes))
                     {
-                        foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync(
-                                     "books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths))
-                                 .SelectAndCacheExpression("/chummer/books/book/code"))
+                        foreach (XPathNavigator xmlBookNode in await (await XmlManager.LoadXPathAsync(
+                                         "books.xml", _objSelectedSetting.EnabledCustomDataDirectoryPaths))
+                                     .SelectAndCacheExpressionAsync("/chummer/books/book/code"))
                         {
                             setValidCodes.Add(xmlBookNode.Value);
                         }
@@ -229,34 +229,34 @@ namespace Chummer
                                     = await XmlManager.LoadXPathAsync(strFileName,
                                                                       _objSelectedSetting
                                                                           .EnabledCustomDataDirectoryPaths);
-                                xmlBaseNode = xmlBaseNode.SelectSingleNodeAndCacheExpression("/chummer");
+                                xmlBaseNode = await xmlBaseNode.SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 if (xmlBaseNode == null)
                                     return;
                                 bool blnLoopFileNameHasItems = false;
-                                foreach (XPathNavigator xmlItemNode in xmlBaseNode.SelectAndCacheExpression(
+                                foreach (XPathNavigator xmlItemNode in await xmlBaseNode.SelectAndCacheExpressionAsync(
                                              ".//*[page and " +
                                              strSourceFilter + ']'))
                                 {
                                     blnLoopFileNameHasItems = true;
-                                    string strName = xmlItemNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                    string strName = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                     string strDisplayName
-                                        = xmlItemNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                           ?? strName
-                                          ?? xmlItemNode.SelectSingleNodeAndCacheExpression("id")?.Value
+                                          ?? (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value
                                           ?? await LanguageManager.GetStringAsync("String_Unknown");
-                                    string strSource = xmlItemNode.SelectSingleNodeAndCacheExpression("source")?.Value;
-                                    string strPage = xmlItemNode.SelectSingleNodeAndCacheExpression("page")?.Value;
+                                    string strSource = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value;
+                                    string strPage = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value;
                                     string strDisplayPage
-                                        = xmlItemNode.SelectSingleNodeAndCacheExpression("altpage")?.Value
+                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
                                           ?? strPage;
                                     string strEnglishNameOnPage
-                                        = xmlItemNode.SelectSingleNodeAndCacheExpression("nameonpage")?.Value
+                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("nameonpage"))?.Value
                                           ?? strName;
                                     string strTranslatedNameOnPage =
-                                        xmlItemNode.SelectSingleNodeAndCacheExpression("altnameonpage")?.Value
+                                        (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("altnameonpage"))?.Value
                                         ?? strDisplayName;
-                                    string strNotes = xmlItemNode.SelectSingleNodeAndCacheExpression("altnotes")?.Value
-                                                      ?? xmlItemNode.SelectSingleNodeAndCacheExpression("notes")?.Value;
+                                    string strNotes = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("altnotes"))?.Value
+                                                      ?? (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("notes"))?.Value;
                                     MasterIndexEntry objEntry = new MasterIndexEntry(
                                         strDisplayName,
                                         strFileName,

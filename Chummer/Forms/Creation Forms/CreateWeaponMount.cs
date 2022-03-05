@@ -77,19 +77,19 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlSizeNode in xmlSizeNodeList)
                     {
-                        string strId = xmlSizeNode.SelectSingleNodeAndCacheExpression("id")?.Value;
+                        string strId = (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                         if (string.IsNullOrEmpty(strId))
                             continue;
 
-                        XPathNavigator xmlTestNode = xmlSizeNode.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails");
-                        if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        XPathNavigator xmlTestNode = await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("forbidden/vehicledetails");
+                        if (xmlTestNode != null && await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        xmlTestNode = xmlSizeNode.SelectSingleNodeAndCacheExpression("required/vehicledetails");
-                        if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        xmlTestNode = await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails");
+                        if (xmlTestNode != null && !await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
@@ -97,8 +97,8 @@ namespace Chummer
 
                         lstSize.Add(new ListItem(
                                         strId,
-                                        xmlSizeNode.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                        ?? xmlSizeNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                        (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                        ?? (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                         ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }
@@ -851,8 +851,8 @@ namespace Chummer
                 XPathNavigator xmlSelectedMount = _xmlDocXPath.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + ']');
                 if (xmlSelectedMount != null)
                 {
-                    xmlForbiddenNode = xmlSelectedMount.SelectSingleNodeAndCacheExpression("forbidden/weaponmountdetails");
-                    xmlRequiredNode = xmlSelectedMount.SelectSingleNodeAndCacheExpression("required/weaponmountdetails");
+                    xmlForbiddenNode = await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("forbidden/weaponmountdetails");
+                    xmlRequiredNode = await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("required/weaponmountdetails");
                 }
             }
 
@@ -875,24 +875,24 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strId))
                             continue;
 
-                        XPathNavigator xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails");
-                        if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        XPathNavigator xmlTestNode = await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("forbidden/vehicledetails");
+                        if (xmlTestNode != null && await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("required/vehicledetails");
-                        if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        xmlTestNode = await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails");
+                        if (xmlTestNode != null && !await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        string strName = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                        string strName = (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                          ?? await LanguageManager.GetStringAsync("String_Unknown");
                         bool blnAddItem = true;
-                        switch (xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("category")?.Value)
+                        switch ((await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value)
                         {
                             case "Visibility":
                             {
@@ -929,21 +929,25 @@ namespace Chummer
                                 if (blnAddItem)
                                     lstVisibility.Add(
                                         new ListItem(
-                                            strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                            strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                             }
                                 break;
 
                             case "Flexibility":
                             {
-                                XPathNodeIterator xmlNodeList = xmlForbiddenNode?.SelectAndCacheExpression("flexibility");
-                                if (xmlNodeList?.Count > 0)
+                                if (xmlForbiddenNode != null)
                                 {
-                                    foreach (XPathNavigator xmlLoopNode in xmlNodeList)
+                                    XPathNodeIterator xmlNodeList
+                                        = await xmlForbiddenNode.SelectAndCacheExpressionAsync("flexibility");
+                                    if (xmlNodeList?.Count > 0)
                                     {
-                                        if (xmlLoopNode.Value == strName)
+                                        foreach (XPathNavigator xmlLoopNode in xmlNodeList)
                                         {
-                                            blnAddItem = false;
-                                            break;
+                                            if (xmlLoopNode.Value == strName)
+                                            {
+                                                blnAddItem = false;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -951,7 +955,7 @@ namespace Chummer
                                 if (xmlRequiredNode != null)
                                 {
                                     blnAddItem = false;
-                                    xmlNodeList = xmlRequiredNode.SelectAndCacheExpression("flexibility");
+                                    XPathNodeIterator xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("flexibility");
                                     if (xmlNodeList?.Count > 0)
                                     {
                                         foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -968,21 +972,25 @@ namespace Chummer
                                 if (blnAddItem)
                                     lstFlexibility.Add(
                                         new ListItem(
-                                            strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                            strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                             }
                                 break;
 
                             case "Control":
                             {
-                                XPathNodeIterator xmlNodeList = xmlForbiddenNode?.SelectAndCacheExpression("control");
-                                if (xmlNodeList?.Count > 0)
+                                if (xmlForbiddenNode != null)
                                 {
-                                    foreach (XPathNavigator xmlLoopNode in xmlNodeList)
+                                    XPathNodeIterator xmlNodeList
+                                        = await xmlForbiddenNode.SelectAndCacheExpressionAsync("control");
+                                    if (xmlNodeList?.Count > 0)
                                     {
-                                        if (xmlLoopNode.Value == strName)
+                                        foreach (XPathNavigator xmlLoopNode in xmlNodeList)
                                         {
-                                            blnAddItem = false;
-                                            break;
+                                            if (xmlLoopNode.Value == strName)
+                                            {
+                                                blnAddItem = false;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -990,7 +998,7 @@ namespace Chummer
                                 if (xmlRequiredNode != null)
                                 {
                                     blnAddItem = false;
-                                    xmlNodeList = xmlRequiredNode.SelectAndCacheExpression("control");
+                                    XPathNodeIterator xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("control");
                                     if (xmlNodeList?.Count > 0)
                                     {
                                         foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -1007,7 +1015,7 @@ namespace Chummer
                                 if (blnAddItem)
                                     lstControl.Add(
                                         new ListItem(
-                                            strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                            strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                             }
                                 break;
 

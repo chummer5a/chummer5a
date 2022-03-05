@@ -896,15 +896,15 @@ namespace Chummer
             treSourcebook.BeginUpdate();
             treSourcebook.Nodes.Clear();
             _setPermanentSourcebooks.Clear();
-            foreach (XPathNavigator objXmlBook in (await XmlManager.LoadXPathAsync("books.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths)).SelectAndCacheExpression("/chummer/books/book"))
+            foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync("books.xml", _objCharacterSettings.EnabledCustomDataDirectoryPaths)).SelectAndCacheExpressionAsync("/chummer/books/book"))
             {
-                if (objXmlBook.SelectSingleNodeAndCacheExpression("hide") != null)
+                if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("hide") != null)
                     continue;
-                string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code")?.Value;
+                string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value;
                 if (string.IsNullOrEmpty(strCode))
                     continue;
                 bool blnChecked = _objCharacterSettings.Books.Contains(strCode);
-                if (objXmlBook.SelectSingleNodeAndCacheExpression("permanent") != null)
+                if (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("permanent") != null)
                 {
                     _setPermanentSourcebooks.Add(strCode);
                     if (_objCharacterSettings.BooksWritable.Add(strCode))
@@ -913,7 +913,7 @@ namespace Chummer
                 }
                 TreeNode objNode = new TreeNode
                 {
-                    Text = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty,
+                    Text = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? string.Empty,
                     Tag = strCode,
                     Checked = blnChecked
                 };
@@ -1067,16 +1067,16 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                            out List<ListItem> lstPriorityTables))
                 {
-                    foreach (XPathNavigator objXmlNode in (await XmlManager
-                                 .LoadXPathAsync("priorities.xml",
-                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
-                             .SelectAndCacheExpression(
-                                 "/chummer/prioritytables/prioritytable"))
+                    foreach (XPathNavigator objXmlNode in await (await XmlManager
+                                     .LoadXPathAsync("priorities.xml",
+                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                 .SelectAndCacheExpressionAsync(
+                                     "/chummer/prioritytables/prioritytable"))
                     {
                         string strName = objXmlNode.Value;
                         if (!string.IsNullOrEmpty(strName))
                             lstPriorityTables.Add(new ListItem(objXmlNode.Value,
-                                objXmlNode.SelectSingleNodeAndCacheExpression("@translate")
+                                (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))
                                     ?.Value ?? strName));
                     }
 
@@ -1110,19 +1110,19 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                            out List<ListItem> lstLimbCount))
                 {
-                    foreach (XPathNavigator objXmlNode in (await XmlManager
-                                 .LoadXPathAsync("options.xml",
-                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
-                             .SelectAndCacheExpression("/chummer/limbcounts/limb"))
+                    foreach (XPathNavigator objXmlNode in await (await XmlManager
+                                     .LoadXPathAsync("options.xml",
+                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                 .SelectAndCacheExpressionAsync("/chummer/limbcounts/limb"))
                     {
-                        string strExclude = objXmlNode.SelectSingleNodeAndCacheExpression("exclude")?.Value ??
+                        string strExclude = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude"))?.Value ??
                                             string.Empty;
                         if (!string.IsNullOrEmpty(strExclude))
                             strExclude = '<' + strExclude;
                         lstLimbCount.Add(new ListItem(
-                            objXmlNode.SelectSingleNodeAndCacheExpression("limbcount")?.Value + strExclude,
-                            objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
-                            ?? objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                            (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("limbcount"))?.Value + strExclude,
+                            (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                            ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                             ?? string.Empty));
                     }
 
@@ -1152,15 +1152,15 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                            out List<ListItem> lstGrades))
                 {
-                    foreach (XPathNavigator objXmlNode in (await XmlManager
-                                 .LoadXPathAsync("bioware.xml",
-                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
-                             .SelectAndCacheExpression("/chummer/grades/grade[not(hide)]"))
+                    foreach (XPathNavigator objXmlNode in await (await XmlManager
+                                     .LoadXPathAsync("bioware.xml",
+                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                 .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]"))
                     {
-                        string strName = objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                         if (!string.IsNullOrEmpty(strName) && strName != "None")
                         {
-                            string strBook = objXmlNode.SelectSingleNodeAndCacheExpression("source")?.Value;
+                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value;
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
                                 continue;
@@ -1172,20 +1172,20 @@ namespace Chummer
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(
                                 strName,
-                                objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                 ?? strName));
                         }
                     }
 
-                    foreach (XPathNavigator objXmlNode in (await XmlManager
-                                 .LoadXPathAsync("cyberware.xml",
-                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
-                             .SelectAndCacheExpression("/chummer/grades/grade[not(hide)]"))
+                    foreach (XPathNavigator objXmlNode in await (await XmlManager
+                                     .LoadXPathAsync("cyberware.xml",
+                                                     _objCharacterSettings.EnabledCustomDataDirectoryPaths))
+                                 .SelectAndCacheExpressionAsync("/chummer/grades/grade[not(hide)]"))
                     {
-                        string strName = objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                         if (!string.IsNullOrEmpty(strName) && strName != "None")
                         {
-                            string strBook = objXmlNode.SelectSingleNodeAndCacheExpression("source")?.Value;
+                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value;
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
                                 continue;
@@ -1197,7 +1197,7 @@ namespace Chummer
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(
                                 strName,
-                                objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                 ?? strName));
                         }
                     }
