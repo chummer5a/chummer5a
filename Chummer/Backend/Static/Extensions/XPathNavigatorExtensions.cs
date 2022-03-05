@@ -603,6 +603,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        /// <param name="tskNode"></param>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
+        public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath)
+        {
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath);
+            XPathNavigator xmlNode = await tskNode;
+            if (blnSuccess)
+                return xmlNode.SelectSingleNode(objExpression);
+            objExpression = XPathExpression.Compile(xpath);
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression);
+            return xmlNode.SelectSingleNode(objExpression);
+        }
+
+        /// <summary>
         /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
         /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
@@ -630,6 +649,25 @@ namespace Chummer
         public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath)
         {
             (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath);
+            if (blnSuccess)
+                return xmlNode.Select(objExpression);
+            objExpression = XPathExpression.Compile(xpath);
+            await s_dicCachedExpressions.TryAddAsync(xpath, objExpression);
+            return xmlNode.Select(objExpression);
+        }
+
+        /// <summary>
+        /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        /// <param name="tskNode"></param>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
+        public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath)
+        {
+            (bool blnSuccess, XPathExpression objExpression) = await s_dicCachedExpressions.TryGetValueAsync(xpath);
+            XPathNavigator xmlNode = await tskNode;
             if (blnSuccess)
                 return xmlNode.Select(objExpression);
             objExpression = XPathExpression.Compile(xpath);

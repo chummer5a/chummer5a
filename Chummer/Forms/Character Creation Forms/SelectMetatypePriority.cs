@@ -998,9 +998,9 @@ namespace Chummer
                         }
 
                         if (blnRemoveFreeSkills)
-                            ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Heritage
-                                                                                                                       && (x.ImproveType == Improvement.ImprovementType.SkillBase
-                                                                                                                           || x.ImproveType == Improvement.ImprovementType.SkillGroupBase)).ToList());
+                            await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Heritage
+                                                                                 && (x.ImproveType == Improvement.ImprovementType.SkillBase
+                                                                                     || x.ImproveType == Improvement.ImprovementType.SkillGroupBase)).ToList());
                         // Add any created Weapons to the character.
                         foreach (Weapon objWeapon in lstWeapons)
                             _objCharacter.Weapons.Add(objWeapon);

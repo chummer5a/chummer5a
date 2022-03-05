@@ -227,23 +227,23 @@ namespace Chummer
             {
                 lstMetatypes.Add(ListItem.Blank);
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                foreach (XPathNavigator xmlMetatypeNode in (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml"))
-                                                                      .SelectAndCacheExpression(
-                                                                          "/chummer/metatypes/metatype"))
+                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml"))
+                             .SelectAndCacheExpressionAsync(
+                                 "/chummer/metatypes/metatype"))
                 {
-                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                     XPathNodeIterator xmlMetavariantsList
-                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant");
+                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant");
                     if (xmlMetavariantsList.Count > 0)
                     {
                         string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                         foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                         {
                             string strMetavariantName
-                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                   ?? string.Empty;
                             if (lstMetatypes.All(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
@@ -251,8 +251,8 @@ namespace Chummer
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
-                                                                  objXmlMetavariantNode
-                                                                      .SelectSingleNodeAndCacheExpression("translate")
+                                                                  (await objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                       ?.Value ?? strMetavariantName)));
                         }
                     }

@@ -280,8 +280,8 @@ namespace Chummer
                 {
                     //Dump skills, (optional)powers if present to output
 
-                    XPathNavigator xmlSpiritPowersBaseChummerNode = (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpression("/chummer");
-                    XPathNavigator xmlCritterPowersBaseChummerNode = (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpression("/chummer");
+                    XPathNavigator xmlSpiritPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                    XPathNavigator xmlCritterPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
 
                     XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                     if (xmlPowersNode != null)
@@ -419,7 +419,7 @@ namespace Chummer
                                                                                + "]/@translate")?.Value
                                   ?? strEnglishCategory;
 
-                    switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type")?.Value)
+                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("type"))?.Value)
                     {
                         case "M":
                             strDisplayType = await LanguageManager.GetStringAsync("String_SpellTypeMana", strLanguageToPrint);
@@ -430,7 +430,7 @@ namespace Chummer
                             break;
                     }
 
-                    switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action")?.Value)
+                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("action"))?.Value)
                     {
                         case "Auto":
                             strDisplayAction = await LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguageToPrint);
@@ -454,7 +454,7 @@ namespace Chummer
                             break;
                     }
 
-                    switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration")?.Value)
+                    switch ((await objXmlPowerNode.SelectSingleNodeAndCacheExpressionAsync("duration"))?.Value)
                     {
                         case "Instant":
                             strDisplayDuration

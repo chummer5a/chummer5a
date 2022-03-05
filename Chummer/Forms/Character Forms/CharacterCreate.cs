@@ -2107,109 +2107,109 @@ namespace Chummer
 
                         // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
                         if (lstInternalIdFilter == null)
-                            ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(
-                                                                      x =>
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .AIProgram ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Armor ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .ArmorMod ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Bioware ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .ComplexForm ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .CritterPower ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Cyberware ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Echo ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Gear ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .MartialArt ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .MartialArtTechnique ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Metamagic ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Power ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Quality ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .Spell ||
-                                                                          x.ImproveSource == Improvement
-                                                                              .ImprovementSource
-                                                                              .StackedFocus).ToList(),
-                                                                  _blnReapplyImprovements);
+                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, CharacterObject.Improvements.Where(
+                                                                                 x =>
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .AIProgram ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Armor ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .ArmorMod ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Bioware ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .ComplexForm ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .CritterPower ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Cyberware ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Echo ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Gear ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .MartialArt ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .MartialArtTechnique ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Metamagic ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Power ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Quality ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .Spell ||
+                                                                                     x.ImproveSource == Improvement
+                                                                                         .ImprovementSource
+                                                                                         .StackedFocus).ToList(),
+                                                                             _blnReapplyImprovements);
                         else
-                            ImprovementManager.RemoveImprovements(CharacterObject, CharacterObject.Improvements.Where(
-                                                                      x => lstInternalIdFilter.Contains(x.SourceName) &&
-                                                                           (x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .AIProgram ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Armor ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .ArmorMod ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Bioware ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .ComplexForm ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .CritterPower ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Cyberware ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Echo ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Gear ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .MartialArt ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .MartialArtTechnique ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Metamagic ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Power ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Quality ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .Spell ||
-                                                                            x.ImproveSource == Improvement
-                                                                                .ImprovementSource
-                                                                                .StackedFocus)).ToList(),
-                                                                  _blnReapplyImprovements);
+                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject, CharacterObject.Improvements.Where(
+                                                                                 x => lstInternalIdFilter.Contains(x.SourceName) &&
+                                                                                     (x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .AIProgram ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Armor ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .ArmorMod ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Bioware ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .ComplexForm ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .CritterPower ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Cyberware ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Echo ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Gear ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .MartialArt ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .MartialArtTechnique ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Metamagic ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Power ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Quality ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .Spell ||
+                                                                                         x.ImproveSource == Improvement
+                                                                                             .ImprovementSource
+                                                                                             .StackedFocus)).ToList(),
+                                                                             _blnReapplyImprovements);
 
                         // Refresh Qualities.
                         // We cannot use foreach because qualities can add more qualities
@@ -2232,10 +2232,10 @@ namespace Chummer
                                 if (objQuality.Bonus != null)
                                 {
                                     ImprovementManager.ForcedValue = strSelected;
-                                    ImprovementManager.CreateImprovements(CharacterObject,
-                                                                          Improvement.ImprovementSource.Quality,
-                                                                          objQuality.InternalId, objQuality.Bonus, 1,
-                                                                          objQuality.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.Quality,
+                                        objQuality.InternalId, objQuality.Bonus, 1,
+                                        objQuality.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -2268,7 +2268,7 @@ namespace Chummer
                                     if (blnDoFirstLevel)
                                     {
                                         ImprovementManager.ForcedValue = strSelected;
-                                        ImprovementManager.CreateImprovements(
+                                        await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Quality,
                                             objQuality.InternalId,
                                             objQuality.FirstLevelBonus, 1,
@@ -2287,7 +2287,7 @@ namespace Chummer
                                 if (objQuality.NaturalWeaponsNode != null)
                                 {
                                     ImprovementManager.ForcedValue = strSelected;
-                                    ImprovementManager.CreateImprovements(
+                                    await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                         objQuality.NaturalWeaponsNode, 1, objQuality.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
@@ -2315,11 +2315,11 @@ namespace Chummer
                                 if (lstInternalIdFilter?.Contains(objMartialArt.InternalId) != false
                                     && objMartialArtNode["bonus"] != null)
                                 {
-                                    ImprovementManager.CreateImprovements(CharacterObject,
-                                                                          Improvement.ImprovementSource.MartialArt,
-                                                                          objMartialArt.InternalId,
-                                                                          objMartialArtNode["bonus"], 1,
-                                                                          objMartialArt.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.MartialArt,
+                                        objMartialArt.InternalId,
+                                        objMartialArtNode["bonus"], 1,
+                                        objMartialArt.CurrentDisplayNameShort);
                                 }
                             }
                             else
@@ -2334,7 +2334,7 @@ namespace Chummer
                                 if (objNode != null)
                                 {
                                     if (objNode["bonus"] != null)
-                                        ImprovementManager.CreateImprovements(
+                                        await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.MartialArtTechnique,
                                             objTechnique.InternalId, objNode["bonus"], 1,
                                             objTechnique.CurrentDisplayName);
@@ -2356,10 +2356,10 @@ namespace Chummer
                                 if (objNode["bonus"] != null)
                                 {
                                     ImprovementManager.ForcedValue = objSpell.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject,
-                                                                          Improvement.ImprovementSource.Spell,
-                                                                          objSpell.InternalId, objNode["bonus"], 1,
-                                                                          objSpell.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.Spell,
+                                        objSpell.InternalId, objNode["bonus"], 1,
+                                        objSpell.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objSpell.Extra = ImprovementManager.SelectedValue;
@@ -2386,11 +2386,11 @@ namespace Chummer
                                 if (objPower.Bonus != null)
                                 {
                                     ImprovementManager.ForcedValue = objPower.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject,
-                                                                          Improvement.ImprovementSource.Power,
-                                                                          objPower.InternalId, objPower.Bonus,
-                                                                          objPower.TotalRating,
-                                                                          objPower.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.Power,
+                                        objPower.InternalId, objPower.Bonus,
+                                        objPower.TotalRating,
+                                        objPower.CurrentDisplayNameShort);
                                 }
                             }
                             else
@@ -2409,11 +2409,11 @@ namespace Chummer
                                 if (objNode["bonus"] != null)
                                 {
                                     ImprovementManager.ForcedValue = objComplexForm.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject,
-                                                                          Improvement.ImprovementSource.ComplexForm,
-                                                                          objComplexForm.InternalId, objNode["bonus"],
-                                                                          1,
-                                                                          objComplexForm.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.ComplexForm,
+                                        objComplexForm.InternalId, objNode["bonus"],
+                                        1,
+                                        objComplexForm.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objComplexForm.Extra = ImprovementManager.SelectedValue;
@@ -2439,10 +2439,10 @@ namespace Chummer
                                 if (objNode["bonus"] != null)
                                 {
                                     ImprovementManager.ForcedValue = objProgram.Extra;
-                                    ImprovementManager.CreateImprovements(CharacterObject,
-                                                                          Improvement.ImprovementSource.AIProgram,
-                                                                          objProgram.InternalId, objNode["bonus"], 1,
-                                                                          objProgram.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.AIProgram,
+                                        objProgram.InternalId, objNode["bonus"], 1,
+                                        objProgram.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objProgram.Extra = ImprovementManager.SelectedValue;
@@ -2475,11 +2475,11 @@ namespace Chummer
                                         ImprovementManager.ForcedValue = strSelected;
                                     }
 
-                                    ImprovementManager.CreateImprovements(CharacterObject,
-                                                                          Improvement.ImprovementSource.CritterPower,
-                                                                          objPower.InternalId, objPower.Bonus,
-                                                                          intRating,
-                                                                          objPower.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject,
+                                        Improvement.ImprovementSource.CritterPower,
+                                        objPower.InternalId, objPower.Bonus,
+                                        intRating,
+                                        objPower.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                     {
                                         objPower.Extra = ImprovementManager.SelectedValue;
@@ -2512,10 +2512,10 @@ namespace Chummer
                                 objMetamagic.Bonus = objNode["bonus"];
                                 if (objMetamagic.Bonus != null)
                                 {
-                                    ImprovementManager.CreateImprovements(CharacterObject, objMetamagic.SourceType,
-                                                                          objMetamagic.InternalId, objMetamagic.Bonus,
-                                                                          1,
-                                                                          objMetamagic.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject, objMetamagic.SourceType,
+                                        objMetamagic.InternalId, objMetamagic.Bonus,
+                                        1,
+                                        objMetamagic.CurrentDisplayNameShort);
                                 }
                             }
                             else
@@ -2543,7 +2543,7 @@ namespace Chummer
                                         ImprovementManager.ForcedValue = objCyberware.Forced;
                                     if (objCyberware.Bonus != null)
                                     {
-                                        ImprovementManager.CreateImprovements(
+                                        await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, objCyberware.SourceType, objCyberware.InternalId,
                                             objCyberware.Bonus, objCyberware.Rating,
                                             objCyberware.CurrentDisplayNameShort);
@@ -2627,11 +2627,11 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(objCyberware.Forced) && objCyberware.Forced != "Right"
                                         && objCyberware.Forced != "Left")
                                         ImprovementManager.ForcedValue = objCyberware.Forced;
-                                    ImprovementManager.CreateImprovements(CharacterObject, objLoopCyberware.SourceType,
-                                                                          objLoopCyberware.InternalId + "Pair",
-                                                                          objLoopCyberware.PairBonus,
-                                                                          objLoopCyberware.Rating,
-                                                                          objLoopCyberware.CurrentDisplayNameShort);
+                                    await ImprovementManager.CreateImprovementsAsync(CharacterObject, objLoopCyberware.SourceType,
+                                        objLoopCyberware.InternalId + "Pair",
+                                        objLoopCyberware.PairBonus,
+                                        objLoopCyberware.Rating,
+                                        objLoopCyberware.CurrentDisplayNameShort);
                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue)
                                         && string.IsNullOrEmpty(objCyberware.Extra))
                                         objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -2662,7 +2662,7 @@ namespace Chummer
                                     if (objArmor.Bonus != null && objArmor.Equipped)
                                     {
                                         ImprovementManager.ForcedValue = objArmor.Extra;
-                                        ImprovementManager.CreateImprovements(
+                                        await ImprovementManager.CreateImprovementsAsync(
                                             CharacterObject, Improvement.ImprovementSource.Armor, objArmor.InternalId,
                                             objArmor.Bonus, objArmor.Rating,
                                             objArmor.CurrentDisplayNameShort);
@@ -2695,7 +2695,7 @@ namespace Chummer
                                         if (objMod.Bonus != null && objMod.Equipped)
                                         {
                                             ImprovementManager.ForcedValue = objMod.Extra;
-                                            ImprovementManager.CreateImprovements(
+                                            await ImprovementManager.CreateImprovementsAsync(
                                                 CharacterObject, Improvement.ImprovementSource.ArmorMod,
                                                 objMod.InternalId,
                                                 objMod.Bonus, objMod.Rating,
@@ -3900,7 +3900,7 @@ namespace Chummer
                             if (objQuality.InternalId.IsEmptyGuid())
                             {
                                 // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                                ImprovementManager.RemoveImprovements(CharacterObject,
+                                await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
                                     Improvement.ImprovementSource.Quality, objQuality.InternalId);
                                 break;
                             }
@@ -3980,7 +3980,7 @@ namespace Chummer
                             else
                             {
                                 // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                                ImprovementManager.RemoveImprovements(CharacterObject,
+                                await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
                                     Improvement.ImprovementSource.Quality, objQuality.InternalId);
                                 break;
                             }

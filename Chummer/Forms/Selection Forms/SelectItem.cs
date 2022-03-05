@@ -114,14 +114,14 @@ namespace Chummer
                         cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
                         if (!_objCharacter.Settings.LicenseRestricted)
                         {
-                            foreach (XPathNavigator objNode in (await _objCharacter.LoadDataXPathAsync("licenses.xml"))
-                                                                            .SelectAndCacheExpression(
-                                                                                "/chummer/licenses/license"))
+                            foreach (XPathNavigator objNode in await (await _objCharacter.LoadDataXPathAsync("licenses.xml"))
+                                         .SelectAndCacheExpressionAsync(
+                                             "/chummer/licenses/license"))
                             {
                                 string strInnerText = objNode.Value;
                                 if (!string.IsNullOrEmpty(strInnerText))
                                     lstItems.Add(new ListItem(strInnerText,
-                                                              objNode.SelectSingleNodeAndCacheExpression("@translate")
+                                                              (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))
                                                                      ?.Value ?? strInnerText));
                             }
                         }

@@ -174,7 +174,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlSkill in objXmlSkillList)
                     {
-                        string strXmlSkillName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        string strXmlSkillName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                         Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
                         if (objExistingSkill == null)
                         {
@@ -190,7 +190,7 @@ namespace Chummer
                         }
 
                         lstSkills.Add(new ListItem(strXmlSkillName,
-                                                   objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                    ?? strXmlSkillName));
                     }
                 }
@@ -227,7 +227,7 @@ namespace Chummer
                                                                   + " and name = " + objExoticSkill.Name.CleanXPath()
                                                                   + ']');
                             lstSkills.Add(new ListItem(objExoticSkill.DictionaryKey,
-                                                       (objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                       ((await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                         ?? objExoticSkill.CurrentDisplayName)
                                                        + await LanguageManager.GetStringAsync("String_Space") + '('
                                                        + objExoticSkill.CurrentDisplaySpecialization + ')'));
