@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeStack<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>
+    public class ThreadSafeStack<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>, IAsyncEnumerable<T>
     {
         private readonly Stack<T> _stkData;
 
@@ -50,7 +50,14 @@ namespace Chummer
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.Get(this);
+            objReturn.SetEnumerator(_stkData.GetEnumerator());
+            return objReturn;
+        }
+
+        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync()
+        {
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this);
             objReturn.SetEnumerator(_stkData.GetEnumerator());
             return objReturn;
         }
@@ -201,6 +208,39 @@ namespace Chummer
 
             item = default;
             return false;
+        }
+
+        public Tuple<bool, T> TryTake()
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (LockObject.EnterWriteLock())
+            {
+                if (_stkData.Count > 0)
+                {
+                    return new Tuple<bool, T>(true, _stkData.Pop());
+                }
+            }
+
+            return new Tuple<bool, T>(false, default);
+        }
+
+        public async ValueTask<Tuple<bool, T>> TryTakeAsync()
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            try
+            {
+                if (_stkData.Count > 0)
+                {
+                    return new Tuple<bool, T>(true, _stkData.Pop());
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
+            }
+
+            return new Tuple<bool, T>(false, default);
         }
 
         /// <inheritdoc cref="Stack{T}.ToArray"/>

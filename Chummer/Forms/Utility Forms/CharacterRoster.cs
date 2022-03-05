@@ -177,9 +177,10 @@ namespace Chummer
                     }
                 }
 
-                foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values)
-                    await objCache.DisposeAsync();
-                await _dicSavedCharacterCaches.DisposeAsync();
+                await _dicSavedCharacterCaches.ForEachAsync(async kvpCache =>
+                                                                await kvpCache.Value.DisposeAsync().ConfigureAwait(false))
+                                              .ConfigureAwait(false);
+                await _dicSavedCharacterCaches.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -222,7 +223,7 @@ namespace Chummer
             if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
             await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
-            PurgeUnusedCharacterCaches();
+            await PurgeUnusedCharacterCaches();
         }
 
         private async void RefreshMruLists(object sender, TextEventArgs e)
@@ -269,7 +270,7 @@ namespace Chummer
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
             await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
-            PurgeUnusedCharacterCaches();
+            await PurgeUnusedCharacterCaches();
         }
 
         private async void OpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -286,11 +287,18 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Remove:
                 {
+                    bool blnRefreshMru = false;
                     // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
-                    if (e.OldItems.Cast<CharacterShared>()
-                         .Any(objForm => !GlobalSettings.FavoriteCharacters.Contains(objForm.CharacterObject.FileName)
-                                         && !GlobalSettings.MostRecentlyUsedCharacters.Contains(
-                                             objForm.CharacterObject.FileName)))
+                    foreach (CharacterShared objForm in e.OldItems)
+                    {
+                        if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
+                            continue;
+                        if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(objForm.CharacterObject.FileName))
+                            continue;
+                        blnRefreshMru = true;
+                        break;
+                    }
+                    if (blnRefreshMru)
                         await RefreshMruLists("mru");
                     else
                         await RefreshNodeTexts();
@@ -338,7 +346,7 @@ namespace Chummer
             if (treCharacterList.IsNullOrDisposed())
                 return;
 
-            List<string> lstFavorites = GlobalSettings.FavoriteCharacters.ToList();
+            List<string> lstFavorites = (await GlobalSettings.FavoriteCharacters.ToArrayAsync()).ToList();
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
             if (objFavoriteNode == null && blnRefreshFavorites)
@@ -352,16 +360,15 @@ namespace Chummer
                 return;
 
             bool blnAddRecentNode = false;
-            List<string> lstRecents = new List<string>(GlobalSettings.MostRecentlyUsedCharacters);
+            List<string> lstRecents = (await GlobalSettings.MostRecentlyUsedCharacters.ToArrayAsync()).ToList();
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
-            foreach (CharacterShared objCharacterForm in Program.MainForm.OpenCharacterForms)
+            await Program.MainForm.OpenCharacterForms.ForEachAsync(objCharacterForm =>
             {
                 string strFile = objCharacterForm.CharacterObject.FileName;
                 // Make sure we're not loading a character that was already loaded by the MRU list.
-                if (lstFavorites.Contains(strFile) || lstRecents.Contains(strFile))
-                    continue;
-                lstRecents.Add(strFile);
-            }
+                if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
+                    lstRecents.Add(strFile);
+            });
             foreach (string strFavorite in lstFavorites)
                 lstRecents.Remove(strFavorite);
             if (!blnRefreshFavorites)
@@ -775,15 +782,16 @@ namespace Chummer
         /// <summary>
         /// Remove all character caches from the cached dictionary that are not present in any of the form's lists (and are therefore unnecessary).
         /// </summary>
-        private void PurgeUnusedCharacterCaches()
+        private async ValueTask PurgeUnusedCharacterCaches()
         {
-            foreach (CharacterCache objCache in _dicSavedCharacterCaches.Values.ToList())
+            foreach (KeyValuePair<string, CharacterCache> kvpCache in await _dicSavedCharacterCaches.ToArrayAsync())
             {
-                if (treCharacterList.FindNodeByTag(objCache) == null)
-                {
-                    _dicSavedCharacterCaches.Remove(objCache.FilePath);
-                    objCache.Dispose();
-                }
+                CharacterCache objCache = kvpCache.Value;
+                if (treCharacterList.FindNodeByTag(objCache) != null)
+                    continue;
+                await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath);
+                if (!objCache.IsDisposed)
+                    await objCache.DisposeAsync();
             }
         }
 

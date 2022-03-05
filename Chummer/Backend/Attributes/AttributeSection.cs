@@ -1245,7 +1245,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async ValueTask<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public async ValueTask<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null)
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -1326,7 +1326,7 @@ namespace Chummer.Backend.Attributes
             return strReturn;
         }
 
-        public async ValueTask ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public async ValueTask ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;

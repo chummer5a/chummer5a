@@ -330,6 +330,8 @@
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Helpers\AsyncFriendlyReaderWriterLock.cs" />
     <Compile Include="Backend\Helpers\AsyncLock.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncEnumerable.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncReadOnlyDictionary.cs" />
     <Compile Include="Backend\Interfaces\IHasCost.cs" />
     <Compile Include="Backend\Interfaces\IHasLockObject.cs" />
     <Compile Include="Backend\Interfaces\IHasXmlDataNode.cs" />
@@ -338,6 +340,7 @@
     <Compile Include="Backend\Static\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DoubleExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\EnumeratorExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\FloatExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\IntegerExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ListExtensions.cs" />

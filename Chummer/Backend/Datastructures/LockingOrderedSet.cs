@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject
+    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject, IAsyncEnumerable<T>
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
@@ -66,7 +66,14 @@ namespace Chummer
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.Get(this);
+            objReturn.SetEnumerator(_lstOrderedData.GetEnumerator());
+            return objReturn;
+        }
+
+        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync()
+        {
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this);
             objReturn.SetEnumerator(_lstOrderedData.GetEnumerator());
             return objReturn;
         }
@@ -74,7 +81,7 @@ namespace Chummer
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.Get(this);
             objReturn.SetEnumerator(_lstOrderedData.GetEnumerator());
             return objReturn;
         }

@@ -38,7 +38,7 @@ namespace Chummer
         private static readonly LockingDictionary<string, SemaphoreSlim> s_DicLanguageDataLockers = new LockingDictionary<string, SemaphoreSlim>();
         private static readonly LockingDictionary<string, LanguageData> s_DicLanguageData = new LockingDictionary<string, LanguageData>();
         private static readonly LockingDictionary<string, string> s_DicEnglishStrings = new LockingDictionary<string, string>();
-        public static IReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
+        public static IAsyncReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
         public static string ManagerErrorMessage { get; }
 
         #region Constructor
@@ -156,7 +156,7 @@ namespace Chummer
                 }
                 else
                 {
-                    (bool blnSuccess, LanguageData objLanguageData) = await s_DicLanguageData.TryGetValueAsync(strKey);
+                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey);
                     if (blnSuccess)
                         eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 }
@@ -551,17 +551,28 @@ namespace Chummer
                 else
                 {
                     (bool blnSuccess, LanguageData objLanguageData)
-                        = await s_DicLanguageData.TryGetValueAsync(strLanguageKey);
+                        = await LoadedLanguageData.TryGetValueAsync(strLanguageKey);
                     if (blnSuccess && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                     {
                         return strReturn;
                     }
                 }
             }
-            if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
+
+            if (blnSync)
             {
-                return strReturn;
+                if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
+                    return strReturn;
             }
+            else
+            {
+                bool blnSuccess;
+                (blnSuccess, strReturn)
+                    = await s_DicEnglishStrings.TryGetValueAsync(strKey);
+                if (blnSuccess)
+                    return strReturn;
+            }
+
             return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
 
@@ -721,7 +732,7 @@ namespace Chummer
                 }
                 else
                 {
-                    (bool blnSuccess, LanguageData objLanguageData) = await s_DicLanguageData.TryGetValueAsync(strKey);
+                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey);
                     if (blnSuccess)
                     {
                         return objLanguageData.DataDocument;

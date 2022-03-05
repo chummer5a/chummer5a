@@ -62,23 +62,36 @@ namespace Chummer
         /// <param name="strXPath">String as XPath Expression to evaluate.</param>
         /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(string strXPath)
+        public static Tuple<bool, object> EvaluateInvariantXPath(string strXPath)
         {
-            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
+            object objReturn = EvaluateInvariantXPath(strXPath, out bool blnIsSuccess);
+            return new Tuple<bool, object>(blnIsSuccess, objReturn);
+        }
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath)
+        {
+            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strXPath);
+            if (blnSuccess)
             {
-                return objCachedEvaluation.Item2;
+                return objCachedEvaluation;
             }
 
             if (string.IsNullOrWhiteSpace(strXPath))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, null);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, null);
                 return null;
             }
 
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
-                return strXPath;
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, new Tuple<bool, object>(false, strXPath));
+                return new Tuple<bool, object>(false, strXPath);
             }
 
             object objReturn;
@@ -92,7 +105,8 @@ namespace Chummer
             {
                 try
                 {
-                    if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
+                    (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync();
+                    if (!blnHasEvaluator)
                     {
                         lock (s_ObjXPathNavigatorDocumentLock)
                             objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
@@ -104,7 +118,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        s_StkXPathNavigatorPool.Push(objEvaluator);
+                        await s_StkXPathNavigatorPool.PushAsync(objEvaluator);
                     }
 
                     blnIsSuccess = objReturn != null;
@@ -123,8 +137,9 @@ namespace Chummer
                 }
             }
 
-            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
-            return objReturn;
+            Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn); // don't want to store managed objects, only primitives
+            return tupReturn;
         }
 
         /// <summary>
@@ -206,31 +221,47 @@ namespace Chummer
         /// <param name="objXPath">XPath Expression to evaluate</param>
         /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(XPathExpression objXPath)
+        public static Tuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath)
+        {
+            object objReturn = EvaluateInvariantXPath(objXPath, out bool blnIsSuccess);
+            return new Tuple<bool, object>(blnIsSuccess, objReturn);
+        }
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath)
         {
             string strExpression = objXPath.Expression;
-            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
+            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strExpression);
+            if (blnSuccess)
             {
-                return objCachedEvaluation.Item2;
+                return objCachedEvaluation;
             }
 
             object objReturn;
             bool blnIsSuccess;
             try
             {
-                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
+                (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync();
+                if (!blnHasEvaluator)
                 {
                     lock (s_ObjXPathNavigatorDocumentLock)
                         objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
                 }
+
                 try
                 {
                     objReturn = objEvaluator?.Evaluate(objXPath);
                 }
                 finally
                 {
-                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                    await s_StkXPathNavigatorPool.PushAsync(objEvaluator);
                 }
+
                 blnIsSuccess = objReturn != null;
             }
             catch (ArgumentException)
@@ -245,8 +276,10 @@ namespace Chummer
                 objReturn = strExpression;
                 blnIsSuccess = false;
             }
-            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
-            return objReturn;
+
+            Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            await s_DicCompiledEvaluations.TryAddAsync(strExpression, tupReturn); // don't want to store managed objects, only primitives
+            return tupReturn;
         }
 
         /// <summary>
@@ -321,6 +354,31 @@ namespace Chummer
             if (string.IsNullOrEmpty(strXPathExpression))
                 return true;
             EvaluateInvariantXPath(strXPathExpression, out bool blnSuccess);
+            return blnSuccess;
+        }
+
+        /// <summary>
+        /// Parse an XPath for whether it is valid XPath.
+        /// </summary>
+        /// <param name="strXPathExpression" >XPath Expression to evaluate</param>
+        /// <param name="blnIsNullSuccess"   >Should a null or empty result be treated as success?</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<bool> IsCharacterAttributeXPathValidOrNullAsync(string strXPathExpression, bool blnIsNullSuccess = true)
+        {
+            if (string.IsNullOrEmpty(strXPathExpression))
+                return blnIsNullSuccess;
+            foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
+            {
+                if (!string.IsNullOrEmpty(strXPathExpression))
+                    strXPathExpression = strXPathExpression
+                                         .Replace('{' + strCharAttributeName + '}', "1")
+                                         .Replace('{' + strCharAttributeName + "Unaug}", "1")
+                                         .Replace('{' + strCharAttributeName + "Base}", "1");
+            }
+
+            if (string.IsNullOrEmpty(strXPathExpression))
+                return true;
+            (bool blnSuccess, object _) = await EvaluateInvariantXPathAsync(strXPathExpression);
             return blnSuccess;
         }
 

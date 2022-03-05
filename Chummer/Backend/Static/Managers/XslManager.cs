@@ -72,10 +72,14 @@ namespace Chummer
             DateTime datLastWriteTimeUtc = File.GetLastWriteTimeUtc(strXslFilePath);
 
             XslCompiledTransform objReturn;
+            bool blnSuccess;
+            Tuple<DateTime, XslCompiledTransform> tupCachedData;
+            if (blnSync)
+                blnSuccess = s_dicCompiledTransforms.TryGetValue(strXslFilePath, out tupCachedData);
+            else
+                (blnSuccess, tupCachedData) = await s_dicCompiledTransforms.TryGetValueAsync(strXslFilePath);
 
-            if (!s_dicCompiledTransforms.TryGetValue(
-                    strXslFilePath, out Tuple<DateTime, XslCompiledTransform> tupCachedData)
-                || tupCachedData.Item1 <= datLastWriteTimeUtc)
+            if (!blnSuccess || tupCachedData.Item1 <= datLastWriteTimeUtc)
             {
 #if DEBUG
                 objReturn = new XslCompiledTransform(true);

@@ -336,7 +336,7 @@ namespace Chummer
                         .CheapReplaceAsync("Armor Cost", () => _decArmorCost.ToString(GlobalSettings.InvariantCultureInfo));
 
                     // Apply any markup.
-                    objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out blnIsSuccess);
+                    (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost);
                     decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
                     decCost *= 1 + (nudMarkup.Value / 100.0m);
 
@@ -371,7 +371,7 @@ namespace Chummer
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
 
                 //Rounding is always 'up'. For items that generate capacity, this means making it a larger negative number.
-                objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity, out blnIsSuccess);
+                (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity);
                 string strReturn = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
                 if (blnSquareBrackets)
                     strReturn = '[' + strReturn + ']';

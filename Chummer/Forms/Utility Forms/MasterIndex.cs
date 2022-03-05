@@ -233,9 +233,7 @@ namespace Chummer
                                 if (xmlBaseNode == null)
                                     return;
                                 bool blnLoopFileNameHasItems = false;
-                                foreach (XPathNavigator xmlItemNode in await xmlBaseNode.SelectAndCacheExpressionAsync(
-                                             ".//*[page and " +
-                                             strSourceFilter + ']'))
+                                foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[page and " + strSourceFilter + ']'))
                                 {
                                     blnLoopFileNameHasItems = true;
                                     string strName = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
@@ -482,7 +480,8 @@ namespace Chummer
                     lblSourceClickReminder.Visible = true;
                     lblSource.Text = objEntry.DisplaySource.ToString();
                     lblSource.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
-                    if (!_dicCachedNotes.TryGetValue(objEntry, out Task<string> tskNotes))
+                    (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry);
+                    if (!blnSuccess)
                     {
                         if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                 StringComparison.OrdinalIgnoreCase)

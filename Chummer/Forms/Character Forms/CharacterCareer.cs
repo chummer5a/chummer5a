@@ -15027,7 +15027,7 @@ namespace Chummer
                     if (objGear.Cost.Contains("Gear Cost"))
                     {
                         string strCost = objGear.Cost.Replace("Gear Cost", (objSelectedGear?.CalculatedCost ?? 0).ToString(GlobalSettings.InvariantCultureInfo));
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
+                        (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost);
                         decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : objGear.TotalCost;
                     }
                     else

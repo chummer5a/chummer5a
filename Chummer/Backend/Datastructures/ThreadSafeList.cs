@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject, IAsyncEnumerable<T>
     {
         private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -571,7 +571,14 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.GetEnumerator" />
         public IEnumerator<T> GetEnumerator()
         {
-            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.Get(this);
+            objReturn.SetEnumerator(_lstData.GetEnumerator());
+            return objReturn;
+        }
+
+        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync()
+        {
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this);
             objReturn.SetEnumerator(_lstData.GetEnumerator());
             return objReturn;
         }

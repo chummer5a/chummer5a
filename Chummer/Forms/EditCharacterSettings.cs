@@ -747,61 +747,61 @@ namespace Chummer
             txtPriorities.ForeColor = txtPriorities.Text.Length == 5 ? ColorManager.WindowText : ColorManager.ErrorColor;
         }
 
-        private void txtContactPoints_TextChanged(object sender, EventArgs e)
+        private async void txtContactPoints_TextChanged(object sender, EventArgs e)
         {
-            txtContactPoints.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtContactPoints.Text)
+            txtContactPoints.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtContactPoints.Text)
                 ? ColorManager.WindowText
                 : ColorManager.ErrorColor;
         }
 
-        private void txtKnowledgePoints_TextChanged(object sender, EventArgs e)
+        private async void txtKnowledgePoints_TextChanged(object sender, EventArgs e)
         {
-            txtKnowledgePoints.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtKnowledgePoints.Text)
+            txtKnowledgePoints.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtKnowledgePoints.Text)
                 ? ColorManager.WindowText
                 : ColorManager.ErrorColor;
         }
 
-        private void txtNuyenExpression_TextChanged(object sender, EventArgs e)
+        private async void txtNuyenExpression_TextChanged(object sender, EventArgs e)
         {
-            txtNuyenExpression.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtNuyenExpression.Text)
+            txtNuyenExpression.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtNuyenExpression.Text)
                 ? ColorManager.WindowText
                 : ColorManager.ErrorColor;
         }
 
-        private void txtBoundSpiritLimit_TextChanged(object sender, EventArgs e)
+        private async void txtBoundSpiritLimit_TextChanged(object sender, EventArgs e)
         {
             txtBoundSpiritLimit.ForeColor
-                = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtBoundSpiritLimit.Text)
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtBoundSpiritLimit.Text)
                     ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
         }
 
-        private void txtRegisteredSpriteLimit_TextChanged(object sender, EventArgs e)
+        private async void txtRegisteredSpriteLimit_TextChanged(object sender, EventArgs e)
         {
             txtRegisteredSpriteLimit.ForeColor
-                = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtRegisteredSpriteLimit.Text)
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtRegisteredSpriteLimit.Text)
                     ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
         }
 
-        private void txtLiftLimit_TextChanged(object sender, EventArgs e)
+        private async void txtLiftLimit_TextChanged(object sender, EventArgs e)
         {
-            txtLiftLimit.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtLiftLimit.Text)
+            txtLiftLimit.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtLiftLimit.Text)
                 ? ColorManager.WindowText
                 : ColorManager.ErrorColor;
         }
 
-        private void txtCarryLimit_TextChanged(object sender, EventArgs e)
+        private async void txtCarryLimit_TextChanged(object sender, EventArgs e)
         {
-            txtCarryLimit.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtCarryLimit.Text)
+            txtCarryLimit.ForeColor = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtCarryLimit.Text)
                 ? ColorManager.WindowText
                 : ColorManager.ErrorColor;
         }
 
-        private void txtEncumbranceInterval_TextChanged(object sender, EventArgs e)
+        private async void txtEncumbranceInterval_TextChanged(object sender, EventArgs e)
         {
             txtEncumbranceInterval.ForeColor
-                = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtEncumbranceInterval.Text)
+                = await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(txtEncumbranceInterval.Text)
                     ? ColorManager.WindowText
                     : ColorManager.ErrorColor;
         }
@@ -1487,12 +1487,12 @@ namespace Chummer
                     switch (e.PropertyName)
                     {
                         case nameof(CharacterSettings.BuiltInOption):
-                            cmdSave.Enabled = IsDirty && IsAllTextBoxesLegal && !_objCharacterSettings.BuiltInOption;
+                            cmdSave.Enabled = IsDirty && await IsAllTextBoxesLegalAsync() && !_objCharacterSettings.BuiltInOption;
                             break;
 
                         case nameof(CharacterSettings.PriorityArray):
                         case nameof(CharacterSettings.BuildMethod):
-                            cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
+                            cmdSaveAs.Enabled = IsDirty && await IsAllTextBoxesLegalAsync();
                             cmdSave.Enabled = cmdSaveAs.Enabled
                                               && !_objCharacterSettings.BuiltInOption;
                             break;
@@ -1501,31 +1501,52 @@ namespace Chummer
             }
         }
 
-        private bool IsAllTextBoxesLegal
+        private bool IsAllTextBoxesLegal()
         {
-            get
-            {
-                if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority && _objCharacterSettings.PriorityArray.Length != 5)
-                    return false;
+            if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority && _objCharacterSettings.PriorityArray.Length != 5)
+                return false;
 
-                return CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.ContactPointsExpression) &&
-                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.KnowledgePointsExpression) &&
-                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.ChargenKarmaToNuyenExpression.Replace("{Karma}", "1")
-                               .Replace("{PriorityNuyen}", "1")) &&
-                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.RegisteredSpriteExpression) &&
-                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.BoundSpiritExpression) &&
-                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.LiftLimitExpression) &&
-                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.CarryLimitExpression) &&
-                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.EncumbranceIntervalExpression);
-            }
+            return CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                       _objCharacterSettings.ContactPointsExpression) &&
+                   CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                       _objCharacterSettings.KnowledgePointsExpression) &&
+                   CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                       _objCharacterSettings.ChargenKarmaToNuyenExpression.Replace("{Karma}", "1")
+                                            .Replace("{PriorityNuyen}", "1")) &&
+                   CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                       _objCharacterSettings.RegisteredSpriteExpression) &&
+                   CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                       _objCharacterSettings.BoundSpiritExpression) &&
+                   CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                       _objCharacterSettings.LiftLimitExpression) &&
+                   CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                       _objCharacterSettings.CarryLimitExpression) &&
+                   CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                       _objCharacterSettings.EncumbranceIntervalExpression);
+        }
+
+        private async ValueTask<bool> IsAllTextBoxesLegalAsync()
+        {
+            if (_objCharacterSettings.BuildMethod == CharacterBuildMethod.Priority && _objCharacterSettings.PriorityArray.Length != 5)
+                return false;
+
+            return await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                       _objCharacterSettings.ContactPointsExpression) &&
+                   await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                       _objCharacterSettings.KnowledgePointsExpression) &&
+                   await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                       _objCharacterSettings.ChargenKarmaToNuyenExpression.Replace("{Karma}", "1")
+                                            .Replace("{PriorityNuyen}", "1")) &&
+                   await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                       _objCharacterSettings.RegisteredSpriteExpression) &&
+                   await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                       _objCharacterSettings.BoundSpiritExpression) &&
+                   await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                       _objCharacterSettings.LiftLimitExpression) &&
+                   await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                       _objCharacterSettings.CarryLimitExpression) &&
+                   await CommonFunctions.IsCharacterAttributeXPathValidOrNullAsync(
+                       _objCharacterSettings.EncumbranceIntervalExpression);
         }
 
         private bool IsDirty
@@ -1539,7 +1560,7 @@ namespace Chummer
                 cmdOK.Text = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
                 if (value)
                 {
-                    bool blnIsAllTextBoxesLegal = IsAllTextBoxesLegal;
+                    bool blnIsAllTextBoxesLegal = IsAllTextBoxesLegal();
                     cmdSaveAs.Enabled = blnIsAllTextBoxesLegal;
                     cmdSave.Enabled = blnIsAllTextBoxesLegal && !_objCharacterSettings.BuiltInOption;
                 }

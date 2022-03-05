@@ -1571,7 +1571,11 @@ namespace Chummer
                             {
                                 using (objCharacter.LockObject.EnterWriteLock())
                                 {
-                                    if (objCharacter.PushText.TryTake(out string strText))
+                                    (bool blnHasText, string strText) = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? objCharacter.PushText.TryTake()
+                                        : await objCharacter.PushText.TryTakeAsync();
+                                    if (blnHasText)
                                     {
                                         LimitSelection = strText;
                                     }

@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeQueue<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>
+    public class ThreadSafeQueue<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>, IAsyncEnumerable<T>
     {
         private readonly Queue<T> _queData;
 
@@ -50,7 +50,14 @@ namespace Chummer
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.Get(this);
+            objReturn.SetEnumerator(_queData.GetEnumerator());
+            return objReturn;
+        }
+
+        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync()
+        {
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this);
             objReturn.SetEnumerator(_queData.GetEnumerator());
             return objReturn;
         }

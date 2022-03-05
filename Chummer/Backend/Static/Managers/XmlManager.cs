@@ -285,8 +285,9 @@ namespace Chummer
             IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                foreach (XmlReference objReference in s_DicXmlDocuments.Values)
-                    await objReference.DisposeAsync().ConfigureAwait(false);
+                await s_DicXmlDocuments.ForEachAsync(async kvpDocument =>
+                                                         await kvpDocument.Value.DisposeAsync().ConfigureAwait(false))
+                                       .ConfigureAwait(false);
                 await s_DicXmlDocuments.ClearAsync().ConfigureAwait(false);
                 s_SetDataDirectories.Clear();
                 s_SetDataDirectories.Add(s_StrBaseDataPath);

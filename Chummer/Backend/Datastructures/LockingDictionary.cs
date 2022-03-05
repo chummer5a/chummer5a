@@ -34,7 +34,7 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -67,7 +67,7 @@ namespace Chummer
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = new LockingEnumerator<KeyValuePair<TKey, TValue>>(this);
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = LockingEnumerator<KeyValuePair<TKey, TValue>>.Get(this);
             objReturn.SetEnumerator(_dicData.GetEnumerator());
             return objReturn;
         }
@@ -75,7 +75,7 @@ namespace Chummer
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            LockingDictionaryEnumerator objReturn = new LockingDictionaryEnumerator(this);
+            LockingDictionaryEnumerator objReturn = LockingDictionaryEnumerator.Get(this);
             objReturn.SetEnumerator(_dicData.GetEnumerator());
             return objReturn;
         }
@@ -83,7 +83,14 @@ namespace Chummer
         /// <inheritdoc />
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            LockingDictionaryEnumerator objReturn = new LockingDictionaryEnumerator(this);
+            LockingDictionaryEnumerator objReturn = LockingDictionaryEnumerator.Get(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
+        }
+        
+        public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync()
+        {
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this);
             objReturn.SetEnumerator(_dicData.GetEnumerator());
             return objReturn;
         }

@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.UI.Skills;
 using Chummer.UI.Table;
@@ -148,6 +149,22 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
+        /// </summary>
+        /// <param name="objColor">Color whose lightness and saturation should be adjusted for Dark Mode.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
+        public static async Task<Color> GenerateDarkModeColorAsync(Color objColor)
+        {
+            (bool blnSuccess, Color objDarkModeColor) = await s_DicDarkModeColors.TryGetValueAsync(objColor);
+            if (!blnSuccess)
+            {
+                objDarkModeColor = GetDarkModeVersion(objColor);
+                await s_DicDarkModeColors.TryAddAsync(objColor, objDarkModeColor);
+            }
+            return objDarkModeColor;
+        }
+
+        /// <summary>
         /// Returns an inverted version of a color that has gone through GenerateDarkModeColor()
         /// </summary>
         /// <param name="objColor">Color whose Dark Mode conversions for lightness and saturation should be inverted.</param>
@@ -163,6 +180,22 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns an inverted version of a color that has gone through GenerateDarkModeColor()
+        /// </summary>
+        /// <param name="objColor">Color whose Dark Mode conversions for lightness and saturation should be inverted.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
+        public static async Task<Color> GenerateInverseDarkModeColorAsync(Color objColor)
+        {
+            (bool blnSuccess, Color objInverseDarkModeColor) = await s_DicInverseDarkModeColors.TryGetValueAsync(objColor);
+            if (!blnSuccess)
+            {
+                objInverseDarkModeColor = InverseGetDarkModeVersion(objColor);
+                await s_DicInverseDarkModeColors.TryAddAsync(objColor, objInverseDarkModeColor);
+            }
+            return objInverseDarkModeColor;
+        }
+
+        /// <summary>
         /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
         /// </summary>
         /// <param name="objColor">Color as it would be in Light mode</param>
@@ -173,6 +206,16 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
+        /// </summary>
+        /// <param name="objColor">Color as it would be in Light mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to dark mode.</returns>
+        public static Task<Color> GenerateCurrentModeColorAsync(Color objColor)
+        {
+            return IsLightMode ? Task.FromResult(objColor) : GenerateDarkModeColorAsync(objColor);
+        }
+
+        /// <summary>
         /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
         /// </summary>
         /// <param name="objColor">Color as it is shown in current color mode</param>
@@ -180,6 +223,16 @@ namespace Chummer
         public static Color GenerateModeIndependentColor(Color objColor)
         {
             return IsLightMode ? objColor : GenerateInverseDarkModeColor(objColor);
+        }
+
+        /// <summary>
+        /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
+        /// </summary>
+        /// <param name="objColor">Color as it is shown in current color mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to light mode.</returns>
+        public static Task<Color> GenerateModeIndependentColorAsync(Color objColor)
+        {
+            return IsLightMode ? Task.FromResult(objColor) : GenerateInverseDarkModeColorAsync(objColor);
         }
 
         /// <summary>
@@ -208,6 +261,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
+        /// </summary>
+        /// <param name="objColor">Color whose lightness should be dimmed.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
+        public static async Task<Color> GenerateCurrentModeDimmedColorAsync(Color objColor)
+        {
+            bool blnSuccess;
+            Color objRetColor;
+            if (IsLightMode)
+            {
+                (blnSuccess, objRetColor) = await s_DicDimmedColors.TryGetValueAsync(objColor);
+                if (!blnSuccess)
+                {
+                    objRetColor = GetDimmedVersion(objColor);
+                    await s_DicDimmedColors.TryAddAsync(objColor, objRetColor);
+                }
+            }
+            else
+            {
+                (blnSuccess, objRetColor) = await s_DicBrightenedColors.TryGetValueAsync(objColor);
+                if (!blnSuccess)
+                {
+                    objRetColor = GetBrightenedVersion(objColor);
+                    await s_DicBrightenedColors.TryAddAsync(objColor, objRetColor);
+                }
+            }
+
+            return objRetColor;
+        }
+
+        /// <summary>
         /// Because the transforms applied to convert a Light Mode color to Dark Mode cannot produce some ranges of lightness and saturation, not all colors are valid in Dark Mode.
         /// This function takes a color intended for Dark Mode and converts it to the closest possible color that is valid in Dark Mode.
         /// If the original color is valid in Dark Mode to begin with, the transforms should end up reproducing it.
@@ -217,6 +301,18 @@ namespace Chummer
         private static Color TransformToDarkModeValidVersion(Color objColor)
         {
             return GenerateDarkModeColor(GenerateInverseDarkModeColor(objColor));
+        }
+
+        /// <summary>
+        /// Because the transforms applied to convert a Light Mode color to Dark Mode cannot produce some ranges of lightness and saturation, not all colors are valid in Dark Mode.
+        /// This function takes a color intended for Dark Mode and converts it to the closest possible color that is valid in Dark Mode.
+        /// If the original color is valid in Dark Mode to begin with, the transforms should end up reproducing it.
+        /// </summary>
+        /// <param name="objColor">Color to adjust, originally specified within Dark Mode.</param>
+        /// <returns>New Color very similar to <paramref name="objColor"/>, but with lightness and saturation values set to within the range allowable in Dark Mode.</returns>
+        private static async Task<Color> TransformToDarkModeValidVersionAsync(Color objColor)
+        {
+            return await GenerateDarkModeColorAsync(await GenerateInverseDarkModeColorAsync(objColor));
         }
 
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;

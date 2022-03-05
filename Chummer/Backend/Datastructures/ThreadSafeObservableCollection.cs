@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IProducerConsumerCollection<T>, IHasLockObject
+    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IProducerConsumerCollection<T>, IHasLockObject, IAsyncEnumerable<T>
     {
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
@@ -155,7 +155,14 @@ namespace Chummer
         /// <inheritdoc />
         public new IEnumerator<T> GetEnumerator()
         {
-            LockingEnumerator<T> objReturn = new LockingEnumerator<T>(this);
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.Get(this);
+            objReturn.SetEnumerator(base.GetEnumerator());
+            return objReturn;
+        }
+
+        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync()
+        {
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this);
             objReturn.SetEnumerator(base.GetEnumerator());
             return objReturn;
         }
