@@ -407,9 +407,7 @@ namespace Chummer
                         WindowState = FormWindowState.Maximized;
                 }
 
-                await ProcessLoadingEnd();
-
-                async ValueTask ProcessLoadingEnd()
+                if (Utils.IsUnitTest)
                 {
                     if (CharacterRoster != null)
                     {
@@ -429,9 +427,9 @@ namespace Chummer
                         while (!MasterIndex.IsFinishedLoading)
                             await Utils.SafeSleepAsync();
                     }
-
-                    IsFinishedLoading = true;
                 }
+
+                IsFinishedLoading = true;
             }
         }
 

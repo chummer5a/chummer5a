@@ -136,9 +136,8 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                await LoadContent();
+                await LoadContent().AsTask().ContinueWith(x => IsFinishedLoading = true);
                 _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
-                IsFinishedLoading = true;
             }
         }
 

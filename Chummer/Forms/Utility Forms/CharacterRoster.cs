@@ -138,9 +138,8 @@ namespace Chummer
                 }
 
                 await this.DoThreadSafeAsync(
-                    () => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
-
-                IsFinishedLoading = true;
+                    () => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache)
+                        .ContinueWith(x => IsFinishedLoading = true));
             }
         }
 
