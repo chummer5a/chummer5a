@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -162,9 +161,12 @@ namespace Chummer
         {
             if (_blnIsDisposed)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+            if (!(objRelease is SafeWriterSemaphoreRelease objReleaseCast))
+                throw new ArgumentException("Argument is not a " + nameof(SafeWriterSemaphoreRelease),
+                                            nameof(objRelease));
             if (Interlocked.Decrement(ref _intCountActiveReaders) == 0 && !IsWriteLockHeldRecursively)
                 _objReaderSemaphore.Release();
-            objRelease.Dispose();
+            objReleaseCast.DoRelease();
         }
 
         /// <summary>
@@ -175,9 +177,12 @@ namespace Chummer
         {
             if (_blnIsDisposed)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+            if (!(objRelease is SafeWriterSemaphoreRelease objReleaseCast))
+                throw new ArgumentException("Argument is not a " + nameof(SafeWriterSemaphoreRelease),
+                                            nameof(objRelease));
             if (Interlocked.Decrement(ref _intCountActiveReaders) == 0 && !IsWriteLockHeldRecursively)
                 _objReaderSemaphore.Release();
-            return objRelease.DisposeAsync();
+            return objReleaseCast.DoReleaseAsync();
         }
 
         /// <summary>
@@ -191,7 +196,9 @@ namespace Chummer
             SemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value ?? _objTopLevelWriterSemaphore;
             SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = objNextSemaphore;
-            using (new SafeWriterSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this))
+            SafeWriterSemaphoreRelease objRelease
+                = new SafeWriterSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
+            try
             {
                 if (Utils.EverDoEvents)
                 {
@@ -200,6 +207,7 @@ namespace Chummer
                 }
                 else
                     objCurrentSemaphore.Wait(token);
+
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
                     try
@@ -218,6 +226,11 @@ namespace Chummer
                         throw;
                     }
                 }
+            }
+            finally
+            {
+                // Deliberately DoRelease to not decrement the active reader count
+                objRelease.DoRelease();
             }
         }
 
@@ -255,7 +268,8 @@ namespace Chummer
             }
             finally
             {
-                await objRelease.DisposeAsync().ConfigureAwait(false);
+                // Deliberately DoRelease to not decrement the active reader count
+                await objRelease.DoReleaseAsync().ConfigureAwait(false);
             }
         }
 
@@ -381,7 +395,7 @@ namespace Chummer
                 _objReaderWriterLock = objReaderWriterLock;
             }
 
-            public ValueTask DisposeAsync()
+            public ValueTask DoReleaseAsync()
             {
                 if (_objReaderWriterLock.IsDisposed)
                     throw new InvalidOperationException(
@@ -398,7 +412,7 @@ namespace Chummer
                 }
 
                 // Update _objReaderWriterLock._objCurrentWriterSemaphore in the calling ExecutionContext
-                // and defer any awaits to DisposeCoreAsync(). If this isn't done, the
+                // and defer any awaits to DoReleaseCoreAsync(). If this isn't done, the
                 // update will happen in a copy of the ExecutionContext and the caller
                 // won't see the changes.
                 _objReaderWriterLock._objCurrentWriterSemaphore.Value = _objCurrentWriterSemaphore
@@ -407,10 +421,10 @@ namespace Chummer
                     ? null
                     : _objCurrentWriterSemaphore;
 
-                return DisposeCoreAsync();
+                return DoReleaseCoreAsync();
             }
 
-            private async ValueTask DisposeCoreAsync()
+            private async ValueTask DoReleaseCoreAsync()
             {
                 await _objNextWriterSemaphore.WaitAsync().ConfigureAwait(false);
                 _objCurrentWriterSemaphore.Release();
@@ -418,7 +432,7 @@ namespace Chummer
                 Utils.SemaphorePool.Return(_objNextWriterSemaphore);
             }
 
-            public void Dispose()
+            public void DoRelease()
             {
                 if (_objReaderWriterLock.IsDisposed)
                     throw new InvalidOperationException(
@@ -450,6 +464,18 @@ namespace Chummer
                 _objCurrentWriterSemaphore.Release();
                 _objNextWriterSemaphore.Release();
                 Utils.SemaphorePool.Return(_objNextWriterSemaphore);
+            }
+
+            /// <inheritdoc />
+            public void Dispose()
+            {
+                _objReaderWriterLock.ExitWriteLock(this);
+            }
+
+            /// <inheritdoc />
+            public ValueTask DisposeAsync()
+            {
+                return _objReaderWriterLock.ExitWriteLockAsync(this);
             }
         }
     }
