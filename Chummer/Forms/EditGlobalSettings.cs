@@ -113,20 +113,26 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (_blnDirty)
+            using (new CursorWait(this))
             {
-                string text = await LanguageManager.GetStringAsync("Message_Options_SaveForms", _strSelectedLanguage);
-                string caption = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", _strSelectedLanguage);
+                if (_blnDirty)
+                {
+                    string text = await LanguageManager.GetStringAsync("Message_Options_SaveForms",
+                                                                       _strSelectedLanguage);
+                    string caption
+                        = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", _strSelectedLanguage);
 
-                if (Program.ShowMessageBox(this, text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                    return;
+                    if (Program.ShowMessageBox(this, text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        != DialogResult.Yes)
+                        return;
+                }
+
+                DialogResult = DialogResult.OK;
+                await SaveRegistrySettings();
+
+                if (_blnDirty)
+                    await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
             }
-
-            DialogResult = DialogResult.OK;
-            SaveRegistrySettings();
-
-            if (_blnDirty)
-                await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
         }
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
@@ -1047,7 +1053,7 @@ namespace Chummer
             PluginsShowOrHide(chkEnablePlugins.Checked);
         }
 
-        private void SaveGlobalOptions()
+        private async ValueTask SaveGlobalOptions()
         {
             GlobalSettings.AutomaticUpdate = chkAutomaticUpdate.Checked;
             GlobalSettings.LiveCustomData = chkLiveCustomData.Checked;
@@ -1126,7 +1132,7 @@ namespace Chummer
             GlobalSettings.CustomDataDirectoryInfos.Clear();
             foreach (CustomDataDirectoryInfo objInfo in _setCustomDataDirectoryInfos)
                 GlobalSettings.CustomDataDirectoryInfos.Add(objInfo);
-            XmlManager.RebuildDataDirectoryInfo(GlobalSettings.CustomDataDirectoryInfos);
+            await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos);
             GlobalSettings.SourcebookInfos.Clear();
             foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
                 GlobalSettings.SourcebookInfos.Add(objInfo.Code, objInfo);
@@ -1135,11 +1141,10 @@ namespace Chummer
         /// <summary>
         /// Save the global settings to the registry.
         /// </summary>
-        private void SaveRegistrySettings()
+        private async ValueTask SaveRegistrySettings()
         {
-            SaveGlobalOptions();
-
-            GlobalSettings.SaveOptionsToRegistry();
+            await SaveGlobalOptions();
+            await GlobalSettings.SaveOptionsToRegistry();
         }
 
         private async ValueTask PopulateDefaultCharacterSettingLists()

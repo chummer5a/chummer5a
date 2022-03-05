@@ -156,13 +156,13 @@ namespace Chummer
                                 // Attempt to cache all XML files that are used the most.
                                 using (_ = Timekeeper.StartSyncron("cache_load", opFrmChummerMain))
                                 {
-                                    await Task.WhenAll(Utils.BasicDataFileNames.Select(x => Task.Run(() =>
+                                    await Task.WhenAll(Utils.BasicDataFileNames.Select(x => Task.Run(async () =>
                                     {
                                         // Load default language data first for performance reasons
                                         if (!GlobalSettings.Language.Equals(
                                                 GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                                            XmlManager.Load(x, null, GlobalSettings.DefaultLanguage);
-                                        XmlManager.Load(x);
+                                            await XmlManager.LoadAsync(x, null, GlobalSettings.DefaultLanguage);
+                                        await XmlManager.LoadAsync(x);
                                         Program.MainProgressBar.PerformStep(
                                             Application.ProductName, LoadingBar.ProgressBarTextPatterns.Initializing);
                                     })));

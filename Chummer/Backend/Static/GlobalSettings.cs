@@ -788,7 +788,7 @@ namespace Chummer
 
         #region Methods
 
-        public static void SaveOptionsToRegistry()
+        public static async ValueTask SaveOptionsToRegistry()
         {
             try
             {
@@ -886,17 +886,17 @@ namespace Chummer
             catch (System.Security.SecurityException)
             {
                 Program.ShowMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (UnauthorizedAccessException)
             {
                 Program.ShowMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (ArgumentNullException e) when (e.ParamName == nameof(Registry))
             {
                 Program.ShowMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry"));
             }
         }
 
