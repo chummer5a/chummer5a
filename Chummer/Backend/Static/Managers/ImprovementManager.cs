@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -229,6 +230,88 @@ namespace Chummer
             }
         }
 
+        public static async ValueTask ClearCachedValueAsync(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName = "")
+        {
+            if (!string.IsNullOrEmpty(strImprovementName))
+            {
+                ImprovementDictionaryKey objCheckKey
+                    = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovementName);
+                if (!await s_DictionaryCachedValues.TryAddAsync(objCheckKey,
+                                                                new Tuple<decimal, List<Improvement>>(
+                                                                    decimal.MinValue, new List<Improvement>())))
+                {
+                    (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
+                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey);
+                    if (blnSuccess)
+                    {
+                        List<Improvement> lstTemp = tupTemp.Item2;
+                        lstTemp.Clear();
+                        await s_DictionaryCachedValues.AddOrUpdateAsync(objCheckKey,
+                                                                        x => new Tuple<decimal, List<Improvement>>(
+                                                                            decimal.MinValue, lstTemp),
+                                                                        (x, y) => new Tuple<decimal, List<Improvement>>(
+                                                                            decimal.MinValue, lstTemp));
+                    }
+                }
+
+                if (!await s_DictionaryCachedAugmentedValues.TryAddAsync(objCheckKey,
+                                                                         new Tuple<decimal, List<Improvement>>(
+                                                                             decimal.MinValue, new List<Improvement>())))
+                {
+                    (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
+                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey);
+                    if (blnSuccess)
+                    {
+                        List<Improvement> lstTemp = tupTemp.Item2;
+                        lstTemp.Clear();
+                        await s_DictionaryCachedAugmentedValues.AddOrUpdateAsync(objCheckKey,
+                            x => new Tuple<decimal, List<Improvement>>(
+                                decimal.MinValue, lstTemp),
+                            (x, y) => new Tuple<decimal, List<Improvement>>(
+                                decimal.MinValue, lstTemp));
+                    }
+                }
+            }
+            else
+            {
+                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedValues.Keys
+                             .Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType)
+                             .ToList())
+                {
+                    (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
+                        = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey);
+                    if (blnSuccess)
+                    {
+                        List<Improvement> lstTemp = tupTemp.Item2;
+                        lstTemp.Clear();
+                        await s_DictionaryCachedValues.AddOrUpdateAsync(objCheckKey,
+                                                                        x => new Tuple<decimal, List<Improvement>>(
+                                                                            decimal.MinValue, lstTemp),
+                                                                        (x, y) => new Tuple<decimal, List<Improvement>>(
+                                                                            decimal.MinValue, lstTemp));
+                    }
+                }
+
+                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedAugmentedValues.Keys
+                             .Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType)
+                             .ToList())
+                {
+                    (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
+                        = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey);
+                    if (blnSuccess)
+                    {
+                        List<Improvement> lstTemp = tupTemp.Item2;
+                        lstTemp.Clear();
+                        await s_DictionaryCachedAugmentedValues.AddOrUpdateAsync(objCheckKey,
+                            x => new Tuple<decimal, List<Improvement>>(
+                                decimal.MinValue, lstTemp),
+                            (x, y) => new Tuple<decimal, List<Improvement>>(
+                                decimal.MinValue, lstTemp));
+                    }
+                }
+            }
+        }
+
         public static void ClearCachedValues(Character objCharacter)
         {
             foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
@@ -244,6 +327,27 @@ namespace Chummer
             }
 
             s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> _);
+        }
+
+        public static async ValueTask ClearCachedValuesAsync(Character objCharacter)
+        {
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
+            {
+                (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
+                    = await s_DictionaryCachedValues.TryRemoveAsync(objKey);
+                if (blnSuccess)
+                    tupTemp.Item2.Clear(); // Just in case this helps the GC
+            }
+
+            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
+            {
+                (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
+                    = await s_DictionaryCachedAugmentedValues.TryRemoveAsync(objKey);
+                if (blnSuccess)
+                    tupTemp.Item2.Clear(); // Just in case this helps the GC
+            }
+
+            await s_DictionaryTransactions.TryRemoveAsync(objCharacter);
         }
 
         #endregion Properties
@@ -1694,6 +1798,64 @@ namespace Chummer
             return true;
         }
 
+        private static async ValueTask<Tuple<bool, string>> ProcessBonusAsync(Character objCharacter, Improvement.ImprovementSource objImprovementSource,
+                                         string strSourceName,
+                                         int intRating, string strFriendlyName, XmlNode bonusNode, string strUnique,
+                                         bool blnIgnoreMethodNotFound = false)
+        {
+            if (bonusNode == null)
+                return new Tuple<bool, string>(false, strSourceName);
+            //As this became a really big nest of **** that it searched past, several places having equal paths just adding a different improvement, a more flexible method was chosen.
+            //So far it is just a slower Dictionary<string, Action> but should (in theory...) be able to leverage this in the future to do it smarter with methods that are the same but
+            //getting a different parameter injected
+
+            AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
+                                                                              strSourceName, strUnique, _strForcedValue,
+                                                                              _strLimitSelection, SelectedValue,
+                                                                              strFriendlyName,
+                                                                              intRating);
+
+            Action<XmlNode> objImprovementMethod
+                = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
+            if (objImprovementMethod != null)
+            {
+                try
+                {
+                    IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync();
+                    try
+                    {
+                        objImprovementMethod.Invoke(bonusNode);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
+                }
+                catch (AbortedException)
+                {
+                    await RollbackAsync(objCharacter);
+                    return new Tuple<bool, string>(false, strSourceName);
+                }
+
+                strSourceName = container.SourceName;
+                _strForcedValue = container.ForcedValue;
+                _strLimitSelection = container.LimitSelection;
+                _strSelectedValue = container.SelectedValue;
+            }
+            else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
+            {
+                return new Tuple<bool, string>(true, strSourceName);
+            }
+            else if (bonusNode.NodeType != XmlNodeType.Comment)
+            {
+                Utils.BreakIfDebug();
+                Log.Warn(new object[] { "Tried to get unknown bonus", bonusNode.OuterXml });
+                return new Tuple<bool, string>(false, strSourceName);
+            }
+
+            return new Tuple<bool, string>(true, strSourceName);
+        }
+
         public static void EnableImprovements(Character objCharacter, IEnumerable<Improvement> objImprovementList)
         {
             EnableImprovements(objCharacter, objImprovementList.ToList());
@@ -3058,6 +3220,114 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Create a new Improvement and add it to the Character.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
+        /// <param name="strSourceName">Name of the item that grants this Improvement.</param>
+        /// <param name="objImprovementType">Type of object the Improvement applies to.</param>
+        /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single highest value in the pool will be applied to the character.</param>
+        /// <param name="decValue">Set a Value for the Improvement.</param>
+        /// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
+        /// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+        /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
+        /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
+        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        /// <param name="strCondition">Condition for when the bonus is applied.</param>
+        public static async ValueTask<Improvement> CreateImprovementAsync(Character objCharacter, string strImprovedName,
+                                                                         Improvement.ImprovementSource objImprovementSource,
+                                                                         string strSourceName, Improvement.ImprovementType objImprovementType,
+                                                                         string strUnique,
+                                                                         decimal decValue = 0, int intRating = 1, int intMinimum = 0,
+                                                                         int intMaximum = 0, decimal decAugmented = 0,
+                                                                         int intAugmentedMaximum = 0, string strExclude = "",
+                                                                         bool blnAddToRating = false, string strTarget = "",
+                                                                         string strCondition = "")
+        {
+            Log.Debug("CreateImprovement");
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
+            {
+                sbdTrace.Append("strImprovedName = ").AppendLine(strImprovedName);
+                sbdTrace.Append("objImprovementSource = ").AppendLine(objImprovementSource.ToString());
+                sbdTrace.Append("strSourceName = ").AppendLine(strSourceName);
+                sbdTrace.Append("objImprovementType = ").AppendLine(objImprovementType.ToString());
+                sbdTrace.Append("strUnique = ").AppendLine(strUnique);
+                sbdTrace.Append("decValue = ").AppendLine(decValue.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("intRating = ").AppendLine(intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("intMinimum = ").AppendLine(intMinimum.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("intMaximum = ").AppendLine(intMaximum.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("decAugmented = ").AppendLine(decAugmented.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("intAugmentedMaximum = ").AppendLine(intAugmentedMaximum.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("strExclude = ").AppendLine(strExclude);
+                sbdTrace.Append("blnAddToRating = ").AppendLine(blnAddToRating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdTrace.Append("strCondition = ").AppendLine(strCondition);
+                Log.Trace(sbdTrace.ToString);
+            }
+
+            Improvement objImprovement = null;
+
+            // Do not attempt to add the Improvements if the Character is null (as a result of Cyberware being added to a VehicleMod).
+            if (objCharacter != null)
+            {
+                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync();
+                try
+                {
+                    // Record the improvement.
+                    // ReSharper disable once UseObjectOrCollectionInitializer
+                    objImprovement = new Improvement(objCharacter)
+                    {
+                        ImprovedName = strImprovedName,
+                        ImproveSource = objImprovementSource,
+                        SourceName = strSourceName,
+                        ImproveType = objImprovementType,
+                        UniqueName = strUnique,
+                        Value = decValue,
+                        Rating = intRating,
+                        Minimum = intMinimum,
+                        Maximum = intMaximum,
+                        Augmented = decAugmented,
+                        AugmentedMaximum = intAugmentedMaximum,
+                        Exclude = strExclude,
+                        AddToRating = blnAddToRating,
+                        Target = strTarget,
+                        Condition = strCondition
+                    };
+                    // This is initially set to false make sure no property changers are triggered by the setters in the section above
+                    objImprovement.SetupComplete = true;
+                    // Add the Improvement to the list.
+                    objCharacter.Improvements.Add(objImprovement);
+                    await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName);
+
+                    // Add the Improvement to the Transaction List.
+                    bool blnSuccess;
+                    List<Improvement> lstTransactions;
+                    do
+                    {
+                        (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter);
+                        if (blnSuccess)
+                            break;
+                        lstTransactions = new List<Improvement>(1);
+                        if (await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions))
+                            break;
+                    } while (true);
+
+                    lstTransactions.Add(objImprovement);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
+            }
+
+            Log.Debug("CreateImprovement exit");
+            return objImprovement;
+        }
+
+        /// <summary>
         /// Clear all of the Improvements from the Transaction List.
         /// </summary>
         public static void Commit(Character objCharacter)
@@ -3065,6 +3335,23 @@ namespace Chummer
             Log.Debug("Commit");
             // Clear all of the Improvements from the Transaction List.
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
+            {
+                lstTransactions.ProcessRelevantEvents();
+            }
+
+            Log.Debug("Commit exit");
+        }
+
+        /// <summary>
+        /// Clear all of the Improvements from the Transaction List.
+        /// </summary>
+        public static async ValueTask CommitAsync(Character objCharacter)
+        {
+            Log.Debug("Commit");
+            // Clear all of the Improvements from the Transaction List.
+            (bool blnSuccess, List<Improvement> lstTransactions)
+                = await s_DictionaryTransactions.TryRemoveAsync(objCharacter);
+            if (blnSuccess)
             {
                 lstTransactions.ProcessRelevantEvents();
             }
@@ -3090,6 +3377,39 @@ namespace Chummer
                         ClearCachedValue(objCharacter, objTransactingImprovement.ImproveType,
                                          objTransactingImprovement.ImprovedName);
                     }
+                }
+
+                lstTransactions.Clear();
+            }
+
+            Log.Debug("Rollback exit");
+        }
+
+        /// <summary>
+        /// Rollback all of the Improvements from the Transaction List.
+        /// </summary>
+        private static async ValueTask RollbackAsync(Character objCharacter)
+        {
+            Log.Debug("Rollback enter");
+            (bool blnSuccess, List<Improvement> lstTransactions)
+                = await s_DictionaryTransactions.TryRemoveAsync(objCharacter);
+            if (blnSuccess)
+            {
+                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync();
+                try
+                {
+                    // Remove all of the Improvements that were added.
+                    foreach (Improvement objTransactingImprovement in lstTransactions)
+                    {
+                        RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource,
+                                           objTransactingImprovement.SourceName);
+                        await ClearCachedValueAsync(objCharacter, objTransactingImprovement.ImproveType,
+                                                    objTransactingImprovement.ImprovedName);
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
                 }
 
                 lstTransactions.Clear();

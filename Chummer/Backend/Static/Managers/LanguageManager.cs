@@ -149,8 +149,18 @@ namespace Chummer
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
                 string strKey = strIntoLanguage.ToUpperInvariant();
-                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
-                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                if (blnSync)
+                {
+                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                }
+                else
+                {
+                    (bool blnSuccess, LanguageData objLanguageData) = await s_DicLanguageData.TryGetValueAsync(strKey);
+                    if (blnSuccess)
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                }
+
                 UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
             }
             else if (!strIntoLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -530,9 +540,22 @@ namespace Chummer
             if (blnLanguageLoaded)
             {
                 string strLanguageKey = strLanguage.ToUpperInvariant();
-                if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData) && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                if (blnSync)
                 {
-                    return strReturn;
+                    if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
+                        && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                    {
+                        return strReturn;
+                    }
+                }
+                else
+                {
+                    (bool blnSuccess, LanguageData objLanguageData)
+                        = await s_DicLanguageData.TryGetValueAsync(strLanguageKey);
+                    if (blnSuccess && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                    {
+                        return strReturn;
+                    }
                 }
             }
             if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
@@ -689,9 +712,20 @@ namespace Chummer
             if (blnLanguageLoaded)
             {
                 string strKey = strLanguage.ToUpperInvariant();
-                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                if (blnSync)
                 {
-                    return objLanguageData.DataDocument;
+                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                    {
+                        return objLanguageData.DataDocument;
+                    }
+                }
+                else
+                {
+                    (bool blnSuccess, LanguageData objLanguageData) = await s_DicLanguageData.TryGetValueAsync(strKey);
+                    if (blnSuccess)
+                    {
+                        return objLanguageData.DataDocument;
+                    }
                 }
             }
             return null;

@@ -84,12 +84,13 @@ namespace Chummer
                 return null;
             }
 
-            using (ThreadSafeList<XPathNavigator> lstCharacterXmlStatblocks = new ThreadSafeList<XPathNavigator>(3))
+            ThreadSafeList<XPathNavigator> lstCharacterXmlStatblocks = new ThreadSafeList<XPathNavigator>(3);
+            try
             {
                 try
                 {
                     using (ZipArchive zipArchive
-                        = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                           = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                     {
                         // NOTE: Cannot parallelize because ZipFile.Open creates one handle on the entire zip file that gets messed up if we try to get it to read multiple files at once
                         foreach (ZipArchiveEntry entry in zipArchive.Entries)
@@ -150,7 +151,8 @@ namespace Chummer
                     Program.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
+                                      strFile));
                     return null;
                 }
                 catch (NotSupportedException)
@@ -158,7 +160,8 @@ namespace Chummer
                     Program.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
+                                      strFile));
                     return null;
                 }
                 catch (UnauthorizedAccessException)
@@ -210,7 +213,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strRaceString))
                         {
                             foreach (XPathNavigator xmlMetatype in xmlMetatypesDocument.Select(
-                                "/chummer/metatypes/metatype"))
+                                         "/chummer/metatypes/metatype"))
                             {
                                 string strMetatypeName = xmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty;
                                 if (strMetatypeName == strRaceString)
@@ -221,7 +224,7 @@ namespace Chummer
                                 }
 
                                 foreach (XPathNavigator xmlMetavariant in
-                                    xmlMetatype.SelectAndCacheExpression("metavariants/metavariant"))
+                                         xmlMetatype.SelectAndCacheExpression("metavariants/metavariant"))
                                 {
                                     string strMetavariantName
                                         = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
@@ -257,7 +260,8 @@ namespace Chummer
                                 intSemicolonIndex = strSettingsSummary.IndexOf(';', intSourcebooksIndex);
                                 if (intSourcebooksIndex + 16 < intSemicolonIndex)
                                 {
-                                    blnDoFullHouse = true; // We probably have multiple books enabled, so use Full House instead
+                                    blnDoFullHouse
+                                        = true; // We probably have multiple books enabled, so use Full House instead
                                 }
                             }
 
@@ -272,9 +276,11 @@ namespace Chummer
                                 if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex)
                                 {
                                     strHeroLabSettingsName = strSettingsSummary.Substring(
-                                            intCharCreationSystemsIndex + 28,
-                                            strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex) - 28 - intCharCreationSystemsIndex)
-                                        .Trim();
+                                                                                   intCharCreationSystemsIndex + 28,
+                                                                                   strSettingsSummary.IndexOf(
+                                                                                       ';', intCharCreationSystemsIndex)
+                                                                                   - 28 - intCharCreationSystemsIndex)
+                                                                               .Trim();
                                     if (strHeroLabSettingsName == "Established Runners")
                                         strHeroLabSettingsName = "Standard";
                                 }
@@ -298,7 +304,8 @@ namespace Chummer
                         objCache.Created = objCache.Karma != "0";
                         if (!objCache.Created)
                         {
-                            XPathNodeIterator xmlJournalEntries = xmlBaseCharacterNode.SelectAndCacheExpression("journals/journal");
+                            XPathNodeIterator xmlJournalEntries
+                                = xmlBaseCharacterNode.SelectAndCacheExpression("journals/journal");
                             if (xmlJournalEntries?.Count > 1)
                             {
                                 objCache.Created = true;
@@ -333,6 +340,10 @@ namespace Chummer
 
                 nodRootNode.Expand();
                 return nodRootNode;
+            }
+            finally
+            {
+                await lstCharacterXmlStatblocks.DisposeAsync();
             }
         }
 

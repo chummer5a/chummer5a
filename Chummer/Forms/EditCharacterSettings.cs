@@ -184,8 +184,10 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                if (!SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemove(
-                    _objReferenceCharacterSettings.DictionaryKey, out CharacterSettings objDeletedSettings))
+                (bool blnSuccess, CharacterSettings objDeletedSettings)
+                    = await SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemoveAsync(
+                        _objReferenceCharacterSettings.DictionaryKey);
+                if (!blnSuccess)
                     return;
                 if (!await Utils.SafeDeleteFileAsync(
                         Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))

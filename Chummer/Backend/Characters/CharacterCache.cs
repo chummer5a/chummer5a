@@ -747,8 +747,9 @@ namespace Chummer
                           ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSettings))
                     {
-                        if (SettingsManager.LoadedCharacterSettings.TryGetValue(
-                            strSettings, out CharacterSettings objSettings))
+                        (bool blnSuccess, CharacterSettings objSettings)
+                            = await SettingsManager.LoadedCharacterSettingsAsModifiable.TryGetValueAsync(strSettings);
+                        if (blnSuccess)
                             _strSettingsFile = objSettings.DisplayName;
                         else
                         {

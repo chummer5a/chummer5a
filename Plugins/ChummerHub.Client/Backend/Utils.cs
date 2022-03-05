@@ -1087,12 +1087,17 @@ namespace ChummerHub.Client.Backend
                 if (!string.IsNullOrEmpty(objCache.FilePath))
                 {
                     //I copy the values, because I dont know what callbacks are registered...
-                    using (CharacterCache tempCache = new CharacterCache())
+                    CharacterCache tempCache = new CharacterCache();
+                    try
                     {
                         if (await tempCache.LoadFromFileAsync(objCache.FilePath))
                         {
                             objCache.CopyFrom(tempCache);
                         }
+                    }
+                    finally
+                    {
+                        await tempCache.DisposeAsync();
                     }
                 }
                 await PluginHandler.MainForm.CharacterRoster.DoThreadSafeFunc(async x =>

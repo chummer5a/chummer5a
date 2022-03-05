@@ -647,6 +647,11 @@ namespace Chummer
 
         private async void OptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            await DoOptionsOnPropertyChanged(sender, e);
+        }
+
+        private async ValueTask DoOptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
             switch (e?.PropertyName)
             {
                 case nameof(CharacterSettings.UseCalculatedPublicAwareness):
@@ -24684,7 +24689,7 @@ namespace Chummer
 
                         if (setNamesOfChangedProperties.Contains(nameof(Settings)))
                             foreach (string strProperty in Settings.GetType().GetProperties().Select(x => x.Name))
-                                OptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
+                                Utils.RunWithoutThreadLock(() => DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty)));
                     }
 
                     foreach (string strPropertyToChange in setNamesOfChangedProperties)
