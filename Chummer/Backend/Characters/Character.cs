@@ -4292,7 +4292,7 @@ namespace Chummer
                         return;
                     using (EnterReadLock.Enter(LockObject))
                     {
-                        _blnIsLoading = true;
+                        _blnIsLoading = value;
                         OnPropertyChanged();
                     }
                 }
