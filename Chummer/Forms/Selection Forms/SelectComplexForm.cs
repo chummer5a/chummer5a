@@ -262,23 +262,23 @@ namespace Chummer
                 foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(
                              "complexform[" + strFilter + ']'))
                 {
-                    string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
 
                     if (!xmlComplexForm.RequirementsMet(_objCharacter))
                         continue;
 
-                    string strName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name")?.Value
+                    string strName = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown");
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                    if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform") != null
-                        && _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression(
-                            "complexform[. = " + strName.CleanXPath() + ']') == null)
+                    if (_xmlOptionalComplexFormNode != null
+                        && await _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpressionAsync("complexform") != null
+                        && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + ']') == null)
                         continue;
 
                     lstComplexFormItems.Add(
-                        new ListItem(strId, xmlComplexForm.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                        new ListItem(strId, (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                 }
 
                 lstComplexFormItems.Sort(CompareListItems.CompareNames);

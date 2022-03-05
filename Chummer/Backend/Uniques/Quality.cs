@@ -650,7 +650,10 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -815,7 +818,8 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -872,9 +876,13 @@ namespace Chummer
             else
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
-                XPathNavigator xmlMyLimitNode = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("limit");
-                if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
-                    strReturn += strSpace + intLevels.ToString(objCulture);
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+                if (objNode != null)
+                {
+                    XPathNavigator xmlMyLimitNode = await objNode.SelectSingleNodeAndCacheExpressionAsync("limit");
+                    if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
+                        strReturn += strSpace + intLevels.ToString(objCulture);
+                }
             }
 
             return strReturn;

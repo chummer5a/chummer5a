@@ -184,10 +184,10 @@ namespace Chummer
             {
                 foreach (XPathNavigator xmlTechnique in objTechniquesList)
                 {
-                    string strId = xmlTechnique.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (!string.IsNullOrEmpty(strId))
                     {
-                        string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name")?.Value
+                        string strTechniqueName = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                                   ?? await LanguageManager.GetStringAsync("String_Unknown");
 
                         if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
@@ -197,7 +197,7 @@ namespace Chummer
                         {
                             lstTechniqueItems.Add(new ListItem(
                                                       strId,
-                                                      xmlTechnique.SelectSingleNodeAndCacheExpression("translate")
+                                                      (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                   ?.Value ?? strTechniqueName));
                         }
                     }

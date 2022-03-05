@@ -235,13 +235,13 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlArt in objArtList)
                 {
-                    string strId = objXmlArt.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
                     {
                         lstMartialArt.Add(new ListItem(
                                               strId,
-                                              objXmlArt.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                              ?? objXmlArt.SelectSingleNodeAndCacheExpression("name")?.Value
+                                              (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                              ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                               ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }

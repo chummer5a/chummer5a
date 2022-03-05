@@ -951,9 +951,12 @@ namespace Chummer.Backend.Attributes
                     if (AttributeCategory == CharacterAttrib.AttributeCategory.Standard)
                     {
                         await objWriter.WriteElementStringAsync("attributecategory",
-                                                                xmlNode?.SelectSingleNodeAndCacheExpression(
-                                                                           "name/@translate")
-                                                                       ?.Value ?? _objCharacter.Metatype);
+                                                                xmlNode != null
+                                                                    ? (await xmlNode
+                                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                                            "name/@translate"))
+                                                                    ?.Value ?? _objCharacter.Metatype
+                                                                    : _objCharacter.Metatype);
                     }
                     else
                     {

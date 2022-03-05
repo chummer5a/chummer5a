@@ -198,14 +198,14 @@ namespace Chummer
                 {
                     if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
 
-                    string strName = objXmlMentor.SelectSingleNodeAndCacheExpression("name")?.Value
+                    string strName = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    string strId = objXmlMentor.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty;
+                    string strId = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty;
                     if (strName == _strForceMentor)
                         strForceId = strId;
                     lstMentors.Add(new ListItem(
                                        strId,
-                                       objXmlMentor.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                       (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                 }
 
                 lstMentors.Sort(CompareListItems.CompareNames);

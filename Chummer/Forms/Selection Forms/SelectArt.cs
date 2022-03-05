@@ -178,13 +178,13 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
                 {
-                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (!string.IsNullOrEmpty(strId)
                         && (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter)))
                     {
-                        lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value,
-                                                 objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                                 ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name")?.Value
+                        lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value,
+                                                 (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                                 ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                                  ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }

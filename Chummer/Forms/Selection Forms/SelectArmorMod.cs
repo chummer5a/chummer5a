@@ -443,25 +443,25 @@ namespace Chummer
                     foreach (XPathNavigator objXmlMod in objXmlModList)
                     {
                         XPathNavigator xmlTestNode
-                            = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
-                        if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("forbidden/parentdetails");
+                        if (xmlTestNode != null && await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/parentdetails");
-                        if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("required/parentdetails");
+                        if (xmlTestNode != null && !await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        string strId = objXmlMod.SelectSingleNodeAndCacheExpression("id")?.Value;
+                        string strId = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                         if (string.IsNullOrEmpty(strId)) continue;
                         decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
                         if (_setBlackMarketMaps.Contains(
-                                objXmlMod.SelectSingleNodeAndCacheExpression("category")?.Value))
+                                (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value))
                             decCostMultiplier *= 0.9m;
                         if (!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter) &&
                             (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
@@ -470,8 +470,8 @@ namespace Chummer
                         {
                             lstMods.Add(new ListItem(
                                             strId,
-                                            objXmlMod.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                            ?? objXmlMod.SelectSingleNodeAndCacheExpression("name")?.Value
+                                            (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                            ?? (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                             ?? await LanguageManager.GetStringAsync("String_Unknown")));
                         }
                         else

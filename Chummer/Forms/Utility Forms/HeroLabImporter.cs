@@ -224,7 +224,7 @@ namespace Chummer
                                 }
 
                                 foreach (XPathNavigator xmlMetavariant in
-                                         xmlMetatype.SelectAndCacheExpression("metavariants/metavariant"))
+                                         await xmlMetatype.SelectAndCacheExpressionAsync("metavariants/metavariant"))
                                 {
                                     string strMetavariantName
                                         = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
@@ -305,7 +305,7 @@ namespace Chummer
                         if (!objCache.Created)
                         {
                             XPathNodeIterator xmlJournalEntries
-                                = xmlBaseCharacterNode.SelectAndCacheExpression("journals/journal");
+                                = await xmlBaseCharacterNode.SelectAndCacheExpressionAsync("journals/journal");
                             if (xmlJournalEntries?.Count > 1)
                             {
                                 objCache.Created = true;
@@ -448,13 +448,19 @@ namespace Chummer
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 }
 
-                string strMetatype = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objCache.Metatype;
+                string strMetatype = objMetatypeNode != null
+                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                      ?? objCache.Metatype
+                    : objCache.Metatype;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
                     objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
 
-                    strMetatype += " (" + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objCache.Metavariant) + ')';
+                    strMetatype += " (" + (objMetatypeNode != null
+                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                          ?? objCache.Metavariant
+                        : objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
                 if (string.IsNullOrEmpty(lblMetatype.Text))

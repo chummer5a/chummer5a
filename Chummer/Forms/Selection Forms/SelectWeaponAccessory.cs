@@ -115,7 +115,7 @@ namespace Chummer
                 foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select(
                              "accessories/accessory" + strFilter))
                 {
-                    string strId = objXmlAccessory.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!_objParentWeapon.CheckAccessoryRequirements(objXmlAccessory))
@@ -131,8 +131,8 @@ namespace Chummer
                     {
                         lstAccessories.Add(new ListItem(
                                                strId,
-                                               objXmlAccessory.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                               ?? objXmlAccessory.SelectSingleNodeAndCacheExpression("name")?.Value
+                                               (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                               ?? (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                                ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                     else

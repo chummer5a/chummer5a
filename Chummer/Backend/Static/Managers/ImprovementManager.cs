@@ -1478,6 +1478,56 @@ namespace Chummer
                                               XmlNode nodBonus, int intRating = 1, string strFriendlyName = "",
                                               bool blnAddImprovementsToCharacter = true)
         {
+            return CreateImprovementsCoreAsync(true, objCharacter, objImprovementSource, strSourceName, nodBonus,
+                                               intRating, strFriendlyName, blnAddImprovementsToCharacter).GetAwaiter()
+                .GetResult();
+        }
+
+        /// <summary>
+        /// Create all of the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that grants these Improvements.</param>
+        /// <param name="nodBonus">bonus XML Node from the source data file.</param>
+        /// <param name="intRating">Selected Rating value that is used to replace the Rating string in an Improvement.</param>
+        /// <param name="strFriendlyName">Friendly name to show in any dialogue windows that ask for a value.</param>
+        /// <param name="blnAddImprovementsToCharacter">If True, adds created improvements to the character. Set to false if all we need is a SelectedValue.</param>
+        ///
+        /// <returns>True if successful</returns>
+        public static Task<bool> CreateImprovementsAsync(Character objCharacter,
+                                                         Improvement.ImprovementSource objImprovementSource,
+                                                         string strSourceName,
+                                                         XmlNode nodBonus, int intRating = 1,
+                                                         string strFriendlyName = "",
+                                                         bool blnAddImprovementsToCharacter = true)
+        {
+            return CreateImprovementsCoreAsync(false, objCharacter, objImprovementSource, strSourceName, nodBonus,
+                                               intRating, strFriendlyName, blnAddImprovementsToCharacter);
+        }
+
+        /// <summary>
+        /// Create all of the Improvements for an XML Node.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="objImprovementSource">Type of object that grants these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that grants these Improvements.</param>
+        /// <param name="nodBonus">bonus XML Node from the source data file.</param>
+        /// <param name="intRating">Selected Rating value that is used to replace the Rating string in an Improvement.</param>
+        /// <param name="strFriendlyName">Friendly name to show in any dialogue windows that ask for a value.</param>
+        /// <param name="blnAddImprovementsToCharacter">If True, adds created improvements to the character. Set to false if all we need is a SelectedValue.</param>
+        ///
+        /// <returns>True if successful</returns>
+        private static async Task<bool> CreateImprovementsCoreAsync(bool blnSync, Character objCharacter,
+                                                                    Improvement.ImprovementSource objImprovementSource,
+                                                                    string strSourceName,
+                                                                    XmlNode nodBonus, int intRating,
+                                                                    string strFriendlyName,
+                                                                    bool blnAddImprovementsToCharacter)
+        {
             Log.Debug("CreateImprovements enter");
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTrace))
             {
@@ -1562,7 +1612,11 @@ namespace Chummer
                                 });
                                 if (eResult == DialogResult.Cancel)
                                 {
-                                    Rollback(objCharacter);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        Rollback(objCharacter);
+                                    else
+                                        await RollbackAsync(objCharacter);
                                     ForcedValue = string.Empty;
                                     LimitSelection = string.Empty;
                                     return false;
@@ -1657,7 +1711,11 @@ namespace Chummer
                                 });
                                 if (eResult == DialogResult.Cancel)
                                 {
-                                    Rollback(objCharacter);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        Rollback(objCharacter);
+                                    else
+                                        await RollbackAsync(objCharacter);
                                     ForcedValue = string.Empty;
                                     LimitSelection = string.Empty;
                                     return false;
@@ -1670,9 +1728,15 @@ namespace Chummer
                             // Create the Improvement.
                             sbdTrace.AppendLine("Calling CreateImprovement");
 
-                            CreateImprovement(objCharacter, _strSelectedValue, objImprovementSource, strSourceName,
-                                              Improvement.ImprovementType.Text,
-                                              strUnique);
+                            if (blnSync)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                CreateImprovement(objCharacter, _strSelectedValue, objImprovementSource, strSourceName,
+                                                  Improvement.ImprovementType.Text,
+                                                  strUnique);
+                            else
+                                await CreateImprovementAsync(objCharacter, _strSelectedValue, objImprovementSource, strSourceName,
+                                                             Improvement.ImprovementType.Text,
+                                                             strUnique);
                         }
 
                         // If there is no character object, don't attempt to add any Improvements.
@@ -1689,7 +1753,11 @@ namespace Chummer
                                               strFriendlyName,
                                               bonusNode, strUnique, !blnAddImprovementsToCharacter))
                             {
-                                Rollback(objCharacter);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    Rollback(objCharacter);
+                                else
+                                    await RollbackAsync(objCharacter);
                                 sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
                                 return false;
                             }
@@ -1707,13 +1775,21 @@ namespace Chummer
                     if (blnAddImprovementsToCharacter)
                     {
                         sbdTrace.AppendLine("Committing improvements.");
-                        Commit(objCharacter);
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            Commit(objCharacter);
+                        else
+                            await CommitAsync(objCharacter);
                         sbdTrace.AppendLine("Finished committing improvements");
                     }
                     else
                     {
                         sbdTrace.AppendLine("Calling scheduled Rollback due to blnAddImprovementsToCharacter = false");
-                        Rollback(objCharacter);
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            Rollback(objCharacter);
+                        else
+                            await RollbackAsync(objCharacter);
                         sbdTrace.AppendLine("Returned from scheduled Rollback");
                     }
 
@@ -2646,15 +2722,59 @@ namespace Chummer
                     : objCharacter.Improvements.Where(objImprovement =>
                                                           objImprovement.ImproveSource == objImprovementSource
                                                           && objImprovement.SourceName == strSourceName)).ToList();
+
+                // Compatibility fix for when blnConcatSelectedValue was around
+                if (strSourceName.IsGuid())
+                {
+                    string strSourceNameSpaced = strSourceName + LanguageManager.GetString("String_Space");
+                    string strSourceNameSpacedInvariant = strSourceName + ' ';
+                    objImprovementList.AddRange(objCharacter.Improvements.Where(
+                                                    objImprovement =>
+                                                        objImprovement.ImproveSource == objImprovementSource &&
+                                                        (objImprovement.SourceName.StartsWith(
+                                                             strSourceNameSpaced, StringComparison.Ordinal)
+                                                         || objImprovement.SourceName.StartsWith(
+                                                             strSourceNameSpacedInvariant, StringComparison.Ordinal))));
+                }
             }
 
-            // Compatibility fix for when blnConcatSelectedValue was around
-            if (strSourceName.IsGuid())
+            return RemoveImprovements(objCharacter, objImprovementList);
+        }
+
+        /// <summary>
+        /// Remove all of the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementSource">Type of object that granted these Improvements.</param>
+        /// <param name="strSourceName">Name of the item that granted these Improvements.</param>
+        public static async ValueTask<decimal> RemoveImprovementsAsync(Character objCharacter,
+                                                                      Improvement.ImprovementSource objImprovementSource,
+                                                                      string strSourceName = "")
+        {
+            // If there is no character object, don't try to remove any Improvements.
+            if (objCharacter == null)
             {
-                string strSourceNameSpaced = strSourceName + LanguageManager.GetString("String_Space");
-                string strSourceNameSpacedInvariant = strSourceName + ' ';
-                using (EnterReadLock.Enter(objCharacter.LockObject))
+                return 0;
+            }
+
+            Log.Debug("RemoveImprovements called with:" + Environment.NewLine + "objImprovementSource = "
+                     + objImprovementSource + Environment.NewLine + "strSourceName = " + strSourceName);
+            List<Improvement> objImprovementList;
+            using (await EnterReadLock.EnterAsync(objCharacter.LockObject))
+            {
+                // A List of Improvements to hold all of the items that will eventually be deleted.
+                objImprovementList = (string.IsNullOrEmpty(strSourceName)
+                    ? objCharacter.Improvements.Where(objImprovement =>
+                                                          objImprovement.ImproveSource == objImprovementSource)
+                    : objCharacter.Improvements.Where(objImprovement =>
+                                                          objImprovement.ImproveSource == objImprovementSource
+                                                          && objImprovement.SourceName == strSourceName)).ToList();
+
+                // Compatibility fix for when blnConcatSelectedValue was around
+                if (strSourceName.IsGuid())
                 {
+                    string strSourceNameSpaced = strSourceName + await LanguageManager.GetStringAsync("String_Space");
+                    string strSourceNameSpacedInvariant = strSourceName + ' ';
                     objImprovementList.AddRange(objCharacter.Improvements.Where(
                                                     objImprovement =>
                                                         objImprovement.ImproveSource == objImprovementSource &&
@@ -2679,6 +2799,39 @@ namespace Chummer
                                                  bool blnReapplyImprovements = false,
                                                  bool blnAllowDuplicatesFromSameSource = false)
         {
+            return RemoveImprovementsCoreAsync(false, objCharacter, objImprovementList, blnReapplyImprovements,
+                                               blnAllowDuplicatesFromSameSource).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Remove all of the Improvements for an XML Node.
+        /// </summary>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementList">List of improvements to delete.</param>
+        /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
+        /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
+        public static Task<decimal> RemoveImprovementsAsync(Character objCharacter, ICollection<Improvement> objImprovementList,
+                                                      bool blnReapplyImprovements = false,
+                                                      bool blnAllowDuplicatesFromSameSource = false)
+        {
+            return RemoveImprovementsCoreAsync(false, objCharacter, objImprovementList, blnReapplyImprovements,
+                                               blnAllowDuplicatesFromSameSource);
+        }
+
+        /// <summary>
+        /// Remove all of the Improvements for an XML Node.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="objCharacter">Character from which improvements should be deleted.</param>
+        /// <param name="objImprovementList">List of improvements to delete.</param>
+        /// <param name="blnReapplyImprovements">Whether we're reapplying Improvements.</param>
+        /// <param name="blnAllowDuplicatesFromSameSource">If we ignore checking whether a potential duplicate improvement has the same SourceName</param>
+        private static async Task<decimal> RemoveImprovementsCoreAsync(bool blnSync, Character objCharacter, ICollection<Improvement> objImprovementList,
+                                                             bool blnReapplyImprovements,
+                                                             bool blnAllowDuplicatesFromSameSource)
+        {
             Log.Debug("RemoveImprovements enter");
             //TODO: report a AI-operation (maybe with dependencies), so we get an idea how long this takes.
             // If there is no character object, don't try to remove any Improvements.
@@ -2689,7 +2842,13 @@ namespace Chummer
             }
 
             decimal decReturn = 0;
-            using (objCharacter.LockObject.EnterWriteLock())
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = objCharacter.LockObject.EnterWriteLock();
+            else
+                objLockerAsync = await objCharacter.LockObject.EnterWriteLockAsync();
+            try
             {
                 // Note: As attractive as it may be to replace objImprovementList with an IEnumerable, we need to iterate through it twice for performance reasons
 
@@ -2698,7 +2857,12 @@ namespace Chummer
                 {
                     // Remove the Improvement.
                     objCharacter.Improvements.Remove(objImprovement);
-                    ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ClearCachedValue(objCharacter, objImprovement.ImproveType, objImprovement.ImprovedName);
+                    else
+                        await ClearCachedValueAsync(objCharacter, objImprovement.ImproveType,
+                                                    objImprovement.ImprovedName);
                 }
 
                 // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
@@ -2895,7 +3059,10 @@ namespace Chummer
                             Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName);
                             if (objArt != null)
                             {
-                                decReturn += RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId);
+                                decReturn += blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? RemoveImprovements(objCharacter, objArt.SourceType, objArt.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter, objArt.SourceType, objArt.InternalId);
                                 objCharacter.Arts.Remove(objArt);
                             }
 
@@ -2907,12 +3074,20 @@ namespace Chummer
                                 = objCharacter.Metamagics.FirstOrDefault(x => x.InternalId == strImprovedName);
                             if (objMetamagic != null)
                             {
-                                decReturn += RemoveImprovements(objCharacter,
-                                                                objImprovement.ImproveType
-                                                                == Improvement.ImprovementType.Metamagic
-                                                                    ? Improvement.ImprovementSource.Metamagic
-                                                                    : Improvement.ImprovementSource.Echo,
-                                                                objMetamagic.InternalId);
+                                decReturn += blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? RemoveImprovements(objCharacter,
+                                                         objImprovement.ImproveType
+                                                         == Improvement.ImprovementType.Metamagic
+                                                             ? Improvement.ImprovementSource.Metamagic
+                                                             : Improvement.ImprovementSource.Echo,
+                                                         objMetamagic.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter,
+                                                                    objImprovement.ImproveType
+                                                                    == Improvement.ImprovementType.Metamagic
+                                                                        ? Improvement.ImprovementSource.Metamagic
+                                                                        : Improvement.ImprovementSource.Echo,
+                                                                    objMetamagic.InternalId);
                                 objCharacter.Metamagics.Remove(objMetamagic);
                             }
 
@@ -2935,9 +3110,10 @@ namespace Chummer
                                                                          && x.Extra == strUniqueName));
                             if (objCritterPower != null)
                             {
-                                decReturn += RemoveImprovements(objCharacter,
-                                                                Improvement.ImprovementSource.CritterPower,
-                                                                objCritterPower.InternalId);
+                                decReturn += blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.CritterPower, objCritterPower.InternalId);
                                 objCharacter.CritterPowers.Remove(objCritterPower);
                             }
 
@@ -2950,9 +3126,10 @@ namespace Chummer
                                     x => x.InternalId == strImprovedName);
                             if (objMentor != null)
                             {
-                                decReturn += RemoveImprovements(objCharacter,
-                                                                Improvement.ImprovementSource.MentorSpirit,
-                                                                objMentor.InternalId);
+                                decReturn += blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.MentorSpirit, objMentor.InternalId);
                                 objCharacter.MentorSpirits.Remove(objMentor);
                             }
 
@@ -2989,8 +3166,10 @@ namespace Chummer
                                 = objCharacter.Spells.FirstOrDefault(x => x.InternalId == strImprovedName);
                             if (objSpell != null)
                             {
-                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell,
-                                                                objSpell.InternalId);
+                                decReturn += blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.Spell, objSpell.InternalId);
                                 objCharacter.Spells.Remove(objSpell);
                             }
 
@@ -3002,8 +3181,10 @@ namespace Chummer
                                     x => x.InternalId == strImprovedName);
                             if (objComplexForm != null)
                             {
-                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm,
-                                                                objComplexForm.InternalId);
+                                decReturn += blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId);
                                 objCharacter.ComplexForms.Remove(objComplexForm);
                             }
 
@@ -3014,17 +3195,7 @@ namespace Chummer
                                 = objCharacter.MartialArts.FirstOrDefault(x => x.InternalId == strImprovedName);
                             if (objMartialArt != null)
                             {
-                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt,
-                                                                objMartialArt.InternalId);
-                                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-                                foreach (MartialArtTechnique objTechnique in objMartialArt.Techniques)
-                                {
-                                    decReturn += RemoveImprovements(objCharacter,
-                                                                    Improvement.ImprovementSource.MartialArtTechnique,
-                                                                    objTechnique.InternalId);
-                                }
-
-                                objCharacter.MartialArts.Remove(objMartialArt);
+                                decReturn += objMartialArt.DeleteMartialArt();
                             }
 
                             break;
@@ -3069,8 +3240,10 @@ namespace Chummer
                                 objLoopProgram => objLoopProgram.InternalId == strImprovedName);
                             if (objProgram != null)
                             {
-                                decReturn += RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram,
-                                                                objProgram.InternalId);
+                                decReturn += blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? RemoveImprovements(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId)
+                                    : await RemoveImprovementsAsync(objCharacter, Improvement.ImprovementSource.AIProgram, objProgram.InternalId);
                                 objCharacter.AIPrograms.Remove(objProgram);
                             }
 
@@ -3114,6 +3287,13 @@ namespace Chummer
                 }
 
                 objImprovementList.ProcessRelevantEvents();
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync();
             }
 
             Log.Debug("RemoveImprovements exit");
@@ -3303,10 +3483,10 @@ namespace Chummer
                     await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName);
 
                     // Add the Improvement to the Transaction List.
-                    bool blnSuccess;
                     List<Improvement> lstTransactions;
                     do
                     {
+                        bool blnSuccess;
                         (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter);
                         if (blnSuccess)
                             break;
@@ -3401,8 +3581,8 @@ namespace Chummer
                     // Remove all of the Improvements that were added.
                     foreach (Improvement objTransactingImprovement in lstTransactions)
                     {
-                        RemoveImprovements(objCharacter, objTransactingImprovement.ImproveSource,
-                                           objTransactingImprovement.SourceName);
+                        await RemoveImprovementsAsync(objCharacter, objTransactingImprovement.ImproveSource,
+                                                      objTransactingImprovement.SourceName);
                         await ClearCachedValueAsync(objCharacter, objTransactingImprovement.ImproveType,
                                                     objTransactingImprovement.ImprovedName);
                     }

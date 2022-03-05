@@ -746,7 +746,8 @@ namespace Chummer
                 case nameof(CharacterSettings.MinInitiativeDice):
                     using (await EnterReadLock.EnterAsync(LockObject))
                     {
-                        if ((await this.GetNodeXPathAsync())?.SelectSingleNodeAndCacheExpression("initiativedice") == null)
+                        XPathNavigator objNode = await this.GetNodeXPathAsync();
+                        if (objNode == null || await objNode.SelectSingleNodeAndCacheExpressionAsync("initiativedice") == null)
                         {
                             _intInitiativeDice = Settings.MinInitiativeDice;
                             OnPropertyChanged(nameof(InitiativeDice));
@@ -4564,9 +4565,12 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string> setSavedBooks))
                                 {
-                                    foreach (XPathNavigator xmlBook in xmlCharacterNavigator
-                                                 .SelectAndCacheExpression(
-                                                     "sources/source"))
+                                    foreach (XPathNavigator xmlBook in (blnSync
+                                                 // ReSharper disable once MethodHasAsyncOverload
+                                                 ? xmlCharacterNavigator.SelectAndCacheExpression(
+                                                     "sources/source")
+                                                 : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
+                                                     "sources/source")))
                                     {
                                         if (!string.IsNullOrEmpty(xmlBook.Value))
                                             setSavedBooks.Add(xmlBook.Value);
@@ -4575,8 +4579,11 @@ namespace Chummer
                                     if (setSavedBooks.Count == 0)
                                         setSavedBooks.AddRange(objDefaultSettings.Books);
 
-                                    XPathNodeIterator xmlCustomDirectoryNames = xmlCharacterNavigator
-                                        .SelectAndCacheExpression(
+                                    XPathNodeIterator xmlCustomDirectoryNames = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlCharacterNavigator.SelectAndCacheExpression(
+                                            "customdatadirectorynames/directoryname")
+                                        : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
                                             "customdatadirectorynames/directoryname");
                                     List<string> lstSavedCustomDataDirectoryNames
                                         = new List<string>(xmlCustomDirectoryNames.Count);
@@ -5039,10 +5046,12 @@ namespace Chummer
                                     _lstPrioritySkills.Clear();
                                 else
                                     await _lstPrioritySkills.ClearAsync();
-                                foreach (XPathNavigator xmlSkillName in xmlCharacterNavigator
-                                             .SelectAndCacheExpression(
+                                foreach (XPathNavigator xmlSkillName in (blnSync
+                                             // ReSharper disable once MethodHasAsyncOverload
+                                             ? xmlCharacterNavigator.SelectAndCacheExpression(
                                                  "priorityskills/priorityskill")
-                                        )
+                                             : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
+                                                 "priorityskills/priorityskill")))
                                 {
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
@@ -5339,7 +5348,11 @@ namespace Chummer
                             {
                                 // Contacts.
                                 foreach (XPathNavigator xmlContact in
-                                         xmlCharacterNavigator.SelectAndCacheExpression("contacts/contact"))
+                                         (blnSync
+                                             // ReSharper disable once MethodHasAsyncOverload
+                                             ? xmlCharacterNavigator.SelectAndCacheExpression("contacts/contact")
+                                             : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
+                                                 "contacts/contact")))
                                 {
                                     Contact objContact = new Contact(this);
                                     objContact.Load(xmlContact);
@@ -5398,9 +5411,15 @@ namespace Chummer
                                                     || objQuality.Name == "The Warrior's Way")
                                                 && objQuality.Bonus?.HasChildNodes == false)
                                             {
-                                                ImprovementManager.RemoveImprovements(this,
-                                                    Improvement.ImprovementSource.Quality,
-                                                    objQuality.InternalId);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ImprovementManager.RemoveImprovements(this,
+                                                        Improvement.ImprovementSource.Quality,
+                                                        objQuality.InternalId);
+                                                else
+                                                    await ImprovementManager.RemoveImprovementsAsync(this,
+                                                        Improvement.ImprovementSource.Quality,
+                                                        objQuality.InternalId);
                                                 XmlNode objNode = blnSync
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     ? objQuality.GetNode()
@@ -5411,10 +5430,17 @@ namespace Chummer
                                                     if (objQuality.Bonus != null)
                                                     {
                                                         ImprovementManager.ForcedValue = objQuality.Extra;
-                                                        ImprovementManager.CreateImprovements(this,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId, objQuality.Bonus, 1,
-                                                            objQuality.CurrentDisplayNameShort);
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ImprovementManager.CreateImprovements(this,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId, objQuality.Bonus, 1,
+                                                                objQuality.CurrentDisplayNameShort);
+                                                        else
+                                                            await ImprovementManager.CreateImprovementsAsync(this,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId, objQuality.Bonus, 1,
+                                                                objQuality.CurrentDisplayNameShort);
                                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                         {
                                                             objQuality.Extra = ImprovementManager.SelectedValue;
@@ -5441,11 +5467,19 @@ namespace Chummer
                                                         if (blnDoFirstLevel)
                                                         {
                                                             ImprovementManager.ForcedValue = objQuality.Extra;
-                                                            ImprovementManager.CreateImprovements(this,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId,
-                                                                objQuality.FirstLevelBonus, 1,
-                                                                objQuality.CurrentDisplayNameShort);
+                                                            if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ImprovementManager.CreateImprovements(this,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    objQuality.FirstLevelBonus, 1,
+                                                                    objQuality.CurrentDisplayNameShort);
+                                                            else
+                                                                await ImprovementManager.CreateImprovementsAsync(this,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    objQuality.FirstLevelBonus, 1,
+                                                                    objQuality.CurrentDisplayNameShort);
                                                             if (!string.IsNullOrEmpty(ImprovementManager
                                                                     .SelectedValue))
                                                             {
@@ -5468,10 +5502,17 @@ namespace Chummer
                                                 if (objQuality.NaturalWeaponsNode != null)
                                                 {
                                                     ImprovementManager.ForcedValue = objQuality.Extra;
-                                                    ImprovementManager.CreateImprovements(this,
-                                                        Improvement.ImprovementSource.Quality,
-                                                        objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
-                                                        objQuality.CurrentDisplayNameShort);
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
+                                                            objQuality.CurrentDisplayNameShort);
+                                                    else
+                                                        await ImprovementManager.CreateImprovementsAsync(this,
+                                                            Improvement.ImprovementSource.Quality,
+                                                            objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
+                                                            objQuality.CurrentDisplayNameShort);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                     {
                                                         objQuality.Extra = ImprovementManager.SelectedValue;
@@ -5545,30 +5586,66 @@ namespace Chummer
                                                     xmlRootQualitiesNode.SelectSingleNode(
                                                         "quality[name=\"Made Man\"]/bonus");
                                                 objQuality.Extra = string.Empty;
-                                                ImprovementManager.RemoveImprovements(this,
-                                                    Improvement.ImprovementSource.Quality,
-                                                    objQuality.InternalId);
-                                                ImprovementManager.CreateImprovement(this, string.Empty,
-                                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                    Improvement.ImprovementType.MadeMan,
-                                                    objQuality.CurrentDisplayNameShort);
-                                                ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
-                                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                    Improvement.ImprovementType.AddContact,
-                                                    objQuality.CurrentDisplayNameShort);
-                                                ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
-                                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                    Improvement.ImprovementType.ContactForcedLoyalty,
-                                                    objQuality.CurrentDisplayNameShort);
-                                                ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
-                                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                    Improvement.ImprovementType.ContactForceGroup,
-                                                    objQuality.CurrentDisplayNameShort);
-                                                ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
-                                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                    Improvement.ImprovementType.ContactMakeFree,
-                                                    objQuality.CurrentDisplayNameShort);
-                                                ImprovementManager.Commit(this);
+                                                if (blnSync)
+                                                {
+                                                    // ReSharper disable MethodHasAsyncOverload
+                                                    ImprovementManager.RemoveImprovements(this,
+                                                        Improvement.ImprovementSource.Quality,
+                                                        objQuality.InternalId);
+                                                    ImprovementManager.CreateImprovement(this, string.Empty,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.MadeMan,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.AddContact,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.ContactForcedLoyalty,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.ContactForceGroup,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    ImprovementManager.CreateImprovement(this, selectedContactUniqueId,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.ContactMakeFree,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    ImprovementManager.Commit(this);
+                                                    // ReSharper restore MethodHasAsyncOverload
+                                                }
+                                                else
+                                                {
+                                                    await ImprovementManager.RemoveImprovementsAsync(this,
+                                                        Improvement.ImprovementSource.Quality,
+                                                        objQuality.InternalId);
+                                                    await ImprovementManager.CreateImprovementAsync(this, string.Empty,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.MadeMan,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    await ImprovementManager.CreateImprovementAsync(
+                                                        this, selectedContactUniqueId,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.AddContact,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    await ImprovementManager.CreateImprovementAsync(
+                                                        this, selectedContactUniqueId,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.ContactForcedLoyalty,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    await ImprovementManager.CreateImprovementAsync(
+                                                        this, selectedContactUniqueId,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.ContactForceGroup,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    await ImprovementManager.CreateImprovementAsync(
+                                                        this, selectedContactUniqueId,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.ContactMakeFree,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    await ImprovementManager.CommitAsync(this);
+                                                }
                                             }
 
                                             if (LastSavedVersion <= new Version(5, 212, 43)
@@ -5605,14 +5682,30 @@ namespace Chummer
                                                 objQuality.Bonus =
                                                     xmlRootQualitiesNode.SelectSingleNode(
                                                         "quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
-                                                ImprovementManager.RemoveImprovements(this,
-                                                    Improvement.ImprovementSource.Quality,
-                                                    objQuality.InternalId);
-                                                ImprovementManager.CreateImprovement(this, string.Empty,
-                                                    Improvement.ImprovementSource.Quality, objQuality.InternalId,
-                                                    Improvement.ImprovementType.CyberadeptDaemon,
-                                                    objQuality.CurrentDisplayNameShort);
-                                                ImprovementManager.Commit(this);
+                                                if (blnSync)
+                                                {
+                                                    // ReSharper disable MethodHasAsyncOverload
+                                                    ImprovementManager.RemoveImprovements(this,
+                                                        Improvement.ImprovementSource.Quality,
+                                                        objQuality.InternalId);
+                                                    ImprovementManager.CreateImprovement(this, string.Empty,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.CyberadeptDaemon,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    ImprovementManager.Commit(this);
+                                                    // ReSharper restore MethodHasAsyncOverload
+                                                }
+                                                else
+                                                {
+                                                    await ImprovementManager.RemoveImprovementsAsync(this,
+                                                        Improvement.ImprovementSource.Quality,
+                                                        objQuality.InternalId);
+                                                    await ImprovementManager.CreateImprovementAsync(this, string.Empty,
+                                                        Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                        Improvement.ImprovementType.CyberadeptDaemon,
+                                                        objQuality.CurrentDisplayNameShort);
+                                                    await ImprovementManager.CommitAsync(this);
+                                                }
                                             }
                                         }
                                     }
@@ -5995,10 +6088,22 @@ namespace Chummer
                                             : await objCyberware.GetNodeAsync();
                                         if (objNode != null)
                                         {
-                                            ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                objCyberware.InternalId);
-                                            ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                objCyberware.InternalId + "Pair");
+                                            if (blnSync)
+                                            {
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                                    objCyberware.InternalId);
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                                    objCyberware.InternalId + "Pair");
+                                            }
+                                            else
+                                            {
+                                                await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType,
+                                                    objCyberware.InternalId);
+                                                await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType,
+                                                    objCyberware.InternalId + "Pair");
+                                            }
                                             objCyberware.Bonus = objNode["bonus"];
                                             objCyberware.WirelessBonus = objNode["wirelessbonus"];
                                             objCyberware.PairBonus = objNode["pairbonus"];
@@ -6008,20 +6113,36 @@ namespace Chummer
                                                 ImprovementManager.ForcedValue = objCyberware.Forced;
                                             if (objCyberware.Bonus != null)
                                             {
-                                                ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId, objCyberware.Bonus,
-                                                    objCyberware.Rating,
-                                                    objCyberware.CurrentDisplayNameShort);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                                        objCyberware.InternalId, objCyberware.Bonus,
+                                                        objCyberware.Rating,
+                                                        objCyberware.CurrentDisplayNameShort);
+                                                else
+                                                    await ImprovementManager.CreateImprovementsAsync(
+                                                        this, objCyberware.SourceType,
+                                                        objCyberware.InternalId, objCyberware.Bonus,
+                                                        objCyberware.Rating,
+                                                        objCyberware.CurrentDisplayNameShort);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
                                             }
 
                                             if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                             {
-                                                ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId, objCyberware.WirelessBonus,
-                                                    objCyberware.Rating,
-                                                    objCyberware.CurrentDisplayNameShort);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
+                                                        objCyberware.InternalId, objCyberware.WirelessBonus,
+                                                        objCyberware.Rating,
+                                                        objCyberware.CurrentDisplayNameShort);
+                                                else
+                                                    await ImprovementManager.CreateImprovementsAsync(
+                                                        this, objCyberware.SourceType,
+                                                        objCyberware.InternalId, objCyberware.WirelessBonus,
+                                                        objCyberware.Rating,
+                                                        objCyberware.CurrentDisplayNameShort);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                     string.IsNullOrEmpty(objCyberware.Extra))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -6072,10 +6193,22 @@ namespace Chummer
                                                 : await objCyberware.GetNodeAsync();
                                             if (objNode != null)
                                             {
-                                                ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId);
-                                                ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId + "Pair");
+                                                if (blnSync)
+                                                {
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                                        objCyberware.InternalId);
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
+                                                        objCyberware.InternalId + "Pair");
+                                                }
+                                                else
+                                                {
+                                                    await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType,
+                                                        objCyberware.InternalId);
+                                                    await ImprovementManager.RemoveImprovementsAsync(this, objCyberware.SourceType,
+                                                        objCyberware.InternalId + "Pair");
+                                                }
                                                 objCyberware.Bonus = objNode["bonus"];
                                                 objCyberware.WirelessBonus = objNode["wirelessbonus"];
                                                 objCyberware.PairBonus = objNode["pairbonus"];
@@ -6085,22 +6218,38 @@ namespace Chummer
                                                     ImprovementManager.ForcedValue = objCyberware.Forced;
                                                 if (objCyberware.Bonus != null)
                                                 {
-                                                    ImprovementManager.CreateImprovements(this,
-                                                        objCyberware.SourceType,
-                                                        objCyberware.InternalId, objCyberware.Bonus,
-                                                        objCyberware.Rating,
-                                                        objCyberware.CurrentDisplayNameShort);
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            objCyberware.SourceType,
+                                                            objCyberware.InternalId, objCyberware.Bonus,
+                                                            objCyberware.Rating,
+                                                            objCyberware.CurrentDisplayNameShort);
+                                                    else
+                                                        await ImprovementManager.CreateImprovementsAsync(this,
+                                                            objCyberware.SourceType,
+                                                            objCyberware.InternalId, objCyberware.Bonus,
+                                                            objCyberware.Rating,
+                                                            objCyberware.CurrentDisplayNameShort);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                         objCyberware.Extra = ImprovementManager.SelectedValue;
                                                 }
 
                                                 if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                                 {
-                                                    ImprovementManager.CreateImprovements(this,
-                                                        objCyberware.SourceType,
-                                                        objCyberware.InternalId, objCyberware.WirelessBonus,
-                                                        objCyberware.Rating,
-                                                        objCyberware.CurrentDisplayNameShort);
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            objCyberware.SourceType,
+                                                            objCyberware.InternalId, objCyberware.WirelessBonus,
+                                                            objCyberware.Rating,
+                                                            objCyberware.CurrentDisplayNameShort);
+                                                    else
+                                                        await ImprovementManager.CreateImprovementsAsync(this,
+                                                            objCyberware.SourceType,
+                                                            objCyberware.InternalId, objCyberware.WirelessBonus,
+                                                            objCyberware.Rating,
+                                                            objCyberware.CurrentDisplayNameShort);
                                                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                         string.IsNullOrEmpty(objCyberware.Extra))
                                                         objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -6169,12 +6318,21 @@ namespace Chummer
                                                     objCyberware.Forced != "Right" &&
                                                     objCyberware.Forced != "Left")
                                                     ImprovementManager.ForcedValue = objCyberware.Forced;
-                                                ImprovementManager.CreateImprovements(this,
-                                                    objLoopCyberware.SourceType,
-                                                    objLoopCyberware.InternalId + "Pair",
-                                                    objLoopCyberware.PairBonus,
-                                                    objLoopCyberware.Rating,
-                                                    objLoopCyberware.CurrentDisplayNameShort);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ImprovementManager.CreateImprovements(this,
+                                                        objLoopCyberware.SourceType,
+                                                        objLoopCyberware.InternalId + "Pair",
+                                                        objLoopCyberware.PairBonus,
+                                                        objLoopCyberware.Rating,
+                                                        objLoopCyberware.CurrentDisplayNameShort);
+                                                else
+                                                    await ImprovementManager.CreateImprovementsAsync(this,
+                                                        objLoopCyberware.SourceType,
+                                                        objLoopCyberware.InternalId + "Pair",
+                                                        objLoopCyberware.PairBonus,
+                                                        objLoopCyberware.Rating,
+                                                        objLoopCyberware.CurrentDisplayNameShort);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
                                                     string.IsNullOrEmpty(objCyberware.Extra))
                                                     objCyberware.Extra = ImprovementManager.SelectedValue;
@@ -6282,8 +6440,11 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                             {
                                 // Spirits/Sprites.
-                                foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.SelectAndCacheExpression(
-                                             "spirits/spirit"))
+                                foreach (XPathNavigator xmlSpirit in (blnSync
+                                             // ReSharper disable once MethodHasAsyncOverload
+                                             ? xmlCharacterNavigator.SelectAndCacheExpression("spirits/spirit")
+                                             : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
+                                                 "spirits/spirit")))
                                 {
                                     Spirit objSpirit = new Spirit(this);
                                     objSpirit.Load(xmlSpirit);
@@ -6294,9 +6455,13 @@ namespace Chummer
                                         imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering))
                                 {
                                     // If we don't have any Fettered spirits, make sure that we
-                                    ImprovementManager.RemoveImprovements(this,
-                                                                          Improvement.ImprovementSource
-                                                                              .SpiritFettering);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ImprovementManager.RemoveImprovements(
+                                            this, Improvement.ImprovementSource.SpiritFettering);
+                                    else
+                                        await ImprovementManager.RemoveImprovementsAsync(this,
+                                            Improvement.ImprovementSource.SpiritFettering);
                                 }
 
                                 //Timekeeper.Finish("load_char_spirits");
@@ -6420,9 +6585,15 @@ namespace Chummer
                                 // If the character has a technomancer quality but no Living Persona commlink, its improvements get re-applied immediately
                                 if (objLivingPersonaQuality != null && LastSavedVersion <= new Version(5, 195, 1))
                                 {
-                                    ImprovementManager.RemoveImprovements(this,
-                                                                          Improvement.ImprovementSource.Quality,
-                                                                          objLivingPersonaQuality.InternalId);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ImprovementManager.RemoveImprovements(this,
+                                                                              Improvement.ImprovementSource.Quality,
+                                                                              objLivingPersonaQuality.InternalId);
+                                    else
+                                        await ImprovementManager.RemoveImprovementsAsync(this,
+                                            Improvement.ImprovementSource.Quality,
+                                            objLivingPersonaQuality.InternalId);
 
                                     XmlNode objNode = blnSync
                                         // ReSharper disable once MethodHasAsyncOverload
@@ -6434,11 +6605,21 @@ namespace Chummer
                                         if (objLivingPersonaQuality.Bonus != null)
                                         {
                                             ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
-                                            ImprovementManager.CreateImprovements(this,
-                                                Improvement.ImprovementSource.Quality,
-                                                objLivingPersonaQuality.InternalId, objLivingPersonaQuality.Bonus,
-                                                1,
-                                                objLivingPersonaQuality.CurrentDisplayNameShort);
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ImprovementManager.CreateImprovements(this,
+                                                    Improvement.ImprovementSource.Quality,
+                                                    objLivingPersonaQuality.InternalId,
+                                                    objLivingPersonaQuality
+                                                        .Bonus, 1,
+                                                    objLivingPersonaQuality.CurrentDisplayNameShort);
+                                            else
+                                                await ImprovementManager.CreateImprovementsAsync(this,
+                                                    Improvement.ImprovementSource.Quality,
+                                                    objLivingPersonaQuality.InternalId,
+                                                    objLivingPersonaQuality
+                                                        .Bonus, 1,
+                                                    objLivingPersonaQuality.CurrentDisplayNameShort);
                                             if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                             {
                                                 objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -6466,12 +6647,21 @@ namespace Chummer
                                             if (blnDoFirstLevel)
                                             {
                                                 ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
-                                                ImprovementManager.CreateImprovements(this,
-                                                    Improvement.ImprovementSource.Quality,
-                                                    objLivingPersonaQuality.InternalId,
-                                                    objLivingPersonaQuality.FirstLevelBonus,
-                                                    1,
-                                                    objLivingPersonaQuality.CurrentDisplayNameShort);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ImprovementManager.CreateImprovements(this,
+                                                        Improvement.ImprovementSource.Quality,
+                                                        objLivingPersonaQuality.InternalId,
+                                                        objLivingPersonaQuality
+                                                            .FirstLevelBonus, 1,
+                                                        objLivingPersonaQuality.CurrentDisplayNameShort);
+                                                else
+                                                    await ImprovementManager.CreateImprovementsAsync(this,
+                                                        Improvement.ImprovementSource.Quality,
+                                                        objLivingPersonaQuality.InternalId,
+                                                        objLivingPersonaQuality
+                                                            .FirstLevelBonus, 1,
+                                                        objLivingPersonaQuality.CurrentDisplayNameShort);
                                                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                                 {
                                                     objLivingPersonaQuality.Extra =
@@ -6494,12 +6684,21 @@ namespace Chummer
                                     if (objLivingPersonaQuality.NaturalWeaponsNode != null)
                                     {
                                         ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
-                                        ImprovementManager.CreateImprovements(this,
-                                                                              Improvement.ImprovementSource.Quality,
-                                                                              objLivingPersonaQuality.InternalId,
-                                                                              objLivingPersonaQuality
-                                                                                  .NaturalWeaponsNode, 1,
-                                                                              objLivingPersonaQuality.CurrentDisplayNameShort);
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ImprovementManager.CreateImprovements(this,
+                                                Improvement.ImprovementSource.Quality,
+                                                objLivingPersonaQuality.InternalId,
+                                                objLivingPersonaQuality
+                                                    .NaturalWeaponsNode, 1,
+                                                objLivingPersonaQuality.CurrentDisplayNameShort);
+                                        else
+                                            await ImprovementManager.CreateImprovementsAsync(this,
+                                                Improvement.ImprovementSource.Quality,
+                                                objLivingPersonaQuality.InternalId,
+                                                objLivingPersonaQuality
+                                                    .NaturalWeaponsNode, 1,
+                                                objLivingPersonaQuality.CurrentDisplayNameShort);
                                         if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                                         {
                                             objLivingPersonaQuality.Extra = ImprovementManager.SelectedValue;
@@ -8079,7 +8278,7 @@ namespace Chummer
                 try
                 {
                     IsDisposed = true;
-                    ImprovementManager.ClearCachedValues(this);
+                    await ImprovementManager.ClearCachedValuesAsync(this);
                     await _lstLinkedCharacters.ClearAsync(); // Clear this list because it relates to Contacts and Spirits disposal
                     await _lstLinkedCharacters.DisposeAsync();
                     foreach (Image imgMugshot in _lstMugshots)
@@ -19462,8 +19661,11 @@ namespace Chummer
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Metatype;
 
-                return (await GetNodeXPathAsync(true, strLanguage))?.SelectSingleNodeAndCacheExpression("translate")
-                                                                   ?.Value ?? Metatype;
+                XPathNavigator objNode = await GetNodeXPathAsync(true, strLanguage);
+                return objNode != null
+                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                    ?.Value ?? Metatype
+                    : Metatype;
             }
         }
 
@@ -19539,8 +19741,11 @@ namespace Chummer
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Metavariant;
 
-                return (await GetNodeXPathAsync(false, strLanguage))?.SelectSingleNodeAndCacheExpression("translate")
-                                                                    ?.Value ?? Metavariant;
+                XPathNavigator objNode = await GetNodeXPathAsync(false, strLanguage);
+                return objNode != null
+                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                             ?.Value ?? Metavariant
+                    : Metavariant;
             }
         }
 
@@ -25047,8 +25252,10 @@ namespace Chummer
                                     "0";
                                 if (!_blnCreated)
                                 {
-                                    XPathNodeIterator xmlJournalEntries =
-                                        xmlStatBlockBaseNode.SelectAndCacheExpression("journals/journal");
+                                    XPathNodeIterator xmlJournalEntries = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlStatBlockBaseNode.SelectAndCacheExpression("journals/journal")
+                                        : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("journals/journal");
                                     if (xmlJournalEntries.Count > 1)
                                     {
                                         _blnCreated = true;
@@ -25080,8 +25287,10 @@ namespace Chummer
                                     foreach (XPathNavigator xmlMetatype in (blnSync
                                                  // ReSharper disable once MethodHasAsyncOverload
                                                  ? LoadDataXPath("metatypes.xml")
-                                                 : await LoadDataXPathAsync("metatypes.xml"))
-                                             .SelectAndCacheExpression("/chummer/metatypes/metatype"))
+                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                     .SelectAndCacheExpression("/chummer/metatypes/metatype")
+                                                 : await (await LoadDataXPathAsync("metatypes.xml"))
+                                                     .SelectAndCacheExpressionAsync("/chummer/metatypes/metatype")))
                                     {
                                         string strMetatypeName = xmlMetatype.SelectSingleNode("name").Value;
                                         if (strMetatypeName == strRaceString)
@@ -25344,8 +25553,11 @@ namespace Chummer
                                             _lstPrioritySkills.Clear();
                                         else
                                             await _lstPrioritySkills.ClearAsync();
-                                        foreach (XPathNavigator xmlField in xmlPriorityTalentPick
-                                                     .SelectAndCacheExpression("field"))
+                                        foreach (XPathNavigator xmlField in (blnSync
+                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                     ? xmlPriorityTalentPick.SelectAndCacheExpression("field")
+                                                     : await xmlPriorityTalentPick.SelectAndCacheExpressionAsync(
+                                                         "field")))
                                         {
                                             string strInnerText = xmlField.Value;
                                             if (!string.IsNullOrEmpty(strInnerText))
@@ -26198,7 +26410,10 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_spells", op_load))
                             {
                                 // Spells.
-                                xmlNodeList = xmlStatBlockBaseNode.SelectAndCacheExpression("magic/spells/spell");
+                                xmlNodeList = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("magic/spells/spell")
+                                    : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("magic/spells/spell");
                                 XmlDocument xmlSpellDocument = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LoadData("spells.xml")
@@ -26475,8 +26690,10 @@ namespace Chummer
                             using (CustomActivity _ = Timekeeper.StartSyncron("load_char_powers", op_load))
                             {
                                 // Powers.
-                                xmlNodeList =
-                                    xmlStatBlockBaseNode.SelectAndCacheExpression("magic/adeptpowers/adeptpower");
+                                xmlNodeList = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("magic/adeptpowers/adeptpower")
+                                    : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("magic/adeptpowers/adeptpower");
                                 XmlDocument xmlPowersDocument = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LoadData("powers.xml")
@@ -26714,7 +26931,10 @@ namespace Chummer
                                     xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake SIN']");
                                 XmlNode xmlFakeLicenseDataNode =
                                     xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake License']");
-                                xmlNodeList = xmlStatBlockBaseNode.SelectAndCacheExpression("identities/identity");
+                                xmlNodeList = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("identities/identity")
+                                    : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("identities/identity");
                                 foreach (XPathNavigator xmlHeroLabIdentity in xmlNodeList)
                                 {
                                     string strIdentityName = xmlHeroLabIdentity.SelectSingleNode("@name")?.Value;
@@ -27554,11 +27774,11 @@ namespace Chummer
                     intResult = (intThreshold - intWILResult) * 10;
                 }
 
-                ImprovementManager.CreateImprovement(this, string.Empty, Improvement.ImprovementSource.Cyberzombie,
-                    string.Empty,
-                    Improvement.ImprovementType.FreeNegativeQualities,
-                    string.Empty, intResult * -1);
-                ImprovementManager.Commit(this);
+                await ImprovementManager.CreateImprovementAsync(this, string.Empty, Improvement.ImprovementSource.Cyberzombie,
+                                                                string.Empty,
+                                                                Improvement.ImprovementType.FreeNegativeQualities,
+                                                                string.Empty, intResult * -1);
+                await ImprovementManager.CommitAsync(this);
 
                 // Convert the character.
                 // Characters lose access to Resonance.

@@ -73,7 +73,7 @@ namespace Chummer
             _blnCanGenericSpellBeFree = blnCanGenericSpellBeFree;
             txtSearch.Text = string.Empty;
             // Populate the Category list.
-            foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.SelectAndCacheExpression(
+            foreach (XPathNavigator objXmlCategory in await _xmlBaseSpellDataNode.SelectAndCacheExpressionAsync(
                          "categories/category"))
             {
                 string strCategory = objXmlCategory.Value;
@@ -82,7 +82,7 @@ namespace Chummer
                 if (!await AnyItemInList(strCategory))
                     continue;
                 _lstCategory.Add(new ListItem(strCategory,
-                                              objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                              (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
                                               ?? strCategory));
             }
 
@@ -406,7 +406,7 @@ namespace Chummer
 
                 async ValueTask AddSpell(XPathNavigator objXmlSpell, string strSpellCategory)
                 {
-                    string strDisplayName = objXmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value ??
+                    string strDisplayName = (await objXmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ??
                                             objXmlSpell.SelectSingleNode("name")?.Value ??
                                             await LanguageManager.GetStringAsync("String_Unknown");
                     if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0

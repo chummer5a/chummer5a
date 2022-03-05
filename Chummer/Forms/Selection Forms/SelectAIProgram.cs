@@ -61,7 +61,7 @@ namespace Chummer
         private async void SelectAIProgram_Load(object sender, EventArgs e)
         {
             // Populate the Category list.
-            foreach (XPathNavigator objXmlCategory in _xmlBaseChummerNode.SelectAndCacheExpression("categories/category"))
+            foreach (XPathNavigator objXmlCategory in await _xmlBaseChummerNode.SelectAndCacheExpressionAsync("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if (_blnInherentProgram && strInnerText != "Common Programs" && strInnerText != "Hacking Programs")
@@ -71,7 +71,7 @@ namespace Chummer
                 // Make sure it is not already in the Category list.
                 if (_lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
                 {
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                    _lstCategory.Add(new ListItem(strInnerText, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strInnerText));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -337,7 +337,7 @@ namespace Chummer
                         && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + ']')
                         == null)
                         continue;
-                    string strDisplayName = objXmlProgram.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName;
+                    string strDisplayName = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName;
                     if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0)
                     {
                         string strCategory = objXmlProgram.SelectSingleNode("category")?.Value;

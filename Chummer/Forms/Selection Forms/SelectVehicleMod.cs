@@ -93,13 +93,13 @@ namespace Chummer
             string strFilterPrefix = (VehicleMountMods
                 ? "weaponmountmods/mod[("
                 : "mods/mod[(") + _objCharacter.Settings.BookXPath() + ") and category = ";
-            foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
+            foreach (XPathNavigator objXmlCategory in await _xmlBaseVehicleDataNode.SelectAndCacheExpressionAsync("modcategories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
                 if ((string.IsNullOrEmpty(_strLimitToCategories) || strValues.Contains(strInnerText))
                     && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
                 {
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
+                    _lstCategory.Add(new ListItem(strInnerText, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strInnerText));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -306,28 +306,28 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMod in objXmlModList)
                 {
                     XPathNavigator xmlTestNode
-                        = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails");
-                    if (xmlTestNode != null && objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("forbidden/vehicledetails");
+                    if (xmlTestNode != null && await objXmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/vehicledetails");
-                    if (xmlTestNode != null && !objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails");
+                    if (xmlTestNode != null && !await objXmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("forbidden/oneof");
+                    xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("forbidden/oneof");
                     if (xmlTestNode != null)
                     {
                         //Add to set for O(N log M) runtime instead of O(N * M)
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setForbiddenAccessory))
                         {
-                            foreach (XPathNavigator node in xmlTestNode.SelectAndCacheExpression("mods"))
+                            foreach (XPathNavigator node in await xmlTestNode.SelectAndCacheExpressionAsync("mods"))
                             {
                                 setForbiddenAccessory.Add(node.Value);
                             }
@@ -339,14 +339,14 @@ namespace Chummer
                         }
                     }
 
-                    xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("required/oneof");
+                    xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("required/oneof");
                     if (xmlTestNode != null)
                     {
                         //Add to set for O(N log M) runtime instead of O(N * M)
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setRequiredAccessory))
                         {
-                            foreach (XPathNavigator node in xmlTestNode.SelectAndCacheExpression("mods"))
+                            foreach (XPathNavigator node in await xmlTestNode.SelectAndCacheExpressionAsync("mods"))
                             {
                                 setRequiredAccessory.Add(node.Value);
                             }
@@ -358,15 +358,15 @@ namespace Chummer
                         }
                     }
 
-                    xmlTestNode = objXmlMod.SelectSingleNodeAndCacheExpression("requires");
+                    xmlTestNode = await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("requires");
                     if (xmlTestNode != null && _objVehicle.Seats
-                        < (xmlTestNode.SelectSingleNodeAndCacheExpression("seats")?.ValueAsInt ?? 0))
+                        < ((await xmlTestNode.SelectSingleNodeAndCacheExpressionAsync("seats"))?.ValueAsInt ?? 0))
                     {
                         continue;
                     }
 
                     int intMinRating = 1;
-                    string strMinRating = objXmlMod.SelectSingleNodeAndCacheExpression("minrating")?.Value;
+                    string strMinRating = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("minrating"))?.Value;
                     if (strMinRating?.Length > 0)
                     {
                         strMinRating = ReplaceStrings(strMinRating);
@@ -376,7 +376,7 @@ namespace Chummer
                             intMinRating = ((double) objTempProcess).StandardRound();
                     }
 
-                    string strRating = objXmlMod.SelectSingleNodeAndCacheExpression("rating")?.Value;
+                    string strRating = (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("rating"))?.Value;
                     if (!string.IsNullOrEmpty(strRating))
                     {
                         // If the rating is "qty", we're looking at Tires instead of actual Rating, so update the fields appropriately.
@@ -402,7 +402,7 @@ namespace Chummer
                     }
 
                     decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNodeAndCacheExpression("category")?.Value))
+                    if (_setBlackMarketMaps.Contains((await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value))
                         decCostMultiplier *= 0.9m;
                     if ((!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter, intMinRating))
                         &&
@@ -410,9 +410,9 @@ namespace Chummer
                                                          || objXmlMod.CheckNuyenRestriction(
                                                              _objCharacter.Nuyen, decCostMultiplier, intMinRating)))
                     {
-                        lstMods.Add(new ListItem(objXmlMod.SelectSingleNodeAndCacheExpression("id")?.Value,
-                                                 objXmlMod.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                                 ?? objXmlMod.SelectSingleNodeAndCacheExpression("name")?.Value
+                        lstMods.Add(new ListItem((await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value,
+                                                 (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                                 ?? (await objXmlMod.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                                  ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                     else

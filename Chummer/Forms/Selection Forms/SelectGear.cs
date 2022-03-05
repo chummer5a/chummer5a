@@ -130,20 +130,20 @@ namespace Chummer
             }
             else
             {
-                objXmlCategoryList = _xmlBaseGearDataNode.SelectAndCacheExpression("categories/category");
+                objXmlCategoryList = await _xmlBaseGearDataNode.SelectAndCacheExpressionAsync("categories/category");
             }
 
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
             {
                 string strCategory = objXmlCategory.Value;
                 // Make sure the Category isn't in the exclusion list.
-                if (!_setAllowedCategories.Contains(strCategory) && objXmlCategory.SelectSingleNodeAndCacheExpression("@show")?.Value == bool.FalseString)
+                if (!_setAllowedCategories.Contains(strCategory) && (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@show"))?.Value == bool.FalseString)
                 {
                     continue;
                 }
                 if (_lstCategory.All(x => x.Value.ToString() != strCategory) && await AnyItemInList(strCategory))
                 {
-                    _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strCategory));
+                    _lstCategory.Add(new ListItem(strCategory, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strCategory));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -1031,29 +1031,29 @@ namespace Chummer
                 foreach (XPathNavigator objXmlGear in _xmlBaseGearDataNode.Select("gears/gear" + strFilter))
                 {
                     XPathNavigator xmlTestNode
-                        = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
-                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("forbidden/parentdetails");
+                    if (xmlTestNode != null && await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/parentdetails");
-                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("required/parentdetails");
+                    if (xmlTestNode != null && !await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/geardetails");
-                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("forbidden/geardetails");
+                    if (xmlTestNode != null && await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/geardetails");
-                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("required/geardetails");
+                    if (xmlTestNode != null && !await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
@@ -1072,7 +1072,7 @@ namespace Chummer
                     if (chkDoItYourself.Checked)
                         decCostMultiplier *= 0.5m;
                     decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value))
+                    if (_setBlackMarketMaps.Contains((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value))
                         decCostMultiplier *= 0.9m;
                     if (!chkHideOverAvailLimit.Checked
                               || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier)
@@ -1081,11 +1081,11 @@ namespace Chummer
                                                           _objCharacter.Nuyen, decCostMultiplier)))
                     {
                         blnAnyItem = true;
-                        string strDisplayName = objXmlGear.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                                ?? objXmlGear.SelectSingleNodeAndCacheExpression("name")?.Value
+                        string strDisplayName = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                                ?? (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                                 ?? await LanguageManager.GetStringAsync("String_Unknown");
                         lstGears.Add(new ListItem(
-                                         objXmlGear.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
+                                         (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty,
                                          strDisplayName));
                     }
                     else
@@ -1135,7 +1135,7 @@ namespace Chummer
                                         if (objXmlGear == null)
                                             continue;
                                         string strLoopCategory
-                                            = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
+                                            = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category"))?.Value;
                                         if (string.IsNullOrEmpty(strLoopCategory))
                                             continue;
                                         ListItem objFoundItem

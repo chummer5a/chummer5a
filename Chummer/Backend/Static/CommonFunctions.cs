@@ -1014,7 +1014,8 @@ namespace Chummer
             xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
-                string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                   ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
             }

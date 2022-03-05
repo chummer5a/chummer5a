@@ -463,7 +463,8 @@ namespace Chummer.Backend.Equipment
             {
                 XPathNavigator objNode = (await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint))
                     .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + ']');
-                strLifestyleQualityType = objNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strLifestyleQualityType;
+                if (objNode != null)
+                    strLifestyleQualityType = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strLifestyleQualityType;
             }
 
             await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType);
@@ -570,7 +571,10 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -624,7 +628,8 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);

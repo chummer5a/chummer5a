@@ -1044,7 +1044,10 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -1129,7 +1132,15 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
         {
-            string strReturn = !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name : Name;
+            string strReturn;
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                strReturn = Name;
+            else
+            {
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            }
+
             if (Extended && _blnCustomExtended)
                 strReturn += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguage) + await LanguageManager.GetStringAsync("String_SpellExtended", strLanguage);
 

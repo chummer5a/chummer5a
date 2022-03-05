@@ -445,10 +445,22 @@ namespace Chummer.Backend.Equipment
             if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
             {
                 XPathNavigator xmlOverrideNode = await this.GetNodeXPathAsync(strLanguageToPrint);
-                objWriter.WriteElementString("sourceid", xmlOverrideNode?.SelectSingleNodeAndCacheExpression("id")?.Value ?? SourceIDString);
-                objWriter.WriteElementString("source",
-                    await _objCharacter.LanguageBookShortAsync(xmlOverrideNode?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
-                                                               strLanguageToPrint));
+                if (xmlOverrideNode != null)
+                {
+                    objWriter.WriteElementString(
+                        "sourceid",
+                        (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? SourceIDString);
+                    objWriter.WriteElementString(
+                        "source",
+                        await _objCharacter.LanguageBookShortAsync(
+                            (await xmlOverrideNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? Source,
+                            strLanguageToPrint));
+                }
+                else
+                {
+                    objWriter.WriteElementString("sourceid", SourceIDString);
+                    objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                }
             }
             else
             {

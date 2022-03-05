@@ -192,15 +192,15 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strRootXPath + '[' + strFilter + ']'))
                 {
-                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
                     {
                         lstMetamagics.Add(new ListItem(strId,
-                                                       objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")
-                                                                      ?.Value ?? objXmlMetamagic
-                                                           .SelectSingleNodeAndCacheExpression("name")?.Value ??
+                                                       (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                                                      ?.Value ?? (await objXmlMetamagic
+                                                           .SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ??
                                                        await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }

@@ -231,10 +231,10 @@ namespace Chummer
                 foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + ']'))
                 {
                     decimal decPoints
-                        = Convert.ToDecimal(objXmlPower.SelectSingleNodeAndCacheExpression("points")?.Value,
+                        = Convert.ToDecimal((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("points"))?.Value,
                                             GlobalSettings.InvariantCultureInfo);
-                    string strExtraPointCost = objXmlPower.SelectSingleNodeAndCacheExpression("extrapointcost")?.Value;
-                    string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value
+                    string strExtraPointCost = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("extrapointcost"))?.Value;
+                    string strName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown");
                     if (!string.IsNullOrEmpty(strExtraPointCost)
                         && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
@@ -253,8 +253,8 @@ namespace Chummer
                         continue;
 
                     lstPower.Add(new ListItem(
-                                     objXmlPower.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
-                                     objXmlPower.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty,
+                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                 }
 
                 lstPower.Sort(CompareListItems.CompareNames);

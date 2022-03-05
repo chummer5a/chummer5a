@@ -1589,7 +1589,8 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -2092,7 +2093,10 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -4513,7 +4517,9 @@ namespace Chummer.Backend.Equipment
             {
                 XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
-                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate");
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode != null
+                    ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate")
+                    : null;
                 if (xmlTranslateNode != null)
                 {
                     strRange = xmlTranslateNode.Value;
@@ -4522,9 +4528,13 @@ namespace Chummer.Backend.Equipment
                 {
                     objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
-                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
-                    if (xmlTranslateNode != null)
-                        strRange = xmlTranslateNode.Value;
+                    if (objXmlCategoryNode != null)
+                    {
+                        xmlTranslateNode
+                            = await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@translate");
+                        if (xmlTranslateNode != null)
+                            strRange = xmlTranslateNode.Value;
+                    }
                 }
             }
             return strRange;
@@ -4569,7 +4579,9 @@ namespace Chummer.Backend.Equipment
             {
                 XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
-                XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate");
+                XPathNavigator xmlTranslateNode = objXmlCategoryNode != null
+                    ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate")
+                    : null;
                 if (xmlTranslateNode != null)
                 {
                     strRange = xmlTranslateNode.Value;
@@ -4578,9 +4590,13 @@ namespace Chummer.Backend.Equipment
                 {
                     objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage);
                     objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
-                    xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
-                    if (xmlTranslateNode != null)
-                        strRange = xmlTranslateNode.Value;
+                    if (objXmlCategoryNode != null)
+                    {
+                        xmlTranslateNode
+                            = await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@translate");
+                        if (xmlTranslateNode != null)
+                            strRange = xmlTranslateNode.Value;
+                    }
                 }
             }
             return strRange;

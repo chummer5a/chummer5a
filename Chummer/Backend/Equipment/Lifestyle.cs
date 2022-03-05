@@ -623,8 +623,8 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator objXmlAspect = await this.GetNodeXPathAsync();
                 if (objXmlAspect != null)
                 {
-                    strBaseLifestyle = objXmlAspect.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                       ?? objXmlAspect.SelectSingleNode("name")?.Value ?? strBaseLifestyle;
+                    strBaseLifestyle = (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                       ?? (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strBaseLifestyle;
                 }
             }
 
@@ -778,7 +778,10 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = (await this.GetNodeXPathAsync(strLanguage))?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 

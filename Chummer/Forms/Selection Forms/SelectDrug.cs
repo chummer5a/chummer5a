@@ -777,7 +777,7 @@ namespace Chummer
                     }
                     
                     lstDrugs.Add(new ListItem(xmlDrug.SelectSingleNode("id")?.Value,
-                                              xmlDrug.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                              (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                               ?? xmlDrug.SelectSingleNode("name")?.Value));
                 }
 
