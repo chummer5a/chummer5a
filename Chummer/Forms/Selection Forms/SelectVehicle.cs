@@ -320,7 +320,7 @@ namespace Chummer
 
             string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
             string strPage = objXmlVehicle.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-            SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+            SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
                 GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
             lblSource.SetToolTip(objSource.LanguageBookTooltip);
@@ -532,7 +532,7 @@ namespace Chummer
                                             sbdWeaponMounts.Length -= Environment.NewLine.Length;
 
                                         AvailabilityValue objAvail = objVehicle.TotalAvailTuple();
-                                        SourceString strSource = new SourceString(objVehicle.Source,
+                                        SourceString strSource = SourceString.GetSourceString(objVehicle.Source,
                                             objVehicle.DisplayPage(GlobalSettings.Language),
                                             GlobalSettings.Language, GlobalSettings.CultureInfo,
                                             _objCharacter);

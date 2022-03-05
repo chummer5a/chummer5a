@@ -223,7 +223,7 @@ namespace Chummer
 
                     string strSource = objXmlPower.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                    SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                    SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     lblCritterPowerSource.Text = objSource.ToString();
                     lblCritterPowerSource.SetToolTip(objSource.LanguageBookTooltip);

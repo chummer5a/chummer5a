@@ -260,10 +260,10 @@ namespace Chummer
                                     MasterIndexEntry objEntry = new MasterIndexEntry(
                                         strDisplayName,
                                         strFileName,
-                                        new SourceString(strSource, strPage, GlobalSettings.DefaultLanguage,
-                                                         GlobalSettings.InvariantCultureInfo),
-                                        new SourceString(strSource, strDisplayPage, GlobalSettings.Language,
-                                                         GlobalSettings.CultureInfo),
+                                        await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.DefaultLanguage,
+                                            GlobalSettings.InvariantCultureInfo),
+                                        await SourceString.GetSourceStringAsync(strSource, strDisplayPage, GlobalSettings.Language,
+                                            GlobalSettings.CultureInfo),
                                         strEnglishNameOnPage,
                                         strTranslatedNameOnPage);
                                     lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));

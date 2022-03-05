@@ -27372,7 +27372,7 @@ namespace Chummer
                     {
                         using (LockObject.EnterWriteLock())
                         {
-                            _objCachedSourceDetail = new SourceString(Source,
+                            _objCachedSourceDetail = SourceString.GetSourceString(Source,
                                 DisplayPage(GlobalSettings.Language), GlobalSettings.Language,
                                 GlobalSettings.CultureInfo,
                                 this);

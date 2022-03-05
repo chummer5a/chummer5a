@@ -1957,8 +1957,8 @@ namespace Chummer.Backend.Skills
                       LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
                     : string.Empty;
                 strReturn += CurrentDisplayCategory + Environment.NewLine + strMiddle +
-                             new SourceString(Source, Page, GlobalSettings.Language, GlobalSettings.CultureInfo,
-                                              CharacterObject).LanguageBookTooltip;
+                             SourceString.GetSourceString(Source, Page, GlobalSettings.Language, GlobalSettings.CultureInfo,
+                                                          CharacterObject).LanguageBookTooltip;
                 return strReturn;
             }
         }

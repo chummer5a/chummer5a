@@ -247,14 +247,14 @@ namespace Chummer.Backend.Equipment
                 if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
                 {
                     if (_objCachedBackupSourceDetail == default)
-                        _objCachedBackupSourceDetail = new SourceString(
+                        _objCachedBackupSourceDetail = SourceString.GetSourceString(
                             this.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("source")?.Value ?? Source,
                             DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                             _objCharacter);
                     return _objCachedBackupSourceDetail;
                 }
                 if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = new SourceString(Source,
+                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
                         DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                         _objCharacter);
                 return _objCachedSourceDetail;

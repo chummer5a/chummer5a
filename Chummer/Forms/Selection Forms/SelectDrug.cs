@@ -244,7 +244,7 @@ namespace Chummer
 
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 string strPage = xmlDrug.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
-                SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);

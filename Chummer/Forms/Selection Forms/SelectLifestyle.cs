@@ -268,7 +268,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);
@@ -407,7 +407,7 @@ namespace Chummer
                     string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText;
                     if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
-                        SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                        SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
                             GlobalSettings.CultureInfo, _objCharacter);
                         lblSource.Text = objSource.ToString();
                         lblSource.SetToolTip(objSource.LanguageBookTooltip);

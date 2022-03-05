@@ -142,7 +142,7 @@ namespace Chummer
                     string strPage = objXmlMentor.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
                                      objXmlMentor.SelectSingleNode("page")?.Value ??
                                      await LanguageManager.GetStringAsync("String_Unknown");
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language,
+                    SourceString objSourceString = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);

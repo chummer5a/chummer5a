@@ -146,7 +146,7 @@ namespace Chummer
             string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                SourceString objSourceString = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
             }
             else

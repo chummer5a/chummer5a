@@ -227,7 +227,7 @@ namespace Chummer
                         string strPage = objXmlProgram.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
                         if (!string.IsNullOrEmpty(strPage))
                         {
-                            SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                            SourceString objSource = SourceString.GetSourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                             lblSource.Text = objSource.ToString();
                             lblSource.SetToolTip(objSource.LanguageBookTooltip);
                         }

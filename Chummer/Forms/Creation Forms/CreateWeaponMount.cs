@@ -728,7 +728,7 @@ namespace Chummer
 
             string strSource = xmlSelectedMount["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
-            SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+            SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
