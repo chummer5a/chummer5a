@@ -23,6 +23,7 @@ Data Changes:
 - Fixed Hedge Witch/Wizard drain reduction not working properly. Existing character with this quality will need to remove and then re-add it to see the effects (or reapply improvements). Fixes #4715.
 - Dedicated Spellslinger and Dedicated Conjurer now properly disable access to the Summoning and Binding skills and the Spellcasting skill respectively.
 - Delnar Skills Remake now reports the appropriate dice pools for rituals (based on Ceremony) and enchantments (based on Arcana).
+- Neural Amplifiers (Learning Stimulus) has had its backend modified so that it stacks and works better together with other karma cost-modifying improvements. 
 
 Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups

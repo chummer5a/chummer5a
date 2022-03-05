@@ -5554,12 +5554,19 @@
       <bonus>
         <knowledgeskillkarmacost>
           <name />
-          <val>-Rating</val>
+          <val>-1</val>
+          <min>3</min>
         </knowledgeskillkarmacost>
-        <knowledgeskillkarmacostmin>
+        <knowledgeskillkarmacost>
           <name />
-          <val>2</val>
-        </knowledgeskillkarmacostmin>
+          <val>-number(Rating >= 2)</val>
+          <min>4</min>
+        </knowledgeskillkarmacost>
+        <knowledgeskillkarmacost>
+          <name />
+          <val>-number(Rating >= 3)</val>
+          <min>5</min>
+        </knowledgeskillkarmacost>
       </bonus>
       <forcegrade>None</forcegrade>
       <rating>3</rating>
