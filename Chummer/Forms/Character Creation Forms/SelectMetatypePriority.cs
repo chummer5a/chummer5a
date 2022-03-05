@@ -866,13 +866,13 @@ namespace Chummer
                     _objCharacter.SkillsPriority = cboSkills.SelectedValue.ToString();
                     _objCharacter.ResourcesPriority = cboResources.SelectedValue.ToString();
                     _objCharacter.TalentPriority = cboTalents.SelectedValue.ToString();
-                    _objCharacter.PriorityBonusSkillList.Clear();
+                    await _objCharacter.PriorityBonusSkillList.ClearAsync();
                     if (cboSkill1.Visible)
-                        _objCharacter.PriorityBonusSkillList.Add(strSkill1);
+                        await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill1);
                     if (cboSkill2.Visible)
-                        _objCharacter.PriorityBonusSkillList.Add(strSkill2);
+                        await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill2);
                     if (cboSkill3.Visible)
-                        _objCharacter.PriorityBonusSkillList.Add(strSkill3);
+                        await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill3);
 
                     // Set starting nuyen
                     XPathNodeIterator xmlResourcesPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Resources\" and value = " + _objCharacter.ResourcesPriority.CleanXPath() +

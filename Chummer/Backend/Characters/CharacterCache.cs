@@ -516,6 +516,7 @@ namespace Chummer
                 _strMetavariant = objExistingCache.Metavariant;
                 _strPlayerName = objExistingCache.PlayerName;
                 _strSettingsFile = objExistingCache.SettingsFile;
+                _imgMugshot?.Dispose();
                 _imgMugshot = objExistingCache.Mugshot.Clone() as Image;
             }
         }
@@ -760,6 +761,7 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(strMugshotBase64))
                     {
+                        _imgMugshot?.Dispose();
                         if (blnSync)
                         {
                             // ReSharper disable once MethodHasAsyncOverload

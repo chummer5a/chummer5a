@@ -5512,9 +5512,9 @@ namespace Chummer
                                                         DialogResult ePickItemResult = DialogResult.Cancel;
                                                         if (blnSync)
                                                             // ReSharper disable once MethodHasAsyncOverload
-                                                            Program.GetFormForDialog(this).DoThreadSafe(x => DoSelectItem(x));
+                                                            Program.GetFormForDialog(this).DoThreadSafe(DoSelectItem);
                                                         else
-                                                            await Program.GetFormForDialog(this).DoThreadSafeAsync(x => DoSelectItem(x));
+                                                            await Program.GetFormForDialog(this).DoThreadSafeAsync(DoSelectItem);
 
                                                         void DoSelectItem(Control frmParent)
                                                         {
