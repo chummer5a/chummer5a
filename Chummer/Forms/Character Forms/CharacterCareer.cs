@@ -73,7 +73,7 @@ namespace Chummer
 
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
-            CharacterObjectSettings.PropertyChanged += OnCharacterSettingsPropertyChanged;
+            CharacterObject.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;
             CharacterObject.AttributeSection.PropertyChanged += MakeDirtyWithCharacterUpdate;
             
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -1191,7 +1191,7 @@ namespace Chummer
                     CharacterObject.ExpenseEntries.CollectionChanged -= ExpenseEntriesCollectionChanged;
                     CharacterObject.AttributeSection.PropertyChanged -= MakeDirtyWithCharacterUpdate;
                     CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                    CharacterObjectSettings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    CharacterObject.SettingsPropertyChanged -= OnCharacterSettingsPropertyChanged;
 
                     SetupCommonCollectionDatabindings(false);
 

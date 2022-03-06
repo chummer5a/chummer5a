@@ -85,7 +85,7 @@ namespace Chummer
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
             CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
-            CharacterObjectSettings.PropertyChanged += OnCharacterSettingsPropertyChanged;
+            CharacterObject.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
@@ -1000,7 +1000,7 @@ namespace Chummer
                     CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
                     CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
                     CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                    CharacterObjectSettings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    CharacterObject.SettingsPropertyChanged -= OnCharacterSettingsPropertyChanged;
 
                     SetupCommonCollectionDatabindings(false);
 

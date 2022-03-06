@@ -826,6 +826,8 @@ namespace Chummer
                     }
                     break;
             }
+
+            SettingsPropertyChanged?.Invoke(sender, e);
         }
 
         private void AttributeSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -23984,6 +23986,9 @@ namespace Chummer
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        // Kept separate for events that are meant to work off of changes to whatever settings the character even if they change
+        public event PropertyChangedEventHandler SettingsPropertyChanged;
 
         #region Static
 
