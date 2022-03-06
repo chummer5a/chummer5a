@@ -196,6 +196,7 @@ namespace Chummer
 
         private async void CharacterCareer_Load(object sender, EventArgs e)
         {
+            using (new CursorWait(this))
             using (CustomActivity op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
                 if (CharacterObject == null)

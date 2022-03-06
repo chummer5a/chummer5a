@@ -182,6 +182,7 @@ namespace Chummer
 
         private async void CharacterCreate_Load(object sender, EventArgs e)
         {
+            using (new CursorWait(this))
             using (CustomActivity op_load_frm_create = Timekeeper.StartSyncron("load_frm_create", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
                 if (CharacterObject == null)
