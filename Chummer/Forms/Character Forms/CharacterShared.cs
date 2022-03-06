@@ -232,29 +232,13 @@ namespace Chummer
         }
 
         protected Stopwatch AutosaveStopWatch { get; } = Stopwatch.StartNew();
-
+        
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
-        protected void AutoSaveCharacter()
+        protected async Task AutoSaveCharacter()
         {
-            AutoSaveCharacterCoreAsync(true).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Automatically Save the character to a backup folder.
-        /// </summary>
-        protected Task AutoSaveCharacterAsync()
-        {
-            return AutoSaveCharacterCoreAsync(false);
-        }
-
-        /// <summary>
-        /// Automatically Save the character to a backup folder.
-        /// </summary>
-        private async Task AutoSaveCharacterCoreAsync(bool blnSync)
-        {
-            using (new CursorWait(this))
+            using (new CursorWait(this, true))
             {
                 try
                 {
@@ -268,11 +252,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowMessageBox(this,
-                                blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
-                                    : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                             return;
                         }
                     }
@@ -287,15 +267,7 @@ namespace Chummer
                     }
 
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                    if (blnSync)
-                    {
-                        // ReSharper disable once MethodHasAsyncOverload
-                        if (!CharacterObject.Save(strFilePath, false, false))
-                        {
-                            Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " (" + CharacterObject.FileName + ')');
-                        }
-                    }
-                    else if (!await CharacterObject.SaveAsync(strFilePath, false, false))
+                    if (!await CharacterObject.SaveAsync(strFilePath, false, false))
                     {
                         Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " (" + CharacterObject.FileName + ')');
                     }

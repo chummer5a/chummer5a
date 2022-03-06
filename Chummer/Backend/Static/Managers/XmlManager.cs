@@ -70,7 +70,7 @@ namespace Chummer
             /// </summary>
             public XmlDocument GetXmlContent()
             {
-                do
+                while (true)
                 {
                     bool blnLoadComplete;
                     using (EnterReadLock.Enter(LockObject))
@@ -78,7 +78,7 @@ namespace Chummer
                     if (blnLoadComplete)
                         break;
                     Utils.SafeSleep();
-                } while (true);
+                }
                 using (EnterReadLock.Enter(LockObject))
                     return _xmlContent;
             }
@@ -88,7 +88,7 @@ namespace Chummer
             /// </summary>
             public async ValueTask<XmlDocument> GetXmlContentAsync()
             {
-                do
+                while (true)
                 {
                     bool blnLoadComplete;
                     using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
@@ -96,7 +96,7 @@ namespace Chummer
                     if (blnLoadComplete)
                         break;
                     await Utils.SafeSleepAsync();
-                } while (true);
+                }
                 using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
                     return _xmlContent;
             }
@@ -172,7 +172,7 @@ namespace Chummer
             /// </summary>
             public XPathDocument GetXPathContent()
             {
-                do
+                while (true)
                 {
                     bool blnLoadComplete;
                     using (EnterReadLock.Enter(LockObject))
@@ -180,7 +180,7 @@ namespace Chummer
                     if (blnLoadComplete)
                         break;
                     Utils.SafeSleep();
-                } while (true);
+                }
                 using (EnterReadLock.Enter(LockObject))
                     return _objXPathContent;
             }
@@ -191,7 +191,7 @@ namespace Chummer
             /// </summary>
             public async ValueTask<XPathDocument> GetXPathContentAsync()
             {
-                do
+                while (true)
                 {
                     bool blnLoadComplete;
                     using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
@@ -199,7 +199,7 @@ namespace Chummer
                     if (blnLoadComplete)
                         break;
                     await Utils.SafeSleepAsync();
-                } while (true);
+                }
                 using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
                     return _objXPathContent;
             }

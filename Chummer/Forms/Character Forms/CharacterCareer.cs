@@ -918,7 +918,7 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Directly calling here so that we can properly unset the dirty flag after the update
-                        await DoUpdateCharacterInfoAsync();
+                        await DoUpdateCharacterInfo();
 
                         // Now we can start checking for character updates
                         Application.Idle += UpdateCharacterInfo;
@@ -3011,7 +3011,7 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Immediately call character update because it re-applies essence loss improvements
-                        await DoUpdateCharacterInfoAsync();
+                        await DoUpdateCharacterInfo();
 
                         if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                         {
@@ -13104,7 +13104,7 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
                     _blnSkipUpdate = false;
                     // Immediately call character update because we know it's necessary
-                    await DoUpdateCharacterInfoAsync();
+                    await DoUpdateCharacterInfo();
 
                     IsDirty = false;
                 }
@@ -13120,83 +13120,68 @@ namespace Chummer
 
         private async void UpdateCharacterInfo(object sender, EventArgs e)
         {
-            await DoUpdateCharacterInfoAsync();
+            await DoUpdateCharacterInfo();
         }
 
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private void DoUpdateCharacterInfo()
-        {
-            DoUpdateCharacterInfoCoreAsync(true).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Update the Character information.
-        /// </summary>
-        private Task DoUpdateCharacterInfoAsync()
-        {
-            return DoUpdateCharacterInfoCoreAsync(false);
-        }
-
-        /// <summary>
-        /// Update the Character information.
-        /// </summary>
-        private async Task DoUpdateCharacterInfoCoreAsync(bool blnSync)
+        private async ValueTask DoUpdateCharacterInfo()
         {
             if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
 
             _blnSkipUpdate = true;
 
-            using (new CursorWait(this))
+            try
             {
-                // TODO: DataBind these wherever possible
-
-                if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
-                    CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                using (new CursorWait(this))
                 {
-                    lblCritterPowerPointsLabel.Visible = true;
-                    lblCritterPowerPoints.Visible = true;
-                    lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
-                }
-                else if (CharacterObject.IsFreeSprite)
-                {
-                    lblCritterPowerPointsLabel.Visible = true;
-                    lblCritterPowerPoints.Visible = true;
-                    lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
-                }
-                else
-                {
-                    lblCritterPowerPointsLabel.Visible = false;
-                    lblCritterPowerPoints.Visible = false;
-                }
+                    // TODO: DataBind these wherever possible
 
-                UpdateInitiationCost(this, EventArgs.Empty);
-
-                RefreshSelectedQuality();
-                RefreshSelectedCyberware();
-                RefreshSelectedArmor();
-                RefreshSelectedGear();
-                RefreshSelectedDrug();
-                RefreshSelectedLifestyle();
-                RefreshSelectedVehicle();
-                RefreshSelectedWeapon();
-                RefreshSelectedSpell();
-                RefreshSelectedComplexForm();
-
-                if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
-                {
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        await AutoSaveCharacterAsync();
+                    if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
+                        CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                    {
+                        lblCritterPowerPointsLabel.Visible = true;
+                        lblCritterPowerPoints.Visible = true;
+                        lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                    }
+                    else if (CharacterObject.IsFreeSprite)
+                    {
+                        lblCritterPowerPointsLabel.Visible = true;
+                        lblCritterPowerPoints.Visible = true;
+                        lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                    }
                     else
-                        await AutoSaveCharacterAsync();
+                    {
+                        lblCritterPowerPointsLabel.Visible = false;
+                        lblCritterPowerPoints.Visible = false;
+                    }
+
+                    UpdateInitiationCost(this, EventArgs.Empty);
+
+                    RefreshSelectedQuality();
+                    RefreshSelectedCyberware();
+                    RefreshSelectedArmor();
+                    RefreshSelectedGear();
+                    RefreshSelectedDrug();
+                    RefreshSelectedLifestyle();
+                    RefreshSelectedVehicle();
+                    RefreshSelectedWeapon();
+                    RefreshSelectedSpell();
+                    RefreshSelectedComplexForm();
+
+                    if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
+                    {
+                        await AutoSaveCharacter();
+                    }
                 }
             }
-
-            _blnSkipUpdate = false;
-            IsCharacterUpdateRequested = false;
+            finally
+            {
+                IsCharacterUpdateRequested = false;
+                _blnSkipUpdate = false;
+            }
         }
 
         /// <summary>

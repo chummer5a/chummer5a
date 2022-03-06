@@ -881,7 +881,7 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Directly calling here so that we can properly unset the dirty flag after the update
-                        await DoUpdateCharacterInfoAsync();
+                        await DoUpdateCharacterInfo();
 
                         // Now we can start checking for character updates
                         Application.Idle += UpdateCharacterInfo;
@@ -2766,7 +2766,7 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Immediately call character update because it re-applies essence loss improvements
-                        await DoUpdateCharacterInfoAsync();
+                        await DoUpdateCharacterInfo();
 
                         if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                         {
@@ -4151,7 +4151,7 @@ namespace Chummer
             bool blnFirstRemoval = true;
             for (int i = CharacterObject.Qualities.Count - 1; i >= 0; --i)
             {
-                Quality objLoopQuality = CharacterObject.Qualities.ElementAt(i);
+                Quality objLoopQuality = CharacterObject.Qualities[i];
                 if (objLoopQuality.InternalId != strInternalIDToRemove)
                     continue;
                 if (!RemoveQuality(objLoopQuality, blnFirstRemoval))
@@ -8938,14 +8938,14 @@ namespace Chummer
         /// <summary>
         /// Calculate the number of Build Points the character has remaining.
         /// </summary>
-        private int CalculateBP(bool blnDoUIUpdate = true)
+        private async ValueTask<int> CalculateBP(bool blnDoUIUpdate = true)
         {
             int intKarmaPointsRemain = CharacterObjectSettings.BuildKarma;
             //int intPointsUsed = 0; // used as a running total for each section
             const int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;
-            string strSpace = LanguageManager.GetString("String_Space");
-            string strPoints = blnDoUIUpdate ? LanguageManager.GetString("String_Karma") : string.Empty;
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strPoints = blnDoUIUpdate ? await LanguageManager.GetStringAsync("String_Karma") : string.Empty;
 
             // ------------------------------------------------------------------------------
             // Metatype/Metavariant only cost points when working with BP (or when the Metatype Costs Karma option is enabled when working with Karma).
@@ -9046,7 +9046,7 @@ namespace Chummer
 
                 if (CharacterObject.Contacts.Any(x => x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
                 {
-                    sbdPositiveQualityTooltip.AppendLine(LanguageManager.GetString("Label_GroupContacts"));
+                    sbdPositiveQualityTooltip.AppendLine(await LanguageManager.GetStringAsync("Label_GroupContacts"));
                     foreach (Contact objGroupContact in CharacterObject.Contacts.Where(x =>
                                  x.EntityType == ContactType.Contact && x.IsGroup && !x.Free))
                     {
@@ -9055,7 +9055,7 @@ namespace Chummer
                         {
                             strNameToUse = objGroupContact.Name;
                             if (string.IsNullOrEmpty(strNameToUse))
-                                strNameToUse = LanguageManager.GetString("String_Unknown");
+                                strNameToUse = await LanguageManager.GetStringAsync("String_Unknown");
                         }
                         else if (!string.IsNullOrWhiteSpace(objGroupContact.Name))
                             strNameToUse += '/' + objGroupContact.Name;
@@ -9090,8 +9090,8 @@ namespace Chummer
             // ------------------------------------------------------------------------------
             // Include the BP used by Martial Arts.
             int intMartialArtsPoints = 0;
-            string strColon = LanguageManager.GetString("String_Colon");
-            string strOf = LanguageManager.GetString("String_Of");
+            string strColon = await LanguageManager.GetStringAsync("String_Colon");
+            string strOf = await LanguageManager.GetStringAsync("String_Of");
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdMartialArtsBPToolTip))
             {
@@ -9292,8 +9292,8 @@ namespace Chummer
                         || lblSpellsBP != null
                         || lblBuildRitualsBP != null))
                 {
-                    string strFormat = "{0}" + strSpace + '×' + strSpace + "{1}" + strSpace + LanguageManager.GetString("String_Karma")
-                                       + strSpace + '=' + strSpace + "{2}" + strSpace + LanguageManager.GetString("String_Karma");
+                    string strFormat = "{0}" + strSpace + '×' + strSpace + "{1}" + strSpace + await LanguageManager.GetStringAsync("String_Karma")
+                                       + strSpace + '=' + strSpace + "{2}" + strSpace + await LanguageManager.GetStringAsync("String_Karma");
                     lblSpellsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
                     lblBuildRitualsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
                     lblBuildPrepsBP?.SetToolTip(string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
@@ -9710,7 +9710,7 @@ namespace Chummer
                     IsCharacterUpdateRequested = true;
                     _blnSkipUpdate = false;
                     // Immediately call character update because we know it's necessary
-                    await DoUpdateCharacterInfoAsync();
+                    await DoUpdateCharacterInfo();
 
                     IsDirty = false;
                 }
@@ -9727,95 +9727,79 @@ namespace Chummer
         
         private async void UpdateCharacterInfo(object sender, EventArgs e)
         {
-            await DoUpdateCharacterInfoAsync();
+            await DoUpdateCharacterInfo();
         }
 
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private void DoUpdateCharacterInfo()
-        {
-            DoUpdateCharacterInfoCoreAsync(true).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Update the Character information.
-        /// </summary>
-        private Task DoUpdateCharacterInfoAsync()
-        {
-            return DoUpdateCharacterInfoCoreAsync(false);
-        }
-
-        /// <summary>
-        /// Update the Character information.
-        /// </summary>
-        private async Task DoUpdateCharacterInfoCoreAsync(bool blnSync)
+        private async ValueTask DoUpdateCharacterInfo()
         {
             if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
 
             _blnSkipUpdate = true;
-
-            using (new CursorWait(this))
+            try
             {
-                // TODO: DataBind these wherever possible
-
-                UpdateSkillRelatedInfo();
-
-                // Calculate the number of Build Points remaining.
-                CalculateBP();
-                CalculateNuyen();
-
-                if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
-                    CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                using (new CursorWait(this))
                 {
-                    lblCritterPowerPointsLabel.Visible = true;
-                    lblCritterPowerPoints.Visible = true;
-                    lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
-                }
-                else if (CharacterObject.IsFreeSprite)
-                {
-                    lblCritterPowerPointsLabel.Visible = true;
-                    lblCritterPowerPoints.Visible = true;
-                    lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
-                }
-                else
-                {
-                    lblCritterPowerPointsLabel.Visible = false;
-                    lblCritterPowerPoints.Visible = false;
-                }
+                    // TODO: DataBind these wherever possible
 
-                UpdateInitiationCost();
+                    UpdateSkillRelatedInfo();
 
-                RefreshSelectedQuality();
-                RefreshSelectedCyberware();
-                RefreshSelectedArmor();
-                RefreshSelectedGear();
-                RefreshSelectedDrug();
-                RefreshSelectedLifestyle();
-                RefreshSelectedVehicle();
-                RefreshSelectedWeapon();
-                RefreshSelectedSpell();
-                RefreshSelectedComplexForm();
+                    // Calculate the number of Build Points remaining.
+                    await CalculateBP();
+                    await CalculateNuyen();
 
-                if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
-                {
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        await AutoSaveCharacterAsync();
+                    if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
+                        CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                    {
+                        lblCritterPowerPointsLabel.Visible = true;
+                        lblCritterPowerPoints.Visible = true;
+                        lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                    }
+                    else if (CharacterObject.IsFreeSprite)
+                    {
+                        lblCritterPowerPointsLabel.Visible = true;
+                        lblCritterPowerPoints.Visible = true;
+                        lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                    }
                     else
-                        await AutoSaveCharacterAsync();
+                    {
+                        lblCritterPowerPointsLabel.Visible = false;
+                        lblCritterPowerPoints.Visible = false;
+                    }
+
+                    UpdateInitiationCost();
+
+                    RefreshSelectedQuality();
+                    RefreshSelectedCyberware();
+                    RefreshSelectedArmor();
+                    RefreshSelectedGear();
+                    RefreshSelectedDrug();
+                    RefreshSelectedLifestyle();
+                    RefreshSelectedVehicle();
+                    RefreshSelectedWeapon();
+                    RefreshSelectedSpell();
+                    RefreshSelectedComplexForm();
+
+                    if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
+                    {
+                        await AutoSaveCharacter();
+                    }
                 }
             }
-
-            _blnSkipUpdate = false;
-            IsCharacterUpdateRequested = false;
+            finally
+            {
+                IsCharacterUpdateRequested = false;
+                _blnSkipUpdate = false;
+            }
         }
 
         /// <summary>
         /// Calculate the amount of Nuyen the character has remaining.
         /// </summary>
-        private decimal CalculateNuyen()
+        private async ValueTask<decimal> CalculateNuyen()
         {
             object objDeductionsLock = new object();
             decimal decDeductions = 0;
@@ -9827,171 +9811,177 @@ namespace Chummer
             if (decStolenNuyenAllowance != 0)
             {
                 object objStolenDeductionsLock = new object();
-                Utils.RunWithoutThreadLock(
-                    () =>
-                    {
-                        // Cyberware/Bioware cost.
-                        decimal decTempStolen = 0;
-                        decimal decTemp = 0;
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware)
-                        {
-                            if (objCyberware.Stolen)
-                                decTempStolen += objCyberware.StolenTotalCost;
-                            else
-                                decTemp += objCyberware.TotalCost;
-                        }
-                        lock (objStolenDeductionsLock)
-                            decStolenDeductions += decTempStolen;
-                        lock (objDeductionsLock)
-                            // ReSharper disable once AccessToModifiedClosure
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Armor cost.
-                        decimal decTempStolen = 0;
-                        decimal decTemp = 0;
-                        foreach (Armor objArmor in CharacterObject.Armor)
-                        {
-                            if (objArmor.Stolen)
-                                decTempStolen += objArmor.StolenTotalCost;
-                            else
-                                decTemp += objArmor.TotalCost;
-                        }
-                        lock (objStolenDeductionsLock)
-                            decStolenDeductions += decTempStolen;
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Weapon cost.
-                        decimal decTempStolen = 0;
-                        decimal decTemp = 0;
-                        foreach (Weapon objWeapon in CharacterObject.Weapons)
-                        {
-                            if (objWeapon.Stolen)
-                                decTempStolen += objWeapon.StolenTotalCost;
-                            else
-                                decTemp += objWeapon.TotalCost;
-                        }
-                        lock (objStolenDeductionsLock)
-                            decStolenDeductions += decTempStolen;
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Gear cost.
-                        decimal decTempStolen = 0;
-                        decimal decTemp = 0;
-                        foreach (Gear objGear in CharacterObject.Gear)
-                        {
-                            if (objGear.Stolen)
-                                decTempStolen += objGear.StolenTotalCost;
-                            else
-                                decTemp += objGear.TotalCost;
-                        }
-                        lock (objStolenDeductionsLock)
-                            decStolenDeductions += decTempStolen;
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Vehicle cost.
-                        decimal decTempStolen = 0;
-                        decimal decTemp = 0;
-                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                        {
-                            if (objVehicle.Stolen)
-                                decTempStolen += objVehicle.StolenTotalCost;
-                            else
-                                decTemp += objVehicle.TotalCost;
-                        }
-                        lock (objStolenDeductionsLock)
-                            decStolenDeductions += decTempStolen;
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Drug cost.
-                        decimal decTempStolen = 0;
-                        decimal decTemp = 0;
-                        foreach (Drug objDrug in CharacterObject.Drugs)
-                        {
-                            if (objDrug.Stolen)
-                                decTempStolen += objDrug.StolenTotalCost;
-                            else
-                                decTemp += objDrug.TotalCost;
-                        }
-                        lock (objStolenDeductionsLock)
-                            decStolenDeductions += decTempStolen;
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Lifestyle cost.
-                        decimal decTemp = CharacterObject.Lifestyles.Sum(x => x.TotalCost);
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    });
+                await Task.Run(() => Parallel.Invoke(
+                                   () =>
+                                   {
+                                       // Cyberware/Bioware cost.
+                                       decimal decTempStolen = 0;
+                                       decimal decTemp = 0;
+                                       foreach (Cyberware objCyberware in CharacterObject.Cyberware)
+                                       {
+                                           if (objCyberware.Stolen)
+                                               decTempStolen += objCyberware.StolenTotalCost;
+                                           else
+                                               decTemp += objCyberware.TotalCost;
+                                       }
+
+                                       lock (objStolenDeductionsLock)
+                                           decStolenDeductions += decTempStolen;
+                                       lock (objDeductionsLock)
+                                           // ReSharper disable once AccessToModifiedClosure
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Armor cost.
+                                       decimal decTempStolen = 0;
+                                       decimal decTemp = 0;
+                                       foreach (Armor objArmor in CharacterObject.Armor)
+                                       {
+                                           if (objArmor.Stolen)
+                                               decTempStolen += objArmor.StolenTotalCost;
+                                           else
+                                               decTemp += objArmor.TotalCost;
+                                       }
+
+                                       lock (objStolenDeductionsLock)
+                                           decStolenDeductions += decTempStolen;
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Weapon cost.
+                                       decimal decTempStolen = 0;
+                                       decimal decTemp = 0;
+                                       foreach (Weapon objWeapon in CharacterObject.Weapons)
+                                       {
+                                           if (objWeapon.Stolen)
+                                               decTempStolen += objWeapon.StolenTotalCost;
+                                           else
+                                               decTemp += objWeapon.TotalCost;
+                                       }
+
+                                       lock (objStolenDeductionsLock)
+                                           decStolenDeductions += decTempStolen;
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Gear cost.
+                                       decimal decTempStolen = 0;
+                                       decimal decTemp = 0;
+                                       foreach (Gear objGear in CharacterObject.Gear)
+                                       {
+                                           if (objGear.Stolen)
+                                               decTempStolen += objGear.StolenTotalCost;
+                                           else
+                                               decTemp += objGear.TotalCost;
+                                       }
+
+                                       lock (objStolenDeductionsLock)
+                                           decStolenDeductions += decTempStolen;
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Vehicle cost.
+                                       decimal decTempStolen = 0;
+                                       decimal decTemp = 0;
+                                       foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                                       {
+                                           if (objVehicle.Stolen)
+                                               decTempStolen += objVehicle.StolenTotalCost;
+                                           else
+                                               decTemp += objVehicle.TotalCost;
+                                       }
+
+                                       lock (objStolenDeductionsLock)
+                                           decStolenDeductions += decTempStolen;
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Drug cost.
+                                       decimal decTempStolen = 0;
+                                       decimal decTemp = 0;
+                                       foreach (Drug objDrug in CharacterObject.Drugs)
+                                       {
+                                           if (objDrug.Stolen)
+                                               decTempStolen += objDrug.StolenTotalCost;
+                                           else
+                                               decTemp += objDrug.TotalCost;
+                                       }
+
+                                       lock (objStolenDeductionsLock)
+                                           decStolenDeductions += decTempStolen;
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Lifestyle cost.
+                                       decimal decTemp = CharacterObject.Lifestyles.Sum(x => x.TotalCost);
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   }));
             }
             else
             {
-                Utils.RunWithoutThreadLock(
-                    () =>
-                    {
-                        // Cyberware/Bioware cost.
-                        decimal decTemp = CharacterObject.Cyberware.Sum(x => x.TotalCost);
-                        lock (objDeductionsLock)
-                            // ReSharper disable once AccessToModifiedClosure
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Armor cost.
-                        decimal decTemp = CharacterObject.Armor.Sum(x => x.TotalCost);
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Weapon cost.
-                        decimal decTemp = CharacterObject.Weapons.Sum(x => x.TotalCost);
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Gear cost.
-                        decimal decTemp = CharacterObject.Gear.Sum(x => x.TotalCost);
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Vehicle cost.
-                        decimal decTemp = CharacterObject.Vehicles.Sum(x => x.TotalCost);
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Drug cost.
-                        decimal decTemp = CharacterObject.Drugs.Sum(x => x.TotalCost);
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    },
-                    () =>
-                    {
-                        // Lifestyle cost.
-                        decimal decTemp = CharacterObject.Lifestyles.Sum(x => x.TotalCost);
-                        lock (objDeductionsLock)
-                            decDeductions += decTemp;
-                    });
+                await Task.Run(() => Parallel.Invoke(
+                                   () =>
+                                   {
+                                       // Cyberware/Bioware cost.
+                                       decimal decTemp = CharacterObject.Cyberware.Sum(x => x.TotalCost);
+                                       lock (objDeductionsLock)
+                                           // ReSharper disable once AccessToModifiedClosure
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Armor cost.
+                                       decimal decTemp = CharacterObject.Armor.Sum(x => x.TotalCost);
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Weapon cost.
+                                       decimal decTemp = CharacterObject.Weapons.Sum(x => x.TotalCost);
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Gear cost.
+                                       decimal decTemp = CharacterObject.Gear.Sum(x => x.TotalCost);
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Vehicle cost.
+                                       decimal decTemp = CharacterObject.Vehicles.Sum(x => x.TotalCost);
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Drug cost.
+                                       decimal decTemp = CharacterObject.Drugs.Sum(x => x.TotalCost);
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   },
+                                   () =>
+                                   {
+                                       // Lifestyle cost.
+                                       decimal decTemp = CharacterObject.Lifestyles.Sum(x => x.TotalCost);
+                                       lock (objDeductionsLock)
+                                           decDeductions += decTemp;
+                                   }));
             }
 
             // Initiation Grade cost.
@@ -13182,7 +13172,7 @@ namespace Chummer
         /// Check the character and determine if it has broken any of the rules.
         /// </summary>
         /// <returns></returns>
-        public bool CheckCharacterValidity(bool blnUseArgBuildPoints = false, int intBuildPoints = 0)
+        public async ValueTask<bool> CheckCharacterValidity(bool blnUseArgBuildPoints = false, int intBuildPoints = 0)
         {
             if (CharacterObject.IgnoreRules)
                 return true;
@@ -13191,7 +13181,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdMessage))
             {
-                sbdMessage.Append(LanguageManager.GetString("Message_InvalidBeginning"));
+                sbdMessage.Append(await LanguageManager.GetStringAsync("Message_InvalidBeginning"));
                 using (new CursorWait(this))
                 {
                     // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
@@ -13201,10 +13191,10 @@ namespace Chummer
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
                                   .AppendFormat(GlobalSettings.CultureInfo,
-                                                LanguageManager.GetString("Message_InvalidPointExcess"),
+                                                await LanguageManager.GetStringAsync("Message_InvalidPointExcess"),
                                                 intMartialArts - 1)
-                                  .Append(LanguageManager.GetString("String_Space"))
-                                  .Append(LanguageManager.GetString("String_MartialArtsCount"));
+                                  .Append(await LanguageManager.GetStringAsync("String_Space"))
+                                  .Append(await LanguageManager.GetStringAsync("String_MartialArtsCount"));
                     }
 
                     // Check if the character has more than 5 Techniques in a Martial Art
@@ -13218,9 +13208,9 @@ namespace Chummer
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t')
                                       .AppendFormat(GlobalSettings.CultureInfo,
-                                                    LanguageManager.GetString("Message_InvalidPointExcess"),
-                                                    intTechniques - 5).Append(LanguageManager.GetString("String_Space"))
-                                      .Append(LanguageManager.GetString("String_TechniquesCount"));
+                                                    await LanguageManager.GetStringAsync("Message_InvalidPointExcess"),
+                                                    intTechniques - 5).Append(await LanguageManager.GetStringAsync("String_Space"))
+                                      .Append(await LanguageManager.GetStringAsync("String_TechniquesCount"));
                         }
                     }
 
@@ -13229,7 +13219,7 @@ namespace Chummer
                         && !CharacterObjectSettings.ExceedPositiveQualities)
                     {
                         sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit"),
+                            GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_PositiveQualityLimit"),
                             CharacterObjectSettings.QualityKarmaLimit);
                         blnValid = false;
                     }
@@ -13239,7 +13229,7 @@ namespace Chummer
                         && !CharacterObjectSettings.ExceedNegativeQualities)
                     {
                         sbdMessage.AppendLine().Append('\t').AppendFormat(
-                            GlobalSettings.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"),
+                            GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NegativeQualityLimit"),
                             CharacterObjectSettings.QualityKarmaLimit);
                         blnValid = false;
                     }
@@ -13252,19 +13242,19 @@ namespace Chummer
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t')
-                                      .Append(LanguageManager.GetString("Message_HighContact"));
+                                      .Append(await LanguageManager.GetStringAsync("Message_HighContact"));
                         }
                     }
                     else if (CharacterObject.Contacts.Any(
                                  x => Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7 && !x.Free))
                     {
                         blnValid = false;
-                        sbdMessage.AppendLine().Append('\t').Append(LanguageManager.GetString("Message_HighContact"));
+                        sbdMessage.AppendLine().Append('\t').Append(await LanguageManager.GetStringAsync("Message_HighContact"));
                     }
 
                     // Check if the character has gone over the Build Point total.
                     if (!blnUseArgBuildPoints)
-                        intBuildPoints = CalculateBP(false);
+                        intBuildPoints = await CalculateBP(false);
                     int intStagedPurchaseQualityPoints = CharacterObject.Qualities
                                                                         .Where(objQuality =>
                                                                                    objQuality.StagedPurchase
@@ -13277,10 +13267,10 @@ namespace Chummer
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
                                   .AppendFormat(GlobalSettings.CultureInfo,
-                                                LanguageManager.GetString("Message_InvalidPointExcess"),
+                                                await LanguageManager.GetStringAsync("Message_InvalidPointExcess"),
                                                 -(intBuildPoints + intStagedPurchaseQualityPoints))
-                                  .Append(LanguageManager.GetString("String_Space"))
-                                  .Append(LanguageManager.GetString("String_Karma"));
+                                  .Append(await LanguageManager.GetStringAsync("String_Space"))
+                                  .Append(await LanguageManager.GetStringAsync("String_Karma"));
                     }
 
                     // if character has more than permitted Metagenic qualities
@@ -13290,7 +13280,7 @@ namespace Chummer
                         {
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
                                 GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("Message_OverNegativeMetagenicQualities"),
+                                await LanguageManager.GetStringAsync("Message_OverNegativeMetagenicQualities"),
                                 -CharacterObject.MetagenicNegativeQualityKarma, CharacterObject.MetagenicLimit);
                             blnValid = false;
                         }
@@ -13299,7 +13289,7 @@ namespace Chummer
                         {
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
                                 GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("Message_OverPositiveMetagenicQualities"),
+                                await LanguageManager.GetStringAsync("Message_OverPositiveMetagenicQualities"),
                                 CharacterObject.MetagenicPositiveQualityKarma, CharacterObject.MetagenicLimit);
                             blnValid = false;
                         }
@@ -13311,7 +13301,7 @@ namespace Chummer
                         {
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
                                 GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("Message_MetagenicQualitiesUnbalanced"),
+                                await LanguageManager.GetStringAsync("Message_MetagenicQualitiesUnbalanced"),
                                 -CharacterObject.MetagenicNegativeQualityKarma,
                                 CharacterObject.MetagenicPositiveQualityKarma - 1,
                                 CharacterObject.MetagenicPositiveQualityKarma);
@@ -13330,7 +13320,7 @@ namespace Chummer
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                              LanguageManager.GetString(
+                                                                              await LanguageManager.GetStringAsync(
                                                                                   "Message_TooManyAttributesAtMax"),
                                                                               intCountAttributesAtMax,
                                                                               CharacterObject.Settings
@@ -13346,7 +13336,7 @@ namespace Chummer
                         //TODO: ATTACH TO ATTRIBUTE SECTION
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
+                                                                          await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidAttributeExcess"), -i);
                     }
 
@@ -13358,7 +13348,7 @@ namespace Chummer
                         //TODO: ATTACH TO ATTRIBUTE SECTION
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
+                                                                          await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidSpecialExcess"), -i);
                     }
 
@@ -13367,7 +13357,7 @@ namespace Chummer
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
+                                                                          await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidSkillGroupExcess"),
                                                                           -CharacterObject.SkillsSection
                                                                               .SkillGroupPoints);
@@ -13378,7 +13368,7 @@ namespace Chummer
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
+                                                                          await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidActiveSkillExcess"),
                                                                           -CharacterObject.SkillsSection.SkillPoints);
                     }
@@ -13388,7 +13378,7 @@ namespace Chummer
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
+                                                                          await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidKnowledgeSkillExcess"),
                                                                           -CharacterObject.SkillsSection
                                                                               .KnowledgeSkillPointsRemain);
@@ -13398,7 +13388,7 @@ namespace Chummer
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
+                                                                          await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidActiveSkillExcessSpecializations"),
                                                                           -CharacterObject.SkillsSection
                                                                               .KnowledgeSkillPointsRemain);
@@ -13406,21 +13396,21 @@ namespace Chummer
                                      s => s.Specializations.Count > 1))
                         {
                             sbdMessage.AppendLine().Append(objSkill.CurrentDisplayName)
-                                      .Append(LanguageManager.GetString("String_Space")).Append('(')
-                                      .AppendJoin(',' + LanguageManager.GetString("String_Space"),
+                                      .Append(await LanguageManager.GetStringAsync("String_Space")).Append('(')
+                                      .AppendJoin(',' + await LanguageManager.GetStringAsync("String_Space"),
                                                   objSkill.Specializations.Select(x => x.CurrentDisplayName))
                                       .Append(')');
                         }
                     }
 
                     // Check if the character has gone over the Nuyen limit.
-                    decimal decNuyen = CalculateNuyen();
+                    decimal decNuyen = await CalculateNuyen();
                     if (decNuyen < 0)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
                                   .AppendFormat(GlobalSettings.CultureInfo,
-                                                LanguageManager.GetString("Message_InvalidNuyenExcess"),
+                                                await LanguageManager.GetStringAsync("Message_InvalidNuyenExcess"),
                                                 (-decNuyen).ToString(CharacterObjectSettings.NuyenFormat,
                                                                      GlobalSettings.CultureInfo)).Append('¥');
                     }
@@ -13429,7 +13419,7 @@ namespace Chummer
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
+                                                                          await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidStolenNuyenExcess"),
                                                                           (-CharacterObject.StolenNuyen).ToString(
                                                                               CharacterObjectSettings.NuyenFormat,
@@ -13463,7 +13453,7 @@ namespace Chummer
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
-                                GlobalSettings.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"),
+                                GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_InvalidEssenceExcess"),
                                 decExcessEss);
                         }
                     }
@@ -13474,7 +13464,7 @@ namespace Chummer
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
-                                  .Append(LanguageManager.GetString("Message_InvalidNoTradition"));
+                                  .Append(await LanguageManager.GetStringAsync("Message_InvalidNoTradition"));
                     }
 
                     // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
@@ -13483,7 +13473,7 @@ namespace Chummer
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                          LanguageManager.GetString(
+                                                                          await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidPowerPoints"),
                                                                           CharacterObject.PowerPointsUsed
                                                                           - CharacterObject.PowerPointsTotal,
@@ -13495,7 +13485,7 @@ namespace Chummer
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
-                                  .Append(LanguageManager.GetString("Message_InvalidNoStream"));
+                                  .Append(await LanguageManager.GetStringAsync("Message_InvalidNoStream"));
                     }
 
                     // Check if the character has more than the permitted amount of native languages.
@@ -13513,18 +13503,18 @@ namespace Chummer
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                              LanguageManager.GetString(
+                                                                              await LanguageManager.GetStringAsync(
                                                                                   "Message_OverLanguageLimit"),
                                                                               intLanguages, intLanguageLimit);
                         }
                         else if (Program.ShowMessageBox(this,
                                                                  string.Format(
                                                                      GlobalSettings.CultureInfo,
-                                                                     LanguageManager.GetString(
+                                                                     await LanguageManager.GetStringAsync(
                                                                          "Message_ExtraNativeLanguages")
                                                                      , (intLanguageLimit - intLanguages).ToString(
                                                                          GlobalSettings.CultureInfo)),
-                                                                 LanguageManager.GetString(
+                                                                 await LanguageManager.GetStringAsync(
                                                                      "MessageTitle_ExtraNativeLanguages"),
                                                                  MessageBoxButtons.YesNo,
                                                                  MessageBoxIcon.Warning) == DialogResult.No)
@@ -13607,7 +13597,7 @@ namespace Chummer
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
-                                                                              LanguageManager.GetString(
+                                                                              await LanguageManager.GetStringAsync(
                                                                                   "Message_InvalidAvail"),
                                                                               intRestrictedCount,
                                                                               CharacterObjectSettings
@@ -13616,7 +13606,7 @@ namespace Chummer
                             if (blnHasRestrictedGearAvailable)
                             {
                                 sbdMessage.AppendLine().AppendFormat(GlobalSettings.CultureInfo,
-                                                                     LanguageManager.GetString(
+                                                                     await LanguageManager.GetStringAsync(
                                                                          "Message_RestrictedGearUsed"),
                                                                      sbdRestrictedItems.ToString());
                             }
@@ -13650,7 +13640,7 @@ namespace Chummer
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t')
-                                      .Append(LanguageManager.GetString("Message_InvalidCyberwareGrades"))
+                                      .Append(await LanguageManager.GetStringAsync("Message_InvalidCyberwareGrades"))
                                       .Append(sbdIllegalCyberwareFromGrade);
                         }
                     }
@@ -13664,7 +13654,7 @@ namespace Chummer
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
-                                GlobalSettings.CultureInfo, LanguageManager.GetString("Message_OverPrototypeLimit"),
+                                GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverPrototypeLimit"),
                                 decPrototypeTranshumanEssenceUsed.ToString(CharacterObjectSettings.EssenceFormat,
                                                                            GlobalSettings.CultureInfo),
                                 decPrototypeTranshumanEssenceMax.ToString(CharacterObjectSettings.EssenceFormat,
@@ -13784,7 +13774,7 @@ namespace Chummer
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
                                 GlobalSettings.CultureInfo,
-                                LanguageManager.GetString("Message_CapacityReachedValidate"),
+                                await LanguageManager.GetStringAsync("Message_CapacityReachedValidate"),
                                 intCapacityOver);
                             foreach (string strItem in lstOverCapacity)
                             {
@@ -13835,7 +13825,7 @@ namespace Chummer
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t').AppendFormat(
-                                GlobalSettings.CultureInfo, LanguageManager.GetString("Message_DroneIllegalDowngrade"),
+                                GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DroneIllegalDowngrade"),
                                 intIllegalDowngrades);
                             foreach (string strItem in lstDronesIllegalDowngrades)
                             {
@@ -13850,12 +13840,12 @@ namespace Chummer
                     if (blnValid && i > 0 && Program.ShowMessageBox(this,
                                                                              string.Format(
                                                                                  GlobalSettings.CultureInfo,
-                                                                                 LanguageManager.GetString(
+                                                                                 await LanguageManager.GetStringAsync(
                                                                                      "Message_ExtraPoints")
                                                                                  , i.ToString(
                                                                                      GlobalSettings.CultureInfo)
-                                                                                 , LanguageManager.GetString("Label_SummaryPrimaryAttributes")),
-                                                                             LanguageManager.GetString(
+                                                                                 , await LanguageManager.GetStringAsync("Label_SummaryPrimaryAttributes")),
+                                                                             await LanguageManager.GetStringAsync(
                                                                                  "MessageTitle_ExtraPoints"),
                                                                              MessageBoxButtons.YesNo,
                                                                              MessageBoxIcon.Warning) == DialogResult.No)
@@ -13869,12 +13859,12 @@ namespace Chummer
                     if (blnValid && i > 0 && Program.ShowMessageBox(this,
                                                                              string.Format(
                                                                                  GlobalSettings.CultureInfo,
-                                                                                 LanguageManager.GetString(
+                                                                                 await LanguageManager.GetStringAsync(
                                                                                      "Message_ExtraPoints")
                                                                                  , i.ToString(
                                                                                      GlobalSettings.CultureInfo)
-                                                                                 , LanguageManager.GetString("Label_SummarySpecialAttributes")),
-                                                                             LanguageManager.GetString(
+                                                                                 , await LanguageManager.GetStringAsync("Label_SummarySpecialAttributes")),
+                                                                             await LanguageManager.GetStringAsync(
                                                                                  "MessageTitle_ExtraPoints"),
                                                                              MessageBoxButtons.YesNo,
                                                                              MessageBoxIcon.Warning) == DialogResult.No)
@@ -13887,11 +13877,11 @@ namespace Chummer
                                  && Program.ShowMessageBox(this,
                                                                     string.Format(
                                                                         GlobalSettings.CultureInfo,
-                                                                        LanguageManager.GetString("Message_ExtraPoints")
+                                                                        await LanguageManager.GetStringAsync("Message_ExtraPoints")
                                                                         , CharacterObject.SkillsSection.SkillGroupPoints
                                                                             .ToString(GlobalSettings.CultureInfo)
-                                                                        , LanguageManager.GetString("Label_SummarySkillGroups")),
-                                                                    LanguageManager.GetString(
+                                                                        , await LanguageManager.GetStringAsync("Label_SummarySkillGroups")),
+                                                                    await LanguageManager.GetStringAsync(
                                                                         "MessageTitle_ExtraPoints"),
                                                                     MessageBoxButtons.YesNo,
                                                                     MessageBoxIcon.Warning) == DialogResult.No)
@@ -13902,11 +13892,11 @@ namespace Chummer
                     // Check if the character has gone over on Active Skills
                     if (blnValid && CharacterObject.SkillsSection.SkillPoints > 0 && Program.ShowMessageBox(
                             this,
-                            string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
+                            string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ExtraPoints")
                                           , CharacterObject.SkillsSection.SkillPoints.ToString(
                                               GlobalSettings.CultureInfo)
-                                          , LanguageManager.GetString("Label_SummaryActiveSkills")),
-                            LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
+                                          , await LanguageManager.GetStringAsync("Label_SummaryActiveSkills")),
+                            await LanguageManager.GetStringAsync("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
                             MessageBoxIcon.Warning) == DialogResult.No)
                     {
                         blnValid = false;
@@ -13917,12 +13907,12 @@ namespace Chummer
                                  && Program.ShowMessageBox(this,
                                                                     string.Format(
                                                                         GlobalSettings.CultureInfo,
-                                                                        LanguageManager.GetString("Message_ExtraPoints")
+                                                                        await LanguageManager.GetStringAsync("Message_ExtraPoints")
                                                                         , CharacterObject.SkillsSection
                                                                             .KnowledgeSkillPointsRemain
                                                                             .ToString(GlobalSettings.CultureInfo)
-                                                                        , LanguageManager.GetString("Label_SummaryKnowledgeSkills")),
-                                                                    LanguageManager.GetString(
+                                                                        , await LanguageManager.GetStringAsync("Label_SummaryKnowledgeSkills")),
+                                                                    await LanguageManager.GetStringAsync(
                                                                         "MessageTitle_ExtraPoints"),
                                                                     MessageBoxButtons.YesNo,
                                                                     MessageBoxIcon.Warning) == DialogResult.No)
@@ -13931,9 +13921,9 @@ namespace Chummer
                     }
                 }
 
-                if (!blnValid && sbdMessage.Length > LanguageManager.GetString("Message_InvalidBeginning").Length)
+                if (!blnValid && sbdMessage.Length > (await LanguageManager.GetStringAsync("Message_InvalidBeginning")).Length)
                     Program.ShowMessageBox(this, sbdMessage.ToString(),
-                                                    LanguageManager.GetString("MessageTitle_Invalid"),
+                                                    await LanguageManager.GetStringAsync("MessageTitle_Invalid"),
                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
@@ -13945,9 +13935,9 @@ namespace Chummer
         /// </summary>
         public async ValueTask<bool> ValidateCharacter()
         {
-            int intBuildPoints = CalculateBP(false);
+            int intBuildPoints = await CalculateBP(false);
 
-            if (CheckCharacterValidity(true, intBuildPoints))
+            if (await CheckCharacterValidity(true, intBuildPoints))
             {
                 // See if the character has any Karma remaining.
                 if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
@@ -15542,9 +15532,11 @@ namespace Chummer
 
         private async void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)
         {
-            if (CheckCharacterValidity())
+            if (await CheckCharacterValidity())
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ValidCharacter"), await LanguageManager.GetStringAsync("MessageTitle_ValidCharacter"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ValidCharacter"),
+                                       await LanguageManager.GetStringAsync("MessageTitle_ValidCharacter"),
+                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
