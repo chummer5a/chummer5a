@@ -4164,7 +4164,7 @@ namespace Chummer
                             Task<bool> tskLoopTask = funcLoopToRun?.Invoke(this) ?? Task.FromResult(true);
                             if (tskLoopTask.Status == TaskStatus.Created)
                                 tskLoopTask.RunSynchronously();
-                            if (!tskLoopTask.Result)
+                            if (!tskLoopTask.GetAwaiter().GetResult())
                                 blnErrorFree = false;
                         }
                     }
