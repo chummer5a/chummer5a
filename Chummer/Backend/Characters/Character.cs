@@ -650,7 +650,7 @@ namespace Chummer
             await DoOptionsOnPropertyChanged(sender, e);
         }
 
-        private async ValueTask DoOptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task DoOptionsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             switch (e?.PropertyName)
             {
@@ -10575,14 +10575,37 @@ namespace Chummer
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        bool blnActuallyDifferentSettings = !_objSettings.HasIdenticalSettings(value);
+                        CharacterSettings objOldSettings = _objSettings;
+                        bool blnActuallyDifferentSettings = false;
                         if (_objSettings != null)
+                        {
+                            blnActuallyDifferentSettings = !_objSettings.HasIdenticalSettings(value);
                             _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                        }
+                        else if (value != null)
+                            blnActuallyDifferentSettings = true;
                         _objSettings = value;
                         if (_objSettings != null)
                             _objSettings.PropertyChanged += OptionsOnPropertyChanged;
-                        if (blnActuallyDifferentSettings && !IsLoading)
-                            OnPropertyChanged();
+                        if (!blnActuallyDifferentSettings || IsLoading)
+                            return;
+                        OnPropertyChanged();
+                        if (_objSettings != null)
+                        {
+                            Utils.RunWithoutThreadLock(async () =>
+                            {
+                                foreach (string strProperty in _objSettings.GetDifferingPropertyNames(objOldSettings))
+                                    await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
+                            });
+                        }
+                        else
+                        {
+                            Utils.RunWithoutThreadLock(async () =>
+                            {
+                                foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(_objSettings))
+                                    await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty));
+                            });
+                        }
                     }
                 }
             }
@@ -24891,10 +24914,6 @@ namespace Chummer
 
                         if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                             RefreshAstralReputationImprovements();
-
-                        if (setNamesOfChangedProperties.Contains(nameof(Settings)))
-                            foreach (string strProperty in Settings.GetType().GetProperties().Select(x => x.Name))
-                                Utils.RunWithoutThreadLock(() => DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty)));
                     }
 
                     foreach (string strPropertyToChange in setNamesOfChangedProperties)

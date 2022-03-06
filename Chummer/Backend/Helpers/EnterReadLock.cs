@@ -27,7 +27,7 @@ namespace Chummer
     /// <summary>
     /// Syntactic Sugar for wrapping a AsyncFriendlyReaderWriterLock's EnterReadLock() and ExitReadLock() methods into something that hooks into `using`
     /// </summary>
-    public readonly struct EnterReadLock : IDisposable
+    public readonly struct EnterReadLock : IDisposable, IEquatable<EnterReadLock>
     {
         private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
 
@@ -69,6 +69,24 @@ namespace Chummer
         public void Dispose()
         {
             _rwlMyLock.ExitReadLock();
+        }
+
+        /// <inheritdoc />
+        public bool Equals(EnterReadLock other)
+        {
+            return _rwlMyLock.Equals(other._rwlMyLock);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is EnterReadLock other && Equals(other);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return _rwlMyLock.GetHashCode();
         }
     }
 }

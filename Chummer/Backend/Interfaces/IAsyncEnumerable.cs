@@ -32,9 +32,19 @@ namespace Chummer
     {
         public static async ValueTask<List<T>> ToListAsync<T>(this IAsyncEnumerable<T> objEnumerable)
         {
-            List<T> lstReturn = objEnumerable is ICollection<T> lstEnumerable
-                ? new List<T>(lstEnumerable.Count)
-                : new List<T>();
+            List<T> lstReturn;
+            switch (objEnumerable)
+            {
+                case ICollection<T> lstEnumerable:
+                    lstReturn = new List<T>(lstEnumerable.Count);
+                    break;
+                case IReadOnlyCollection<T> lstReadOnlyEnumerable:
+                    lstReturn = new List<T>(lstReadOnlyEnumerable.Count);
+                    break;
+                default:
+                    lstReturn = new List<T>();
+                    break;
+            }
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())

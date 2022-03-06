@@ -123,13 +123,13 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync"></param>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
         private async Task SaveCoreAsync(bool blnSync, XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
             if (blnSync)
             {
+                // ReSharper disable MethodHasAsyncOverload
                 objWriter.WriteStartElement("spirit");
                 objWriter.WriteElementString(
                     "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
@@ -151,10 +151,11 @@ namespace Chummer
                     System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
                                                                  string.Empty));
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-                // ReSharper disable once MethodHasAsyncOverload
+
                 SaveMugshots(objWriter);
-                // ReSharper disable once MethodHasAsyncOverload
+
                 objWriter.WriteEndElement();
+                // ReSharper restore MethodHasAsyncOverload
             }
             else
             {

@@ -28,7 +28,6 @@ namespace Chummer
     public sealed class CursorWait : IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        private static readonly object s_ObjApplicationWaitCursorsLock = new object();
         private static int _intApplicationWaitCursors;
         private static readonly LockingDictionary<Control, int> s_DicWaitCursorControls = new LockingDictionary<Control, int>();
         private static readonly LockingDictionary<Control, int> s_DicApplicationStartingControls = new LockingDictionary<Control, int>();
@@ -42,11 +41,9 @@ namespace Chummer
             if (objControl.IsNullOrDisposed())
             {
                 _objControl = null;
-                Interlocked.Increment(ref _intApplicationWaitCursors);
-                if (_intApplicationWaitCursors > 0)
+                if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
                 {
-                    lock (s_ObjApplicationWaitCursorsLock)
-                        Application.UseWaitCursor = true;
+                    Application.UseWaitCursor = true;
                 }
                 return;
             }
@@ -100,11 +97,9 @@ namespace Chummer
             {
                 _objControl = null;
                 _frmControlTopParent = null;
-                Interlocked.Increment(ref _intApplicationWaitCursors);
-                if (_intApplicationWaitCursors > 0)
+                if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
                 {
-                    lock (s_ObjApplicationWaitCursorsLock)
-                        Application.UseWaitCursor = true;
+                    Application.UseWaitCursor = true;
                 }
             }
         }
@@ -143,11 +138,9 @@ namespace Chummer
             _blnDisposed = true;
             if (_objControl == null)
             {
-                Interlocked.Decrement(ref _intApplicationWaitCursors);
-                if (_intApplicationWaitCursors <= 0)
+                if (Interlocked.Decrement(ref _intApplicationWaitCursors) == 0)
                 {
-                    lock (s_ObjApplicationWaitCursorsLock)
-                        Application.UseWaitCursor = false;
+                    Application.UseWaitCursor = false;
                 }
                 return;
             }

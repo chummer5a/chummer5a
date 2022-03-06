@@ -33,7 +33,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable
+    public sealed class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;

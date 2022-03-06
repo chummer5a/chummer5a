@@ -3941,7 +3941,7 @@ namespace Chummer
             RemoveSelectedObject(treWeapons.SelectedNode?.Tag);
         }
 
-        private void RemoveSelectedObject(object selectedObject)
+        private static void RemoveSelectedObject(object selectedObject)
         {
             if (!(selectedObject is ICanRemove iRemovable))
                 return;

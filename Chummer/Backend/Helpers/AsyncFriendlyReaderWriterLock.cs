@@ -75,7 +75,7 @@ namespace Chummer
             SemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value ?? _objTopLevelWriterSemaphore;
             SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = objNextSemaphore;
-            IDisposable objReturn = new SafeWriterSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
+            SafeWriterSemaphoreRelease objReturn = new SafeWriterSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
             try
             {
                 if (Utils.EverDoEvents)

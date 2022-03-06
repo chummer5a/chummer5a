@@ -1453,18 +1453,18 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="guiAmmo">InternalId of the Ammo to find.</param>
         /// <param name="strLanguage">Language in which to display ammo name.</param>
-        public async ValueTask<string> GetAmmoNameAsync(Guid guiAmmo, string strLanguage)
+        public Task<string> GetAmmoNameAsync(Guid guiAmmo, string strLanguage)
         {
             if (guiAmmo == Guid.Empty)
-                return string.Empty;
+                return Task.FromResult(string.Empty);
             string strAmmoGuid = guiAmmo.ToString("D", GlobalSettings.InvariantCultureInfo);
             Gear objAmmo = ParentVehicle != null
                 ? _objCharacter.Vehicles.FindVehicleGear(strAmmoGuid)
                 : _objCharacter.Gear.DeepFindById(strAmmoGuid);
 
-            if (objAmmo != null)
-                return await objAmmo.DisplayNameShortAsync(strLanguage);
-            return string.Empty;
+            return objAmmo != null
+                ? objAmmo.DisplayNameShortAsync(strLanguage).AsTask()
+                : Task.FromResult(string.Empty);
         }
 
         /// <summary>

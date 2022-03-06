@@ -28,7 +28,7 @@ namespace Chummer
     /// Taken from the WCF project here:
     /// https://github.com/dotnet/wcf/blob/main/src/System.Private.ServiceModel/src/Internals/System/Runtime/AsyncLock.cs
     /// </summary>
-    public class AsyncLock : IDisposable, IAsyncDisposable
+    public sealed class AsyncLock : IDisposable, IAsyncDisposable
     {
         // Needed because the pools are not necessarily initialized in static classes
         private readonly bool _blnTopLevelSemaphoreFromPool;
@@ -55,7 +55,7 @@ namespace Chummer
         public Task<IAsyncDisposable> TakeLockAsync()
         {
             if (_blnIsDisposed)
-                throw new ObjectDisposedException(nameof(AsyncLock));
+                return Task.FromException<IAsyncDisposable>(new ObjectDisposedException(nameof(AsyncLock)));
             SemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;
             SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentSemaphore.Value = objNextSemaphore;
@@ -63,7 +63,7 @@ namespace Chummer
             return TakeLockCoreAsync(objCurrentSemaphore, objRelease);
         }
 
-        private async Task<IAsyncDisposable> TakeLockCoreAsync(SemaphoreSlim objCurrentSemaphore, SafeSemaphoreRelease objRelease)
+        private static async Task<IAsyncDisposable> TakeLockCoreAsync(SemaphoreSlim objCurrentSemaphore, SafeSemaphoreRelease objRelease)
         {
             await objCurrentSemaphore.WaitAsync();
             return objRelease;

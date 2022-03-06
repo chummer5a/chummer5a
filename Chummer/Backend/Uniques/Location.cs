@@ -32,7 +32,7 @@ namespace Chummer
     /// A Location.
     /// </summary>
     [DebuggerDisplay("{nameof(Name)}")]
-    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IDisposable
+    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IDisposable
     {
         private Guid _guiID;
         private string _strName;

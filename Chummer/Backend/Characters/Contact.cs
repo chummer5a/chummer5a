@@ -310,13 +310,13 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync"></param>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
         private async Task SaveCoreAsync(bool blnSync, XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
             if (blnSync)
             {
+                // ReSharper disable MethodHasAsyncOverload
                 objWriter.WriteStartElement("contact");
                 objWriter.WriteElementString("name", _strName);
                 objWriter.WriteElementString("role", _strRole);
@@ -353,13 +353,12 @@ namespace Chummer
                     objWriter.WriteElementString("readonly", string.Empty);
 
                 if (_strUnique != null)
-                {
                     objWriter.WriteElementString("guid", _strUnique);
-                }
-                
+
                 SaveMugshots(objWriter);
-                
+
                 objWriter.WriteEndElement();
+                // ReSharper restore MethodHasAsyncOverload
             }
             else
             {

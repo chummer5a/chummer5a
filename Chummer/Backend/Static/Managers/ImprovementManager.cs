@@ -3488,16 +3488,17 @@ namespace Chummer
 
                     // Add the Improvement to the Transaction List.
                     List<Improvement> lstTransactions;
-                    do
+                    List<Improvement> lstTransactionsNew = new List<Improvement>(1);
+                    while (true)
                     {
                         bool blnSuccess;
                         (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter);
                         if (blnSuccess)
                             break;
-                        lstTransactions = new List<Improvement>(1);
+                        lstTransactions = lstTransactionsNew;
                         if (await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions))
                             break;
-                    } while (true);
+                    }
 
                     lstTransactions.Add(objImprovement);
                 }

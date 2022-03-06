@@ -470,6 +470,55 @@ namespace Chummer
             OnMultiplePropertyChanged(lstPropertiesToUpdate);
         }
 
+        public IEnumerable<string> GetDifferingPropertyNames(CharacterSettings objOther)
+        {
+            PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+            if (objOther == null)
+            {
+                yield return nameof(SourceId);
+                yield return nameof(FileName);
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                    yield return objProperty.Name;
+                yield return nameof(CustomDataDirectoryKeys);
+                yield return nameof(Books);
+                yield return nameof(BannedWareGrades);
+                yield break;
+            }
+            if (!_guiSourceId.Equals(objOther._guiSourceId))
+            {
+                yield return nameof(SourceId);
+            }
+            if (!_strFileName.Equals(objOther._strFileName))
+            {
+                yield return nameof(FileName);
+            }
+
+            // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+            {
+                object objMyValue = objProperty.GetValue(this);
+                object objOtherValue = objProperty.GetValue(objOther);
+                if (objMyValue.Equals(objOtherValue))
+                    continue;
+                yield return objProperty.Name;
+            }
+
+            if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+            {
+                yield return nameof(CustomDataDirectoryKeys);
+            }
+
+            if (!_setBooks.SetEquals(objOther._setBooks))
+            {
+                yield return nameof(Books);
+            }
+
+            if (!BannedWareGrades.SetEquals(objOther.BannedWareGrades))
+            {
+                yield return nameof(BannedWareGrades);
+            }
+        }
+
         public bool HasIdenticalSettings(CharacterSettings objOther)
         {
             if (objOther == null)
