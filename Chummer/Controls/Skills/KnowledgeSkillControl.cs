@@ -353,7 +353,8 @@ namespace Chummer.UI.Skills
             _tmrNameChangeTimer?.Dispose();
             _tmrSpecChangeTimer?.Dispose();
             _objSkill.PropertyChanged -= Skill_PropertyChanged;
-            _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
+            if (!_objSkill.CharacterObject.IsDisposed)
+                _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
