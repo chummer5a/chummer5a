@@ -862,17 +862,10 @@ namespace Chummer
                                             foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberware"))
                                             {
                                                 foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(
-                                                             objCyberware =>
-                                                                 (objCyberware.Name == objXmlCyberware.InnerText)))
+                                                             objCyberware => objCyberware.Name == objXmlCyberware.InnerText))
                                                 {
-                                                    if (objXmlCyberware.Attributes["select"] == null)
-                                                    {
-                                                        intTotal++;
-                                                        break;
-                                                    }
-
-                                                    if (objXmlCyberware.Attributes["select"].InnerText
-                                                        == objCyberware.Extra)
+                                                    string strSelect = objXmlCyberware.Attributes["select"]?.InnerText;
+                                                    if (string.IsNullOrEmpty(strSelect) || strSelect == objCyberware.Extra)
                                                     {
                                                         intTotal++;
                                                         break;
@@ -898,14 +891,8 @@ namespace Chummer
                                                              objCyberware =>
                                                                  objCyberware.Name.Contains(objXmlCyberware.InnerText)))
                                                 {
-                                                    if (objXmlCyberware.Attributes["select"] == null)
-                                                    {
-                                                        intTotal++;
-                                                        break;
-                                                    }
-
-                                                    if (objXmlCyberware.Attributes["select"].InnerText
-                                                        == objCyberware.Extra)
+                                                    string strSelect = objXmlCyberware.Attributes["select"]?.InnerText;
+                                                    if (string.IsNullOrEmpty(strSelect) || strSelect == objCyberware.Extra)
                                                     {
                                                         intTotal++;
                                                         break;
@@ -921,14 +908,8 @@ namespace Chummer
                                                 {
                                                     if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
                                                     {
-                                                        if (objXmlCyberware.Attributes["select"] == null)
-                                                        {
-                                                            intTotal++;
-                                                            break;
-                                                        }
-
-                                                        if (objXmlCyberware.Attributes["select"].InnerText
-                                                            == objCyberware.Extra)
+                                                        string strSelect = objXmlCyberware.Attributes["select"]?.InnerText;
+                                                        if (string.IsNullOrEmpty(strSelect) || strSelect == objCyberware.Extra)
                                                         {
                                                             intTotal++;
                                                             break;

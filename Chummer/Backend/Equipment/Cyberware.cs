@@ -4107,7 +4107,7 @@ namespace Chummer.Backend.Equipment
                                                   GlobalSettings
                                                       .InvariantCultureInfo));
                         sbdValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + '}',
-                                              () => (Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0"));
+                                              () => Parent?.GetMatrixAttributeString(strMatrixAttribute) ?? "0");
                         if (Children.Count + GearChildren.Count > 0 &&
                             strExpression.Contains("{Children " + strMatrixAttribute + '}'))
                         {
