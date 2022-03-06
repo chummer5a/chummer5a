@@ -2326,10 +2326,16 @@ namespace Chummer
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 Character[] lstClones = new Character[intClones];
+                Task<Character>[] tskLoadingTasks = new Task<Character>[intClones];
+                for (int i = 0; i < intClones; ++i)
+                {
+                    string strNewName = CharacterObject.Alias + strSpace + i.ToString(GlobalSettings.CultureInfo);
+                    tskLoadingTasks[i] = Task.Run(() => Program.LoadCharacterAsync(CharacterObject.FileName, strNewName, true));
+                }
                 // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
-                await Task.Run(() => Parallel.For(0, intClones,
-                    i => lstClones[i] = Program.LoadCharacter(CharacterObject.FileName,
-                        CharacterObject.Alias + strSpace + i.ToString(GlobalSettings.CultureInfo), true)));
+                await Task.WhenAll(tskLoadingTasks);
+                for (int i = 0; i < intClones; ++i)
+                    lstClones[i] = await tskLoadingTasks[i];
                 await Program.OpenCharacterList(lstClones, false);
             }
         }

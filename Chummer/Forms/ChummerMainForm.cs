@@ -149,7 +149,7 @@ namespace Chummer
                             ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1);
                             try
                             {
-                                Task<ParallelLoopResult> objCharacterLoadingTask = null;
+                                Task objCharacterLoadingTask = null;
                                 using (Program.MainProgressBar
                                            = await Program.CreateAndShowProgressBarAsync(
                                                Text,
@@ -272,15 +272,21 @@ namespace Chummer
                                             }
 
                                             if (setFilesToLoad.Count > 0)
-                                                objCharacterLoadingTask = Task.Run(() =>
-                                                    Parallel.ForEach(setFilesToLoad, x =>
+                                            {
+                                                List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
+                                                foreach (string strFile in setFilesToLoad)
+                                                {
+                                                    tskLoadingTasks.Add(Task.Run(async () =>
                                                     {
                                                         Character objCharacter
-                                                            = Program.LoadCharacter(x);
+                                                            = await Program.LoadCharacterAsync(strFile);
                                                         // ReSharper disable once AccessToDisposedClosure
-                                                        lstCharactersToLoad
-                                                            .Add(objCharacter);
+                                                        await lstCharactersToLoad
+                                                            .AddAsync(objCharacter);
                                                     }));
+                                                }
+                                                objCharacterLoadingTask = Task.WhenAll(tskLoadingTasks);
+                                            }
                                         }
                                         finally
                                         {
@@ -1012,16 +1018,17 @@ namespace Chummer
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
                 if (s.Length == 0)
                     return;
-                Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(s.Length);
+                Character[] lstCharacters = new Character[s.Length];
+                Task<Character>[] tskCharacterLoads = new Task<Character>[s.Length];
+                // Array instead of concurrent bag because we want to preserve order
                 for (int i = 0; i < s.Length; ++i)
                 {
-                    dicIndexedStrings.Add(i, s[i]);
+                    string strFile = s[i];
+                    tskCharacterLoads[i] = Task.Run(() => Program.LoadCharacterAsync(strFile));
                 }
-
-                // Array with locker instead of concurrent bag because we want to preserve order
-                Character[] lstCharacters = new Character[s.Length];
-                await Task.WhenAll(dicIndexedStrings.Select(x =>
-                    Task.Run(() => lstCharacters[x.Key] = Program.LoadCharacter(x.Value))));
+                await Task.WhenAll(tskCharacterLoads);
+                for (int i = 0; i < lstCharacters.Length; ++i)
+                    lstCharacters[i] = await tskCharacterLoads[i];
                 await OpenCharacterList(lstCharacters);
             }
         }
@@ -1244,15 +1251,15 @@ namespace Chummer
                            string.Join(',' + await LanguageManager.GetStringAsync("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
                            lstFilesToOpen.Count * Character.NumLoadingSections))
                 {
-                    Dictionary<int, string> dicIndexedStrings =
-                        new Dictionary<int, string>(lstFilesToOpen.Count);
+                    Task<Character>[] tskCharacterLoads = new Task<Character>[lstFilesToOpen.Count];
                     for (int i = 0; i < lstFilesToOpen.Count; ++i)
                     {
-                        dicIndexedStrings.Add(i, lstFilesToOpen[i]);
+                        string strFile = lstFilesToOpen[i];
+                        tskCharacterLoads[i] = Task.Run(() => Program.LoadCharacterAsync(strFile));
                     }
-
-                    await Task.WhenAll(dicIndexedStrings.Select(x =>
-                        Task.Run(() => lstCharacters[x.Key] = Program.LoadCharacter(x.Value))));
+                    await Task.WhenAll(tskCharacterLoads);
+                    for (int i = 0; i < lstCharacters.Length; ++i)
+                        lstCharacters[i] = await tskCharacterLoads[i];
                 }
                 await OpenCharacterList(lstCharacters);
             }
@@ -1552,7 +1559,7 @@ namespace Chummer
             else if (m.Msg == NativeMethods.WM_COPYDATA && _blnAbleToReceiveData)
             {
                 ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
-                Task<ParallelLoopResult> objCharacterLoadingTask = null;
+                Task objCharacterLoadingTask = null;
 
                 using (Program.MainProgressBar = Program.CreateAndShowProgressBar())
                 using (new CursorWait(this))
@@ -1625,12 +1632,21 @@ namespace Chummer
                             }
 
                             if (setFilesToLoad.Count > 0)
-                                objCharacterLoadingTask = Task.Run(() =>
-                                                                       Parallel.ForEach(setFilesToLoad, x =>
-                                                                       {
-                                                                           Character objCharacter = Program.LoadCharacter(x);
-                                                                           lstCharactersToLoad.Add(objCharacter);
-                                                                       }));
+                            {
+                                List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
+                                foreach (string strFile in setFilesToLoad)
+                                {
+                                    tskLoadingTasks.Add(Task.Run(async () =>
+                                    {
+                                        Character objCharacter
+                                            = await Program.LoadCharacterAsync(strFile);
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        await lstCharactersToLoad
+                                            .AddAsync(objCharacter);
+                                    }));
+                                }
+                                objCharacterLoadingTask = Task.WhenAll(tskLoadingTasks);
+                            }
                         }
                         finally
                         {

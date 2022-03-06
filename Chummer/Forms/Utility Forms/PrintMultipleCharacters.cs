@@ -131,32 +131,48 @@ namespace Chummer
                             objBar.Value = 0;
                             objBar.Maximum = treCharacters.Nodes.Count;
                         }));
-                    Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
+
                     // Parallelized load because this is one major bottleneck.
-                    Parallel.For(0, lstCharacters.Length, (i, objState) =>
+                    Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
+                    Task<Character>[] tskLoadingTasks = new Task<Character>[treCharacters.Nodes.Count];
+                    for (int i = 0; i < tskLoadingTasks.Length; ++i)
                     {
-                        if (_objPrinterCancellationTokenSource.IsCancellationRequested ||
-                            objState.ShouldExitCurrentIteration)
+                        string strLoopFile = treCharacters.Nodes[i].Tag.ToString();
+                        tskLoadingTasks[i] = Task.Run(() => InnerLoad(strLoopFile), _objPrinterCancellationTokenSource.Token);
+                    }
+
+                    async Task<Character> InnerLoad(string strLoopFile)
+                    {
+                        if (_objPrinterCancellationTokenSource.IsCancellationRequested)
                         {
-                            if (!objState.IsStopped)
-                                objState.Stop();
                             _objPrinterCancellationTokenSource?.Cancel(false);
-                            return;
+                            return null;
                         }
 
-                        lstCharacters[i] = Program.LoadCharacter(treCharacters.Nodes[i].Tag.ToString(), string.Empty, false, false, false);
-                        bool blnLoadSuccessful = lstCharacters[i] != null;
-                        if (_objPrinterCancellationTokenSource.IsCancellationRequested ||
-                            objState.ShouldExitCurrentIteration)
+                        Character objReturn = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, false);
+                        bool blnLoadSuccessful = objReturn != null;
+                        if (_objPrinterCancellationTokenSource.IsCancellationRequested)
                         {
-                            if (!objState.IsStopped)
-                                objState.Stop();
                             _objPrinterCancellationTokenSource?.Cancel(false);
-                            return;
+                            return null;
                         }
                         if (blnLoadSuccessful)
-                            prgProgress.DoThreadSafe(() => ++prgProgress.Value);
-                    });
+                            await prgProgress.DoThreadSafeAsync(() => ++prgProgress.Value);
+                        return objReturn;
+                    }
+
+                    await Task.WhenAll(tskLoadingTasks);
+                    if (_objPrinterCancellationTokenSource.IsCancellationRequested)
+                        return;
+                    try
+                    {
+                        for (int i = 0; i < lstCharacters.Length; ++i)
+                            lstCharacters[i] = await tskLoadingTasks[i];
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return; // We cancelled the task, so just exit
+                    }
                     if (_objPrinterCancellationTokenSource.IsCancellationRequested)
                         return;
                     await CleanUpOldCharacters();
