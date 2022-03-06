@@ -3865,29 +3865,29 @@ namespace Chummer
                 objWeapon.Create(objXmlWeapon, lstWeapons);
                 objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
-                decimal decCost = objWeapon.TotalCost;
-                // Apply a markup if applicable.
-                if (frmPickWeapon.Markup != 0)
-                {
-                    decCost *= 1 + frmPickWeapon.Markup / 100.0m;
-                }
-
-                // Multiply the cost if applicable.
-                char chrAvail = objWeapon.TotalAvailTuple().Suffix;
-                switch (chrAvail)
-                {
-                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                        break;
-
-                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                        break;
-                }
-
                 // Check the item's Cost and make sure the character can afford it.
                 if (!frmPickWeapon.FreeCost)
                 {
+                    decimal decCost = objWeapon.TotalCost;
+                    // Apply a markup if applicable.
+                    if (frmPickWeapon.Markup != 0)
+                    {
+                        decCost *= 1 + frmPickWeapon.Markup / 100.0m;
+                    }
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+                    switch (chrAvail)
+                    {
+                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                            break;
+
+                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                            break;
+                    }
+
                     if (decCost > CharacterObject.Nuyen)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -4020,29 +4020,29 @@ namespace Chummer
 
                 objVehicle.DiscountCost = frmPickVehicle.BlackMarketDiscount;
 
-                decimal decCost = objVehicle.TotalCost;
-                // Apply a markup if applicable.
-                if (frmPickVehicle.Markup != 0)
-                {
-                    decCost *= 1 + frmPickVehicle.Markup / 100.0m;
-                }
-
-                // Multiply the cost if applicable.
-                char chrAvail = objVehicle.TotalAvailTuple().Suffix;
-                switch (chrAvail)
-                {
-                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                        break;
-
-                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                        break;
-                }
-
                 // Check the item's Cost and make sure the character can afford it.
                 if (!frmPickVehicle.FreeCost)
                 {
+                    decimal decCost = objVehicle.TotalCost;
+                    // Apply a markup if applicable.
+                    if (frmPickVehicle.Markup != 0)
+                    {
+                        decCost *= 1 + frmPickVehicle.Markup / 100.0m;
+                    }
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = objVehicle.TotalAvailTuple().Suffix;
+                    switch (chrAvail)
+                    {
+                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                            break;
+
+                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                            break;
+                    }
+
                     if (decCost > CharacterObject.Nuyen)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -6423,30 +6423,31 @@ namespace Chummer
 
                     // Check the item's Cost and make sure the character can afford it.
                     decimal decOriginalCost = objWeapon.TotalCost;
+
                     objWeapon.WeaponAccessories.Add(objAccessory);
-
-                    decimal decCost = objWeapon.TotalCost - decOriginalCost;
-                    // Apply a markup if applicable.
-                    if (frmPickWeaponAccessory.Markup != 0)
-                    {
-                        decCost *= 1 + frmPickWeaponAccessory.Markup / 100.0m;
-                    }
-
-                    // Multiply the cost if applicable.
-                    char chrAvail = objAccessory.TotalAvailTuple().Suffix;
-                    switch (chrAvail)
-                    {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
-
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
-                    }
 
                     if (!frmPickWeaponAccessory.FreeCost)
                     {
+                        decimal decCost = objWeapon.TotalCost - decOriginalCost;
+                        // Apply a markup if applicable.
+                        if (frmPickWeaponAccessory.Markup != 0)
+                        {
+                            decCost *= 1 + frmPickWeaponAccessory.Markup / 100.0m;
+                        }
+
+                        // Multiply the cost if applicable.
+                        char chrAvail = objAccessory.TotalAvailTuple().Suffix;
+                        switch (chrAvail)
+                        {
+                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                break;
+
+                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                break;
+                        }
+
                         if (decCost > CharacterObject.Nuyen)
                         {
                             objWeapon.WeaponAccessories.Remove(objAccessory);
@@ -6493,29 +6494,29 @@ namespace Chummer
                 if (objArmor.InternalId.IsEmptyGuid())
                     return frmPickArmor.AddAgain;
 
-                decimal decCost = objArmor.TotalCost;
-                // Apply a markup if applicable.
-                if (frmPickArmor.Markup != 0)
-                {
-                    decCost *= 1 + frmPickArmor.Markup / 100.0m;
-                }
-
-                // Multiply the cost if applicable.
-                char chrAvail = objArmor.TotalAvailTuple().Suffix;
-                switch (chrAvail)
-                {
-                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                        break;
-
-                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                        break;
-                }
-
                 // Check the item's Cost and make sure the character can afford it.
                 if (!frmPickArmor.FreeCost)
                 {
+                    decimal decCost = objArmor.TotalCost;
+                    // Apply a markup if applicable.
+                    if (frmPickArmor.Markup != 0)
+                    {
+                        decCost *= 1 + frmPickArmor.Markup / 100.0m;
+                    }
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = objArmor.TotalAvailTuple().Suffix;
+                    switch (chrAvail)
+                    {
+                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                            break;
+
+                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                            break;
+                    }
+
                     if (decCost > CharacterObject.Nuyen)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -6635,28 +6636,28 @@ namespace Chummer
                         continue;
                     }
 
-                    decimal decCost = objArmor.TotalCost - decOriginalCost;
-                    // Apply a markup if applicable.
-                    if (frmPickArmorMod.Markup != 0)
-                    {
-                        decCost *= 1 + frmPickArmorMod.Markup / 100.0m;
-                    }
-
-                    // Multiply the cost if applicable.
-                    char chrAvail = objMod.TotalAvailTuple().Suffix;
-                    switch (chrAvail)
-                    {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
-
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
-                    }
-
                     if (!frmPickArmorMod.FreeCost)
                     {
+                        decimal decCost = objArmor.TotalCost - decOriginalCost;
+                        // Apply a markup if applicable.
+                        if (frmPickArmorMod.Markup != 0)
+                        {
+                            decCost *= 1 + frmPickArmorMod.Markup / 100.0m;
+                        }
+
+                        // Multiply the cost if applicable.
+                        char chrAvail = objMod.TotalAvailTuple().Suffix;
+                        switch (chrAvail)
+                        {
+                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                break;
+
+                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                break;
+                        }
+
                         if (decCost > CharacterObject.Nuyen)
                         {
                             objArmor.ArmorMods.Remove(objMod);
@@ -6803,8 +6804,6 @@ namespace Chummer
 
                     // Check the item's Cost and make sure the character can afford it.
                     decimal decOriginalCost = objVehicle.TotalCost;
-                    if (frmPickVehicleMod.FreeCost)
-                        objMod.Cost = "0";
 
                     objVehicle.Mods.Add(objMod);
 
@@ -6830,38 +6829,46 @@ namespace Chummer
                         }
                     }
 
-                    decimal decCost = objVehicle.TotalCost - decOriginalCost;
-
-                    // Multiply the cost if applicable.
-                    char chrAvail = objMod.TotalAvailTuple().Suffix;
-                    switch (chrAvail)
+                    if (!frmPickVehicleMod.FreeCost)
                     {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
+                        decimal decCost = objVehicle.TotalCost - decOriginalCost;
 
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
+                        // Multiply the cost if applicable.
+                        char chrAvail = objMod.TotalAvailTuple().Suffix;
+                        switch (chrAvail)
+                        {
+                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                break;
+
+                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                break;
+                        }
+
+                        if (decCost > CharacterObject.Nuyen)
+                        {
+                            objVehicle.Mods.Remove(objMod);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
+                                                   await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            continue;
+                        }
+
+                        // Create the Expense Log Entry.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(decCost * -1,
+                                          await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod")
+                                          + await LanguageManager.GetStringAsync("String_Space")
+                                          + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                          DateTime.Now);
+                        CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                        CharacterObject.Nuyen -= decCost;
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
+                        objExpense.Undo = objUndo;
                     }
-
-                    if (decCost > CharacterObject.Nuyen)
-                    {
-                        objVehicle.Mods.Remove(objMod);
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        continue;
-                    }
-
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod") + await LanguageManager.GetStringAsync("String_Space") + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                        DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                    CharacterObject.Nuyen -= decCost;
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddVehicleMod, objMod.InternalId);
-                    objExpense.Undo = objUndo;
                 }
             }
             while (blnAddAgain);
@@ -6939,28 +6946,28 @@ namespace Chummer
                 };
                 objWeapon.Create(objXmlWeapon, lstWeapons);
 
-                decimal decCost = objWeapon.TotalCost;
-                // Apply a markup if applicable.
-                if (frmPickWeapon.Markup != 0)
-                {
-                    decCost *= 1 + frmPickWeapon.Markup / 100.0m;
-                }
-
-                // Multiply the cost if applicable.
-                char chrAvail = objWeapon.TotalAvailTuple().Suffix;
-                switch (chrAvail)
-                {
-                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                        break;
-
-                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                        break;
-                }
-
                 if (!frmPickWeapon.FreeCost)
                 {
+                    decimal decCost = objWeapon.TotalCost;
+                    // Apply a markup if applicable.
+                    if (frmPickWeapon.Markup != 0)
+                    {
+                        decCost *= 1 + frmPickWeapon.Markup / 100.0m;
+                    }
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+                    switch (chrAvail)
+                    {
+                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                            break;
+
+                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                            break;
+                    }
+
                     // Check the item's Cost and make sure the character can afford it.
                     if (decCost > CharacterObject.Nuyen)
                     {
@@ -7097,28 +7104,28 @@ namespace Chummer
                     decimal intOriginalCost = objWeapon.TotalCost;
                     objWeapon.WeaponAccessories.Add(objAccessory);
 
-                    decimal decCost = objWeapon.TotalCost - intOriginalCost;
-                    // Apply a markup if applicable.
-                    if (frmPickWeaponAccessory.Markup != 0)
-                    {
-                        decCost *= 1 + frmPickWeaponAccessory.Markup / 100.0m;
-                    }
-
-                    // Multiply the cost if applicable.
-                    char chrAvail = objAccessory.TotalAvailTuple().Suffix;
-                    switch (chrAvail)
-                    {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
-
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
-                    }
-
                     if (!frmPickWeaponAccessory.FreeCost)
                     {
+                        decimal decCost = objWeapon.TotalCost - intOriginalCost;
+                        // Apply a markup if applicable.
+                        if (frmPickWeaponAccessory.Markup != 0)
+                        {
+                            decCost *= 1 + frmPickWeaponAccessory.Markup / 100.0m;
+                        }
+
+                        // Multiply the cost if applicable.
+                        char chrAvail = objAccessory.TotalAvailTuple().Suffix;
+                        switch (chrAvail)
+                        {
+                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                break;
+
+                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                break;
+                        }
+
                         if (decCost > CharacterObject.Nuyen)
                         {
                             objWeapon.WeaponAccessories.Remove(objAccessory);
@@ -7173,29 +7180,29 @@ namespace Chummer
                 if (!objSelectedWeapon.AllowAccessory)
                     objWeapon.AllowAccessory = false;
 
-                decimal decCost = objWeapon.TotalCost;
-                // Apply a markup if applicable.
-                if (frmPickWeapon.Markup != 0)
-                {
-                    decCost *= 1 + frmPickWeapon.Markup / 100.0m;
-                }
-
-                // Multiply the cost if applicable.
-                char chrAvail = objWeapon.TotalAvailTuple().Suffix;
-                switch (chrAvail)
-                {
-                    case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                        decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                        break;
-
-                    case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                        decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                        break;
-                }
-
                 // Check the item's Cost and make sure the character can afford it.
                 if (!frmPickWeapon.FreeCost)
                 {
+                    decimal decCost = objWeapon.TotalCost;
+                    // Apply a markup if applicable.
+                    if (frmPickWeapon.Markup != 0)
+                    {
+                        decCost *= 1 + frmPickWeapon.Markup / 100.0m;
+                    }
+
+                    // Multiply the cost if applicable.
+                    char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+                    switch (chrAvail)
+                    {
+                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                            break;
+
+                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                            break;
+                    }
+
                     if (decCost > CharacterObject.Nuyen)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -7377,30 +7384,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"), MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -9213,30 +9215,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
@@ -9331,30 +9328,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
@@ -9453,30 +9445,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
@@ -9563,30 +9550,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
@@ -9675,30 +9657,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
@@ -9788,30 +9765,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
@@ -9937,30 +9909,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();
@@ -10049,30 +10016,25 @@ namespace Chummer
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.DoItYourself)
                             objGear.Cost = '(' + objGear.Cost + ") * 0.5";
-                        // If the item was marked as free, change its cost.
-                        if (frmPickGear.FreeCost)
-                        {
-                            objGear.Cost = "0";
-                        }
-
-                        decimal decCost = objGear.TotalCost;
-
-                        // Multiply the cost if applicable.
-                        char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
-                        switch (chrAvail)
-                        {
-                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                                break;
-
-                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                                break;
-                        }
 
                         // Check the item's Cost and make sure the character can afford it.
                         if (!frmPickGear.FreeCost)
                         {
+                            decimal decCost = objGear.TotalCost;
+
+                            // Multiply the cost if applicable.
+                            char chrAvail = (await objGear.TotalAvailTupleAsync()).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
                             if (decCost > CharacterObject.Nuyen)
                             {
                                 objGear.DeleteGear();

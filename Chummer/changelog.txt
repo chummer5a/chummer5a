@@ -19,6 +19,7 @@ Application Changes:
 - Chummer now treats items with an availability or cost defined as just a hyphen as them having 0 in these values instead of crashing.
 - Ammo types that modify a weapon's range now have that modification properly represented.
 - Changing the character settings of a currently open character now properly causes the new settings to be reflected in the open character's form.
+- Checking the "Free" box when acquiring new items in career mode now always universally just skips the purchasing process instead of setting the item's cost to 0.
 
 Data Changes:
 - One with the Matrix I, II, and III can no longer be taken multiple times.
