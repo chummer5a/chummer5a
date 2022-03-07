@@ -45,5 +45,17 @@ namespace Chummer
         {
             return objWriter.WriteAttributeStringAsync(null, localName, null, value);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static XmlElementWriteHelper StartElement(this XmlWriter objWriter, string localName)
+        {
+            return XmlElementWriteHelper.StartElement(objWriter, localName);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<XmlElementWriteHelper> StartElementAsync(this XmlWriter objWriter, string localName)
+        {
+            return XmlElementWriteHelper.StartElementAsync(objWriter, localName);
+        }
     }
 }

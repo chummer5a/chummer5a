@@ -129,58 +129,66 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable MethodHasAsyncOverload
-                objWriter.WriteStartElement("spirit");
-                objWriter.WriteElementString(
-                    "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("name", _strName);
-                objWriter.WriteElementString("crittername", _strCritterName);
-                objWriter.WriteElementString(
-                    "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString(
-                    "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString(
-                    "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString(
-                    "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("type", _eEntityType.ToString());
-                objWriter.WriteElementString("file", _strFileName);
-                objWriter.WriteElementString("relative", _strRelativeName);
-                objWriter.WriteElementString(
-                    "notes",
-                    System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
-                                                                 string.Empty));
-                objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
+                using (objWriter.StartElement("spirit"))
+                {
+                    objWriter.WriteElementString(
+                        "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString("name", _strName);
+                    objWriter.WriteElementString("crittername", _strCritterName);
+                    objWriter.WriteElementString(
+                        "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString(
+                        "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString(
+                        "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString(
+                        "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
+                    objWriter.WriteElementString("type", _eEntityType.ToString());
+                    objWriter.WriteElementString("file", _strFileName);
+                    objWriter.WriteElementString("relative", _strRelativeName);
+                    objWriter.WriteElementString(
+                        "notes",
+                        System.Text.RegularExpressions.Regex.Replace(
+                            _strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+                            string.Empty));
+                    objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
 
-                SaveMugshots(objWriter);
-
-                objWriter.WriteEndElement();
-                // ReSharper restore MethodHasAsyncOverload
+                    SaveMugshots(objWriter);
+                }
             }
             else
             {
-                await objWriter.WriteStartElementAsync("spirit");
-                await objWriter.WriteElementStringAsync(
-                    "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("name", _strName);
-                await objWriter.WriteElementStringAsync("crittername", _strCritterName);
-                await objWriter.WriteElementStringAsync(
-                    "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync(
-                    "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync(
-                    "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync(
-                    "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteElementStringAsync("type", _eEntityType.ToString());
-                await objWriter.WriteElementStringAsync("file", _strFileName);
-                await objWriter.WriteElementStringAsync("relative", _strRelativeName);
-                await objWriter.WriteElementStringAsync(
-                    "notes",
-                    System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
-                                                                 string.Empty));
-                await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes));
-                await SaveMugshotsAsync(objWriter);
-                await objWriter.WriteEndElementAsync();
+                // <spirit>
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("spirit");
+                try
+                {
+                    await objWriter.WriteElementStringAsync(
+                        "guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("name", _strName);
+                    await objWriter.WriteElementStringAsync("crittername", _strCritterName);
+                    await objWriter.WriteElementStringAsync(
+                        "services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync(
+                        "force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync(
+                        "bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync(
+                        "fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("type", _eEntityType.ToString());
+                    await objWriter.WriteElementStringAsync("file", _strFileName);
+                    await objWriter.WriteElementStringAsync("relative", _strRelativeName);
+                    await objWriter.WriteElementStringAsync(
+                        "notes",
+                        System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+                                                                     string.Empty));
+                    await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes));
+                    await SaveMugshotsAsync(objWriter);
+                }
+                finally
+                {
+                    // </spirit>
+                    await objBaseElement.DisposeAsync();
+                }
             }
         }
 
@@ -244,120 +252,182 @@ namespace Chummer
                 strName = objXmlCritterNode?["translate"]?.InnerText ?? Name;
             }
 
-            await objWriter.WriteStartElementAsync("spirit");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("name", strName);
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            await objWriter.WriteElementStringAsync("crittername", CritterName);
-            await objWriter.WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("services", ServicesOwed.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("ratinglabel", await LanguageManager.GetStringAsync(RatingLabel, strLanguageToPrint));
-
-            if (objXmlCritterNode != null)
+            // <spirit>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("spirit");
+            try
             {
-                //Attributes for spirits, named differently as to not confuse <attribute>
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("name", strName);
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("crittername", CritterName);
+                await objWriter.WriteElementStringAsync("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("services", ServicesOwed.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("ratinglabel", await LanguageManager.GetStringAsync(RatingLabel, strLanguageToPrint));
 
-                Dictionary<string, int> dicAttributes = new Dictionary<string, int>(s_PrintAttributeLabels.Count);
-                await objWriter.WriteStartElementAsync("spiritattributes");
-                foreach (string strAttribute in s_PrintAttributeLabels)
+                if (objXmlCritterNode != null)
                 {
-                    string strInner = string.Empty;
-                    if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
-                    {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
-                        int intValue = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
-                        await objWriter.WriteElementStringAsync(strAttribute, intValue.ToString(objCulture));
+                    //Attributes for spirits, named differently as to not confuse <attribute>
 
-                        dicAttributes[strAttribute] = intValue;
+                    Dictionary<string, int> dicAttributes = new Dictionary<string, int>(s_PrintAttributeLabels.Count);
+                    // <spiritattributes>
+                    XmlElementWriteHelper objSpiritAttributesElement = await objWriter.StartElementAsync("spiritattributes");
+                    try
+                    {
+                        foreach (string strAttribute in s_PrintAttributeLabels)
+                        {
+                            string strInner = string.Empty;
+                            if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
+                            {
+                                object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                                int intValue = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
+                                await objWriter.WriteElementStringAsync(strAttribute, intValue.ToString(objCulture));
+
+                                dicAttributes[strAttribute] = intValue;
+                            }
+                        }
                     }
+                    finally
+                    {
+                        // </spiritattributes>
+                        await objSpiritAttributesElement.DisposeAsync();
+                    }
+
+                    if (_objLinkedCharacter != null)
+                    {
+                        //Dump skills, (optional)powers if present to output
+
+                        XPathNavigator xmlSpiritPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                        XPathNavigator xmlCritterPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
+
+                        XmlNode xmlPowersNode = objXmlCritterNode["powers"];
+                        if (xmlPowersNode != null)
+                        {
+                            // <powers>
+                            XmlElementWriteHelper objPowersElement = await objWriter.StartElementAsync("powers");
+                            try
+                            {
+                                foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
+                                {
+                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                                }
+                            }
+                            finally
+                            {
+                                // </powers>
+                                await objPowersElement.DisposeAsync();
+                            }
+                        }
+
+                        xmlPowersNode = objXmlCritterNode["optionalpowers"];
+                        if (xmlPowersNode != null)
+                        {
+                            // <optionalpowers>
+                            XmlElementWriteHelper objOptionalPowersElement = await objWriter.StartElementAsync("optionalpowers");
+                            try
+                            {
+                                foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
+                                {
+                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                                }
+                            }
+                            finally
+                            {
+                                // </optionalpowers>
+                                await objOptionalPowersElement.DisposeAsync();
+                            }
+                        }
+
+                        xmlPowersNode = objXmlCritterNode["skills"];
+                        if (xmlPowersNode != null)
+                        {
+                            XPathNavigator xmlSkillsDocument = await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguageToPrint);
+                            // <skills>
+                            XmlElementWriteHelper objSkillsElement = await objWriter.StartElementAsync("skills");
+                            try
+                            {
+                                foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
+                                {
+                                    string strAttrName = xmlSkillNode.Attributes?["attr"]?.Value ?? string.Empty;
+                                    if (!dicAttributes.TryGetValue(strAttrName, out int intAttrValue))
+                                        intAttrValue = _intForce;
+                                    int intDicepool = intAttrValue + _intForce;
+
+                                    string strEnglishName = xmlSkillNode.InnerText;
+                                    string strTranslatedName
+                                        = xmlSkillsDocument
+                                          .SelectSingleNode("/chummer/skills/skill[name = "
+                                                            + strEnglishName.CleanXPath() + "]/translate")?.Value ??
+                                          xmlSkillsDocument
+                                              .SelectSingleNode(
+                                                  "/chummer/knowledgeskills/skill[name = " + strEnglishName.CleanXPath()
+                                                  + "]/translate")?.Value ?? strEnglishName;
+                                    // <skill>
+                                    XmlElementWriteHelper objSkillElement = await objWriter.StartElementAsync("skill");
+                                    try
+                                    {
+                                        await objWriter.WriteElementStringAsync("name", strTranslatedName);
+                                        await objWriter.WriteElementStringAsync("name_english", strEnglishName);
+                                        await objWriter.WriteElementStringAsync("attr", strAttrName);
+                                        await objWriter.WriteElementStringAsync(
+                                            "pool", intDicepool.ToString(objCulture));
+                                    }
+                                    finally
+                                    {
+                                        // </skill>
+                                        await objSkillElement.DisposeAsync();
+                                    }
+                                }
+                            }
+                            finally
+                            {
+                                // </skills>
+                                await objSkillsElement.DisposeAsync();
+                            }
+                        }
+
+                        xmlPowersNode = objXmlCritterNode["weaknesses"];
+                        if (xmlPowersNode != null)
+                        {
+                            // <weaknesses>
+                            XmlElementWriteHelper objWeaknessesElement = await objWriter.StartElementAsync("weaknesses");
+                            try
+                            {
+                                foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
+                                {
+                                    await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
+                                }
+                            }
+                            finally
+                            {
+                                // </weaknesses>
+                                await objWeaknessesElement.DisposeAsync();
+                            }
+                        }
+                    }
+                    //Page in book for reference
+                    string strSource = string.Empty;
+                    string strPage = string.Empty;
+
+                    if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
+                        await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint));
+                    if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage) || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
+                        await objWriter.WriteElementStringAsync("page", strPage);
                 }
 
-                await objWriter.WriteEndElementAsync();
+                await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("type", EntityType.ToString());
 
-                if (_objLinkedCharacter != null)
-                {
-                    //Dump skills, (optional)powers if present to output
-
-                    XPathNavigator xmlSpiritPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                    XPathNavigator xmlCritterPowersBaseChummerNode = await (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint)).SelectSingleNodeAndCacheExpressionAsync("/chummer");
-
-                    XmlNode xmlPowersNode = objXmlCritterNode["powers"];
-                    if (xmlPowersNode != null)
-                    {
-                        await objWriter.WriteStartElementAsync("powers");
-                        foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
-                        {
-                            await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
-                        }
-                        await objWriter.WriteEndElementAsync();
-                    }
-
-                    xmlPowersNode = objXmlCritterNode["optionalpowers"];
-                    if (xmlPowersNode != null)
-                    {
-                        await objWriter.WriteStartElementAsync("optionalpowers");
-                        foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
-                        {
-                            await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
-                        }
-                        await objWriter.WriteEndElementAsync();
-                    }
-
-                    xmlPowersNode = objXmlCritterNode["skills"];
-                    if (xmlPowersNode != null)
-                    {
-                        XPathNavigator xmlSkillsDocument = await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguageToPrint);
-                        await objWriter.WriteStartElementAsync("skills");
-                        foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
-                        {
-                            string strAttrName = xmlSkillNode.Attributes?["attr"]?.Value ?? string.Empty;
-                            if (!dicAttributes.TryGetValue(strAttrName, out int intAttrValue))
-                                intAttrValue = _intForce;
-                            int intDicepool = intAttrValue + _intForce;
-
-                            string strEnglishName = xmlSkillNode.InnerText;
-                            string strTranslatedName = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + strEnglishName.CleanXPath() + "]/translate")?.Value ??
-                                                       xmlSkillsDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strEnglishName.CleanXPath() + "]/translate")?.Value ?? strEnglishName;
-                            await objWriter.WriteStartElementAsync("skill");
-                            await objWriter.WriteElementStringAsync("name", strTranslatedName);
-                            await objWriter.WriteElementStringAsync("name_english", strEnglishName);
-                            await objWriter.WriteElementStringAsync("attr", strAttrName);
-                            await objWriter.WriteElementStringAsync("pool", intDicepool.ToString(objCulture));
-                            await objWriter.WriteEndElementAsync();
-                        }
-                        await objWriter.WriteEndElementAsync();
-                    }
-
-                    xmlPowersNode = objXmlCritterNode["weaknesses"];
-                    if (xmlPowersNode != null)
-                    {
-                        await objWriter.WriteStartElementAsync("weaknesses");
-                        foreach (XmlNode objXmlPowerNode in xmlPowersNode.ChildNodes)
-                        {
-                            await PrintPowerInfo(objWriter, xmlSpiritPowersBaseChummerNode, xmlCritterPowersBaseChummerNode, objXmlPowerNode, strLanguageToPrint);
-                        }
-                        await objWriter.WriteEndElementAsync();
-                    }
-                }
-                //Page in book for reference
-                string strSource = string.Empty;
-                string strPage = string.Empty;
-
-                if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
-                    await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint));
-                if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage) || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
-                    await objWriter.WriteElementStringAsync("page", strPage);
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+                await PrintMugshots(objWriter);
             }
-
-            await objWriter.WriteElementStringAsync("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("type", EntityType.ToString());
-
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await PrintMugshots(objWriter);
-            await objWriter.WriteEndElementAsync();
+            finally
+            {
+                // </spirit>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         private async ValueTask PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
@@ -523,20 +593,28 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strDisplayAction))
                     strDisplayAction = await LanguageManager.GetStringAsync("String_None", strLanguageToPrint);
 
-                await objWriter.WriteStartElementAsync("critterpower");
-                await objWriter.WriteElementStringAsync("name", strPowerName);
-                await objWriter.WriteElementStringAsync("name_english", strEnglishName);
-                await objWriter.WriteElementStringAsync("extra", sbdExtra.ToString());
-                await objWriter.WriteElementStringAsync("category", strCategory);
-                await objWriter.WriteElementStringAsync("category_english", strEnglishCategory);
-                await objWriter.WriteElementStringAsync("type", strDisplayType);
-                await objWriter.WriteElementStringAsync("action", strDisplayAction);
-                await objWriter.WriteElementStringAsync("range", strDisplayRange);
-                await objWriter.WriteElementStringAsync("duration", strDisplayDuration);
-                await objWriter.WriteElementStringAsync(
-                    "source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("page", strPage);
-                await objWriter.WriteEndElementAsync();
+                // <critterpower>
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("critterpower");
+                try
+                {
+                    await objWriter.WriteElementStringAsync("name", strPowerName);
+                    await objWriter.WriteElementStringAsync("name_english", strEnglishName);
+                    await objWriter.WriteElementStringAsync("extra", sbdExtra.ToString());
+                    await objWriter.WriteElementStringAsync("category", strCategory);
+                    await objWriter.WriteElementStringAsync("category_english", strEnglishCategory);
+                    await objWriter.WriteElementStringAsync("type", strDisplayType);
+                    await objWriter.WriteElementStringAsync("action", strDisplayAction);
+                    await objWriter.WriteElementStringAsync("range", strDisplayRange);
+                    await objWriter.WriteElementStringAsync("duration", strDisplayDuration);
+                    await objWriter.WriteElementStringAsync(
+                        "source", await CharacterObject.LanguageBookShortAsync(strSource, strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("page", strPage);
+                }
+                finally
+                {
+                    // </critterpower>
+                    await objBaseElement.DisposeAsync();
+                }
             }
         }
 
@@ -1206,31 +1284,38 @@ namespace Chummer
             {
                 objWriter.WriteElementString("mainmugshotindex", MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
                 // <mugshot>
-                objWriter.WriteStartElement("mugshots");
-                foreach (Image imgMugshot in Mugshots)
-                {
-                    // ReSharper disable once MethodHasAsyncOverload
-                    objWriter.WriteElementString("mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
-                }
-
-                // </mugshot>
                 // ReSharper disable once MethodHasAsyncOverload
-                objWriter.WriteEndElement();
+                using (objWriter.StartElement("mugshots"))
+                {
+                    foreach (Image imgMugshot in Mugshots)
+                    {
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objWriter.WriteElementString(
+                            "mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
+                    }
+
+                    // </mugshot>
+                }
             }
             else
             {
                 await objWriter.WriteElementStringAsync("mainmugshotindex",
                                                         MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
-                // <mugshot>
-                await objWriter.WriteStartElementAsync("mugshots");
-                foreach (Image imgMugshot in Mugshots)
+                // <mugshots>
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots");
+                try
                 {
-                    await objWriter.WriteElementStringAsync(
-                        "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
+                    foreach (Image imgMugshot in Mugshots)
+                    {
+                        await objWriter.WriteElementStringAsync(
+                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
+                    }
                 }
-
-                // </mugshot>
-                await objWriter.WriteEndElementAsync();
+                finally
+                {
+                    // </mugshots>
+                    await objBaseElement.DisposeAsync();
+                }
             }
         }
 
@@ -1296,30 +1381,43 @@ namespace Chummer
                     // <mainmugshotbase64 />
                     await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync());
                 }
-                // <othermugshots>
+                // <hasothermugshots>
                 await objWriter.WriteElementStringAsync("hasothermugshots",
                     (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteStartElementAsync("othermugshots");
-                for (int i = 0; i < Mugshots.Count; ++i)
+                // <othermugshots>
+                XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots");
+                try
                 {
-                    if (i == MainMugshotIndex)
-                        continue;
-                    Image imgMugshot = Mugshots[i];
-                    await objWriter.WriteStartElementAsync("mugshot");
+                    for (int i = 0; i < Mugshots.Count; ++i)
+                    {
+                        if (i == MainMugshotIndex)
+                            continue;
+                        Image imgMugshot = Mugshots[i];
+                        // <mugshot>
+                        XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot");
+                        try
+                        {
+                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync());
 
-                    await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync());
-
-                    string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                        guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
-                        i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
-                    imgMugshot.Save(imgMugshotPath);
-                    await objWriter.WriteElementStringAsync("temppath",
-                        "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
-
-                    await objWriter.WriteEndElementAsync();
+                            string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
+                                                                 guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
+                                                                 i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
+                            imgMugshot.Save(imgMugshotPath);
+                            await objWriter.WriteElementStringAsync("temppath",
+                                                                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+                        }
+                        finally
+                        {
+                            // </mugshot>
+                            await objMugshotElement.DisposeAsync();
+                        }
+                    }
                 }
-                // </mugshots>
-                await objWriter.WriteEndElementAsync();
+                finally
+                {
+                    // </othermugshots>
+                    await objOtherMugshotsElement.DisposeAsync();
+                }
             }
         }
 

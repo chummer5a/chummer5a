@@ -371,28 +371,45 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("power");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("extra", await CharacterObject.TranslateExtraAsync(Extra, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("pointsperlevel", PointsPerLevel.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("adeptway", AdeptWayDiscount.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
-            await objWriter.WriteElementStringAsync("totalpoints", PowerPoints.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("action", await DisplayActionMethodAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteStartElementAsync("enhancements");
-            foreach (Enhancement objEnhancement in Enhancements)
+
+            // <power>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("power");
+            try
             {
-                await objEnhancement.Print(objWriter, strLanguageToPrint);
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("extra", await CharacterObject.TranslateExtraAsync(Extra, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("pointsperlevel", PointsPerLevel.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("adeptway", AdeptWayDiscount.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("rating", LevelsEnabled ? TotalRating.ToString(objCulture) : "0");
+                await objWriter.WriteElementStringAsync("totalpoints", PowerPoints.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("action", await DisplayActionMethodAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("source", await CharacterObject.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+                // <enhancements>
+                XmlElementWriteHelper objEnhancementsElement = await objWriter.StartElementAsync("enhancements");
+                try
+                {
+                    foreach (Enhancement objEnhancement in Enhancements)
+                    {
+                        await objEnhancement.Print(objWriter, strLanguageToPrint);
+                    }
+                }
+                finally
+                {
+                    // </enhancements>
+                    await objEnhancementsElement.DisposeAsync();
+                }
             }
-            await objWriter.WriteEndElementAsync();
-            await objWriter.WriteEndElementAsync();
+            finally
+            {
+                // </power>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

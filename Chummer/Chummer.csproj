@@ -330,6 +330,7 @@
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Helpers\AsyncFriendlyReaderWriterLock.cs" />
     <Compile Include="Backend\Helpers\AsyncLock.cs" />
+    <Compile Include="Backend\Helpers\XmlElementWriteHelper.cs" />
     <Compile Include="Backend\Interfaces\IAsyncEnumerable.cs" />
     <Compile Include="Backend\Interfaces\IAsyncReadOnlyDictionary.cs" />
     <Compile Include="Backend\Interfaces\IHasCost.cs" />

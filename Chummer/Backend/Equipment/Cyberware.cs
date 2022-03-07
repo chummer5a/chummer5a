@@ -1889,106 +1889,129 @@ namespace Chummer.Backend.Equipment
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("cyberware");
-            if ((string.IsNullOrWhiteSpace(LimbSlot) && _strCategory != "Cyberlimb") || CyberlimbAttributeAbbrevs.Count == 0)
+            // <cyberware>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("cyberware");
+            try
             {
-                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("name_english", Name);
-            }
-            else
-            {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdName))
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdNameEnglish))
+                if ((string.IsNullOrWhiteSpace(LimbSlot) && _strCategory != "Cyberlimb") || CyberlimbAttributeAbbrevs.Count == 0)
                 {
-                    sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint)).Append(strSpace).Append('(');
-                    sbdNameEnglish.Append(Name).Append(strSpace).Append('(');
-                    bool blnFirst = true;
-                    foreach (string strAbbrev in CyberlimbAttributeAbbrevs)
+                    await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("name_english", Name);
+                }
+                else
+                {
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdName))
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdNameEnglish))
                     {
-                        int intTotalValue = GetAttributeTotalValue(strAbbrev);
-                        if (!blnFirst)
+                        sbdName.Append(await DisplayNameShortAsync(strLanguageToPrint)).Append(strSpace).Append('(');
+                        sbdNameEnglish.Append(Name).Append(strSpace).Append('(');
+                        bool blnFirst = true;
+                        foreach (string strAbbrev in CyberlimbAttributeAbbrevs)
                         {
-                            sbdName.Append(',').Append(strSpace);
-                            sbdNameEnglish.Append(',').Append(strSpace);
+                            int intTotalValue = GetAttributeTotalValue(strAbbrev);
+                            if (!blnFirst)
+                            {
+                                sbdName.Append(',').Append(strSpace);
+                                sbdNameEnglish.Append(',').Append(strSpace);
+                            }
+                            else
+                                blnFirst = false;
+
+                            CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAbbrev);
+                            if (objLoopAttribute != null)
+                                sbdName.Append(await objLoopAttribute.GetDisplayAbbrevAsync(strLanguageToPrint));
+                            else
+                                sbdName.Append(strAbbrev);
+                            sbdName.Append(strSpace).Append(intTotalValue.ToString(objCulture));
+                            sbdNameEnglish.Append(strAbbrev).Append(strSpace)
+                                          .Append(intTotalValue.ToString(GlobalSettings.InvariantCultureInfo));
                         }
-                        else
-                            blnFirst = false;
-
-                        CharacterAttrib objLoopAttribute = _objCharacter.GetAttribute(strAbbrev);
-                        if (objLoopAttribute != null)
-                            sbdName.Append(await objLoopAttribute.GetDisplayAbbrevAsync(strLanguageToPrint));
-                        else
-                            sbdName.Append(strAbbrev);
-                        sbdName.Append(strSpace).Append(intTotalValue.ToString(objCulture));
-                        sbdNameEnglish.Append(strAbbrev).Append(strSpace)
-                                      .Append(intTotalValue.ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdName.Append(')');
+                        sbdNameEnglish.Append(')');
+                        await objWriter.WriteElementStringAsync("name", sbdName.ToString());
+                        await objWriter.WriteElementStringAsync("name_english", sbdNameEnglish.ToString());
                     }
-                    sbdName.Append(')');
-                    sbdNameEnglish.Append(')');
-                    await objWriter.WriteElementStringAsync("name", sbdName.ToString());
-                    await objWriter.WriteElementStringAsync("name_english", sbdNameEnglish.ToString());
                 }
-            }
 
-            await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("category_english", Category);
+                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("category_english", Category);
 
-            await objWriter.WriteElementStringAsync("ess",
-                CalculatedESS.ToString(_objCharacter.Settings.EssenceFormat, objCulture));
-            await objWriter.WriteElementStringAsync("capacity", Capacity);
-            await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("minrating", MinRating.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("maxrating", MaxRating.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel);
-            await objWriter.WriteElementStringAsync("allowsubsystems", AllowedSubsystems);
-            await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("location", Location);
-            await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("improvementsource", SourceType.ToString());
+                await objWriter.WriteElementStringAsync("ess",
+                    CalculatedESS.ToString(_objCharacter.Settings.EssenceFormat, objCulture));
+                await objWriter.WriteElementStringAsync("capacity", Capacity);
+                await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("minrating", MinRating.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("maxrating", MaxRating.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel);
+                await objWriter.WriteElementStringAsync("allowsubsystems", AllowedSubsystems);
+                await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("location", Location);
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("improvementsource", SourceType.ToString());
 
-            await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
-            await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
-            await objWriter.WriteElementStringAsync("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-            await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
-            await objWriter.WriteElementStringAsync("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
-            await objWriter.WriteElementStringAsync("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-            await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+                await objWriter.WriteElementStringAsync("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+                await objWriter.WriteElementStringAsync("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+                await objWriter.WriteElementStringAsync("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+                await objWriter.WriteElementStringAsync("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+                await objWriter.WriteElementStringAsync("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+                await objWriter.WriteElementStringAsync("iscommlink", IsCommlink.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("isprogram", IsProgram.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("conditionmonitor", MatrixCM.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
 
-            if (GearChildren.Count > 0)
-            {
-                await objWriter.WriteStartElementAsync("gears");
-                foreach (Gear objGear in GearChildren)
+                if (GearChildren.Count > 0)
                 {
-                    await objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                    // <gears>
+                    XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears");
+                    try
+                    {
+                        foreach (Gear objGear in GearChildren)
+                        {
+                            await objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                        }
+                    }
+                    finally
+                    {
+                        // </gears>
+                        await objGearsElement.DisposeAsync();
+                    }
                 }
 
-                await objWriter.WriteEndElementAsync();
+                // <children>
+                XmlElementWriteHelper objChildrenElement = await objWriter.StartElementAsync("children");
+                try
+                {
+                    foreach (Cyberware objChild in Children)
+                    {
+                        await objChild.Print(objWriter, objCulture, strLanguageToPrint);
+                    }
+                }
+                finally
+                {
+                    // </children>
+                    await objChildrenElement.DisposeAsync();
+                }
+                
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
             }
-
-            await objWriter.WriteStartElementAsync("children");
-            foreach (Cyberware objChild in Children)
+            finally
             {
-                await objChild.Print(objWriter, objCulture, strLanguageToPrint);
+                // </cyberware>
+                await objBaseElement.DisposeAsync();
             }
-
-            await objWriter.WriteEndElementAsync();
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

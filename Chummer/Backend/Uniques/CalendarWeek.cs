@@ -113,14 +113,22 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("week");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture));
-            if (blnPrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+            // <week>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("week");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture));
+                if (blnPrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </week>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Save, Load, and Print Methods

@@ -186,17 +186,25 @@ namespace Chummer.Backend.Attributes
                         return;
                     break;
             }
-            await objWriter.WriteStartElementAsync("attribute");
-            await objWriter.WriteElementStringAsync("name_english", Abbrev);
-            await objWriter.WriteElementStringAsync("name", await GetDisplayAbbrevAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("base", Value.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("total", TotalValue.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("min", TotalMinimum.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("max", TotalMaximum.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("aug", TotalAugmentedMaximum.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("bp", TotalKarmaCost.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("metatypecategory", MetatypeCategory.ToString());
-            await objWriter.WriteEndElementAsync();
+            // <attribute>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("attribute");
+            try
+            {
+                await objWriter.WriteElementStringAsync("name_english", Abbrev);
+                await objWriter.WriteElementStringAsync("name", await GetDisplayAbbrevAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("base", Value.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("total", TotalValue.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("min", TotalMinimum.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("max", TotalMaximum.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("aug", TotalAugmentedMaximum.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("bp", TotalKarmaCost.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("metatypecategory", MetatypeCategory.ToString());
+            }
+            finally
+            {
+                // </attribute>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Save, Load, and Print Methods

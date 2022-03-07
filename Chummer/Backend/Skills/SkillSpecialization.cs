@@ -94,13 +94,21 @@ namespace Chummer.Backend.Skills
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("skillspecialization");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("specbonus", SpecializationBonus.ToString(objCulture));
-            await objWriter.WriteEndElementAsync();
+            // <skillspecialization>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("skillspecialization");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("free", Free.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("expertise", Expertise.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("specbonus", SpecializationBonus.ToString(objCulture));
+            }
+            finally
+            {
+                // </skillspecialization>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

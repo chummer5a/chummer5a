@@ -490,39 +490,47 @@ namespace Chummer
             if (!AllowPrint || objWriter == null)
                 return;
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
-            string strRatingString = string.Empty;
-            if (intRating > 1)
-                strRatingString = strSpace + intRating.ToString(objCulture);
-            string strSourceName = string.Empty;
-            if (!string.IsNullOrWhiteSpace(SourceName))
-                strSourceName = strSpace + '(' + await GetSourceNameAsync(strLanguageToPrint) + ')';
-            await objWriter.WriteStartElementAsync("quality");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            await objWriter.WriteElementStringAsync(
-                "extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint) + strRatingString + strSourceName);
-            await objWriter.WriteElementStringAsync("bp", BP.ToString(objCulture));
-            string strQualityType = Type.ToString();
-            if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            // <quality>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("quality");
+            try
             {
-                strQualityType =
-                    (await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguageToPrint))
-                                 .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath()
-                                                   + "]/@translate")
-                                 ?.Value ?? strQualityType;
-            }
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguageToPrint);
+                string strRatingString = string.Empty;
+                if (intRating > 1)
+                    strRatingString = strSpace + intRating.ToString(objCulture);
+                string strSourceName = string.Empty;
+                if (!string.IsNullOrWhiteSpace(SourceName))
+                    strSourceName = strSpace + '(' + await GetSourceNameAsync(strLanguageToPrint) + ')';
+                await objWriter.WriteElementStringAsync(
+                    "extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint) + strRatingString + strSourceName);
+                await objWriter.WriteElementStringAsync("bp", BP.ToString(objCulture));
+                string strQualityType = Type.ToString();
+                if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                {
+                    strQualityType =
+                        (await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguageToPrint))
+                        .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath()
+                                                                              + "]/@translate")
+                        ?.Value ?? strQualityType;
+                }
 
-            await objWriter.WriteElementStringAsync("qualitytype", strQualityType);
-            await objWriter.WriteElementStringAsync("qualitytype_english", Type.ToString());
-            await objWriter.WriteElementStringAsync("qualitysource", OriginSource.ToString());
-            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+                await objWriter.WriteElementStringAsync("qualitytype", strQualityType);
+                await objWriter.WriteElementStringAsync("qualitytype_english", Type.ToString());
+                await objWriter.WriteElementStringAsync("qualitysource", OriginSource.ToString());
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </quality>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

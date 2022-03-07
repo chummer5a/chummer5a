@@ -154,16 +154,24 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("martialarttechnique");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteElementStringAsync("source", Source);
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            await objWriter.WriteEndElementAsync();
+            // <martialarttechnique>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("martialarttechnique");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+                await objWriter.WriteElementStringAsync("source", Source);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+            }
+            finally
+            {
+                // </martialarttechnique>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

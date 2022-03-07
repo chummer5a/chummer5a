@@ -600,49 +600,65 @@ namespace Chummer.Backend.Equipment
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("lifestyle");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("name", CustomName);
-            await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            await objWriter.WriteElementStringAsync("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            await objWriter.WriteElementStringAsync("totalcost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("multiplier", Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            await objWriter.WriteElementStringAsync("months", Increments.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("type", StyleType.ToString());
-            await objWriter.WriteElementStringAsync("increment", IncrementType.ToString());
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("bonuslp", BonusLP.ToString(objCulture));
-            string strBaseLifestyle = string.Empty;
-
-            // Retrieve the Advanced Lifestyle information if applicable.
-            if (!string.IsNullOrEmpty(BaseLifestyle))
+            // <lifestyle>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("lifestyle");
+            try
             {
-                XPathNavigator objXmlAspect = await this.GetNodeXPathAsync();
-                if (objXmlAspect != null)
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", CustomName);
+                await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("totalmonthlycost", TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("totalcost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("multiplier", Multiplier.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("months", Increments.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("purchased", Purchased.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("type", StyleType.ToString());
+                await objWriter.WriteElementStringAsync("increment", IncrementType.ToString());
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("bonuslp", BonusLP.ToString(objCulture));
+                string strBaseLifestyle = string.Empty;
+
+                // Retrieve the Advanced Lifestyle information if applicable.
+                if (!string.IsNullOrEmpty(BaseLifestyle))
                 {
-                    strBaseLifestyle = (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                       ?? (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strBaseLifestyle;
+                    XPathNavigator objXmlAspect = await this.GetNodeXPathAsync();
+                    if (objXmlAspect != null)
+                    {
+                        strBaseLifestyle = (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                           ?? (await objXmlAspect.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strBaseLifestyle;
+                    }
                 }
+
+                await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyle);
+                await objWriter.WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+
+                // <qualities>
+                XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities");
+                try
+                {
+                    // Retrieve the Qualities for the Advanced Lifestyle if applicable.
+                    foreach (LifestyleQuality objQuality in LifestyleQualities)
+                    {
+                        await objQuality.Print(objWriter, objCulture, strLanguageToPrint);
+                    }
+                }
+                finally
+                {
+                    // </qualities>
+                    await objQualitiesElement.DisposeAsync();
+                }
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
             }
-
-            await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyle);
-            await objWriter.WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            await objWriter.WriteStartElementAsync("qualities");
-
-            // Retrieve the Qualities for the Advanced Lifestyle if applicable.
-            foreach (LifestyleQuality objQuality in LifestyleQualities)
+            finally
             {
-                await objQuality.Print(objWriter, objCulture, strLanguageToPrint);
+                // </lifestyle>
+                await objBaseElement.DisposeAsync();
             }
-            await objWriter.WriteEndElementAsync();
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

@@ -1215,6 +1215,14 @@ namespace Chummer
             return XmlWriter.Create(output, _objStandardXmlWriterSettings);
         }
 
+        private static readonly XmlWriterSettings _objXslTransformXmlWriterSettings = new XmlWriterSettings
+            { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t", ConformanceLevel = ConformanceLevel.Auto };
+
+        public static XmlWriter GetXslTransformXmlWriter(Stream output)
+        {
+            return XmlWriter.Create(output, _objXslTransformXmlWriterSettings);
+        }
+
         private static string s_strTempPath = string.Empty;
 
         /// <summary>

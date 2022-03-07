@@ -124,14 +124,22 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("limitmodifier");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(objCulture, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            await objWriter.WriteElementStringAsync("condition", await _objCharacter.TranslateExtraAsync(Condition, strLanguageToPrint));
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+            // <limitmodifier>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("limitmodifier");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("condition", await _objCharacter.TranslateExtraAsync(Condition, strLanguageToPrint));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </limitmodifier>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

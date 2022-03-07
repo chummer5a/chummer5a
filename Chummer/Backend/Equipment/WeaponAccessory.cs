@@ -577,37 +577,53 @@ namespace Chummer.Backend.Equipment
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("accessory");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            await objWriter.WriteElementStringAsync("mount", Mount);
-            await objWriter.WriteElementStringAsync("extramount", ExtraMount);
-            await objWriter.WriteElementStringAsync("rc", RC);
-            await objWriter.WriteElementStringAsync("conceal", TotalConcealability.ToString("+#,0;-#,0;0", objCulture));
-            await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel);
-            await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
-            await objWriter.WriteElementStringAsync("included", IncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture));
-            if (GearChildren.Count > 0)
+            // <accessory>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("accessory");
+            try
             {
-                await objWriter.WriteStartElementAsync("gears");
-                foreach (Gear objGear in GearChildren)
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("mount", Mount);
+                await objWriter.WriteElementStringAsync("extramount", ExtraMount);
+                await objWriter.WriteElementStringAsync("rc", RC);
+                await objWriter.WriteElementStringAsync("conceal", TotalConcealability.ToString("+#,0;-#,0;0", objCulture));
+                await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel);
+                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture));
+                await objWriter.WriteElementStringAsync("included", IncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture));
+                if (GearChildren.Count > 0)
                 {
-                    await objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                    // <gears>
+                    XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears");
+                    try
+                    {
+                        foreach (Gear objGear in GearChildren)
+                        {
+                            await objGear.Print(objWriter, objCulture, strLanguageToPrint);
+                        }
+                    }
+                    finally
+                    {
+                        // </gears>
+                        await objGearsElement.DisposeAsync();
+                    }
                 }
-                await objWriter.WriteEndElementAsync();
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
             }
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+            finally
+            {
+                // </accessory>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

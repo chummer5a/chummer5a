@@ -346,14 +346,22 @@ namespace Chummer
                 return;
             if (Amount != 0 || GlobalSettings.PrintFreeExpenses)
             {
-                await objWriter.WriteStartElementAsync("expense");
-                await objWriter.WriteElementStringAsync("guid", InternalId);
-                await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture));
-                await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture));
-                await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint));
-                await objWriter.WriteElementStringAsync("type", Type.ToString());
-                await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo));
-                await objWriter.WriteEndElementAsync();
+                // <expense>
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("expense");
+                try
+                {
+                    await objWriter.WriteElementStringAsync("guid", InternalId);
+                    await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture));
+                    await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture));
+                    await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("type", Type.ToString());
+                    await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo));
+                }
+                finally
+                {
+                    // </expense>
+                    await objBaseElement.DisposeAsync();
+                }
             }
         }
 

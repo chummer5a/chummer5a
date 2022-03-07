@@ -1352,23 +1352,31 @@ namespace Chummer
                 {
                     // Begin the document.
                     await objWriter.WriteStartDocumentAsync();
-
-                    // </characters>
-                    await objWriter.WriteStartElementAsync("characters");
-
-                    foreach (Character objCharacter in lstCharacters)
+                    try
                     {
-                        await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
-                        if (objToken.IsCancellationRequested)
-                            return objReturn;
+                        // </characters>
+                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters");
+                        try
+                        {
+                            foreach (Character objCharacter in lstCharacters)
+                            {
+                                await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
+                                if (objToken.IsCancellationRequested)
+                                    return objReturn;
+                            }
+                        }
+                        finally
+                        {
+                            // </characters>
+                            await objCharactersElement.DisposeAsync();
+                        }
                     }
-
-                    // </characters>
-                    await objWriter.WriteEndElementAsync();
-
-                    // Finish the document and flush the Writer and Stream.
-                    await objWriter.WriteEndDocumentAsync();
-                    await objWriter.FlushAsync();
+                    finally
+                    {
+                        // Finish the document and flush the Writer and Stream.
+                        await objWriter.WriteEndDocumentAsync();
+                        await objWriter.FlushAsync();
+                    }
                 }
 
                 if (objToken.IsCancellationRequested)

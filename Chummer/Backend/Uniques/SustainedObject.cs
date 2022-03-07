@@ -159,14 +159,22 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("sustainedobject");
-            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture));
-            await objWriter.WriteEndElementAsync();
+            // <sustainedobject>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("sustainedobject");
+            try
+            {
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture));
+            }
+            finally
+            {
+                // </sustainedobject>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

@@ -389,18 +389,24 @@ namespace Chummer.Backend.Skills
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("skillgroup");
-
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("ratingmax", RatingMaximum.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("base", Base.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("isbroken", IsBroken.ToString(GlobalSettings.InvariantCultureInfo));
-
-            await objWriter.WriteEndElementAsync();
+            // <skillgroup>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("skillgroup");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("rating", Rating.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("ratingmax", RatingMaximum.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("base", Base.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("karma", Karma.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("isbroken", IsBroken.ToString(GlobalSettings.InvariantCultureInfo));
+            }
+            finally
+            {
+                // </skillgroup>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         public void Load(XmlNode xmlNode)

@@ -299,24 +299,40 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("martialart");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("cost", Cost.ToString(objCulture));
-            await objWriter.WriteStartElementAsync("martialarttechniques");
-            foreach (MartialArtTechnique objTechnique in Techniques)
+            // <martialart>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("martialart");
+            try
             {
-                await objTechnique.Print(objWriter, strLanguageToPrint);
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("cost", Cost.ToString(objCulture));
+                // <martialarttechniques>
+                XmlElementWriteHelper objTechniquesElement = await objWriter.StartElementAsync("martialarttechniques");
+                try
+                {
+                    foreach (MartialArtTechnique objTechnique in Techniques)
+                    {
+                        await objTechnique.Print(objWriter, strLanguageToPrint);
+                    }
+                }
+                finally
+                {
+                    // </martialarttechniques>
+                    await objTechniquesElement.DisposeAsync();
+                }
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
             }
-            await objWriter.WriteEndElementAsync();
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+            finally
+            {
+                // </martialart>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Create, Save, Load, and Print Methods

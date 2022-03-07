@@ -271,29 +271,37 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("spell");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("name_english", Name);
-            await objWriter.WriteElementStringAsync("descriptors", await DisplayDescriptorsAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("category_english", Category);
-            await objWriter.WriteElementStringAsync("type", await DisplayTypeAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("range", await DisplayRangeAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("damage", await DisplayDamageAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("duration", await DisplayDurationAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("dv", await DisplayDvAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("barehandedadept", BarehandedAdept.ToString(GlobalSettings.InvariantCultureInfo));
-            await objWriter.WriteElementStringAsync("dicepool", DicePool.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+            // <spell>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("spell");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("descriptors", await DisplayDescriptorsAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("category_english", Category);
+                await objWriter.WriteElementStringAsync("type", await DisplayTypeAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("range", await DisplayRangeAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("damage", await DisplayDamageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("duration", await DisplayDurationAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("dv", await DisplayDvAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("barehandedadept", BarehandedAdept.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("dicepool", DicePool.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </spell>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

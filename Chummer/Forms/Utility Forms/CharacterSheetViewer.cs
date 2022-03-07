@@ -570,7 +570,7 @@ namespace Chummer
 
                 using (MemoryStream objStream = new MemoryStream())
                 {
-                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                    using (XmlWriter objWriter = Utils.GetXslTransformXmlWriter(objStream))
                     {
                         await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter));
                         if (_objOutputGeneratorCancellationTokenSource.IsCancellationRequested)

@@ -449,35 +449,43 @@ namespace Chummer.Backend.Equipment
         {
             if (!AllowPrint || objWriter == null)
                 return;
-            await objWriter.WriteStartElementAsync("quality");
-            await objWriter.WriteElementStringAsync("guid", InternalId);
-            await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
-            await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("formattedname", await FormattedDisplayNameAsync(objCulture, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture));
-            await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            string strLifestyleQualityType = Type.ToString();
-            if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            // <quality>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("quality");
+            try
             {
-                XPathNavigator objNode = (await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint))
-                    .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + ']');
-                if (objNode != null)
-                    strLifestyleQualityType = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strLifestyleQualityType;
-            }
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("formattedname", await FormattedDisplayNameAsync(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                string strLifestyleQualityType = Type.ToString();
+                if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                {
+                    XPathNavigator objNode = (await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint))
+                        .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + ']');
+                    if (objNode != null)
+                        strLifestyleQualityType = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strLifestyleQualityType;
+                }
 
-            await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType);
-            await objWriter.WriteElementStringAsync("lifestylequalitytype_english", Type.ToString());
-            await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString());
-            await objWriter.WriteElementStringAsync("free", Free.ToString());
-            await objWriter.WriteElementStringAsync("freebylifestyle", FreeByLifestyle.ToString());
-            await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString());
-            await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
-            await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
-            if (GlobalSettings.PrintNotes)
-                await objWriter.WriteElementStringAsync("notes", Notes);
-            await objWriter.WriteEndElementAsync();
+                await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType);
+                await objWriter.WriteElementStringAsync("lifestylequalitytype_english", Type.ToString());
+                await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString());
+                await objWriter.WriteElementStringAsync("free", Free.ToString());
+                await objWriter.WriteElementStringAsync("freebylifestyle", FreeByLifestyle.ToString());
+                await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString());
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </quality>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
