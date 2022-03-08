@@ -995,10 +995,25 @@ namespace Chummer
             if (lstCharacters == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.DoThreadSafeFunc(async x => await ((ChummerMainForm)x).OpenCharacterList(lstCharacters, blnIncludeInMru));
+                return MainForm.DoThreadSafeFunc(
+                    x => ((ChummerMainForm) x).OpenCharacterList(lstCharacters, blnIncludeInMru));
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
                                 x => x.DoThreadSafeFunc(
-                                          async y => await ((ChummerMainForm)y).OpenCharacterList(lstCharacters, blnIncludeInMru))));
+                                    y => ((ChummerMainForm) y).OpenCharacterList(lstCharacters, blnIncludeInMru))));
+        }
+
+        /// <summary>
+        /// Open a character's print form up without necessarily opening them up fully for editing.
+        /// </summary>
+        public static Task OpenCharacterForPrinting(Character objCharacter)
+        {
+            if (objCharacter == null || MainForm == null)
+                return Task.CompletedTask;
+            if (MainForm != null)
+                return MainForm.DoThreadSafeFunc(x => ((ChummerMainForm) x).OpenCharacterForPrinting(objCharacter));
+            return Task.Run(() => MainFormOnAssignAsyncActions.Add(
+                                x => x.DoThreadSafeFunc(
+                                    y => ((ChummerMainForm) y).OpenCharacterForPrinting(objCharacter))));
         }
 
         public static LoadingBar MainProgressBar { get; set; }

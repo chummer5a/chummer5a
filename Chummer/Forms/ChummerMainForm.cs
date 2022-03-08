@@ -45,6 +45,7 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private DiceRoller _frmRoller;
         private ChummerUpdater _frmUpdate;
+        private CharacterSheetViewer _frmViewer;
         private readonly ThreadSafeObservableCollection<CharacterShared> _lstOpenCharacterForms = new ThreadSafeObservableCollection<CharacterShared>();
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
@@ -1271,7 +1272,7 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character (not thread-safe).
         /// </summary>
-        public ValueTask OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
+        public Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
         {
             return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
         }
@@ -1281,7 +1282,7 @@ namespace Chummer
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
-        public async ValueTask OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
+        public async Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
         {
             using (new CursorWait(this))
             {
@@ -1345,6 +1346,45 @@ namespace Chummer
                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                 foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
                     frmNewCharacter.QueueThreadSafe(() => frmNewCharacter.WindowState = wsPreference);
+            }
+        }
+
+        /// <summary>
+        /// Open a character's print form up without necessarily opening them up fully for editing.
+        /// </summary>
+        public async Task OpenCharacterForPrinting(Character objCharacter)
+        {
+            using (new CursorWait(this))
+            {
+                // Character is already open in an existing form, so switch to it and make it open up its print viewer
+                if (SwitchToOpenCharacter(objCharacter))
+                {
+                    CharacterShared objOpenForm = OpenCharacterForms.Find(x => x.CharacterObject == objCharacter);
+                    if (objOpenForm != null)
+                        await objOpenForm.DoPrint();
+                }
+                else
+                {
+                    // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
+                    // If a Viewer window already exists for this character, use it instead.
+                    if (_frmViewer == null)
+                    {
+                        await this.DoThreadSafeFunc(async () =>
+                        {
+                            _frmViewer = new CharacterSheetViewer();
+                            await _frmViewer.SetCharacters(objCharacter);
+                            _frmViewer.Show();
+                        });
+                    }
+                    else
+                    {
+                        await this.DoThreadSafeFunc(async () =>
+                        {
+                            await _frmViewer.SetCharacters(objCharacter);
+                            _frmViewer.Activate();
+                        });
+                    }
+                }
             }
         }
 

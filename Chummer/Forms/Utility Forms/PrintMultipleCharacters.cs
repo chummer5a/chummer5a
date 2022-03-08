@@ -192,10 +192,11 @@ namespace Chummer
                     }
                     else
                     {
-                        await _frmPrintView.DoThreadSafeFunc(async () =>
+                        await _frmPrintView.DoThreadSafeFunc(async x =>
                         {
-                            await _frmPrintView.SetCharacters(_aobjCharacters);
-                            _frmPrintView.Activate();
+                            CharacterSheetViewer objSheetViewer = (CharacterSheetViewer)x;
+                            await objSheetViewer.SetCharacters(_aobjCharacters);
+                            objSheetViewer.Activate();
                         });
                     }
                 }
