@@ -150,7 +150,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                using (new CursorWait(this, true))
+                using (CursorWait.New(this, true))
                 {
                     tvGroupSearchResult.SelectedNode = null;
                     bSearch.Text = "searching";
@@ -218,7 +218,7 @@ namespace ChummerHub.Client.UI
 
             try
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     SINnerSearchGroup item = tvGroupSearchResult.SelectedNode.Tag as SINnerSearchGroup;
                     if (MyCE.MySINnerFile.MyGroup != null)
@@ -232,7 +232,7 @@ namespace ChummerHub.Client.UI
                     //var uploadtask = MyCE.Upload();
                     //await uploadtask.ContinueWith(b =>
                     //{
-                    using (new CursorWait(this))
+                    using (CursorWait.New(this))
                     {
                         Task<SINSearchGroupResult> task = JoinGroupTask(item, MyCE);
                         await task.ContinueWith(async a =>
@@ -363,7 +363,7 @@ namespace ChummerHub.Client.UI
                 {
                     try
                     {
-                        using (new CursorWait(this, true))
+                        using (CursorWait.New(this, true))
                         {
                             SinnersClient client = StaticUtils.GetClient();
                             SINner response =
@@ -449,7 +449,7 @@ namespace ChummerHub.Client.UI
             lSINnerName.Text = MyCE.MySINnerFile.Alias;
             if (MyCE?.MySINnerFile.MyGroup != null)
             {
-                using (new CursorWait(this, true))
+                using (CursorWait.New(this, true))
                 {
                     try
                     {

@@ -1009,6 +1009,15 @@ namespace Chummer.Backend.Attributes
                 return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
         }
 
+        public async ValueTask<BindingSource> GetAttributeBindingByNameAsync(string abbrev)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                (bool blnSuccess, BindingSource objAttributeBinding) = await _dicBindings.TryGetValueAsync(abbrev);
+                return blnSuccess ? objAttributeBinding : null;
+            }
+        }
+
         internal void ForceAttributePropertyChangedNotificationAll(params string[] lstNames)
         {
             foreach (CharacterAttrib att in AttributeList)

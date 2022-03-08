@@ -30,7 +30,6 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private readonly CharacterBuildMethod _eStartingBuildMethod;
-        private bool _blnLoading = true;
         private readonly bool _blnForExistingCharacter;
 
         #region Control Events
@@ -115,10 +114,11 @@ namespace Chummer
 
         private async void cmdEditCharacterOption_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+            try
             {
                 using (EditCharacterSettings frmOptions =
-                    new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
+                       new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
                     await frmOptions.ShowDialogSafeAsync(this);
 
                 SuspendLayout();
@@ -145,27 +145,47 @@ namespace Chummer
                         cboCharacterSetting.SelectedIndex = 0;
                     cboCharacterSetting.EndUpdate();
                 }
-
+            }
+            finally
+            {
                 ResumeLayout();
+                await objCursorWait.DisposeAsync();
             }
         }
 
         private async void SelectBuildMethod_Load(object sender, EventArgs e)
         {
-            chkIgnoreRules.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
-            await ProcessGameplayIndexChanged();
-            _blnLoading = false;
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            SuspendLayout();
+            try
+            {
+                chkIgnoreRules.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
+                await ProcessGameplayIndexChanged();
+            }
+            finally
+            {
+                ResumeLayout();
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await ProcessGameplayIndexChanged();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            SuspendLayout();
+            try
+            {
+                await ProcessGameplayIndexChanged();
+            }
+            finally
+            {
+                ResumeLayout();
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async ValueTask ProcessGameplayIndexChanged()
         {
-            if (!_blnLoading)
-                SuspendLayout();
             // Load the Priority information.
             if (cboCharacterSetting.SelectedValue is CharacterSettings objSelectedGameplayOption)
             {
@@ -214,9 +234,6 @@ namespace Chummer
                 if (string.IsNullOrEmpty(lblBooks.Text))
                     lblCustomData.Text = await LanguageManager.GetStringAsync("String_None");
             }
-
-            if (!_blnLoading)
-                ResumeLayout();
         }
 
         #endregion Control Events

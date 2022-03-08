@@ -196,7 +196,7 @@ namespace Chummer
 
         private async void CharacterCareer_Load(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             using (CustomActivity op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
                 if (CharacterObject == null)
@@ -1116,7 +1116,7 @@ namespace Chummer
 
         private async void CharacterCareer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 bool blnOldIsLoading = IsLoading;
                 IsLoading = true;
@@ -1918,7 +1918,7 @@ namespace Chummer
                     {
                         if (IsLoading)
                             break;
-                        using (new CursorWait(this))
+                        using (CursorWait.New(this))
                         {
                             SuspendLayout();
                             cmdAddLifestyle.SplitMenuStrip =
@@ -2159,7 +2159,7 @@ namespace Chummer
                     {
                         if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
-                            using (new CursorWait(this))
+                            using (CursorWait.New(this))
                             {
                                 SuspendLayout();
                                 RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
@@ -2172,7 +2172,7 @@ namespace Chummer
                     }
                 case nameof(CharacterSettings.EnableEnemyTracking):
                 {
-                    using (new CursorWait(this))
+                    using (CursorWait.New(this))
                     {
                         SuspendLayout();
                         if (!CharacterObjectSettings.EnableEnemyTracking)
@@ -2322,7 +2322,7 @@ namespace Chummer
                 return;
             }
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 Character[] lstClones = new Character[intClones];
@@ -2352,7 +2352,7 @@ namespace Chummer
 
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
@@ -3068,7 +3068,7 @@ namespace Chummer
             }
 
             string strOpenFile = string.Empty;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 Character objMerge = new Character {FileName = CharacterObject.FileName};
                 try
@@ -3259,7 +3259,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     Character objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile);
                     await Program.OpenCharacter(objOpenCharacter);
@@ -3316,7 +3316,7 @@ namespace Chummer
                 return;
 
             string strOpenFile = string.Empty;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 // Load the Spirit's save file into a new Merge character.
                 Character objMerge = new Character {FileName = CharacterObject.FileName};
@@ -3432,7 +3432,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strOpenFile))
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     Character objOpenCharacter = await Program.LoadCharacterAsync(strOpenFile);
                     await Program.OpenCharacter(objOpenCharacter);
@@ -7354,7 +7354,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -9170,7 +9170,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     string strCategories = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -9283,7 +9283,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     string strCategories = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
@@ -9415,7 +9415,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -9520,7 +9520,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -9613,7 +9613,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     string strCategories = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -9736,7 +9736,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -9880,7 +9880,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -9974,7 +9974,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     string strCategories = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -13062,7 +13062,7 @@ namespace Chummer
             _blnSkipUpdate = true;
 
             // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
@@ -13103,7 +13103,7 @@ namespace Chummer
 
             try
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     // TODO: DataBind these wherever possible
 
@@ -14885,7 +14885,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             XPathNavigator xmlParent = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync();
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strCategories = string.Empty;
 
@@ -15117,7 +15117,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strCategories = string.Empty;
 
@@ -16335,7 +16335,7 @@ namespace Chummer
 
         private void RepopulateKarmaExpenseList()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 lstKarma.Items.Clear();
                 lstKarma.ContextMenuStrip = null;
@@ -16416,7 +16416,7 @@ namespace Chummer
 
         private void RepopulateNuyenExpenseList()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 lstNuyen.Items.Clear();
                 lstNuyen.ContextMenuStrip = null;
@@ -17750,7 +17750,7 @@ namespace Chummer
 
         private void cboAttributeCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 CharacterObject.AttributeSection.AttributeCategory
                     = AttributeSection.ConvertAttributeCategory(cboAttributeCategory.SelectedValue.ToString());
@@ -18063,7 +18063,7 @@ namespace Chummer
 
         private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
                 {

@@ -336,7 +336,7 @@ namespace ChummerHub.Client.UI
 
         public async Task<string> GetUserEmail()
         {
-            using (new CursorWait(this, true))
+            using (CursorWait.New(this, true))
             {
                 try
                 {
@@ -460,7 +460,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                using (new CursorWait(sender, true))
+                using (CursorWait.New(sender, true))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     if (client == null)
@@ -594,7 +594,7 @@ namespace ChummerHub.Client.UI
         private async Task BackupTask(FolderBrowserDialog folderBrowserDialog1)
         {
             string folderName = folderBrowserDialog1.SelectedPath;
-            using (new CursorWait(this, true))
+            using (CursorWait.New(this, true))
             {
                 try
                 {
@@ -655,7 +655,7 @@ namespace ChummerHub.Client.UI
             {
                 DirectoryInfo d = new DirectoryInfo(folderName);//Assuming Test is your Folder
                 FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
-                using (new CursorWait(this, true))
+                using (CursorWait.New(this, true))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)

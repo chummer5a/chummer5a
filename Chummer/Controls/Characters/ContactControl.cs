@@ -294,12 +294,17 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
                     ? _objContact.LinkedCharacter
                     : null;
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
                     if (objOpenCharacter == null)
                         objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
                     if (!Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             else
@@ -433,7 +438,7 @@ namespace Chummer
                     CreateStatBlock();
                     _blnStatBlockIsLoaded = true;
                 }
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     SuspendLayout();
                     lblConnection.Visible = value;
@@ -509,7 +514,7 @@ namespace Chummer
 
         private void CreateSecondRow()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 lblConnection = new Label
                 {
@@ -680,7 +685,7 @@ namespace Chummer
         /// </summary>
         private void CreateStatBlock()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 cboMetatype = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype" };
                 cboGender = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };

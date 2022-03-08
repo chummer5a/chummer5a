@@ -113,7 +113,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (_blnDirty)
                 {
@@ -159,7 +159,7 @@ namespace Chummer
 
                 if (!_blnLoading)
                 {
-                    using (new CursorWait(this))
+                    using (CursorWait.New(this))
                     {
                         _blnLoading = true;
                         await TranslateForm();
@@ -177,19 +177,19 @@ namespace Chummer
 
         private async void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 await PopulateXsltList();
         }
 
         private async void cmdVerify_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 await LanguageManager.VerifyStrings(_strSelectedLanguage);
         }
 
         private async void cmdVerifyData_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedLanguage = _strSelectedLanguage;
                 // Build a list of Sourcebooks that will be passed to the Verify method.
@@ -267,7 +267,7 @@ namespace Chummer
 
         private async void cmdPDFTest_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 await CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
         }
 
@@ -373,7 +373,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (Enum.TryParse(cboColorMode.SelectedValue.ToString(), true, out ColorMode eNewColorMode) && _eSelectedColorModeSetting != eNewColorMode)
                 {
@@ -680,7 +680,7 @@ namespace Chummer
             clbPlugins.Items.Clear();
             if (Program.PluginLoader.MyPlugins.Count == 0)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 foreach (IPlugin plugin in Program.PluginLoader.MyPlugins)
                 {
@@ -721,7 +721,7 @@ namespace Chummer
 
         private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 object plugin = clbPlugins.Items[e.Index];
                 if (GlobalSettings.PluginsEnabledDic.ContainsKey(plugin.ToString()))
@@ -825,7 +825,7 @@ namespace Chummer
             if (!txtPDFLocation.Enabled)
                 return;
             // Prompt the user to select a save file to associate with this Contact.
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strNewFileName;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -872,7 +872,7 @@ namespace Chummer
         private async ValueTask PromptPdfAppPath()
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
@@ -1657,7 +1657,7 @@ namespace Chummer
         private async void bScanForPDFs_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 Task<XPathNavigator> tskLoadBooks = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
                 using (FolderBrowserDialog fbd = new FolderBrowserDialog {ShowNewFolderButton = false})

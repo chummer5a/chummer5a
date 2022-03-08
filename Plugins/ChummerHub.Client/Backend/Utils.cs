@@ -71,7 +71,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (_userRoles == null)
                 {
-                    using (new CursorWait(PluginHandler.MainForm))
+                    using (CursorWait.New(PluginHandler.MainForm))
                     {
                         int counter = 0;
                         //just wait until the task from the startup finishes...
@@ -102,7 +102,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (_possibleRoles == null)
                 {
-                    using (new CursorWait(PluginHandler.MainForm))
+                    using (CursorWait.New(PluginHandler.MainForm))
                     {
                         int counter = 0;
                         //just wait until the task from the startup finishes...
@@ -522,7 +522,7 @@ namespace ChummerHub.Client.Backend
                         ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login",
                         Tag = new Action(() =>
                         {
-                            using (new CursorWait(Program.MainForm))
+                            using (CursorWait.New(Program.MainForm))
                                 using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabPlugins"))
                                     frmOptions.ShowDialog(Program.MainForm);
                         })
@@ -919,7 +919,7 @@ namespace ChummerHub.Client.Backend
                         group = ge.MySINnerGroupCreate.MyGroup;
                         try
                         {
-                            using (new CursorWait(Program.MainForm))
+                            using (CursorWait.New(Program.MainForm))
                             {
                                 SINnerGroup a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
                                 return a;
@@ -1012,7 +1012,7 @@ namespace ChummerHub.Client.Backend
             {
                 try
                 {
-                    using (new CursorWait(PluginHandler.MainForm, true))
+                    using (CursorWait.New(PluginHandler.MainForm, true))
                     {
                         if (args.Item1.KeyCode == Keys.Delete)
                         {
@@ -1049,7 +1049,7 @@ namespace ChummerHub.Client.Backend
                 {
                     if (sinner.Id == null)
                         return;
-                    using (new CursorWait(PluginHandler.MainForm, true))
+                    using (CursorWait.New(PluginHandler.MainForm, true))
                     {
                         SinnersClient client = StaticUtils.GetClient();
                         ConfiguredTaskAwaitable<ResultSinnerDelete> res = client.DeleteAsync(sinner.Id.Value).ConfigureAwait(false);
@@ -1078,7 +1078,7 @@ namespace ChummerHub.Client.Backend
 
         private static async Task OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
         {
-            using (new CursorWait(PluginHandler.MainForm, true))
+            using (CursorWait.New(PluginHandler.MainForm, true))
             {
                 if (string.IsNullOrEmpty(sinner.FilePath))
                 {
@@ -1160,7 +1160,7 @@ namespace ChummerHub.Client.Backend
 
         private static async ValueTask SwitchToCharacter(CharacterCache objCache)
         {
-            using (new CursorWait(PluginHandler.MainForm, true))
+            using (CursorWait.New(PluginHandler.MainForm, true))
             {
                 Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
                                              ?? await Program.LoadCharacterAsync(objCache.FilePath);
@@ -1315,7 +1315,7 @@ namespace ChummerHub.Client.Backend
                                 {
                                     Program.ShowMessageBox(msg);
                                 }
-                                using (new CursorWait(PluginHandler.MainForm, true))
+                                using (CursorWait.New(PluginHandler.MainForm, true))
                                 {
                                     await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                                 }

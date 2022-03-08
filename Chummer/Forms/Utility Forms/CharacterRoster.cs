@@ -119,7 +119,7 @@ namespace Chummer
 
         private async void CharacterRoster_Load(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SetMyEventHandlers();
                 _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
@@ -147,7 +147,7 @@ namespace Chummer
 
         private async void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (_blnIsClosing)
                     return;
@@ -855,7 +855,7 @@ namespace Chummer
         {
             if (this.IsNullOrDisposed()) // Safety check for external calls
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 tlpRight.SuspendLayout();
                 if (objCache != null)
@@ -998,7 +998,7 @@ namespace Chummer
 
                 case CharacterCache objCache:
                     {
-                        using (new CursorWait(this))
+                        using (CursorWait.New(this))
                         {
                             objCache.OnMyDoubleClick(sender, e);
                         }
@@ -1169,7 +1169,7 @@ namespace Chummer
 
             if (t?.Tag is CharacterCache objCache)
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     Character objOpenCharacter
                         = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
@@ -1189,7 +1189,7 @@ namespace Chummer
 
             if (t?.Tag is CharacterCache objCache)
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (Character objOpenCharacter
                         = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
@@ -1208,7 +1208,7 @@ namespace Chummer
 
             if (t?.Tag is CharacterCache objCache)
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (Character objOpenCharacter
                            = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
@@ -1294,7 +1294,7 @@ namespace Chummer
             Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
             if (objOpenCharacter != null)
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                     Program.MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objOpenCharacter)?.Close();
             }
         }

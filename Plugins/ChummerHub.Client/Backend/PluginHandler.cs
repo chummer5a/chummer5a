@@ -442,7 +442,7 @@ namespace Chummer.Plugins
             {
                 try
                 {
-                    using (new CursorWait(MainForm, true))
+                    using (CursorWait.New(MainForm, true))
                     {
                         using (CharacterExtended ce = await GetMyCeAsync(input))
                         {
@@ -631,7 +631,7 @@ namespace Chummer.Plugins
             ResultGroupGetSearchGroups res = null;
             try
             {
-                using (new CursorWait(MainForm, true))
+                using (CursorWait.New(MainForm, true))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     res = await client.GetPublicGroupAsync("Archetypes", string.Empty);
@@ -686,7 +686,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(MainForm, true))
+                using (CursorWait.New(MainForm, true))
                 {
                     using (frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null)
                     {
@@ -753,7 +753,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(frmCharRoster, true))
+                using (CursorWait.New(frmCharRoster, true))
                 {
                     IEnumerable<TreeNode> res = null;
                     if (Settings.Default.UserModeRegistered)
@@ -914,7 +914,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(MainForm.CharacterRoster, true))
+                using (CursorWait.New(MainForm.CharacterRoster, true))
                 {
                     SINSearchGroupResult MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null);
                     SINnerSearchGroup item = MySINSearchGroupResult.SinGroups.FirstOrDefault(x => x.Groupname?.Contains("My Data") == true);
@@ -1317,7 +1317,7 @@ namespace Chummer.Plugins
                         return;
                 }
             }
-            using (new CursorWait(MainForm))
+            using (CursorWait.New(MainForm))
             {
                 await MainForm.DoThreadSafeFunc(async x =>
                 {

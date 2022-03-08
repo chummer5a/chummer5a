@@ -181,7 +181,7 @@ namespace ChummerHub.Client.Sinners
             {
                 try
                 {
-                    using (new CursorWait(PluginHandler.MainForm, true))
+                    using (CursorWait.New(PluginHandler.MainForm, true))
                     {
                         try
                         {
@@ -736,7 +736,7 @@ namespace ChummerHub.Client.Sinners
         {
             try
             {
-                using (new CursorWait(PluginHandler.MainForm, true))
+                using (CursorWait.New(PluginHandler.MainForm, true))
                 {
                     if (myState != null)
                     {

@@ -101,7 +101,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (_strXslt == "Export JSON")
                 {
@@ -161,7 +161,7 @@ namespace Chummer
                     _strXslt = cboXSLT.Text;
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
-                        using (new CursorWait(this))
+                        using (CursorWait.New(this))
                         {
                             await txtText.DoThreadSafeAsync(
                                 async x => x.Text = await LanguageManager.GetStringAsync("String_Generating_Data"));
@@ -242,7 +242,7 @@ namespace Chummer
 
         private async Task GenerateCharacterXml()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false),
                                    txtText.DoThreadSafeAsync(
@@ -304,7 +304,7 @@ namespace Chummer
 
         private async Task GenerateXml()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
@@ -382,7 +382,7 @@ namespace Chummer
 
         private async Task GenerateJson()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try

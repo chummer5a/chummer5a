@@ -112,7 +112,7 @@ namespace Chummer
 
         private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabCustomDataDirectories"))
                 await frmOptions.ShowDialogSafeAsync(this);
         }
@@ -131,7 +131,7 @@ namespace Chummer
                 _objCharacterSettings.Name = frmSelectName.SelectedValue;
             }
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -182,7 +182,7 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 (bool blnSuccess, CharacterSettings objDeletedSettings)
                     = await SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemoveAsync(
@@ -305,7 +305,7 @@ namespace Chummer
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 _objCharacterSettings.Name = strSelectedName;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -352,7 +352,7 @@ namespace Chummer
 
         private async void cmdSave_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (_objReferenceCharacterSettings.BuildMethod != _objCharacterSettings.BuildMethod)
                 {
@@ -429,7 +429,7 @@ namespace Chummer
                 IsDirty = false;
             }
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 _blnLoading = true;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -483,7 +483,7 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 _blnLoading = true;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -1034,7 +1034,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask PopulateOptions()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -1064,7 +1064,7 @@ namespace Chummer
 
         private async ValueTask PopulatePriorityTableList()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                            out List<ListItem> lstPriorityTables))
@@ -1107,7 +1107,7 @@ namespace Chummer
 
         private async ValueTask PopulateLimbCountList()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                            out List<ListItem> lstLimbCount))
@@ -1149,7 +1149,7 @@ namespace Chummer
 
         private async ValueTask PopulateAllowedGrades()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                            out List<ListItem> lstGrades))
@@ -1435,7 +1435,7 @@ namespace Chummer
 
         private void PopulateSettingsList()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelect = string.Empty;
                 if (!_blnLoading)
@@ -1466,7 +1466,7 @@ namespace Chummer
 
         private async void SettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (!_blnLoading)
                 {

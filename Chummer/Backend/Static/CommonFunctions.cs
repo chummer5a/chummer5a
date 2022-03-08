@@ -1415,8 +1415,15 @@ namespace Chummer
                 objLoopControl = objLoopControl.Parent;
             }
 
-            using (new CursorWait(objControl.FindForm() ?? objControl))
+            CursorWait objCursorWait = await CursorWait.NewAsync(objControl.FindForm() ?? objControl);
+            try
+            {
                 await OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -1441,16 +1448,23 @@ namespace Chummer
                 if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
                     await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                using (new CursorWait(Program.MainForm))
-                using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
+                try
                 {
-                    if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
-                        // ReSharper disable once AccessToDisposedClosure
-                        await frmOptions.DoLinkPdfReader();
-                    if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
-                        return;
-                    strPdfParameters = GlobalSettings.PdfParameters;
-                    strPdfAppPath = GlobalSettings.PdfAppPath;
+                    using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                    {
+                        if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
+                            // ReSharper disable once AccessToDisposedClosure
+                            await frmOptions.DoLinkPdfReader();
+                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
+                            return;
+                        strPdfParameters = GlobalSettings.PdfParameters;
+                        strPdfAppPath = GlobalSettings.PdfAppPath;
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
 
@@ -1514,23 +1528,30 @@ namespace Chummer
                 if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
                         await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                using (new CursorWait(Program.MainForm))
-                using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
+                try
                 {
-                    // ReSharper disable once AccessToDisposedClosure
-                    await frmOptions.DoLinkPdf(objBookInfo.Code);
-                    if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
-                        return;
-                    uriPath = null;
-                    try
+                    using (EditGlobalSettings frmOptions = new EditGlobalSettings())
                     {
-                        uriPath = new Uri(objBookInfo.Path);
+                        // ReSharper disable once AccessToDisposedClosure
+                        await frmOptions.DoLinkPdf(objBookInfo.Code);
+                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
+                            return;
+                        uriPath = null;
+                        try
+                        {
+                            uriPath = new Uri(objBookInfo.Path);
+                        }
+                        catch (UriFormatException)
+                        {
+                            // Silently swallow the error because PDF fetching is usually done in the background
+                            objBookInfo.Path = string.Empty;
+                        }
                     }
-                    catch (UriFormatException)
-                    {
-                        // Silently swallow the error because PDF fetching is usually done in the background
-                        objBookInfo.Path = string.Empty;
-                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
 

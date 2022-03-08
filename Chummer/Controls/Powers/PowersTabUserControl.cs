@@ -60,7 +60,7 @@ namespace Chummer.UI.Powers
         {
             if (_objCharacter != null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 RealLoad();
         }
 

@@ -216,7 +216,7 @@ namespace Chummer
 
         private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
                 string strPdfPrinter = string.Empty;
@@ -480,7 +480,7 @@ namespace Chummer
         /// </summary>
         private async Task RefreshCharacterXml()
         {
-            using (new CursorWait(this, true))
+            using (CursorWait.New(this, true))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                     {
@@ -507,7 +507,7 @@ namespace Chummer
         /// </summary>
         private async Task AsyncGenerateOutput()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                     {

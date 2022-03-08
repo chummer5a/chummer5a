@@ -182,7 +182,7 @@ namespace Chummer
 
         private async void CharacterCreate_Load(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             using (CustomActivity op_load_frm_create = Timekeeper.StartSyncron("load_frm_create", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
                 if (CharacterObject == null)
@@ -930,7 +930,7 @@ namespace Chummer
 
         private async void CharacterCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 bool blnOldIsLoading = IsLoading;
                 IsLoading = true;
@@ -1681,7 +1681,7 @@ namespace Chummer
                     {
                         if (IsLoading)
                             break;
-                        using (new CursorWait(this))
+                        using (CursorWait.New(this))
                         {
                             SuspendLayout();
                             cmdAddLifestyle.SplitMenuStrip =
@@ -1932,7 +1932,7 @@ namespace Chummer
                     {
                         if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
-                            using (new CursorWait(this))
+                            using (CursorWait.New(this))
                             {
                                 SuspendLayout();
                                 RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
@@ -1945,7 +1945,7 @@ namespace Chummer
                     }
                 case nameof(CharacterSettings.EnableEnemyTracking):
                 {
-                    using (new CursorWait(this))
+                    using (CursorWait.New(this))
                     {
                         SuspendLayout();
                         if (!CharacterObjectSettings.EnableEnemyTracking)
@@ -2045,7 +2045,7 @@ namespace Chummer
 
         private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
                 {
@@ -2091,7 +2091,7 @@ namespace Chummer
 
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
@@ -3152,7 +3152,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectSpell frmPickSpell = new SelectSpell(CharacterObject))
                     {
@@ -3252,7 +3252,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     // The number of Complex Forms cannot exceed twice the character's RES.
                     if (CharacterObject.ComplexForms.Count >= CharacterObject.RES.Value * 2 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit) && !CharacterObject.IgnoreRules)
@@ -3296,7 +3296,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     XmlNode objXmlProgram;
                     // Let the user select a Program.
@@ -3378,7 +3378,7 @@ namespace Chummer
 
         private async ValueTask<bool> AddWeapon(Location objLocation = null)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject))
                 {
@@ -3429,7 +3429,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     Lifestyle objLifestyle;
                     using (SelectLifestyle frmPickLifestyle = new SelectLifestyle(CharacterObject))
@@ -3485,7 +3485,7 @@ namespace Chummer
 
         private async ValueTask<bool> AddVehicle(Location objLocation = null)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (SelectVehicle frmPickVehicle = new SelectVehicle(CharacterObject))
                 {
@@ -3694,7 +3694,7 @@ namespace Chummer
 
         private void cmdAddMetamagic_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (CharacterObject.MAGEnabled)
                 {
@@ -3752,7 +3752,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectCritterPower frmPickCritterPower = new SelectCritterPower(CharacterObject))
                     {
@@ -3807,7 +3807,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     //from 1 to second highest life module order possible (ye hardcoding is bad, but extra stage is a niche case)
                     int intStage;
@@ -3871,7 +3871,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectQuality frmPickQuality = new SelectQuality(CharacterObject))
                     {
@@ -4046,7 +4046,7 @@ namespace Chummer
                     return false;
             }
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
                 {
@@ -4313,7 +4313,7 @@ namespace Chummer
 
         private async ValueTask<bool> AddArmor(Location objLocation = null)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (SelectArmor frmPickArmor = new SelectArmor(CharacterObject))
                 {
@@ -4492,7 +4492,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     // Make sure the Weapon allows Accessories to be added to it.
                     if (!objWeapon.AllowAccessory)
@@ -4602,7 +4602,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectArmorMod frmPickArmorMod = new SelectArmorMod(CharacterObject, objArmor)
                     {
@@ -4669,7 +4669,7 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (CreateWeaponMount frmPickVehicleMod = new CreateWeaponMount(objVehicle, CharacterObject))
                 {
@@ -4702,7 +4702,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectVehicleMod frmPickVehicleMod = new SelectVehicleMod(CharacterObject, objVehicle, objVehicle.Mods))
                     {
@@ -4852,7 +4852,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
                     {
@@ -4930,7 +4930,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     // Make sure the Weapon allows Accessories to be added to it.
                     if (!objWeapon.AllowAccessory)
@@ -4985,7 +4985,7 @@ namespace Chummer
                 return;
             }
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
                 {
@@ -5054,7 +5054,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     XmlNode xmlTechnique;
                     using (SelectMartialArtTechnique frmPickMartialArtTechnique = new SelectMartialArtTechnique(CharacterObject, objMartialArt))
@@ -5139,7 +5139,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>(1);
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     Gear objGear;
                     lstWeapons.Clear();
@@ -5228,7 +5228,7 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                     using (SelectLifestyleAdvanced frmPickLifestyle = new SelectLifestyleAdvanced(CharacterObject, objLifestyle))
@@ -5346,7 +5346,7 @@ namespace Chummer
                 return;
             }
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
                 {
@@ -5654,7 +5654,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectCyberware frmPickCyberware = new SelectCyberware(CharacterObject, Improvement.ImprovementSource.Cyberware, objCyberwareParent ?? (object)objMod))
                     {
@@ -6003,7 +6003,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     string strCategories = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -6107,7 +6107,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     string strCategories;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -6204,7 +6204,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -6287,7 +6287,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -6360,7 +6360,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
                     {
@@ -6439,7 +6439,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -6552,7 +6552,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objSensor, strCategories))
                     {
@@ -6633,7 +6633,7 @@ namespace Chummer
 
             do
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (SelectGear frmPickGear = new SelectGear(CharacterObject, 0, 1, objAccessory, strCategories))
                     {
@@ -9689,7 +9689,7 @@ namespace Chummer
             _blnSkipUpdate = true;
 
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
@@ -9742,7 +9742,7 @@ namespace Chummer
             _blnSkipUpdate = true;
             try
             {
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     // TODO: DataBind these wherever possible
 
@@ -11326,7 +11326,7 @@ namespace Chummer
         /// </summary>
         public override async Task<bool> SaveCharacterAsCreated()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 // If the character was built with Karma, record their staring Karma amount (if any).
                 if (CharacterObject.Karma > 0)
@@ -11798,7 +11798,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             XPathNavigator xmlParent = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync();
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strCategories = string.Empty;
 
@@ -11925,7 +11925,7 @@ namespace Chummer
 
             // Open the Gear XML file and locate the selected Gear.
             object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strCategories = string.Empty;
                 if (!string.IsNullOrEmpty(strSelectedId) && objParent is IHasXmlDataNode objParentWithDataNode)
@@ -13183,7 +13183,7 @@ namespace Chummer
                                                           out StringBuilder sbdMessage))
             {
                 sbdMessage.Append(await LanguageManager.GetStringAsync("Message_InvalidBeginning"));
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
                     int intMartialArts = CharacterObject.MartialArts.Count(objArt => !objArt.IsQuality);
@@ -13994,7 +13994,7 @@ namespace Chummer
 
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
-                    using (new CursorWait(this))
+                    using (CursorWait.New(this))
                     {
                         using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
@@ -15519,7 +15519,7 @@ namespace Chummer
 
         private async void btnCreateBackstory_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (_objStoryBuilder == null)
                 {

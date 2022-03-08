@@ -66,7 +66,7 @@ namespace Chummer
                 {
                     FileName = fileName
                 };
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     if (!await objCharacter.LoadAsync())
                     {

@@ -108,7 +108,7 @@ namespace Chummer
 
         private async void SelectMetatypePriority_Load(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -362,7 +362,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -385,13 +385,13 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 await MetatypeSelected();
         }
 
         private async void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -637,7 +637,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -666,7 +666,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -688,7 +688,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -720,7 +720,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -749,7 +749,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -776,7 +776,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -803,7 +803,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -828,7 +828,7 @@ namespace Chummer
 
         private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 cboPossessionMethod.Enabled = chkPossessionBased.Checked;
         }
 

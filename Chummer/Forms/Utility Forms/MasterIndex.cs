@@ -134,10 +134,15 @@ namespace Chummer
 
         private async void MasterIndex_Load(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await LoadContent().AsTask().ContinueWith(x => IsFinishedLoading = true);
                 _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -151,8 +156,15 @@ namespace Chummer
             if (e.PropertyName == nameof(CharacterSettings.Books)
                 || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
             {
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                try
+                {
                     await LoadContent();
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
         }
 
@@ -160,7 +172,8 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strSelectedSetting = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey;
                 if ((string.IsNullOrEmpty(strSelectedSetting)
@@ -180,6 +193,10 @@ namespace Chummer
 
                     await LoadContent();
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -431,7 +448,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 bool blnCustomList = !(txtSearch.TextLength == 0 && string.IsNullOrEmpty(cboFile.SelectedValue?.ToString()));
                 List<ListItem> lstFilteredItems = blnCustomList ? Utils.ListItemListPool.Get() : _lstItems;
@@ -489,7 +506,8 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 if (lstItems.SelectedValue is MasterIndexEntry objEntry)
                 {
@@ -538,6 +556,10 @@ namespace Chummer
                     txtNotes.Visible = false;
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private sealed class MasterIndexEntry : IDisposable
@@ -569,17 +591,23 @@ namespace Chummer
 
         private async void cmdEditCharacterSetting_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                using (EditCharacterSettings frmOptions = new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
+                using (EditCharacterSettings frmOptions
+                       = new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
                     await frmOptions.ShowDialogSafeAsync(this);
                 // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
         public void ForceRepopulateCharacterSettings()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 PopulateCharacterSettings();

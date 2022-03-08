@@ -69,7 +69,7 @@ namespace Chummer
 
         private async ValueTask RefreshResultLabel()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
@@ -93,7 +93,7 @@ namespace Chummer
                 return;
             if (cboSelectLifestyle.SelectedIndex < 0)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 _objLifestyle = ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle;
                 lblDice.Text = string.Format(GlobalSettings.CultureInfo,
@@ -107,7 +107,7 @@ namespace Chummer
         private ValueTask RefreshSelectLifestyle()
         {
             _blnIsSelectLifestyleRefreshing = true;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 try
                 {
@@ -158,7 +158,7 @@ namespace Chummer
 
         private ValueTask RefreshCalculation()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 nudDiceResult.SuspendLayout();
                 nudDiceResult.MinimumAsInt =
@@ -174,7 +174,7 @@ namespace Chummer
         {
             if (SelectedLifestyle == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 int intResult = 0;
                 for (int i = 0; i < SelectedLifestyle.Dice; ++i)

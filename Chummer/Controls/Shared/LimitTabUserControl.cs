@@ -57,7 +57,7 @@ namespace Chummer.UI.Shared
         {
             if (_objCharacter != null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 RealLoad();
         }
 

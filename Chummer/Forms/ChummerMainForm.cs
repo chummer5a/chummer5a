@@ -94,7 +94,8 @@ namespace Chummer
         //in case of a commandline argument not asking for the mainform to be shown.
         private async void ChummerMainForm_Load(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 using (CustomActivity opFrmChummerMain = Timekeeper.StartSyncron(
                            "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
@@ -144,7 +145,8 @@ namespace Chummer
 
                         Program.MainForm = this;
 
-                        using (new CursorWait(this))
+                        CursorWait objCursorWait2 = await CursorWait.NewAsync(this);
+                        try
                         {
                             ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1);
                             try
@@ -343,6 +345,10 @@ namespace Chummer
                                 await lstCharactersToLoad.DisposeAsync();
                             }
                         }
+                        finally
+                        {
+                            await objCursorWait2.DisposeAsync();
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -430,6 +436,10 @@ namespace Chummer
                 }
 
                 IsFinishedLoading = true;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -658,16 +668,30 @@ namespace Chummer
 
         private async void mnuGlobalSettings_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
-            using (EditGlobalSettings frmOptions = new EditGlobalSettings())
-                await frmOptions.ShowDialogSafeAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                    await frmOptions.ShowDialogSafeAsync(this);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void mnuCharacterSettings_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
-            using (EditCharacterSettings frmCharacterOptions = new EditCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings))
-                await frmCharacterOptions.ShowDialogSafeAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                using (EditCharacterSettings frmCharacterOptions = new EditCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings))
+                    await frmCharacterOptions.ShowDialogSafeAsync(this);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -736,7 +760,8 @@ namespace Chummer
 
         private async void mnuNewCritter_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 Character objCharacter = new Character();
                 try
@@ -771,6 +796,10 @@ namespace Chummer
                     await objCharacter.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void mnuMRU_Click(object sender, EventArgs e)
@@ -778,8 +807,15 @@ namespace Chummer
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
                 await OpenCharacter(await Program.LoadCharacterAsync(strFileName));
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -890,7 +926,7 @@ namespace Chummer
         /// <returns></returns>
         public bool SwitchToOpenCharacter(Character objCharacter)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (objCharacter == null)
                     return false;
@@ -994,7 +1030,8 @@ namespace Chummer
 
         private async void ChummerMainForm_DragDrop(object sender, DragEventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // Open each file that has been dropped into the window.
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
@@ -1012,6 +1049,10 @@ namespace Chummer
                 for (int i = 0; i < lstCharacters.Length; ++i)
                     lstCharacters[i] = await tskCharacterLoads[i];
                 await OpenCharacterList(lstCharacters);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1136,7 +1177,8 @@ namespace Chummer
             Character objCharacter = new Character();
             try
             {
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
                     // Show the BP selection window.
                     using (SelectBuildMethod frmBP = new SelectBuildMethod(objCharacter))
@@ -1170,8 +1212,13 @@ namespace Chummer
 
                     Program.OpenCharacters.Add(objCharacter);
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
 
-                using (new CursorWait(this))
+                objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
                     CharacterCreate frmNewCharacter = new CharacterCreate(objCharacter)
                     {
@@ -1183,6 +1230,10 @@ namespace Chummer
                     // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                     if (MdiChildren.Length > 1)
                         frmNewCharacter.WindowState = FormWindowState.Maximized;
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             finally
@@ -1198,7 +1249,8 @@ namespace Chummer
         {
             if (Utils.IsUnitTest)
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 List<string> lstFilesToOpen;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -1245,6 +1297,10 @@ namespace Chummer
                 }
                 await OpenCharacterList(lstCharacters);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
 
             //Timekeeper.Finish("load_sum");
             //Timekeeper.Log();
@@ -1265,7 +1321,8 @@ namespace Chummer
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
         public async Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 if (lstCharacters == null)
                     return;
@@ -1328,13 +1385,18 @@ namespace Chummer
                 foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
                     frmNewCharacter.QueueThreadSafe(() => frmNewCharacter.WindowState = wsPreference);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void mnuOpenForPrinting_Click(object sender, EventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strFile;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -1357,6 +1419,10 @@ namespace Chummer
                     await OpenCharacterForPrinting(objCharacter);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -1364,7 +1430,8 @@ namespace Chummer
         /// </summary>
         public async Task OpenCharacterForPrinting(Character objCharacter)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // Character is already open in an existing form, so switch to it and make it open up its print viewer
                 if (SwitchToOpenCharacter(objCharacter))
@@ -1382,13 +1449,18 @@ namespace Chummer
                     }
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void mnuOpenForExport_Click(object sender, EventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strFile;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -1411,6 +1483,10 @@ namespace Chummer
                     await OpenCharacterForExport(objCharacter);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -1418,7 +1494,8 @@ namespace Chummer
         /// </summary>
         public async Task OpenCharacterForExport(Character objCharacter)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // Character is already open in an existing form, so switch to it and make it open up its exporter
                 if (SwitchToOpenCharacter(objCharacter))
@@ -1429,9 +1506,14 @@ namespace Chummer
                 }
                 else
                 {
-                    using (ExportCharacter frmExportCharacter = this.DoThreadSafeFunc(() => new ExportCharacter(objCharacter)))
+                    using (ExportCharacter frmExportCharacter
+                           = this.DoThreadSafeFunc(() => new ExportCharacter(objCharacter)))
                         await frmExportCharacter.ShowDialogSafeAsync(this);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1649,7 +1731,7 @@ namespace Chummer
                 Task objCharacterLoadingTask = null;
 
                 using (Program.MainProgressBar = Program.CreateAndShowProgressBar())
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     // Extract the file name
                     NativeMethods.CopyDataStruct objReceivedData = (NativeMethods.CopyDataStruct)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.CopyDataStruct));

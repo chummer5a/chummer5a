@@ -63,7 +63,7 @@ namespace Chummer
 
         private async void SelectMetatypeKarma_Load(object sender, EventArgs e)
         {
-            using (new CursorWait())
+            using (CursorWait.New())
             {
                 SuspendLayout();
                 try
@@ -171,7 +171,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait())
+            using (CursorWait.New())
             {
                 SuspendLayout();
                 try
@@ -194,7 +194,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            using (new CursorWait())
+            using (CursorWait.New())
                 await MetatypeSelected();
         }
 
@@ -202,7 +202,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait())
+            using (CursorWait.New())
             {
                 SuspendLayout();
                 try
@@ -233,7 +233,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait())
+            using (CursorWait.New())
             {
                 SuspendLayout();
                 try
@@ -249,7 +249,7 @@ namespace Chummer
 
         private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
-            using (new CursorWait())
+            using (CursorWait.New())
                 cboPossessionMethod.Enabled = chkPossessionBased.Checked;
         }
 
@@ -942,7 +942,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait())
+            using (CursorWait.New())
             {
                 SuspendLayout();
                 try

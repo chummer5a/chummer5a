@@ -121,12 +121,17 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
                     ? _objContact.LinkedCharacter
                     : null;
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
                     if (objOpenCharacter == null)
                         objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
                     if (!Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             else
@@ -172,7 +177,8 @@ namespace Chummer
 
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
                     _objContact.FileName = openFileDialog.FileName;
                     cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
@@ -184,6 +190,10 @@ namespace Chummer
                     _objContact.RelativeFileName = "../" + uriRelative;
 
                     ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
         }

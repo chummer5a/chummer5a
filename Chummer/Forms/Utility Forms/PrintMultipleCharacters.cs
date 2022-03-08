@@ -120,7 +120,7 @@ namespace Chummer
 
         private async Task DoPrint()
         {
-            using (new CursorWait(this, true))
+            using (CursorWait.New(this, true))
             {
                 try
                 {

@@ -238,7 +238,7 @@ namespace Chummer
         /// </summary>
         protected async Task AutoSaveCharacter()
         {
-            using (new CursorWait(this, true))
+            using (CursorWait.New(this, true))
             {
                 try
                 {
@@ -287,7 +287,7 @@ namespace Chummer
         {
             if (treLimit == null || treLimit.SelectedNode.Level == 0)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 TreeNode objSelectedNode = treLimit.SelectedNode;
                 string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -331,7 +331,7 @@ namespace Chummer
         {
             if (objNotes == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
             {
                 await frmItemNotes.ShowDialogSafeAsync(this);
@@ -354,7 +354,7 @@ namespace Chummer
         {
             if (pnlAttributes == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -562,7 +562,7 @@ namespace Chummer
             TreeNode objManipulationNode = null;
             TreeNode objRitualsNode = null;
             TreeNode objEnchantmentsNode = null;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -837,7 +837,7 @@ namespace Chummer
             if (treAIPrograms == null)
                 return;
             TreeNode objParentNode = null;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -959,7 +959,7 @@ namespace Chummer
             if (treComplexForms == null)
                 return;
             TreeNode objParentNode = null;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -1123,7 +1123,7 @@ namespace Chummer
         {
             if (treMetamagic == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -1356,7 +1356,7 @@ namespace Chummer
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -1436,7 +1436,7 @@ namespace Chummer
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -1513,7 +1513,7 @@ namespace Chummer
 
         protected void RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 switch (e?.ListChangedType)
                 {
@@ -1560,7 +1560,7 @@ namespace Chummer
 
         protected void RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (removingOldEventArgs?.OldObject is Power objPower)
                 {
@@ -1573,7 +1573,7 @@ namespace Chummer
         {
             if (treMetamagic == null || notifyCollectionChangedEventArgs == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -1683,7 +1683,7 @@ namespace Chummer
                 return;
             TreeNode objPowersNode = null;
             TreeNode objWeaknessesNode = null;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
@@ -1830,7 +1830,7 @@ namespace Chummer
             TreeNode objNegativeQualityRoot = null;
             TreeNode objLifeModuleRoot = null;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -2074,7 +2074,7 @@ namespace Chummer
         {
             if (treQualities == null || treQualities.GetNodeCount(false) <= 0)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 TreeNode objSelectedNode = treQualities.SelectedNode;
                 foreach (TreeNode objQualityTypeNode in treQualities.Nodes)
@@ -2099,7 +2099,7 @@ namespace Chummer
         {
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 foreach (XPathNavigator objNode in objNodeList)
                 {
@@ -2121,7 +2121,7 @@ namespace Chummer
             if (treArmor == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2136,7 +2136,7 @@ namespace Chummer
             if (treGear == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2162,7 +2162,7 @@ namespace Chummer
             if (treVehicles == null || objVehicle == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2177,7 +2177,7 @@ namespace Chummer
             if (treWeapons == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2192,7 +2192,7 @@ namespace Chummer
             if (treImprovements == null || notifyCollectionChangedEventArgs == null)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId =
                     (treImprovements.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -2348,7 +2348,7 @@ namespace Chummer
             NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
             bool rootSibling = true)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -2508,7 +2508,7 @@ namespace Chummer
         {
             if (treWeapons == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2662,7 +2662,7 @@ namespace Chummer
         {
             if (treArmor == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -2885,7 +2885,7 @@ namespace Chummer
             TreeNode nodArmor = treArmor.FindNode(objArmor.InternalId);
             if (nodArmor == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -2999,7 +2999,7 @@ namespace Chummer
         {
             if (treGear == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3142,7 +3142,7 @@ namespace Chummer
         {
             if (treGear == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3247,7 +3247,7 @@ namespace Chummer
             TreeNode objHoleNode = null;
             TreeNode objAntiHoleNode = null;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3462,7 +3462,7 @@ namespace Chummer
         {
             if (treVehicles == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -3908,7 +3908,7 @@ namespace Chummer
         {
             if (treFoci == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treFoci.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -4321,7 +4321,7 @@ namespace Chummer
         {
             if (treMartialArts == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treMartialArts.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
@@ -4485,7 +4485,7 @@ namespace Chummer
             TreeNode nodMartialArt = treMartialArts.FindNodeByTag(objMartialArt);
             if (nodMartialArt == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
@@ -4575,7 +4575,7 @@ namespace Chummer
         {
             if (treImprovements == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId =
                     (treImprovements.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -4908,7 +4908,7 @@ namespace Chummer
         {
             if (treLifestyles == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 string strSelectedId = (treLifestyles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                 TreeNode objParentNode = null;
@@ -5035,7 +5035,7 @@ namespace Chummer
         {
             if (lstCalendar == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
                 {
@@ -5171,7 +5171,7 @@ namespace Chummer
         {
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -5486,7 +5486,7 @@ namespace Chummer
             if (pnlSustainedSpells == null && pnlSustainedComplexForms == null && pnlSustainedCritterPowers == null)
                 return;
 
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 Panel DetermineRefreshingPanel(SustainedObject objSustained, Panel flpSustainedSpellsParam,
                                                Panel flpSustainedComplexFormsParam, Panel flpSustainedCritterPowersParam)
@@ -5781,7 +5781,7 @@ namespace Chummer
 
             if (lstNodes == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 List<ICanSort> lstSorted = lstNodes.Cast<TreeNode>().Select(n => n.Tag).OfType<ICanSort>().ToList();
 
@@ -5812,7 +5812,7 @@ namespace Chummer
         /// <param name="selectedObject"></param>
         public void CopyObject(object selectedObject)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 switch (selectedObject)
                 {
@@ -6302,7 +6302,7 @@ namespace Chummer
 
         protected async ValueTask AddContactsFromFile()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 XPathDocument xmlDoc;
                 // Displays an OpenFileDialog so the user can select the XML to read.
@@ -6352,7 +6352,7 @@ namespace Chummer
         {
             if (panSpirits == null && panSprites == null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (notifyCollectionChangedEventArgs == null ||
                     notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
@@ -6666,7 +6666,7 @@ namespace Chummer
         /// </summary>
         protected async ValueTask<bool> AddMugshot()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
                 {
@@ -6929,7 +6929,7 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
                 if (string.IsNullOrEmpty(CharacterObject.FileName))
@@ -6946,7 +6946,7 @@ namespace Chummer
                     return await SaveCharacterAsCreated();
                 }
 
-                using (new CursorWait(this))
+                using (CursorWait.New(this))
                 {
                     using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                     {
@@ -6967,7 +6967,7 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 // If the Created is checked, make sure the user wants to actually save this character.
                 if (blnDoCreated && !await ConfirmSaveCreatedCharacter())
@@ -7021,7 +7021,7 @@ namespace Chummer
 
         public async ValueTask DoPrint()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
                 // If a Viewer window already exists for this character, use it instead.
@@ -7062,7 +7062,7 @@ namespace Chummer
 
         public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                 bool blnAddAgain;
