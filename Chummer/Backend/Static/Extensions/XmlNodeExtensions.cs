@@ -102,7 +102,7 @@ namespace Chummer
                 read = (T)Convert.ChangeType(fieldValue, typeof(T), GlobalSettings.InvariantCultureInfo);
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 //If we are debugging, great
                 //Utils.BreakIfDebug();

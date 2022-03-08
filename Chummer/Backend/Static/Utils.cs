@@ -235,7 +235,7 @@ namespace Chummer
                 //or does not exist (has already been processed)
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 BreakIfDebug();
                 return true;

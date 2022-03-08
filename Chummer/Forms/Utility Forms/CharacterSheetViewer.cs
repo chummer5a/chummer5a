@@ -683,7 +683,7 @@ namespace Chummer
                     webViewer.ShowPrintDialog();
                 }
             }
-            catch (Exception)
+            catch
             {
                 // Error of some kind occured, proceed to use wkhtmltopdf instead
                 return false;

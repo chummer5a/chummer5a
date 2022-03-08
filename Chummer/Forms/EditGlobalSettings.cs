@@ -339,7 +339,7 @@ namespace Chummer
             {
                 txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text, _objSelectedCultureInfo);
             }
-            catch (Exception)
+            catch
             {
                 txtDateFormatView.Text = await LanguageManager.GetStringAsync("String_Error", _strSelectedLanguage);
             }
@@ -352,7 +352,7 @@ namespace Chummer
             {
                 txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text, _objSelectedCultureInfo);
             }
-            catch (Exception)
+            catch
             {
                 txtTimeFormatView.Text = await LanguageManager.GetStringAsync("String_Error", _strSelectedLanguage);
             }
@@ -851,7 +851,7 @@ namespace Chummer
                     PdfReader objPdfReader = new PdfReader(strNewFileName);
                     objPdfReader.Close();
                 }
-                catch (Exception)
+                catch
                 {
                     Program.ShowMessageBox(this, string.Format(
                                                         await LanguageManager.GetStringAsync(
