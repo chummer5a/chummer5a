@@ -233,34 +233,45 @@ namespace Chummer
                                 if (xmlBaseNode == null)
                                     return;
                                 bool blnLoopFileNameHasItems = false;
-                                foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[page and " + strSourceFilter + ']'))
+                                foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(
+                                             ".//*[page and " + strSourceFilter + ']'))
                                 {
                                     blnLoopFileNameHasItems = true;
-                                    string strName = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                                    string strName = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                        ?.Value;
                                     string strDisplayName
-                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                          ?.Value
                                           ?? strName
                                           ?? (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value
                                           ?? await LanguageManager.GetStringAsync("String_Unknown");
-                                    string strSource = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value;
-                                    string strPage = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value;
+                                    string strSource
+                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value;
+                                    string strPage = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("page"))
+                                        ?.Value;
                                     string strDisplayPage
                                         = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
                                           ?? strPage;
                                     string strEnglishNameOnPage
-                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("nameonpage"))?.Value
+                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("nameonpage"))
+                                          ?.Value
                                           ?? strName;
                                     string strTranslatedNameOnPage =
-                                        (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("altnameonpage"))?.Value
+                                        (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("altnameonpage"))
+                                        ?.Value
                                         ?? strDisplayName;
-                                    string strNotes = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("altnotes"))?.Value
-                                                      ?? (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("notes"))?.Value;
+                                    string strNotes
+                                        = (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("altnotes"))?.Value
+                                          ?? (await xmlItemNode.SelectSingleNodeAndCacheExpressionAsync("notes"))
+                                          ?.Value;
                                     MasterIndexEntry objEntry = new MasterIndexEntry(
                                         strDisplayName,
                                         strFileName,
-                                        await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.DefaultLanguage,
+                                        await SourceString.GetSourceStringAsync(
+                                            strSource, strPage, GlobalSettings.DefaultLanguage,
                                             GlobalSettings.InvariantCultureInfo),
-                                        await SourceString.GetSourceStringAsync(strSource, strDisplayPage, GlobalSettings.Language,
+                                        await SourceString.GetSourceStringAsync(
+                                            strSource, strDisplayPage, GlobalSettings.Language,
                                             GlobalSettings.CultureInfo),
                                         strEnglishNameOnPage,
                                         strTranslatedNameOnPage);
@@ -373,32 +384,39 @@ namespace Chummer
                         _lstFileNamesWithItems.Insert(
                             0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
 
-                        int intOldSelectedIndex = cboFile.SelectedIndex;
+                        await Task.WhenAll(
+                            cboFile.DoThreadSafeAsync(x =>
+                            {
+                                ElasticComboBox cboThis = (ElasticComboBox)x;
+                                int intOldSelectedIndex = cboThis.SelectedIndex;
+                                cboThis.BeginUpdate();
+                                cboThis.PopulateWithListItems(_lstFileNamesWithItems);
+                                try
+                                {
+                                    cboThis.SelectedIndex = Math.Max(intOldSelectedIndex, 0);
+                                }
+                                // For some reason, some unit tests will fire this exception even when _lstFileNamesWithItems is explicitly checked for having enough items
+                                catch (ArgumentOutOfRangeException)
+                                {
+                                    cboThis.SelectedIndex = -1;
+                                }
 
-                        cboFile.BeginUpdate();
-                        cboFile.PopulateWithListItems(_lstFileNamesWithItems);
-                        try
-                        {
-                            cboFile.SelectedIndex = Math.Max(intOldSelectedIndex, 0);
-                        }
-                        // For some reason, some unit tests will fire this exception even when _lstFileNamesWithItems is explicitly checked for having enough items
-                        catch (ArgumentOutOfRangeException)
-                        {
-                            cboFile.SelectedIndex = -1;
-                        }
-
-                        cboFile.EndUpdate();
-
-                        lstItems.BeginUpdate();
-                        lstItems.PopulateWithListItems(_lstItems);
-                        lstItems.SelectedIndex = -1;
-                        lstItems.EndUpdate();
-
-                        _blnSkipRefresh = false;
+                                cboThis.EndUpdate();
+                            })
+                            ,
+                            lstItems.DoThreadSafeAsync(x =>
+                            {
+                                ListBox lstThis = (ListBox) x;
+                                lstThis.BeginUpdate();
+                                lstThis.PopulateWithListItems(_lstItems);
+                                lstThis.SelectedIndex = -1;
+                                lstThis.EndUpdate();
+                            }));
                     }
                 }
                 finally
                 {
+                    _blnSkipRefresh = false;
                     IsFinishedLoading = blnOldIsFinishedLoading;
                 }
             }
