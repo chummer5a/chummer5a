@@ -18,6 +18,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                _lstCharacters.Dispose();
                 _objRefresherCancellationTokenSource?.Dispose();
                 _objOutputGeneratorCancellationTokenSource?.Dispose();
             }

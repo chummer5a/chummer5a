@@ -41,7 +41,7 @@ namespace Chummer
     public partial class CharacterSheetViewer : Form
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        private readonly List<Character> _lstCharacters = new List<Character>(1);
+        private readonly ThreadSafeList<Character> _lstCharacters = new ThreadSafeList<Character>(1);
         private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalSettings.DefaultCharacterSheet;
         private bool _blnLoading;
@@ -489,10 +489,11 @@ namespace Chummer
                     }),
                     cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
                     cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
-                _objCharacterXml = _lstCharacters.Count > 0
+                Character[] aobjCharacters = await _lstCharacters.ToArrayAsync();
+                _objCharacterXml = aobjCharacters.Length > 0
                     ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
                                                                         _objRefresherCancellationTokenSource.Token,
-                                                                        _lstCharacters.ToArray())
+                                                                        aobjCharacters)
                     : null;
                 await this.DoThreadSafeAsync(() => tsSaveAsXml.Enabled = _objCharacterXml != null);
                 if (_objRefresherCancellationTokenSource.IsCancellationRequested)
@@ -756,16 +757,25 @@ namespace Chummer
         /// </summary>
         public async ValueTask SetCharacters(params Character[] lstCharacters)
         {
-            foreach (Character objCharacter in _lstCharacters)
+            IAsyncDisposable objLocker = await _lstCharacters.LockObject.EnterWriteLockAsync();
+            try
             {
-                objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+                foreach (Character objCharacter in _lstCharacters)
+                {
+                    objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+                }
+
+                _lstCharacters.Clear();
+                if (lstCharacters != null)
+                    _lstCharacters.AddRange(lstCharacters);
+                foreach (Character objCharacter in _lstCharacters)
+                {
+                    objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
+                }
             }
-            _lstCharacters.Clear();
-            if (lstCharacters != null)
-                _lstCharacters.AddRange(lstCharacters);
-            foreach (Character objCharacter in _lstCharacters)
+            finally
             {
-                objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
+                await objLocker.DisposeAsync();
             }
 
             bool blnOldLoading = _blnLoading;
