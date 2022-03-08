@@ -88,5 +88,15 @@ namespace Chummer
         {
             return _rwlMyLock.GetHashCode();
         }
+
+        public static bool operator ==(EnterReadLock left, EnterReadLock right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(EnterReadLock left, EnterReadLock right)
+        {
+            return !(left == right);
+        }
     }
 }
