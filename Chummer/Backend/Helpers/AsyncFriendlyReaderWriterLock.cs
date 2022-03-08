@@ -173,13 +173,14 @@ namespace Chummer
         /// Asynchronously release a lock held for writing.
         /// Use the SafeSemaphoreWriterRelease object gotten after obtaining a write lock as this method's argument.
         /// </summary>
-        public ValueTask ExitWriteLockAsync(IAsyncDisposable objRelease)
+        public Task ExitWriteLockAsync(IAsyncDisposable objRelease)
         {
             if (_blnIsDisposed)
-                throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+                return Task.FromException(new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock)));
             if (!(objRelease is SafeWriterSemaphoreRelease objReleaseCast))
-                throw new ArgumentException("Argument is not a " + nameof(SafeWriterSemaphoreRelease),
-                                            nameof(objRelease));
+                return Task.FromException(new ArgumentException(
+                                              "Argument is not a " + nameof(SafeWriterSemaphoreRelease),
+                                              nameof(objRelease)));
             if (Interlocked.Decrement(ref _intCountActiveReaders) == 0 && !IsWriteLockHeldRecursively)
                 _objReaderSemaphore.Release();
             return objReleaseCast.DoReleaseAsync();
@@ -193,20 +194,25 @@ namespace Chummer
             if (_blnIsDisposed || _blnIsDisposing)
                 throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
 
+            // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
+            bool blnDoWriterLock = false;
             SemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value ?? _objTopLevelWriterSemaphore;
             SemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             _objCurrentWriterSemaphore.Value = objNextSemaphore;
-            SafeWriterSemaphoreRelease objRelease
-                = new SafeWriterSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
+            SafeWriterSemaphoreRelease objRelease = new SafeWriterSemaphoreRelease(objCurrentSemaphore, objNextSemaphore, this);
             try
             {
-                if (Utils.EverDoEvents)
+                blnDoWriterLock = _objTopLevelWriterSemaphore.CurrentCount == 0;
+                if (blnDoWriterLock)
                 {
-                    while (!objCurrentSemaphore.Wait(Utils.DefaultSleepDuration, token))
-                        Utils.DoEventsSafe();
+                    if (Utils.EverDoEvents)
+                    {
+                        while (!objCurrentSemaphore.Wait(Utils.DefaultSleepDuration, token))
+                            Utils.DoEventsSafe();
+                    }
+                    else
+                        objCurrentSemaphore.Wait(token);
                 }
-                else
-                    objCurrentSemaphore.Wait(token);
 
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
                 {
@@ -230,7 +236,7 @@ namespace Chummer
             finally
             {
                 // Deliberately DoRelease to not decrement the active reader count
-                objRelease.DoRelease();
+                objRelease.DoRelease(blnDoWriterLock);
             }
         }
 
@@ -250,7 +256,10 @@ namespace Chummer
 
         private async Task TakeReadLockCoreAsync(SemaphoreSlim objCurrentSemaphore, SafeWriterSemaphoreRelease objRelease, CancellationToken token = default)
         {
-            await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
+            // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
+            bool blnDoWriterLock = _objTopLevelWriterSemaphore.CurrentCount == 0;
+            if (blnDoWriterLock)
+                await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
             try
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -269,7 +278,7 @@ namespace Chummer
             finally
             {
                 // Deliberately DoRelease to not decrement the active reader count
-                await objRelease.DoReleaseAsync().ConfigureAwait(false);
+                await objRelease.DoReleaseAsync(blnDoWriterLock).ConfigureAwait(false);
             }
         }
 
@@ -395,20 +404,20 @@ namespace Chummer
                 _objReaderWriterLock = objReaderWriterLock;
             }
 
-            public ValueTask DoReleaseAsync()
+            public Task DoReleaseAsync(bool blnReleaseLock = true)
             {
                 if (_objReaderWriterLock.IsDisposed)
-                    throw new InvalidOperationException(
-                        "Lock object was disposed before a writer lock release object assigned to it");
+                    return Task.FromException(new InvalidOperationException(
+                                                  "Lock object was disposed before a writer lock release object assigned to it"));
                 if (_objNextWriterSemaphore != _objReaderWriterLock._objCurrentWriterSemaphore.Value)
                 {
                     if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == _objCurrentWriterSemaphore)
-                        throw new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset.");
+                        return Task.FromException(new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore. Instead, the old semaphore was never unset."));
                     if (_objReaderWriterLock._objCurrentWriterSemaphore.Value == null)
-                        throw new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
-                                                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
-                                                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation.");
-                    throw new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore");
+                        return Task.FromException(new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore. Instead, the current semaphore is null.\n\n"
+                                                                            + "This may be because AsyncLocal's control flow is the inverse of what one expects, so acquiring "
+                                                                            + "the lock inside a function and then leaving the function before exiting the lock can produce this situation."));
+                    return Task.FromException(new InvalidOperationException("_objNextWriterSemaphore was expected to be the current semaphore"));
                 }
 
                 // Update _objReaderWriterLock._objCurrentWriterSemaphore in the calling ExecutionContext
@@ -421,18 +430,21 @@ namespace Chummer
                     ? null
                     : _objCurrentWriterSemaphore;
 
-                return DoReleaseCoreAsync();
+                return DoReleaseCoreAsync(blnReleaseLock);
             }
 
-            private async ValueTask DoReleaseCoreAsync()
+            private async Task DoReleaseCoreAsync(bool blnReleaseLock = true)
             {
-                await _objNextWriterSemaphore.WaitAsync().ConfigureAwait(false);
-                _objCurrentWriterSemaphore.Release();
-                _objNextWriterSemaphore.Release();
+                if (blnReleaseLock)
+                {
+                    await _objNextWriterSemaphore.WaitAsync().ConfigureAwait(false);
+                    _objCurrentWriterSemaphore.Release();
+                    _objNextWriterSemaphore.Release();
+                }
                 Utils.SemaphorePool.Return(_objNextWriterSemaphore);
             }
 
-            public void DoRelease()
+            public void DoRelease(bool blnReleaseLock = true)
             {
                 if (_objReaderWriterLock.IsDisposed)
                     throw new InvalidOperationException(
@@ -454,15 +466,19 @@ namespace Chummer
                     = _objCurrentWriterSemaphore == _objReaderWriterLock._objTopLevelWriterSemaphore
                         ? null
                         : _objCurrentWriterSemaphore;
-                if (Utils.EverDoEvents)
+                if (blnReleaseLock)
                 {
-                    while (!_objNextWriterSemaphore.Wait(Utils.DefaultSleepDuration))
-                        Utils.DoEventsSafe();
+                    if (Utils.EverDoEvents)
+                    {
+                        while (!_objNextWriterSemaphore.Wait(Utils.DefaultSleepDuration))
+                            Utils.DoEventsSafe();
+                    }
+                    else
+                        _objNextWriterSemaphore.Wait();
+
+                    _objCurrentWriterSemaphore.Release();
+                    _objNextWriterSemaphore.Release();
                 }
-                else
-                    _objNextWriterSemaphore.Wait();
-                _objCurrentWriterSemaphore.Release();
-                _objNextWriterSemaphore.Release();
                 Utils.SemaphorePool.Return(_objNextWriterSemaphore);
             }
 
@@ -475,7 +491,7 @@ namespace Chummer
             /// <inheritdoc />
             public ValueTask DisposeAsync()
             {
-                return _objReaderWriterLock.ExitWriteLockAsync(this);
+                return new ValueTask(_objReaderWriterLock.ExitWriteLockAsync(this));
             }
         }
     }
