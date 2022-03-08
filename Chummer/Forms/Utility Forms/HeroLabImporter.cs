@@ -580,29 +580,32 @@ namespace Chummer
                         {
                             objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
                         }
-                        else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                     GlobalSettings.DefaultCharacterSetting,
-                                     out CharacterSettings objDefaultCharacterSettings)
-                                 && objCache.BuildMethod.UsesPriorityTables()
-                                 == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
-                        {
-                            objCharacter.SettingsKey = objDefaultCharacterSettings.DictionaryKey;
-                        }
                         else
                         {
-                            objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings.Values
-                                                                      .FirstOrDefault(
-                                                                          x => x.BuiltInOption
-                                                                               && x.BuildMethod == objCache.BuildMethod)
-                                                                      ?.DictionaryKey
-                                                       ?? SettingsManager.LoadedCharacterSettings.Values
-                                                                         .FirstOrDefault(
-                                                                             x => x.BuiltInOption
-                                                                                 && x.BuildMethod.UsesPriorityTables()
-                                                                                 == objCache.BuildMethod
-                                                                                     .UsesPriorityTables())
-                                                                         ?.DictionaryKey
-                                                       ?? GlobalSettings.DefaultCharacterSetting;
+                            (bool blnSuccess, CharacterSettings objDefaultCharacterSettings)
+                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                    GlobalSettings.DefaultCharacterSetting);
+                            if (blnSuccess && objCache.BuildMethod.UsesPriorityTables()
+                                == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
+                            {
+                                objCharacter.SettingsKey = objDefaultCharacterSettings.DictionaryKey;
+                            }
+                            else
+                            {
+                                objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings.Values
+                                                                          .FirstOrDefault(
+                                                                              x => x.BuiltInOption
+                                                                                  && x.BuildMethod == objCache.BuildMethod)
+                                                                          ?.DictionaryKey
+                                                           ?? SettingsManager.LoadedCharacterSettings.Values
+                                                                             .FirstOrDefault(
+                                                                                 x => x.BuiltInOption
+                                                                                     && x.BuildMethod.UsesPriorityTables()
+                                                                                     == objCache.BuildMethod
+                                                                                         .UsesPriorityTables())
+                                                                             ?.DictionaryKey
+                                                           ?? GlobalSettings.DefaultCharacterSetting;
+                            }
                         }
                     }
 

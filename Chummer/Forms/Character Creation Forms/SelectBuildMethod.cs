@@ -42,37 +42,6 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            // Populate the Character Settings list.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
-            {
-                foreach (CharacterSettings objLoopSetting in SettingsManager.LoadedCharacterSettings.Values)
-                {
-                    lstCharacterSettings.Add(new ListItem(objLoopSetting, objLoopSetting.DisplayName));
-                }
-
-                lstCharacterSettings.Sort(CompareListItems.CompareNames);
-                cboCharacterSetting.BeginUpdate();
-                cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
-                if (blnUseCurrentValues)
-                {
-                    if (SettingsManager.LoadedCharacterSettings.TryGetValue(
-                            _objCharacter.SettingsKey, out CharacterSettings objSetting))
-                        cboCharacterSetting.SelectedValue = objSetting;
-                    if (cboCharacterSetting.SelectedIndex == -1
-                        && SettingsManager.LoadedCharacterSettings.TryGetValue(
-                            GlobalSettings.DefaultCharacterSetting, out objSetting))
-                        cboCharacterSetting.SelectedValue = objSetting;
-                    chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
-                }
-                else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
-                             GlobalSettings.DefaultCharacterSetting, out CharacterSettings objSetting))
-                    cboCharacterSetting.SelectedValue = objSetting;
-
-                if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
-                    cboCharacterSetting.SelectedIndex = 0;
-                cboCharacterSetting.EndUpdate();
-            }
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -136,11 +105,15 @@ namespace Chummer
                     cboCharacterSetting.BeginUpdate();
                     cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
                     cboCharacterSetting.SelectedValue = objOldSelected;
-                    if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0
-                                                                && SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                                    GlobalSettings.DefaultCharacterSetting,
-                                                                    out CharacterSettings objSetting))
-                        cboCharacterSetting.SelectedValue = objSetting;
+                    if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                    {
+                        (bool blnSuccess, CharacterSettings objSetting)
+                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                GlobalSettings.DefaultCharacterSetting);
+                        if (blnSuccess)
+                            cboCharacterSetting.SelectedValue = objSetting;
+                    }
+
                     if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                         cboCharacterSetting.SelectedIndex = 0;
                     cboCharacterSetting.EndUpdate();
@@ -159,6 +132,47 @@ namespace Chummer
             SuspendLayout();
             try
             {
+                // Populate the Character Settings list.
+                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
+                {
+                    foreach (CharacterSettings objLoopSetting in SettingsManager.LoadedCharacterSettings.Values)
+                    {
+                        lstCharacterSettings.Add(new ListItem(objLoopSetting, objLoopSetting.DisplayName));
+                    }
+
+                    lstCharacterSettings.Sort(CompareListItems.CompareNames);
+                    cboCharacterSetting.BeginUpdate();
+                    cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+                    if (_blnForExistingCharacter)
+                    {
+                        (bool blnSuccess, CharacterSettings objSetting)
+                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                _objCharacter.SettingsKey);
+                        if (blnSuccess)
+                            cboCharacterSetting.SelectedValue = objSetting;
+                        if (cboCharacterSetting.SelectedIndex == -1)
+                        {
+                            (blnSuccess, objSetting)
+                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                    GlobalSettings.DefaultCharacterSetting);
+                            if (blnSuccess)
+                                cboCharacterSetting.SelectedValue = objSetting;
+                        }
+                        chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
+                    }
+                    else
+                    {
+                        (bool blnSuccess, CharacterSettings objSetting)
+                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                GlobalSettings.DefaultCharacterSetting);
+                        if (blnSuccess)
+                            cboCharacterSetting.SelectedValue = objSetting;
+                    }
+
+                    if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                        cboCharacterSetting.SelectedIndex = 0;
+                    cboCharacterSetting.EndUpdate();
+                }
                 chkIgnoreRules.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
                 await ProcessGameplayIndexChanged();
             }

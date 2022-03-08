@@ -399,14 +399,21 @@ namespace Chummer
 
             if (blnGeneratePersistents)
             {
-                if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
+                (bool blnSuccess, StoryModule objInnerModule)
+                    = await ParentStory.PersistentModules.TryGetValueAsync(strFunction);
+                if (blnSuccess)
                     return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
                 StoryModule objPersistentStoryModule = ParentStory.GeneratePersistentModule(strFunction);
                 if (objPersistentStoryModule != null)
                     return await ResolveMacros(objPersistentStoryModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
             }
-            else if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
-                return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
+            else
+            {
+                (bool blnSuccess, StoryModule objInnerModule)
+                    = await ParentStory.PersistentModules.TryGetValueAsync(strFunction);
+                if (blnSuccess)
+                    return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
+            }
 
             return await LanguageManager.GetStringAsync("String_Error", strLanguage);
         }

@@ -4615,24 +4615,48 @@ namespace Chummer
                                 // Get the name of the settings file in use if possible.
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("settings", ref _strSettingsKey);
 
+                                bool blnSuccess;
+
                                 // Load the character's settings file.
                                 string strDummy = string.Empty;
                                 if (!xmlCharacterNavigator.TryGetStringFieldQuickly("buildmethod", ref strDummy)
                                     || !Enum.TryParse(strDummy, true, out CharacterBuildMethod eSavedBuildMethod))
                                 {
-                                    eSavedBuildMethod = SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                        GlobalSettings.DefaultCharacterSettingDefaultValue,
-                                        out CharacterSettings objSettings)
+                                    CharacterSettings objSettings;
+                                    if (blnSync)
+                                        blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            GlobalSettings.DefaultCharacterSettingDefaultValue, out objSettings);
+                                    else
+                                        (blnSuccess, objSettings)
+                                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                GlobalSettings.DefaultCharacterSettingDefaultValue);
+                                    eSavedBuildMethod = blnSuccess
                                         ? objSettings.BuildMethod
                                         : CharacterBuildMethod.Priority;
                                 }
 
-                                if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                        GlobalSettings.DefaultCharacterSetting,
-                                        out CharacterSettings objDefaultSettings)
-                                    && !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                        GlobalSettings.DefaultCharacterSettingDefaultValue, out objDefaultSettings))
-                                    objDefaultSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                                CharacterSettings objDefaultSettings;
+                                if (blnSync)
+                                    blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                        GlobalSettings.DefaultCharacterSetting, out objDefaultSettings);
+                                else
+                                    (blnSuccess, objDefaultSettings)
+                                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                            GlobalSettings.DefaultCharacterSetting);
+                                if (!blnSuccess)
+                                {
+                                    if (blnSync)
+                                        blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            GlobalSettings.DefaultCharacterSettingDefaultValue, out objDefaultSettings);
+                                    else
+                                        (blnSuccess, objDefaultSettings)
+                                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                GlobalSettings.DefaultCharacterSettingDefaultValue);
+                                    if (!blnSuccess)
+                                    {
+                                        objDefaultSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                                    }
+                                }
 
                                 CharacterSettings objProspectiveSettings;
                                 bool blnShowSelectBP = false;

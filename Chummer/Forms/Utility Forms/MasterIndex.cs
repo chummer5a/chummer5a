@@ -86,10 +86,9 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            PopulateCharacterSettings();
         }
 
-        private void PopulateCharacterSettings()
+        private async ValueTask PopulateCharacterSettings()
         {
             // Populate the Character Settings list.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -108,25 +107,36 @@ namespace Chummer
 
                 bool blnOldSkipRefresh = _blnSkipRefresh;
                 _blnSkipRefresh = true;
+                CharacterSettings objSettings;
+                bool blnSuccess;
 
                 cboCharacterSetting.BeginUpdate();
                 cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
-                if (!string.IsNullOrEmpty(strOldSettingKey)
-                    && SettingsManager.LoadedCharacterSettings.TryGetValue(
-                        strOldSettingKey, out CharacterSettings objSettings))
-                    cboCharacterSetting.SelectedValue = objSettings;
+                if (!string.IsNullOrEmpty(strOldSettingKey))
+                {
+                    (blnSuccess, objSettings)
+                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strOldSettingKey);
+                    if (blnSuccess)
+                        cboCharacterSetting.SelectedValue = objSettings;
+                }
+
                 cboCharacterSetting.EndUpdate();
 
                 _blnSkipRefresh = blnOldSkipRefresh;
 
                 if (cboCharacterSetting.SelectedIndex != -1)
                     return;
-                if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
-                                                                        out objSettings))
+                (blnSuccess, objSettings)
+                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting);
+                if (blnSuccess)
                     cboCharacterSetting.SelectedValue = objSettings;
-                else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
-                             GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings))
-                    cboCharacterSetting.SelectedValue = objSettings;
+                else
+                {
+                    (blnSuccess, objSettings)
+                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue);
+                    if (blnSuccess)
+                        cboCharacterSetting.SelectedValue = objSettings;
+                }
                 if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
                     cboCharacterSetting.SelectedIndex = 0;
             }
@@ -137,6 +147,7 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this);
             try
             {
+                await PopulateCharacterSettings();
                 await LoadContent().AsTask().ContinueWith(x => IsFinishedLoading = true);
                 _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
             }
@@ -176,14 +187,27 @@ namespace Chummer
             try
             {
                 string strSelectedSetting = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey;
-                if ((string.IsNullOrEmpty(strSelectedSetting)
-                     || !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                         strSelectedSetting, out CharacterSettings objSettings))
-                    && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultMasterIndexSetting,
-                                                                            out objSettings)
-                    && !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                        GlobalSettings.DefaultMasterIndexSettingDefaultValue, out objSettings))
-                    objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                CharacterSettings objSettings = null;
+                bool blnSuccess = false;
+                if (!string.IsNullOrEmpty(strSelectedSetting))
+                {
+                    (blnSuccess, objSettings)
+                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSelectedSetting);
+                }
+                if (!blnSuccess)
+                {
+                    (blnSuccess, objSettings)
+                        = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                            GlobalSettings.DefaultMasterIndexSetting);
+                    if (!blnSuccess)
+                    {
+                        (blnSuccess, objSettings)
+                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                GlobalSettings.DefaultMasterIndexSettingDefaultValue);
+                        if (!blnSuccess)
+                            objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                    }
+                }
 
                 if (objSettings != _objSelectedSetting)
                 {
@@ -605,13 +629,18 @@ namespace Chummer
             }
         }
 
-        public void ForceRepopulateCharacterSettings()
+        public async ValueTask ForceRepopulateCharacterSettings()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 SuspendLayout();
-                PopulateCharacterSettings();
+                await PopulateCharacterSettings();
                 ResumeLayout();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

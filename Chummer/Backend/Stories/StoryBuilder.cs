@@ -72,22 +72,33 @@ namespace Chummer
             }
 
             string[] story = new string[modules.Count];
+            Task<string>[] atskStoryTasks = new Task<string>[modules.Count];
             XPathNavigator xmlBaseMacrosNode = await xdoc.SelectSingleNodeAndCacheExpressionAsync("/chummer/storybuilder/macros");
             //Actually "write" the story
-            await Task.Run(() => Parallel.For(0, modules.Count,
-                i =>
+            for (int i = 0; i < modules.Count; ++i)
+            {
+                int intLocal = i;
+                atskStoryTasks[i] = Task.Run(async () =>
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdTemp))
                     {
-                        story[i] = Write(sbdTemp, modules[i]["story"]?.InnerText ?? string.Empty, 5,
-                                         xmlBaseMacrosNode).ToString();
+                        return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
+                                                xmlBaseMacrosNode)).ToString();
                     }
-                }));
+                });
+            }
+
+            await Task.WhenAll(atskStoryTasks);
+
+            for (int i = 0; i < modules.Count; ++i)
+            {
+                story[i] = await atskStoryTasks[i];
+            }
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
 
-        private StringBuilder Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
+        private async Task<StringBuilder> Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
         {
             if (levels <= 0)
                 return story;
@@ -96,7 +107,7 @@ namespace Chummer
             IEnumerable<string> words;
             if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
             {
-                words = Macro(innerText, xmlBaseMacrosNode).SplitNoAlloc(' ', '\n', '\r', '\t');
+                words = (await Macro(innerText, xmlBaseMacrosNode)).SplitNoAlloc(' ', '\n', '\r', '\t');
             }
             else
             {
@@ -118,7 +129,7 @@ namespace Chummer
                     else
                     {
                         //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
-                        Write(story, trim, --levels, xmlBaseMacrosNode);
+                        await Write(story, trim, --levels, xmlBaseMacrosNode);
                     }
                     mfix = true;
                 }
@@ -139,7 +150,7 @@ namespace Chummer
             return story;
         }
 
-        public string Macro(string innerText, XPathNavigator xmlBaseMacrosNode)
+        public async ValueTask<string> Macro(string innerText, XPathNavigator xmlBaseMacrosNode)
         {
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
@@ -184,17 +195,18 @@ namespace Chummer
                 if (xmlUserMacroFirstChild != null)
                 {
                     //Already defined, no need to do anything fancy
-                    if (!_dicPersistence.TryGetValue(macroPool, out string strSelectedNodeName))
+                    (bool blnSuccess, string strSelectedNodeName) = await _dicPersistence.TryGetValueAsync(macroPool);
+                    if (!blnSuccess)
                     {
                         switch (xmlUserMacroFirstChild.Name)
                         {
                             case "random":
                                 {
-                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.SelectAndCacheExpression("./*[not(self::default)]");
+                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]");
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? GlobalSettings.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                            ? await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(xmlPossibleNodeList.Count)
                                             : 0;
                                         int i = 0;
                                         foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
@@ -213,11 +225,11 @@ namespace Chummer
                             case "persistent":
                                 {
                                     //Any node not named
-                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.SelectAndCacheExpression("./*[not(self::default)]");
+                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild.SelectAndCacheExpressionAsync("./*[not(self::default)]");
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? GlobalSettings.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                            ? await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(xmlPossibleNodeList.Count)
                                             : 0;
                                         int i = 0;
                                         foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
@@ -230,8 +242,8 @@ namespace Chummer
                                             ++i;
                                         }
 
-                                        if (!_dicPersistence.TryAdd(macroPool, strSelectedNodeName))
-                                            _dicPersistence.TryGetValue(macroPool, out strSelectedNodeName);
+                                        if (!await _dicPersistence.TryAddAsync(macroPool, strSelectedNodeName))
+                                            strSelectedNodeName = (await _dicPersistence.TryGetValueAsync(macroPool)).Item2;
                                     }
 
                                     break;
@@ -248,7 +260,7 @@ namespace Chummer
                             return strSelected;
                     }
 
-                    string strDefault = xmlUserMacroFirstChild.SelectSingleNodeAndCacheExpression("default")?.Value;
+                    string strDefault = (await xmlUserMacroFirstChild.SelectSingleNodeAndCacheExpressionAsync("default"))?.Value;
                     if (!string.IsNullOrEmpty(strDefault))
                     {
                         return strDefault;

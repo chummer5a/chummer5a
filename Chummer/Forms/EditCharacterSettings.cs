@@ -441,7 +441,11 @@ namespace Chummer
             if (_blnLoading)
                 return;
             string strSelectedFile = cboSetting.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedFile) || !SettingsManager.LoadedCharacterSettings.TryGetValue(strSelectedFile, out CharacterSettings objNewOption))
+            if (string.IsNullOrEmpty(strSelectedFile))
+                return;
+            (bool blnSuccess, CharacterSettings objNewOption)
+                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strSelectedFile);
+            if (!blnSuccess)
                 return;
 
             if (IsDirty)
@@ -624,9 +628,9 @@ namespace Chummer
                 e.Cancel = true;
             }
 
-            if (_blnForceMasterIndexRepopulateOnClose)
+            if (_blnForceMasterIndexRepopulateOnClose && Program.MainForm.MasterIndex != null)
             {
-                Program.MainForm.MasterIndex?.ForceRepopulateCharacterSettings();
+                await Program.MainForm.MasterIndex.ForceRepopulateCharacterSettings();
             }
         }
 
