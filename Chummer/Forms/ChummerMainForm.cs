@@ -153,26 +153,8 @@ namespace Chummer
                                 using (Program.MainProgressBar
                                            = await Program.CreateAndShowProgressBarAsync(
                                                Text,
-                                               (GlobalSettings.AllowEasterEggs ? 4 : 3)
-                                               + Utils.BasicDataFileNames.Count))
+                                               GlobalSettings.AllowEasterEggs ? 4 : 3))
                                 {
-                                    // Attempt to cache all XML files that are used the most.
-                                    using (_ = Timekeeper.StartSyncron("cache_load", opFrmChummerMain))
-                                    {
-                                        await Task.WhenAll(Utils.BasicDataFileNames.Select(x => Task.Run(async () =>
-                                        {
-                                            // Load default language data first for performance reasons
-                                            if (!GlobalSettings.Language.Equals(
-                                                    GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                                                await XmlManager.LoadAsync(x, null, GlobalSettings.DefaultLanguage);
-                                            await XmlManager.LoadAsync(x);
-                                            Program.MainProgressBar.PerformStep(
-                                                Application.ProductName,
-                                                LoadingBar.ProgressBarTextPatterns.Initializing);
-                                        })));
-                                        //Timekeeper.Finish("cache_load");
-                                    }
-
                                     Program.MainProgressBar.PerformStep(
                                         await LanguageManager.GetStringAsync("String_UI"));
 

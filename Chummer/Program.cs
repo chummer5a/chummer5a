@@ -30,6 +30,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Chummer.Backend;
 using Chummer.Plugins;
 using Chummer.Properties;
@@ -498,6 +499,36 @@ namespace Chummer
 
                     if (showMainForm)
                     {
+                        // Attempt to cache all XML files that are used the most.
+                        using (_ = Timekeeper.StartSyncron("cache_load", null, CustomActivity.OperationType.DependencyOperation, Utils.CurrentChummerVersion.ToString(3)))
+                        using (MainProgressBar
+                                   = CreateAndShowProgressBar(
+                                       Application.ProductName, Utils.BasicDataFileNames.Count))
+                        {
+                            Task[] tskCachingTasks = new Task[Utils.BasicDataFileNames.Count];
+                            for (int i = 0; i < tskCachingTasks.Length; ++i)
+                            {
+                                string strLoopFile = Utils.BasicDataFileNames[i];
+                                tskCachingTasks[i] = Task.Run(() => CacheCommonFile(strLoopFile));
+                            }
+
+                            async Task CacheCommonFile(string strFile)
+                            {
+                                // Load default language data first for performance reasons
+                                if (!GlobalSettings.Language.Equals(
+                                        GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
+                                }
+                                await XmlManager.LoadXPathAsync(strFile);
+                                MainProgressBar.PerformStep(
+                                    Application.ProductName,
+                                    LoadingBar.ProgressBarTextPatterns.Initializing);
+                            }
+
+                            Utils.RunWithoutThreadLock(() => Task.WhenAll(tskCachingTasks));
+                        }
+
                         MainForm.MyStartupPvt = pvt;
                         Application.Run(MainForm);
                     }
