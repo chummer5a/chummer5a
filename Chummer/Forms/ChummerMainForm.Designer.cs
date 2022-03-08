@@ -39,6 +39,8 @@ namespace Chummer
             this.newToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.mnuNewCritter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.openToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuOpenForPrinting = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuOpenForExport = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.printToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
@@ -125,6 +127,8 @@ namespace Chummer
             this.newToolStripMenuItem,
             this.mnuNewCritter,
             this.openToolStripMenuItem,
+            this.mnuOpenForPrinting,
+            this.mnuOpenForExport,
             this.toolStripSeparator3,
             this.toolStripSeparator4,
             this.printToolStripMenuItem,
@@ -209,6 +213,36 @@ namespace Chummer
             this.openToolStripMenuItem.Tag = "Menu_Main_Open";
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenFile);
+            // 
+            // mnuOpenForPrinting
+            // 
+            this.mnuOpenForPrinting.Image = global::Chummer.Properties.Resources.folder_print;
+            this.mnuOpenForPrinting.ImageDpi120 = null;
+            this.mnuOpenForPrinting.ImageDpi144 = null;
+            this.mnuOpenForPrinting.ImageDpi192 = global::Chummer.Properties.Resources.folder_print1;
+            this.mnuOpenForPrinting.ImageDpi288 = null;
+            this.mnuOpenForPrinting.ImageDpi384 = null;
+            this.mnuOpenForPrinting.ImageDpi96 = global::Chummer.Properties.Resources.folder_print;
+            this.mnuOpenForPrinting.Name = "mnuOpenForPrinting";
+            this.mnuOpenForPrinting.Size = new System.Drawing.Size(195, 22);
+            this.mnuOpenForPrinting.Tag = "Menu_Main_OpenForPrinting";
+            this.mnuOpenForPrinting.Text = "Open for P&rinting";
+            this.mnuOpenForPrinting.Click += new System.EventHandler(this.mnuOpenForPrinting_Click);
+            // 
+            // mnuOpenForExport
+            // 
+            this.mnuOpenForExport.Image = global::Chummer.Properties.Resources.folder_script_go;
+            this.mnuOpenForExport.ImageDpi120 = null;
+            this.mnuOpenForExport.ImageDpi144 = null;
+            this.mnuOpenForExport.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go1;
+            this.mnuOpenForExport.ImageDpi288 = null;
+            this.mnuOpenForExport.ImageDpi384 = null;
+            this.mnuOpenForExport.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go;
+            this.mnuOpenForExport.Name = "mnuOpenForExport";
+            this.mnuOpenForExport.Size = new System.Drawing.Size(195, 22);
+            this.mnuOpenForExport.Tag = "Menu_Main_OpenForExport";
+            this.mnuOpenForExport.Text = "Open for E&xport";
+            this.mnuOpenForExport.Click += new System.EventHandler(this.mnuOpenForExport_Click);
             // 
             // toolStripSeparator3
             // 
@@ -1055,7 +1089,7 @@ namespace Chummer
             this.tsPrint.Text = "&Print";
             this.tsPrint.Click += new System.EventHandler(this.tsPrint_Click);
             // 
-            // frmChummerMain
+            // ChummerMainForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1068,7 +1102,7 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
-            this.Name = "frmChummerMain";
+            this.Name = "ChummerMainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chummer5";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChummerMainForm_Closing);
@@ -1154,6 +1188,8 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsSaveAs;
         private DpiFriendlyToolStripMenuItem tsClose;
         private DpiFriendlyToolStripMenuItem tsPrint;
+        private DpiFriendlyToolStripMenuItem mnuOpenForPrinting;
+        private DpiFriendlyToolStripMenuItem mnuOpenForExport;
     }
 }
 

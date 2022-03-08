@@ -1439,6 +1439,14 @@
       <text>&amp;Open</text>
     </string>
     <string>
+      <key>Menu_Main_OpenForPrinting</key>
+      <text>Open for P&amp;rinting</text>
+    </string>
+    <string>
+      <key>Menu_Main_OpenForExport</key>
+      <text>Open for E&amp;xport</text>
+    </string>
+    <string>
       <key>Menu_Main_PrintMultiple</key>
       <text>Print &amp;Multiple</text>
     </string>

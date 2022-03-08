@@ -4145,7 +4145,9 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_page_white.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_palette.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_picture.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_print.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_red.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_script_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_stand.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_star.png" />
@@ -12018,7 +12020,9 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_page_white.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_palette.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_picture.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_print.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_red.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_script_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_stand.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_star.png" />

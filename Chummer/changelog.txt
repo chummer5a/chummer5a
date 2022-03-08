@@ -1,5 +1,6 @@
 Future Build 223
 Application Changes:
+- Characters can now be opened up directly for printing (including exporting to PDF) or for exporting without needing to fully open a character for editing.
 - Changing the rating of a knowsoft or linguasoft after it has been bought no longer causes Chummer to crash. Fixes #4708.
 - Skill group rating maxima now also follow values set in character settings for maximum skill ratings.
 - Disabling the setting that allows skills to be regrouped now properly makes skill groups remain broken after character creation if they are broken at least once.
@@ -32,6 +33,8 @@ Changed/New Strings:
 - Checkbox_Options_SpecializationsBreakSkillGroups
 - MessageTitle_ExtraNativeLanguages
 - Message_ExtraNativeLanguages
+- Menu_Main_OpenForPrinting
+- Menu_Main_OpenForExport
 
 Removed Strings:
 - Message_UnderLanguageLimit

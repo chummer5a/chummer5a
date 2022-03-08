@@ -1348,6 +1348,35 @@ namespace Chummer
             }
         }
 
+        private async void mnuOpenForPrinting_Click(object sender, EventArgs e)
+        {
+            if (Utils.IsUnitTest)
+                return;
+            using (new CursorWait(this))
+            {
+                string strFile;
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                             await LanguageManager.GetStringAsync("DialogFilter_All")
+                })
+                {
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strFile = openFileDialog.FileName;
+                }
+
+                if (!File.Exists(strFile))
+                    return;
+
+                using (Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
+                                                ?? await Task.Run(() => Program.LoadCharacterAsync(strFile)))
+                {
+                    await OpenCharacterForPrinting(objCharacter);
+                }
+            }
+        }
+
         /// <summary>
         /// Open a character's print form up without necessarily opening them up fully for editing.
         /// </summary>
@@ -1369,6 +1398,35 @@ namespace Chummer
                         await frmViewer.SetCharacters(objCharacter);
                         await frmViewer.ShowDialogSafeAsync(this);
                     }
+                }
+            }
+        }
+
+        private async void mnuOpenForExport_Click(object sender, EventArgs e)
+        {
+            if (Utils.IsUnitTest)
+                return;
+            using (new CursorWait(this))
+            {
+                string strFile;
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                       {
+                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                    await LanguageManager.GetStringAsync("DialogFilter_All")
+                       })
+                {
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strFile = openFileDialog.FileName;
+                }
+
+                if (!File.Exists(strFile))
+                    return;
+
+                using (Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
+                                                ?? await Task.Run(() => Program.LoadCharacterAsync(strFile)))
+                {
+                    await OpenCharacterForExport(objCharacter);
                 }
             }
         }

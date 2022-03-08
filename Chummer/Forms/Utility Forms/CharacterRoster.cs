@@ -1160,6 +1160,64 @@ namespace Chummer
             treCharacterList.SelectedNode = t;
         }
 
+        private async void tsOpen_Click(object sender, EventArgs e)
+        {
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+
+            TreeNode t = treCharacterList.SelectedNode;
+
+            if (t?.Tag is CharacterCache objCache)
+            {
+                using (new CursorWait(this))
+                {
+                    Character objOpenCharacter
+                        = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                          ?? await Program.LoadCharacterAsync(objCache.FilePath);
+                    if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+                        await Program.OpenCharacter(objOpenCharacter);
+                }
+            }
+        }
+
+        private async void tsOpenForPrinting_Click(object sender, EventArgs e)
+        {
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+
+            TreeNode t = treCharacterList.SelectedNode;
+
+            if (t?.Tag is CharacterCache objCache)
+            {
+                using (new CursorWait(this))
+                {
+                    using (Character objOpenCharacter
+                        = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                          ?? await Program.LoadCharacterAsync(objCache.FilePath))
+                        await Program.OpenCharacterForPrinting(objOpenCharacter);
+                }
+            }
+        }
+
+        private async void tsOpenForExport_Click(object sender, EventArgs e)
+        {
+            if (treCharacterList.IsNullOrDisposed())
+                return;
+
+            TreeNode t = treCharacterList.SelectedNode;
+
+            if (t?.Tag is CharacterCache objCache)
+            {
+                using (new CursorWait(this))
+                {
+                    using (Character objOpenCharacter
+                           = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                             ?? await Program.LoadCharacterAsync(objCache.FilePath))
+                        await Program.OpenCharacterForExport(objOpenCharacter);
+                }
+            }
+        }
+
         private void tsToggleFav_Click(object sender, EventArgs e)
         {
             if (treCharacterList.IsNullOrDisposed())
@@ -1298,6 +1356,42 @@ namespace Chummer
             };
             tsSort.Click += tsSort_Click;
             //
+            // tsOpen
+            //
+            DpiFriendlyToolStripMenuItem tsOpen = new DpiFriendlyToolStripMenuItem
+            {
+                Image = Properties.Resources.folder_page,
+                Name = "tsOpen",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_Main_Open",
+                ImageDpi192 = Properties.Resources.folder_page1
+            };
+            tsOpen.Click += tsOpen_Click;
+            //
+            // tsOpenForPrinting
+            //
+            DpiFriendlyToolStripMenuItem tsOpenForPrinting = new DpiFriendlyToolStripMenuItem
+            {
+                Image = Properties.Resources.folder_print,
+                Name = "tsOpenForPrinting",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_Main_OpenForPrinting",
+                ImageDpi192 = Properties.Resources.folder_print1
+            };
+            tsOpenForPrinting.Click += tsOpenForPrinting_Click;
+            //
+            // tsOpenForExport
+            //
+            DpiFriendlyToolStripMenuItem tsOpenForExport = new DpiFriendlyToolStripMenuItem
+            {
+                Image = Properties.Resources.folder_script_go,
+                Name = "tsOpenForExport",
+                Size = new Size(intToolStripWidth, intToolStripHeight),
+                Tag = "Menu_Main_OpenForExport",
+                ImageDpi192 = Properties.Resources.folder_script_go1
+            };
+            tsOpenForExport.Click += tsOpenForExport_Click;
+            //
             // tsDelete
             //
             DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem
@@ -1321,11 +1415,17 @@ namespace Chummer
             {
                 tsToggleFav,
                 tsSort,
+                tsOpen,
+                tsOpenForPrinting,
+                tsOpenForExport,
                 tsDelete
             });
 
             tsToggleFav.TranslateToolStripItemsRecursively();
             tsSort.TranslateToolStripItemsRecursively();
+            tsOpen.TranslateToolStripItemsRecursively();
+            tsOpenForPrinting.TranslateToolStripItemsRecursively();
+            tsOpenForExport.TranslateToolStripItemsRecursively();
             tsDelete.TranslateToolStripItemsRecursively();
 
             if (blnIncludeCloseOpenCharacter)
