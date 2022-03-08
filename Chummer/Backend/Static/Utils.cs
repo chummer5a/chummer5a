@@ -886,6 +886,8 @@ namespace Chummer
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -904,6 +906,8 @@ namespace Chummer
             Task objTask = Task.Run(() => Parallel.Invoke(afuncToRun));
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -921,6 +925,8 @@ namespace Chummer
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             return objTask.Result;
         }
 
@@ -944,6 +950,8 @@ namespace Chummer
             Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -962,11 +970,15 @@ namespace Chummer
                 Task<T> objSyncTask = funcToRun.Invoke();
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
                 return objSyncTask.Result;
             }
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             return objTask.Result;
         }
 
@@ -986,6 +998,8 @@ namespace Chummer
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
                     aobjReturn[i] = objSyncTask.Result;
                 });
                 return aobjReturn;
@@ -996,6 +1010,8 @@ namespace Chummer
             Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -1014,11 +1030,15 @@ namespace Chummer
                 Task objSyncTask = funcToRun.Invoke();
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
                 return;
             }
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -1036,6 +1056,8 @@ namespace Chummer
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
                 });
                 return;
             }
@@ -1045,6 +1067,8 @@ namespace Chummer
             Task objTask = Task.Run(() => Task.WhenAll(aobjTasks));
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         private static readonly Lazy<string> _strHumanReadableOSVersion = new Lazy<string>(GetHumanReadableOSVersion);

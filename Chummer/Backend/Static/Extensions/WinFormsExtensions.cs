@@ -745,6 +745,8 @@ namespace Chummer
             Task<T> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
             if (objTask.Status == TaskStatus.Created)
                 objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             return objTask.Result;
         }
 
@@ -759,6 +761,8 @@ namespace Chummer
             Task<T> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
             if (objTask.Status == TaskStatus.Created)
                 objTask.RunSynchronously();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             return objTask.Result;
         }
 
