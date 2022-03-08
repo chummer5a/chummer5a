@@ -4165,6 +4165,7 @@ namespace Chummer
                             if (tskLoopTask.Status == TaskStatus.Created)
                                 tskLoopTask.RunSynchronously();
                             if (tskLoopTask.Exception != null)
+                                // ReSharper disable once PossibleNullReferenceException
                                 throw tskLoopTask.Exception;
                             if (!tskLoopTask.GetAwaiter().GetResult())
                                 blnErrorFree = false;
@@ -25559,6 +25560,7 @@ namespace Chummer
                 XPathNavigator xmlLeadsDocument = null;
                 List<string> lstTextStatBlockLines = null;
                 using (CustomActivity op_load = blnSync
+                           // ReSharper disable once MethodHasAsyncOverload
                            ? Timekeeper.StartSyncron("LoadFromHeroLabFile", null,
                                                      CustomActivity.OperationType
                                                                    .DependencyOperation, strPorFile)
