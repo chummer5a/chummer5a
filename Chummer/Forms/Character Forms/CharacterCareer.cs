@@ -2246,8 +2246,7 @@ namespace Chummer
 
         private async void mnuFileExport_Click(object sender, EventArgs e)
         {
-            using (ExportCharacter frmExportCharacter = new ExportCharacter(CharacterObject))
-                await frmExportCharacter.ShowDialogSafeAsync(this);
+            await DoExport();
         }
 
         private async void mnuSpecialCyberzombie_Click(object sender, EventArgs e)

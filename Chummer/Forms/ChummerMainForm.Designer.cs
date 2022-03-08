@@ -20,7 +20,6 @@ namespace Chummer
                 components?.Dispose();
                 _frmRoller?.Dispose();
                 _frmUpdate?.Dispose();
-                _frmViewer?.Dispose();
                 _mascotChummy?.Dispose();
             }
             base.Dispose(disposing);

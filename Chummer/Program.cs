@@ -1016,6 +1016,20 @@ namespace Chummer
                                     y => ((ChummerMainForm) y).OpenCharacterForPrinting(objCharacter))));
         }
 
+        /// <summary>
+        /// Open a character for exporting without necessarily opening them up fully for editing.
+        /// </summary>
+        public static Task OpenCharacterForExport(Character objCharacter)
+        {
+            if (objCharacter == null || MainForm == null)
+                return Task.CompletedTask;
+            if (MainForm != null)
+                return MainForm.DoThreadSafeFunc(x => ((ChummerMainForm)x).OpenCharacterForExport(objCharacter));
+            return Task.Run(() => MainFormOnAssignAsyncActions.Add(
+                                x => x.DoThreadSafeFunc(
+                                    y => ((ChummerMainForm)y).OpenCharacterForExport(objCharacter))));
+        }
+
         public static LoadingBar MainProgressBar { get; set; }
 
         /// <summary>

@@ -7038,6 +7038,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask DoExport()
+        {
+            using (ExportCharacter frmExportCharacter = new ExportCharacter(CharacterObject))
+                await frmExportCharacter.ShowDialogSafeAsync(this);
+        }
+
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>

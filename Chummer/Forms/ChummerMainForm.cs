@@ -45,7 +45,6 @@ namespace Chummer
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private DiceRoller _frmRoller;
         private ChummerUpdater _frmUpdate;
-        private CharacterSheetViewer _frmViewer;
         private readonly ThreadSafeObservableCollection<CharacterShared> _lstOpenCharacterForms = new ThreadSafeObservableCollection<CharacterShared>();
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
@@ -1365,25 +1364,33 @@ namespace Chummer
                 }
                 else
                 {
-                    // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
-                    // If a Viewer window already exists for this character, use it instead.
-                    if (_frmViewer == null)
+                    using (CharacterSheetViewer frmViewer = this.DoThreadSafeFunc(() => new CharacterSheetViewer()))
                     {
-                        await this.DoThreadSafeFunc(async () =>
-                        {
-                            _frmViewer = new CharacterSheetViewer();
-                            await _frmViewer.SetCharacters(objCharacter);
-                            _frmViewer.Show();
-                        });
+                        await frmViewer.SetCharacters(objCharacter);
+                        await frmViewer.ShowDialogSafeAsync(this);
                     }
-                    else
-                    {
-                        await this.DoThreadSafeFunc(async () =>
-                        {
-                            await _frmViewer.SetCharacters(objCharacter);
-                            _frmViewer.Activate();
-                        });
-                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Open a character for exporting without necessarily opening them up fully for editing.
+        /// </summary>
+        public async Task OpenCharacterForExport(Character objCharacter)
+        {
+            using (new CursorWait(this))
+            {
+                // Character is already open in an existing form, so switch to it and make it open up its exporter
+                if (SwitchToOpenCharacter(objCharacter))
+                {
+                    CharacterShared objOpenForm = OpenCharacterForms.Find(x => x.CharacterObject == objCharacter);
+                    if (objOpenForm != null)
+                        await objOpenForm.DoExport();
+                }
+                else
+                {
+                    using (ExportCharacter frmExportCharacter = this.DoThreadSafeFunc(() => new ExportCharacter(objCharacter)))
+                        await frmExportCharacter.ShowDialogSafeAsync(this);
                 }
             }
         }
