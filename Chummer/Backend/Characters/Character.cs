@@ -14770,7 +14770,7 @@ namespace Chummer
                               / 100.0m;
 
                 // Run through all of the pieces of Cyberware and include their Essence cost.
-                decESS -= Cyberware.Sum(objCyberware => objCyberware.CalculatedESS);
+                decESS -= Cyberware.AsParallel().Sum(objCyberware => objCyberware.CalculatedESS);
 
                 //1781 Essence is not printing
                 //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
@@ -14803,6 +14803,7 @@ namespace Chummer
                                                                        Backend.Equipment.Cyberware.EssenceHoleGUID)
                                                                    && !objCyberware.SourceID.Equals(
                                                                        Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
+                                                        .AsParallel()
                                                         .Sum(objCyberware => objCyberware.CalculatedESS);
                 }
             }
@@ -14830,6 +14831,7 @@ namespace Chummer
                                                                      Backend.Equipment.Cyberware.EssenceHoleGUID)
                                                                  && !objCyberware.SourceID.Equals(
                                                                      Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
+                                                      .AsParallel()
                                                       .Sum(objCyberware => objCyberware.CalculatedESS);
                 }
             }
@@ -14855,6 +14857,7 @@ namespace Chummer
                                                                   Backend.Equipment.Cyberware.EssenceHoleGUID)
                                                               || objCyberware.SourceID.Equals(
                                                                   Backend.Equipment.Cyberware.EssenceAntiHoleGUID))
+                                                   .AsParallel()
                                                    .Sum(objCyberware => objCyberware.CalculatedESS);
                 }
             }
@@ -15023,6 +15026,7 @@ namespace Chummer
                     return _decCachedPrototypeTranshumanEssenceUsed = Cyberware
                                                                       .Where(objCyberware =>
                                                                                  objCyberware.PrototypeTranshuman)
+                                                                      .AsParallel()
                                                                       .Sum(objCyberware =>
                                                                                objCyberware
                                                                                    .CalculatedESSPrototypeInvariant);
