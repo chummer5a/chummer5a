@@ -1534,42 +1534,43 @@
     </gear>
 	<gear>
       <id>d71ea9c1-9b5f-428e-b849-7d665eb31c5e</id>
-      <name>Ammo: Sling-Shot Acid Capsules</name>
+      <name>Ammo: Slingshot Acid Capsules</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>SOTG</source>
       <page>13</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>100</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <damagereplace>6P Acid</damagereplace>
+        <damagereplace>6P</damagereplace>
+		<damagetype>Acid</damagetype>
       </weaponbonus>
       <ammoforweapontype>slingshot</ammoforweapontype>
     </gear>
 	<gear>
       <id>e20f021b-1d00-4443-a481-d417114e067e</id>
-      <name>Ammo: Sling-Shot Paint Capsules</name>
+      <name>Ammo: Slingshot Paint Capsules</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>SOTG</source>
       <page>13</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>10</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <damagereplace>0</damagereplace>
+        <damagereplace>0S</damagereplace>
       </weaponbonus>
       <ammoforweapontype>slingshot</ammoforweapontype>
     </gear>
 	<gear>
       <id>5ece577b-7c15-4f2c-9f4b-cd325154cf9c</id>
-      <name>Ammo: Sling-Shot Poison Capsules</name>
+      <name>Ammo: Slingshot Poison Capsules</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>SOTG</source>
       <page>13</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>100</cost>
       <costfor>10</costfor>
       <weaponbonus>
@@ -1584,11 +1585,11 @@
       <rating>0</rating>
       <source>RG</source>
       <page>23</page>
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>5</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <damagereplace>As Substance Within</damagereplace>
+        <damagereplace>As Drug/Toxin</damagereplace>
 		<userange>Light Pistol</userange>
       </weaponbonus>
       <ammoforweapontype>slingshot</ammoforweapontype>

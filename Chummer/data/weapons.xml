@@ -14850,10 +14850,10 @@
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>6</accuracy>
-      <damage>As Ammo</damage>
+      <damage>Special</damage>
       <mode>SA</mode>
       <ammo>10(m)</ammo>
-      <avail>-</avail>
+      <avail>0</avail>
 	  <range>Shuriken</range>
       <cost>150</cost>
       <source>SOTG</source>
