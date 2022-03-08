@@ -831,6 +831,10 @@ namespace Chummer
             else
                 objCache = await CharacterCache.CreateFromFileAsync(strFile);
 
+            if (objCache == null)
+                return new TreeNode
+                    {Text = await LanguageManager.GetStringAsync("String_Error"), ForeColor = ColorManager.ErrorColor};
+
             TreeNode objNode = new TreeNode
             {
                 Text = objCache.CalculatedName(),
