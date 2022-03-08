@@ -54,14 +54,20 @@ namespace Chummer
 
         private async void cmdRoll_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 int intResult = 0;
                 for (int i = 0; i < Dice; ++i)
                 {
                     intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 }
+
                 nudDiceResult.ValueAsInt = intResult;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

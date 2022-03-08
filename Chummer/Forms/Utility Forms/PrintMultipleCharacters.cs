@@ -120,17 +120,18 @@ namespace Chummer
 
         private async Task DoPrint()
         {
-            using (CursorWait.New(this, true))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true);
+            try
             {
                 try
                 {
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
-                        prgProgress.DoThreadSafeAsync(x =>
-                        {
-                            ProgressBar objBar = (ProgressBar) x;
-                            objBar.Value = 0;
-                            objBar.Maximum = treCharacters.Nodes.Count;
-                        }));
+                                       prgProgress.DoThreadSafeAsync(x =>
+                                       {
+                                           ProgressBar objBar = (ProgressBar) x;
+                                           objBar.Value = 0;
+                                           objBar.Maximum = treCharacters.Nodes.Count;
+                                       }));
 
                     // Parallelized load because this is one major bottleneck.
                     Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
@@ -138,7 +139,8 @@ namespace Chummer
                     for (int i = 0; i < tskLoadingTasks.Length; ++i)
                     {
                         string strLoopFile = treCharacters.Nodes[i].Tag.ToString();
-                        tskLoadingTasks[i] = Task.Run(() => InnerLoad(strLoopFile), _objPrinterCancellationTokenSource.Token);
+                        tskLoadingTasks[i]
+                            = Task.Run(() => InnerLoad(strLoopFile), _objPrinterCancellationTokenSource.Token);
                     }
 
                     async Task<Character> InnerLoad(string strLoopFile)
@@ -149,13 +151,15 @@ namespace Chummer
                             return null;
                         }
 
-                        Character objReturn = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, false);
+                        Character objReturn
+                            = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, false);
                         bool blnLoadSuccessful = objReturn != null;
                         if (_objPrinterCancellationTokenSource.IsCancellationRequested)
                         {
                             _objPrinterCancellationTokenSource?.Cancel(false);
                             return null;
                         }
+
                         if (blnLoadSuccessful)
                             await prgProgress.DoThreadSafeAsync(() => ++prgProgress.Value);
                         return objReturn;
@@ -173,6 +177,7 @@ namespace Chummer
                     {
                         return; // We cancelled the task, so just exit
                     }
+
                     if (_objPrinterCancellationTokenSource.IsCancellationRequested)
                         return;
                     await CleanUpOldCharacters();
@@ -194,7 +199,7 @@ namespace Chummer
                     {
                         await _frmPrintView.DoThreadSafeFunc(async x =>
                         {
-                            CharacterSheetViewer objSheetViewer = (CharacterSheetViewer)x;
+                            CharacterSheetViewer objSheetViewer = (CharacterSheetViewer) x;
                             await objSheetViewer.SetCharacters(_aobjCharacters);
                             objSheetViewer.Activate();
                         });
@@ -203,8 +208,12 @@ namespace Chummer
                 finally
                 {
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                        prgProgress.DoThreadSafeAsync(x => ((ProgressBar)x).Value = 0));
+                                       prgProgress.DoThreadSafeAsync(x => ((ProgressBar) x).Value = 0));
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

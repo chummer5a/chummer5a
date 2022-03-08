@@ -69,7 +69,8 @@ namespace Chummer
 
         private async ValueTask RefreshResultLabel()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
@@ -78,7 +79,11 @@ namespace Chummer
                                      _objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo)
                                  + strSpace + '=' + strSpace +
                                  StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥',
-                                     GlobalSettings.CultureInfo);
+                                                        GlobalSettings.CultureInfo);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -93,14 +98,19 @@ namespace Chummer
                 return;
             if (cboSelectLifestyle.SelectedIndex < 0)
                 return;
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                _objLifestyle = ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle;
+                _objLifestyle = ((ListItem) cboSelectLifestyle.SelectedItem).Value as Lifestyle;
                 lblDice.Text = string.Format(GlobalSettings.CultureInfo,
-                    await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf"),
-                    SelectedLifestyle?.Dice ?? 0);
+                                             await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf"),
+                                             SelectedLifestyle?.Dice ?? 0);
                 await RefreshCalculation();
                 cmdRoll.Enabled = SelectedLifestyle?.Dice > 0;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -174,14 +184,20 @@ namespace Chummer
         {
             if (SelectedLifestyle == null)
                 return;
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 int intResult = 0;
                 for (int i = 0; i < SelectedLifestyle.Dice; ++i)
                 {
                     intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 }
+
                 nudDiceResult.ValueAsInt = intResult;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

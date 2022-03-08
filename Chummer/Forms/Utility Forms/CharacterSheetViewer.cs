@@ -216,7 +216,8 @@ namespace Chummer
 
         private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
                 string strPdfPrinter = string.Empty;
@@ -234,7 +235,8 @@ namespace Chummer
                 {
                     DialogResult ePdfPrinterDialogResult = Program.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter"), strPdfPrinter),
+                                      await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter"),
+                                      strPdfPrinter),
                         await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter"),
                         MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
                     switch (ePdfPrinterDialogResult)
@@ -245,7 +247,8 @@ namespace Chummer
 
                         case DialogResult.Yes:
                             Program.ShowMessageBox(this,
-                                await LanguageManager.GetStringAsync("Message_Viewer_PDFPrinterError"));
+                                                   await LanguageManager.GetStringAsync(
+                                                       "Message_Viewer_PDFPrinterError"));
                             break;
                     }
                 }
@@ -266,18 +269,18 @@ namespace Chummer
                 if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
                 {
                     Program.ShowMessageBox(this,
-                                                    string.Format(GlobalSettings.CultureInfo,
-                                                                  await LanguageManager.GetStringAsync(
-                                                                      "Message_File_Cannot_Be_Accessed"), strSaveFile));
+                                           string.Format(GlobalSettings.CultureInfo,
+                                                         await LanguageManager.GetStringAsync(
+                                                             "Message_File_Cannot_Be_Accessed"), strSaveFile));
                     return;
                 }
 
                 if (!await Utils.SafeDeleteFileAsync(strSaveFile, true))
                 {
                     Program.ShowMessageBox(this,
-                                                    string.Format(GlobalSettings.CultureInfo,
-                                                                  await LanguageManager.GetStringAsync(
-                                                                      "Message_File_Cannot_Be_Accessed"), strSaveFile));
+                                           string.Format(GlobalSettings.CultureInfo,
+                                                         await LanguageManager.GetStringAsync(
+                                                             "Message_File_Cannot_Be_Accessed"), strSaveFile));
                     return;
                 }
 
@@ -301,17 +304,17 @@ namespace Chummer
                         }
                     };
                     PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
-                    { WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe") };
-                    PdfOutput objPdfOutput = new PdfOutput { OutputFilePath = strSaveFile };
+                        {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
+                    PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
                     await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
 
                     if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfAppPath))
                     {
                         Uri uriPath = new Uri(strSaveFile);
                         string strParams = GlobalSettings.PdfParameters
-                            .Replace("{page}", "1")
-                            .Replace("{localpath}", uriPath.LocalPath)
-                            .Replace("{absolutepath}", uriPath.AbsolutePath);
+                                                         .Replace("{page}", "1")
+                                                         .Replace("{localpath}", uriPath.LocalPath)
+                                                         .Replace("{absolutepath}", uriPath.AbsolutePath);
                         ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
                         {
                             FileName = GlobalSettings.PdfAppPath,
@@ -325,6 +328,10 @@ namespace Chummer
                 {
                     Program.ShowMessageBox(this, ex.ToString());
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -480,15 +487,16 @@ namespace Chummer
         /// </summary>
         private async Task RefreshCharacterXml()
         {
-            using (CursorWait.New(this, true))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true);
+            try
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
-                    {
-                        tsPrintPreview.Enabled = false;
-                        tsSaveAsHtml.Enabled = false;
-                    }),
-                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
-                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
+                                   {
+                                       tsPrintPreview.Enabled = false;
+                                       tsSaveAsHtml.Enabled = false;
+                                   }),
+                                   cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
+                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
                 Character[] aobjCharacters = await _lstCharacters.ToArrayAsync();
                 _objCharacterXml = aobjCharacters.Length > 0
                     ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
@@ -500,6 +508,10 @@ namespace Chummer
                     return;
                 await RefreshSheet();
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
@@ -507,15 +519,16 @@ namespace Chummer
         /// </summary>
         private async Task AsyncGenerateOutput()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
-                    {
-                        tsPrintPreview.Enabled = false;
-                        tsSaveAsHtml.Enabled = false;
-                    }),
-                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
-                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
+                                   {
+                                       tsPrintPreview.Enabled = false;
+                                       tsSaveAsHtml.Enabled = false;
+                                   }),
+                                   cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
+                                   cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
                 await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet"));
                 string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
                 if (!File.Exists(strXslPath))
@@ -534,7 +547,8 @@ namespace Chummer
                 }
                 catch (ArgumentException)
                 {
-                    string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
+                    string strReturn = "Last write time could not be fetched when attempting to load "
+                                       + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
                     Program.ShowMessageBox(this, strReturn);
@@ -542,7 +556,8 @@ namespace Chummer
                 }
                 catch (PathTooLongException)
                 {
-                    string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
+                    string strReturn = "Last write time could not be fetched when attempting to load "
+                                       + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
                     Program.ShowMessageBox(this, strReturn);
@@ -550,7 +565,8 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    string strReturn = "Last write time could not be fetched when attempting to load " + _strSelectedSheet +
+                    string strReturn = "Last write time could not be fetched when attempting to load "
+                                       + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
                     Program.ShowMessageBox(this, strReturn);
@@ -601,7 +617,7 @@ namespace Chummer
 
                         await this.DoThreadSafeAsync(() => UseWaitCursor = true);
                         await webViewer.DoThreadSafeAsync(
-                            x => ((WebBrowser)x).Url = new Uri("file:///" + _strTempSheetFilePath));
+                            x => ((WebBrowser) x).Url = new Uri("file:///" + _strTempSheetFilePath));
                     }
                     else
                     {
@@ -610,10 +626,14 @@ namespace Chummer
                         {
                             string strOutput = await objReader.ReadToEndAsync();
                             await this.DoThreadSafeAsync(() => UseWaitCursor = true);
-                            await webViewer.DoThreadSafeAsync(x => ((WebBrowser)x).DocumentText = strOutput);
+                            await webViewer.DoThreadSafeAsync(x => ((WebBrowser) x).DocumentText = strOutput);
                         }
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -765,9 +785,9 @@ namespace Chummer
                     objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
                 }
 
-                _lstCharacters.Clear();
+                await _lstCharacters.ClearAsync();
                 if (lstCharacters != null)
-                    _lstCharacters.AddRange(lstCharacters);
+                    await _lstCharacters.AddRangeAsync(lstCharacters);
                 foreach (Character objCharacter in _lstCharacters)
                 {
                     objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;

@@ -238,7 +238,8 @@ namespace Chummer
         /// </summary>
         protected async Task AutoSaveCharacter()
         {
-            using (CursorWait.New(this, true))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true);
+            try
             {
                 try
                 {
@@ -252,12 +253,16 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                            Program.ShowMessageBox(
+                                this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                             return;
                         }
                     }
 
-                    string strShowFileName = CharacterObject.FileName.SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
+                    string strShowFileName = CharacterObject.FileName
+                                                            .SplitNoAlloc(
+                                                                Path.DirectorySeparatorChar,
+                                                                StringSplitOptions.RemoveEmptyEntries).LastOrDefault();
 
                     if (string.IsNullOrEmpty(strShowFileName))
                         strShowFileName = CharacterObject.CharacterName + ".chum5";
@@ -269,13 +274,18 @@ namespace Chummer
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
                     if (!await CharacterObject.SaveAsync(strFilePath, false, false))
                     {
-                        Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " (" + CharacterObject.FileName + ')');
+                        Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " ("
+                                 + CharacterObject.FileName + ')');
                     }
                 }
                 finally
                 {
                     AutosaveStopWatch.Restart();
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -287,7 +297,8 @@ namespace Chummer
         {
             if (treLimit == null || treLimit.SelectedNode.Level == 0)
                 return;
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 TreeNode objSelectedNode = treLimit.SelectedNode;
                 string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -300,7 +311,9 @@ namespace Chummer
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound"));
                     return;
                 }
-                using (SelectLimitModifier frmPickLimitModifier = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
+
+                using (SelectLimitModifier frmPickLimitModifier
+                       = new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"))
                 {
                     await frmPickLimitModifier.ShowDialogSafeAsync(this);
 
@@ -311,7 +324,9 @@ namespace Chummer
                     CharacterObject.LimitModifiers.Remove(objLimitModifier);
                     // Create the new limit modifier.
                     objLimitModifier = new LimitModifier(CharacterObject, strGuid);
-                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus, frmPickLimitModifier.SelectedLimitType, frmPickLimitModifier.SelectedCondition, true);
+                    objLimitModifier.Create(frmPickLimitModifier.SelectedName, frmPickLimitModifier.SelectedBonus,
+                                            frmPickLimitModifier.SelectedLimitType,
+                                            frmPickLimitModifier.SelectedCondition, true);
 
                     CharacterObject.LimitModifiers.Add(objLimitModifier);
 
@@ -319,6 +334,10 @@ namespace Chummer
 
                     IsDirty = true;
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -331,20 +350,27 @@ namespace Chummer
         {
             if (objNotes == null)
                 return;
-            using (CursorWait.New(this))
-            using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                await frmItemNotes.ShowDialogSafeAsync(this);
-                if (frmItemNotes.DialogResult != DialogResult.OK)
-                    return;
-                objNotes.Notes = frmItemNotes.Notes;
-                objNotes.NotesColor = frmItemNotes.NotesColor;
-                IsDirty = true;
-                if (treNode != null)
+                using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
                 {
-                    treNode.ForeColor = objNotes.PreferredColor;
-                    treNode.ToolTipText = objNotes.Notes.WordWrap();
+                    await frmItemNotes.ShowDialogSafeAsync(this);
+                    if (frmItemNotes.DialogResult != DialogResult.OK)
+                        return;
+                    objNotes.Notes = frmItemNotes.Notes;
+                    objNotes.NotesColor = frmItemNotes.NotesColor;
+                    IsDirty = true;
+                    if (treNode != null)
+                    {
+                        treNode.ForeColor = objNotes.PreferredColor;
+                        treNode.ToolTipText = objNotes.Notes.WordWrap();
+                    }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6302,15 +6328,16 @@ namespace Chummer
 
         protected async ValueTask AddContactsFromFile()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 XPathDocument xmlDoc;
                 // Displays an OpenFileDialog so the user can select the XML to read.
                 using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog
-                {
-                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml") + '|' +
-                             await LanguageManager.GetStringAsync("DialogFilter_All")
-                })
+                       {
+                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml") + '|' +
+                                    await LanguageManager.GetStringAsync("DialogFilter_All")
+                       })
                 {
                     // Show the Dialog.
                     // If the user cancels out, return early.
@@ -6320,9 +6347,9 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader =
-                            new StreamReader(dlgOpenFileDialog.FileName, Encoding.UTF8, true))
+                               new StreamReader(dlgOpenFileDialog.FileName, Encoding.UTF8, true))
                         using (XmlReader objXmlReader =
-                            XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                               XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                             xmlDoc = new XPathDocument(objXmlReader);
                     }
                     catch (IOException ex)
@@ -6337,12 +6364,18 @@ namespace Chummer
                     }
                 }
 
-                foreach (XPathNavigator xmlContact in await xmlDoc.CreateNavigator().SelectAndCacheExpressionAsync("/chummer/contacts/contact"))
+                foreach (XPathNavigator xmlContact in await xmlDoc.CreateNavigator()
+                                                                  .SelectAndCacheExpressionAsync(
+                                                                      "/chummer/contacts/contact"))
                 {
                     Contact objContact = new Contact(CharacterObject);
                     objContact.Load(xmlContact);
                     CharacterObject.Contacts.Add(objContact);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6666,7 +6699,8 @@ namespace Chummer
         /// </summary>
         protected async ValueTask<bool> AddMugshot()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
                 {
@@ -6698,8 +6732,9 @@ namespace Chummer
                         if (!File.Exists(dlgOpenFileDialog.FileName))
                         {
                             Program.ShowMessageBox(string.Format(
-                                await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Read_Accessed"),
-                                dlgOpenFileDialog.FileName));
+                                                       await LanguageManager.GetStringAsync(
+                                                           "Message_File_Cannot_Be_Read_Accessed"),
+                                                       dlgOpenFileDialog.FileName));
                             blnMakeLoop = true;
                         }
                     }
@@ -6716,7 +6751,8 @@ namespace Chummer
                         }
                         else
                         {
-                            await CharacterObject.Mugshots.AddAsync(bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
+                            await CharacterObject.Mugshots.AddAsync(
+                                bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb));
                         }
                     }
 
@@ -6725,6 +6761,10 @@ namespace Chummer
                 }
 
                 return true;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6929,7 +6969,8 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
                 if (string.IsNullOrEmpty(CharacterObject.FileName))
@@ -6946,19 +6987,21 @@ namespace Chummer
                     return await SaveCharacterAsCreated();
                 }
 
-                using (CursorWait.New(this))
+                using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                 {
-                    using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
-                    {
-                        frmProgressBar.PerformStep(CharacterObject.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                        if (!await CharacterObject.SaveAsync())
-                            return false;
-                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);
-                        IsDirty = false;
-                    }
+                    frmProgressBar.PerformStep(CharacterObject.CharacterName,
+                                               LoadingBar.ProgressBarTextPatterns.Saving);
+                    if (!await CharacterObject.SaveAsync())
+                        return false;
+                    GlobalSettings.MostRecentlyUsedCharacters.Insert(0, CharacterObject.FileName);
+                    IsDirty = false;
                 }
 
                 return true;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6967,7 +7010,8 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // If the Created is checked, make sure the user wants to actually save this character.
                 if (blnDoCreated && !await ConfirmSaveCreatedCharacter())
@@ -6976,14 +7020,16 @@ namespace Chummer
                 }
 
                 using (SaveFileDialog saveFileDialog = new SaveFileDialog
-                {
-                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
-                             await LanguageManager.GetStringAsync("DialogFilter_All")
-                })
+                       {
+                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                    await LanguageManager.GetStringAsync("DialogFilter_All")
+                       })
                 {
                     string strShowFileName = CharacterObject.FileName
-                        .SplitNoAlloc(Path.DirectorySeparatorChar, StringSplitOptions.RemoveEmptyEntries)
-                        .LastOrDefault();
+                                                            .SplitNoAlloc(
+                                                                Path.DirectorySeparatorChar,
+                                                                StringSplitOptions.RemoveEmptyEntries)
+                                                            .LastOrDefault();
 
                     if (string.IsNullOrEmpty(strShowFileName))
                         strShowFileName = CharacterObject.CharacterName;
@@ -6997,6 +7043,10 @@ namespace Chummer
                 }
 
                 return await SaveCharacter(false, blnDoCreated);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -7021,7 +7071,8 @@ namespace Chummer
 
         public async ValueTask DoPrint()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
                 // If a Viewer window already exists for this character, use it instead.
@@ -7035,6 +7086,10 @@ namespace Chummer
                 {
                     _frmPrintView.Activate();
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -7062,7 +7117,8 @@ namespace Chummer
 
         public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                 bool blnAddAgain;
@@ -7079,7 +7135,8 @@ namespace Chummer
 
                         // Open the Gear XML file and locate the selected piece.
                         XmlNode objXmlGear = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = " +
-                            frmPickGear.SelectedGear.CleanXPath() + ']');
+                                                                             frmPickGear.SelectedGear.CleanXPath()
+                                                                             + ']');
 
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -7123,20 +7180,23 @@ namespace Chummer
                                 if (decCost > CharacterObject.Nuyen)
                                 {
                                     Program.ShowMessageBox(this,
-                                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen"),
-                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen"),
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Information);
+                                                           await LanguageManager.GetStringAsync(
+                                                               "Message_NotEnoughNuyen"),
+                                                           await LanguageManager.GetStringAsync(
+                                                               "MessageTitle_NotEnoughNuyen"),
+                                                           MessageBoxButtons.OK,
+                                                           MessageBoxIcon.Information);
                                     continue;
                                 }
 
                                 // Create the Expense Log Entry.
                                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                                 objExpense.Create(decCost * -1,
-                                    await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleGear") +
-                                    await LanguageManager.GetStringAsync("String_Space") +
-                                    objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
-                                    DateTime.Now);
+                                                  await LanguageManager.GetStringAsync(
+                                                      "String_ExpensePurchaseVehicleGear") +
+                                                  await LanguageManager.GetStringAsync("String_Space") +
+                                                  objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  DateTime.Now);
                                 CharacterObject.ExpenseEntries.AddWithSort(objExpense);
                                 CharacterObject.Nuyen -= decCost;
 
@@ -7153,7 +7213,7 @@ namespace Chummer
                         {
                             objExistingGear =
                                 objSelectedVehicle.GearChildren.FirstOrDefault(x =>
-                                    objGear.IsIdenticalToOtherGear(x));
+                                                                                   objGear.IsIdenticalToOtherGear(x));
                         }
 
                         if (objExistingGear != null)
@@ -7181,6 +7241,10 @@ namespace Chummer
 
                     IsDirty = true;
                 } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

@@ -66,7 +66,8 @@ namespace Chummer
                 {
                     FileName = fileName
                 };
-                using (CursorWait.New(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
                     if (!await objCharacter.LoadAsync())
                     {
@@ -77,7 +78,9 @@ namespace Chummer
 
                     nudInit.Value = objCharacter.InitiativeDice;
                     txtName.Text = objCharacter.Name;
-                    if (int.TryParse(objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(), out int intTemp))
+                    if (int.TryParse(
+                            objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries)
+                                        .FirstOrDefault(), out int intTemp))
                         nudInitStart.Value = intTemp;
                     if (_character != null)
                     {
@@ -86,6 +89,10 @@ namespace Chummer
                     }
 
                     _character = objCharacter;
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
         }

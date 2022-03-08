@@ -4353,13 +4353,21 @@ namespace Chummer
             try
             {
                 LoadAsDirty = false;
-                using (CustomActivity loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
-                                                                             CustomActivity.OperationType
-                                                                                 .DependencyOperation, _strFileName))
+                using (CustomActivity loadActivity = blnSync
+                           // ReSharper disable once MethodHasAsyncOverload
+                           ? Timekeeper.StartSyncron("clsCharacter.Load", null,
+                                                     CustomActivity.OperationType
+                                                                   .DependencyOperation, _strFileName)
+                           : await Timekeeper.StartSyncronAsync("clsCharacter.Load", null,
+                                                     CustomActivity.OperationType
+                                                                   .DependencyOperation, _strFileName))
                 {
                     try
                     {
-                        using (_ = Timekeeper.StartSyncron("upload_AI_options", loadActivity))
+                        using (_ = blnSync
+                                   // ReSharper disable once MethodHasAsyncOverload
+                                   ? Timekeeper.StartSyncron("upload_AI_options", loadActivity)
+                                   : await Timekeeper.StartSyncronAsync("upload_AI_options", loadActivity))
                         {
                             UploadObjectAsMetric.UploadObject(TelemetryClient, Settings);
                         }
@@ -4371,13 +4379,16 @@ namespace Chummer
 
                         frmLoadingForm?.PerformStep("XML");
 
-                        using (_ = Timekeeper.StartSyncron("load_xml", loadActivity))
+                        using (_ = blnSync
+                                   // ReSharper disable once MethodHasAsyncOverload
+                                   ? Timekeeper.StartSyncron("load_xml", loadActivity)
+                                   : await Timekeeper.StartSyncronAsync("load_xml", loadActivity))
                         {
                             if (!File.Exists(_strFileName))
                                 return false;
                             bool blnKeepLoading = blnSync
                                 ? LoadSaveFileDocument()
-                                : await Task.Run(LoadSaveFileDocument);
+                                : await Task.Run(LoadSaveFileDocumentAsync);
 
                             bool LoadSaveFileDocument()
                             {
@@ -4434,6 +4445,61 @@ namespace Chummer
                                 return true;
                             }
 
+                            async Task<bool> LoadSaveFileDocumentAsync()
+                            {
+                                bool blnErrorCaught = false;
+                                do
+                                {
+                                    try
+                                    {
+                                        objXmlDocument.LoadStandard(_strFileName, !blnErrorCaught);
+                                        blnErrorCaught = false;
+                                    }
+                                    catch (XmlException ex)
+                                    {
+                                        if (System.Text.RegularExpressions.Regex.IsMatch(ex.Message,
+                                                GlobalSettings.InvalidXmlCharacterRegex))
+                                        {
+                                            /*If we found a known control character that's preventing the character from
+                                            being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
+                                            If yes, restart the load, explicitly ignoring invalid characters.*/
+
+                                            if (Program.ShowMessageBox(
+                                                    await LanguageManager.GetStringAsync("Message_InvalidTextFound"),
+                                                    await LanguageManager.GetStringAsync("Message_InvalidTextFound_Title"),
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) ==
+                                                DialogResult.No)
+                                            {
+                                                return false;
+                                            }
+
+                                            blnErrorCaught = true;
+                                        }
+                                        else
+                                        {
+                                            if (showWarnings)
+                                            {
+                                                Program.ShowMessageBox(
+                                                    string.Format(GlobalSettings.CultureInfo,
+                                                                  await LanguageManager.GetStringAsync("Message_FailedLoad"),
+                                                                  ex.Message),
+                                                    string.Format(GlobalSettings.CultureInfo,
+                                                                  await LanguageManager.GetStringAsync("MessageTitle_FailedLoad"),
+                                                                  ex.Message),
+                                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                            }
+
+                                            return false;
+                                        }
+                                    }
+                                } while (blnErrorCaught);
+
+                                objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
+                                xmlCharacterNavigator =
+                                    objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
+                                return true;
+                            }
+
                             if (!blnKeepLoading || objXmlCharacter == null || xmlCharacterNavigator == null)
                             {
                                 return false;
@@ -4452,7 +4518,10 @@ namespace Chummer
                                     ? LanguageManager.GetString("String_Settings")
                                     : await LanguageManager.GetStringAsync("String_Settings"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_misc", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_misc", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_misc", loadActivity))
                             {
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
 
@@ -5174,7 +5243,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "String_MentorSpirit"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_mentorspirit", loadActivity))
                             {
                                 // Improvements.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
@@ -5202,7 +5274,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Improvements")
                                                             : await LanguageManager.GetStringAsync("Tab_Improvements"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_imp", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_imp", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_imp", loadActivity))
                             {
                                 // Improvements.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
@@ -5348,7 +5423,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Label_Contacts")
                                                             : await LanguageManager.GetStringAsync("Label_Contacts"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_contacts", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_contacts", loadActivity))
                             {
                                 // Contacts.
                                 foreach (XPathNavigator xmlContact in
@@ -5371,7 +5449,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("String_Qualities")
                                                             : await LanguageManager.GetStringAsync("String_Qualities"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_quality", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_quality", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_quality", loadActivity))
                             {
                                 // Qualities
 
@@ -5731,7 +5812,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Label_Attributes")
                                                             : await LanguageManager.GetStringAsync("Label_Attributes"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_attributes", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_attributes", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_attributes", loadActivity))
                             {
                                 AttributeSection.Load(objXmlCharacter);
                             }
@@ -5741,7 +5825,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("String_Tradition")
                                                             : await LanguageManager.GetStringAsync("String_Tradition"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_misc2", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_misc2", loadActivity))
                             {
                                 // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
                                 if (_blnAdeptEnabled && _blnMagicianEnabled)
@@ -5866,7 +5953,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Skills")
                                                             : await LanguageManager.GetStringAsync("Tab_Skills"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_skills", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_skills", loadActivity)) //slightly messy
                             {
                                 _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
                                 _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
@@ -5889,7 +5979,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("String_Locations")
                                                             : await LanguageManager.GetStringAsync("String_Locations"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_loc", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_loc", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_loc", loadActivity))
                             {
                                 // Locations.
                                 objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
@@ -5916,7 +6009,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_loc");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_abundle", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_abundle", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_abundle", loadActivity))
                             {
                                 // Armor Bundles.
                                 objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
@@ -5943,7 +6039,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_abundle");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_vloc", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_vloc", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_vloc", loadActivity))
                             {
                                 // Vehicle Locations.
                                 XmlNodeList objXmlVehicleLocationList =
@@ -5965,7 +6064,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_vloc");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_wloc", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_wloc", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_wloc", loadActivity))
                             {
                                 // Weapon Locations.
                                 XmlNodeList objXmlWeaponLocationList =
@@ -5986,7 +6088,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_wloc");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_sfoci", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_sfoci", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_sfoci", loadActivity))
                             {
                                 // Stacked Foci.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
@@ -6009,7 +6114,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Armor")
                                                             : await LanguageManager.GetStringAsync("Tab_Armor"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_armor", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_armor", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_armor", loadActivity))
                             {
                                 // Armor.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
@@ -6028,7 +6136,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Weapons")
                                                             : await LanguageManager.GetStringAsync("Tab_Weapons"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_weapons", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_weapons", loadActivity))
                             {
                                 // Weapons.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
@@ -6047,7 +6158,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Drugs")
                                                             : await LanguageManager.GetStringAsync("Tab_Drugs"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_drugs", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_drugs", loadActivity))
                             {
                                 // Drugs.
                                 objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
@@ -6066,7 +6180,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Cyberware")
                                                             : await LanguageManager.GetStringAsync("Tab_Cyberware"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_ware", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_ware", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_ware", loadActivity))
                             {
                                 // Cyberware/Bioware.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
@@ -6358,7 +6475,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "Label_SelectedSpells"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_spells", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_spells", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_spells", loadActivity))
                             {
                                 // Spells.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
@@ -6376,7 +6496,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Adept")
                                                             : await LanguageManager.GetStringAsync("Tab_Adept"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_powers", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_powers", loadActivity))
                             {
                                 // Powers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
@@ -6441,7 +6564,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Label_Spirits")
                                                             : await LanguageManager.GetStringAsync("Label_Spirits"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_spirits", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_spirits", loadActivity))
                             {
                                 // Spirits/Sprites.
                                 foreach (XPathNavigator xmlSpirit in (blnSync
@@ -6477,7 +6603,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "Label_ComplexForms"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_complex", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_complex", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_complex", loadActivity))
                             {
                                 // Compex Forms/Technomancer Programs.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
@@ -6497,7 +6626,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "Tab_AdvancedPrograms"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_aiprogram", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_aiprogram", loadActivity))
                             {
                                 // Compex Forms/Technomancer Programs.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
@@ -6516,7 +6648,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_MartialArts")
                                                             : await LanguageManager.GetStringAsync("Tab_MartialArts"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_marts", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_martialarts", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_martialarts", loadActivity))
                             {
                                 // Martial Arts.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
@@ -6535,7 +6670,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Limits")
                                                             : await LanguageManager.GetStringAsync("Tab_Limits"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_mod", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_mod", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_mod", loadActivity))
                             {
                                 // Limit Modifiers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
@@ -6556,7 +6694,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "String_SelectPACKSKit_Lifestyles"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_lifestyle", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_lifestyle", loadActivity))
                             {
                                 // Lifestyles.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
@@ -6575,7 +6716,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Gear")
                                                             : await LanguageManager.GetStringAsync("Tab_Gear"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_gear", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_gear", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_gear", loadActivity))
                             {
                                 // <gears>
                                 objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
@@ -6718,7 +6862,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Label_Vehicles")
                                                             : await LanguageManager.GetStringAsync("Label_Vehicles"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_car", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_car", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_car", loadActivity))
                             {
                                 // Vehicles.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
@@ -6738,7 +6885,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "String_Metamagics"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_mmagic", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_metamagics", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_metamagics", loadActivity))
                             {
                                 // Metamagics/Echoes.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
@@ -6757,7 +6907,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("String_Arts")
                                                             : await LanguageManager.GetStringAsync("String_Arts"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_arts", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_arts", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_arts", loadActivity))
                             {
                                 // Arts
                                 objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
@@ -6777,7 +6930,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "String_Enhancements"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_ench", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_enhancements", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_enhancements", loadActivity))
                             {
                                 // Enhancements
                                 objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
@@ -6796,7 +6952,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Critter")
                                                             : await LanguageManager.GetStringAsync("Tab_Critter"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_cpow", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_critterpowers", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_critterpowers", loadActivity))
                             {
                                 // Critter Powers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
@@ -6816,7 +6975,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "Label_SummaryFoci"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_foci", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_foci", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_foci", loadActivity))
                             {
                                 // Foci.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
@@ -6840,7 +7002,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "Label_SummaryInitiation"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_init", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_init", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_init", loadActivity))
                             {
                                 // Initiation Grades.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
@@ -6862,7 +7027,10 @@ namespace Chummer
                             // they shouldn't get loaded in create mode because they shouldn't be there.
                             if (Created)
                             {
-                                using (_ = Timekeeper.StartSyncron("load_char_elog", loadActivity))
+                                using (_ = blnSync
+                                           // ReSharper disable once MethodHasAsyncOverload
+                                           ? Timekeeper.StartSyncron("load_char_elog", loadActivity)
+                                           : await Timekeeper.StartSyncronAsync("load_char_elog", loadActivity))
                                 {
                                     // Expense Log Entries.
                                     XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
@@ -6894,7 +7062,10 @@ namespace Chummer
                                                                 "Tip_Skill_Sustain"));
 
                             // Need to load these after everything else so that we can properly link them up during loading
-                            using (_ = Timekeeper.StartSyncron("load_char_SustainedAbilities", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_sustainedobjects", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_sustainedobjects", loadActivity))
                             {
                                 objXmlNodeList = objXmlCharacter.SelectNodes("sustainedobjects");
                                 foreach (XmlNode objXmlSustained in objXmlNodeList)
@@ -6912,7 +7083,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Improvements")
                                                             : await LanguageManager.GetStringAsync("Tab_Improvements"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_igroup", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_igroup", loadActivity))
                             {
                                 // Improvement Groups.
                                 XmlNodeList objXmlGroupList =
@@ -6930,7 +7104,10 @@ namespace Chummer
                                                             ? LanguageManager.GetString("Tab_Calendar")
                                                             : await LanguageManager.GetStringAsync("Tab_Calendar"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_calendar", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_calendar", loadActivity))
                             {
                                 // Calendar.
                                 XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
@@ -6950,7 +7127,10 @@ namespace Chummer
                                                             : await LanguageManager.GetStringAsync(
                                                                 "String_LegacyFixes"));
 
-                            using (_ = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_unarmed", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_unarmed", loadActivity))
                             {
                                 // Look for the unarmed attack
                                 bool blnFoundUnarmed = false;
@@ -6985,7 +7165,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_unarmed");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_dwarffix", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_dwarffix", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_dwarffix", loadActivity))
                             {
                                 // converting from old dwarven resistance to new dwarven resistance
                                 if (Metatype.Equals("dwarf", StringComparison.OrdinalIgnoreCase))
@@ -7025,7 +7208,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_dwarffix");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_cyberadeptfix", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_cyberadeptfix", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_cyberadeptfix", loadActivity))
                             {
                                 //Sweep through grades if we have any cyberadept improvements that need reassignment
                                 if (lstCyberadeptSweepGrades.Count > 0)
@@ -7063,7 +7249,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_cyberadeptfix");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_mentorspiritfix", loadActivity))
                             {
                                 Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
                                 // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
@@ -7082,7 +7271,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_mentorspiritfix");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_flechettefix", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_flechettefix", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_flechettefix", loadActivity))
                             {
                                 //Fixes an issue where existing weapons could have been loaded with non-flechette ammunition
                                 if (LastSavedVersion <= new Version(5, 212, 78))
@@ -7128,7 +7320,10 @@ namespace Chummer
                                                                 "Tab_Options_Plugins"));
 
                             //Plugins
-                            using (_ = Timekeeper.StartSyncron("load_plugins", loadActivity))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_plugins", loadActivity)
+                                       : await Timekeeper.StartSyncronAsync("load_char_plugins", loadActivity))
                             {
                                 foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                                 {
@@ -7154,7 +7349,10 @@ namespace Chummer
                                                             "String_GeneratedImprovements"));
 
                         // Refresh certain improvements
-                        using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
+                        using (_ = blnSync
+                                   // ReSharper disable once MethodHasAsyncOverload
+                                   ? Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity)
+                                   : await Timekeeper.StartSyncronAsync("load_char_improvementrefreshers1", loadActivity))
                         {
                             // Process all events related to improvements
                             using (new FetchSafelyFromPool<
@@ -25360,9 +25558,13 @@ namespace Chummer
                 XPathNavigator xmlStatBlockDocument = null;
                 XPathNavigator xmlLeadsDocument = null;
                 List<string> lstTextStatBlockLines = null;
-                using (CustomActivity op_load = Timekeeper.StartSyncron("LoadFromHeroLabFile", null,
-                                                                        CustomActivity.OperationType
-                                                                            .DependencyOperation, strPorFile))
+                using (CustomActivity op_load = blnSync
+                           ? Timekeeper.StartSyncron("LoadFromHeroLabFile", null,
+                                                     CustomActivity.OperationType
+                                                                   .DependencyOperation, strPorFile)
+                           : await Timekeeper.StartSyncronAsync("LoadFromHeroLabFile", null,
+                                                     CustomActivity.OperationType
+                                                                   .DependencyOperation, strPorFile))
                 {
                     try
                     {
@@ -25592,7 +25794,10 @@ namespace Chummer
                             XPathNavigator xmlStatBlockBaseNode;
                             XPathNavigator xmlLeadsBaseNode;
 
-                            using (_ = Timekeeper.StartSyncron("load_char_misc", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_misc", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_misc", op_load))
                             {
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
 
@@ -26003,7 +26208,10 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             List<Vehicle> lstVehicles = new List<Vehicle>(1);
 
-                            using (_ = Timekeeper.StartSyncron("load_char_quality", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_quality", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_quality", op_load))
                             {
                                 string[] astrLevelLabels =
                                 {
@@ -26220,7 +26428,10 @@ namespace Chummer
                             }
 
                             AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode, op_load);
-                            using (_ = Timekeeper.StartSyncron("load_char_misc2", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_misc2", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_misc2", op_load))
                             {
                                 /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
                                 // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
@@ -26254,8 +26465,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_misc2");
                             }
 
-                            using (CustomActivity op_load_char_skills =
-                                   Timekeeper.StartSyncron("load_char_skills", op_load)) //slightly messy
+                            using (CustomActivity op_load_char_skills = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_skills", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_skills", op_load)) //slightly messy
                             {
                                 SkillsSection.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNode("skills"),
                                                               op_load_char_skills);
@@ -26351,7 +26564,10 @@ namespace Chummer
         
                             Timekeeper.Finish("load_char_wloc");
                             */
-                            using (_ = Timekeeper.StartSyncron("load_char_contacts", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_contacts", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_contacts", op_load))
                             {
                                 // Contacts.
                                 foreach (XPathNavigator xmlContactToImport in xmlStatBlockBaseNode.Select(
@@ -26417,7 +26633,10 @@ namespace Chummer
                             }
 
                             XmlDocument xmlGearDocument;
-                            using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_armor", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_armor", op_load))
                             {
                                 // Armor.
                                 xmlGearDocument = blnSync
@@ -26662,7 +26881,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_armor");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_weapons", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_weapons", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_weapons", op_load))
                             {
                                 // Weapons.
                                 foreach (XPathNavigator xmlWeaponToImport in xmlStatBlockBaseNode.Select(
@@ -26695,7 +26917,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_weapons");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_ware", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_ware", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_ware", op_load))
                             {
                                 // Cyberware/Bioware.
                                 foreach (XPathNavigator xmlCyberwareToImport in xmlStatBlockBaseNode.Select(
@@ -26764,7 +26989,10 @@ namespace Chummer
                             }
 
                             XPathNodeIterator xmlNodeList;
-                            using (_ = Timekeeper.StartSyncron("load_char_spells", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_spells", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_spells", op_load))
                             {
                                 // Spells.
                                 xmlNodeList = blnSync
@@ -27044,7 +27272,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spells");
                             }
 
-                            using (CustomActivity _ = Timekeeper.StartSyncron("load_char_powers", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_powers", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_powers", op_load))
                             {
                                 // Powers.
                                 xmlNodeList = blnSync
@@ -27149,7 +27380,10 @@ namespace Chummer
         
                             Timekeeper.Finish("load_char_spirits");
                             */
-                            using (_ = Timekeeper.StartSyncron("load_char_complex", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_complex", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_complex", op_load))
                             {
                                 // Complex Forms/Technomancer Programs.
                                 string strComplexFormsLine =
@@ -27281,7 +27515,10 @@ namespace Chummer
         
                             Timekeeper.Finish("load_char_marts");
                             */
-                            using (_ = Timekeeper.StartSyncron("load_char_lifestyle", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_lifestyle", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_lifestyle", op_load))
                             {
                                 // Lifestyles.
                                 XmlNode xmlFakeSINDataNode =
@@ -27363,7 +27600,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_lifestyle");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_gear", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_gear", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_gear", op_load))
                             {
                                 // <gears>
                                 foreach (XPathNavigator xmlGearToImport in xmlStatBlockBaseNode.Select(
@@ -27398,7 +27638,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_gear");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_car", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_car", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_car", op_load))
                             {
                                 foreach (Vehicle objVehicle in lstVehicles)
                                 {
@@ -27507,7 +27750,10 @@ namespace Chummer
                             */
                             _lstWeapons.AddRange(lstWeapons);
 
-                            using (_ = Timekeeper.StartSyncron("load_char_unarmed", op_load))
+                            using (_ = blnSync
+                                       // ReSharper disable once MethodHasAsyncOverload
+                                       ? Timekeeper.StartSyncron("load_char_unarmed", op_load)
+                                       : await Timekeeper.StartSyncronAsync("load_char_unarmed", op_load))
                             {
                                 // Look for the unarmed attack
                                 bool blnFoundUnarmed = false;
@@ -27548,7 +27794,10 @@ namespace Chummer
                         }
 
                         // Refresh certain improvements
-                        using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
+                        using (_ = blnSync
+                                   // ReSharper disable once MethodHasAsyncOverload
+                                   ? Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load)
+                                   : await Timekeeper.StartSyncronAsync("load_char_improvementrefreshers2", op_load))
                         {
                             // Refresh Black Market discounts
                             RefreshBlackMarketDiscounts();

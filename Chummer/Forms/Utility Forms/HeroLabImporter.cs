@@ -55,7 +55,8 @@ namespace Chummer
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                using (CursorWait.New(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
                     string strSelectedFile = openFileDialog.FileName;
                     TreeNode objNode = await CacheCharacters(strSelectedFile);
@@ -65,6 +66,10 @@ namespace Chummer
                         treCharacterList.Nodes.Add(objNode);
                         treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
         }
@@ -551,7 +556,8 @@ namespace Chummer
             string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 bool blnLoaded = false;
                 Character objCharacter = new Character();
@@ -560,32 +566,48 @@ namespace Chummer
                     Program.OpenCharacters.Add(objCharacter);
 
                     CharacterSettings objHeroLabSettings =
-                        SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
+                        SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                            x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
                     if (objHeroLabSettings != null)
                     {
                         objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
                     }
                     else
                     {
-                        objHeroLabSettings = SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.Name.Contains(objCache.SettingsName) && x.BuildMethod == objCache.BuildMethod);
+                        objHeroLabSettings = SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                            x => x.Name.Contains(objCache.SettingsName) && x.BuildMethod == objCache.BuildMethod);
                         if (objHeroLabSettings != null)
                         {
                             objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
                         }
-                        else if (SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out CharacterSettings objDefaultCharacterSettings)
-                            && objCache.BuildMethod.UsesPriorityTables() == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
+                        else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                     GlobalSettings.DefaultCharacterSetting,
+                                     out CharacterSettings objDefaultCharacterSettings)
+                                 && objCache.BuildMethod.UsesPriorityTables()
+                                 == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
                         {
                             objCharacter.SettingsKey = objDefaultCharacterSettings.DictionaryKey;
                         }
                         else
                         {
-                            objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.BuiltInOption && x.BuildMethod == objCache.BuildMethod)?.DictionaryKey
-                                                       ?? SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(x => x.BuiltInOption && x.BuildMethod.UsesPriorityTables() == objCache.BuildMethod.UsesPriorityTables())?.DictionaryKey
+                            objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings.Values
+                                                                      .FirstOrDefault(
+                                                                          x => x.BuiltInOption
+                                                                               && x.BuildMethod == objCache.BuildMethod)
+                                                                      ?.DictionaryKey
+                                                       ?? SettingsManager.LoadedCharacterSettings.Values
+                                                                         .FirstOrDefault(
+                                                                             x => x.BuiltInOption
+                                                                                 && x.BuildMethod.UsesPriorityTables()
+                                                                                 == objCache.BuildMethod
+                                                                                     .UsesPriorityTables())
+                                                                         ?.DictionaryKey
                                                        ?? GlobalSettings.DefaultCharacterSetting;
                         }
                     }
 
                     DialogResult ePickBPResult = await this.DoThreadSafeFunc(ShowBPAsync);
+
                     async ValueTask<DialogResult> ShowBPAsync()
                     {
                         using (SelectBuildMethod frmPickBP = new SelectBuildMethod(objCharacter, true))
@@ -594,6 +616,7 @@ namespace Chummer
                             return frmPickBP.DialogResult;
                         }
                     }
+
                     if (ePickBPResult != DialogResult.OK)
                         return;
                     //Timekeeper.Start("load_file");
@@ -610,6 +633,10 @@ namespace Chummer
                     if (!blnLoaded)
                         Program.OpenCharacters.Remove(objCharacter);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             Close();

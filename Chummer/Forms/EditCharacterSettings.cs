@@ -112,9 +112,16 @@ namespace Chummer
 
         private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
-            using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabCustomDataDirectories"))
-                await frmOptions.ShowDialogSafeAsync(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabCustomDataDirectories"))
+                    await frmOptions.ShowDialogSafeAsync(this);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cmdRename_Click(object sender, EventArgs e)
@@ -131,7 +138,8 @@ namespace Chummer
                 _objCharacterSettings.Name = frmSelectName.SelectedValue;
             }
 
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -170,6 +178,10 @@ namespace Chummer
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
@@ -182,7 +194,8 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 (bool blnSuccess, CharacterSettings objDeletedSettings)
                     = await SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemoveAsync(
@@ -193,7 +206,8 @@ namespace Chummer
                         Path.Combine(Utils.GetStartupPath, "settings", _objReferenceCharacterSettings.FileName), true))
                 {
                     // Revert removal of setting if we cannot delete the file
-                    await SettingsManager.LoadedCharacterSettingsAsModifiable.AddAsync(objDeletedSettings.DictionaryKey, objDeletedSettings);
+                    await SettingsManager.LoadedCharacterSettingsAsModifiable.AddAsync(
+                        objDeletedSettings.DictionaryKey, objDeletedSettings);
                     return;
                 }
 
@@ -201,10 +215,10 @@ namespace Chummer
                 _blnForceMasterIndexRepopulateOnClose = true;
                 KeyValuePair<string, CharacterSettings> kvpReplacementOption =
                     SettingsManager.LoadedCharacterSettings.First(x => x.Value.BuiltInOption
-                                                                     && x.Value.BuildMethod ==
-                                                                     _objReferenceCharacterSettings.BuildMethod);
+                                                                       && x.Value.BuildMethod ==
+                                                                       _objReferenceCharacterSettings.BuildMethod);
                 foreach (Character objCharacter in Program.OpenCharacters.Where(x =>
-                    x.SettingsKey == _objReferenceCharacterSettings.FileName))
+                             x.SettingsKey == _objReferenceCharacterSettings.FileName))
                     objCharacter.SettingsKey = kvpReplacementOption.Key;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -229,6 +243,10 @@ namespace Chummer
                         ResumeLayout();
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -305,7 +323,8 @@ namespace Chummer
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 _objCharacterSettings.Name = strSelectedName;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -317,7 +336,8 @@ namespace Chummer
 
                 try
                 {
-                    CharacterSettings objNewCharacterSettings = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
+                    CharacterSettings objNewCharacterSettings
+                        = new CharacterSettings(_objCharacterSettings, false, strSelectedFullFileName);
                     if (!await SettingsManager.LoadedCharacterSettingsAsModifiable.TryAddAsync(
                             objNewCharacterSettings.DictionaryKey, objNewCharacterSettings))
                     {
@@ -333,6 +353,7 @@ namespace Chummer
                         objNewCharacterSettings.Dispose();
                         return;
                     }
+
                     // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
                     _blnForceMasterIndexRepopulateOnClose = true;
                     _objReferenceCharacterSettings = objNewCharacterSettings;
@@ -348,11 +369,16 @@ namespace Chummer
                     }
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cmdSave_Click(object sender, EventArgs e)
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 if (_objReferenceCharacterSettings.BuildMethod != _objCharacterSettings.BuildMethod)
                 {
@@ -369,17 +395,18 @@ namespace Chummer
                         if (sbdConflictingCharacters.Length > 0)
                         {
                             Program.ShowMessageBox(this,
-                                                            await LanguageManager.GetStringAsync(
-                                                                "Message_CharacterOptions_OpenCharacterOnBuildMethodChange")
-                                                            +
-                                                            sbdConflictingCharacters,
-                                                            await LanguageManager.GetStringAsync(
-                                                                "MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange"),
-                                                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                   await LanguageManager.GetStringAsync(
+                                                       "Message_CharacterOptions_OpenCharacterOnBuildMethodChange")
+                                                   +
+                                                   sbdConflictingCharacters,
+                                                   await LanguageManager.GetStringAsync(
+                                                       "MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange"),
+                                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                     }
                 }
+
                 if (!_objCharacterSettings.Save())
                     return;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -402,6 +429,10 @@ namespace Chummer
                         ResumeLayout();
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -429,7 +460,8 @@ namespace Chummer
                 IsDirty = false;
             }
 
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 _blnLoading = true;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -472,6 +504,10 @@ namespace Chummer
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cmdRestoreDefaults_Click(object sender, EventArgs e)
@@ -483,7 +519,8 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 _blnLoading = true;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -524,6 +561,10 @@ namespace Chummer
                 }
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1034,7 +1075,8 @@ namespace Chummer
         /// </summary>
         private async ValueTask PopulateOptions()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -1060,14 +1102,19 @@ namespace Chummer
                     }
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async ValueTask PopulatePriorityTableList()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                           out List<ListItem> lstPriorityTables))
+                                                               out List<ListItem> lstPriorityTables))
                 {
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                      .LoadXPathAsync("priorities.xml",
@@ -1078,8 +1125,10 @@ namespace Chummer
                         string strName = objXmlNode.Value;
                         if (!string.IsNullOrEmpty(strName))
                             lstPriorityTables.Add(new ListItem(objXmlNode.Value,
-                                (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))
-                                    ?.Value ?? strName));
+                                                               (await objXmlNode
+                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                       "@translate"))
+                                                               ?.Value ?? strName));
                     }
 
                     string strOldSelected = _objCharacterSettings.PriorityTable;
@@ -1103,29 +1152,38 @@ namespace Chummer
                     _objCharacterSettings.PriorityTable != strSelectedTable)
                     _objCharacterSettings.PriorityTable = strSelectedTable;
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async ValueTask PopulateLimbCountList()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                           out List<ListItem> lstLimbCount))
+                                                               out List<ListItem> lstLimbCount))
                 {
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                      .LoadXPathAsync("options.xml",
                                                      _objCharacterSettings.EnabledCustomDataDirectoryPaths))
                                  .SelectAndCacheExpressionAsync("/chummer/limbcounts/limb"))
                     {
-                        string strExclude = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude"))?.Value ??
+                        string strExclude = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("exclude"))?.Value
+                                            ??
                                             string.Empty;
                         if (!string.IsNullOrEmpty(strExclude))
                             strExclude = '<' + strExclude;
                         lstLimbCount.Add(new ListItem(
-                            (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("limbcount"))?.Value + strExclude,
-                            (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                            ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
-                            ?? string.Empty));
+                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("limbcount"))
+                                             ?.Value + strExclude,
+                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                             ?.Value
+                                             ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                             ?.Value
+                                             ?? string.Empty));
                     }
 
                     string strLimbSlot = _objCharacterSettings.LimbCount.ToString(GlobalSettings.InvariantCultureInfo);
@@ -1145,14 +1203,19 @@ namespace Chummer
 
                 _blnSkipLimbCountUpdate = false;
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async ValueTask PopulateAllowedGrades()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                           out List<ListItem> lstGrades))
+                                                               out List<ListItem> lstGrades))
                 {
                     foreach (XPathNavigator objXmlNode in await (await XmlManager
                                      .LoadXPathAsync("bioware.xml",
@@ -1162,7 +1225,8 @@ namespace Chummer
                         string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                         if (!string.IsNullOrEmpty(strName) && strName != "None")
                         {
-                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value;
+                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source"))
+                                ?.Value;
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
                                 continue;
@@ -1173,9 +1237,10 @@ namespace Chummer
                             if (objExistingCoveredGrade.Value != null)
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(
-                                strName,
-                                (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                ?? strName));
+                                              strName,
+                                              (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                              ?.Value
+                                              ?? strName));
                         }
                     }
 
@@ -1187,7 +1252,8 @@ namespace Chummer
                         string strName = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                         if (!string.IsNullOrEmpty(strName) && strName != "None")
                         {
-                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value;
+                            string strBook = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("source"))
+                                ?.Value;
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
                                 continue;
@@ -1198,9 +1264,10 @@ namespace Chummer
                             if (objExistingCoveredGrade.Value != null)
                                 lstGrades.Remove(objExistingCoveredGrade);
                             lstGrades.Add(new ListItem(
-                                strName,
-                                (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                                ?? strName));
+                                              strName,
+                                              (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                              ?.Value
+                                              ?? strName));
                         }
                     }
 
@@ -1223,6 +1290,10 @@ namespace Chummer
 
                     flpAllowedCyberwareGrades.ResumeLayout();
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1466,7 +1537,8 @@ namespace Chummer
 
         private async void SettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 if (!_blnLoading)
                 {
@@ -1487,7 +1559,8 @@ namespace Chummer
                     switch (e.PropertyName)
                     {
                         case nameof(CharacterSettings.BuiltInOption):
-                            cmdSave.Enabled = IsDirty && await IsAllTextBoxesLegalAsync() && !_objCharacterSettings.BuiltInOption;
+                            cmdSave.Enabled = IsDirty && await IsAllTextBoxesLegalAsync()
+                                                      && !_objCharacterSettings.BuiltInOption;
                             break;
 
                         case nameof(CharacterSettings.PriorityArray):
@@ -1498,6 +1571,10 @@ namespace Chummer
                             break;
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
