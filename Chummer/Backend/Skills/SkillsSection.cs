@@ -1179,6 +1179,19 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// Gets an active skill by its Name. Returns null if none found.
+        /// </summary>
+        /// <param name="strSkillName">Name of the skill.</param>
+        /// <returns></returns>
+        public async ValueTask<Skill> GetActiveSkillAsync(string strSkillName)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                return (await _dicSkills.TryGetValueAsync(strSkillName)).Item2;
+            }
+        }
+
+        /// <summary>
         /// This is only used for reflection, so that all zero ratings skills are not uploaded
         /// </summary>
         [HubTag]

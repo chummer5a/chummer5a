@@ -807,8 +807,12 @@ namespace Chummer
             {
                 try
                 {
-                    while (!_dicSavedCharacterCaches.TryGetValue(strFile, out objCache))
+                    while (true)
                     {
+                        bool blnSuccess;
+                        (blnSuccess, objCache) = await _dicSavedCharacterCaches.TryGetValueAsync(strFile);
+                        if (blnSuccess)
+                            break;
                         objCache = await CharacterCache.CreateFromFileAsync(strFile);
                         if (await _dicSavedCharacterCaches.TryAddAsync(strFile, objCache))
                             break;

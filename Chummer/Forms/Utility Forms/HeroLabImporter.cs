@@ -318,10 +318,13 @@ namespace Chummer
                         }
 
                         string strImageString = xmlBaseCharacterNode.SelectSingleNode("images/image/@filename")?.Value;
-                        if (!string.IsNullOrEmpty(strImageString)
-                            && _dicImages.TryGetValue(strImageString, out Bitmap objTemp))
+                        if (!string.IsNullOrEmpty(strImageString))
                         {
-                            objCache.Mugshot = objTemp;
+                            (bool blnSuccess, Bitmap objTemp) = await _dicImages.TryGetValueAsync(strImageString);
+                            if (blnSuccess)
+                            {
+                                objCache.Mugshot = objTemp;
+                            }
                         }
 
                         objCache.FilePath = strFile;

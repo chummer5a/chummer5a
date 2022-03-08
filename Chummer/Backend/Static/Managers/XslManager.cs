@@ -75,6 +75,7 @@ namespace Chummer
             bool blnSuccess;
             Tuple<DateTime, XslCompiledTransform> tupCachedData;
             if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
                 blnSuccess = s_dicCompiledTransforms.TryGetValue(strXslFilePath, out tupCachedData);
             else
                 (blnSuccess, tupCachedData) = await s_dicCompiledTransforms.TryGetValueAsync(strXslFilePath);

@@ -101,7 +101,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 if (_strXslt == "Export JSON")
                 {
@@ -111,6 +112,10 @@ namespace Chummer
                 {
                     await ExportNormal();
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -161,12 +166,15 @@ namespace Chummer
                     _strXslt = cboXSLT.Text;
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
-                        using (CursorWait.New(this))
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                        try
                         {
                             await txtText.DoThreadSafeAsync(
                                 async x => x.Text = await LanguageManager.GetStringAsync("String_Generating_Data"));
-                            if (_dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                                                      out Tuple<string, string> strBoxText))
+                            (bool blnSuccess, Tuple<string, string> strBoxText)
+                                = await _dicCache.TryGetValueAsync(
+                                    new Tuple<string, string>(_strExportLanguage, _strXslt));
+                            if (blnSuccess)
                             {
                                 await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2);
                             }
@@ -193,6 +201,10 @@ namespace Chummer
                                     ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
                                     : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);
                             }
+                        }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync();
                         }
                     }
                 }
@@ -242,7 +254,8 @@ namespace Chummer
 
         private async Task GenerateCharacterXml()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false),
                                    txtText.DoThreadSafeAsync(
@@ -255,6 +268,10 @@ namespace Chummer
                     return;
                 if (_objCharacterXml != null)
                     await DoXsltUpdate();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -292,19 +309,22 @@ namespace Chummer
             }
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
-
+            
+            (bool blnSuccess, Tuple<string, string> strBoxText)
+                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt));
             File.WriteAllText(strSaveFile, // Change this to a proper path.
-                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
-                    ? strBoxText.Item1
-                    : txtText.Text,
-                Encoding.UTF8);
+                              blnSuccess
+                                  ? strBoxText.Item1
+                                  : txtText.Text,
+                              Encoding.UTF8);
 
             DialogResult = DialogResult.OK;
         }
 
         private async Task GenerateXml()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
@@ -314,7 +334,9 @@ namespace Chummer
                     XslCompiledTransform objXslTransform;
                     try
                     {
-                        objXslTransform = await XslManager.GetTransformForFileAsync(exportSheetPath); // Use the path for the export sheet.
+                        objXslTransform
+                            = await XslManager
+                                .GetTransformForFileAsync(exportSheetPath); // Use the path for the export sheet.
                     }
                     catch (ArgumentException)
                     {
@@ -378,11 +400,16 @@ namespace Chummer
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async Task GenerateJson()
         {
-            using (CursorWait.New(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
@@ -396,6 +423,10 @@ namespace Chummer
                 {
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -431,11 +462,13 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strSaveFile))
                 return;
 
+            (bool blnSuccess, Tuple<string, string> strBoxText)
+                = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt));
             File.WriteAllText(strSaveFile, // Change this to a proper path.
-                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
-                    ? strBoxText.Item1
-                    : txtText.Text,
-                Encoding.UTF8);
+                              blnSuccess
+                                  ? strBoxText.Item1
+                                  : txtText.Text,
+                              Encoding.UTF8);
 
             DialogResult = DialogResult.OK;
         }

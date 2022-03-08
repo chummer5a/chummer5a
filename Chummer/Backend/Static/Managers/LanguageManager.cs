@@ -207,6 +207,7 @@ namespace Chummer
             SemaphoreSlim objLockerObject;
             if (blnSync)
             {
+                // ReSharper disable once MethodHasAsyncOverload
                 while (!s_DicLanguageDataLockers.TryGetValue(strKey, out objLockerObject))
                 {
                     objLockerObject = Utils.SemaphorePool.Get();
@@ -561,6 +562,7 @@ namespace Chummer
 
             if (blnSync)
             {
+                // ReSharper disable once MethodHasAsyncOverload
                 if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
                     return strReturn;
             }

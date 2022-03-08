@@ -3229,7 +3229,10 @@ namespace Chummer
                         case Improvement.ImprovementType.SkillSpecialization:
                         case Improvement.ImprovementType.SkillExpertise:
                         {
-                            Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                            Skill objSkill = blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objCharacter.SkillsSection.GetActiveSkill(strImprovedName)
+                                : await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName);
                             SkillSpecialization objSkillSpec = strUniqueName.IsGuid()
                                 ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == strUniqueName)
                                 // Kept for legacy reasons
