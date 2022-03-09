@@ -1351,10 +1351,15 @@ namespace Chummer
                 if (!File.Exists(strFile))
                     return;
 
-                using (Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
-                                                ?? await Task.Run(() => Program.LoadCharacterAsync(strFile)))
+                Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
+                                         ?? await Task.Run(() => Program.LoadCharacterAsync(strFile));
+                try
                 {
                     await OpenCharacterForPrinting(objCharacter);
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync();
                 }
             }
         }
@@ -1405,10 +1410,15 @@ namespace Chummer
                 if (!File.Exists(strFile))
                     return;
 
-                using (Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
-                                                ?? await Task.Run(() => Program.LoadCharacterAsync(strFile)))
+                Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
+                                         ?? await Task.Run(() => Program.LoadCharacterAsync(strFile));
+                try
                 {
                     await OpenCharacterForExport(objCharacter);
+                }
+                finally
+                {
+                    await objCharacter.DisposeAsync();
                 }
             }
         }
