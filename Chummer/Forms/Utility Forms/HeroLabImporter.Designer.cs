@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmHeroLabImporter
+    partial class HeroLabImporter
     {
         /// <summary>
         /// Required designer variable.
@@ -33,7 +33,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmHeroLabImporter));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HeroLabImporter));
             this.treCharacterList = new System.Windows.Forms.TreeView();
             this.cmdSelectFile = new System.Windows.Forms.Button();
             this.cmdImport = new System.Windows.Forms.Button();
@@ -86,7 +86,7 @@ namespace Chummer
             this.treCharacterList.Size = new System.Drawing.Size(300, 508);
             this.treCharacterList.TabIndex = 0;
             this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
-            this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
+            this.treCharacterList.DoubleClick += new System.EventHandler(this.cmdImport_Click);
             // 
             // cmdSelectFile
             // 
@@ -523,7 +523,7 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmHeroLabImporter";
+            this.Name = "HeroLabImporter";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "Title_HeroLabImporter";
             this.Text = "Hero Lab Importer";

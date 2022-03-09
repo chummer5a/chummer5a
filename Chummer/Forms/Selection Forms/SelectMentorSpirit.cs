@@ -24,7 +24,7 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectMentorSpirit : Form
+    public partial class SelectMentorSpirit : Form
     {
         private bool _blnSkipRefresh = true;
         private string _strForceMentor = string.Empty;
@@ -34,20 +34,19 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
+        public SelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
         {
-            InitializeComponent();
-
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            // Load the Mentor information.
-            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
+            InitializeComponent();
             if (strXmlFile == "paragons.xml")
                 Tag = "Title_SelectMentorSpirit_Paragon";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            // Load the Mentor information.
+            _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -61,7 +60,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSelectedId))
                         objXmlMentor =
                             _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " +
-                                                                          strSelectedId.CleanXPath() + "]");
+                                                                          strSelectedId.CleanXPath() + ']');
                 }
 
                 if (objXmlMentor != null)
@@ -70,16 +69,16 @@ namespace Chummer
                     cboChoice2.BeginUpdate();
 
                     // If the Mentor offers a choice of bonuses, build the list and let the user select one.
-                    XPathNavigator xmlChoices = objXmlMentor.SelectSingleNodeAndCacheExpression("choices");
+                    XPathNavigator xmlChoices = await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("choices");
                     if (xmlChoices != null)
                     {
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstChoice1))
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstChoice2))
                         {
-                            foreach (XPathNavigator objChoice in xmlChoices.SelectAndCacheExpression("choice"))
+                            foreach (XPathNavigator objChoice in await xmlChoices.SelectAndCacheExpressionAsync("choice"))
                             {
-                                string strName = objChoice.SelectSingleNodeAndCacheExpression("name")?.Value
+                                string strName = (await objChoice.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                                  ?? string.Empty;
                                 if ((_objCharacter.AdeptEnabled ||
                                      !strName.StartsWith("Adept:", StringComparison.Ordinal)) &&
@@ -88,12 +87,12 @@ namespace Chummer
                                 {
                                     if (objChoice.SelectSingleNode("@set")?.Value == "2")
                                         lstChoice2.Add(new ListItem(strName,
-                                                                    objChoice.SelectSingleNodeAndCacheExpression(
-                                                                        "translate")?.Value ?? strName));
+                                                                    (await objChoice.SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "translate"))?.Value ?? strName));
                                     else
                                         lstChoice1.Add(new ListItem(strName,
-                                                                    objChoice.SelectSingleNodeAndCacheExpression(
-                                                                        "translate")?.Value ?? strName));
+                                                                    (await objChoice.SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "translate"))?.Value ?? strName));
                                 }
                             }
 
@@ -131,19 +130,19 @@ namespace Chummer
                     // Get the information for the selected Mentor.
                     lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
                                         objXmlMentor.SelectSingleNode("advantage")?.Value ??
-                                        LanguageManager.GetString("String_Unknown");
+                                        await LanguageManager.GetStringAsync("String_Unknown");
                     lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
                     lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
                                            objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
-                                           LanguageManager.GetString("String_Unknown");
+                                           await LanguageManager.GetStringAsync("String_Unknown");
                     lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
 
                     string strSource = objXmlMentor.SelectSingleNode("source")?.Value ??
-                                       LanguageManager.GetString("String_Unknown");
-                    string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ??
+                                       await LanguageManager.GetStringAsync("String_Unknown");
+                    string strPage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ??
                                      objXmlMentor.SelectSingleNode("page")?.Value ??
-                                     LanguageManager.GetString("String_Unknown");
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language,
+                                     await LanguageManager.GetStringAsync("String_Unknown");
+                    SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -172,7 +171,7 @@ namespace Chummer
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + strSelectedId.CleanXPath() + ']');
                 if (objXmlMentor == null)
                     return;
 
@@ -185,7 +184,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Mentor list.
         /// </summary>
-        private void RefreshMentorsList(object sender, EventArgs e)
+        private async void RefreshMentorsList(object sender, EventArgs e)
         {
             string strForceId = string.Empty;
 
@@ -195,18 +194,18 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
             {
                 foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select(
-                             "mentors/mentor[" + strFilter + "]"))
+                             "mentors/mentor[" + strFilter + ']'))
                 {
                     if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
 
-                    string strName = objXmlMentor.SelectSingleNodeAndCacheExpression("name")?.Value
-                                     ?? LanguageManager.GetString("String_Unknown");
-                    string strId = objXmlMentor.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty;
+                    string strName = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strId = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty;
                     if (strName == _strForceMentor)
                         strForceId = strId;
                     lstMentors.Add(new ListItem(
                                        strId,
-                                       objXmlMentor.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                       (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                 }
 
                 lstMentors.Sort(CompareListItems.CompareNames);
@@ -229,9 +228,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

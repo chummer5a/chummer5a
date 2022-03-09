@@ -23,25 +23,25 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectText : Form
+    public partial class SelectText : Form
     {
         private string _strReturnValue = string.Empty;
 
         #region Control Events
 
-        public frmSelectText()
+        public SelectText()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             if ((PreventXPathErrors && txtValue.Text.Contains('"'))
                 || (PreventFileNameCharErrors && txtValue.Text.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
@@ -55,7 +55,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void frmSelectText_Shown(object sender, EventArgs e)
+        private void SelectText_Shown(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(DefaultString))
             {

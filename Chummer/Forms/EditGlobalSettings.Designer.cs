@@ -430,7 +430,7 @@ namespace Chummer
             this.cmdPDFTest.Size = new System.Drawing.Size(122, 23);
             this.cmdPDFTest.TabIndex = 17;
             this.cmdPDFTest.Tag = "Button_Options_PDFTest";
-            this.cmdPDFTest.Text = "Test - Open to Page 5";
+            this.cmdPDFTest.Text = "Test - Open to Page 3";
             this.cmdPDFTest.UseVisualStyleBackColor = true;
             this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
             // 
@@ -628,9 +628,9 @@ namespace Chummer
             this.chkAutomaticUpdate.Size = new System.Drawing.Size(116, 17);
             this.chkAutomaticUpdate.TabIndex = 5;
             this.chkAutomaticUpdate.Tag = "Checkbox_Options_AutomaticUpdates";
-            this.chkAutomaticUpdate.Text = "Automatic Updates";
+            this.chkAutomaticUpdate.Text = "Automatically download updates";
             this.chkAutomaticUpdate.UseVisualStyleBackColor = true;
-            this.chkAutomaticUpdate.CheckedChanged += new System.EventHandler(this.chkAutomaticUpdate_CheckedChanged);
+            this.chkAutomaticUpdate.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkConfirmKarmaExpense
             // 
@@ -1306,14 +1306,15 @@ namespace Chummer
             // 
             this.chkPreferNightlyBuilds.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPreferNightlyBuilds.AutoSize = true;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkPreferNightlyBuilds, 2);
             this.chkPreferNightlyBuilds.DefaultColorScheme = true;
             this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(23, 243);
-            this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
             this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(120, 17);
             this.chkPreferNightlyBuilds.TabIndex = 25;
             this.chkPreferNightlyBuilds.Tag = "Checkbox_Options_PreferNightlyBuilds";
-            this.chkPreferNightlyBuilds.Text = "Prefer Nightly Builds";
+            this.chkPreferNightlyBuilds.Text = "Prefer Nightly builds when updating";
             this.chkPreferNightlyBuilds.UseVisualStyleBackColor = true;
             this.chkPreferNightlyBuilds.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
@@ -2285,7 +2286,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Options";
             this.Text = "Global Settings";
-            this.Load += new System.EventHandler(this.frmOptions_Load);
+            this.Load += new System.EventHandler(this.EditGlobalSettings_Load);
             this.tlpOptions.ResumeLayout(false);
             this.tlpOptions.PerformLayout();
             this.tabOptions.ResumeLayout(false);

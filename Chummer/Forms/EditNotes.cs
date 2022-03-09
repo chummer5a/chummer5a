@@ -91,7 +91,7 @@ namespace Chummer
             }
         }
 
-        private void frmNotes_Resize(object sender, EventArgs e)
+        private void EditNotes_Resize(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -100,7 +100,7 @@ namespace Chummer
             _intHeight = Height;
         }
 
-        private void frmNotes_Shown(object sender, EventArgs e)
+        private void EditNotes_Shown(object sender, EventArgs e)
         {
             txtNotes.Focus();
             txtNotes.SelectionLength = 0;
@@ -121,7 +121,7 @@ namespace Chummer
         private void btnColorSelect_Click(object sender, EventArgs e)
         {
             _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
-            var resNewColor = colorDialog1.ShowDialog();
+            DialogResult resNewColor = colorDialog1.ShowDialog();
             if (resNewColor == DialogResult.OK)
             {
                 _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);

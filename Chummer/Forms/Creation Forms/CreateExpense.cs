@@ -55,16 +55,14 @@ namespace Chummer
             }
 
             datDate.Value = DateTime.Now;
-
-            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault");
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterSettings.NuyenPerBPWftP != 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_KarmaNuyenExchange"),
-                    LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK,
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange"),
+                    await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             else
@@ -213,8 +211,9 @@ namespace Chummer
             KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
         }
 
-        private void frmExpanse_Load(object sender, EventArgs e)
+        private async void CreateExpanse_Load(object sender, EventArgs e)
         {
+            txtDescription.Text = await LanguageManager.GetStringAsync("String_ExpenseDefault");
             chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
             chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;

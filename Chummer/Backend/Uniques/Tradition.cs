@@ -24,6 +24,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -43,7 +44,7 @@ namespace Chummer.Backend.Uniques
     /// A Tradition
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    public class Tradition : IHasInternalId, IHasName, IHasXmlNode, IHasSource, INotifyMultiplePropertyChanged
+    public class Tradition : IHasInternalId, IHasName, IHasXmlDataNode, IHasSource, INotifyMultiplePropertyChanged
     {
         private Guid _guiID;
         private Guid _guiSourceID;
@@ -105,7 +106,10 @@ namespace Chummer.Backend.Uniques
             ResetTradition();
             Type = blnIsTechnomancerTradition ? TraditionType.RES : TraditionType.MAG;
             if (xmlTraditionNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
                 _xmlCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
             xmlTraditionNode.TryGetStringFieldQuickly("name", ref _strName);
             xmlTraditionNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTraditionNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -152,35 +156,29 @@ namespace Chummer.Backend.Uniques
             _strSpiritManipulation = string.Empty;
             if (Type != TraditionType.None)
             {
-                XmlNode xmlSpiritListNode = GetNode()?["spirits"];
+                XPathNavigator xmlSpiritListNode = this.GetNodeXPath()?.SelectSingleNode("spirits");
                 if (xmlSpiritListNode != null)
                 {
-                    using (XmlNodeList xmlAlwaysAccessSpirits = xmlSpiritListNode.SelectNodes("spirit"))
+                    foreach (XPathNavigator xmlSpiritNode in xmlSpiritListNode.Select("spirit"))
                     {
-                        if (xmlAlwaysAccessSpirits?.Count > 0)
-                        {
-                            foreach (XmlNode xmlSpiritNode in xmlAlwaysAccessSpirits)
-                            {
-                                _lstAvailableSpirits.Add(xmlSpiritNode.InnerText);
-                            }
-                        }
+                        _lstAvailableSpirits.Add(xmlSpiritNode.Value);
                     }
 
-                    XmlNode xmlCombatSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritcombat");
+                    XPathNavigator xmlCombatSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritcombat");
                     if (xmlCombatSpiritNode != null)
-                        _strSpiritCombat = xmlCombatSpiritNode.InnerText;
-                    XmlNode xmlDetectionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritdetection");
+                        _strSpiritCombat = xmlCombatSpiritNode.Value;
+                    XPathNavigator xmlDetectionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritdetection");
                     if (xmlDetectionSpiritNode != null)
-                        _strSpiritDetection = xmlDetectionSpiritNode.InnerText;
-                    XmlNode xmlHealthSpiritNode = xmlSpiritListNode.SelectSingleNode("spirithealth");
+                        _strSpiritDetection = xmlDetectionSpiritNode.Value;
+                    XPathNavigator xmlHealthSpiritNode = xmlSpiritListNode.SelectSingleNode("spirithealth");
                     if (xmlHealthSpiritNode != null)
-                        _strSpiritHealth = xmlHealthSpiritNode.InnerText;
-                    XmlNode xmlIllusionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritillusion");
+                        _strSpiritHealth = xmlHealthSpiritNode.Value;
+                    XPathNavigator xmlIllusionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritillusion");
                     if (xmlIllusionSpiritNode != null)
-                        _strSpiritIllusion = xmlIllusionSpiritNode.InnerText;
-                    XmlNode xmlManipulationSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritmanipulation");
+                        _strSpiritIllusion = xmlIllusionSpiritNode.Value;
+                    XPathNavigator xmlManipulationSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritmanipulation");
                     if (xmlManipulationSpiritNode != null)
-                        _strSpiritManipulation = xmlManipulationSpiritNode.InnerText;
+                        _strSpiritManipulation = xmlManipulationSpiritNode.Value;
                 }
             }
             if (blnDoOnPropertyChanged)
@@ -193,7 +191,7 @@ namespace Chummer.Backend.Uniques
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -244,15 +242,16 @@ namespace Chummer.Backend.Uniques
                 _guiID = Guid.NewGuid();
             }
             xmlNode.TryGetStringFieldQuickly("name", ref _strName);
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             if (!xmlNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && !xmlNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             xmlNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             xmlNode.TryGetStringFieldQuickly("spiritform", ref _strSpiritForm);
-            xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+            if (!xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression))
+                objMyNode.Value?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
             // Legacy catch for if a drain expression is not empty but has no attributes associated with it.
             if (_objCharacter.LastSavedVersion < new Version(5, 214, 77) &&
                 !string.IsNullOrEmpty(_strDrainExpression) && !_strDrainExpression.Contains('{') &&
@@ -265,7 +264,7 @@ namespace Chummer.Backend.Uniques
                     _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
                 }
                 else
-                    GetNode()?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+                    objMyNode.Value?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
             }
 
             xmlNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -294,10 +293,11 @@ namespace Chummer.Backend.Uniques
         /// <param name="xpathCharacterNode">XPathNavigator of the Character from which to load.</param>
         public void LegacyLoad(XPathNavigator xpathCharacterNode)
         {
+            bool blnDoDrainSweep;
             if (_eTraditionType == TraditionType.RES)
             {
                 xpathCharacterNode.TryGetStringFieldQuickly("stream", ref _strName);
-                xpathCharacterNode.TryGetStringFieldQuickly("streamfading", ref _strDrainExpression);
+                blnDoDrainSweep = xpathCharacterNode.TryGetStringFieldQuickly("streamfading", ref _strDrainExpression);
             }
             else
             {
@@ -312,11 +312,15 @@ namespace Chummer.Backend.Uniques
                 }
                 else
                     xpathCharacterNode.TryGetStringFieldQuickly("tradition", ref _strName);
-                xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
+                blnDoDrainSweep = xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
             }
-            foreach (string strAttribute in AttributeSection.AttributeStrings)
-                _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
-            _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
+
+            if (blnDoDrainSweep)
+            {
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
+                    _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+                _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
+            }
         }
 
         public void LoadFromHeroLab(XPathNavigator xmlHeroLabNode)
@@ -326,11 +330,11 @@ namespace Chummer.Backend.Uniques
             _eTraditionType = TraditionType.MAG;
             _strName = xmlHeroLabNode.SelectSingleNode("@name")?.Value;
             XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName)
-                ? _objCharacter.LoadData("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = " + _strName.CleanXPath() + "]") : null;
+                ? _objCharacter.LoadData("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = " + _strName.CleanXPath() + ']') : null;
             if (xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
             {
                 _guiSourceID = new Guid(CustomMagicalTraditionGuid);
-                xmlTraditionDataNode = GetNode();
+                xmlTraditionDataNode = this.GetNode();
             }
             Create(xmlTraditionDataNode);
             if (IsCustomTradition)
@@ -349,32 +353,40 @@ namespace Chummer.Backend.Uniques
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("tradition");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            if (Type == TraditionType.MAG)
+            // <tradition>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("tradition");
+            try
             {
-                objWriter.WriteElementString("spiritcombat", DisplaySpiritCombatMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spiritdetection", DisplaySpiritDetectionMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spirithealth", DisplaySpiritHealthMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spiritillusion", DisplaySpiritIllusionMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spiritmanipulation", DisplaySpiritManipulationMethod(strLanguageToPrint));
-                objWriter.WriteElementString("spiritform", DisplaySpiritForm(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("istechnomancertradition", (Type == TraditionType.RES).ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+                if (Type == TraditionType.MAG)
+                {
+                    await objWriter.WriteElementStringAsync("spiritcombat", await DisplaySpiritCombatMethodAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("spiritdetection", await DisplaySpiritDetectionMethodAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("spirithealth", await DisplaySpiritHealthMethodAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("spiritillusion", await DisplaySpiritIllusionMethodAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("spiritmanipulation", await DisplaySpiritManipulationMethodAsync(strLanguageToPrint));
+                    await objWriter.WriteElementStringAsync("spiritform", await DisplaySpiritFormAsync(strLanguageToPrint));
+                }
+                await objWriter.WriteElementStringAsync("drainattributes", await DisplayDrainExpressionMethodAsync(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("drainvalue", DrainValue.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
             }
-            objWriter.WriteElementString("drainattributes", DisplayDrainExpressionMethod(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("drainvalue", DrainValue.ToString(objCulture));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteEndElement();
+            finally
+            {
+                // </tradition>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -403,7 +415,7 @@ namespace Chummer.Backend.Uniques
             get
             {
                 if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = new SourceString(Source,
+                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
                         DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                         _objCharacter);
                 return _objCachedSourceDetail;
@@ -430,6 +442,7 @@ namespace Chummer.Backend.Uniques
                 if (_eTraditionType != value)
                 {
                     _xmlCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                     _eTraditionType = value;
                     OnPropertyChanged();
                 }
@@ -488,7 +501,42 @@ namespace Chummer.Backend.Uniques
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async Task<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (IsCustomTradition)
+            {
+                if (GlobalSettings.Language != strLanguage)
+                {
+                    string strFile = string.Empty;
+                    switch (Type)
+                    {
+                        case TraditionType.MAG:
+                            strFile = "traditions.xml";
+                            break;
+
+                        case TraditionType.RES:
+                            strFile = "streams.xml";
+                            break;
+                    }
+                    string strReturnEnglish = strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? Name : await _objCharacter.ReverseTranslateExtraAsync(Name, GlobalSettings.DefaultLanguage, strFile);
+                    return await _objCharacter.TranslateExtraAsync(strReturnEnglish, strLanguage);
+                }
+
+                return await _objCharacter.TranslateExtraAsync(Name, strLanguage);
+            }
+
+            // Get the translated name if applicable.
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -500,6 +548,19 @@ namespace Chummer.Backend.Uniques
 
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public async Task<string> DisplayNameAsync(string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+
+            if (!string.IsNullOrEmpty(Extra))
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
 
             return strReturn;
         }
@@ -521,6 +582,14 @@ namespace Chummer.Backend.Uniques
         public string DisplaySpiritForm(string strLanguage)
         {
             return _objCharacter.TranslateExtra(SpiritForm, strLanguage, "critterpowers.xml");
+        }
+
+        /// <summary>
+        /// The spirit form of the tradition as it should be displayed in printouts and the UI.
+        /// </summary>
+        public Task<string> DisplaySpiritFormAsync(string strLanguage)
+        {
+            return _objCharacter.TranslateExtraAsync(SpiritForm, strLanguage, "critterpowers.xml");
         }
 
         /// <summary>
@@ -578,6 +647,14 @@ namespace Chummer.Backend.Uniques
         public string DisplayDrainExpressionMethod(CultureInfo objCultureInfo, string strLanguage)
         {
             return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
+        }
+
+        /// <summary>
+        /// Magician's Tradition Drain Attributes for display purposes.
+        /// </summary>
+        public ValueTask<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage)
+        {
+            return _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltipAsync(DrainExpression, objCultureInfo, strLanguage, false);
         }
 
         /// <summary>
@@ -691,6 +768,16 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Method to get Magician's Combat Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritCombatMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritCombat)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritCombat, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
         /// Magician's Combat Spirit (for Custom Traditions) in the language of the current UI.
         /// </summary>
         public string DisplaySpiritCombat
@@ -727,6 +814,16 @@ namespace Chummer.Backend.Uniques
             return string.IsNullOrEmpty(SpiritDetection)
                 ? LanguageManager.GetString("String_None", strLanguage)
                 : _objCharacter.TranslateExtra(SpiritDetection, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
+        /// Method to get Magician's Detection Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritDetectionMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritDetection)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritDetection, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -769,6 +866,16 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Method to get Magician's Health Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritHealthMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritHealth)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritHealth, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
         /// Magician's Health Spirit (for Custom Traditions) in the language of the current UI.
         /// </summary>
         public string DisplaySpiritHealth
@@ -808,6 +915,16 @@ namespace Chummer.Backend.Uniques
         }
 
         /// <summary>
+        /// Method to get Magician's Illusion Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritIllusionMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritIllusion)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritIllusion, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
         /// Magician's Illusion Spirit (for Custom Traditions) in the language of the current UI.
         /// </summary>
         public string DisplaySpiritIllusion
@@ -844,6 +961,16 @@ namespace Chummer.Backend.Uniques
             return string.IsNullOrEmpty(SpiritManipulation)
                 ? LanguageManager.GetString("String_None", strLanguage)
                 : _objCharacter.TranslateExtra(SpiritManipulation, strLanguage, "critters.xml");
+        }
+
+        /// <summary>
+        /// Method to get Magician's Manipulation Spirit (for Custom Traditions) in a language.
+        /// </summary>
+        public Task<string> DisplaySpiritManipulationMethodAsync(string strLanguage)
+        {
+            return string.IsNullOrEmpty(SpiritManipulation)
+                ? LanguageManager.GetStringAsync("String_None", strLanguage)
+                : _objCharacter.TranslateExtraAsync(SpiritManipulation, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -896,7 +1023,24 @@ namespace Chummer.Backend.Uniques
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async Task<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -905,41 +1049,83 @@ namespace Chummer.Backend.Uniques
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
-        public XmlNode GetNode(string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
             if (Type == TraditionType.None)
                 return null;
-            if (_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage)
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
-                                          : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
-                                          + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                          + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
-            return _xmlCachedMyXmlNode;
-        }
-
-        public XmlDocument GetTraditionDocument(string strLanguage)
-        {
+            if (_xmlCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _xmlCachedMyXmlNode;
+            XmlDocument objDoc = null;
             switch (Type)
             {
                 case TraditionType.MAG:
-                    return _objCharacter.LoadData("traditions.xml", strLanguage);
+                    objDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadData("traditions.xml", strLanguage)
+                        : await _objCharacter.LoadDataAsync("traditions.xml", strLanguage);
+                    break;
 
                 case TraditionType.RES:
-                    return _objCharacter.LoadData("streams.xml", strLanguage);
-
-                default:
-                    return null;
+                    objDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadData("traditions.xml", strLanguage)
+                        : await _objCharacter.LoadDataAsync("streams.xml", strLanguage);
+                    break;
             }
+            if (objDoc == null)
+                _xmlCachedMyXmlNode = null;
+            else
+                _xmlCachedMyXmlNode = objDoc
+                    .SelectSingleNode(SourceID == Guid.Empty
+                                          ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                                          : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
+                                          + " or id = "
+                                          + SourceIDString.ToUpperInvariant()
+                                                          .CleanXPath()
+                                          + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
+            return _xmlCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            XPathNavigator objDoc = null;
+            switch (Type)
+            {
+                case TraditionType.MAG:
+                    objDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadDataXPath("traditions.xml", strLanguage)
+                        : await _objCharacter.LoadDataXPathAsync("traditions.xml", strLanguage);
+                    break;
+
+                case TraditionType.RES:
+                    objDoc = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadDataXPath("streams.xml", strLanguage)
+                        : await _objCharacter.LoadDataXPathAsync("streams.xml", strLanguage);
+                    break;
+            }
+            if (objDoc == null)
+                _xmlCachedMyXmlNode = null;
+            else
+                _objCachedMyXPathNode = objDoc
+                    .SelectSingleNode(SourceID == Guid.Empty
+                                          ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
+                                          : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
+                                          + " or id = "
+                                          + SourceIDString.ToUpperInvariant()
+                                                          .CleanXPath()
+                                          + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties

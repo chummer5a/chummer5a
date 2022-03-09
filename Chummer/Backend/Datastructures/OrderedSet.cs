@@ -70,16 +70,19 @@ namespace Chummer
             _lstOrderedData = new List<T>(capacity);
         }
 
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             return _lstOrderedData.GetEnumerator();
         }
 
+        /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
 
+        /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
             List<T> lstOther = other.ToList();
@@ -94,6 +97,7 @@ namespace Chummer
             _setData.IntersectWith(setOther);
         }
 
+        /// <inheritdoc />
         public void ExceptWith(IEnumerable<T> other)
         {
             HashSet<T> setOther = other.ToHashSet();
@@ -101,6 +105,7 @@ namespace Chummer
             _setData.ExceptWith(setOther);
         }
 
+        /// <inheritdoc />
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
             HashSet<T> setOther = other.ToHashSet();
@@ -109,36 +114,43 @@ namespace Chummer
             _setData.SymmetricExceptWith(setOther);
         }
 
+        /// <inheritdoc />
         public bool IsSubsetOf(IEnumerable<T> other)
         {
             return _setData.IsSubsetOf(other);
         }
 
+        /// <inheritdoc />
         public bool IsSupersetOf(IEnumerable<T> other)
         {
             return _setData.IsSupersetOf(other);
         }
 
+        /// <inheritdoc />
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
             return _setData.IsProperSupersetOf(other);
         }
 
+        /// <inheritdoc />
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
             return _setData.IsProperSubsetOf(other);
         }
 
+        /// <inheritdoc />
         public bool Overlaps(IEnumerable<T> other)
         {
             return _setData.Overlaps(other);
         }
 
+        /// <inheritdoc />
         public bool SetEquals(IEnumerable<T> other)
         {
             return _setData.SetEquals(other);
         }
 
+        /// <inheritdoc />
         void ICollection<T>.Add(T item)
         {
             if (!_setData.Add(item))
@@ -146,6 +158,7 @@ namespace Chummer
             _lstOrderedData.Add(item);
         }
 
+        /// <inheritdoc />
         public bool Add(T item)
         {
             if (!_setData.Add(item))
@@ -154,22 +167,26 @@ namespace Chummer
             return true;
         }
 
+        /// <inheritdoc />
         public void Clear()
         {
             _setData.Clear();
             _lstOrderedData.Clear();
         }
 
+        /// <inheritdoc />
         public bool Contains(T item)
         {
             return _setData.Contains(item);
         }
 
+        /// <inheritdoc />
         public void CopyTo(T[] array, int arrayIndex)
         {
             _lstOrderedData.CopyTo(array, arrayIndex);
         }
 
+        /// <inheritdoc />
         public bool Remove(T item)
         {
             if (!_setData.Remove(item))
@@ -178,29 +195,37 @@ namespace Chummer
             return true;
         }
 
+        /// <inheritdoc />
         public bool IsReadOnly => false;
 
+        /// <inheritdoc />
         int ICollection<T>.Count => _lstOrderedData.Count;
 
+        /// <inheritdoc />
         int IReadOnlyCollection<T>.Count => _lstOrderedData.Count;
 
+        /// <inheritdoc />
         public int IndexOf(T item)
         {
             return _lstOrderedData.IndexOf(item);
         }
 
+        /// <inheritdoc />
         public void Insert(int index, T item)
         {
             _setData.Add(item);
             _lstOrderedData.Insert(index, item);
         }
 
+        /// <inheritdoc />
         public void RemoveAt(int index)
         {
             _setData.Remove(_lstOrderedData[index]);
             _lstOrderedData.RemoveAt(index);
         }
 
+        // ReSharper disable once InheritdocInvalidUsage
+        /// <inheritdoc />
         public T this[int index]
         {
             get => _lstOrderedData[index];
@@ -215,16 +240,19 @@ namespace Chummer
             }
         }
 
+        /// <inheritdoc />
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             _setData.GetObjectData(info, context);
         }
 
+        /// <inheritdoc />
         public void OnDeserialization(object sender)
         {
             _setData.OnDeserialization(sender);
         }
 
+        /// <inheritdoc cref="List{T}.Sort()" />
         public void Sort()
         {
             if (_setData.Comparer is IComparer<T> comparer)
@@ -233,26 +261,31 @@ namespace Chummer
                 _lstOrderedData.Sort();
         }
 
+        /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
         public void Sort(Comparison<T> comparison)
         {
             _lstOrderedData.Sort(comparison);
         }
 
+        /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
         public void Sort(IComparer<T> comparer)
         {
             _lstOrderedData.Sort(comparer);
         }
 
+        /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
         public void Sort(int index, int count, IComparer<T> comparer)
         {
             _lstOrderedData.Sort(index, count, comparer);
         }
 
+        /// <inheritdoc cref="List{T}.Reverse(int, int)" />
         public void Reverse(int index, int count)
         {
             _lstOrderedData.Reverse(index, count);
         }
 
+        /// <inheritdoc cref="List{T}.FindAll" />
         public List<T> FindAll(Predicate<T> predicate)
         {
             return _lstOrderedData.FindAll(predicate);

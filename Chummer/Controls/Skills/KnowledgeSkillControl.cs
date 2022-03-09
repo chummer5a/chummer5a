@@ -36,14 +36,19 @@ namespace Chummer.UI.Skills
         private readonly KnowledgeSkill _objSkill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Timer _tmrSpecChangeTimer;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudSkill;
         private readonly Label lblRating;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnCareerIncrease;
         private readonly ColorableCheckBox chkNativeLanguage;
         private readonly ElasticComboBox cboSpec;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ColorableCheckBox chkKarma;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Label lblSpec;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnAddSpec;
 
         public KnowledgeSkillControl(KnowledgeSkill objSkill)
@@ -84,15 +89,11 @@ namespace Chummer.UI.Skills
 
                 if (objSkill.CharacterObject.Created)
                 {
-                    int intMinimumSize;
-                    using (Graphics g = CreateGraphics())
-                        intMinimumSize = (int)(25 * g.DpiX / 96.0f);
                     lblRating = new Label
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         Margin = new Padding(3, 6, 3, 6),
-                        MinimumSize = new Size(intMinimumSize, 0),
                         Name = "lblRating",
                         Text = "00",
                         TextAlign = ContentAlignment.MiddleCenter
@@ -143,8 +144,7 @@ namespace Chummer.UI.Skills
                         UseVisualStyleBackColor = true
                     };
                     btnAddSpec.Click += btnAddSpec_Click;
-
-                    lblSpec.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(KnowledgeSkill.IsNativeLanguage));
+                    
                     lblSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
 
                     btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
@@ -251,9 +251,9 @@ namespace Chummer.UI.Skills
                     this.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.Enabled));
                 }
 
-                KnowledgeSkillControl_DpiChangedAfterParent(null, EventArgs.Empty);
+                AdjustForDpi();
                 this.UpdateLightDarkMode();
-                this.TranslateWinForm(string.Empty, false);
+                this.TranslateWinForm(blnDoResumeLayout: false);
             }
             finally
             {
@@ -288,9 +288,9 @@ namespace Chummer.UI.Skills
                         IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
                         cboSpec.QueueThreadSafe(() =>
                         {
+                            _blnUpdatingSpec = true;
                             cboSpec.BeginUpdate();
                             cboSpec.PopulateWithListItems(lstSpecializations);
-                            cboSpec.EndUpdate();
                             if (string.IsNullOrEmpty(strOldSpec))
                                 cboSpec.SelectedIndex = -1;
                             else
@@ -299,6 +299,8 @@ namespace Chummer.UI.Skills
                                 if (cboSpec.SelectedIndex == -1)
                                     cboSpec.Text = strOldSpec;
                             }
+                            cboSpec.EndUpdate();
+                            _blnUpdatingSpec = false;
                         });
                     }
                     if (blnAll)
@@ -351,20 +353,21 @@ namespace Chummer.UI.Skills
             _tmrNameChangeTimer?.Dispose();
             _tmrSpecChangeTimer?.Dispose();
             _objSkill.PropertyChanged -= Skill_PropertyChanged;
-            _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
+            if (!_objSkill.CharacterObject.IsDisposed)
+                _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
             }
         }
 
-        private void btnCareerIncrease_Click(object sender, EventArgs e)
+        private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
             int upgradeKarmaCost = _objSkill.UpgradeKarmaCost;
 
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
                 _objSkill.CurrentDisplayName, _objSkill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
@@ -373,7 +376,7 @@ namespace Chummer.UI.Skills
             _objSkill.Upgrade();
         }
 
-        private void btnAddSpec_Click(object sender, EventArgs e)
+        private async void btnAddSpec_Click(object sender, EventArgs e)
         {
             int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
 
@@ -406,18 +409,18 @@ namespace Chummer.UI.Skills
             else
                 price += decExtraSpecCost.StandardRound(); //Spec
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
             Form frmToUse = ParentForm ?? Program.MainForm;
 
-            DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+            DialogResult eResult = await frmToUse.DoThreadSafeFunc(async x =>
             {
-                using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill) {Mode = "Knowledge"})
+                using (SelectSpec selectForm = new SelectSpec(_objSkill) {Mode = "Knowledge"})
                 {
-                    selectForm.ShowDialogSafe(frmToUse);
+                    await selectForm.ShowDialogSafeAsync(x);
 
                     if (selectForm.DialogResult == DialogResult.OK)
                         _objSkill.AddSpecialization(selectForm.SelectedItem);
@@ -433,11 +436,11 @@ namespace Chummer.UI.Skills
                 frmParent.IsCharacterUpdateRequested = true;
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private async void cmdDelete_Click(object sender, EventArgs e)
         {
             if (!_objSkill.AllowDelete)
                 return;
-            if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill")))
+            if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteKnowledgeSkill")))
                 return;
             _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_objSkill);
         }
@@ -493,6 +496,11 @@ namespace Chummer.UI.Skills
         #endregion ButtonWithToolTip Visibility workaround
 
         private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            AdjustForDpi();
+        }
+
+        private void AdjustForDpi()
         {
             using (Graphics g = CreateGraphics())
             {

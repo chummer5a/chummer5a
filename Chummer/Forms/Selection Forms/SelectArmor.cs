@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -30,7 +31,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectArmor : Form
+    public partial class SelectArmor : Form
     {
         private string _strSelectedArmor = string.Empty;
 
@@ -51,7 +52,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectArmor(Character objCharacter)
+        public SelectArmor(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -64,7 +65,7 @@ namespace Chummer
                                                          .SelectSingleNodeAndCacheExpression("/chummer")));
         }
 
-        private void frmSelectArmor_Load(object sender, EventArgs e)
+        private async void SelectArmor_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -99,7 +100,7 @@ namespace Chummer
                 foreach (XmlNode objXmlCategory in objXmlCategoryList)
                 {
                     string strInnerText = objXmlCategory.InnerText;
-                    if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
+                    if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
                     {
                         _lstCategory.Add(new ListItem(strInnerText,
                             objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
@@ -110,7 +111,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
 
             cboCategory.BeginUpdate();
@@ -126,7 +127,7 @@ namespace Chummer
 
             _blnLoading = false;
 
-            RefreshList();
+            await RefreshList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -140,7 +141,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void lstArmor_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstArmor_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -148,7 +149,7 @@ namespace Chummer
             XmlNode xmlArmor = null;
             string strSelectedId = lstArmor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + "]");
+                xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + ']');
             if (xmlArmor != null)
             {
                 // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
@@ -156,6 +157,7 @@ namespace Chummer
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 objArmor.Create(xmlArmor, 0, lstWeapons, true, true, true);
 
+                _objSelectedArmor?.Dispose();
                 _objSelectedArmor = objArmor;
 
                 int intRating = 0;
@@ -200,12 +202,13 @@ namespace Chummer
 
                 string strRatingLabel = xmlArmor.SelectSingleNode("ratinglabel")?.Value;
                 lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
-                        LanguageManager.GetString(strRatingLabel))
-                    : LanguageManager.GetString("Label_Rating");
+                    ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
+                        await LanguageManager.GetStringAsync(strRatingLabel))
+                    : await LanguageManager.GetStringAsync("Label_Rating");
             }
             else
             {
+                _objSelectedArmor?.Dispose();
                 _objSelectedArmor = null;
                 lblRatingLabel.Visible = false;
                 lblRatingNALabel.Visible = false;
@@ -218,9 +221,9 @@ namespace Chummer
             UpdateArmorInfo();
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -229,16 +232,16 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
             UpdateArmorInfo();
         }
@@ -253,11 +256,11 @@ namespace Chummer
             UpdateArmorInfo();
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
             UpdateArmorInfo();
         }
@@ -301,12 +304,12 @@ namespace Chummer
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
 
-        private void tmrSearch_Tick(object sender, EventArgs e)
+        private async void tmrSearch_Tick(object sender, EventArgs e)
         {
             tmrSearch.Stop();
             tmrSearch.Enabled = false;
 
-            RefreshList();
+            await RefreshList();
         }
 
         private void dgvArmor_DoubleClick(object sender, EventArgs e)
@@ -355,7 +358,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes the displayed lists
         /// </summary>
-        private void RefreshList()
+        private async ValueTask RefreshList()
         {
             if (_blnLoading)
                 return;
@@ -391,7 +394,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(txtSearch.Text))
                     sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-                BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'));
+                await BuildArmorList(_objXmlDocument.SelectNodes("/chummer/armors/armor[" + sbdFilter + ']'));
             }
         }
 
@@ -399,7 +402,7 @@ namespace Chummer
         /// Builds the list of Armors to render in the active tab.
         /// </summary>
         /// <param name="objXmlArmorList">XmlNodeList of Armors to render.</param>
-        private void BuildArmorList(XmlNodeList objXmlArmorList)
+        private async ValueTask BuildArmorList(XmlNodeList objXmlArmorList)
         {
             switch (tabControl.SelectedIndex)
             {
@@ -431,37 +434,40 @@ namespace Chummer
                                 || SelectionShared.CheckNuyenRestriction(
                                     objXmlArmor, _objCharacter.Nuyen, decCostMultiplier)))
                         {
-                            Armor objArmor = new Armor(_objCharacter);
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-                            objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
-
-                            string strArmorGuid = objArmor.SourceIDString;
-                            string strArmorName = objArmor.CurrentDisplayName;
-                            int intArmor = objArmor.TotalArmor;
-                            decimal decCapacity = Convert.ToDecimal(objArmor.CalculatedCapacity, GlobalSettings.CultureInfo);
-                            AvailabilityValue objAvail = objArmor.TotalAvailTuple();
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdAccessories))
+                            using (Armor objArmor = new Armor(_objCharacter))
                             {
-                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                List<Weapon> lstWeapons = new List<Weapon>(1);
+                                objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
+
+                                string strArmorGuid = objArmor.SourceIDString;
+                                string strArmorName = objArmor.CurrentDisplayName;
+                                int intArmor = objArmor.TotalArmor;
+                                decimal decCapacity
+                                    = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo);
+                                AvailabilityValue objAvail = objArmor.TotalAvailTuple();
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdAccessories))
                                 {
-                                    sbdAccessories.AppendLine(objMod.CurrentDisplayName);
+                                    foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                    {
+                                        sbdAccessories.AppendLine(objMod.CurrentDisplayName);
+                                    }
+
+                                    foreach (Gear objGear in objArmor.GearChildren)
+                                    {
+                                        sbdAccessories.AppendLine(objGear.CurrentDisplayName);
+                                    }
+
+                                    if (sbdAccessories.Length > 0)
+                                        sbdAccessories.Length -= Environment.NewLine.Length;
+                                    SourceString strSource = await SourceString.GetSourceStringAsync(
+                                        objArmor.Source, await objArmor.DisplayPageAsync(GlobalSettings.Language),
+                                        GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                                    NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
+
+                                    tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
+                                                      sbdAccessories.ToString(), strSource, strCost);
                                 }
-
-                                foreach (Gear objGear in objArmor.GearChildren)
-                                {
-                                    sbdAccessories.AppendLine(objGear.CurrentDisplayName);
-                                }
-
-                                if (sbdAccessories.Length > 0)
-                                    sbdAccessories.Length -= Environment.NewLine.Length;
-                                SourceString strSource = new SourceString(
-                                    objArmor.Source, objArmor.DisplayPage(GlobalSettings.Language),
-                                    GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                                NuyenString strCost = new NuyenString(objArmor.DisplayCost(out decimal _, false));
-
-                                tabArmor.Rows.Add(strArmorGuid, strArmorName, intArmor, decCapacity, objAvail,
-                                                  sbdAccessories.ToString(), strSource, strCost);
                             }
                         }
                     }
@@ -479,7 +485,7 @@ namespace Chummer
                                                                    out List<ListItem> lstArmors))
                     {
                         int intOverLimit = 0;
-                        string strSpace = LanguageManager.GetString("String_Space");
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
                         foreach (XmlNode objXmlArmor in objXmlArmorList)
                         {
                             decimal decCostMultiplier = 1 + (nudMarkup.Value / 100.0m);
@@ -522,7 +528,7 @@ namespace Chummer
                             // Add after sort so that it's always at the end
                             lstArmors.Add(new ListItem(string.Empty,
                                                        string.Format(GlobalSettings.CultureInfo,
-                                                                     LanguageManager.GetString(
+                                                                     await LanguageManager.GetStringAsync(
                                                                          "String_RestrictedItemsHidden"),
                                                                      intOverLimit)));
                         }
@@ -602,7 +608,7 @@ namespace Chummer
                 lblArmorValueLabel.Visible = true;
                 lblArmorValue.Text = _objSelectedArmor.DisplayArmorValue;
                 lblCapacityLabel.Visible = true;
-                lblCapacity.Text = _objSelectedArmor.CalculatedCapacity;
+                lblCapacity.Text = _objSelectedArmor.DisplayCapacity;
 
                 lblCostLabel.Visible = true;
                 decimal decItemCost = 0;
@@ -643,9 +649,9 @@ namespace Chummer
             _blnSkipUpdate = false;
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

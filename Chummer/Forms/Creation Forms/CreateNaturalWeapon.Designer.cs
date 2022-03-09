@@ -338,7 +338,7 @@ namespace Chummer
             this.ShowInTaskbar = false;
             this.Tag = "Title_CreateNaturalWeapon";
             this.Text = "Create Natural Weapon";
-            this.Load += new System.EventHandler(this.frmNaturalWeapon_Load);
+            this.Load += new System.EventHandler(this.CreateNaturalWeapon_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudDVMod)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudAP)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudReach)).EndInit();

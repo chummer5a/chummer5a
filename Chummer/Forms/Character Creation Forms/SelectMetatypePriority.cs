@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -32,7 +33,7 @@ using Chummer.Backend.Skills;
 namespace Chummer
 {
     // ReSharper disable once InconsistentNaming
-    public partial class frmPriorityMetatype : Form
+    public partial class SelectMetatypePriority : Form
     {
         private readonly Character _objCharacter;
         private string _strCurrentPossessionMethod;
@@ -52,7 +53,7 @@ namespace Chummer
 
         #region Form Events
 
-        public frmPriorityMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
+        public SelectMetatypePriority(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             if (string.IsNullOrEmpty(_objCharacter.SettingsKey))
@@ -105,238 +106,329 @@ namespace Chummer
                     _dicSumtoTenValues.Add(strPriority, 0);
         }
 
-        private void frmPriorityMetatype_Load(object sender, EventArgs e)
+        private async void SelectMetatypePriority_Load(object sender, EventArgs e)
         {
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                lblSumtoTen.Visible = true;
-            }
-
-            // Populate the Priority Category list.
-            XPathNavigator xmlBasePrioritiesNode = _xmlBasePriorityDataNode.SelectSingleNodeAndCacheExpression("priorities");
-            if (xmlBasePrioritiesNode != null)
-            {
-                foreach (XPathNavigator objXmlPriorityCategory in _xmlBasePriorityDataNode.SelectAndCacheExpression("categories/category"))
+                SuspendLayout();
+                try
                 {
-                    XPathNodeIterator objItems = xmlBasePrioritiesNode.Select("priority[category = " + objXmlPriorityCategory.Value.CleanXPath() + " and prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + "]");
-
-                    if (objItems.Count == 0)
+                    if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        objItems = xmlBasePrioritiesNode.Select("priority[category = " + objXmlPriorityCategory.Value.CleanXPath() + " and not(prioritytable)]");
+                        lblSumtoTen.Visible = true;
                     }
 
-                    if (objItems.Count > 0)
+                    // Populate the Priority Category list.
+                    XPathNavigator xmlBasePrioritiesNode
+                        = await _xmlBasePriorityDataNode.SelectSingleNodeAndCacheExpressionAsync("priorities");
+                    if (xmlBasePrioritiesNode != null)
                     {
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                       out List<ListItem> lstItems))
+                        foreach (XPathNavigator objXmlPriorityCategory in await _xmlBasePriorityDataNode
+                                     .SelectAndCacheExpressionAsync("categories/category"))
                         {
-                            foreach (XPathNavigator objXmlPriority in objItems)
+                            XPathNodeIterator objItems = xmlBasePrioritiesNode.Select(
+                                "priority[category = " + objXmlPriorityCategory.Value.CleanXPath()
+                                                       + " and prioritytable = "
+                                                       + _objCharacter.Settings.PriorityTable.CleanXPath() + ']');
+
+                            if (objItems.Count == 0)
                             {
-                                string strValue = objXmlPriority.SelectSingleNodeAndCacheExpression("value")?.Value;
-                                if (!string.IsNullOrEmpty(strValue) && _lstPriorities.Contains(strValue))
-                                {
-                                    lstItems.Add(new ListItem(
-                                                     strValue,
-                                                     objXmlPriority.SelectSingleNodeAndCacheExpression("translate")
-                                                                   ?.Value ??
-                                                     objXmlPriority.SelectSingleNodeAndCacheExpression("name")?.Value ??
-                                                     LanguageManager.GetString("String_Unknown")));
-                                }
+                                objItems = xmlBasePrioritiesNode.Select(
+                                    "priority[category = " + objXmlPriorityCategory.Value.CleanXPath()
+                                                           + " and not(prioritytable)]");
                             }
 
-                            lstItems.Sort(CompareListItems.CompareNames);
-                            switch (objXmlPriorityCategory.Value)
+                            if (objItems.Count > 0)
                             {
-                                case "Heritage":
-                                    cboHeritage.BeginUpdate();
-                                    cboHeritage.PopulateWithListItems(lstItems);
-                                    cboHeritage.EndUpdate();
-                                    break;
+                                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                               out List<ListItem> lstItems))
+                                {
+                                    foreach (XPathNavigator objXmlPriority in objItems)
+                                    {
+                                        string strValue
+                                            = (await objXmlPriority.SelectSingleNodeAndCacheExpressionAsync("value"))
+                                            ?.Value;
+                                        if (!string.IsNullOrEmpty(strValue) && _lstPriorities.Contains(strValue))
+                                        {
+                                            lstItems.Add(new ListItem(
+                                                             strValue,
+                                                             (await objXmlPriority
+                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                     "translate"))
+                                                             ?.Value ??
+                                                             (await objXmlPriority
+                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                     "name"))?.Value ??
+                                                             await LanguageManager.GetStringAsync("String_Unknown")));
+                                        }
+                                    }
 
-                                case "Talent":
-                                    cboTalent.BeginUpdate();
-                                    cboTalent.PopulateWithListItems(lstItems);
-                                    cboTalent.EndUpdate();
-                                    break;
+                                    lstItems.Sort(CompareListItems.CompareNames);
+                                    switch (objXmlPriorityCategory.Value)
+                                    {
+                                        case "Heritage":
+                                            cboHeritage.BeginUpdate();
+                                            cboHeritage.PopulateWithListItems(lstItems);
+                                            cboHeritage.EndUpdate();
+                                            break;
 
-                                case "Attributes":
-                                    cboAttributes.BeginUpdate();
-                                    cboAttributes.PopulateWithListItems(lstItems);
-                                    cboAttributes.EndUpdate();
-                                    break;
+                                        case "Talent":
+                                            cboTalent.BeginUpdate();
+                                            cboTalent.PopulateWithListItems(lstItems);
+                                            cboTalent.EndUpdate();
+                                            break;
 
-                                case "Skills":
-                                    cboSkills.BeginUpdate();
-                                    cboSkills.PopulateWithListItems(lstItems);
-                                    cboSkills.EndUpdate();
-                                    break;
+                                        case "Attributes":
+                                            cboAttributes.BeginUpdate();
+                                            cboAttributes.PopulateWithListItems(lstItems);
+                                            cboAttributes.EndUpdate();
+                                            break;
 
-                                case "Resources":
-                                    cboResources.BeginUpdate();
-                                    cboResources.PopulateWithListItems(lstItems);
-                                    cboResources.EndUpdate();
-                                    break;
+                                        case "Skills":
+                                            cboSkills.BeginUpdate();
+                                            cboSkills.PopulateWithListItems(lstItems);
+                                            cboSkills.EndUpdate();
+                                            break;
+
+                                        case "Resources":
+                                            cboResources.BeginUpdate();
+                                            cboResources.PopulateWithListItems(lstItems);
+                                            cboResources.EndUpdate();
+                                            break;
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            }
 
-            // Set Priority defaults.
-            if (!string.IsNullOrEmpty(_objCharacter.TalentPriority))
-            {
-                //Attributes
-                cboAttributes.SelectedIndex = cboAttributes.FindString(_objCharacter.AttributesPriority[0].ToString(GlobalSettings.InvariantCultureInfo));
-                //Heritage (Metatype)
-                cboHeritage.SelectedIndex = cboHeritage.FindString(_objCharacter.MetatypePriority[0].ToString(GlobalSettings.InvariantCultureInfo));
-                //Resources
-                cboResources.SelectedIndex = cboResources.FindString(_objCharacter.ResourcesPriority[0].ToString(GlobalSettings.InvariantCultureInfo));
-                //Skills
-                cboSkills.SelectedIndex = cboSkills.FindString(_objCharacter.SkillsPriority[0].ToString(GlobalSettings.InvariantCultureInfo));
-                //Magical/Resonance Talent
-                cboTalent.SelectedIndex = cboTalent.FindString(_objCharacter.SpecialPriority[0].ToString(GlobalSettings.InvariantCultureInfo));
-
-                LoadMetatypes();
-                PopulateMetatypes();
-                PopulateMetavariants();
-                PopulateTalents();
-                RefreshSelectedMetatype();
-
-                //Magical/Resonance Type
-                cboTalents.SelectedValue = _objCharacter.TalentPriority;
-                if (cboTalents.SelectedIndex == -1 && cboTalents.Items.Count > 1)
-                    cboTalents.SelectedIndex = 0;
-                //Selected Magical Bonus Skill
-                string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
-                if (!string.IsNullOrEmpty(strSkill))
-                {
-                    if (ExoticSkill.IsExoticSkillName(strSkill))
+                    // Set Priority defaults.
+                    if (!string.IsNullOrEmpty(_objCharacter.TalentPriority))
                     {
-                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
-                        if (intParenthesesIndex > 0)
-                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                        //Attributes
+                        cboAttributes.SelectedIndex
+                            = cboAttributes.FindString(_objCharacter.AttributesPriority[0]
+                                                                    .ToString(GlobalSettings.InvariantCultureInfo));
+                        //Heritage (Metatype)
+                        cboHeritage.SelectedIndex
+                            = cboHeritage.FindString(_objCharacter.MetatypePriority[0]
+                                                                  .ToString(GlobalSettings.InvariantCultureInfo));
+                        //Resources
+                        cboResources.SelectedIndex
+                            = cboResources.FindString(_objCharacter.ResourcesPriority[0]
+                                                                   .ToString(GlobalSettings.InvariantCultureInfo));
+                        //Skills
+                        cboSkills.SelectedIndex
+                            = cboSkills.FindString(_objCharacter.SkillsPriority[0]
+                                                                .ToString(GlobalSettings.InvariantCultureInfo));
+                        //Magical/Resonance Talent
+                        cboTalent.SelectedIndex
+                            = cboTalent.FindString(_objCharacter.SpecialPriority[0]
+                                                                .ToString(GlobalSettings.InvariantCultureInfo));
+
+                        LoadMetatypes();
+                        PopulateMetatypes();
+                        await PopulateMetavariants();
+                        await PopulateTalents();
+                        await RefreshSelectedMetatype();
+
+                        //Magical/Resonance Type
+                        cboTalents.SelectedValue = _objCharacter.TalentPriority;
+                        if (cboTalents.SelectedIndex == -1 && cboTalents.Items.Count > 1)
+                            cboTalents.SelectedIndex = 0;
+                        //Selected Magical Bonus Skill
+                        string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
+                        if (!string.IsNullOrEmpty(strSkill))
+                        {
+                            if (ExoticSkill.IsExoticSkillName(strSkill))
+                            {
+                                int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                                if (intParenthesesIndex > 0)
+                                    strSkill = strSkill.Substring(0, intParenthesesIndex);
+                            }
+
+                            cboSkill1.SelectedValue = strSkill;
+                        }
+
+                        strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
+                        if (!string.IsNullOrEmpty(strSkill))
+                        {
+                            if (ExoticSkill.IsExoticSkillName(strSkill))
+                            {
+                                int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                                if (intParenthesesIndex > 0)
+                                    strSkill = strSkill.Substring(0, intParenthesesIndex);
+                            }
+
+                            cboSkill2.SelectedValue = strSkill;
+                        }
+
+                        strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
+                        if (!string.IsNullOrEmpty(strSkill))
+                        {
+                            if (ExoticSkill.IsExoticSkillName(strSkill))
+                            {
+                                int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                                if (intParenthesesIndex > 0)
+                                    strSkill = strSkill.Substring(0, intParenthesesIndex);
+                            }
+
+                            cboSkill3.SelectedValue = strSkill;
+                        }
+
+                        await ProcessTalentsIndexChanged();
+
+                        switch (_objCharacter.EffectiveBuildMethod)
+                        {
+                            case CharacterBuildMethod.Priority:
+                                ManagePriorityItems(cboHeritage);
+                                ManagePriorityItems(cboAttributes);
+                                ManagePriorityItems(cboTalent);
+                                ManagePriorityItems(cboSkills);
+                                ManagePriorityItems(cboResources);
+                                break;
+
+                            case CharacterBuildMethod.SumtoTen:
+                                SumToTen();
+                                break;
+                        }
                     }
-                    cboSkill1.SelectedValue = strSkill;
-                }
-                strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
-                if (!string.IsNullOrEmpty(strSkill))
-                {
-                    if (ExoticSkill.IsExoticSkillName(strSkill))
+                    else
                     {
-                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
-                        if (intParenthesesIndex > 0)
-                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                        cboHeritage.SelectedIndex = 0;
+                        cboTalent.SelectedIndex = 0;
+                        cboAttributes.SelectedIndex = 0;
+                        cboSkills.SelectedIndex = 0;
+                        cboResources.SelectedIndex = 0;
+                        ManagePriorityItems(cboHeritage, true);
+                        ManagePriorityItems(cboAttributes, true);
+                        ManagePriorityItems(cboTalent, true);
+                        ManagePriorityItems(cboSkills, true);
+                        ManagePriorityItems(cboResources, true);
+                        LoadMetatypes();
+                        PopulateMetatypes();
+                        await PopulateMetavariants();
+                        await PopulateTalents();
+                        await RefreshSelectedMetatype();
+                        if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                            SumToTen();
                     }
-                    cboSkill2.SelectedValue = strSkill;
-                }
-                strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
-                if (!string.IsNullOrEmpty(strSkill))
-                {
-                    if (ExoticSkill.IsExoticSkillName(strSkill))
+
+                    // Set up possession boxes
+                    // Add Possession and Inhabitation to the list of Critter Tradition variations.
+                    chkPossessionBased.SetToolTip(
+                        await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition"));
+
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstMethods))
                     {
-                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
-                        if (intParenthesesIndex > 0)
-                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                        lstMethods.Add(new ListItem("Possession",
+                                                    _xmlCritterPowerDocumentPowersNode
+                                                        ?.SelectSingleNode("power[name = \"Possession\"]/translate")
+                                                        ?.InnerText
+                                                    ?? "Possession"));
+                        lstMethods.Add(new ListItem("Inhabitation",
+                                                    _xmlCritterPowerDocumentPowersNode
+                                                        ?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")
+                                                        ?.InnerText
+                                                    ?? "Inhabitation"));
+                        lstMethods.Sort(CompareListItems.CompareNames);
+
+                        _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
+                                                                   .FirstOrDefault(
+                                                                       y => lstMethods.Any(
+                                                                           x => y.Equals(
+                                                                               x.Value.ToString(),
+                                                                               StringComparison.OrdinalIgnoreCase)));
+
+                        cboPossessionMethod.BeginUpdate();
+                        cboPossessionMethod.PopulateWithListItems(lstMethods);
+                        cboPossessionMethod.EndUpdate();
                     }
-                    cboSkill3.SelectedValue = strSkill;
-                }
-                cboTalents_SelectedIndexChanged(null, EventArgs.Empty);
 
-                switch (_objCharacter.EffectiveBuildMethod)
+                    _blnLoading = false;
+                }
+                finally
                 {
-                    case CharacterBuildMethod.Priority:
-                        ManagePriorityItems(cboHeritage);
-                        ManagePriorityItems(cboAttributes);
-                        ManagePriorityItems(cboTalent);
-                        ManagePriorityItems(cboSkills);
-                        ManagePriorityItems(cboResources);
-                        break;
-
-                    case CharacterBuildMethod.SumtoTen:
-                        SumToTen();
-                        break;
+                    ResumeLayout();
                 }
             }
-            else
+            finally
             {
-                cboHeritage.SelectedIndex = 0;
-                cboTalent.SelectedIndex = 0;
-                cboAttributes.SelectedIndex = 0;
-                cboSkills.SelectedIndex = 0;
-                cboResources.SelectedIndex = 0;
-                ManagePriorityItems(cboHeritage, true);
-                ManagePriorityItems(cboAttributes, true);
-                ManagePriorityItems(cboTalent, true);
-                ManagePriorityItems(cboSkills, true);
-                ManagePriorityItems(cboResources, true);
-                LoadMetatypes();
-                PopulateMetatypes();
-                PopulateMetavariants();
-                PopulateTalents();
-                RefreshSelectedMetatype();
-                if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-                    SumToTen();
+                await objCursorWait.DisposeAsync();
             }
-
-            // Set up possession boxes
-            // Add Possession and Inhabitation to the list of Critter Tradition variations.
-            chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
-
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMethods))
-            {
-                lstMethods.Add(new ListItem("Possession",
-                                            _xmlCritterPowerDocumentPowersNode
-                                                ?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText
-                                            ?? "Possession"));
-                lstMethods.Add(new ListItem("Inhabitation",
-                                            _xmlCritterPowerDocumentPowersNode
-                                                ?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")
-                                                ?.InnerText
-                                            ?? "Inhabitation"));
-                lstMethods.Sort(CompareListItems.CompareNames);
-
-                _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
-                                                           .FirstOrDefault(
-                                                               y => lstMethods.Any(
-                                                                   x => y.Equals(
-                                                                       x.Value.ToString(),
-                                                                       StringComparison.OrdinalIgnoreCase)));
-
-                cboPossessionMethod.BeginUpdate();
-                cboPossessionMethod.PopulateWithListItems(lstMethods);
-                cboPossessionMethod.EndUpdate();
-            }
-
-            _blnLoading = false;
         }
 
         #endregion Form Events
 
         #region Control Events
 
-        private void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            SuspendLayout();
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                SumToTen();
+                SuspendLayout();
+                try
+                {
+                    if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                    {
+                        SumToTen();
+                    }
+
+                    await PopulateMetavariants();
+                    await RefreshSelectedMetatype();
+                    await PopulateTalents();
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
-            PopulateMetavariants();
-            RefreshSelectedMetatype();
-            PopulateTalents();
-            ResumeLayout();
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            MetatypeSelected();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                await MetatypeSelected();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SuspendLayout();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                SuspendLayout();
+                try
+                {
+                    await ProcessTalentsIndexChanged();
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+        }
+
+        private async ValueTask ProcessTalentsIndexChanged()
+        {
             cboSkill1.BeginUpdate();
             cboSkill2.BeginUpdate();
             cboSkill3.BeginUpdate();
@@ -353,21 +445,21 @@ namespace Chummer
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
-                    if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                    if (xmlBaseTalentPriorityList.Count == 1 || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
                     {
-                        xmlTalentNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + strSelectedTalents.CleanXPath() + "]");
+                        xmlTalentNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + strSelectedTalents.CleanXPath() + ']');
                         break;
                     }
                 }
 
                 if (xmlTalentNode != null)
                 {
-                    string strSkillCount = xmlTalentNode.SelectSingleNodeAndCacheExpression("skillqty")?.Value ?? xmlTalentNode.SelectSingleNodeAndCacheExpression("skillgroupqty")?.Value ?? string.Empty;
+                    string strSkillCount = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillqty"))?.Value ?? (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgroupqty"))?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSkillCount) && int.TryParse(strSkillCount, out int intSkillCount))
                     {
-                        XPathNavigator xmlSkillTypeNode = xmlTalentNode.SelectSingleNodeAndCacheExpression("skilltype") ?? xmlTalentNode.SelectSingleNodeAndCacheExpression("skillgrouptype");
+                        XPathNavigator xmlSkillTypeNode = await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skilltype") ?? await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillgrouptype");
                         string strSkillType = xmlSkillTypeNode?.Value ?? string.Empty;
-                        XPathNodeIterator objNodeList = xmlTalentNode.SelectAndCacheExpression("skillgroupchoices/skillgroup");
+                        XPathNodeIterator objNodeList = await xmlTalentNode.SelectAndCacheExpressionAsync("skillgroupchoices/skillgroup");
                         XPathNodeIterator xmlSkillsList;
                         switch (strSkillType)
                         {
@@ -388,11 +480,15 @@ namespace Chummer
                                 break;
 
                             case "specific":
-                                xmlSkillsList = BuildSkillList(xmlTalentNode.SelectAndCacheExpression("skillchoices/skill"));
+                                xmlSkillsList = BuildSkillList(await xmlTalentNode.SelectAndCacheExpressionAsync("skillchoices/skill"));
                                 break;
 
                             case "xpath":
-                                xmlSkillsList = GetActiveSkillList(xmlSkillTypeNode?.SelectSingleNodeAndCacheExpression("@xpath")?.Value);
+                                xmlSkillsList = GetActiveSkillList(
+                                    xmlSkillTypeNode != null
+                                        ? (await xmlSkillTypeNode.SelectSingleNodeAndCacheExpressionAsync("@xpath"))
+                                        ?.Value
+                                        : null);
                                 strSkillType = "active";
                                 break;
 
@@ -412,20 +508,20 @@ namespace Chummer
                                     {
                                         string strInnerText = objXmlSkill.Value;
                                         lstSkills.Add(new ListItem(strInnerText,
-                                                                   objXmlSkill.SelectSingleNodeAndCacheExpression(
-                                                                       "@translate")?.Value ?? strInnerText));
+                                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync(
+                                                                       "@translate"))?.Value ?? strInnerText));
                                     }
                                 }
                                 else
                                 {
                                     foreach (XPathNavigator objXmlSkill in xmlSkillsList)
                                     {
-                                        string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                         ?? LanguageManager.GetString("String_Unknown");
+                                        string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                                         ?? await LanguageManager.GetStringAsync("String_Unknown");
                                         lstSkills.Add(
                                             new ListItem(
                                                 strName,
-                                                objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                 ?? strName));
                                     }
                                 }
@@ -500,17 +596,17 @@ namespace Chummer
                                 }
 
                                 string strMetamagicSkillSelection = string.Format(
-                                    GlobalSettings.CultureInfo, LanguageManager.GetString("String_MetamagicSkillBase"),
-                                    LanguageManager.GetString("String_MetamagicSkills"));
+                                    GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_MetamagicSkillBase"),
+                                    await LanguageManager.GetStringAsync("String_MetamagicSkills"));
                                 // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                                 // So the language file should contain each of those like String_MetamagicSkillType_magic
-                                string strSkillVal = xmlTalentNode.SelectSingleNodeAndCacheExpression("skillval")?.Value
-                                                     ?? xmlTalentNode
-                                                        .SelectSingleNodeAndCacheExpression("skillgroupval")
+                                string strSkillVal = (await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("skillval"))?.Value
+                                                     ?? (await xmlTalentNode
+                                                         .SelectSingleNodeAndCacheExpressionAsync("skillgroupval"))
                                                         ?.Value;
                                 lblMetatypeSkillSelection.Text = string.Format(
                                     GlobalSettings.CultureInfo, strMetamagicSkillSelection, strSkillCount,
-                                    LanguageManager.GetString("String_MetamagicSkillType_" + strSkillType),
+                                    await LanguageManager.GetStringAsync("String_MetamagicSkillType_" + strSkillType),
                                     strSkillVal);
                                 lblMetatypeSkillSelection.Visible = true;
                             }
@@ -525,19 +621,21 @@ namespace Chummer
                             XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + (cboHeritage.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                             {
-                                if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                                if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
                                 {
-                                    XPathNavigator objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + "]");
+                                    XPathNavigator objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                                     if (!string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
-                                        objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode("metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + "]");
-                                    if (int.TryParse(objXmlMetatypePriorityNode?.SelectSingleNodeAndCacheExpression("value")?.Value, out int intTemp))
+                                        objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode("metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + ']');
+                                    if (objXmlMetatypePriorityNode != null && int.TryParse(
+                                            (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                "value"))?.Value, out int intTemp))
                                         intSpecialAttribPoints += intTemp;
                                     break;
                                 }
                             }
                         }
 
-                        if (int.TryParse(xmlTalentNode.SelectSingleNodeAndCacheExpression("specialattribpoints")?.Value, out int intTalentSpecialAttribPoints))
+                        if (int.TryParse((await xmlTalentNode.SelectSingleNodeAndCacheExpressionAsync("specialattribpoints"))?.Value, out int intTalentSpecialAttribPoints))
                             intSpecialAttribPoints += intTalentSpecialAttribPoints;
 
                         lblSpecialAttributes.Text = intSpecialAttribPoints.ToString(GlobalSettings.CultureInfo);
@@ -555,21 +653,34 @@ namespace Chummer
             {
                 SumToTen();
             }
-            ResumeLayout();
         }
 
-        private void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboMetavariant_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            SuspendLayout();
-            RefreshSelectedMetatype();
-            PopulateTalents();
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                SumToTen();
+                SuspendLayout();
+                try
+                {
+                    await RefreshSelectedMetatype();
+                    await PopulateTalents();
+                    if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                    {
+                        SumToTen();
+                    }
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
-            ResumeLayout();
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -582,113 +693,180 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            SuspendLayout();
-            PopulateMetatypes();
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+            using (CursorWait.New(this))
             {
-                SumToTen();
+                SuspendLayout();
+                try
+                {
+                    PopulateMetatypes();
+                    if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
+                    {
+                        SumToTen();
+                    }
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
-            ResumeLayout();
         }
 
-        private void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboHeritage_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            SuspendLayout();
-            switch (_objCharacter.EffectiveBuildMethod)
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                case CharacterBuildMethod.Priority:
-                    ManagePriorityItems(cboHeritage);
-                    break;
+                SuspendLayout();
+                try
+                {
+                    switch (_objCharacter.EffectiveBuildMethod)
+                    {
+                        case CharacterBuildMethod.Priority:
+                            ManagePriorityItems(cboHeritage);
+                            break;
 
-                case CharacterBuildMethod.SumtoTen:
-                    SumToTen();
-                    break;
+                        case CharacterBuildMethod.SumtoTen:
+                            SumToTen();
+                            break;
+                    }
+
+                    LoadMetatypes();
+                    PopulateMetatypes();
+                    await PopulateMetavariants();
+                    await RefreshSelectedMetatype();
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
-            LoadMetatypes();
-            PopulateMetatypes();
-            PopulateMetavariants();
-            RefreshSelectedMetatype();
-            ResumeLayout();
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            SuspendLayout();
-            switch (_objCharacter.EffectiveBuildMethod)
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                case CharacterBuildMethod.Priority:
-                    ManagePriorityItems(cboTalent);
-                    break;
+                SuspendLayout();
+                try
+                {
+                    switch (_objCharacter.EffectiveBuildMethod)
+                    {
+                        case CharacterBuildMethod.Priority:
+                            ManagePriorityItems(cboTalent);
+                            break;
 
-                case CharacterBuildMethod.SumtoTen:
-                    SumToTen();
-                    break;
+                        case CharacterBuildMethod.SumtoTen:
+                            SumToTen();
+                            break;
+                    }
+
+                    await PopulateTalents();
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
-            PopulateTalents();
-            ResumeLayout();
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            SuspendLayout();
-            switch (_objCharacter.EffectiveBuildMethod)
+            using (CursorWait.New(this))
             {
-                case CharacterBuildMethod.Priority:
-                    ManagePriorityItems(cboAttributes);
-                    break;
+                SuspendLayout();
+                try
+                {
+                    switch (_objCharacter.EffectiveBuildMethod)
+                    {
+                        case CharacterBuildMethod.Priority:
+                            ManagePriorityItems(cboAttributes);
+                            break;
 
-                case CharacterBuildMethod.SumtoTen:
-                    SumToTen();
-                    break;
+                        case CharacterBuildMethod.SumtoTen:
+                            SumToTen();
+                            break;
+                    }
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
-            ResumeLayout();
         }
 
         private void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            SuspendLayout();
-            switch (_objCharacter.EffectiveBuildMethod)
+            using (CursorWait.New(this))
             {
-                case CharacterBuildMethod.Priority:
-                    ManagePriorityItems(cboSkills);
-                    break;
+                SuspendLayout();
+                try
+                {
+                    switch (_objCharacter.EffectiveBuildMethod)
+                    {
+                        case CharacterBuildMethod.Priority:
+                            ManagePriorityItems(cboSkills);
+                            break;
 
-                case CharacterBuildMethod.SumtoTen:
-                    SumToTen();
-                    break;
+                        case CharacterBuildMethod.SumtoTen:
+                            SumToTen();
+                            break;
+                    }
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
-            ResumeLayout();
         }
 
         private void cboResources_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            SuspendLayout();
-            switch (_objCharacter.EffectiveBuildMethod)
+            using (CursorWait.New(this))
             {
-                case CharacterBuildMethod.Priority:
-                    ManagePriorityItems(cboResources);
-                    break;
+                SuspendLayout();
+                try
+                {
+                    switch (_objCharacter.EffectiveBuildMethod)
+                    {
+                        case CharacterBuildMethod.Priority:
+                            ManagePriorityItems(cboResources);
+                            break;
 
-                case CharacterBuildMethod.SumtoTen:
-                    SumToTen();
-                    break;
+                        case CharacterBuildMethod.SumtoTen:
+                            SumToTen();
+                            break;
+                    }
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
-            ResumeLayout();
         }
 
         private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
-            cboPossessionMethod.Enabled = chkPossessionBased.Checked;
+            using (CursorWait.New(this))
+                cboPossessionMethod.Enabled = chkPossessionBased.Checked;
         }
 
         #endregion Control Events
@@ -698,21 +876,21 @@ namespace Chummer
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        private void MetatypeSelected()
+        private async ValueTask MetatypeSelected()
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
                 int intSumToTen = SumToTen(false);
                 if (intSumToTen != _objCharacter.Settings.SumtoTen)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_SumtoTen"),
+                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SumtoTen"),
                         _objCharacter.Settings.SumtoTen.ToString(GlobalSettings.CultureInfo), intSumToTen.ToString(GlobalSettings.CultureInfo)));
                     return;
                 }
             }
             if (cboTalents.SelectedIndex == -1)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectTalent"), LanguageManager.GetString("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectTalent"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectTalent"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -724,36 +902,36 @@ namespace Chummer
                 || (cboSkill2.Visible && string.IsNullOrEmpty(strSkill2))
                 || (cboSkill3.Visible && string.IsNullOrEmpty(strSkill3)))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectSkill"), LanguageManager.GetString("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectSkill"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (ExoticSkill.IsExoticSkillName(strSkill1))
             {
-                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill1);
-                    if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     strSkill1 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
                 }
             }
             if (ExoticSkill.IsExoticSkillName(strSkill2))
             {
-                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill2);
-                    if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     strSkill2 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
                 }
             }
             if (ExoticSkill.IsExoticSkillName(strSkill3))
             {
-                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                using (SelectExoticSkill frmSelectExotic = new SelectExoticSkill(_objCharacter))
                 {
                     frmSelectExotic.ForceSkill(strSkill3);
-                    if (frmSelectExotic.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectExotic.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     strSkill3 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
                 }
@@ -763,409 +941,547 @@ namespace Chummer
                 || (cboSkill1.Visible && cboSkill3.Visible && strSkill1 == strSkill3)
                 || (cboSkill2.Visible && cboSkill3.Visible && strSkill2 == strSkill3))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_Duplicate"), LanguageManager.GetString("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_Duplicate"), await LanguageManager.GetStringAsync("MessageTitle_Metatype_Duplicate"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            using (new CursorWait(this))
+            string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedMetatype))
             {
-                string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
-                if (!string.IsNullOrEmpty(strSelectedMetatype))
+                XmlNode objXmlMetatype
+                    = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode(
+                        "metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                if (objXmlMetatype == null)
                 {
-                    XmlNode objXmlMetatype = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode("metatype[name = " + strSelectedMetatype.CleanXPath() + "]");
-                    if (objXmlMetatype == null)
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"),
+                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"),
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
+                    return;
+                }
+
+                strSelectedMetatype = objXmlMetatype["id"]?.InnerText ?? Guid.Empty.ToString("D");
+
+                // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
+                for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                {
+                    if (i >= _objCharacter.Qualities.Count)
+                        continue;
+                    Quality objQuality = _objCharacter.Qualities[i];
+                    if (objQuality.OriginSource == QualitySource.Selected
+                        && (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("onlyprioritygiven") != null)
+                        objQuality.DeleteQuality();
+                }
+
+                string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
+                string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
+
+                // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
+                if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
+                    strSelectedMetavariant = "Human";
+                XmlNode objXmlMetavariant
+                    = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = "
+                                                      + strSelectedMetavariant.CleanXPath() + ']');
+                strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
+                int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
+
+                if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
+                    strSelectedMetatype
+                    || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
+                    strSelectedMetavariant)
+                {
+                    // Remove qualities that require the old metatype
+                    List<Quality> lstQualitiesToCheck = new List<Quality>(_objCharacter.Qualities.Count);
+                    foreach (Quality objQuality in _objCharacter.Qualities)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
-                        return;
-                    }
-
-                    // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
-                    _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Selected && x.GetNode()?["onlyprioritygiven"] != null);
-
-                    string strSelectedMetavariant = cboMetavariant.SelectedValue.ToString();
-                    string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
-
-                    // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                    if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
-                        strSelectedMetavariant = "Human";
-                    XmlNode objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + "]");
-                    strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
-                    int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
-
-                    if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
-                        strSelectedMetatype
-                        || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
-                        strSelectedMetavariant)
-                    {
-                        // Remove qualities that require the old metatype
-                        List<Quality> lstQualitiesToCheck = new List<Quality>(_objCharacter.Qualities.Count);
-                        foreach (Quality objQuality in _objCharacter.Qualities)
+                        if (objQuality.OriginSource == QualitySource.Improvement
+                            || objQuality.OriginSource == QualitySource.Heritage
+                            || objQuality.OriginSource == QualitySource.Metatype
+                            || objQuality.OriginSource == QualitySource.MetatypeRemovable
+                            || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
+                            continue;
+                        XPathNavigator xmlRestrictionNode
+                            = (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("required");
+                        if (xmlRestrictionNode != null &&
+                            (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
+                             || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                         {
-                            if (objQuality.OriginSource == QualitySource.Improvement
-                                || objQuality.OriginSource == QualitySource.Heritage
-                                || objQuality.OriginSource == QualitySource.Metatype
-                                || objQuality.OriginSource == QualitySource.MetatypeRemovable
-                                || objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
-                                continue;
-                            XmlNode xmlRestrictionNode = objQuality.GetNode()?["required"];
+                            lstQualitiesToCheck.Add(objQuality);
+                        }
+                        else
+                        {
+                            xmlRestrictionNode = (await objQuality.GetNodeXPathAsync())?.SelectSingleNode("forbidden");
                             if (xmlRestrictionNode != null &&
-                                (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
+                                (xmlRestrictionNode.SelectSingleNode(".//metatype") != null
+                                 || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
                             {
                                 lstQualitiesToCheck.Add(objQuality);
                             }
-                            else
-                            {
-                                xmlRestrictionNode = objQuality.GetNode()?["forbidden"];
-                                if (xmlRestrictionNode != null &&
-                                    (xmlRestrictionNode.SelectSingleNode(".//metatype") != null || xmlRestrictionNode.SelectSingleNode(".//metavariant") != null))
-                                {
-                                    lstQualitiesToCheck.Add(objQuality);
-                                }
-                            }
                         }
-                        _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText,
-                            strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
-                            _xmlCritterPowerDocumentPowersNode, null, chkPossessionBased.Checked ? cboPossessionMethod.SelectedValue?.ToString() : string.Empty);
-                        foreach (Quality objQuality in lstQualitiesToCheck)
+                    }
+
+                    _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype,
+                                         strSelectedMetavariant, objXmlMetatype, intForce,
+                                         _xmlQualityDocumentQualitiesNode,
+                                         _xmlCritterPowerDocumentPowersNode, null,
+                                         chkPossessionBased.Checked
+                                             ? cboPossessionMethod.SelectedValue?.ToString()
+                                             : string.Empty);
+                    foreach (Quality objQuality in lstQualitiesToCheck)
+                    {
+                        // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
+                        if ((await objQuality.GetNodeXPathAsync())?.RequirementsMet(
+                                _objCharacter, strIgnoreQuality: objQuality.Name) == false)
                         {
-                            // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
-                            if (objQuality.GetNode()?.CreateNavigator()
-                                          .RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name) == false)
-                            {
-                                _objCharacter.Qualities.Remove(objQuality);
-                            }
+                            objQuality.DeleteQuality();
                         }
                     }
-
-                    string strOldSpecialPriority = _objCharacter.SpecialPriority;
-                    string strOldTalentPriority = _objCharacter.TalentPriority;
-
-                    // begin priority based character settings
-                    // Load the Priority information.
-
-                    // Set the character priority selections
-                    _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantKarma.Text, GlobalSettings.CultureInfo);
-                    _objCharacter.MetatypePriority = cboHeritage.SelectedValue.ToString();
-                    _objCharacter.AttributesPriority = cboAttributes.SelectedValue.ToString();
-                    _objCharacter.SpecialPriority = cboTalent.SelectedValue.ToString();
-                    _objCharacter.SkillsPriority = cboSkills.SelectedValue.ToString();
-                    _objCharacter.ResourcesPriority = cboResources.SelectedValue.ToString();
-                    _objCharacter.TalentPriority = cboTalents.SelectedValue.ToString();
-                    _objCharacter.PriorityBonusSkillList.Clear();
-                    if (cboSkill1.Visible)
-                        _objCharacter.PriorityBonusSkillList.Add(strSkill1);
-                    if (cboSkill2.Visible)
-                        _objCharacter.PriorityBonusSkillList.Add(strSkill2);
-                    if (cboSkill3.Visible)
-                        _objCharacter.PriorityBonusSkillList.Add(strSkill3);
-
-                    // Set starting nuyen
-                    XPathNodeIterator xmlResourcesPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Resources\" and value = " + _objCharacter.ResourcesPriority.CleanXPath() +
-                                                                                                 " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-                    foreach (XPathNavigator xmlResourcesPriority in xmlResourcesPriorityList)
-                    {
-                        if (xmlResourcesPriorityList.Count == 1 ||
-                            (xmlResourcesPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null &&
-                             xmlResourcesPriority.SelectSingleNodeAndCacheExpression("gameplayoption") != null))
-                        {
-                            decimal decResources = 0;
-                            if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
-                                _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
-                            break;
-                        }
-                    }
-
-                    switch (cboTalents.SelectedValue)
-                    {
-                        case "Aspected Magician":
-                        case "Enchanter":
-                            _objCharacter.Pushtext.Push(strSkill1);
-                            break;
-                    }
-
-                    XmlNode charNode =
-                        strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString()
-                            ? objXmlMetatype
-                            : objXmlMetavariant ?? objXmlMetatype;
-
-                    bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
-                    if (strOldSpecialPriority != _objCharacter.SpecialPriority || strOldTalentPriority != _objCharacter.SpecialPriority)
-                    {
-                        List<Quality> lstOldPriorityQualities = _objCharacter.Qualities.Where(x => x.OriginSource == QualitySource.Heritage).ToList();
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        bool blnRemoveFreeSkills = true;
-                        XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + _objCharacter.SpecialPriority.CleanXPath() +
-                                                                                                      " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-                        foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
-                        {
-                            if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority.SelectSingleNodeAndCacheExpression("gameplayoption") != null)
-                            {
-                                XPathNavigator xmlTalentPriorityNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + _objCharacter.TalentPriority.CleanXPath() + "]");
-
-                                if (xmlTalentPriorityNode != null)
-                                {
-                                    // Create the Qualities that come with the Talent.
-                                    foreach (XPathNavigator objXmlQualityItem in xmlTalentPriorityNode.SelectAndCacheExpression("qualities/quality"))
-                                    {
-                                        XmlNode objXmlQuality = _xmlQualityDocumentQualitiesNode.SelectSingleNode("quality[name = " + objXmlQualityItem.Value.CleanXPath() + "]");
-                                        Quality objQuality = new Quality(_objCharacter);
-                                        string strForceValue = objXmlQualityItem.SelectSingleNodeAndCacheExpression("@select")?.Value ?? string.Empty;
-                                        objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons, strForceValue);
-                                        Quality objExistingQuality = lstOldPriorityQualities.Find(x => x.SourceIDString == objQuality.SourceIDString && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
-                                        if (objExistingQuality != null)
-                                            lstOldPriorityQualities.Remove(objExistingQuality);
-                                        else
-                                            _objCharacter.Qualities.Add(objQuality);
-                                    }
-
-                                    foreach (Quality objQuality in lstOldPriorityQualities)
-                                    {
-                                        _objCharacter.Qualities.Remove(objQuality);
-                                    }
-
-                                    // Set starting magic
-                                    int intTemp = 0;
-                                    _objCharacter.MAG.MetatypeMinimum =
-                                        xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp) ? intTemp : 1;
-                                    _objCharacter.FreeSpells = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
-                                    _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp)
-                                        ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intForce);
-                                    // Set starting resonance
-                                    _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 1;
-                                    _objCharacter.CFPLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
-                                    _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp)
-                                        ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intForce);
-                                    // Set starting depth
-                                    _objCharacter.DEP.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp) ? intTemp : 1;
-                                    _objCharacter.AINormalProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp) ? intTemp : 0;
-                                    _objCharacter.AIAdvancedProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp) ? intTemp : 0;
-                                    _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp)
-                                        ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intForce);
-
-                                    // Set Free Skills/Skill Groups
-                                    int intFreeLevels = 0;
-                                    Improvement.ImprovementType eType = Improvement.ImprovementType.SkillBase;
-                                    XPathNavigator objTalentSkillValNode = xmlTalentPriorityNode.SelectSingleNodeAndCacheExpression("skillval");
-                                    if (objTalentSkillValNode == null || !int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
-                                    {
-                                        objTalentSkillValNode = xmlTalentPriorityNode.SelectSingleNodeAndCacheExpression("skillgroupval");
-                                        if (objTalentSkillValNode != null && int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
-                                        {
-                                            eType = Improvement.ImprovementType.SkillGroupBase;
-                                        }
-                                    }
-
-                                    blnRemoveFreeSkills = false;
-                                    AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
-                                }
-
-                                break;
-                            }
-                        }
-
-                        if (blnRemoveFreeSkills)
-                            ImprovementManager.RemoveImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Heritage
-                                                                                                                       && (x.ImproveType == Improvement.ImprovementType.SkillBase
-                                                                                                                           || x.ImproveType == Improvement.ImprovementType.SkillGroupBase)).ToList());
-                        // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in lstWeapons)
-                            _objCharacter.Weapons.Add(objWeapon);
-                    }
-
-                    // Set Special Attributes
-                    _objCharacter.Special = Convert.ToInt32(lblSpecialAttributes.Text, GlobalSettings.CultureInfo);
-                    _objCharacter.TotalSpecial = _objCharacter.Special;
-
-                    // Set Attributes
-                    XPathNodeIterator objXmlAttributesPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Attributes\" and value = " + _objCharacter.AttributesPriority.CleanXPath() +
-                                                                                                     " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-                    foreach (XPathNavigator objXmlAttributesPriority in objXmlAttributesPriorityList)
-                    {
-                        if (objXmlAttributesPriorityList.Count == 1 ||
-                            (objXmlAttributesPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null &&
-                             objXmlAttributesPriority.SelectSingleNodeAndCacheExpression("gameplayoption") != null))
-                        {
-                            int intAttributes = 0;
-                            objXmlAttributesPriority.TryGetInt32FieldQuickly("attributes", ref intAttributes);
-                            if (boolHalveAttributePriorityPoints)
-                                intAttributes /= 2;
-                            _objCharacter.TotalAttributes = _objCharacter.Attributes = intAttributes;
-                            break;
-                        }
-                    }
-
-                    // Set Skills and Skill Groups
-                    XPathNodeIterator objXmlSkillsPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Skills\" and value = " + _objCharacter.SkillsPriority.CleanXPath() +
-                                                                                                 " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
-                    foreach (XPathNavigator objXmlSkillsPriority in objXmlSkillsPriorityList)
-                    {
-                        if (objXmlSkillsPriorityList.Count == 1 ||
-                            (objXmlSkillsPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null &&
-                             objXmlSkillsPriority.SelectSingleNodeAndCacheExpression("gameplayoption") != null))
-                        {
-                            int intTemp = 0;
-                            if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
-                                _objCharacter.SkillsSection.SkillPointsMaximum = intTemp;
-                            if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skillgroups", ref intTemp))
-                                _objCharacter.SkillsSection.SkillGroupPointsMaximum = intTemp;
-                            break;
-                        }
-                    }
-
-                    // Sprites can never have Physical Attributes
-                    if (_objCharacter.DEPEnabled || strSelectedMetatype.EndsWith("Sprite", StringComparison.Ordinal))
-                    {
-                        _objCharacter.BOD.AssignLimits(0, 0, 0);
-                        _objCharacter.AGI.AssignLimits(0, 0, 0);
-                        _objCharacter.REA.AssignLimits(0, 0, 0);
-                        _objCharacter.STR.AssignLimits(0, 0, 0);
-                        _objCharacter.MAG.AssignLimits(0, 0, 0);
-                        _objCharacter.MAGAdept.AssignLimits(0, 0, 0);
-                    }
-
-                    // Set free contact points
-                    _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
-
-                    // If we suspect the character converted from Karma to Priority/Sum-to-Ten, try to convert their Attributes, Skills, and Skill Groups to using points as efficiently as possible
-                    bool blnDoSwitch = false;
-                    foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
-                    {
-                        if (objAttribute.Base > 0)
-                        {
-                            blnDoSwitch = false;
-                            break;
-                        }
-                        if (objAttribute.Karma > 0)
-                            blnDoSwitch = true;
-                    }
-                    if (blnDoSwitch)
-                    {
-                        int intPointsSpent = 0;
-                        while (intPointsSpent < _objCharacter.TotalAttributes)
-                        {
-                            CharacterAttrib objAttributeToShift = null;
-                            foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
-                            {
-                                if (objAttribute.Karma > 0 && (objAttributeToShift == null || objAttributeToShift.Value < objAttribute.Value))
-                                {
-                                    objAttributeToShift = objAttribute;
-                                }
-                            }
-                            if (objAttributeToShift == null)
-                                break;
-                            int intKarma = Math.Min(objAttributeToShift.Karma, _objCharacter.TotalAttributes - intPointsSpent);
-                            objAttributeToShift.Karma -= intKarma;
-                            objAttributeToShift.Base += intKarma;
-                            intPointsSpent += intKarma;
-                        }
-                    }
-                    blnDoSwitch = false;
-                    foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
-                    {
-                        if (objAttribute.Base > 0)
-                        {
-                            blnDoSwitch = false;
-                            break;
-                        }
-                        if (objAttribute.Karma > 0)
-                            blnDoSwitch = true;
-                    }
-                    if (blnDoSwitch)
-                    {
-                        int intPointsSpent = 0;
-                        while (intPointsSpent < _objCharacter.TotalSpecial)
-                        {
-                            CharacterAttrib objAttributeToShift = null;
-                            foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
-                            {
-                                if (objAttribute.Karma > 0 && (objAttributeToShift == null || objAttributeToShift.Value < objAttribute.Value))
-                                {
-                                    objAttributeToShift = objAttribute;
-                                }
-                            }
-                            if (objAttributeToShift == null)
-                                break;
-                            int intKarma = Math.Min(objAttributeToShift.Karma, _objCharacter.TotalSpecial - intPointsSpent);
-                            objAttributeToShift.Karma -= intKarma;
-                            objAttributeToShift.Base += intKarma;
-                            intPointsSpent += intKarma;
-                        }
-                    }
-                    blnDoSwitch = false;
-                    foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
-                    {
-                        if (objGroup.Base > 0)
-                        {
-                            blnDoSwitch = false;
-                            break;
-                        }
-                        if (objGroup.Karma > 0)
-                            blnDoSwitch = true;
-                    }
-                    if (blnDoSwitch)
-                    {
-                        int intPointsSpent = 0;
-                        while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
-                        {
-                            SkillGroup objGroupToShift = null;
-                            foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
-                            {
-                                if (objGroup.Karma > 0 && (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating))
-                                {
-                                    objGroupToShift = objGroup;
-                                }
-                            }
-                            if (objGroupToShift == null)
-                                break;
-                            int intKarma = Math.Min(objGroupToShift.Karma, _objCharacter.SkillsSection.SkillGroupPointsMaximum - intPointsSpent);
-                            objGroupToShift.Karma -= intKarma;
-                            objGroupToShift.Base += intKarma;
-                            intPointsSpent += intKarma;
-                        }
-                    }
-                    blnDoSwitch = false;
-                    foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                    {
-                        if (objSkill.Base > 0)
-                        {
-                            blnDoSwitch = false;
-                            break;
-                        }
-                        if (objSkill.Karma > 0)
-                            blnDoSwitch = true;
-                    }
-                    if (blnDoSwitch)
-                    {
-                        int intPointsSpent = 0;
-                        while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
-                        {
-                            Skill objSkillToShift = null;
-                            foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                            {
-                                if (objSkill.Karma > 0 && (objSkillToShift == null || objSkillToShift.Rating < objSkill.Rating))
-                                {
-                                    objSkillToShift = objSkill;
-                                }
-                            }
-                            if (objSkillToShift == null)
-                                break;
-                            int intKarma = Math.Min(objSkillToShift.Karma, _objCharacter.SkillsSection.SkillGroupPointsMaximum - intPointsSpent);
-                            objSkillToShift.Karma -= intKarma;
-                            objSkillToShift.Base += intKarma;
-                            intPointsSpent += intKarma;
-                        }
-                    }
-                    DialogResult = DialogResult.OK;
-                    Close();
                 }
-                else
+
+                string strOldSpecialPriority = _objCharacter.SpecialPriority;
+                string strOldTalentPriority = _objCharacter.TalentPriority;
+
+                // begin priority based character settings
+                // Load the Priority information.
+
+                // Set the character priority selections
+                _objCharacter.MetatypeBP = Convert.ToInt32(lblMetavariantKarma.Text, GlobalSettings.CultureInfo);
+                _objCharacter.MetatypePriority = cboHeritage.SelectedValue.ToString();
+                _objCharacter.AttributesPriority = cboAttributes.SelectedValue.ToString();
+                _objCharacter.SpecialPriority = cboTalent.SelectedValue.ToString();
+                _objCharacter.SkillsPriority = cboSkills.SelectedValue.ToString();
+                _objCharacter.ResourcesPriority = cboResources.SelectedValue.ToString();
+                _objCharacter.TalentPriority = cboTalents.SelectedValue.ToString();
+                await _objCharacter.PriorityBonusSkillList.ClearAsync();
+                if (cboSkill1.Visible)
+                    await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill1);
+                if (cboSkill2.Visible)
+                    await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill2);
+                if (cboSkill3.Visible)
+                    await _objCharacter.PriorityBonusSkillList.AddAsync(strSkill3);
+
+                // Set starting nuyen
+                XPathNodeIterator xmlResourcesPriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Resources\" and value = "
+                    + _objCharacter.ResourcesPriority.CleanXPath() +
+                    " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath()
+                    + ")]");
+                foreach (XPathNavigator xmlResourcesPriority in xmlResourcesPriorityList)
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectMetatype"), LanguageManager.GetString("MessageTitle_Metatype_SelectMetatype"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    if (xmlResourcesPriorityList.Count == 1 ||
+                        (await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null &&
+                         await xmlResourcesPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption") != null))
+                    {
+                        decimal decResources = 0;
+                        if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
+                            _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
+                        break;
+                    }
                 }
+
+                switch (cboTalents.SelectedValue)
+                {
+                    case "Aspected Magician":
+                    case "Enchanter":
+                        await _objCharacter.PushText.PushAsync(strSkill1);
+                        break;
+                }
+
+                XmlNode charNode =
+                    strSelectedMetatypeCategory == "Shapeshifter" || strSelectedMetavariant == Guid.Empty.ToString()
+                        ? objXmlMetatype
+                        : objXmlMetavariant ?? objXmlMetatype;
+
+                int intSpecialAttribPoints = 0;
+                bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
+                if (strOldSpecialPriority != _objCharacter.SpecialPriority
+                    || strOldTalentPriority != _objCharacter.SpecialPriority)
+                {
+                    List<Quality> lstOldPriorityQualities = _objCharacter.Qualities
+                                                                         .Where(x => x.OriginSource
+                                                                             == QualitySource.Heritage).ToList();
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    bool blnRemoveFreeSkills = true;
+                    XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
+                        "priorities/priority[category = \"Talent\" and value = "
+                        + _objCharacter.SpecialPriority.CleanXPath() +
+                        " and (not(prioritytable) or prioritytable = "
+                        + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                    foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
+                    {
+                        if (xmlBaseTalentPriorityList.Count == 1
+                            || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption")
+                            != null)
+                        {
+                            XPathNavigator xmlTalentPriorityNode
+                                = xmlBaseTalentPriority.SelectSingleNode(
+                                    "talents/talent[value = " + _objCharacter.TalentPriority.CleanXPath() + ']');
+
+                            if (xmlTalentPriorityNode != null)
+                            {
+                                // Create the Qualities that come with the Talent.
+                                foreach (XPathNavigator objXmlQualityItem in await xmlTalentPriorityNode
+                                             .SelectAndCacheExpressionAsync("qualities/quality"))
+                                {
+                                    XmlNode objXmlQuality
+                                        = _xmlQualityDocumentQualitiesNode.SelectSingleNode(
+                                            "quality[name = " + objXmlQualityItem.Value.CleanXPath() + ']');
+                                    Quality objQuality = new Quality(_objCharacter);
+                                    string strForceValue
+                                        = (await objXmlQualityItem.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                                        ?.Value ?? string.Empty;
+                                    objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons, strForceValue);
+                                    Quality objExistingQuality = lstOldPriorityQualities.Find(
+                                        x => x.SourceIDString == objQuality.SourceIDString
+                                             && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
+                                    if (objExistingQuality != null)
+                                        lstOldPriorityQualities.Remove(objExistingQuality);
+                                    else
+                                        _objCharacter.Qualities.Add(objQuality);
+                                }
+
+                                foreach (Quality objQuality in lstOldPriorityQualities)
+                                {
+                                    objQuality.DeleteQuality();
+                                }
+
+                                // Set starting magic
+                                int intTemp = 1;
+                                int intMax = 0;
+                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("magic", ref intTemp))
+                                    intTemp = 1;
+                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intMax))
+                                    intMax = Math.Max(CommonFunctions.ExpressionToInt(
+                                                          charNode["magmax"]?.InnerText, intForce), intTemp);
+                                _objCharacter.MAG.AssignLimits(intTemp, intMax, intMax);
+                                _objCharacter.FreeSpells
+                                    = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp)
+                                        ? intTemp
+                                        : 0;
+                                // Set starting resonance
+                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp))
+                                    intTemp = 1;
+                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intMax))
+                                    intMax = Math.Max(CommonFunctions.ExpressionToInt(
+                                                          charNode["resmax"]?.InnerText, intForce), intTemp);
+                                _objCharacter.RES.AssignLimits(intTemp, intMax, intMax);
+                                _objCharacter.CFPLimit
+                                    = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
+                                // Set starting depth
+                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp))
+                                    intTemp = 1;
+                                if (!xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intMax))
+                                    intMax = Math.Max(CommonFunctions.ExpressionToInt(
+                                                          charNode["depmax"]?.InnerText, intForce), intTemp);
+                                _objCharacter.DEP.AssignLimits(intTemp, intMax, intMax);
+                                _objCharacter.AINormalProgramLimit
+                                    = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp)
+                                        ? intTemp
+                                        : 0;
+                                _objCharacter.AIAdvancedProgramLimit
+                                    = xmlTalentPriorityNode.TryGetInt32FieldQuickly(
+                                        "aiadvancedprogramlimit", ref intTemp)
+                                        ? intTemp
+                                        : 0;
+
+                                // Set Free Skills/Skill Groups
+                                int intFreeLevels = 0;
+                                Improvement.ImprovementType eType = Improvement.ImprovementType.SkillBase;
+                                XPathNavigator objTalentSkillValNode
+                                    = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync("skillval");
+                                if (objTalentSkillValNode == null
+                                    || !int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                {
+                                    objTalentSkillValNode
+                                        = await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                            "skillgroupval");
+                                    if (objTalentSkillValNode != null
+                                        && int.TryParse(objTalentSkillValNode.Value, out intFreeLevels))
+                                    {
+                                        eType = Improvement.ImprovementType.SkillGroupBase;
+                                    }
+                                }
+
+                                blnRemoveFreeSkills = false;
+                                AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
+
+                                if (int.TryParse(
+                                        (await xmlTalentPriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                            "specialattribpoints"))?.Value, out int intTalentSpecialAttribPoints))
+                                    intSpecialAttribPoints += intTalentSpecialAttribPoints;
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if (blnRemoveFreeSkills)
+                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objCharacter.Improvements
+                                                                             .Where(x => x.ImproveSource
+                                                                                 == Improvement.ImprovementSource
+                                                                                     .Heritage
+                                                                                 && (x.ImproveType
+                                                                                     == Improvement.ImprovementType
+                                                                                         .SkillBase
+                                                                                     || x.ImproveType
+                                                                                     == Improvement.ImprovementType
+                                                                                         .SkillGroupBase))
+                                                                             .ToList());
+                    // Add any created Weapons to the character.
+                    foreach (Weapon objWeapon in lstWeapons)
+                        _objCharacter.Weapons.Add(objWeapon);
+                }
+
+                // Set Special Attributes
+
+                XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Heritage\" and value = "
+                    + _objCharacter.MetatypePriority.CleanXPath()
+                    + " and (not(prioritytable) or prioritytable = "
+                    + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
+                {
+                    if (xmlBaseMetatypePriorityList.Count == 1
+                        || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                        != null)
+                    {
+                        XPathNavigator objXmlMetatypePriorityNode
+                            = xmlBaseMetatypePriority.SelectSingleNode(
+                                "metatypes/metatype[name = " + _objCharacter.Metatype.CleanXPath() + ']');
+                        if (strSelectedMetavariant != Guid.Empty.ToString())
+                            objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode(
+                                "metavariants/metavariant[name = " + _objCharacter.Metavariant.CleanXPath() + ']');
+                        if (objXmlMetatypePriorityNode != null && int.TryParse(
+                                (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value"))
+                                ?.Value, out int intTemp))
+                            intSpecialAttribPoints += intTemp;
+                        break;
+                    }
+                }
+
+                _objCharacter.Special = intSpecialAttribPoints;
+                _objCharacter.TotalSpecial = _objCharacter.Special;
+
+                // Set Attributes
+                XPathNodeIterator objXmlAttributesPriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Attributes\" and value = "
+                    + _objCharacter.AttributesPriority.CleanXPath() +
+                    " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath()
+                    + ")]");
+                foreach (XPathNavigator objXmlAttributesPriority in objXmlAttributesPriorityList)
+                {
+                    if (objXmlAttributesPriorityList.Count == 1 ||
+                        (await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null
+                         &&
+                         await objXmlAttributesPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption")
+                         != null))
+                    {
+                        int intAttributes = 0;
+                        objXmlAttributesPriority.TryGetInt32FieldQuickly("attributes", ref intAttributes);
+                        if (boolHalveAttributePriorityPoints)
+                            intAttributes /= 2;
+                        _objCharacter.TotalAttributes = _objCharacter.Attributes = intAttributes;
+                        break;
+                    }
+                }
+
+                // Set Skills and Skill Groups
+                XPathNodeIterator objXmlSkillsPriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Skills\" and value = " + _objCharacter.SkillsPriority.CleanXPath()
+                                                                             +
+                                                                             " and (not(prioritytable) or prioritytable = "
+                                                                             + _objCharacter.Settings.PriorityTable
+                                                                                 .CleanXPath() + ")]");
+                foreach (XPathNavigator objXmlSkillsPriority in objXmlSkillsPriorityList)
+                {
+                    if (objXmlSkillsPriorityList.Count == 1 ||
+                        (await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null &&
+                         await objXmlSkillsPriority.SelectSingleNodeAndCacheExpressionAsync("gameplayoption") != null))
+                    {
+                        int intTemp = 0;
+                        if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
+                            _objCharacter.SkillsSection.SkillPointsMaximum = intTemp;
+                        if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skillgroups", ref intTemp))
+                            _objCharacter.SkillsSection.SkillGroupPointsMaximum = intTemp;
+                        break;
+                    }
+                }
+
+                // Sprites can never have Physical Attributes
+                if (_objCharacter.DEPEnabled || _objCharacter.Metatype.EndsWith("Sprite", StringComparison.Ordinal))
+                {
+                    _objCharacter.BOD.AssignLimits(0, 0, 0);
+                    _objCharacter.AGI.AssignLimits(0, 0, 0);
+                    _objCharacter.REA.AssignLimits(0, 0, 0);
+                    _objCharacter.STR.AssignLimits(0, 0, 0);
+                    _objCharacter.MAG.AssignLimits(0, 0, 0);
+                    _objCharacter.MAGAdept.AssignLimits(0, 0, 0);
+                }
+
+                // Set free contact points
+                _objCharacter.OnPropertyChanged(nameof(Character.ContactPoints));
+
+                // If we suspect the character converted from Karma to Priority/Sum-to-Ten, try to convert their Attributes, Skills, and Skill Groups to using points as efficiently as possible
+                bool blnDoSwitch = false;
+                foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
+                {
+                    if (objAttribute.Base > 0)
+                    {
+                        blnDoSwitch = false;
+                        break;
+                    }
+
+                    if (objAttribute.Karma > 0)
+                        blnDoSwitch = true;
+                }
+
+                if (blnDoSwitch)
+                {
+                    int intPointsSpent = 0;
+                    while (intPointsSpent < _objCharacter.TotalAttributes)
+                    {
+                        CharacterAttrib objAttributeToShift = null;
+                        foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
+                        {
+                            if (objAttribute.Karma > 0 && (objAttributeToShift == null
+                                                           || objAttributeToShift.Value < objAttribute.Value))
+                            {
+                                objAttributeToShift = objAttribute;
+                            }
+                        }
+
+                        if (objAttributeToShift == null)
+                            break;
+                        int intKarma = Math.Min(objAttributeToShift.Karma,
+                                                _objCharacter.TotalAttributes - intPointsSpent);
+                        objAttributeToShift.Karma -= intKarma;
+                        objAttributeToShift.Base += intKarma;
+                        intPointsSpent += intKarma;
+                    }
+                }
+
+                blnDoSwitch = false;
+                foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                {
+                    if (objAttribute.Base > 0)
+                    {
+                        blnDoSwitch = false;
+                        break;
+                    }
+
+                    if (objAttribute.Karma > 0)
+                        blnDoSwitch = true;
+                }
+
+                if (blnDoSwitch)
+                {
+                    int intPointsSpent = 0;
+                    while (intPointsSpent < _objCharacter.TotalSpecial)
+                    {
+                        CharacterAttrib objAttributeToShift = null;
+                        foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                        {
+                            if (objAttribute.Karma > 0 && (objAttributeToShift == null
+                                                           || objAttributeToShift.Value < objAttribute.Value))
+                            {
+                                objAttributeToShift = objAttribute;
+                            }
+                        }
+
+                        if (objAttributeToShift == null)
+                            break;
+                        int intKarma = Math.Min(objAttributeToShift.Karma, _objCharacter.TotalSpecial - intPointsSpent);
+                        objAttributeToShift.Karma -= intKarma;
+                        objAttributeToShift.Base += intKarma;
+                        intPointsSpent += intKarma;
+                    }
+                }
+
+                blnDoSwitch = false;
+                foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                {
+                    if (objGroup.Base > 0)
+                    {
+                        blnDoSwitch = false;
+                        break;
+                    }
+
+                    if (objGroup.Karma > 0)
+                        blnDoSwitch = true;
+                }
+
+                if (blnDoSwitch)
+                {
+                    int intPointsSpent = 0;
+                    while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
+                    {
+                        SkillGroup objGroupToShift = null;
+                        foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
+                        {
+                            if (objGroup.Karma > 0
+                                && (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating))
+                            {
+                                objGroupToShift = objGroup;
+                            }
+                        }
+
+                        if (objGroupToShift == null)
+                            break;
+                        int intKarma = Math.Min(objGroupToShift.Karma,
+                                                _objCharacter.SkillsSection.SkillGroupPointsMaximum - intPointsSpent);
+                        objGroupToShift.Karma -= intKarma;
+                        objGroupToShift.Base += intKarma;
+                        intPointsSpent += intKarma;
+                    }
+                }
+
+                blnDoSwitch = false;
+                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                {
+                    if (objSkill.Base > 0)
+                    {
+                        blnDoSwitch = false;
+                        break;
+                    }
+
+                    if (objSkill.Karma > 0)
+                        blnDoSwitch = true;
+                }
+
+                if (blnDoSwitch)
+                {
+                    int intPointsSpent = 0;
+                    while (intPointsSpent < _objCharacter.SkillsSection.SkillGroupPointsMaximum)
+                    {
+                        Skill objSkillToShift = null;
+                        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                        {
+                            if (objSkill.Karma > 0
+                                && (objSkillToShift == null || objSkillToShift.Rating < objSkill.Rating))
+                            {
+                                objSkillToShift = objSkill;
+                            }
+                        }
+
+                        if (objSkillToShift == null)
+                            break;
+                        int intKarma = Math.Min(objSkillToShift.Karma,
+                                                _objCharacter.SkillsSection.SkillGroupPointsMaximum - intPointsSpent);
+                        objSkillToShift.Karma -= intKarma;
+                        objSkillToShift.Base += intKarma;
+                        intPointsSpent += intKarma;
+                    }
+                }
+
+                DialogResult = DialogResult.OK;
+                Close();
+            }
+            else
+            {
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype"),
+                                       await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype"),
+                                       MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -1338,25 +1654,41 @@ namespace Chummer
             return value;
         }
 
-        private void RefreshSelectedMetatype()
+        private async ValueTask RefreshSelectedMetatype()
         {
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
             string strSelectedMetavariant = cboMetavariant.SelectedValue?.ToString();
             string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
 
-            XPathNavigator objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + "]");
-            XPathNavigator objXmlMetavariant = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == "None" ? null : objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + "]");
+            XPathNavigator objXmlMetatype
+                = _xmlBaseMetatypeDataNode.SelectSingleNode(
+                    "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+            XPathNavigator objXmlMetavariant
+                = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == "None"
+                    ? null
+                    : objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = "
+                                                       + strSelectedMetavariant.CleanXPath() + ']');
             XPathNavigator objXmlMetatypePriorityNode = null;
             XPathNavigator objXmlMetavariantPriorityNode = null;
-            XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + strSelectedHeritage.CleanXPath()
-                + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+            XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
+                "priorities/priority[category = \"Heritage\" and value = " + strSelectedHeritage.CleanXPath()
+                                                                           + " and (not(prioritytable) or prioritytable = "
+                                                                           + _objCharacter.Settings.PriorityTable
+                                                                               .CleanXPath() + ")]");
             foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
             {
-                if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                if (xmlBaseMetatypePriorityList.Count == 1
+                    || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                    != null)
                 {
-                    objXmlMetatypePriorityNode = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + "]");
-                    objXmlMetavariantPriorityNode = objXmlMetavariant != null ? objXmlMetatypePriorityNode.SelectSingleNode("metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + "]") : null;
+                    objXmlMetatypePriorityNode
+                        = xmlBaseMetatypePriority.SelectSingleNode(
+                            "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                    objXmlMetavariantPriorityNode = objXmlMetavariant != null
+                        ? objXmlMetatypePriorityNode.SelectSingleNode(
+                            "metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + ']')
+                        : null;
                     break;
                 }
             }
@@ -1366,7 +1698,8 @@ namespace Chummer
             {
                 if (objXmlMetavariantPriorityNode == null)
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("String_NotSupported"), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("String_NotSupported"),
+                                           Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     cmdOK.Enabled = false;
                 }
                 else
@@ -1374,62 +1707,124 @@ namespace Chummer
                     cmdOK.Enabled = true;
                 }
 
-                lblBOD.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNodeAndCacheExpression("bodmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetavariant.SelectSingleNodeAndCacheExpression("bodmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetavariant.SelectSingleNodeAndCacheExpression("bodaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblAGI.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNodeAndCacheExpression("agimin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetavariant.SelectSingleNodeAndCacheExpression("agimax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetavariant.SelectSingleNodeAndCacheExpression("agiaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblREA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNodeAndCacheExpression("reamin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetavariant.SelectSingleNodeAndCacheExpression("reamax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetavariant.SelectSingleNodeAndCacheExpression("reaaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblSTR.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNodeAndCacheExpression("strmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetavariant.SelectSingleNodeAndCacheExpression("strmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetavariant.SelectSingleNodeAndCacheExpression("straug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblCHA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNodeAndCacheExpression("chamin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetavariant.SelectSingleNodeAndCacheExpression("chamax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetavariant.SelectSingleNodeAndCacheExpression("chaaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblINT.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNodeAndCacheExpression("intmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetavariant.SelectSingleNodeAndCacheExpression("intmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetavariant.SelectSingleNodeAndCacheExpression("intaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblLOG.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNodeAndCacheExpression("logmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetavariant.SelectSingleNodeAndCacheExpression("logmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetavariant.SelectSingleNodeAndCacheExpression("logaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblWIL.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNodeAndCacheExpression("wilmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetavariant.SelectSingleNodeAndCacheExpression("wilmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetavariant.SelectSingleNodeAndCacheExpression("wilaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblBOD.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "bodmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "bodmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "bodaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblAGI.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "agimin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "agimax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "agiaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblREA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "reamin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "reamax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "reaaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblSTR.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "strmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "strmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "straug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblCHA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "chamin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "chamax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "chaaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblINT.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "intmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "intmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "intaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblLOG.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "logmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "logmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "logaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblWIL.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "wilmin"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "wilmax"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync(
+                                                "wilaug"))?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
 
-                lblMetavariantKarma.Text = objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpression("karma")?.Value ?? 0.ToString(GlobalSettings.CultureInfo);
+                lblMetavariantKarma.Text
+                    = (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma"))
+                      ?.Value
+                      ?? 0.ToString(GlobalSettings.CultureInfo);
 
-                string strSource = objXmlMetavariant.SelectSingleNodeAndCacheExpression("source")?.Value;
+                string strSource = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("source"))
+                    ?.Value;
                 if (!string.IsNullOrEmpty(strSource))
                 {
-                    string strPage = objXmlMetavariant.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetavariant.SelectSingleNodeAndCacheExpression("page")?.Value;
+                    string strPage
+                        = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
+                          ?? (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value;
                     if (!string.IsNullOrEmpty(strPage))
                     {
-                        SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                        SourceString objSource = await SourceString.GetSourceStringAsync(
+                            strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
+                            _objCharacter);
                         lblSource.Text = objSource.ToString();
                         lblSource.SetToolTip(objSource.LanguageBookTooltip);
                     }
                     else
                     {
-                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
                 }
                 else
                 {
-                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
                     lblSource.SetToolTip(strUnknown);
                 }
 
                 // Set the special attributes label.
-                if (!int.TryParse(objXmlMetavariantPriorityNode?.SelectSingleNodeAndCacheExpression("value")?.Value, NumberStyles.Any,
-                    GlobalSettings.InvariantCultureInfo, out int intSpecialAttribPoints))
+                if (objXmlMetavariantPriorityNode == null || !int.TryParse(
+                        (await objXmlMetavariantPriorityNode.SelectSingleNodeAndCacheExpressionAsync("value"))
+                        ?.Value,
+                        NumberStyles.Any,
+                        GlobalSettings.InvariantCultureInfo, out int intSpecialAttribPoints))
                     intSpecialAttribPoints = 0;
 
-                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
-                    + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Talent\" and value = "
+                    + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
+                    + " and (not(prioritytable) or prioritytable = "
+                    + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
-                    if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                    if (xmlBaseTalentPriorityList.Count == 1
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                        != null)
                     {
-                        XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + (cboTalents.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + "]");
-                        if (int.TryParse(objXmlTalentsNode?.SelectSingleNodeAndCacheExpression("specialattribpoints")?.Value, out int intTemp))
+                        XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
+                            "talents/talent[value = "
+                            + (cboTalents.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + ']');
+                        if (objXmlTalentsNode != null
+                            && int.TryParse(
+                                (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
+                                    "specialattribpoints"))
+                                ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
                     }
@@ -1439,96 +1834,36 @@ namespace Chummer
 
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metavariant's Qualities.
-                foreach (XPathNavigator objXmlQuality in objXmlMetavariant.SelectAndCacheExpression("qualities/*/quality"))
+                foreach (XPathNavigator objXmlQuality in await objXmlMetavariant.SelectAndCacheExpressionAsync(
+                             "qualities/*/quality"))
                 {
                     string strQuality;
-                    if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                        StringComparison.OrdinalIgnoreCase))
                     {
-                        strQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath() + "]/translate")?.Value ?? objXmlQuality.Value;
+                        strQuality = _xmlBaseQualityDataNode
+                                     .SelectSingleNode("qualities/quality[name = "
+                                                       + objXmlQuality.Value.CleanXPath() + "]/translate")
+                                     ?.Value
+                                     ?? objXmlQuality.Value;
 
-                        string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
+                        string strSelect
+                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                            ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
+                            strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect)
+                                          + ')';
                     }
                     else
                     {
                         strQuality = objXmlQuality.Value;
-                        string strSelect = objXmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
+                        string strSelect
+                            = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                            ?.Value;
                         if (!string.IsNullOrEmpty(strSelect))
                             strQuality += strSpace + '(' + strSelect + ')';
                     }
-                    if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
-                        dicQualities[strQuality] = intExistingRating + 1;
-                    else
-                        dicQualities.Add(strQuality, 1);
-                }
 
-                if (dicQualities.Count > 0)
-                {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdQualities))
-                    {
-                        foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
-                        {
-                            sbdQualities.Append(objLoopQuality.Key);
-                            if (objLoopQuality.Value > 1)
-                            {
-                                sbdQualities.Append(strSpace)
-                                            .Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
-                            }
-
-                            sbdQualities.Append(',').Append(strSpace);
-                        }
-
-                        sbdQualities.Length -= 2;
-                        lblMetavariantQualities.Text = sbdQualities.ToString();
-                    }
-                }
-                else
-                {
-                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None");
-                }
-            }
-            else if (objXmlMetatype != null)
-            {
-                cmdOK.Enabled = true;
-                lblBOD.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetatype.SelectSingleNodeAndCacheExpression("bodaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblAGI.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNodeAndCacheExpression("agimin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetatype.SelectSingleNodeAndCacheExpression("agimax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetatype.SelectSingleNodeAndCacheExpression("agiaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblREA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNodeAndCacheExpression("reamin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetatype.SelectSingleNodeAndCacheExpression("reamax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetatype.SelectSingleNodeAndCacheExpression("reaaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblSTR.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNodeAndCacheExpression("strmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetatype.SelectSingleNodeAndCacheExpression("strmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetatype.SelectSingleNodeAndCacheExpression("straug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblCHA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNodeAndCacheExpression("chamin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetatype.SelectSingleNodeAndCacheExpression("chamax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetatype.SelectSingleNodeAndCacheExpression("chaaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblINT.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNodeAndCacheExpression("intmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetatype.SelectSingleNodeAndCacheExpression("intmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetatype.SelectSingleNodeAndCacheExpression("intaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblLOG.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNodeAndCacheExpression("logmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetatype.SelectSingleNodeAndCacheExpression("logmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetatype.SelectSingleNodeAndCacheExpression("logaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-                lblWIL.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNodeAndCacheExpression("wilmin")?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
-                    objXmlMetatype.SelectSingleNodeAndCacheExpression("wilmax")?.Value ?? 0.ToString(GlobalSettings.CultureInfo), objXmlMetatype.SelectSingleNodeAndCacheExpression("wilaug")?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
-
-                Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
-                // Build a list of the Metatype's Qualities.
-                foreach (XPathNavigator xmlQuality in objXmlMetatype.SelectAndCacheExpression("qualities/*/quality"))
-                {
-                    string strQuality;
-                    if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                    {
-                        XPathNavigator objQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + xmlQuality.Value.CleanXPath() + "]");
-                        strQuality = objQuality.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlQuality.Value;
-
-                        string strSelect = xmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
-                        if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
-                    }
-                    else
-                    {
-                        strQuality = xmlQuality.Value;
-                        string strSelect = xmlQuality.SelectSingleNodeAndCacheExpression("@select")?.Value;
-                        if (!string.IsNullOrEmpty(strSelect))
-                            strQuality += strSpace + '(' + strSelect + ')';
-                    }
                     if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
                         dicQualities[strQuality] = intExistingRating + 1;
                     else
@@ -1558,48 +1893,216 @@ namespace Chummer
                 }
                 else
                 {
-                    lblMetavariantQualities.Text = LanguageManager.GetString("String_None");
+                    lblMetavariantQualities.Text = await LanguageManager.GetStringAsync("String_None");
+                }
+            }
+            else if (objXmlMetatype != null)
+            {
+                cmdOK.Enabled = true;
+                lblBOD.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "bodmin"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "bodmax"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "bodaug"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblAGI.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "agimin"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "agimax"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "agiaug"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblREA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "reamin"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "reamax"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "reaaug"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblSTR.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "strmin"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "strmax"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "straug"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblCHA.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "chamin"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "chamax"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "chaaug"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblINT.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "intmin"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "intmax"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "intaug"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblLOG.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "logmin"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "logmax"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "logaug"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+                lblWIL.Text = string.Format(GlobalSettings.CultureInfo, strAttributeFormat,
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "wilmin"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "wilmax"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo),
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync(
+                                                "wilaug"))
+                                            ?.Value ?? 0.ToString(GlobalSettings.CultureInfo));
+
+                Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
+                // Build a list of the Metatype's Qualities.
+                foreach (XPathNavigator xmlQuality in await objXmlMetatype.SelectAndCacheExpressionAsync(
+                             "qualities/*/quality"))
+                {
+                    string strQuality;
+                    if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        XPathNavigator objQuality
+                            = _xmlBaseQualityDataNode.SelectSingleNode(
+                                "qualities/quality[name = " + xmlQuality.Value.CleanXPath() + ']');
+                        strQuality = (await objQuality.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                     ?.Value
+                                     ?? xmlQuality.Value;
+
+                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strSelect))
+                            strQuality += strSpace + '(' + await _objCharacter.TranslateExtraAsync(strSelect)
+                                          + ')';
+                    }
+                    else
+                    {
+                        strQuality = xmlQuality.Value;
+                        string strSelect = (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select"))
+                            ?.Value;
+                        if (!string.IsNullOrEmpty(strSelect))
+                            strQuality += strSpace + '(' + strSelect + ')';
+                    }
+
+                    if (dicQualities.TryGetValue(strQuality, out int intExistingRating))
+                        dicQualities[strQuality] = intExistingRating + 1;
+                    else
+                        dicQualities.Add(strQuality, 1);
                 }
 
-                lblMetavariantKarma.Text = objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpression("karma")?.Value ?? 0.ToString(GlobalSettings.CultureInfo);
+                if (dicQualities.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdQualities))
+                    {
+                        foreach (KeyValuePair<string, int> objLoopQuality in dicQualities)
+                        {
+                            sbdQualities.Append(objLoopQuality.Key);
+                            if (objLoopQuality.Value > 1)
+                            {
+                                sbdQualities.Append(strSpace)
+                                            .Append(objLoopQuality.Value.ToString(GlobalSettings.CultureInfo));
+                            }
 
-                string strSource = objXmlMetatype.SelectSingleNodeAndCacheExpression("source")?.Value;
+                            sbdQualities.Append(',').Append(strSpace);
+                        }
+
+                        sbdQualities.Length -= 2;
+                        lblMetavariantQualities.Text = sbdQualities.ToString();
+                    }
+                }
+                else
+                {
+                    lblMetavariantQualities.Text = await LanguageManager.GetStringAsync("String_None");
+                }
+
+                lblMetavariantKarma.Text
+                    = (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("karma"))?.Value
+                      ?? 0.ToString(GlobalSettings.CultureInfo);
+
+                string strSource = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("source"))
+                    ?.Value;
                 if (!string.IsNullOrEmpty(strSource))
                 {
-                    string strPage = objXmlMetatype.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetatype.SelectSingleNodeAndCacheExpression("page")?.Value;
+                    string strPage
+                        = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
+                          ?? (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value;
                     if (!string.IsNullOrEmpty(strPage))
                     {
-                        SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                        SourceString objSource = await SourceString.GetSourceStringAsync(
+                            strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
+                            _objCharacter);
                         lblSource.Text = objSource.ToString();
                         lblSource.SetToolTip(objSource.LanguageBookTooltip);
                     }
                     else
                     {
-                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
                 }
                 else
                 {
-                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
                     lblSource.SetToolTip(strUnknown);
                 }
 
                 // Set the special attributes label.
-                if (!int.TryParse(objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpression("value")?.Value, NumberStyles.Any,
-                    GlobalSettings.InvariantCultureInfo, out int intSpecialAttribPoints))
+                if (!int.TryParse(
+                        (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync("value"))
+                        ?.Value,
+                        NumberStyles.Any,
+                        GlobalSettings.InvariantCultureInfo, out int intSpecialAttribPoints))
                     intSpecialAttribPoints = 0;
 
-                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
-                    + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Talent\" and value = "
+                    + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
+                    + " and (not(prioritytable) or prioritytable = "
+                    + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
-                    if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                    if (xmlBaseTalentPriorityList.Count == 1
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                        != null)
                     {
-                        XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + (cboTalents.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + "]");
-                        if (int.TryParse(objXmlTalentsNode?.SelectSingleNodeAndCacheExpression("specialattribpoints")?.Value, out int intTemp))
+                        XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
+                            "talents/talent[value = "
+                            + (cboTalents.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + ']');
+                        if (objXmlTalentsNode != null
+                            && int.TryParse(
+                                (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
+                                    "specialattribpoints"))
+                                ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
                     }
@@ -1619,14 +2122,25 @@ namespace Chummer
                 lblWIL.Text = string.Empty;
 
                 int intSpecialAttribPoints = 0;
-                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
-                    + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
+                XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select(
+                    "priorities/priority[category = \"Talent\" and value = "
+                    + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
+                    + " and (not(prioritytable) or prioritytable = "
+                    + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
-                    if (xmlBaseTalentPriorityList.Count == 1 || xmlBaseTalentPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                    if (xmlBaseTalentPriorityList.Count == 1
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable")
+                        != null)
                     {
-                        XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode("talents/talent[value = " + (cboTalents.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + "]");
-                        if (int.TryParse(objXmlTalentsNode?.SelectSingleNodeAndCacheExpression("specialattribpoints")?.Value, out int intTemp))
+                        XPathNavigator objXmlTalentsNode = xmlBaseTalentPriority.SelectSingleNode(
+                            "talents/talent[value = "
+                            + (cboTalents.SelectedValue?.ToString() ?? string.Empty).CleanXPath() + ']');
+                        if (objXmlTalentsNode != null
+                            && int.TryParse(
+                                (await objXmlTalentsNode.SelectSingleNodeAndCacheExpressionAsync(
+                                    "specialattribpoints"))
+                                ?.Value, out int intTemp))
                             intSpecialAttribPoints += intTemp;
                         break;
                     }
@@ -1654,7 +2168,7 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
-        private void PopulateTalents()
+        private async ValueTask PopulateTalents()
         {
             // Load the Priority information.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTalent))
@@ -1668,23 +2182,23 @@ namespace Chummer
                 foreach (XPathNavigator xmlBaseTalentPriority in xmlBaseTalentPriorityList)
                 {
                     if (xmlBaseTalentPriorityList.Count == 1
-                        || xmlBaseTalentPriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                        || await xmlBaseTalentPriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
                     {
-                        foreach (XPathNavigator objXmlPriorityTalent in xmlBaseTalentPriority.SelectAndCacheExpression(
+                        foreach (XPathNavigator objXmlPriorityTalent in await xmlBaseTalentPriority.SelectAndCacheExpressionAsync(
                                      "talents/talent"))
                         {
                             XPathNavigator xmlQualitiesNode
-                                = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("qualities");
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("qualities");
                             if (xmlQualitiesNode != null)
                             {
                                 bool blnFoundUnavailableQuality = false;
 
-                                foreach (XPathNavigator xmlQuality in xmlQualitiesNode.SelectAndCacheExpression(
+                                foreach (XPathNavigator xmlQuality in await xmlQualitiesNode.SelectAndCacheExpressionAsync(
                                              "quality"))
                                 {
                                     if (_xmlBaseQualityDataNode.SelectSingleNode(
                                             "qualities/quality[" + _objCharacter.Settings.BookXPath() + " and name = "
-                                            + xmlQuality.Value.CleanXPath() + "]") == null)
+                                            + xmlQuality.Value.CleanXPath() + ']') == null)
                                     {
                                         blnFoundUnavailableQuality = true;
                                         break;
@@ -1696,14 +2210,14 @@ namespace Chummer
                             }
 
                             XPathNavigator xmlForbiddenNode
-                                = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("forbidden");
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("forbidden");
                             if (xmlForbiddenNode != null)
                             {
                                 bool blnRequirementForbidden = false;
 
                                 // Loop through the oneof requirements.
                                 XPathNodeIterator objXmlForbiddenList
-                                    = xmlForbiddenNode.SelectAndCacheExpression("oneof");
+                                    = await xmlForbiddenNode.SelectAndCacheExpressionAsync("oneof");
                                 foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                 {
                                     XPathNodeIterator objXmlOneOfList
@@ -1750,14 +2264,14 @@ namespace Chummer
                             }
 
                             XPathNavigator xmlRequiredNode
-                                = objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("required");
+                                = await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("required");
                             if (xmlRequiredNode != null)
                             {
                                 bool blnRequirementMet = false;
 
                                 // Loop through the oneof requirements.
                                 XPathNodeIterator objXmlForbiddenList
-                                    = xmlRequiredNode.SelectAndCacheExpression("oneof");
+                                    = await xmlRequiredNode.SelectAndCacheExpressionAsync("oneof");
                                 foreach (XPathNavigator objXmlOneOf in objXmlForbiddenList)
                                 {
                                     XPathNodeIterator objXmlOneOfList
@@ -1804,11 +2318,11 @@ namespace Chummer
                             }
 
                             lstTalent.Add(new ListItem(
-                                              objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("value")?.Value,
-                                              objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("translate")
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("value"))?.Value,
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                   ?.Value ??
-                                              objXmlPriorityTalent.SelectSingleNodeAndCacheExpression("name")?.Value ??
-                                              LanguageManager.GetString("String_Unknown")));
+                                              (await objXmlPriorityTalent.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ??
+                                              await LanguageManager.GetStringAsync("String_Unknown")));
                         }
 
                         break;
@@ -1833,7 +2347,7 @@ namespace Chummer
             }
         }
 
-        private void PopulateMetavariants()
+        private async ValueTask PopulateMetavariants()
         {
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
 
@@ -1842,15 +2356,15 @@ namespace Chummer
             {
                 string strSelectedHeritage = cboHeritage.SelectedValue?.ToString();
 
-                XPathNavigator objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + "]");
+                XPathNavigator objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                 XPathNavigator objXmlMetatypeBP = null;
                 XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Heritage\" and value = " + strSelectedHeritage.CleanXPath()
                     + " and (not(prioritytable) or prioritytable = " + _objCharacter.Settings.PriorityTable.CleanXPath() + ")]");
                 foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                 {
-                    if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                    if (xmlBaseMetatypePriorityList.Count == 1 || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
                     {
-                        objXmlMetatypeBP = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + "]");
+                        objXmlMetatypeBP = xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                         break;
                     }
                 }
@@ -1860,20 +2374,20 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMetavariants))
                     {
-                        lstMetavariants.Add(new ListItem(Guid.Empty, LanguageManager.GetString("String_None")));
+                        lstMetavariants.Add(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None")));
                         // Retrieve the list of Metavariants for the selected Metatype.
                         foreach (XPathNavigator objXmlMetavariant in objXmlMetatype.Select(
-                                     "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + "]"))
+                                     "metavariants/metavariant[" + _objCharacter.Settings.BookXPath() + ']'))
                         {
-                            string strName = objXmlMetavariant.SelectSingleNodeAndCacheExpression("name")?.Value
-                                             ?? LanguageManager.GetString("String_Unknown");
+                            string strName = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
                             if (objXmlMetatypeBP.SelectSingleNode(
-                                    "metavariants/metavariant[name = " + strName.CleanXPath() + "]") != null)
+                                    "metavariants/metavariant[name = " + strName.CleanXPath() + ']') != null)
                             {
                                 lstMetavariants.Add(new ListItem(
                                                         strName,
-                                                        objXmlMetavariant
-                                                            .SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                        (await objXmlMetavariant
+                                                            .SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                         ?? strName));
                             }
                         }
@@ -1893,10 +2407,10 @@ namespace Chummer
                         cboMetavariant.EndUpdate();
 
                         // If the Metatype has Force enabled, show the Force NUD.
-                        string strEssMax = objXmlMetatype.SelectSingleNodeAndCacheExpression("essmax")?.Value
+                        string strEssMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("essmax"))?.Value
                                            ?? string.Empty;
                         int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
-                        if (objXmlMetatype.SelectSingleNodeAndCacheExpression("forcecreature") != null || intPos != -1)
+                        if (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forcecreature") != null || intPos != -1)
                         {
                             if (intPos != -1)
                             {
@@ -1905,27 +2419,21 @@ namespace Chummer
                                     --intPos;
                                     lblForceLabel.Text = strEssMax.Substring(intPos, 3)
                                                                   .Replace(
-                                                                      "D6", LanguageManager.GetString("String_D6"));
+                                                                      "D6", await LanguageManager.GetStringAsync("String_D6"));
                                     nudForce.Maximum
                                         = Convert.ToInt32(strEssMax[intPos], GlobalSettings.InvariantCultureInfo) * 6;
                                 }
                                 else
                                 {
                                     lblForceLabel.Text = 1.ToString(GlobalSettings.CultureInfo)
-                                                         + LanguageManager.GetString("String_D6");
+                                                         + await LanguageManager.GetStringAsync("String_D6");
                                     nudForce.Maximum = 6;
                                 }
                             }
                             else
                             {
-                                // TODO: Unhardcode whether Force is called "Force" or "Level"
-                                lblForceLabel.Text = LanguageManager.GetString(
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("bodmax")?.Value == "0" &&
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("agimax")?.Value == "0" &&
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("reamax")?.Value == "0" &&
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("strmax")?.Value == "0" &&
-                                    objXmlMetatype.SelectSingleNodeAndCacheExpression("magmin")?.Value.Contains('F')
-                                    != true
+                                lblForceLabel.Text = await LanguageManager.GetStringAsync(
+                                    await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("forceislevels") != null
                                         ? "String_Level"
                                         : "String_Force");
                                 nudForce.Maximum = 100;
@@ -1944,7 +2452,7 @@ namespace Chummer
                 else
                 {
                     cboMetavariant.BeginUpdate();
-                    cboMetavariant.PopulateWithListItems(new ListItem("None", LanguageManager.GetString("String_None")).Yield());
+                    cboMetavariant.PopulateWithListItems(new ListItem("None", await LanguageManager.GetStringAsync("String_None")).Yield());
                     cboMetavariant.Enabled = false;
                     cboMetavariant.EndUpdate();
 
@@ -1956,7 +2464,7 @@ namespace Chummer
             {
                 // Clear the Metavariant list if nothing is currently selected.
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.PopulateWithListItems(new ListItem("None", LanguageManager.GetString("String_None")).Yield());
+                cboMetavariant.PopulateWithListItems(new ListItem("None", await LanguageManager.GetStringAsync("String_None")).Yield());
                 cboMetavariant.Enabled = false;
                 cboMetavariant.EndUpdate();
 
@@ -1988,12 +2496,12 @@ namespace Chummer
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
                                          "metatypes/metatype[(" + _objCharacter.Settings.BookXPath()
                                                                 + ") and category = " + strSelectedCategory.CleanXPath()
-                                                                + "]"))
+                                                                + ']'))
                             {
                                 string strName = objXmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value;
                                 if (!string.IsNullOrEmpty(strName)
                                     && xmlBaseMetatypePriority.SelectSingleNode(
-                                        "metatypes/metatype[name = " + strName.CleanXPath() + "]") != null)
+                                        "metatypes/metatype[name = " + strName.CleanXPath() + ']') != null)
                                 {
                                     lstMetatype.Add(new ListItem(
                                                         strName,
@@ -2191,9 +2699,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Custom Methods

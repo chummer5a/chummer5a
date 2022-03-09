@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -122,7 +123,7 @@ namespace Chummer
             _objDrug = new Drug(_objCharacter)
             {
                 Name = txtDrugName.Text,
-                Category = "Custom Drug",
+                Category = "Custom Drug"
             };
             if ((_objCharacter != null) && (!string.IsNullOrEmpty(cboGrade?.SelectedValue?.ToString())))
                 _objDrug.Grade = Grade.ConvertToCyberwareGrade(cboGrade.SelectedValue.ToString(),
@@ -136,18 +137,18 @@ namespace Chummer
             }
         }
 
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             // Make sure the suite and file name fields are populated.
             if (string.IsNullOrEmpty(txtDrugName.Text))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CustomDrug_Name"), LanguageManager.GetString("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name"), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             if (_objDrug.Components.Count(o => o.Category == "Foundation") != 1)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CustomDrug_MissingFoundation"), LanguageManager.GetString("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CustomDrug_MissingFoundation"), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Foundation"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -156,7 +157,7 @@ namespace Chummer
             Close();
         }
 
-        private void AddSelectedComponent()
+        private async ValueTask AddSelectedComponent()
         {
             if (!(treAvailableComponents.SelectedNode?.Tag is DrugNodeData objNodeData) || objNodeData.Level == -1)
             {
@@ -175,8 +176,8 @@ namespace Chummer
             if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
-                Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_DuplicateDrugComponentWarning"),
+                Program.ShowMessageBox(this,
+                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_DuplicateDrugComponentWarning"),
                         objNodeData.DrugComponent.Limit));
                 return;
             }
@@ -184,15 +185,15 @@ namespace Chummer
             //drug can have only one foundation
             if (objNodeData.DrugComponent.Category == "Foundation" && _lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning"));
                 return;
             }
 
-            string strSpaceString = LanguageManager.GetString("String_Space");
+            string strSpaceString = await LanguageManager.GetStringAsync("String_Space");
             //restriction for maximum level of block (CF 191)
             if (objNodeData.Level + 1 > 2)
             {
-                string strColonString = LanguageManager.GetString("String_Colon");
+                string strColonString = await LanguageManager.GetStringAsync("String_Colon");
                 foreach (DrugComponent objFoundationComponent in _lstSelectedDrugComponents.Select(x => x.DrugComponent))
                 {
                     if (objFoundationComponent.Category != "Foundation")
@@ -205,7 +206,7 @@ namespace Chummer
                             dctBlockAttributes.TryGetValue(objItem.Key, out decimal decBlockAttrValue) &&
                             decBlockAttrValue > 0)
                         {
-                            string strMessage = LanguageManager.GetString("String_MaximumDrugBlockLevel") +
+                            string strMessage = await LanguageManager.GetStringAsync("String_MaximumDrugBlockLevel") +
                                                 Environment.NewLine + Environment.NewLine +
                                                 objFoundationComponent.CurrentDisplayName + strColonString +
                                                 strSpaceString + objItem.Key +
@@ -213,7 +214,7 @@ namespace Chummer
                                                 objNodeData.DrugComponent.CurrentDisplayName + strColonString +
                                                 strSpaceString + objItem.Key +
                                                 decBlockAttrValue.ToString("+#.#;-#.#;", GlobalSettings.CultureInfo);
-                            Program.MainForm.ShowMessageBox(this, strMessage);
+                            Program.ShowMessageBox(this, strMessage);
                             return;
                         }
                     }
@@ -222,7 +223,7 @@ namespace Chummer
 
             string strNodeText = objNodeData.DrugComponent.CurrentDisplayName;
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
-                strNodeText += strSpaceString + '(' + LanguageManager.GetString("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ")";
+                strNodeText += strSpaceString + '(' + await LanguageManager.GetStringAsync("String_Level") + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ')';
             TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);
             objNewNode.Tag = objNodeData;
             objNewNode.EnsureVisible();
@@ -250,14 +251,14 @@ namespace Chummer
             }
         }
 
-        private void btnAddComponent_Click(object sender, EventArgs e)
+        private async void btnAddComponent_Click(object sender, EventArgs e)
         {
-            AddSelectedComponent();
+            await AddSelectedComponent();
         }
 
-        private void treAvailableComponents_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        private async void treAvailableComponents_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            AddSelectedComponent();
+            await AddSelectedComponent();
         }
 
         private void btnRemoveComponent_Click(object sender, EventArgs e)
@@ -277,9 +278,9 @@ namespace Chummer
             lblDrugDescription.Text = _objDrug.GenerateDescription(0);
         }
 
-        private void btnOk_Click(object sender, EventArgs e)
+        private async void btnOk_Click(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -296,7 +297,7 @@ namespace Chummer
 
             // Update the Essence and Cost multipliers based on the Grade that has been selected.
             // Retrieve the information for the selected Grade.
-            XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = " + cboGrade.SelectedValue.ToString().CleanXPath() + "]");
+            XmlNode objXmlGrade = _objXmlDocument.SelectSingleNode("/chummer/grades/grade[name = " + cboGrade.SelectedValue.ToString().CleanXPath() + ']');
             if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
                 _dblCostMultiplier = 1.0;
             if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))

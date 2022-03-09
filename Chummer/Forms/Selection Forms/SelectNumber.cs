@@ -22,13 +22,13 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectNumber : Form
+    public partial class SelectNumber : Form
     {
         private decimal _decReturnValue;
 
         #region Control Events
 
-        public frmSelectNumber(int intDecimalPlaces = 2)
+        public SelectNumber(int intDecimalPlaces = 2)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -36,7 +36,7 @@ namespace Chummer
             nudNumber.DecimalPlaces = intDecimalPlaces;
         }
 
-        private void frmSelectNumber_Shown(object sender, EventArgs e)
+        private void SelectNumber_Shown(object sender, EventArgs e)
         {
             nudNumber.Focus();
         }

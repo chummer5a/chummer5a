@@ -1,9 +1,9 @@
-version: 5.216.{build}
+version: 5.222.{build}
 branches:
   only:
   - master
 skip_tags: true
-image: Visual Studio 2019
+image: Visual Studio 2022
 configuration: Release
 platform: Any CPU
 init:
@@ -21,7 +21,8 @@ install:
 nuget:
   disable_publish_on_pr: true
 cache:
-  - packages -> **\packages.config
+  - packages -> **\packages.config                        # preserve "packages" directory in the root of build folder but will reset it if packages.config is modified
+  - '%USERPROFILE%\.nuget\packages -> **\project.json'    # project.json cache
 before_build:
 - ps: |
     $token = $env:api_token
@@ -60,7 +61,7 @@ before_build:
     else
     {
         nuget restore
-        & 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\IDE\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
+        & 'C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\TextTransform.exe' 'C:\projects\chummer\Chummer\Properties\contributors.tt'
         Set-AppveyorBuildVariable -Name OldMinorVersion -Value $($env:APPVEYOR_BUILD_VERSION).Split('.')[1]
         Write-Host "Environment Variable: $env:OldMinorVersion"
         $Assemblyfile = "C:\projects\chummer\Chummer\Properties\AssemblyInfo.cs"
@@ -106,8 +107,8 @@ artifacts:
 deploy:
 - provider: GitHub
   tag: Nightly-v$(appveyor_build_version)
-  auth_token:
-    secure: xrNlPolUlOE6KAfl/ZDdT8kdVxlzMZXfvafmN92gRYHGh6b2XcwXNi8K1+f0LO6m
+  auth_token: 
+      secure: eh1lnecGeM5jlVA2x7bLrKGaN/5dft7U4LSNiMenMrDTj7rHinhLQnTTnL2BXY5J
   artifact: Chummer
   draft: false
   prerelease: true
@@ -116,6 +117,7 @@ on_failure:
     Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
     if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true)
     {
+      # Webhook throws errors during build.
       Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
       ./send.ps1 failure $env:DISCORD_WEBHOOK_URL
     }

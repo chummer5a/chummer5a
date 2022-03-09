@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -28,7 +29,7 @@ namespace Chummer
     public partial class CreateSpell : Form
     {
         private readonly XPathNavigator _objXmlDocument;
-        private bool _blnLoading;
+        private bool _blnLoading = true;
         private bool _blnSkipRefresh;
         private readonly Spell _objSpell;
 
@@ -43,21 +44,20 @@ namespace Chummer
             _objXmlDocument = objCharacter.LoadDataXPath("spells.xml");
         }
 
-        private void frmCreateSpell_Load(object sender, EventArgs e)
+        private async void CreateSpell_Load(object sender, EventArgs e)
         {
-            _blnLoading = true;
             lblDV.Text = 0.ToString(GlobalSettings.CultureInfo);
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCategory))
             {
                 // Populate the list of Spell Categories.
-                foreach (XPathNavigator objXmlCategory in _objXmlDocument.SelectAndCacheExpression(
+                foreach (XPathNavigator objXmlCategory in await _objXmlDocument.SelectAndCacheExpressionAsync(
                              "/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
                                                  ?? strInnerText));
                 }
 
@@ -72,8 +72,8 @@ namespace Chummer
             // Populate the list of Spell Types.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
             {
-                lstTypes.Add(new ListItem("P", LanguageManager.GetString("String_DescPhysical")));
-                lstTypes.Add(new ListItem("M", LanguageManager.GetString("String_DescMana")));
+                lstTypes.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_DescPhysical")));
+                lstTypes.Add(new ListItem("M", await LanguageManager.GetStringAsync("String_DescMana")));
                 cboType.PopulateWithListItems(lstTypes);
             }
 
@@ -82,8 +82,8 @@ namespace Chummer
             // Populate the list of Ranges.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstRanges))
             {
-                lstRanges.Add(new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong")));
-                lstRanges.Add(new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight")));
+                lstRanges.Add(new ListItem("T", await LanguageManager.GetStringAsync("String_SpellRangeTouchLong")));
+                lstRanges.Add(new ListItem("LOS", await LanguageManager.GetStringAsync("String_SpellRangeLineOfSight")));
                 cboRange.PopulateWithListItems(lstRanges);
             }
             cboRange.SelectedIndex = 0;
@@ -91,9 +91,9 @@ namespace Chummer
             // Populate the list of Durations.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDurations))
             {
-                lstDurations.Add(new ListItem("I", LanguageManager.GetString("String_SpellDurationInstantLong")));
-                lstDurations.Add(new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong")));
-                lstDurations.Add(new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong")));
+                lstDurations.Add(new ListItem("I", await LanguageManager.GetStringAsync("String_SpellDurationInstantLong")));
+                lstDurations.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_SpellDurationPermanentLong")));
+                lstDurations.Add(new ListItem("S", await LanguageManager.GetStringAsync("String_SpellDurationSustainedLong")));
                 cboDuration.PopulateWithListItems(lstDurations);
             }
 
@@ -104,10 +104,10 @@ namespace Chummer
             cboRange.EndUpdate();
             cboDuration.EndUpdate();
 
-            CalculateDrain();
+            await CalculateDrain();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboCategory.SelectedValue.ToString() == "Health")
             {
@@ -117,26 +117,26 @@ namespace Chummer
             else
                 chkArea.Enabled = true;
 
-            ChangeModifiers();
-            CalculateDrain();
+            await ChangeModifiers();
+            await CalculateDrain();
         }
 
-        private void cboType_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CalculateDrain();
+            await CalculateDrain();
         }
 
-        private void cboRange_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboRange_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CalculateDrain();
+            await CalculateDrain();
         }
 
-        private void cboDuration_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDuration_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CalculateDrain();
+            await CalculateDrain();
         }
 
-        private void chkModifier_CheckedChanged(object sender, EventArgs e)
+        private async void chkModifier_CheckedChanged(object sender, EventArgs e)
         {
             cboType.Enabled = true;
             if (_blnSkipRefresh)
@@ -381,42 +381,42 @@ namespace Chummer
                     }
             }
 
-            CalculateDrain();
+            await CalculateDrain();
         }
 
-        private void chkRestricted_CheckedChanged(object sender, EventArgs e)
+        private async void chkRestricted_CheckedChanged(object sender, EventArgs e)
         {
             chkVeryRestricted.Enabled = !chkRestricted.Checked;
 
-            CalculateDrain();
+            await CalculateDrain();
             txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
             if (!txtRestriction.Enabled)
                 txtRestriction.Text = string.Empty;
         }
 
-        private void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
+        private async void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
         {
             chkRestricted.Enabled = !chkVeryRestricted.Checked;
 
-            CalculateDrain();
+            await CalculateDrain();
             txtRestriction.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
             if (!txtRestriction.Enabled)
                 txtRestriction.Text = string.Empty;
         }
 
-        private void nudNumberOfEffects_ValueChanged(object sender, EventArgs e)
+        private async void nudNumberOfEffects_ValueChanged(object sender, EventArgs e)
         {
-            CalculateDrain();
+            await CalculateDrain();
         }
 
-        private void chkArea_CheckedChanged(object sender, EventArgs e)
+        private async void chkArea_CheckedChanged(object sender, EventArgs e)
         {
-            CalculateDrain();
+            await CalculateDrain();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -431,7 +431,7 @@ namespace Chummer
         /// <summary>
         /// Re-calculate the Drain modifiers based on the currently-selected options.
         /// </summary>
-        private void ChangeModifiers()
+        private async ValueTask ChangeModifiers()
         {
             foreach (CheckBox chkCheckbox in flpModifiers.Controls.OfType<CheckBox>())
             {
@@ -459,74 +459,74 @@ namespace Chummer
             {
                 case "Detection":
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_DetectionSpell1");
+                    chkModifier1.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell1");
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_DetectionSpell2");
+                    chkModifier2.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell2");
                     chkModifier3.Tag = "+0";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_DetectionSpell3");
+                    chkModifier3.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell3");
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_DetectionSpell4");
+                    chkModifier4.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell4");
                     chkModifier5.Tag = "+0";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_DetectionSpell5");
+                    chkModifier5.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell5");
                     chkModifier6.Tag = "+0";
-                    chkModifier6.Text = LanguageManager.GetString("Checkbox_DetectionSpell6");
+                    chkModifier6.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell6");
                     chkModifier7.Tag = "+1";
-                    chkModifier7.Text = LanguageManager.GetString("Checkbox_DetectionSpell7");
+                    chkModifier7.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell7");
                     chkModifier8.Tag = "+1";
-                    chkModifier8.Text = LanguageManager.GetString("Checkbox_DetectionSpell8");
+                    chkModifier8.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell8");
                     chkModifier9.Tag = "+2";
-                    chkModifier9.Text = LanguageManager.GetString("Checkbox_DetectionSpell9");
+                    chkModifier9.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell9");
                     chkModifier10.Tag = "+4";
-                    chkModifier10.Text = LanguageManager.GetString("Checkbox_DetectionSpell10");
+                    chkModifier10.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell10");
                     chkModifier11.Tag = "+1";
-                    chkModifier11.Text = LanguageManager.GetString("Checkbox_DetectionSpell11");
+                    chkModifier11.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell11");
                     chkModifier12.Tag = "+2";
-                    chkModifier12.Text = LanguageManager.GetString("Checkbox_DetectionSpell12");
+                    chkModifier12.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell12");
                     chkModifier13.Tag = "+4";
-                    chkModifier13.Text = LanguageManager.GetString("Checkbox_DetectionSpell13");
+                    chkModifier13.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell13");
                     chkModifier14.Tag = "+2";
-                    chkModifier14.Text = LanguageManager.GetString("Checkbox_DetectionSpell14");
+                    chkModifier14.Text = await LanguageManager.GetStringAsync("Checkbox_DetectionSpell14");
                     break;
 
                 case "Health":
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_HealthSpell1");
+                    chkModifier1.Text = await LanguageManager.GetStringAsync("Checkbox_HealthSpell1");
                     chkModifier2.Tag = "+4";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_HealthSpell2");
+                    chkModifier2.Text = await LanguageManager.GetStringAsync("Checkbox_HealthSpell2");
                     chkModifier3.Tag = "-2";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_HealthSpell3");
+                    chkModifier3.Text = await LanguageManager.GetStringAsync("Checkbox_HealthSpell3");
                     chkModifier4.Tag = "+2";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_HealthSpell4");
+                    chkModifier4.Text = await LanguageManager.GetStringAsync("Checkbox_HealthSpell4");
                     chkModifier5.Tag = "-2";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_HealthSpell5");
+                    chkModifier5.Text = await LanguageManager.GetStringAsync("Checkbox_HealthSpell5");
                     break;
 
                 case "Illusion":
                     chkModifier1.Tag = "-1";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_IllusionSpell1");
+                    chkModifier1.Text = await LanguageManager.GetStringAsync("Checkbox_IllusionSpell1");
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_IllusionSpell2");
+                    chkModifier2.Text = await LanguageManager.GetStringAsync("Checkbox_IllusionSpell2");
                     chkModifier3.Tag = "-2";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_IllusionSpell3");
+                    chkModifier3.Text = await LanguageManager.GetStringAsync("Checkbox_IllusionSpell3");
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_IllusionSpell4");
+                    chkModifier4.Text = await LanguageManager.GetStringAsync("Checkbox_IllusionSpell4");
                     chkModifier5.Tag = "+2";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_IllusionSpell5");
+                    chkModifier5.Text = await LanguageManager.GetStringAsync("Checkbox_IllusionSpell5");
                     break;
 
                 case "Manipulation":
                     chkModifier1.Tag = "-2";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_ManipulationSpell1");
+                    chkModifier1.Text = await LanguageManager.GetStringAsync("Checkbox_ManipulationSpell1");
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_ManipulationSpell2");
+                    chkModifier2.Text = await LanguageManager.GetStringAsync("Checkbox_ManipulationSpell2");
                     chkModifier3.Tag = "+0";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_ManipulationSpell3");
+                    chkModifier3.Text = await LanguageManager.GetStringAsync("Checkbox_ManipulationSpell3");
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_ManipulationSpell4");
+                    chkModifier4.Text = await LanguageManager.GetStringAsync("Checkbox_ManipulationSpell4");
                     chkModifier5.Tag = "+2";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_ManipulationSpell5");
+                    chkModifier5.Text = await LanguageManager.GetStringAsync("Checkbox_ManipulationSpell5");
                     chkModifier6.Tag = "+2";
-                    chkModifier6.Text = LanguageManager.GetString("Checkbox_ManipulationSpell6");
+                    chkModifier6.Text = await LanguageManager.GetStringAsync("Checkbox_ManipulationSpell6");
                     nudNumberOfEffects.Visible = true;
                     nudNumberOfEffects.Top = chkModifier6.Top - 1;
                     break;
@@ -534,21 +534,21 @@ namespace Chummer
                 default:
                     // Combat.
                     chkModifier1.Tag = "+0";
-                    chkModifier1.Text = LanguageManager.GetString("Checkbox_CombatSpell1");
+                    chkModifier1.Text = await LanguageManager.GetStringAsync("Checkbox_CombatSpell1");
                     chkModifier2.Tag = "+0";
-                    chkModifier2.Text = LanguageManager.GetString("Checkbox_CombatSpell2");
+                    chkModifier2.Text = await LanguageManager.GetStringAsync("Checkbox_CombatSpell2");
                     chkModifier3.Tag = "+2";
-                    chkModifier3.Text = LanguageManager.GetString("Checkbox_CombatSpell3");
+                    chkModifier3.Text = await LanguageManager.GetStringAsync("Checkbox_CombatSpell3");
                     nudNumberOfEffects.Visible = true;
                     nudNumberOfEffects.Top = chkModifier3.Top - 1;
                     chkModifier4.Tag = "+0";
-                    chkModifier4.Text = LanguageManager.GetString("Checkbox_CombatSpell4");
+                    chkModifier4.Text = await LanguageManager.GetStringAsync("Checkbox_CombatSpell4");
                     chkModifier5.Tag = "-1";
-                    chkModifier5.Text = LanguageManager.GetString("Checkbox_CombatSpell5");
+                    chkModifier5.Text = await LanguageManager.GetStringAsync("Checkbox_CombatSpell5");
                     break;
             }
 
-            string strCheckBoxFormat = LanguageManager.GetString("String_Space") + "({0})";
+            string strCheckBoxFormat = await LanguageManager.GetStringAsync("String_Space") + "({0})";
             foreach (Control objControl in flpModifiers.Controls)
             {
                 switch (objControl)
@@ -597,7 +597,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the Spell's Drain Value based on the currently-selected options.
         /// </summary>
-        private string CalculateDrain()
+        private async ValueTask<string> CalculateDrain()
         {
             if (_blnLoading)
                 return string.Empty;
@@ -659,7 +659,7 @@ namespace Chummer
             if (cboCategory.SelectedValue.ToString() == "Health" && chkModifier1.Checked)
             {
                 // Health Spells use (Damage Value) as their base.
-                strBase = '(' + LanguageManager.GetString("String_SpellDamageValue") + ')';
+                strBase = '(' + await LanguageManager.GetStringAsync("String_SpellDamageValue") + ')';
             }
             else
             {
@@ -672,9 +672,9 @@ namespace Chummer
                 strDV = '+' + strDV;
             if (intDV == 0)
                 strDV = string.Empty;
-            lblDV.Text = (strBase + strDV).Replace('/', '÷')
-                .CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"))
-                .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"));
+            lblDV.Text = await (strBase + strDV).Replace('/', '÷').Replace('*', '×')
+                .CheapReplaceAsync("F", () => LanguageManager.GetStringAsync("String_SpellForce"))
+                .CheapReplaceAsync("Damage Value", () => LanguageManager.GetStringAsync("String_SpellDamageValue"));
 
             return strBase + strDV;
         }
@@ -682,7 +682,7 @@ namespace Chummer
         /// <summary>
         /// Accept the values of the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             string strMessage = string.Empty;
             // Make sure a name has been provided.
@@ -690,7 +690,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += Environment.NewLine;
-                strMessage += LanguageManager.GetString("Message_SpellName");
+                strMessage += await LanguageManager.GetStringAsync("Message_SpellName");
             }
 
             // Make sure a Restricted value if the field is enabled.
@@ -698,7 +698,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strMessage))
                     strMessage += Environment.NewLine;
-                strMessage += LanguageManager.GetString("Message_SpellRestricted");
+                strMessage += await LanguageManager.GetStringAsync("Message_SpellRestricted");
             }
 
             switch (cboCategory.SelectedValue.ToString())
@@ -711,7 +711,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strMessage))
                                 strMessage += Environment.NewLine;
-                            strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1");
+                            strMessage += await LanguageManager.GetStringAsync("Message_CombatSpellRequirement1");
                         }
 
                         // Either Physical damage or Stun damage must be selected.
@@ -719,7 +719,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strMessage))
                                 strMessage += Environment.NewLine;
-                            strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2");
+                            strMessage += await LanguageManager.GetStringAsync("Message_CombatSpellRequirement2");
                         }
 
                         break;
@@ -731,7 +731,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strMessage))
                                 strMessage += Environment.NewLine;
-                            strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1");
+                            strMessage += await LanguageManager.GetStringAsync("Message_DetectionSpellRequirement1");
                         }
 
                         // Either Active or Passive must be selected.
@@ -739,7 +739,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strMessage))
                                 strMessage += Environment.NewLine;
-                            strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2");
+                            strMessage += await LanguageManager.GetStringAsync("Message_DetectionSpellRequirement2");
                         }
 
                         break;
@@ -755,7 +755,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strMessage))
                                 strMessage += Environment.NewLine;
-                            strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1");
+                            strMessage += await LanguageManager.GetStringAsync("Message_IllusionSpellRequirement1");
                         }
 
                         // Either Single-Sense or Multi-Sense must be selected.
@@ -763,7 +763,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strMessage))
                                 strMessage += Environment.NewLine;
-                            strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2");
+                            strMessage += await LanguageManager.GetStringAsync("Message_IllusionSpellRequirement2");
                         }
 
                         break;
@@ -775,7 +775,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strMessage))
                                 strMessage += Environment.NewLine;
-                            strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1");
+                            strMessage += await LanguageManager.GetStringAsync("Message_ManipulationSpellRequirement1");
                         }
 
                         // Either Minor Change or Major Change must be selected.
@@ -783,7 +783,7 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strMessage))
                                 strMessage += Environment.NewLine;
-                            strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2");
+                            strMessage += await LanguageManager.GetStringAsync("Message_ManipulationSpellRequirement2");
                         }
 
                         break;
@@ -793,7 +793,7 @@ namespace Chummer
             // Show the message if necessary.
             if (!string.IsNullOrEmpty(strMessage))
             {
-                Program.MainForm.ShowMessageBox(this, strMessage, LanguageManager.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowMessageBox(this, strMessage, await LanguageManager.GetStringAsync("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -881,7 +881,7 @@ namespace Chummer
             {
                 _objSpell.Damage = chkModifier4.Checked ? "P" : "S";
             }
-            _objSpell.DV = CalculateDrain();
+            _objSpell.DvBase = await CalculateDrain();
             if (!string.IsNullOrEmpty(txtRestriction.Text))
                 _objSpell.Extra = txtRestriction.Text;
             _objSpell.Duration = cboDuration.SelectedValue.ToString();

@@ -28,15 +28,15 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <typeparam name="T2"></typeparam>
-    public class CollectionPooledObjectPolicy<T, T2> : IPooledObjectPolicy<T> where T : class, ICollection<T2>, new()
+    public sealed class CollectionPooledObjectPolicy<T, T2> : IPooledObjectPolicy<T> where T : class, ICollection<T2>, new()
     {
-        private readonly DefaultPooledObjectPolicy<T> _objBasePolicy = new DefaultPooledObjectPolicy<T>();
-
         /// <inheritdoc />
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T Create()
         {
-            return _objBasePolicy.Create();
+            T objReturn = new T();
+            objReturn.Clear(); // Just in case
+            return objReturn;
         }
 
         /// <inheritdoc />
@@ -44,7 +44,7 @@ namespace Chummer
         public bool Return(T obj)
         {
             obj.Clear();
-            return _objBasePolicy.Return(obj);
+            return true;
         }
     }
 }

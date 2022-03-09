@@ -21,14 +21,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
 namespace Chummer
 {
-    // TODO: Review naming schema
-    // ReSharper disable once InconsistentNaming
-    public partial class frmSelectMetamagic : Form
+    public partial class SelectMetamagic : Form
     {
         private bool _blnLoading = true;
         private string _strSelectedMetamagic = string.Empty;
@@ -44,7 +43,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectMetamagic(Character objCharacter, InitiationGrade objGrade)
+        public SelectMetamagic(Character objCharacter, InitiationGrade objGrade)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             if (objGrade == null)
@@ -77,16 +76,16 @@ namespace Chummer
             }
         }
 
-        private void frmSelectMetamagic_Load(object sender, EventArgs e)
+        private async void SelectMetamagic_Load(object sender, EventArgs e)
         {
-            Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strType);
-            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strType);
+            Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Title_SelectGeneric"), _strType);
+            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Checkbox_SelectGeneric_LimitList"), _strType);
 
             _blnLoading = false;
-            BuildMetamagicList();
+            await BuildMetamagicList();
         }
 
-        private void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMetamagic_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -95,13 +94,13 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retireve the information for the selected piece of Cyberware.
-                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + ']');
 
                 if (objXmlMetamagic != null)
                 {
                     string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value;
-                    string strPage = objXmlMetamagic.SelectSingleNode("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                    string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
+                    SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;
@@ -132,14 +131,14 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            BuildMetamagicList();
+            await BuildMetamagicList();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildMetamagicList();
+            await BuildMetamagicList();
         }
 
         #endregion Control Events
@@ -158,7 +157,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Metamagics.
         /// </summary>
-        private void BuildMetamagicList()
+        private async ValueTask BuildMetamagicList()
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
@@ -193,16 +192,16 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strRootXPath + '[' + strFilter + ']'))
                 {
-                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
                     {
                         lstMetamagics.Add(new ListItem(strId,
-                                                       objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")
-                                                                      ?.Value ?? objXmlMetamagic
-                                                           .SelectSingleNodeAndCacheExpression("name")?.Value ??
-                                                       LanguageManager.GetString("String_Unknown")));
+                                                       (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                                                      ?.Value ?? (await objXmlMetamagic
+                                                           .SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ??
+                                                       await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }
 
@@ -229,7 +228,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Make sure the selected Metamagic or Echo meets its requirements.
-                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + ']');
 
                 if (objXmlMetamagic?.RequirementsMet(_objCharacter, _strType) != true)
                     return;
@@ -240,9 +239,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

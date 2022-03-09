@@ -31,7 +31,7 @@ namespace Chummer
         private static readonly LockingDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new LockingDictionary<string, CharacterSettings>();
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings
+        public static IAsyncReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings
         {
             get
             {

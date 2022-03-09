@@ -19,8 +19,8 @@
 
 namespace Chummer
 {
-    internal interface ICanSell : ICanRemove
+    internal interface ICanSell : ICanRemove, IHasCost
     {
-        void Sell(decimal percentage);
+        bool Sell(decimal percentage, bool blnConfirmDelete);
     }
 }

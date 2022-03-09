@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -30,7 +31,7 @@ using NLog;
 namespace Chummer.Backend.Equipment
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, IDisposable
+    public sealed class LifestyleQuality : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, IHasSource, ICanRemove, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -59,6 +60,7 @@ namespace Chummer.Backend.Equipment
         private readonly HashSet<string> _setAllowedFreeLifestyles = Utils.StringHashSetPool.Get();
         private readonly Character _objCharacter;
         private bool _blnFree;
+        private bool _blnIsFreeGrid;
 
         #region Helper Methods
 
@@ -84,8 +86,6 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-#if DEBUG
-
         /// <summary>
         /// Convert a string to a LifestyleQualitySource.
         /// </summary>
@@ -94,17 +94,15 @@ namespace Chummer.Backend.Equipment
         {
             switch (strValue)
             {
+                case "BuiltIn":
+                    return QualitySource.BuiltIn;
+                case "Heritage":
+                    return QualitySource.Heritage;
+                case "Improvement":
+                    return QualitySource.Improvement;
                 default:
                     return QualitySource.Selected;
             }
-#else
-        /// <summary>
-        /// Convert a string to a LifestyleQualitySource.
-        /// </summary>
-        public QualitySource ConvertToLifestyleQualitySource()
-        {
-            return QualitySource.Selected;
-#endif
         }
 
         #endregion Helper Methods
@@ -138,10 +136,15 @@ namespace Chummer.Backend.Equipment
             else
             {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
 
             if (objXmlLifestyleQuality.TryGetStringFieldQuickly("name", ref _strName))
+            {
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("lp", ref _intLP);
             objXmlLifestyleQuality.TryGetStringFieldQuickly("cost", ref _strCost);
             objXmlLifestyleQuality.TryGetInt32FieldQuickly("multiplier", ref _intMultiplier);
@@ -183,7 +186,7 @@ namespace Chummer.Backend.Equipment
             _strExtra = strExtra;
             if (!string.IsNullOrEmpty(_strExtra))
             {
-                var intParenthesesIndex = _strExtra.IndexOf('(');
+                int intParenthesesIndex = _strExtra.IndexOf('(');
                 if (intParenthesesIndex != -1)
                     _strExtra = intParenthesesIndex + 1 < strExtra.Length
                         ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')')
@@ -224,7 +227,7 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlBonus = objXmlLifestyleQuality["bonus"];
             if (xmlBonus != null)
             {
-                var strOldForced = ImprovementManager.ForcedValue;
+                string strOldForced = ImprovementManager.ForcedValue;
                 if (!string.IsNullOrEmpty(_strExtra))
                     ImprovementManager.ForcedValue = _strExtra;
                 if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Quality,
@@ -251,7 +254,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = new SourceString(Source,
+                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
                         DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                         _objCharacter);
                 return _objCachedSourceDetail;
@@ -262,7 +265,7 @@ namespace Chummer.Backend.Equipment
         ///     Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -287,6 +290,8 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("print", _blnPrint.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("lifestylequalitytype", Type.ToString());
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
+            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("isfreegrid", _blnIsFreeGrid.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("allowed", _setAllowedFreeLifestyles.Count > 0
@@ -309,13 +314,15 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objNode, Lifestyle objParentLifestyle)
         {
             ParentLifestyle = objParentLifestyle;
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID)) _guiID = Guid.NewGuid();
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
-                _objCachedMyXmlNode = null;
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                _guiID = Guid.NewGuid();
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                var node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("lp", ref _intLP);
@@ -324,33 +331,31 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("basemultiplier", ref _intBaseMultiplier);
             objNode.TryGetBoolFieldQuickly("contributetolimit", ref _blnContributeToLP);
             if (!objNode.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum))
-                _objCachedMyXmlNode.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
+                objMyNode.Value?.TryGetInt32FieldQuickly("areamaximum", ref _intAreaMaximum);
             if (!objNode.TryGetInt32FieldQuickly("area", ref _intArea))
-                _objCachedMyXmlNode.TryGetInt32FieldQuickly("area", ref _intArea);
+                objMyNode.Value?.TryGetInt32FieldQuickly("area", ref _intArea);
             if (!objNode.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum))
-                _objCachedMyXmlNode.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
+                objMyNode.Value?.TryGetInt32FieldQuickly("securitymaximum", ref _intSecurityMaximum);
             if (!objNode.TryGetInt32FieldQuickly("security", ref _intSecurity))
-                _objCachedMyXmlNode.TryGetInt32FieldQuickly("security", ref _intSecurity);
+                objMyNode.Value?.TryGetInt32FieldQuickly("security", ref _intSecurity);
             if (!objNode.TryGetInt32FieldQuickly("comforts", ref _intComfort))
-                _objCachedMyXmlNode.TryGetInt32FieldQuickly("comforts", ref _intComfort);
+                objMyNode.Value?.TryGetInt32FieldQuickly("comforts", ref _intComfort);
             if (!objNode.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum))
-                _objCachedMyXmlNode.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum);
+                objMyNode.Value?.TryGetInt32FieldQuickly("comfortsmaximum", ref _intComfortMaximum);
             objNode.TryGetBoolFieldQuickly("print", ref _blnPrint);
             if (objNode["lifestylequalitytype"] != null)
                 Type = ConvertToLifestyleQualityType(objNode["lifestylequalitytype"].InnerText);
-#if DEBUG
             if (objNode["lifestylequalitysource"] != null)
                 OriginSource = ConvertToLifestyleQualitySource(objNode["lifestylequalitysource"].InnerText);
-#else
-            OriginSource = QualitySource.Selected;
-#endif
-            if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory))
-                _strCategory = GetNode()?["category"]?.InnerText ?? string.Empty;
+            if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory) && objMyNode.Value?.TryGetStringFieldQuickly("category", ref _strCategory) != true)
+                _strCategory = string.Empty;
+            objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
+            objNode.TryGetBoolFieldQuickly("isfreegrid", ref _blnIsFreeGrid);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             string strAllowedFreeLifestyles = string.Empty;
-            if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles))
-                strAllowedFreeLifestyles = GetNode()?["allowed"]?.InnerText ?? string.Empty;
+            if (!objNode.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles) && objMyNode.Value?.TryGetStringFieldQuickly("allowed", ref strAllowedFreeLifestyles) != true)
+                strAllowedFreeLifestyles = string.Empty;
             _setAllowedFreeLifestyles.Clear();
             foreach (string strLoopLifestyle in strAllowedFreeLifestyles.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                 _setAllowedFreeLifestyles.Add(strLoopLifestyle);
@@ -369,12 +374,14 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private void LegacyShim()
         {
+            if (Utils.IsUnitTest)
+                return;
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
             if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
                 return;
             XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
-            XPathNavigator objLifestyleQualityNode = GetNode()?.CreateNavigator()
-                                                     ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + "]");
+            XPathNavigator objLifestyleQualityNode = this.GetNodeXPath()
+                                                     ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + ']');
             if (objLifestyleQualityNode == null)
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
@@ -383,11 +390,11 @@ namespace Chummer.Backend.Equipment
                                  "/chummer/qualities/quality"))
                     {
                         lstQualities.Add(new ListItem(xmlNode.SelectSingleNode("id")?.Value,
-                                                      xmlNode.SelectSingleNode("translate")?.Value
+                                                      xmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                       ?? xmlNode.SelectSingleNode("name")?.Value));
                     }
 
-                    using (frmSelectItem frmSelect = new frmSelectItem
+                    using (SelectItem frmSelect = new SelectItem
                            {
                                Description = string.Format(GlobalSettings.CultureInfo,
                                                            LanguageManager.GetString(
@@ -395,7 +402,7 @@ namespace Chummer.Backend.Equipment
                            })
                     {
                         frmSelect.SetGeneralItemsMode(lstQualities);
-                        if (frmSelect.ShowDialogSafe(Program.GetFormForDialog(_objCharacter)) == DialogResult.Cancel)
+                        if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             _guiID = Guid.Empty;
                             return;
@@ -403,13 +410,13 @@ namespace Chummer.Backend.Equipment
 
                         objLifestyleQualityNode =
                             objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = "
-                                                            + frmSelect.SelectedItem.CleanXPath() + "]");
+                                                            + frmSelect.SelectedItem.CleanXPath() + ']');
                     }
                 }
             }
 
-            var intTemp = 0;
-            var strTemp = string.Empty;
+            int intTemp = 0;
+            string strTemp = string.Empty;
             if (objLifestyleQualityNode.TryGetStringFieldQuickly("cost", ref strTemp))
                 CostString = strTemp;
             if (objLifestyleQualityNode.TryGetInt32FieldQuickly("lp", ref intTemp))
@@ -438,35 +445,47 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (!AllowPrint || objWriter == null)
                 return;
-            objWriter.WriteStartElement("quality");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("formattedname", FormattedDisplayName(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            objWriter.WriteElementString("lp", LP.ToString(objCulture));
-            objWriter.WriteElementString("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            var strLifestyleQualityType = Type.ToString();
-            if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            // <quality>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("quality");
+            try
             {
-                XPathNavigator objNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguageToPrint)
-                    .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + "]");
-                strLifestyleQualityType = objNode?.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strLifestyleQualityType;
-            }
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("formattedname", await FormattedDisplayNameAsync(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("lp", LP.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+                string strLifestyleQualityType = Type.ToString();
+                if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                {
+                    XPathNavigator objNode = (await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint))
+                        .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + ']');
+                    if (objNode != null)
+                        strLifestyleQualityType = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strLifestyleQualityType;
+                }
 
-            objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
-            objWriter.WriteElementString("lifestylequalitytype_english", Type.ToString());
-            objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+                await objWriter.WriteElementStringAsync("lifestylequalitytype", strLifestyleQualityType);
+                await objWriter.WriteElementStringAsync("lifestylequalitytype_english", Type.ToString());
+                await objWriter.WriteElementStringAsync("lifestylequalitysource", OriginSource.ToString());
+                await objWriter.WriteElementStringAsync("free", Free.ToString());
+                await objWriter.WriteElementStringAsync("freebylifestyle", FreeByLifestyle.ToString());
+                await objWriter.WriteElementStringAsync("isfreegrid", IsFreeGrid.ToString());
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </quality>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -486,7 +505,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         ///     String-formatted identifier of the <inheritdoc cref="SourceID" /> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public string SourceIDString => SourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         ///     LifestyleQuality's name.
@@ -496,8 +515,10 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName != value)
-                    _objCachedMyXmlNode = null;
+                if (_strName == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
                 _strName = value;
             }
         }
@@ -544,7 +565,24 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -569,7 +607,14 @@ namespace Chummer.Backend.Equipment
         public int LP
         {
             get => Free || !ContributesLP ? 0 : _intLP;
-            set => _intLP = value;
+            set
+            {
+                if (_intLP == value)
+                    return;
+                _intLP = value;
+                if (!Free && ContributesLP)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
+            }
         }
 
         /// <summary>
@@ -580,7 +625,19 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+        }
+
+        /// <summary>
+        ///     The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
@@ -590,12 +647,26 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            var strReturn = DisplayNameShort(strLanguage);
+            string strReturn = DisplayNameShort(strLanguage);
 
             if (!string.IsNullOrEmpty(Extra))
                 // Attempt to retrieve the CharacterAttribute name.
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' +
                              _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+            return strReturn;
+        }
+
+        /// <summary>
+        ///     The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+
+            if (!string.IsNullOrEmpty(Extra))
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' +
+                             await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
             return strReturn;
         }
 
@@ -609,12 +680,29 @@ namespace Chummer.Backend.Equipment
             if (Multiplier > 0)
                 strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";
             else if (Multiplier < 0)
-                strReturn += strSpace + "[" + Multiplier.ToString(objCulture) + "%]";
+                strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
 
             if (Cost > 0)
                 strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
             else if (Cost < 0)
-                strReturn += strSpace + "[" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+            return strReturn;
+        }
+
+        public async ValueTask<string> FormattedDisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = await DisplayNameAsync(strLanguage);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+
+            if (Multiplier > 0)
+                strReturn += strSpace + "[+" + Multiplier.ToString(objCulture) + "%]";
+            else if (Multiplier < 0)
+                strReturn += strSpace + '[' + Multiplier.ToString(objCulture) + "%]";
+
+            if (Cost > 0)
+                strReturn += strSpace + "[+" + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
+            else if (Cost < 0)
+                strReturn += strSpace + '[' + Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture) + "¥]";
             return strReturn;
         }
 
@@ -657,9 +745,9 @@ namespace Chummer.Backend.Equipment
                 if (Free || FreeByLifestyle)
                     return 0;
                 if (!decimal.TryParse(CostString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                    out var decReturn))
+                    out decimal decReturn))
                 {
-                    var objProcess = CommonFunctions.EvaluateInvariantXPath(CostString, out var blnIsSuccess);
+                    object objProcess = CommonFunctions.EvaluateInvariantXPath(CostString, out bool blnIsSuccess);
                     if (blnIsSuccess)
                         return Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                 }
@@ -674,7 +762,14 @@ namespace Chummer.Backend.Equipment
         public string CostString
         {
             get => string.IsNullOrWhiteSpace(_strCost) ? "0" : _strCost;
-            set => _strCost = value;
+            set
+            {
+                if (_strCost == value)
+                    return;
+                _strCost = value;
+                if (!Free && !FreeByLifestyle)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalMonthlyCost));
+            }
         }
 
         /// <summary>
@@ -683,13 +778,55 @@ namespace Chummer.Backend.Equipment
         public bool Free
         {
             get => _blnFree || OriginSource == QualitySource.BuiltIn;
-            set => _blnFree = value;
+            set
+            {
+                if (_blnFree == value)
+                    return;
+                _blnFree = value;
+                if (ContributesLP)
+                {
+                    if (!FreeByLifestyle)
+                        ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalLP), nameof(Lifestyle.TotalMonthlyCost), nameof(Lifestyle.CostMultiplier), nameof(Lifestyle.BaseCostMultiplier));
+                    else
+                        ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
+                }
+                else if (!FreeByLifestyle)
+                    ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalMonthlyCost), nameof(Lifestyle.CostMultiplier), nameof(Lifestyle.BaseCostMultiplier));
+            }
+        }
+
+        public bool IsFreeGrid
+        {
+            get => _blnIsFreeGrid;
+            set
+            {
+                if (_blnIsFreeGrid == value)
+                    return;
+                _blnIsFreeGrid = value;
+                switch (value)
+                {
+                    case true when OriginSource == QualitySource.Selected:
+                        OriginSource = QualitySource.BuiltIn;
+                        break;
+                    case false when OriginSource == QualitySource.BuiltIn:
+                        OriginSource = QualitySource.Selected;
+                        break;
+                }
+                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.LifestyleQualities));
+            }
         }
 
         public bool ContributesLP
         {
             get => _blnContributeToLP;
-            set => _blnContributeToLP = value;
+            set
+            {
+                if (_blnContributeToLP == value)
+                    return;
+                _blnContributeToLP = value;
+                if (value && !Free)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalLP));
+            }
         }
 
         /// <summary>
@@ -719,7 +856,13 @@ namespace Chummer.Backend.Equipment
         public int Comfort
         {
             get => _intComfort;
-            set => _intComfort = value;
+            set
+            {
+                if (_intComfort == value)
+                    return;
+                _intComfort = value;
+                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalComforts), nameof(Lifestyle.ComfortsDelta));
+            }
         }
 
         /// <summary>
@@ -728,7 +871,13 @@ namespace Chummer.Backend.Equipment
         public int ComfortMaximum
         {
             get => _intComfortMaximum;
-            set => _intComfortMaximum = value;
+            set
+            {
+                if (_intComfortMaximum == value)
+                    return;
+                _intComfortMaximum = value;
+                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalComfortsMaximum));
+            }
         }
 
         /// <summary>
@@ -737,7 +886,13 @@ namespace Chummer.Backend.Equipment
         public int SecurityMaximum
         {
             get => _intSecurityMaximum;
-            set => _intSecurityMaximum = value;
+            set
+            {
+                if (_intSecurityMaximum == value)
+                    return;
+                _intSecurityMaximum = value;
+                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalSecurityMaximum));
+            }
         }
 
         /// <summary>
@@ -746,7 +901,13 @@ namespace Chummer.Backend.Equipment
         public int Security
         {
             get => _intSecurity;
-            set => _intSecurity = value;
+            set
+            {
+                if (_intSecurity == value)
+                    return;
+                _intSecurity = value;
+                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalSecurity), nameof(Lifestyle.SecurityDelta));
+            }
         }
 
         /// <summary>
@@ -755,7 +916,14 @@ namespace Chummer.Backend.Equipment
         public int Multiplier
         {
             get => Free || FreeByLifestyle ? 0 : _intMultiplier;
-            set => _intMultiplier = value;
+            set
+            {
+                if (_intMultiplier == value)
+                    return;
+                _intMultiplier = value;
+                if (!Free && !FreeByLifestyle)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.CostMultiplier));
+            }
         }
 
         /// <summary>
@@ -764,7 +932,14 @@ namespace Chummer.Backend.Equipment
         public int BaseMultiplier
         {
             get => Free || FreeByLifestyle ? 0 : _intBaseMultiplier;
-            set => _intBaseMultiplier = value;
+            set
+            {
+                if (_intBaseMultiplier == value)
+                    return;
+                _intBaseMultiplier = value;
+                if (!Free && !FreeByLifestyle)
+                    ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.BaseCostMultiplier));
+            }
         }
 
         /// <summary>
@@ -782,7 +957,13 @@ namespace Chummer.Backend.Equipment
         public int AreaMaximum
         {
             get => _intAreaMaximum;
-            set => _intAreaMaximum = value;
+            set
+            {
+                if (_intAreaMaximum == value)
+                    return;
+                _intAreaMaximum = value;
+                ParentLifestyle?.OnPropertyChanged(nameof(Lifestyle.TotalAreaMaximum));
+            }
         }
 
         /// <summary>
@@ -791,35 +972,58 @@ namespace Chummer.Backend.Equipment
         public int Area
         {
             get => _intArea;
-            set => _intArea = value;
-        }
-
-        public XmlNode GetNode()
-        {
-            return GetNode(GlobalSettings.Language);
-        }
-
-        public XmlNode GetNode(string strLanguage)
-        {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage ||
-                GlobalSettings.LiveCustomData)
+            set
             {
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage &&
-                    !GlobalSettings.LiveCustomData) return _objCachedMyXmlNode;
-                _objCachedMyXmlNode = _objCharacter.LoadData("lifestyles.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/qualities/quality[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/qualities/quality[id = "
-                                                                           + SourceIDString.CleanXPath() + " or id = "
-                                                                           + SourceIDString.ToUpperInvariant()
-                                                                               .CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-                return _objCachedMyXmlNode;
+                if (_intArea == value)
+                    return;
+                _intArea = value;
+                ParentLifestyle?.OnMultiplePropertyChanged(nameof(Lifestyle.TotalArea), nameof(Lifestyle.AreaDelta));
             }
+        }
 
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        {
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("lifestyles.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/qualities/quality[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/qualities/quality[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/qualities/quality[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/qualities/quality[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Properties
@@ -832,7 +1036,7 @@ namespace Chummer.Backend.Equipment
                 !_objCharacter.Settings.BookEnabled(Source))
                 return null;
 
-            var objNode = new TreeNode
+            TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = CurrentFormattedDisplayName,
@@ -872,6 +1076,16 @@ namespace Chummer.Backend.Equipment
         public void Dispose()
         {
             Utils.StringHashSetPool.Return(_setAllowedFreeLifestyles);
+        }
+
+        public bool Remove(bool blnConfirmDelete = true)
+        {
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
+                return false;
+
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);
+
+            return ParentLifestyle.LifestyleQualities.Remove(this);
         }
     }
 }

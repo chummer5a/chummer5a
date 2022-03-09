@@ -565,7 +565,7 @@ namespace Chummer
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Tag = "Title_CreateWeaponMount";
             this.Text = "Create Weapon Mount";
-            this.Load += new System.EventHandler(this.frmCreateWeaponMount_Load);
+            this.Load += new System.EventHandler(this.CreateWeaponMount_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

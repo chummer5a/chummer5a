@@ -22,7 +22,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -34,11 +34,10 @@ namespace Chummer
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
-    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>, IDisposable, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>
+    public sealed class LockingDictionary<TKey, TValue> : IDictionary, IDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IHasLockObject
     {
         private readonly Dictionary<TKey, TValue> _dicData;
-        private readonly ReaderWriterLockSlim
-            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public LockingDictionary()
         {
@@ -64,33 +63,56 @@ namespace Chummer
         {
             _dicData = new Dictionary<TKey, TValue>(comparer);
         }
-
+        
         /// <inheritdoc />
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _dicData.GetEnumerator().GetLockingType(_rwlThis);
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = LockingEnumerator<KeyValuePair<TKey, TValue>>.Get(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _dicData.GetLockingDictionaryEnumerator(_rwlThis);
+            LockingDictionaryEnumerator objReturn = LockingDictionaryEnumerator.Get(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         IDictionaryEnumerator IDictionary.GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _dicData.GetLockingDictionaryEnumerator(_rwlThis);
+            LockingDictionaryEnumerator objReturn = LockingDictionaryEnumerator.Get(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
+        }
+        
+        public async ValueTask<IEnumerator<KeyValuePair<TKey, TValue>>> GetEnumeratorAsync()
+        {
+            LockingEnumerator<KeyValuePair<TKey, TValue>> objReturn = await LockingEnumerator<KeyValuePair<TKey, TValue>>.GetAsync(this);
+            objReturn.SetEnumerator(_dicData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         public void Add(KeyValuePair<TKey, TValue> item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 _dicData.Add(item.Key, item.Value);
+        }
+
+        public async ValueTask AddAsync(KeyValuePair<TKey, TValue> item)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _dicData.Add(item.Key, item.Value);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
@@ -105,24 +127,49 @@ namespace Chummer
             Add((TKey)key, (TValue)value);
         }
 
+        public ValueTask AddAsync(object key, object value)
+        {
+            return AddAsync((TKey)key, (TValue)value);
+        }
+
         /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
         public void Clear()
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 _dicData.Clear();
+        }
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.Clear" />
+        public async ValueTask ClearAsync()
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _dicData.Clear();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
+                return _dicData.Contains(item);
+        }
+
+        public async ValueTask<bool> ContainsAsync(KeyValuePair<TKey, TValue> item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _dicData.Contains(item);
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
             {
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
@@ -135,7 +182,33 @@ namespace Chummer
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
+            {
+                foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
+                {
+                    array.SetValue(kvpItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        /// <inheritdoc cref="ICollection.CopyTo" />
+        public async ValueTask CopyToAsync(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
+                {
+                    array[arrayIndex] = kvpItem;
+                    ++arrayIndex;
+                }
+            }
+        }
+
+        /// <inheritdoc cref="ICollection.CopyTo" />
+        public async ValueTask CopyToAsync(Array array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (KeyValuePair<TKey, TValue> kvpItem in _dicData)
                 {
@@ -148,9 +221,24 @@ namespace Chummer
         /// <inheritdoc />
         public KeyValuePair<TKey, TValue>[] ToArray()
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
             {
-                KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[Count];
+                KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[_dicData.Count];
+                int i = 0;
+                foreach (KeyValuePair<TKey, TValue> kvpLoop in _dicData)
+                {
+                    akvpReturn[i] = kvpLoop;
+                    ++i;
+                }
+                return akvpReturn;
+            }
+        }
+
+        public async ValueTask<KeyValuePair<TKey, TValue>[]> ToArrayAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                KeyValuePair<TKey, TValue>[] akvpReturn = new KeyValuePair<TKey, TValue>[_dicData.Count];
                 int i = 0;
                 foreach (KeyValuePair<TKey, TValue> kvpLoop in _dicData)
                 {
@@ -165,7 +253,7 @@ namespace Chummer
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
             {
                 return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
                                                                            && _dicData.Remove(item.Key);
@@ -175,7 +263,7 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(TKey key)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 return _dicData.Remove(key);
         }
 
@@ -184,13 +272,59 @@ namespace Chummer
         {
             Remove((TKey)key);
         }
+        
+        public async ValueTask<bool> RemoveAsync(KeyValuePair<TKey, TValue> item)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                return _dicData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
+                                                                           && _dicData.Remove(item.Key);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+        
+        public async ValueTask<bool> RemoveAsync(TKey key)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                return _dicData.Remove(key);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+        
+        public ValueTask<bool> RemoveAsync(object key)
+        {
+            return RemoveAsync((TKey)key);
+        }
 
         public bool TryRemove(TKey key, out TValue value)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
-            using (new EnterWriteLock(_rwlThis))
-            {
+            using (LockObject.EnterWriteLock())
                 return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
+        }
+
+        public async ValueTask<Tuple<bool, TValue>> TryRemoveAsync(TKey key)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either removed the item we want to remove or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                bool blnSuccess = _dicData.TryGetValue(key, out TValue value) && _dicData.Remove(key);
+                return new Tuple<bool, TValue>(blnSuccess, value);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -201,12 +335,12 @@ namespace Chummer
             TKey objKeyToTake = default;
             TValue objValue = default;
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
             {
-                if (Count > 0)
+                if (_dicData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    objKeyToTake = Keys.First();
+                    objKeyToTake = _dicData.Keys.First();
                     if (_dicData.TryGetValue(objKeyToTake, out objValue))
                     {
                         blnTakeSuccessful = _dicData.Remove(objKeyToTake);
@@ -228,13 +362,13 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                     return _dicData.Count;
             }
         }
 
         /// <inheritdoc />
-        public object SyncRoot => _rwlThis;
+        public object SyncRoot => LockObject;
 
         /// <inheritdoc />
         public bool IsSynchronized => true;
@@ -248,21 +382,41 @@ namespace Chummer
         /// <inheritdoc cref="IDictionary{TKey, TValue}.ContainsKey" />
         public bool ContainsKey(TKey key)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
+                return _dicData.ContainsKey(key);
+        }
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.ContainsKey" />
+        public async ValueTask<bool> ContainsKeyAsync(TKey key)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _dicData.ContainsKey(key);
         }
 
         /// <inheritdoc />
         public void Add(TKey key, TValue value)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 _dicData.Add(key, value);
+        }
+
+        public async ValueTask AddAsync(TKey key, TValue value)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _dicData.Add(key, value);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public bool TryAdd(TKey key, TValue value)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
             {
                 if (_dicData.ContainsKey(key))
                     return false;
@@ -271,10 +425,32 @@ namespace Chummer
             return true;
         }
 
+        public async ValueTask<bool> TryAddAsync(TKey key, TValue value)
+        {
+            // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                if (_dicData.ContainsKey(key))
+                    return false;
+                _dicData.Add(key, value);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            return true;
+        }
+
         /// <inheritdoc />
         public bool TryAdd(KeyValuePair<TKey, TValue> item)
         {
             return TryAdd(item.Key, item.Value);
+        }
+
+        public ValueTask<bool> TryAddAsync(KeyValuePair<TKey, TValue> item)
+        {
+            return TryAddAsync(item.Key, item.Value);
         }
 
         /// <summary>
@@ -288,17 +464,19 @@ namespace Chummer
                                   Func<TKey, TValue, TValue> updateValueFactory)
         {
             TValue objReturn;
-            using (new EnterWriteLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    _dicData[key] = objReturn;
+                    using (LockObject.EnterWriteLock())
+                        _dicData[key] = objReturn;
                 }
                 else
                 {
                     objReturn = addValueFactory(key);
-                    _dicData.Add(key, objReturn);
+                    using (LockObject.EnterWriteLock())
+                        _dicData.Add(key, objReturn);
                 }
             }
             return objReturn;
@@ -313,25 +491,201 @@ namespace Chummer
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
         public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    _dicData[key] = objNewValue;
+                    using (LockObject.EnterWriteLock())
+                        _dicData[key] = objNewValue;
                     return objNewValue;
                 }
-
-                _dicData.Add(key, addValue);
+                using (LockObject.EnterWriteLock())
+                    _dicData.Add(key, addValue);
                 return addValue;
             }
+        }
+
+        /// <summary>
+        /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, Func<TKey, TValue> addValueFactory,
+                                  Func<TKey, TValue, TValue> updateValueFactory)
+        {
+            TValue objReturn;
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    objReturn = updateValueFactory(key, objExistingValue);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        _dicData[key] = objReturn;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    objReturn = addValueFactory(key);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        _dicData.Add(key, objReturn);
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Adds a key/value pair to the dictionary if the key does not already exist, or to update a key/value pair in the dictionary if the key already exists.
+        /// </summary>
+        /// <param name="key">The key to be added or whose value should be updated</param>
+        /// <param name="addValue">The value to be added for an absent key</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
+        public async ValueTask<TValue> AddOrUpdateAsync(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                IAsyncDisposable objLocker;
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    TValue objNewValue = updateValueFactory(key, objExistingValue);
+                    objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        _dicData[key] = objNewValue;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                    return objNewValue;
+                }
+                objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    _dicData.Add(key, addValue);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+                return addValue;
+            }
+        }
+
+        /// <summary>
+        /// Uses the specified functions to remove a key/value pair from the dictionary if the key exists and passes a condition, or to update a key/value pair in the dictionary if the key exists but does not.
+        /// </summary>
+        /// <param name="key">The key to be removed or whose value should be updated</param>
+        /// <param name="removalConditionFunc">The function used to check if a key should be removed or updated.</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <returns>Whether the key was found and successfully removed or not.</returns>
+        public bool RemoveOrUpdate(TKey key, Func<TKey, TValue, bool> removalConditionFunc,
+                                   Func<TKey, TValue, TValue> updateValueFactory)
+        {
+            bool blnReturn;
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    blnReturn = removalConditionFunc(key, objExistingValue);
+                    if (blnReturn)
+                    {
+                        using (LockObject.EnterWriteLock())
+                            blnReturn = _dicData.Remove(key);
+                    }
+                    if (!blnReturn) // Not an else in case we somehow fail at removing a key that still passes the condition
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _dicData[key] = updateValueFactory(key, objExistingValue);
+                    }
+                }
+                else
+                {
+                    blnReturn = false;
+                }
+            }
+            return blnReturn;
+        }
+
+        /// <summary>
+        /// Uses the specified functions to remove a key/value pair from the dictionary if the key exists and passes a condition, or to update a key/value pair in the dictionary if the key exists but does not.
+        /// </summary>
+        /// <param name="key">The key to be removed or whose value should be updated</param>
+        /// <param name="removalConditionFunc">The function used to check if a key should be removed or updated.</param>
+        /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        public async ValueTask<bool> RemoveOrUpdateAsync(TKey key, Func<TKey, TValue, bool> removalConditionFunc,
+                                                    Func<TKey, TValue, TValue> updateValueFactory)
+        {
+            bool blnReturn;
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                if (_dicData.TryGetValue(key, out TValue objExistingValue))
+                {
+                    blnReturn = removalConditionFunc(key, objExistingValue);
+                    if (blnReturn)
+                    {
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                        try
+                        {
+                            blnReturn = _dicData.Remove(key);
+                        }
+                        catch
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    if (!blnReturn) // Not an else in case we somehow fail at removing a key that still passes the condition
+                    {
+                        IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                        try
+                        {
+                            _dicData[key] = updateValueFactory(key, objExistingValue);
+                        }
+                        catch
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    blnReturn = false;
+                }
+            }
+            return blnReturn;
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
         public bool TryGetValue(TKey key, out TValue value)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
                 return _dicData.TryGetValue(key, out value);
+        }
+
+        /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
+        public async ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                bool blnSuccess = _dicData.TryGetValue(key, out TValue value);
+                return new Tuple<bool, TValue>(blnSuccess, value);
+            }
         }
 
         // ReSharper disable once InheritdocInvalidUsage
@@ -340,16 +694,16 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                     return _dicData[key];
             }
             set
             {
-                using (new EnterUpgradeableReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_dicData[key].Equals(value))
+                    if (_dicData.TryGetValue(key, out TValue objValue) && objValue.Equals(value))
                         return;
-                    using (new EnterWriteLock(_rwlThis))
+                    using (LockObject.EnterWriteLock())
                         _dicData[key] = value;
                 }
             }
@@ -367,7 +721,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     // This construction makes sure we hold onto the lock until enumeration is done
                     foreach (TKey objKey in _dicData.Keys)
@@ -381,7 +735,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                     return _dicData.Keys;
             }
         }
@@ -391,7 +745,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                     return _dicData.Keys;
             }
         }
@@ -401,7 +755,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                 {
                     // This construction makes sure we hold onto the lock until enumeration is done
                     foreach (TValue objValue in _dicData.Values)
@@ -415,7 +769,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                     return _dicData.Values;
             }
         }
@@ -425,7 +779,7 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                     return _dicData.Values;
             }
         }
@@ -433,7 +787,21 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            _rwlThis.Dispose();
+            if (IsDisposed)
+                return;
+            IsDisposed = true;
+            LockObject.Dispose();
         }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            if (IsDisposed)
+                return;
+            IsDisposed = true;
+            await LockObject.DisposeAsync();
+        }
+
+        public bool IsDisposed { get; private set; }
     }
 }

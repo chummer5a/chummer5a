@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -39,6 +40,30 @@ namespace Chummer
                 return false;
             return dicLeft.Keys.All(dicRight.ContainsKey) &&
                    dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
+        }
+
+        public static async ValueTask<bool> EqualsByValueAsync(this IAsyncReadOnlyDictionary<object, IComparable> dicLeft, IAsyncReadOnlyDictionary<object, IComparable> dicRight)
+        {
+            if (dicLeft.Count != dicRight.Count)
+                return false;
+            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator = await dicLeft.GetEnumeratorAsync();
+            while (objLeftEnumerator.MoveNext())
+            {
+                object objKey = objLeftEnumerator.Current.Key;
+                if (!await dicRight.ContainsKeyAsync(objKey))
+                    return false;
+            }
+            IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = await dicRight.GetEnumeratorAsync();
+            while (objRightEnumerator.MoveNext())
+            {
+                object objKey = objRightEnumerator.Current.Key;
+                (bool blnContains, IComparable objValue) = await dicLeft.TryGetValueAsync(objKey);
+                if (!blnContains)
+                    return false;
+                if (!objValue.Equals(objRightEnumerator.Current.Value))
+                    return false;
+            }
+            return true;
         }
     }
 }

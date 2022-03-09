@@ -37,7 +37,7 @@ namespace Chummer
         private readonly Point _mouthCenter;
         private readonly Pen _thickPen;
         private readonly XPathNavigator _objXmlDocument;
-        private readonly List<string> _usedTips = new List<string>();
+        private readonly List<string> _lstUsedTips = new List<string>();
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
 
@@ -59,13 +59,13 @@ namespace Chummer
 
             Paint += panel1_Paint;
 
-            using (var tmrDraw = new Timer { Interval = 100 })
+            using (Timer tmrDraw = new Timer { Interval = 100 })
             {
                 tmrDraw.Tick += tmr_DrawTick;
                 tmrDraw.Start();
             }
 
-            using (var tmrTip = new Timer { Interval = 300000 })
+            using (Timer tmrTip = new Timer { Interval = 300000 })
             {
                 tmrTip.Tick += tmr_TipTick;
                 tmrTip.Start();
@@ -185,17 +185,20 @@ namespace Chummer
 
         private string HelpfulAdvice()
         {
-            if (_usedTips.Count == _objXmlDocument.SelectAndCacheExpression("tip").Count)
+            if (_lstUsedTips.Count == _objXmlDocument.SelectAndCacheExpression("tip").Count)
             {
-                _usedTips.Clear();
+                _lstUsedTips.Clear();
             }
             foreach (XPathNavigator objXmlTip in _objXmlDocument.SelectAndCacheExpression("tip"))
             {
-                var strId = objXmlTip.SelectSingleNodeAndCacheExpression("id")?.Value;
-                if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId)) continue;
-                if (!objXmlTip.RequirementsMet(CharacterObject)) continue;
-                _usedTips.Add(strId);
-                return objXmlTip.SelectSingleNodeAndCacheExpression("translate")?.Value ?? objXmlTip.SelectSingleNodeAndCacheExpression("text")?.Value ?? string.Empty;
+                string strId = objXmlTip.SelectSingleNodeAndCacheExpression("id")?.Value;
+                if (string.IsNullOrEmpty(strId) || _lstUsedTips.Contains(strId))
+                    continue;
+                if (!objXmlTip.RequirementsMet(CharacterObject))
+                    continue;
+                _lstUsedTips.Add(strId);
+                return objXmlTip.SelectSingleNodeAndCacheExpression("translate")?.Value
+                       ?? objXmlTip.SelectSingleNodeAndCacheExpression("text")?.Value ?? string.Empty;
             }
             return string.Empty;
         }
@@ -219,7 +222,7 @@ namespace Chummer
             get => _characterObject;
             set
             {
-                _usedTips.Clear();
+                _lstUsedTips.Clear();
                 _characterObject = value;
             }
         }

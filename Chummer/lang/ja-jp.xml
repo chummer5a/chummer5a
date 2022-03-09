@@ -1516,7 +1516,7 @@
         </string>
         <string>
             <key>Message_AttributeMaximum</key>
-            <text>キャラクター作成地は, 2つ以上の能力値を最大値にすることはできません.</text>
+            <text>キャラクター作成地は, {0}つ以上の能力値を最大値にすることはできません.</text>
         </string>
         <string>
             <key>Message_AttributeBuildPoints</key>
@@ -4918,7 +4918,7 @@
         </string>
         <string>
             <key>Button_Options_PDFTest</key>
-            <text>テスト - 5ページを開く</text>
+            <text>テスト - 3ページを開く</text>
         </string>
         <!-- Print Multiple Window -->
         <string>
@@ -6479,14 +6479,6 @@
             <text>Select a Skill/Skill Group</text>
         </string>
         <string>
-            <key>Checkbox_Options_MayBuyQualities</key>
-            <text>May buy Qualities (RC 40)</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_ContactPoints</key>
-            <text>Contact points instead of fixed Contacts (RC 40)</text>
-        </string>
-        <string>
             <key>Checkbox_Options_UseLogging</key>
             <text>Use Debug Logging</text>
         </string>
@@ -8039,14 +8031,6 @@
         <string>
             <key>Label_LifestyleNuyen_ResultOf</key>
             <text>Result of {0}D6: (</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_KnowledgeMultiplier</key>
-            <text>Override Knowledge Points (INT + LOG) Multiplier</text>
-        </string>
-        <string>
-            <key>Checkbox_Options_ContactMultiplier</key>
-            <text>Override Contact Points Charisma Multiplier</text>
         </string>
         <string>
             <key>Checkbox_Options_Live_CustomData</key>

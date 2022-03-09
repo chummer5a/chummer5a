@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectDrug
+    partial class SelectDrug
     {
         /// <summary>
         /// Required designer variable.
@@ -650,13 +650,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectDrug";
+            this.Name = "SelectDrug";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectCyberware";
             this.Text = "Select Cyberware";
-            this.Load += new System.EventHandler(this.frmSelectDrug_Load);
+            this.Load += new System.EventHandler(this.SelectDrug_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpLeft.ResumeLayout(false);

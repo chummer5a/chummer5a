@@ -132,12 +132,12 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private void bParentGroupId_Click(object sender, EventArgs e)
+        private async void bParentGroupId_Click(object sender, EventArgs e)
         {
-            string text = LanguageManager.GetString("String_SINners_HowToGroupParentDescription", _strSelectedLanguage);
-            this.DoThreadSafe(() =>
+            string text = await LanguageManager.GetStringAsync("String_SINners_HowToGroupParentDescription", _strSelectedLanguage);
+            await this.DoThreadSafeAsync(x =>
             {
-                PluginHandler.MainForm.ShowMessageBox(Parent, text, "How to ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(x.Parent, text, "How to ...", MessageBoxButtons.OK, MessageBoxIcon.Information);
             });
         }
     }

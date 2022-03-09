@@ -1,6 +1,6 @@
 ﻿namespace Chummer
 {
-    partial class frmInitiative
+    partial class InitiativeTracker
     {
         /// <summary>
         /// Required designer variable.
@@ -46,7 +46,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(427, 318);
             this.Controls.Add(this.ucInit);
-            this.Name = "frmInitiative";
+            this.Name = "InitiativeTracker";
             this.Tag = "String_AttributeINILong";
             this.Text = "[Initiative]";
             this.ResumeLayout(false);

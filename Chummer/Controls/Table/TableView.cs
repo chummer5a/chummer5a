@@ -130,7 +130,6 @@ namespace Chummer.UI.Table
                 // layout cells
                 foreach (int index in _table._lstPermutation)
                 {
-                    int dy = 0;
                     x = 0;
                     TableRow row = _table._lstRowCells[index];
                     if (row.Parent != null)
@@ -140,6 +139,7 @@ namespace Chummer.UI.Table
                         row.Selected = (_table._intSelectedIndex == index);
                         row.Location = new Point(0, y);
                         row.Width = widthSum;
+                        int dy = 0;
                         for (int i = 0; i < _table._columns.Count; i++)
                         {
                             TableCell cell = _table._lstCells[i].cells[index];
@@ -330,7 +330,7 @@ namespace Chummer.UI.Table
             }
             else
             {
-                cells = new List<TableCell>();
+                cells = new List<TableCell>(1);
             }
             HeaderCell header = new HeaderCell
             {
@@ -395,7 +395,7 @@ namespace Chummer.UI.Table
             {
                 if (!_dicObservedProperties.TryGetValue(dependency, out List<int> lstDependencies))
                 {
-                    lstDependencies = new List<int>();
+                    lstDependencies = new List<int>(1);
                     _dicObservedProperties[dependency] = lstDependencies;
                 }
                 lstDependencies.Add(index);

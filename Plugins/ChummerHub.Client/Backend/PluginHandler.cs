@@ -247,12 +247,13 @@ namespace Chummer.Plugins
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
-            //We should maybe add an option in the plugin-option dialog to give the user the opportunity to enable this again.
-            //if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
-            //{
-            //    if (telemetry?.Context?.User != null)
-            //        telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
-            //}
+            if (!String.IsNullOrEmpty(ChummerHub.Client.Properties.Settings.Default.UserEmail))
+            {
+                if (telemetry?.Context?.User != null)
+                {
+                    telemetry.Context.User.AccountId = ChummerHub.Client.Properties.Settings.Default.UserEmail;
+                }
+            }
             return telemetry;
         }
 
@@ -341,7 +342,7 @@ namespace Chummer.Plugins
                     catch (Exception e)
                     {
                         Log.Error(e);
-                        MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
+                        Program.ShowMessageBox("Error loading SINner: " + e.Message);
                     }
                     string msg = "Load:" + argument;
                     Log.Trace("Sending argument to Pipeserver: " + msg);
@@ -359,36 +360,42 @@ namespace Chummer.Plugins
 
         public IEnumerable<TabPage> GetTabPages(CharacterCareer input)
         {
-            foreach (TabPage tabPage in GetTabPagesCommon(input))
-                yield return tabPage;
+            if (!Settings.Default.UserModeRegistered)
+                yield break;
+            TabPage objReturn = Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
+            if (objReturn == null)
+                yield break;
+            yield return objReturn;
         }
 
-        public IEnumerable<TabPage> GetTabPages(frmCreate input)
-        {
-            foreach (TabPage tabPage in GetTabPagesCommon(input))
-                yield return tabPage;
-        }
-
-        private IEnumerable<TabPage> GetTabPagesCommon(CharacterShared input)
+        public IEnumerable<TabPage> GetTabPages(CharacterCreate input)
         {
             if (!Settings.Default.UserModeRegistered)
                 yield break;
+            TabPage objReturn = Utils.RunWithoutThreadLock(() => GetTabPagesCommon(input));
+            if (objReturn == null)
+                yield break;
+            yield return objReturn;
+        }
+
+        private static async Task<TabPage> GetTabPagesCommon(CharacterShared input)
+        {
             ucSINnersUserControl uc = new ucSINnersUserControl();
             try
             {
-                uc.SetCharacterFrom(input);
+                await uc.SetCharacterFrom(input);
             }
             catch (Exception e)
             {
                 ChummerHub.Client.Backend.Utils.HandleError(e);
-                yield break;
+                return null;
             }
             TabPage page = new TabPage("SINners")
             {
                 Name = "SINners"
             };
             page.Controls.Add(uc);
-            yield return page;
+            return page;
         }
 
         public static SINner MySINnerLoading { get; internal set; }
@@ -421,7 +428,7 @@ namespace Chummer.Plugins
             return returnme;
         }
 
-        public static bool MyOnSaveUpload(Character input)
+        public static async Task<bool> MyOnSaveUpload(Character input)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
@@ -431,66 +438,60 @@ namespace Chummer.Plugins
                 msg += "If you want to use SINners as online store, please register!";
                 Log.Warn(msg);
             }
-            else
+            else if (input.DoOnSaveCompletedAsync.Remove(MyOnSaveUpload)) // Makes we only run this if we haven't already triggered the callback
             {
-                if (input.DoOnSaveCompleted.Remove(MyOnSaveUpload)) // Makes we only run this if we haven't already triggered the callback
+                try
                 {
-                    Task.Run(async () =>
+                    using (CursorWait.New(MainForm, true))
                     {
-                        try
+                        using (CharacterExtended ce = await GetMyCeAsync(input))
                         {
-                            using (new CursorWait(MainForm, true))
+                            //ce = new CharacterExtended(input, null);
+                            if (ce.MySINnerFile.SiNnerMetaData.Tags.All(a => a?.TagName != "Reflection"))
                             {
-                                using (CharacterExtended ce = await GetMyCeAsync(input))
-                                {
-                                    //ce = new CharacterExtended(input, null);
-                                    if (ce.MySINnerFile.SiNnerMetaData.Tags.All(a => a?.TagName != "Reflection"))
-                                    {
-                                        ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
-                                    }
-
-                                    await ce.Upload();
-                                }
-
-                                TabPage tabPage = null;
-                                CharacterShared found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
-                                switch (found)
-                                {
-                                    case frmCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
-                                    {
-                                        int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                                        tabPage = frm.TabCharacterTabs.TabPages[index];
-                                        break;
-                                    }
-                                    case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
-                                    {
-                                        int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                                        tabPage = frm2.TabCharacterTabs.TabPages[index];
-                                        break;
-                                    }
-                                }
-
-                                if (tabPage == null)
-                                    return;
-                                Control[] ucseq = tabPage.Controls.Find("SINnersBasic", true);
-                                foreach (Control uc in ucseq)
-                                {
-                                    if (uc is ucSINnersBasic sb)
-                                        await sb.CheckSINnerStatus();
-                                }
-
-                                Control[] ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+                                ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
                             }
+
+                            await ce.Upload();
                         }
-                        catch (Exception e)
+
+                        TabPage tabPage = null;
+                        CharacterShared found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
+                        switch (found)
                         {
-                            Trace.TraceError(e.ToString());
+                            case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                {
+                                    int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                    tabPage = frm.TabCharacterTabs.TabPages[index];
+                                    break;
+                                }
+                            case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                {
+                                    int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                    tabPage = frm2.TabCharacterTabs.TabPages[index];
+                                    break;
+                                }
                         }
-                        finally
+
+                        if (tabPage == null)
+                            return true;
+                        Control[] ucseq = tabPage.Controls.Find("SINnersBasic", true);
+                        foreach (Control uc in ucseq)
                         {
-                            input.DoOnSaveCompleted.Add(MyOnSaveUpload);
+                            if (uc is ucSINnersBasic sb)
+                                await sb.CheckSINnerStatus();
                         }
-                    });
+
+                        Control[] ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Trace.TraceError(e.ToString());
+                }
+                finally
+                {
+                    input.DoOnSaveCompletedAsync.Add(MyOnSaveUpload);
                 }
             }
             return true;
@@ -523,7 +524,7 @@ namespace Chummer.Plugins
                 TabControl.TabPageCollection myCollection = null;
                 switch (found)
                 {
-                    case frmCreate foundcreate:
+                    case CharacterCreate foundcreate:
                         myCollection = foundcreate.TabCharacterTabs.TabPages;
                         break;
                     case CharacterCareer foundcareer:
@@ -537,12 +538,12 @@ namespace Chummer.Plugins
                 sinnertab = myCollection.OfType<TabPage>().FirstOrDefault(x => x.Name == "SINners");
             }
             
-            CharacterCache myCharacterCache = new CharacterCache();
+            CharacterCache myCharacterCache;
             if (blnSync)
                 // ReSharper disable once MethodHasAsyncOverload
-                myCharacterCache.LoadFromFile(input?.FileName);
+                myCharacterCache = new CharacterCache(input?.FileName);
             else
-                await myCharacterCache.LoadFromFileAsync(input?.FileName);
+                myCharacterCache = await CharacterCache.CreateFromFileAsync(input?.FileName);
             if (sinnertab == null)
                 return new CharacterExtended(input, null, myCharacterCache);
             ucSINnersUserControl myUcSIN = sinnertab.Controls.OfType<ucSINnersUserControl>().FirstOrDefault();
@@ -630,7 +631,7 @@ namespace Chummer.Plugins
             ResultGroupGetSearchGroups res = null;
             try
             {
-                using (new CursorWait(MainForm, true))
+                using (CursorWait.New(MainForm, true))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     res = await client.GetPublicGroupAsync("Archetypes", string.Empty);
@@ -654,13 +655,13 @@ namespace Chummer.Plugins
 
                             await MainForm.CharacterRoster.RefreshPluginNodes(this);
                             MainForm.CharacterRoster.treCharacterList.SelectedNode =
-                                nodelist.FirstOrDefault(a => a.Name == "Archetypes");
+                                nodelist.Find(a => a.Name == "Archetypes");
                             MainForm.BringToFront();
                         });
                     }
                     else
                     {
-                        MainForm.ShowMessageBox("No archetypes found!");
+                        Program.ShowMessageBox("No archetypes found!");
                     }
                 }
             }
@@ -685,7 +686,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(MainForm, true))
+                using (CursorWait.New(MainForm, true))
                 {
                     using (frmSINnerGroupSearch frmSearch = new frmSINnerGroupSearch(null, null)
                     {
@@ -752,7 +753,7 @@ namespace Chummer.Plugins
         {
             try
             {
-                using (new CursorWait(frmCharRoster, true))
+                using (CursorWait.New(frmCharRoster, true))
                 {
                     IEnumerable<TreeNode> res = null;
                     if (Settings.Default.UserModeRegistered)
@@ -895,20 +896,25 @@ namespace Chummer.Plugins
             try
             {
                 SINnerGroup g = await ChummerHub.Client.Backend.Utils.CreateGroupOnClickAsync();
-                ShowMySINnersOnClick(sender, e);
+                await ShowMySINners();
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
             }
         }
 
         private async void ShowMySINnersOnClick(object sender, EventArgs e)
         {
+            await ShowMySINners();
+        }
+
+        private async ValueTask ShowMySINners()
+        {
             try
             {
-                using (new CursorWait(MainForm.CharacterRoster, true))
+                using (CursorWait.New(MainForm.CharacterRoster, true))
                 {
                     SINSearchGroupResult MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null);
                     SINnerSearchGroup item = MySINSearchGroupResult.SinGroups.FirstOrDefault(x => x.Groupname?.Contains("My Data") == true);
@@ -928,7 +934,7 @@ namespace Chummer.Plugins
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
             }
         }
 
@@ -970,7 +976,7 @@ namespace Chummer.Plugins
                     catch (Exception exception)
                     {
                         Log.Error(exception);
-                        MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                        Program.ShowMessageBox("Error sharing SINner: " + exception.Message);
                     }
 
                     break;
@@ -1053,7 +1059,7 @@ namespace Chummer.Plugins
                     catch (Exception exception)
                     {
                         Log.Error(exception);
-                        MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                        Program.ShowMessageBox("Error sharing SINner: " + exception.Message);
                     }
 
                     break;
@@ -1100,7 +1106,7 @@ namespace Chummer.Plugins
                         catch (Exception exception)
                         {
                             Log.Error(exception);
-                            MainForm.ShowMessageBox("Error sharing SINner: " + exception.Message);
+                            Program.ShowMessageBox("Error sharing SINner: " + exception.Message);
                         }
                     }
 
@@ -1122,7 +1128,7 @@ namespace Chummer.Plugins
                         catch (Exception exception)
                         {
                             Log.Error(exception);
-                            MainForm.ShowMessageBox("Error sharing Group: " + exception.Message);
+                            Program.ShowMessageBox("Error sharing Group: " + exception.Message);
                         }
                     }
 
@@ -1186,7 +1192,7 @@ namespace Chummer.Plugins
                 if (BlnHasDuplicate)
                 {
                     Log.Info("More than one instance, not starting NamedPipe-Server...");
-                    throw new ApplicationException("More than one instance is running.");
+                    throw new InvalidOperationException("More than one instance is running.");
                 }
 
                 Log.Info("Only one instance, starting NamedPipe-Server...");
@@ -1207,17 +1213,19 @@ namespace Chummer.Plugins
                     await Task.Delay(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
                 if (!MainForm.Visible)
                 {
-                    await MainForm.DoThreadSafeAsync(() =>
+                    await MainForm.DoThreadSafeAsync(x =>
                     {
-                        if (MainForm.WindowState == FormWindowState.Minimized)
-                            MainForm.WindowState = FormWindowState.Normal;
+                        ChummerMainForm objMainForm = (ChummerMainForm) x;
+                        if (objMainForm.WindowState == FormWindowState.Minimized)
+                            objMainForm.WindowState = FormWindowState.Normal;
                     });
                 }
 
-                await MainForm.DoThreadSafeAsync(() =>
+                await MainForm.DoThreadSafeAsync(x =>
                 {
-                    MainForm.Activate();
-                    MainForm.BringToFront();
+                    ChummerMainForm objMainForm = (ChummerMainForm)x;
+                    objMainForm.Activate();
+                    objMainForm.BringToFront();
                 });
                 SinnersClient client = StaticUtils.GetClient();
                 while (!MainForm.Visible)
@@ -1265,7 +1273,7 @@ namespace Chummer.Plugins
                                     await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.MySINner, null);
                                 await StaticUtils.WebCall(callback, 70,
                                     "Character downloaded");
-                                MainFormLoadChar(fileNameToLoad);
+                                await MainFormLoadChar(fileNameToLoad);
                                 await StaticUtils.WebCall(callback, 100,
                                     "Character opened");
                             }
@@ -1273,14 +1281,14 @@ namespace Chummer.Plugins
                             {
                                 await StaticUtils.WebCall(callback, 0,
                                     "Character not found");
-                                MainForm.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
+                                Program.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
                             }
                         }
                     }
                     catch (Exception e)
                     {
                         Log.Error(e);
-                        MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
+                        Program.ShowMessageBox("Error loading SINner: " + e.Message);
                     }
 
                 }
@@ -1291,38 +1299,32 @@ namespace Chummer.Plugins
             }
         }
 
-        private static void MainFormLoadChar(string fileToLoad)
+        private static async ValueTask MainFormLoadChar(string fileToLoad)
         {
             //already open
-            Character objCharacter = MainForm.OpenCharacters.FirstOrDefault(a => a.FileName == fileToLoad);
+            Character objCharacter = Program.OpenCharacters.FirstOrDefault(a => a.FileName == fileToLoad);
             if (objCharacter == null)
             {
                 objCharacter = new Character
                 {
                     FileName = fileToLoad
                 };
-                using (LoadingBar frmLoadingForm = ChummerMainForm.CreateAndShowProgressBar(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
+                using (LoadingBar frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
                 {
-                    if (objCharacter.Load(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening))
-                        MainForm.OpenCharacters.Add(objCharacter);
+                    if (await objCharacter.LoadAsync(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening))
+                        Program.OpenCharacters.Add(objCharacter);
                     else
                         return;
                 }
             }
-            using (new CursorWait(MainForm))
+            using (CursorWait.New(MainForm))
             {
-                MainForm.DoThreadSafe(() =>
+                await MainForm.DoThreadSafeFunc(async x =>
                 {
-                    if (MainForm.OpenCharacterForms.Any(a => a.CharacterObject == objCharacter))
-                    {
-                        MainForm.SwitchToOpenCharacter(objCharacter, false);
-                    }
-                    else
-                    {
-                        MainForm.OpenCharacter(objCharacter, false);
-                    }
-
-                    MainForm.BringToFront();
+                    ChummerMainForm frmMain = (ChummerMainForm) x;
+                    if (!frmMain.SwitchToOpenCharacter(objCharacter))
+                        await frmMain.OpenCharacter(objCharacter, false);
+                    frmMain.BringToFront();
                 });
             }
         }
@@ -1371,8 +1373,7 @@ namespace Chummer.Plugins
                             }
                             case CharacterCache objCache:
                             {
-                                object sinidob = null;
-                                if (objCache.MyPluginDataDic?.TryGetValue("SINnerId", out sinidob) == true)
+                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob))
                                 {
                                     mySiNnerId = (Guid?) sinidob;
                                 }
@@ -1404,8 +1405,8 @@ namespace Chummer.Plugins
                                 {
                                     using (frmSINnerPassword getPWD = new frmSINnerPassword())
                                     {
-                                        string pwdquestion = LanguageManager.GetString("String_SINners_EnterGroupPassword", true);
-                                        string pwdcaption = LanguageManager.GetString("String_SINners_EnterGroupPasswordTitle", true);
+                                        string pwdquestion = await LanguageManager.GetStringAsync("String_SINners_EnterGroupPassword", true);
+                                        string pwdcaption = await LanguageManager.GetStringAsync("String_SINners_EnterGroupPasswordTitle", true);
                                         passwd = getPWD.ShowDialog(Program.MainForm, pwdquestion, pwdcaption);
                                     }
                                 }

@@ -23,7 +23,6 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -65,7 +64,7 @@ namespace Chummer
             tabOptions.TabPages.Remove(tabGitHubIssues);
 #endif
             this.UpdateLightDarkMode();
-            this.TranslateWinForm(_strSelectedLanguage);
+            this.TranslateWinForm();
 
             _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
             _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>(GlobalSettings.SourcebookInfos);
@@ -77,33 +76,33 @@ namespace Chummer
             }
         }
 
-        private void frmOptions_Load(object sender, EventArgs e)
+        private async void EditGlobalSettings_Load(object sender, EventArgs e)
         {
-            PopulateDefaultCharacterSettingLists();
-            PopulateMugshotCompressionOptions();
-            SetToolTips();
-            PopulateOptions();
+            await PopulateDefaultCharacterSettingLists();
+            await PopulateMugshotCompressionOptions();
+            await SetToolTips();
+            await PopulateOptions();
             PopulateLanguageList();
             SetDefaultValueForLanguageList();
-            PopulateSheetLanguageList();
+            await PopulateSheetLanguageList();
             SetDefaultValueForSheetLanguageList();
-            PopulateXsltList();
+            await PopulateXsltList();
             SetDefaultValueForXsltList();
-            PopulatePdfParameters();
+            await PopulatePdfParameters();
 
             _blnLoading = false;
 
             if (_blnPromptPdfReaderOnLoad)
             {
                 _blnPromptPdfReaderOnLoad = false;
-                PromptPdfAppPath();
+                await PromptPdfAppPath();
             }
 
             if (!string.IsNullOrEmpty(_strSelectCodeOnRefresh))
             {
                 lstGlobalSourcebookInfos.SelectedValue = _strSelectCodeOnRefresh;
                 if (lstGlobalSourcebookInfos.SelectedIndex >= 0)
-                    PromptPdfLocation();
+                    await PromptPdfLocation();
                 _strSelectCodeOnRefresh = string.Empty;
             }
         }
@@ -112,72 +111,110 @@ namespace Chummer
 
         #region Control Events
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (_blnDirty)
-            {
-                string text = LanguageManager.GetString("Message_Options_SaveForms", _strSelectedLanguage);
-                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms", _strSelectedLanguage);
-
-                if (Program.MainForm.ShowMessageBox(this, text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                    return;
-            }
-
-            DialogResult = DialogResult.OK;
-            SaveRegistrySettings();
-
-            if (_blnDirty)
-                Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
-        }
-
-        private void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            _strSelectedLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage;
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
             try
             {
-                _objSelectedCultureInfo = CultureInfo.GetCultureInfo(_strSelectedLanguage);
-            }
-            catch (CultureNotFoundException)
-            {
-                _objSelectedCultureInfo = GlobalSettings.SystemCultureInfo;
-            }
-
-            imgLanguageFlag.Image = Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height) >= 32
-                ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strSelectedLanguage.Substring(3, 2))
-                : FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
-
-            bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && !_strSelectedLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase);
-            cmdVerify.Enabled = isEnabled;
-            cmdVerifyData.Enabled = isEnabled;
-
-            if (!_blnLoading)
-            {
-                using (new CursorWait(this))
+                if (_blnDirty)
                 {
-                    _blnLoading = true;
-                    TranslateForm();
-                    _blnLoading = false;
-                }
-            }
+                    string text = await LanguageManager.GetStringAsync("Message_Options_SaveForms",
+                                                                       _strSelectedLanguage);
+                    string caption
+                        = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", _strSelectedLanguage);
 
-            OptionsChanged(sender, e);
+                    if (Program.ShowMessageBox(this, text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                        != DialogResult.Yes)
+                        return;
+                }
+
+                DialogResult = DialogResult.OK;
+                await SaveRegistrySettings();
+
+                if (_blnDirty)
+                    await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
-                PopulateXsltList();
+            try
+            {
+                _strSelectedLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage;
+                try
+                {
+                    _objSelectedCultureInfo = CultureInfo.GetCultureInfo(_strSelectedLanguage);
+                }
+                catch (CultureNotFoundException)
+                {
+                    _objSelectedCultureInfo = GlobalSettings.SystemCultureInfo;
+                }
+
+                imgLanguageFlag.Image = Math.Min(imgLanguageFlag.Width, imgLanguageFlag.Height) >= 32
+                    ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strSelectedLanguage.Substring(3, 2))
+                    : FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
+
+                bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && !_strSelectedLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase);
+                cmdVerify.Enabled = isEnabled;
+                cmdVerifyData.Enabled = isEnabled;
+
+                if (!_blnLoading)
+                {
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                    try
+                    {
+                        _blnLoading = true;
+                        await TranslateForm();
+                        _blnLoading = false;
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
+                    }
+                }
+
+                OptionsChanged(sender, e);
+            }
+            catch(ArgumentOutOfRangeException ex)
+            {
+                Log.Error(ex, "How the hell? Give me the callstack! " + ex);
+            }
+        }
+
+        private async void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                await PopulateXsltList();
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private async void cmdVerify_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
                 await LanguageManager.VerifyStrings(_strSelectedLanguage);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void cmdVerifyData_Click(object sender, EventArgs e)
+        private async void cmdVerifyData_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strSelectedLanguage = _strSelectedLanguage;
                 // Build a list of Sourcebooks that will be passed to the Verify method.
@@ -194,20 +231,31 @@ namespace Chummer
                     XmlManager.Verify(strSelectedLanguage, setBooks);
                 }
 
-                string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
-                Program.MainForm.ShowMessageBox(this, string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_Options_ValidationResults", _strSelectedLanguage), strFilePath),
-                    LanguageManager.GetString("MessageTitle_Options_ValidationResults", _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                string strFilePath
+                    = Path.Combine(Utils.GetStartupPath, "lang", "results_" + strSelectedLanguage + ".xml");
+                Program.ShowMessageBox(
+                    this,
+                    string.Format(_objSelectedCultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_Options_ValidationResults",
+                                                                       _strSelectedLanguage), strFilePath),
+                    await LanguageManager.GetStringAsync("MessageTitle_Options_ValidationResults",
+                                                         _strSelectedLanguage), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
-        private void cmdPDFAppPath_Click(object sender, EventArgs e)
+        private async void cmdPDFAppPath_Click(object sender, EventArgs e)
         {
-            PromptPdfAppPath();
+            await PromptPdfAppPath();
         }
 
-        private void cmdPDFLocation_Click(object sender, EventArgs e)
+        private async void cmdPDFLocation_Click(object sender, EventArgs e)
         {
-            PromptPdfLocation();
+            await PromptPdfLocation();
         }
 
         private void lstGlobalSourcebookInfos_SelectedIndexChanged(object sender, EventArgs e)
@@ -253,13 +301,22 @@ namespace Chummer
             }
         }
 
-        private void cmdPDFTest_Click(object sender, EventArgs e)
+        private async void cmdPDFTest_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
-                CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 5", null, cboPDFParameters.SelectedValue?.ToString() ?? string.Empty, txtPDFAppPath.Text);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                await CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null,
+                                              cboPDFParameters.SelectedValue?.ToString() ?? string.Empty,
+                                              txtPDFAppPath.Text);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -267,9 +324,9 @@ namespace Chummer
             GlobalSettings.UseLoggingResetCounter = 10;
             if (useAI > UseAILogging.Info
                 && GlobalSettings.UseLoggingApplicationInsightsPreference <= UseAILogging.Info
-                && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(),
-                    LanguageManager.GetString("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
+                && DialogResult.Yes != Program.ShowMessageBox(this,
+                    (await LanguageManager.GetStringAsync("Message_Options_ConfirmTelemetry", _strSelectedLanguage)).WordWrap(),
+                    await LanguageManager.GetStringAsync("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
                     MessageBoxButtons.YesNo))
             {
                 _blnLoading = true;
@@ -280,13 +337,13 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void chkUseLogging_CheckedChanged(object sender, EventArgs e)
+        private async void chkUseLogging_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            if (chkUseLogging.Checked && !GlobalSettings.UseLogging && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
-                LanguageManager.GetString("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).WordWrap(),
-                LanguageManager.GetString("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage),
+            if (chkUseLogging.Checked && !GlobalSettings.UseLogging && DialogResult.Yes != Program.ShowMessageBox(this,
+                (await LanguageManager.GetStringAsync("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)).WordWrap(),
+                await LanguageManager.GetStringAsync("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage),
                 MessageBoxButtons.YesNo))
             {
                 _blnLoading = true;
@@ -321,28 +378,28 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void txtDateFormat_TextChanged(object sender, EventArgs e)
+        private async void txtDateFormat_TextChanged(object sender, EventArgs e)
         {
             try
             {
                 txtDateFormatView.Text = DateTime.Now.ToString(txtDateFormat.Text, _objSelectedCultureInfo);
             }
-            catch (Exception)
+            catch
             {
-                txtDateFormatView.Text = LanguageManager.GetString("String_Error", _strSelectedLanguage);
+                txtDateFormatView.Text = await LanguageManager.GetStringAsync("String_Error", _strSelectedLanguage);
             }
             OptionsChanged(sender, e);
         }
 
-        private void txtTimeFormat_TextChanged(object sender, EventArgs e)
+        private async void txtTimeFormat_TextChanged(object sender, EventArgs e)
         {
             try
             {
                 txtTimeFormatView.Text = DateTime.Now.ToString(txtTimeFormat.Text, _objSelectedCultureInfo);
             }
-            catch (Exception)
+            catch
             {
-                txtTimeFormatView.Text = LanguageManager.GetString("String_Error", _strSelectedLanguage);
+                txtTimeFormatView.Text = await LanguageManager.GetStringAsync("String_Error", _strSelectedLanguage);
             }
             OptionsChanged(sender, e);
         }
@@ -361,7 +418,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 if (Enum.TryParse(cboColorMode.SelectedValue.ToString(), true, out ColorMode eNewColorMode) && _eSelectedColorModeSetting != eNewColorMode)
                 {
@@ -402,22 +459,6 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void chkAutomaticUpdate_CheckedChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-            if (chkAutomaticUpdate.Checked)
-            {
-                chkPreferNightlyBuilds.Enabled = true;
-            }
-            else
-            {
-                chkPreferNightlyBuilds.Enabled = false;
-                chkPreferNightlyBuilds.Checked = false;
-            }
-            OptionsChanged(sender, e);
-        }
-
         private void cmdRemovePDFLocation_Click(object sender, EventArgs e)
         {
             UpdateSourcebookInfoPath(string.Empty);
@@ -448,10 +489,11 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void chkLifeModules_CheckedChanged(object sender, EventArgs e)
+        private async void chkLifeModules_CheckedChanged(object sender, EventArgs e)
         {
-            if (!chkLifeModule.Checked || _blnLoading) return;
-            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
+            if (!chkLifeModule.Checked || _blnLoading)
+                return;
+            if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Tip_LifeModule_Warning", _strSelectedLanguage), Application.ProductName,
                    MessageBoxButtons.OKCancel, MessageBoxIcon.Warning) != DialogResult.OK)
                 chkLifeModule.Checked = false;
             else
@@ -473,42 +515,45 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void cmdAddCustomDirectory_Click(object sender, EventArgs e)
+        private async void cmdAddCustomDirectory_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
             using (FolderBrowserDialog dlgSelectFolder = new FolderBrowserDialog { SelectedPath = Utils.GetStartupPath })
             {
                 if (dlgSelectFolder.ShowDialog(this) != DialogResult.OK)
                     return;
-                using (frmSelectText frmSelectCustomDirectoryName = new frmSelectText
+                using (SelectText frmSelectCustomDirectoryName = new SelectText
                 {
-                    Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
+                    Description = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage)
                 })
                 {
-                    if (frmSelectCustomDirectoryName.ShowDialogSafe(this) != DialogResult.OK)
+                    if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this) != DialogResult.OK)
                         return;
                     CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, dlgSelectFolder.SelectedPath);
                     if (objNewCustomDataDirectory.XmlException != default)
                     {
-                        Program.MainForm.ShowMessageBox(this,
-                            string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FailedLoad", _strSelectedLanguage),
+                        Program.ShowMessageBox(this,
+                            string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Message_FailedLoad", _strSelectedLanguage),
                                 objNewCustomDataDirectory.XmlException.Message),
                             string.Format(_objSelectedCultureInfo,
-                                LanguageManager.GetString("MessageTitle_FailedLoad", _strSelectedLanguage) +
-                                LanguageManager.GetString("String_Space", _strSelectedLanguage) + objNewCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
+                                await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", _strSelectedLanguage) +
+                                await LanguageManager.GetStringAsync("String_Space", _strSelectedLanguage) + objNewCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-                    if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == objNewCustomDataDirectory.DirectoryPath))
+
+                    string strDirectoryPath = objNewCustomDataDirectory.DirectoryPath;
+                    if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == strDirectoryPath))
                     {
-                        Program.MainForm.ShowMessageBox(this,
+                        Program.ShowMessageBox(this,
                             string.Format(
-                                LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryPath",
-                                    _strSelectedLanguage), objNewCustomDataDirectory.Name),
-                            LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryPath",
-                                _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                await LanguageManager.GetStringAsync("Message_Duplicate_CustomDataDirectoryPath",
+                                                                     _strSelectedLanguage), objNewCustomDataDirectory.Name),
+                            await LanguageManager.GetStringAsync("MessageTitle_Duplicate_CustomDataDirectoryPath",
+                                                                 _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
+
                     if (_setCustomDataDirectoryInfos.Contains(objNewCustomDataDirectory))
                     {
                         CustomDataDirectoryInfo objExistingInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objNewCustomDataDirectory));
@@ -518,12 +563,12 @@ namespace Chummer
                             {
                                 if (objExistingInfo.HasManifest)
                                 {
-                                    Program.MainForm.ShowMessageBox(
+                                    Program.ShowMessageBox(
                                         string.Format(
-                                            LanguageManager.GetString(
+                                            await LanguageManager.GetStringAsync(
                                                 "Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objNewCustomDataDirectory.Name),
-                                        LanguageManager.GetString(
+                                        await LanguageManager.GetStringAsync(
                                             "MessageTitle_Duplicate_CustomDataDirectory"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     return;
@@ -547,12 +592,12 @@ namespace Chummer
                     }
                     if (_setCustomDataDirectoryInfos.Any(x =>
                         objNewCustomDataDirectory.CharacterSettingsSaveKey.Equals(x.CharacterSettingsSaveKey,
-                            StringComparison.OrdinalIgnoreCase)) && Program.MainForm.ShowMessageBox(this,
+                            StringComparison.OrdinalIgnoreCase)) && Program.ShowMessageBox(this,
                         string.Format(
-                            LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName",
-                                _strSelectedLanguage), objNewCustomDataDirectory.Name),
-                        LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryName",
-                            _strSelectedLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            await LanguageManager.GetStringAsync("Message_Duplicate_CustomDataDirectoryName",
+                                                                 _strSelectedLanguage), objNewCustomDataDirectory.Name),
+                        await LanguageManager.GetStringAsync("MessageTitle_Duplicate_CustomDataDirectoryName",
+                                                             _strSelectedLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                         return;
                     _setCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
                     PopulateCustomDataDirectoryListBox();
@@ -572,30 +617,30 @@ namespace Chummer
             PopulateCustomDataDirectoryListBox();
         }
 
-        private void cmdRenameCustomDataDirectory_Click(object sender, EventArgs e)
+        private async void cmdRenameCustomDataDirectory_Click(object sender, EventArgs e)
         {
             if (lsbCustomDataDirectories.SelectedIndex == -1)
                 return;
             ListItem objSelected = (ListItem)lsbCustomDataDirectories.SelectedItem;
             CustomDataDirectoryInfo objInfoToRename = (CustomDataDirectoryInfo)objSelected.Value;
-            using (frmSelectText frmSelectCustomDirectoryName = new frmSelectText
+            using (SelectText frmSelectCustomDirectoryName = new SelectText
             {
-                Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
+                Description = await LanguageManager.GetStringAsync("String_CustomItem_SelectText", _strSelectedLanguage)
             })
             {
-                if (frmSelectCustomDirectoryName.ShowDialogSafe(this) != DialogResult.OK)
+                if (await frmSelectCustomDirectoryName.ShowDialogSafeAsync(this) != DialogResult.OK)
                     return;
                 CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.DirectoryPath);
                 if (!objNewInfo.HasManifest)
                     objNewInfo.CopyGuid(objInfoToRename);
                 if (objNewInfo.XmlException != default)
                 {
-                    Program.MainForm.ShowMessageBox(this,
-                        string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FailedLoad", _strSelectedLanguage),
+                    Program.ShowMessageBox(this,
+                        string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Message_FailedLoad", _strSelectedLanguage),
                             objNewInfo.XmlException.Message),
                         string.Format(_objSelectedCultureInfo,
-                            LanguageManager.GetString("MessageTitle_FailedLoad", _strSelectedLanguage) +
-                            LanguageManager.GetString("String_Space", _strSelectedLanguage) + objNewInfo.Name + Path.DirectorySeparatorChar + "manifest.xml"),
+                            await LanguageManager.GetStringAsync("MessageTitle_FailedLoad", _strSelectedLanguage) +
+                            await LanguageManager.GetStringAsync("String_Space", _strSelectedLanguage) + objNewInfo.Name + Path.DirectorySeparatorChar + "manifest.xml"),
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
@@ -603,12 +648,12 @@ namespace Chummer
                                                           objNewInfo.CharacterSettingsSaveKey.Equals(
                                                               x.CharacterSettingsSaveKey,
                                                               StringComparison.OrdinalIgnoreCase)) &&
-                    Program.MainForm.ShowMessageBox(this,
+                    Program.ShowMessageBox(this,
                         string.Format(
-                            LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName",
-                                _strSelectedLanguage), objNewInfo.Name),
-                        LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryName",
-                            _strSelectedLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            await LanguageManager.GetStringAsync("Message_Duplicate_CustomDataDirectoryName",
+                                                                 _strSelectedLanguage), objNewInfo.Name),
+                        await LanguageManager.GetStringAsync("MessageTitle_Duplicate_CustomDataDirectoryName",
+                                                             _strSelectedLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
                 _setCustomDataDirectoryInfos.Remove(objInfoToRename);
                 _setCustomDataDirectoryInfos.Add(objNewInfo);
@@ -671,6 +716,7 @@ namespace Chummer
 #else
         private void cmdUploadPastebin_Click(object sender, EventArgs e)
         {
+            // Method intentionally left empty.
         }
 #endif
 
@@ -679,7 +725,7 @@ namespace Chummer
             clbPlugins.Items.Clear();
             if (Program.PluginLoader.MyPlugins.Count == 0)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 foreach (IPlugin plugin in Program.PluginLoader.MyPlugins)
                 {
@@ -720,7 +766,7 @@ namespace Chummer
 
         private void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 object plugin = clbPlugins.Items[e.Index];
                 if (GlobalSettings.PluginsEnabledDic.ContainsKey(plugin.ToString()))
@@ -737,7 +783,7 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void lsbCustomDataDirectories_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lsbCustomDataDirectories_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -754,7 +800,7 @@ namespace Chummer
             lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
             lblDirectoryAuthors.Text = objSelected.GetDisplayAuthors(_strSelectedLanguage, _objSelectedCultureInfo);
             lblDirectoryName.Text = objSelected.Name;
-            lblDirectoryPath.Text = objSelected.DirectoryPath.Replace(Utils.GetStartupPath, LanguageManager.GetString("String_Chummer5a", _strSelectedLanguage));
+            lblDirectoryPath.Text = objSelected.DirectoryPath.Replace(Utils.GetStartupPath, await LanguageManager.GetStringAsync("String_Chummer5a", _strSelectedLanguage));
 
             if (objSelected.DependenciesList.Count > 0)
             {
@@ -797,17 +843,17 @@ namespace Chummer
 
         private bool _blnPromptPdfReaderOnLoad;
 
-        public void DoLinkPdfReader()
+        public async ValueTask DoLinkPdfReader()
         {
             if (_blnLoading)
                 _blnPromptPdfReaderOnLoad = true;
             else
-                PromptPdfAppPath();
+                await PromptPdfAppPath();
         }
 
         private string _strSelectCodeOnRefresh = string.Empty;
 
-        public void DoLinkPdf(string strCode)
+        public async ValueTask DoLinkPdf(string strCode)
         {
             if (_blnLoading)
                 _strSelectCodeOnRefresh = strCode;
@@ -815,23 +861,24 @@ namespace Chummer
             {
                 lstGlobalSourcebookInfos.SelectedValue = strCode;
                 if (lstGlobalSourcebookInfos.SelectedIndex >= 0)
-                    PromptPdfLocation();
+                    await PromptPdfLocation();
             }
         }
 
-        private void PromptPdfLocation()
+        private async ValueTask PromptPdfLocation()
         {
             if (!txtPDFLocation.Enabled)
                 return;
             // Prompt the user to select a save file to associate with this Contact.
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 string strNewFileName;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' +
-                             LanguageManager.GetString("DialogFilter_All")
-                })
+                       {
+                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf") + '|' +
+                                    await LanguageManager.GetStringAsync("DialogFilter_All")
+                       })
                 {
                     if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
                     {
@@ -850,34 +897,39 @@ namespace Chummer
                     PdfReader objPdfReader = new PdfReader(strNewFileName);
                     objPdfReader.Close();
                 }
-                catch (Exception)
+                catch
                 {
-                    Program.MainForm.ShowMessageBox(this, string.Format(
-                                                        LanguageManager.GetString(
-                                                            "Message_Options_FileIsNotPDF",
-                                                            _strSelectedLanguage), Path.GetFileName(strNewFileName)),
-                                                    LanguageManager.GetString(
-                                                        "MessageTitle_Options_FileIsNotPDF",
-                                                        _strSelectedLanguage), MessageBoxButtons.OK,
-                                                    MessageBoxIcon.Error);
+                    Program.ShowMessageBox(this, string.Format(
+                                               await LanguageManager.GetStringAsync(
+                                                   "Message_Options_FileIsNotPDF",
+                                                   _strSelectedLanguage), Path.GetFileName(strNewFileName)),
+                                           await LanguageManager.GetStringAsync(
+                                               "MessageTitle_Options_FileIsNotPDF",
+                                               _strSelectedLanguage), MessageBoxButtons.OK,
+                                           MessageBoxIcon.Error);
                     return;
                 }
 
                 UpdateSourcebookInfoPath(strNewFileName);
                 txtPDFLocation.Text = strNewFileName;
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void PromptPdfAppPath()
+        private async ValueTask PromptPdfAppPath()
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Filter = LanguageManager.GetString("DialogFilter_Exe") + '|' +
-                             LanguageManager.GetString("DialogFilter_All")
-                })
+                       {
+                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Exe") + '|' +
+                                    await LanguageManager.GetStringAsync("DialogFilter_All")
+                       })
                 {
                     if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
                     {
@@ -890,14 +942,18 @@ namespace Chummer
                     txtPDFAppPath.Text = openFileDialog.FileName;
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void TranslateForm()
+        private async ValueTask TranslateForm()
         {
-            this.TranslateWinForm(_strSelectedLanguage);
-            PopulateDefaultCharacterSettingLists();
-            PopulateMugshotCompressionOptions();
-            SetToolTips();
+            await this.TranslateWinFormAsync(_strSelectedLanguage);
+            await PopulateDefaultCharacterSettingLists();
+            await PopulateMugshotCompressionOptions();
+            await SetToolTips();
 
             string strSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             if (strSheetLanguage != _strSelectedLanguage
@@ -906,31 +962,31 @@ namespace Chummer
                 cboSheetLanguage.SelectedValue = _strSelectedLanguage;
             }
 
-            PopulatePdfParameters();
+            await PopulatePdfParameters();
             PopulateCustomDataDirectoryListBox();
-            PopulateApplicationInsightsOptions();
-            PopulateColorModes();
-            PopulateDpiScalingMethods();
+            await PopulateApplicationInsightsOptions();
+            await PopulateColorModes();
+            await PopulateDpiScalingMethods();
         }
 
-        private void RefreshGlobalSourcebookInfosListView()
+        private async ValueTask RefreshGlobalSourcebookInfosListView()
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstSourcebookInfos))
             {
-                foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", null, _strSelectedLanguage)
-                                                                .SelectAndCacheExpression("/chummer/books/book"))
+                foreach (XPathNavigator objXmlBook in await (await XmlManager.LoadXPathAsync("books.xml", null, _strSelectedLanguage))
+                             .SelectAndCacheExpressionAsync("/chummer/books/book"))
                 {
-                    string strCode = objXmlBook.SelectSingleNodeAndCacheExpression("code")?.Value;
+                    string strCode = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("code"))?.Value;
                     if (!string.IsNullOrEmpty(strCode))
                     {
                         ListItem objBookInfo
                             = new ListItem(
                                 strCode,
-                                objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                ?? objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value ?? strCode);
+                                (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                ?? (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? strCode);
                         lstSourcebookInfos.Add(objBookInfo);
                     }
                 }
@@ -997,21 +1053,20 @@ namespace Chummer
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
-        private void PopulateOptions()
+        private async ValueTask PopulateOptions()
         {
-            RefreshGlobalSourcebookInfosListView();
+            await RefreshGlobalSourcebookInfosListView();
             PopulateCustomDataDirectoryListBox();
 
             chkAutomaticUpdate.Checked = GlobalSettings.AutomaticUpdate;
-            chkPreferNightlyBuilds.Enabled = GlobalSettings.AutomaticUpdate;
-            chkPreferNightlyBuilds.Checked = chkPreferNightlyBuilds.Enabled && GlobalSettings.PreferNightlyBuilds;
+            chkPreferNightlyBuilds.Checked = GlobalSettings.PreferNightlyBuilds;
             chkLiveCustomData.Checked = GlobalSettings.LiveCustomData;
             chkLiveUpdateCleanCharacterFiles.Checked = GlobalSettings.LiveUpdateCleanCharacterFiles;
             chkUseLogging.Checked = GlobalSettings.UseLogging;
             cboUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
-            PopulateApplicationInsightsOptions();
-            PopulateColorModes();
-            PopulateDpiScalingMethods();
+            await PopulateApplicationInsightsOptions();
+            await PopulateColorModes();
+            await PopulateDpiScalingMethods();
 
             chkLifeModule.Checked = GlobalSettings.LifeModuleEnabled;
             chkStartupFullscreen.Checked = GlobalSettings.StartupFullscreen;
@@ -1053,7 +1108,7 @@ namespace Chummer
             PluginsShowOrHide(chkEnablePlugins.Checked);
         }
 
-        private void SaveGlobalOptions()
+        private async ValueTask SaveGlobalOptions()
         {
             GlobalSettings.AutomaticUpdate = chkAutomaticUpdate.Checked;
             GlobalSettings.LiveCustomData = chkLiveCustomData.Checked;
@@ -1132,7 +1187,7 @@ namespace Chummer
             GlobalSettings.CustomDataDirectoryInfos.Clear();
             foreach (CustomDataDirectoryInfo objInfo in _setCustomDataDirectoryInfos)
                 GlobalSettings.CustomDataDirectoryInfos.Add(objInfo);
-            XmlManager.RebuildDataDirectoryInfo(GlobalSettings.CustomDataDirectoryInfos);
+            await XmlManager.RebuildDataDirectoryInfoAsync(GlobalSettings.CustomDataDirectoryInfos);
             GlobalSettings.SourcebookInfos.Clear();
             foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
                 GlobalSettings.SourcebookInfos.Add(objInfo.Code, objInfo);
@@ -1141,14 +1196,13 @@ namespace Chummer
         /// <summary>
         /// Save the global settings to the registry.
         /// </summary>
-        private void SaveRegistrySettings()
+        private async ValueTask SaveRegistrySettings()
         {
-            SaveGlobalOptions();
-
-            GlobalSettings.SaveOptionsToRegistry();
+            await SaveGlobalOptions();
+            await GlobalSettings.SaveOptionsToRegistry();
         }
 
-        private void PopulateDefaultCharacterSettingLists()
+        private async ValueTask PopulateDefaultCharacterSettingLists()
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCharacterSettings))
@@ -1161,8 +1215,8 @@ namespace Chummer
                     {
                         string strName = kvpLoopCharacterOptions.Value.Name;
                         if (strName.IsGuid() || (strName.StartsWith('{') && strName.EndsWith('}')))
-                            strName = LanguageManager.GetString(strName.TrimStartOnce('{').TrimEndOnce('}'),
-                                                                _strSelectedLanguage);
+                            strName = await LanguageManager.GetStringAsync(strName.TrimStartOnce('{').TrimEndOnce('}'),
+                                                                           _strSelectedLanguage);
                         lstCharacterSettings.Add(new ListItem(strId, strName));
                     }
                 }
@@ -1199,18 +1253,18 @@ namespace Chummer
             }
         }
 
-        private void PopulateMugshotCompressionOptions()
+        private async ValueTask PopulateMugshotCompressionOptions()
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstMugshotCompressionOptions))
             {
                 lstMugshotCompressionOptions.Add(
-                    new ListItem("png", LanguageManager.GetString("String_Lossless_Compression_Option")));
+                    new ListItem("png", await LanguageManager.GetStringAsync("String_Lossless_Compression_Option")));
                 lstMugshotCompressionOptions.Add(new ListItem("jpeg_automatic",
-                                                              LanguageManager.GetString(
+                                                              await LanguageManager.GetStringAsync(
                                                                   "String_Lossy_Automatic_Compression_Option")));
                 lstMugshotCompressionOptions.Add(new ListItem("jpeg_manual",
-                                                              LanguageManager.GetString(
+                                                              await LanguageManager.GetStringAsync(
                                                                   "String_Lossy_Manual_Compression_Option")));
 
                 string strOldSelected = cboMugshotCompression.SelectedValue?.ToString();
@@ -1253,22 +1307,22 @@ namespace Chummer
             nudMugshotCompressionQuality.Visible = blnShowQualitySelector;
         }
 
-        private void PopulatePdfParameters()
+        private async ValueTask PopulatePdfParameters()
         {
             int intIndex = 0;
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstPdfParameters))
             {
-                foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", null, _strSelectedLanguage)
-                                                                .SelectAndCacheExpression(
-                                                                    "/chummer/pdfarguments/pdfargument"))
+                foreach (XPathNavigator objXmlNode in await (await XmlManager.LoadXPathAsync("options.xml", null, _strSelectedLanguage))
+                             .SelectAndCacheExpressionAsync(
+                                 "/chummer/pdfarguments/pdfargument"))
                 {
-                    string strValue = objXmlNode.SelectSingleNodeAndCacheExpression("value")?.Value;
+                    string strValue = (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("value"))?.Value;
                     lstPdfParameters.Add(new ListItem(
                                              strValue,
-                                             objXmlNode.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                             ?? objXmlNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                             (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                             ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                              ?? string.Empty));
                     if (!string.IsNullOrWhiteSpace(GlobalSettings.PdfParameters)
                         && GlobalSettings.PdfParameters == strValue)
@@ -1293,7 +1347,7 @@ namespace Chummer
             }
         }
 
-        private void PopulateApplicationInsightsOptions()
+        private async ValueTask PopulateApplicationInsightsOptions()
         {
             string strOldSelected = cboUseLoggingApplicationInsights.SelectedValue?.ToString() ?? GlobalSettings.UseLoggingApplicationInsights.ToString();
             
@@ -1303,13 +1357,13 @@ namespace Chummer
                 foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
                 {
                     //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
-                    if (Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !Debugger.IsAttached
+                    if (Utils.IsMilestoneVersion && !Debugger.IsAttached
                         && eOption > UseAILogging.NotSet)
                         continue;
                     lstUseAIOptions.Add(new ListItem(
                                             eOption,
-                                            LanguageManager.GetString("String_ApplicationInsights_" + eOption,
-                                                                      _strSelectedLanguage)));
+                                            await LanguageManager.GetStringAsync("String_ApplicationInsights_" + eOption,
+                                                _strSelectedLanguage)));
                 }
 
                 cboUseLoggingApplicationInsights.BeginUpdate();
@@ -1322,7 +1376,7 @@ namespace Chummer
             }
         }
 
-        private void PopulateColorModes()
+        private async ValueTask PopulateColorModes()
         {
             string strOldSelected = cboColorMode.SelectedValue?.ToString() ?? GlobalSettings.ColorModeSetting.ToString();
             
@@ -1332,7 +1386,7 @@ namespace Chummer
                 foreach (ColorMode eLoopColorMode in Enum.GetValues(typeof(ColorMode)))
                 {
                     lstColorModes.Add(new ListItem(eLoopColorMode,
-                                                   LanguageManager.GetString(
+                                                   await LanguageManager.GetStringAsync(
                                                        "String_" + eLoopColorMode, _strSelectedLanguage)));
                 }
 
@@ -1346,7 +1400,7 @@ namespace Chummer
             }
         }
 
-        private void PopulateDpiScalingMethods()
+        private async ValueTask PopulateDpiScalingMethods()
         {
             string strOldSelected = cboDpiScalingMethod.SelectedValue?.ToString() ?? GlobalSettings.DpiScalingMethodSetting.ToString();
             
@@ -1373,7 +1427,7 @@ namespace Chummer
                     }
 
                     lstDpiScalingMethods.Add(new ListItem(eLoopDpiScalingMethod,
-                                                          LanguageManager.GetString(
+                                                          await LanguageManager.GetStringAsync(
                                                               "String_" + eLoopDpiScalingMethod,
                                                               _strSelectedLanguage)));
                 }
@@ -1388,9 +1442,9 @@ namespace Chummer
             }
         }
 
-        private void SetToolTips()
+        private async ValueTask SetToolTips()
         {
-            cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Tip_Options_TelemetryId", _strSelectedLanguage),
+            cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Tip_Options_TelemetryId", _strSelectedLanguage),
                 Properties.Settings.Default.UploadClientId.ToString("D", GlobalSettings.InvariantCultureInfo)).WordWrap());
         }
 
@@ -1435,15 +1489,15 @@ namespace Chummer
             }
         }
 
-        private void PopulateSheetLanguageList()
+        private async ValueTask PopulateSheetLanguageList()
         {
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLanguagesWithSheets))
             {
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-                foreach (XPathNavigator xmlSheetLanguage in XmlManager.LoadXPath("sheets.xml")
-                                                                      .SelectAndCacheExpression(
-                                                                          "/chummer/sheets/@lang"))
+                foreach (XPathNavigator xmlSheetLanguage in await (await XmlManager.LoadXPathAsync("sheets.xml"))
+                             .SelectAndCacheExpressionAsync(
+                                 "/chummer/sheets/@lang"))
                 {
                     setLanguagesWithSheets.Add(xmlSheetLanguage.Value);
                 }
@@ -1477,8 +1531,8 @@ namespace Chummer
                             continue;
                         }
 
-                        XPathNavigator node = xmlDocument.CreateNavigator()
-                                                         .SelectSingleNodeAndCacheExpression("/chummer/name");
+                        XPathNavigator node = await xmlDocument.CreateNavigator()
+                                                               .SelectSingleNodeAndCacheExpressionAsync("/chummer/name");
                         if (node == null)
                             continue;
 
@@ -1494,7 +1548,7 @@ namespace Chummer
             }
         }
 
-        private void PopulateXsltList()
+        private async ValueTask PopulateXsltList()
         {
             string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             imgSheetLanguageFlag.Image = Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height) >= 32
@@ -1504,22 +1558,30 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFiles))
             {
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-                foreach (XPathNavigator xmlSheet in XmlManager.LoadXPath("sheets.xml")
-                                                              .SelectAndCacheExpression(
-                                                                  "/chummer/sheets[@lang="
-                                                                  + GlobalSettings.Language.CleanXPath()
-                                                                  + "]/sheet[not(hide)]"))
+                foreach (XPathNavigator xmlSheet in await (await XmlManager.LoadXPathAsync("sheets.xml"))
+                             .SelectAndCacheExpressionAsync(
+                                 "/chummer/sheets[@lang="
+                                 + GlobalSettings.Language.CleanXPath()
+                                 + "]/sheet[not(hide)]"))
                 {
-                    string strFile = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value ?? string.Empty;
+                    string strFile = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename"))?.Value ?? string.Empty;
                     lstFiles.Add(new ListItem(
                                      !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                      StringComparison.OrdinalIgnoreCase)
                                          ? Path.Combine(GlobalSettings.Language, strFile)
                                          : strFile,
-                                     xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty));
+                                     (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value ?? string.Empty));
                 }
-
-                string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                string strOldSelected;
+                try
+                {
+                    strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+                }
+                catch(IndexOutOfRangeException)
+                { 
+                    strOldSelected = string.Empty;
+                }
+                 
                 // Strip away the language prefix
                 int intPos = strOldSelected.LastIndexOf(Path.DirectorySeparatorChar);
                 if (intPos != -1)
@@ -1650,9 +1712,11 @@ namespace Chummer
         private async void bScanForPDFs_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                Task<XPathNavigator> tskLoadBooks = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
+                Task<XPathNavigator> tskLoadBooks
+                    = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
                 using (FolderBrowserDialog fbd = new FolderBrowserDialog {ShowNewFolderButton = false})
                 {
                     DialogResult result = fbd.ShowDialog();
@@ -1663,8 +1727,10 @@ namespace Chummer
                     sw.Start();
                     string[] files = Directory.GetFiles(fbd.SelectedPath, "*.pdf", SearchOption.TopDirectoryOnly);
                     XPathNavigator books = await tskLoadBooks;
-                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language=\"" + _strSelectedLanguage + "\"]");
-                    using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar(fbd.SelectedPath, files.Length))
+                    XPathNodeIterator matches = books.Select("/chummer/books/book/matches/match[language = "
+                                                             + _strSelectedLanguage.CleanXPath() + ']');
+                    using (LoadingBar frmProgressBar
+                           = await Program.CreateAndShowProgressBarAsync(fbd.SelectedPath, files.Length))
                     {
                         List<SourcebookInfo> list = null;
                         await Task.Run(() => list = ScanFilesForPDFTexts(files, matches, frmProgressBar).ToList());
@@ -1690,11 +1756,20 @@ namespace Chummer
                             Log.Info(sbdFeedback.ToString());
                         }
 
-                        string message = string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FoundPDFsInFolder", _strSelectedLanguage), list.Count, fbd.SelectedPath);
-                        string title = LanguageManager.GetString("MessageTitle_FoundPDFsInFolder", _strSelectedLanguage);
-                        Program.MainForm.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        string message = string.Format(_objSelectedCultureInfo,
+                                                       await LanguageManager.GetStringAsync(
+                                                           "Message_FoundPDFsInFolder", _strSelectedLanguage),
+                                                       list.Count, fbd.SelectedPath);
+                        string title
+                            = await LanguageManager.GetStringAsync("MessageTitle_FoundPDFsInFolder",
+                                                                   _strSelectedLanguage);
+                        Program.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 

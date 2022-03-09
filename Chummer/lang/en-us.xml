@@ -47,12 +47,16 @@
       <text>Chummer5 encountered an error while saving the character.</text>
     </string>
     <string>
+      <key>Message_Prompt_Delete_Existing_File</key>
+      <text>Chummer5 has detected that the following file already exists at this location that is outside of the Chummer base directory:\n{0}\n\nAre you sure you wish to remove the old file?</text>
+    </string>
+    <string>
       <key>Message_File_Cannot_Be_Accessed</key>
-      <text>Chummer5 cannot access the file for writing. Please make sure it has permission to write to the location and that the file is not currently in use.</text>
+      <text>Chummer5 cannot access the following file for writing:\n{0}\n\nPlease make sure it has permission to write to the location and that the file is not currently in use.</text>
     </string>
     <string>
       <key>Message_File_Cannot_Be_Read_Accessed</key>
-      <text>Chummer5 cannot access the file {0}. Please make sure that the file exists and that Chummer5 has permission to read from the location.</text>
+      <text>Chummer5 cannot access the following file:\n{0}\n\nPlease make sure that the file exists and that Chummer5 has permission to read from the location.</text>
     </string>
     <string>
       <key>Message_Files_Cannot_Be_Removed</key>
@@ -995,6 +999,10 @@
       <text>hours</text>
     </string>
     <string>
+      <key>String_Encumbrance</key>
+      <text>Encumbrance</text>
+    </string>
+    <string>
       <key>String_ArmorEncumbrance</key>
       <text>Armor Encumbrance</text>
     </string>
@@ -1431,6 +1439,14 @@
       <text>&amp;Open</text>
     </string>
     <string>
+      <key>Menu_Main_OpenForPrinting</key>
+      <text>Open for P&amp;rinting</text>
+    </string>
+    <string>
+      <key>Menu_Main_OpenForExport</key>
+      <text>Open for E&amp;xport</text>
+    </string>
+    <string>
       <key>Menu_Main_PrintMultiple</key>
       <text>Print &amp;Multiple</text>
     </string>
@@ -1852,7 +1868,7 @@
     </string>
     <string>
       <key>Tab_Magician</key>
-      <text>Spells and Spirits</text>
+      <text>Spells &amp;&amp; Spirits</text>
     </string>
     <string>
       <key>Tab_Adept</key>
@@ -1860,7 +1876,7 @@
     </string>
     <string>
       <key>Tab_Technomancer</key>
-      <text>Complex Forms and Sprites</text>
+      <text>Complex Forms &amp;&amp; Sprites</text>
     </string>
     <string>
       <key>Tab_Critter</key>
@@ -1876,7 +1892,7 @@
     </string>
     <string>
       <key>Tab_Cyberware</key>
-      <text>Cyberware and Bioware</text>
+      <text>Cyberware &amp;&amp; Bioware</text>
     </string>
     <string>
       <key>Tab_StreetGear</key>
@@ -1892,7 +1908,7 @@
     </string>
     <string>
       <key>Tab_Karma</key>
-      <text>Karma and Nuyen</text>
+      <text>Karma &amp;&amp; Nuyen</text>
     </string>
     <string>
       <key>Tab_Improvements</key>
@@ -1920,11 +1936,11 @@
     </string>
     <string>
       <key>Tab_Lifestyle</key>
-      <text>Lifestyle</text>
+      <text>Lifestyles</text>
     </string>
     <string>
       <key>Tab_Armor</key>
-      <text>Clothing and Armor</text>
+      <text>Clothing &amp;&amp; Armor</text>
     </string>
     <string>
       <key>Tab_Weapons</key>
@@ -1936,7 +1952,7 @@
     </string>
     <string>
       <key>Tab_Pets</key>
-      <text>Pets and Cohorts</text>
+      <text>Pets &amp;&amp; Cohorts</text>
     </string>
     <string>
       <key>Tab_ConditionMonitor</key>
@@ -2371,6 +2387,50 @@
       <text>Registered Sprite Limit:</text>
     </string>
     <string>
+      <key>Label_CharacterOptions_WeightDecimalPlaces</key>
+      <text>Number of decimal places to show for weight:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_LiftLimit</key>
+      <text>Lift Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_CarryLimit</key>
+      <text>Carry Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbranceIntervalLeft</key>
+      <text>Increase encumbrance penalty every</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbranceIntervalRight</key>
+      <text>kg over Carry Limit</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_EncumbrancePenaltiesHeader</key>
+      <text>Each encumbrance penalty tick does the following:</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyPhysicalLimit</key>
+      <text>Lower Physical Limit by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyMovementSpeed</key>
+      <text>Lower Movement Speeds by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyAgility</key>
+      <text>Lower Agility by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyReaction</key>
+      <text>Lower Reaction by</text>
+    </string>
+    <string>
+      <key>Checkbox_CharacterOptions_EncumbrancePenaltyWoundModifier</key>
+      <text>Apply an additional Wound Modifier of</text>
+    </string>
+    <string>
       <key>Message_CannotRemoveCyberware</key>
       <text>This item cannot be removed because it is included as a base feature for a piece of Cyberware.</text>
     </string>
@@ -2688,7 +2748,7 @@
     </string>
     <string>
       <key>Message_AttributeMaximum</key>
-      <text>You cannot have more than one Attribute at its maximum value during character creation.</text>
+      <text>You cannot have more than {0} Attribute(s) at its/their maximum value during character creation.</text>
     </string>
     <string>
       <key>Message_AttributeBuildPoints</key>
@@ -2713,6 +2773,10 @@
     <string>
       <key>Message_InvalidBeginning</key>
       <text>This character is not valid and breaks the following rules:</text>
+    </string>
+    <string>
+      <key>Message_TooManyAttributesAtMax</key>
+      <text>{0} Attribute(s) is/are at their metatype maximum when only {1} is/are allowed.</text>
     </string>
     <string>
       <key>Message_InvalidAttributeExcess</key>
@@ -2839,10 +2903,6 @@
       <text>Too many Language Knowledge Skills listed as Native. Current: {0} Maximum: {1}</text>
     </string>
     <string>
-      <key>Message_UnderLanguageLimit</key>
-      <text>Too few Language Knowledge Skills listed as Native. Current: {0} Minimum: {1}</text>
-    </string>
-    <string>
       <key>Message_OverPositiveMetagenicQualities</key>
       <text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
     </string>
@@ -2893,6 +2953,14 @@
     <string>
       <key>Message_NoExtraKarma</key>
       <text>You have {0} Karma remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose this extra Karma?</text>
+    </string>
+    <string>
+      <key>MessageTitle_ExtraNativeLanguages</key>
+      <text>Extra Native Languages</text>
+    </string>
+    <string>
+      <key>Message_ExtraNativeLanguages</key>
+      <text>You have {0} more native languages that you can get for this character.\nAre you sure you want to proceed out of character creation without choosing any more?</text>
     </string>
     <string>
       <key>Message_SumtoTen</key>
@@ -3001,6 +3069,10 @@
     <string>
       <key>String_EssenceLossChargen</key>
       <text>Essence Loss (Character Generation)</text>
+    </string>
+    <string>
+      <key>String_BurnedEdge</key>
+      <text>Burned Edge</text>
     </string>
     <string>
       <key>String_SpiritFettering</key>
@@ -3153,6 +3225,14 @@
     <string>
       <key>MessageTitle_NotHighestGrade</key>
       <text>Cannot Undo This Entry</text>
+    </string>
+    <string>
+      <key>Message_UndoBrokenSkillGroup</key>
+      <text>{0} is a broken skill group, either because one of the skills in it has a specialization or at least one skill in the group is a different level from the others. Chummer cannot undo increases to ratings of broken skill groups.</text>
+    </string>
+    <string>
+      <key>MessageTitle_UndoBrokenSkillGroup</key>
+      <text>Cannot Undo This Skill Group Increase</text>
     </string>
     <string>
       <key>Message_UndoExpense</key>
@@ -4258,6 +4338,10 @@
       <text>Nuyen (Stolen):</text>
     </string>
     <string>
+      <key>Label_CarriedWeight</key>
+      <text>Carried Weight:</text>
+    </string>
+    <string>
       <key>Node_SelectedQualities</key>
       <text>Selected Qualities</text>
     </string>
@@ -5192,10 +5276,6 @@
       <text>Selected Weapons</text>
     </string>
     <string>
-      <key>Tip_WeaponInstalled</key>
-      <text>Installed Weapon Accessories and Mods count towards a Weapon's stats.</text>
-    </string>
-    <string>
       <key>String_WeaponAccessory</key>
       <text>Weapon Accessory</text>
     </string>
@@ -5837,7 +5917,7 @@
     </string>
     <string>
       <key>Checkbox_Options_PreferNightlyBuilds</key>
-      <text>Prefer Nightly Builds</text>
+      <text>Prefer Nightly builds when updating</text>
     </string>
     <string>
       <key>Checkbox_Option_HideItemsOverAvailLimit</key>
@@ -6042,6 +6122,18 @@
       <text>Memory:</text>
     </string>
     <string>
+      <key>Label_OtherLiftAndCarryLimits</key>
+      <text>Lift/Carry Limits:</text>
+    </string>
+    <string>
+      <key>Label_OtherLiftAndCarryLimitsFormat</key>
+      <text>{0}/{1} kg</text>
+    </string>
+    <string>
+      <key>Label_OtherLiftAndCarryHits</key>
+      <text>Active Lift/Carry Test Hits:</text>
+    </string>
+    <string>
       <key>Tip_OtherCMPhysical</key>
       <text>Physical CM is calculated as 8 + (BOD / 2).</text>
     </string>
@@ -6096,6 +6188,10 @@
     <string>
       <key>Tip_OtherFly</key>
       <text>Character's flying speed in meters.</text>
+    </string>
+    <string>
+      <key>Tip_OtherLiftAndCarryLimits</key>
+      <text>Character's baseline lift/carry weight limit in kilograms.</text>
     </string>
     <string>
       <key>Tip_OtherComposure</key>
@@ -6256,16 +6352,24 @@
     <!-- End Region -->
     <!-- Region ToolTips -->
     <string>
+      <key>Tip_SpellDrain</key>
+      <text>Drain for</text>
+    </string>
+    <string>
       <key>Tip_SpellDrainBase</key>
-      <text>Base Drain for</text>
+      <text>Base Drain</text>
     </string>
     <string>
       <key>Tip_SpellDrainSeeDescription</key>
       <text>See Spell Description</text>
     </string>
     <string>
+      <key>Tip_ComplexFormFading</key>
+      <text>Fading for</text>
+    </string>
+    <string>
       <key>Tip_ComplexFormFadingBase</key>
-      <text>Base Fading for</text>
+      <text>Base Fading</text>
     </string>
     <string>
       <key>Tip_ComplexFormFadingSeeDescription</key>
@@ -6298,10 +6402,6 @@
     <string>
       <key>Tip_Armor</key>
       <text>Armor</text>
-    </string>
-    <string>
-      <key>Tip_LiftAndCarry</key>
-      <text>Lift: {0} kg, Carry: {1} kg</text>
     </string>
     <string>
       <key>Tip_DiceRoller</key>
@@ -7131,24 +7231,8 @@
       <text>Color Mode:</text>
     </string>
     <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
-      <text>May buy Qualities (RC 40)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_KnowledgeMultiplier</key>
-      <text>Override Knowledge Points (INT + LOG) Multiplier</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactMultiplier</key>
-      <text>Override Contact Points Charisma Multiplier</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactPoints</key>
-      <text>Contact points instead of fixed Contacts (RC 40)</text>
-    </string>
-    <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
-      <text>Automatic Updates</text>
+      <text>Automatically download updates</text>
     </string>
     <string>
       <key>Checkbox_Options_Live_CustomData</key>
@@ -7531,6 +7615,10 @@
       <text>Use Skill Points on broken groups</text>
     </string>
     <string>
+      <key>Checkbox_Options_SpecializationsBreakSkillGroups</key>
+      <text>Specializations break skill groups</text>
+    </string>
+    <string>
       <key>Checkbox_Options_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>
@@ -7868,7 +7956,7 @@
     </string>
     <string>
       <key>Button_Options_PDFTest</key>
-      <text>Test - Open to Page 5</text>
+      <text>Test - Open to Page 3</text>
     </string>
     <string>
       <key>Button_Options_PDFFolderScan</key>
@@ -7991,6 +8079,18 @@
     <string>
       <key>Label_CharacterOptions_NuyenExpression</key>
       <text>Nuyen Expression</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxNumberMaxAttributes</key>
+      <text>Max Number of Attributes at Max</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxSkillRating</key>
+      <text>Max Skill Rating</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_MaxKnowledgeSkillRating</key>
+      <text>Max Knowledge Skill Rating</text>
     </string>
     <string>
       <key>Label_CharacterOptions_AllowedCyberwareGrades</key>
@@ -8290,7 +8390,7 @@
     </string>
     <string>
       <key>Label_SelectBP_MaxNuyen</key>
-      <text>Nuyen Karma Max</text>
+      <text>Max Nuyen Karma</text>
     </string>
     <string>
       <key>Label_SelectBP_QualityKarmaLimit</key>

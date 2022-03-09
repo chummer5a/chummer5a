@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -28,7 +27,6 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
-using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
 using NLog;
 
@@ -146,7 +144,7 @@ namespace Chummer.Backend
             public readonly Dictionary<string, string> _dicAttributes;
 
             // ReSharper disable once MemberCanBePrivate.Local
-            public readonly int _intProcessId = Process.GetCurrentProcess().Id;
+            public readonly int _intProcessId = Program.MyProcess.Id;
 
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
@@ -196,30 +194,6 @@ namespace Chummer.Backend
         {
             try
             {
-                if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes && Program.ChummerTelemetryClient != null)
-                {
-                    ex.Data.Add("IsCrash", bool.TrueString);
-                    ExceptionTelemetry et = new ExceptionTelemetry(ex)
-                    {
-                        SeverityLevel = SeverityLevel.Critical
-                    };
-                    //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
-                    foreach (DictionaryEntry d in ex.Data)
-                    {
-                        if ((d.Key != null) && (d.Value != null))
-                            et.Properties.Add(d.Key.ToString(), d.Value.ToString());
-                    }
-                    Program.ChummerTelemetryClient.TrackException(et);
-                    Program.ChummerTelemetryClient.Flush();
-                }
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
-
-            try
-            {
                 using (DumpData dump = new DumpData(ex))
                 {
                     foreach (string strSettingFile in Directory.EnumerateFiles(
@@ -241,9 +215,9 @@ namespace Chummer.Backend
             }
             catch (Exception nex)
             {
-                Program.MainForm.ShowMessageBox(
+                Program.ShowMessageBox(
                     "Failed to create crash report." + Environment.NewLine +
-                    "Chummer crashed with version: " + Assembly.GetAssembly(typeof(Program))?.GetName().Version + Environment.NewLine +
+                    "Chummer crashed with version: " + Utils.CurrentChummerVersion + Environment.NewLine +
                     "Here is some information to help the developers figure out why:" + Environment.NewLine + nex +
                     Environment.NewLine + "Crash information:" + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

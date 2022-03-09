@@ -11,6 +11,7 @@ using ChummerHub.Client.Properties;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using ChummerHub.Client.Sinners;
+using GroupControls;
 using NLog;
 using Utils = ChummerHub.Client.Backend.Utils;
 
@@ -85,18 +86,18 @@ namespace ChummerHub.Client.UI
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                cbSINnerUrl.DoThreadSafe(() =>
+                cbSINnerUrl.DoThreadSafe(x =>
                 {
-                    cbSINnerUrl.SetToolTip(tip);
-                    cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
+                    x.SetToolTip(tip);
+                    ((ComboBox)x).SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
                 });
             }
             else
             {
-                await cbSINnerUrl.DoThreadSafeAsync(() =>
+                await cbSINnerUrl.DoThreadSafeAsync(x =>
                 {
-                    cbSINnerUrl.SetToolTip(tip);
-                    cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
+                    x.SetToolTip(tip);
+                    ((ComboBox)x).SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
                 });
             }
 
@@ -109,19 +110,19 @@ namespace ChummerHub.Client.UI
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                tbTempDownloadPath.DoThreadSafe(() =>
+                tbTempDownloadPath.DoThreadSafe(x =>
                 {
-                    tbTempDownloadPath.Text = Settings.Default.TempDownloadPath;
-                    tbTempDownloadPath.SetToolTip(
+                    x.Text = Settings.Default.TempDownloadPath;
+                    x.SetToolTip(
                         "Where should chummer download the temporary files from the WebService?");
                 });
             }
             else
             {
-                await tbTempDownloadPath.DoThreadSafeAsync(() =>
+                await tbTempDownloadPath.DoThreadSafeAsync(x =>
                 {
-                    tbTempDownloadPath.Text = Settings.Default.TempDownloadPath;
-                    tbTempDownloadPath.SetToolTip(
+                    x.Text = Settings.Default.TempDownloadPath;
+                    x.SetToolTip(
                         "Where should chummer download the temporary files from the WebService?");
                 });
             }
@@ -142,47 +143,47 @@ namespace ChummerHub.Client.UI
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                cbSINnerUrl.DoThreadSafe(() =>
+                cbSINnerUrl.DoThreadSafe(x =>
                 {
-                    cbSINnerUrl.DataSource = Settings.Default.SINnerUrls;
-                    cbSINnerUrl.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
-                    cbSINnerUrl.Enabled = true;
+                    ((ComboBox)x).DataSource = Settings.Default.SINnerUrls;
+                    ((ComboBox)x).SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
+                    x.Enabled = true;
                 });
                 // ReSharper disable once MethodHasAsyncOverload
                 cbIgnoreWarnings.DoThreadSafe(
-                    () => cbIgnoreWarnings.Checked = Settings.Default.IgnoreWarningsOnOpening);
+                    x => ((CheckBox)x).Checked = Settings.Default.IgnoreWarningsOnOpening);
                 // ReSharper disable once MethodHasAsyncOverload
                 cbOpenChummerFromSharedLinks.DoThreadSafe(
-                    () => cbOpenChummerFromSharedLinks.Checked = Settings.Default.OpenChummerFromSharedLinks);
+                    x => ((CheckBox)x).Checked = Settings.Default.OpenChummerFromSharedLinks);
                 // ReSharper disable once MethodHasAsyncOverload
                 rbListUserMode.DoThreadSafe(
-                    () => rbListUserMode.SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0);
+                    x => ((RadioButtonList)x).SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0);
                 // ReSharper disable once MethodHasAsyncOverload
-                cbVisibilityIsPublic.DoThreadSafe(() =>
+                cbVisibilityIsPublic.DoThreadSafe(x =>
                 {
-                    cbVisibilityIsPublic.Checked = Settings.Default.VisibilityIsPublic;
-                    cbVisibilityIsPublic.BindingContext = new BindingContext();
+                    ((CheckBox)x).Checked = Settings.Default.VisibilityIsPublic;
+                    x.BindingContext = new BindingContext();
                 });
             }
             else
             {
                 await Task.WhenAll(
-                    cbSINnerUrl.DoThreadSafeAsync(() =>
+                    cbSINnerUrl.DoThreadSafeAsync(x =>
                     {
-                        cbSINnerUrl.DataSource = Settings.Default.SINnerUrls;
-                        cbSINnerUrl.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
-                        cbSINnerUrl.Enabled = true;
+                        ((ComboBox)x).DataSource = Settings.Default.SINnerUrls;
+                        ((ComboBox)x).SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
+                        x.Enabled = true;
                     }),
-                    cbIgnoreWarnings.DoThreadSafeAsync(() =>
-                        cbIgnoreWarnings.Checked = Settings.Default.IgnoreWarningsOnOpening),
-                    cbOpenChummerFromSharedLinks.DoThreadSafeAsync(() =>
-                        cbOpenChummerFromSharedLinks.Checked = Settings.Default.OpenChummerFromSharedLinks),
-                    rbListUserMode.DoThreadSafeAsync(() =>
-                        rbListUserMode.SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0),
-                    cbVisibilityIsPublic.DoThreadSafeAsync(() =>
+                    cbIgnoreWarnings.DoThreadSafeAsync(x =>
+                        ((CheckBox)x).Checked = Settings.Default.IgnoreWarningsOnOpening),
+                    cbOpenChummerFromSharedLinks.DoThreadSafeAsync(x =>
+                        ((CheckBox)x).Checked = Settings.Default.OpenChummerFromSharedLinks),
+                    rbListUserMode.DoThreadSafeAsync(x =>
+                        ((RadioButtonList)x).SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0),
+                    cbVisibilityIsPublic.DoThreadSafeAsync(x =>
                     {
-                        cbVisibilityIsPublic.Checked = Settings.Default.VisibilityIsPublic;
-                        cbVisibilityIsPublic.BindingContext = new BindingContext();
+                        ((CheckBox)x).Checked = Settings.Default.VisibilityIsPublic;
+                        x.BindingContext = new BindingContext();
                     }));
             }
 
@@ -209,40 +210,40 @@ namespace ChummerHub.Client.UI
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                cbUploadOnSave.DoThreadSafe(() =>
+                cbUploadOnSave.DoThreadSafe(x =>
                 {
-                    cbUploadOnSave.Checked = UploadOnSave;
-                    cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
+                    ((CheckBox)x).Checked = UploadOnSave;
+                    ((CheckBox)x).CheckedChanged += cbUploadOnSave_CheckedChanged;
                 });
                 // ReSharper disable once MethodHasAsyncOverload
-                cbSINnerUrl.DoThreadSafe(() => cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged);
+                cbSINnerUrl.DoThreadSafe(x => ((ComboBox)x).SelectedValueChanged += CbSINnerUrl_SelectedValueChanged);
                 // ReSharper disable once MethodHasAsyncOverload
-                cbVisibilityIsPublic.DoThreadSafe(() => cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged);
+                cbVisibilityIsPublic.DoThreadSafe(x => ((CheckBox)x).CheckedChanged += cbVisibilityIsPublic_CheckedChanged);
                 // ReSharper disable once MethodHasAsyncOverload
-                rbListUserMode.DoThreadSafe(() => rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged);
+                rbListUserMode.DoThreadSafe(x => ((RadioButtonList)x).SelectedIndexChanged += RbListUserMode_SelectedIndexChanged);
                 // ReSharper disable once MethodHasAsyncOverload
-                cbIgnoreWarnings.DoThreadSafe(() => cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged);
+                cbIgnoreWarnings.DoThreadSafe(x => ((CheckBox)x).CheckedChanged += CbIgnoreWarningsOnCheckedChanged);
                 // ReSharper disable once MethodHasAsyncOverload
-                cbOpenChummerFromSharedLinks.DoThreadSafe(() => cbOpenChummerFromSharedLinks.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged);
+                cbOpenChummerFromSharedLinks.DoThreadSafe(x => ((CheckBox)x).CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged);
             }
             else
             {
                 await Task.WhenAll(
-                    cbUploadOnSave.DoThreadSafeAsync(() =>
+                    cbUploadOnSave.DoThreadSafeAsync(x =>
                     {
-                        cbUploadOnSave.Checked = UploadOnSave;
-                        cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
+                        ((CheckBox)x).Checked = UploadOnSave;
+                        ((CheckBox)x).CheckedChanged += cbUploadOnSave_CheckedChanged;
                     }),
-                    cbSINnerUrl.DoThreadSafeAsync(() =>
-                        cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged),
-                    cbVisibilityIsPublic.DoThreadSafeAsync(() =>
-                        cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged),
-                    rbListUserMode.DoThreadSafeAsync(() =>
-                        rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged),
-                    cbIgnoreWarnings.DoThreadSafeAsync(() =>
-                        cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged),
-                    cbOpenChummerFromSharedLinks.DoThreadSafeAsync(() =>
-                        cbOpenChummerFromSharedLinks.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged));
+                    cbSINnerUrl.DoThreadSafeAsync(x =>
+                        ((ComboBox)x).SelectedValueChanged += CbSINnerUrl_SelectedValueChanged),
+                    cbVisibilityIsPublic.DoThreadSafeAsync(x =>
+                                                               ((CheckBox)x).CheckedChanged += cbVisibilityIsPublic_CheckedChanged),
+                    rbListUserMode.DoThreadSafeAsync(x =>
+                                                         ((RadioButtonList)x).SelectedIndexChanged += RbListUserMode_SelectedIndexChanged),
+                    cbIgnoreWarnings.DoThreadSafeAsync(x =>
+                                                           ((CheckBox)x).CheckedChanged += CbIgnoreWarningsOnCheckedChanged),
+                    cbOpenChummerFromSharedLinks.DoThreadSafeAsync(x =>
+                                                                       ((CheckBox)x).CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged));
             }
             //AddShieldToButton(bRegisterUriScheme);
         }
@@ -335,7 +336,7 @@ namespace ChummerHub.Client.UI
 
         public async Task<string> GetUserEmail()
         {
-            using (new CursorWait(this, true))
+            using (CursorWait.New(this, true))
             {
                 try
                 {
@@ -459,7 +460,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                using (new CursorWait(sender, true))
+                using (CursorWait.New(sender, true))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     if (client == null)
@@ -549,17 +550,22 @@ namespace ChummerHub.Client.UI
                 Title = "Please Select Chummer File(s) for Batch-Upload"
             })
             {
-                if (thisDialog.ShowDialog() == DialogResult.OK)
+                if (thisDialog.ShowDialog() != DialogResult.OK)
+                    return;
+                foreach (string file in thisDialog.FileNames)
                 {
-                    foreach (string file in thisDialog.FileNames)
+                    CharacterExtended objTemp = null;
+                    try
                     {
-                        using (_ = await Utils.UploadCharacterFromFile(file))
-                        {
-                        }
+                        objTemp = await Utils.UploadCharacterFromFile(file);
                     }
-
-                    Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
+                    finally
+                    {
+                        objTemp?.Dispose();
+                    }
                 }
+
+                Program.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
             }
         }
 
@@ -579,7 +585,7 @@ namespace ChummerHub.Client.UI
                 {
                     await BackupTask(folderBrowserDialog1).ContinueWith(a =>
                     {
-                        Program.MainForm.ShowMessageBox(a.Status.ToString());
+                        Program.ShowMessageBox(a.Status.ToString());
                     });
                 }
             }
@@ -588,7 +594,7 @@ namespace ChummerHub.Client.UI
         private async Task BackupTask(FolderBrowserDialog folderBrowserDialog1)
         {
             string folderName = folderBrowserDialog1.SelectedPath;
-            using (new CursorWait(this, true))
+            using (CursorWait.New(this, true))
             {
                 try
                 {
@@ -613,7 +619,7 @@ namespace ChummerHub.Client.UI
                         catch (Exception e2)
                         {
                             Log.Error(e2);
-                            Invoke(new Action(() => Program.MainForm.ShowMessageBox(e2.Message)));
+                            Invoke(new Action(() => Program.ShowMessageBox(e2.Message)));
                         }
                     }
                     //getsinner.Dispose();
@@ -621,7 +627,7 @@ namespace ChummerHub.Client.UI
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
+                    Invoke(new Action(() => Program.ShowMessageBox(ex.Message)));
                 }
             }
         }
@@ -636,7 +642,7 @@ namespace ChummerHub.Client.UI
                 {
                     await RestoreTask(folderBrowserDialog1).ContinueWith(a =>
                     {
-                        Program.MainForm.ShowMessageBox(a.Status.ToString());
+                        Program.ShowMessageBox(a.Status.ToString());
                     });
                 }
             }
@@ -649,7 +655,7 @@ namespace ChummerHub.Client.UI
             {
                 DirectoryInfo d = new DirectoryInfo(folderName);//Assuming Test is your Folder
                 FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
-                using (new CursorWait(this, true))
+                using (CursorWait.New(this, true))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)
@@ -695,7 +701,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
             }
         }
 

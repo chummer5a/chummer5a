@@ -24,8 +24,10 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
 using NLog;
@@ -37,7 +39,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource, IDisposable
+    public sealed class Spell : IHasInternalId, IHasName, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -61,7 +63,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnAlchemical;
         private bool _blnFreeBonus;
-        private bool _blnUsesUnarmed;
+        private bool _blnBarehandedAdept;
         private int _intGrade;
 
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
@@ -153,7 +155,7 @@ namespace Chummer
             get
             {
                 if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = new SourceString(Source,
+                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
                         DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                         _objCharacter);
                 return _objCachedSourceDetail;
@@ -164,7 +166,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -189,7 +191,7 @@ namespace Chummer
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", string.Empty));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("barehandedadept", _blnBarehandedAdept.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
@@ -208,10 +210,12 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             if (objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors))
@@ -229,7 +233,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("dv", ref _strDV);
             if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited && _objCharacter.LastSavedVersion <= new Version(5, 197, 30))
             {
-                GetNode()?.TryGetStringFieldQuickly("dv", ref _strDV);
+                objMyNode.Value?.TryGetStringFieldQuickly("dv", ref _strDV);
             }
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
             if (_blnExtended)
@@ -243,7 +247,8 @@ namespace Chummer
             else
                 _blnCustomExtended = false;
             objNode.TryGetBoolFieldQuickly("freebonus", ref _blnFreeBonus);
-            objNode.TryGetBoolFieldQuickly("usesunarmed", ref _blnUsesUnarmed);
+            if (!objNode.TryGetBoolFieldQuickly("barehandedadept", ref _blnBarehandedAdept))
+                objNode.TryGetBoolFieldQuickly("usesunarmed", ref _blnBarehandedAdept);
             objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -262,33 +267,41 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("spell");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("descriptors", DisplayDescriptors(strLanguageToPrint));
-            objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("type", DisplayType(strLanguageToPrint));
-            objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
-            objWriter.WriteElementString("damage", DisplayDamage(strLanguageToPrint));
-            objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
-            objWriter.WriteElementString("dv", DisplayDV(strLanguageToPrint));
-            objWriter.WriteElementString("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            // <spell>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("spell");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("descriptors", await DisplayDescriptorsAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("category_english", Category);
+                await objWriter.WriteElementStringAsync("type", await DisplayTypeAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("range", await DisplayRangeAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("damage", await DisplayDamageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("duration", await DisplayDurationAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("dv", await DisplayDvAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("alchemy", Alchemical.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("barehandedadept", BarehandedAdept.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("dicepool", DicePool.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </spell>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -321,6 +334,7 @@ namespace Chummer
                 if (_strName != value)
                 {
                     _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
                     _strName = value;
                 }
             }
@@ -430,6 +444,71 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Translated Descriptors.
+        /// </summary>
+        public async ValueTask<string> DisplayDescriptorsAsync(string strLanguage = "")
+        {
+            if (string.IsNullOrWhiteSpace(Descriptors))
+                return await LanguageManager.GetStringAsync("String_None", strLanguage);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
+            {
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+                if (HashDescriptors.Count > 0)
+                {
+                    foreach (string strDescriptor in HashDescriptors)
+                    {
+                        switch (strDescriptor.Trim())
+                        {
+                            case "Alchemical Preparation":
+                                sbdReturn.Append(
+                                    await LanguageManager.GetStringAsync("String_DescAlchemicalPreparation", strLanguage));
+                                break;
+
+                            case "Extended Area":
+                                sbdReturn.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea", strLanguage));
+                                break;
+
+                            case "Material Link":
+                                sbdReturn.Append(await LanguageManager.GetStringAsync("String_DescMaterialLink", strLanguage));
+                                break;
+
+                            case "Multi-Sense":
+                                sbdReturn.Append(await LanguageManager.GetStringAsync("String_DescMultiSense", strLanguage));
+                                break;
+
+                            case "Organic Link":
+                                sbdReturn.Append(await LanguageManager.GetStringAsync("String_DescOrganicLink", strLanguage));
+                                break;
+
+                            case "Single-Sense":
+                                sbdReturn.Append(await LanguageManager.GetStringAsync("String_DescSingleSense", strLanguage));
+                                break;
+
+                            default:
+                                sbdReturn.Append(await LanguageManager.GetStringAsync("String_Desc" + strDescriptor.Trim(),
+                                                     strLanguage));
+                                break;
+                        }
+
+                        sbdReturn.Append(',').Append(strSpace);
+                    }
+                }
+
+                // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
+                if (Extended && _blnCustomExtended)
+                    sbdReturn.Append(await LanguageManager.GetStringAsync("String_DescExtendedArea", strLanguage)).Append(',')
+                             .Append(strSpace);
+
+                // Remove the trailing comma.
+                if (sbdReturn.Length >= strSpace.Length + 1)
+                    sbdReturn.Length -= strSpace.Length + 1;
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
         /// Translated Category.
         /// </summary>
         public string DisplayCategory(string strLanguage)
@@ -438,6 +517,17 @@ namespace Chummer
                 return Category;
 
             return _objCharacter.LoadDataXPath("spells.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+        }
+
+        /// <summary>
+        /// Translated Category.
+        /// </summary>
+        public async ValueTask<string> DisplayCategoryAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Category;
+
+            return (await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -474,11 +564,26 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Translated Type.
+        /// </summary>
+        public Task<string> DisplayTypeAsync(string strLanguage)
+        {
+            switch (Type)
+            {
+                case "M":
+                    return LanguageManager.GetStringAsync("String_SpellTypeMana", strLanguage);
+
+                default:
+                    return LanguageManager.GetStringAsync("String_SpellTypePhysical", strLanguage);
+            }
+        }
+
+        /// <summary>
         /// Translated Drain Value.
         /// </summary>
-        public string DisplayDV(string strLanguage)
+        public string DisplayDv(string strLanguage)
         {
-            string strReturn = DV.Replace('/', '÷');
+            string strReturn = CalculatedDv.Replace('/', '÷').Replace('*', '×');
             if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strReturn = strReturn.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce", strLanguage))
@@ -494,20 +599,55 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Translated Drain Value.
+        /// </summary>
+        public async ValueTask<string> DisplayDvAsync(string strLanguage)
+        {
+            string strReturn = CalculatedDv.Replace('/', '÷').Replace('*', '×');
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                strReturn = await strReturn
+                                  .CheapReplaceAsync(
+                                      "F", () => LanguageManager.GetStringAsync("String_SpellForce", strLanguage))
+                                  .CheapReplaceAsync("Overflow damage",
+                                                     () => LanguageManager.GetStringAsync(
+                                                         "String_SpellOverflowDamage", strLanguage))
+                                  .CheapReplaceAsync("Damage Value",
+                                                     () => LanguageManager.GetStringAsync(
+                                                         "String_SpellDamageValue", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage))
+                                  .CheapReplaceAsync("Disease DV",
+                                                     () => LanguageManager.GetStringAsync(
+                                                         "String_SpellDiseaseDV", strLanguage))
+                                  .CheapReplaceAsync("Radiation Power",
+                                                     () => LanguageManager.GetStringAsync(
+                                                         "String_SpellRadiationPower", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "Special", () => LanguageManager.GetStringAsync("String_Special", strLanguage));
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
         /// Drain Tooltip.
         /// </summary>
-        public string DVTooltip
+        public string DvTooltip
         {
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                int intMAG = _objCharacter.MAG.TotalValue;
-                string strDV = DV;
+                // Barehanded Adept is limited to a Force of MAG/3 rounded up
+                int intHighestForce = BarehandedAdept
+                    ? (_objCharacter.MAG.TotalValue + 2) / 3
+                    : _objCharacter.MAG.TotalValue * 2;
+                string strDV = CalculatedDv;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdTip))
                 {
-                    sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainBase"));
-                    for (int i = 1; i <= intMAG * 2; i++)
+                    sbdTip.Append(LanguageManager.GetString("Tip_SpellDrain"));
+                    for (int i = 1; i <= intHighestForce; i++)
                     {
                         // Calculate the Spell's Drain for the current Force.
                         object xprResult = CommonFunctions.EvaluateInvariantXPath(
@@ -525,21 +665,6 @@ namespace Chummer
                                   .Append(strSpace).Append(i.ToString(GlobalSettings.CultureInfo))
                                   .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
                                   .Append(intDV.ToString(GlobalSettings.CultureInfo));
-
-                            string strLabelFormat = strSpace + "({0}" + LanguageManager.GetString("String_Colon")
-                                                    + strSpace + "{1})";
-                            if (Limited)
-                            {
-                                sbdTip.AppendFormat(GlobalSettings.CultureInfo, strLabelFormat,
-                                                    LanguageManager.GetString("String_SpellLimited"), -2);
-                            }
-
-                            if (Extended && _blnCustomExtended)
-                            {
-                                sbdTip.AppendFormat(GlobalSettings.CultureInfo, strLabelFormat,
-                                                    LanguageManager.GetString("String_SpellExtended"),
-                                                    '+' + 2.ToString(GlobalSettings.CultureInfo));
-                            }
                         }
                         else
                         {
@@ -549,17 +674,42 @@ namespace Chummer
                         }
                     }
 
-                    List<Improvement> lstDrainImprovements = RelevantImprovements(
-                        o => o.ImproveType == Improvement.ImprovementType.DrainValue
-                             || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
-                             || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain).ToList();
-                    if (lstDrainImprovements.Count == 0)
-                        return sbdTip.ToString();
-                    sbdTip.AppendLine().Append(LanguageManager.GetString("Label_Bonus"));
-                    foreach (Improvement objLoopImprovement in lstDrainImprovements)
+                    sbdTip.AppendLine();
+                    if (BarehandedAdept)
+                        sbdTip.Append('(');
+                    sbdTip.Append(LanguageManager.GetString("Tip_SpellDrainBase")).Append(strSpace).Append('(').Append(DvBase).Append(')');
+                    if (Limited)
                     {
-                        sbdTip.AppendLine().Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("String_SpellLimited")).Append(strSpace).Append("(-2)");
+                    }
+                    if (Extended && _blnCustomExtended)
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(LanguageManager.GetString("String_SpellExtended")).Append(strSpace)
+                              .Append("(+2)");
+                    }
+                    foreach (Improvement objLoopImprovement in RelevantImprovements(o =>
+                                 o.ImproveType == Improvement.ImprovementType.DrainValue
+                                 || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
+                                 || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true))
+                    {
+                        sbdTip.Append(strSpace).Append('+').Append(strSpace)
+                              .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)
                               .Append('(').Append(objLoopImprovement.Value.ToString("0;-0;0")).Append(')');
+                    }
+
+                    if (BarehandedAdept)
+                    {
+                        Improvement objBarehandedAdeptImprovement = ImprovementManager
+                                                                    .GetCachedImprovementListForValueOf(
+                                                                        _objCharacter,
+                                                                        Improvement.ImprovementType.AllowSpellRange)
+                                                                    .Find(x => x.ImprovedName == "T" || x.ImprovedName == "T (A)");
+                        string strBarehandedAdeptName = objBarehandedAdeptImprovement != null
+                            ? _objCharacter.GetObjectName(objBarehandedAdeptImprovement)
+                            : _objCharacter.TranslateExtra("Barehanded Adept", GlobalSettings.Language, "qualities.xml");
+                        sbdTip.Append(')').Append(strSpace).Append('×').Append(strSpace).Append(strBarehandedAdeptName).Append(strSpace).Append("(×2)");
                     }
 
                     return sbdTip.ToString();
@@ -589,9 +739,44 @@ namespace Chummer
                     .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage))
                     .CheapReplace("Touch", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage)) // Short form to remain export-friendly
                     .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage))
-                    .CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
+                    .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
                     .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage))
                     .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// Translated Range.
+        /// </summary>
+        public async ValueTask<string> DisplayRangeAsync(string strLanguage)
+        {
+            string strReturn = Range;
+            if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                strReturn = await strReturn
+                                  .CheapReplaceAsync(
+                                      "Self", () => LanguageManager.GetStringAsync("String_SpellRangeSelf", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "LOS",
+                                      () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "LOI",
+                                      () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "Touch",
+                                      () => LanguageManager.GetStringAsync("String_SpellRangeTouch",
+                                                                           strLanguage)) // Short form to remain export-friendly
+                                  .CheapReplaceAsync(
+                                      "T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "(A)",
+                                      async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea", strLanguage) + ')')
+                                  .CheapReplaceAsync(
+                                      "MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort", strLanguage))
+                                  .CheapReplaceAsync(
+                                      "Special", () => LanguageManager.GetStringAsync("String_Special", strLanguage));
             }
 
             return strReturn;
@@ -644,6 +829,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Translated Damage.
+        /// </summary>
+        public async ValueTask<string> DisplayDamageAsync(string strLanguage)
+        {
+            if (Damage != "S" && Damage != "P")
+                return await LanguageManager.GetStringAsync("String_None", strLanguage);
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdReturn))
+            {
+                sbdReturn.Append('0');
+                foreach (Improvement improvement in RelevantImprovements(
+                             i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
+                                  || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage))
+                    sbdReturn.AppendFormat(GlobalSettings.InvariantCultureInfo, " + {0:0;-0;0}", improvement.Value);
+                string output = sbdReturn.ToString();
+
+                object xprResult = CommonFunctions.EvaluateInvariantXPath(output.TrimStart('+'), out bool blnIsSuccess);
+                sbdReturn.Clear();
+                if (blnIsSuccess)
+                    sbdReturn.Append(xprResult);
+
+                switch (Damage)
+                {
+                    case "P":
+                        sbdReturn.Append(await LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage));
+                        break;
+
+                    case "S":
+                        sbdReturn.Append(await LanguageManager.GetStringAsync("String_DamageStun", strLanguage));
+                        break;
+                }
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
         /// Spell's duration.
         /// </summary>
         public string Duration
@@ -677,19 +899,43 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Translated Duration.
+        /// </summary>
+        public Task<string> DisplayDurationAsync(string strLanguage)
+        {
+            switch (Duration)
+            {
+                case "P":
+                    return LanguageManager.GetStringAsync("String_SpellDurationPermanent", strLanguage);
+
+                case "S":
+                    return LanguageManager.GetStringAsync("String_SpellDurationSustained", strLanguage);
+
+                case "I":
+                    return LanguageManager.GetStringAsync("String_SpellDurationInstant", strLanguage);
+
+                case "Special":
+                    return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage);
+
+                default:
+                    return LanguageManager.GetStringAsync("String_None", strLanguage);
+            }
+        }
+
+        /// <summary>
         /// Spell's drain value.
         /// </summary>
-        public string DV
+        public string CalculatedDv
         {
             get
             {
-                string strReturn = _strDV;
-                if (!Limited && !_blnCustomExtended && !RelevantImprovements(o =>
+                string strReturn = DvBase;
+                if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !RelevantImprovements(o =>
                         o.ImproveType == Improvement.ImprovementType.DrainValue
                         || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                         || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true).Any())
                     return strReturn;
-                bool force = strReturn.StartsWith('F');
+                bool blnForce = strReturn.StartsWith('F');
                 string strDV = strReturn.TrimStartOnce('F');
                 //Navigator can't do math on a single value, so inject a mathable value.
                 if (string.IsNullOrEmpty(strDV))
@@ -736,14 +982,19 @@ namespace Chummer
                         sbdReturn.Append("+2");
                     }
 
+                    if (BarehandedAdept)
+                    {
+                        sbdReturn.Insert(0, "2 * (").Append(')');
+                    }
+
                     xprResult = CommonFunctions.EvaluateInvariantXPath(sbdReturn.ToString(), out bool blnIsSuccess);
                     if (!blnIsSuccess)
                         return strReturn;
                 }
 
-                if (force)
+                if (blnForce)
                 {
-                    strReturn = string.Format(GlobalSettings.InvariantCultureInfo, "F{0:+0;-0;}", xprResult);
+                    strReturn = string.Format(GlobalSettings.InvariantCultureInfo, BarehandedAdept ? "2 * F{0:+0;-0;}" : "F{0:+0;-0;}", xprResult);
                 }
                 else if (xprResult.ToString() != "0")
                 {
@@ -751,6 +1002,11 @@ namespace Chummer
                 }
                 return strReturn;
             }
+        }
+
+        public string DvBase
+        {
+            get => _strDV;
             set => _strDV = value;
         }
 
@@ -782,7 +1038,24 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? Page
+                : Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -855,9 +1128,29 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            string strReturn = !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? GetNode(strLanguage)?["translate"]?.InnerText ?? Name : Name;
+            string strReturn = !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name : Name;
             if (Extended && _blnCustomExtended)
                 strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_SpellExtended", strLanguage);
+
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            string strReturn;
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                strReturn = Name;
+            else
+            {
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage);
+                strReturn = objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? Name : Name;
+            }
+
+            if (Extended && _blnCustomExtended)
+                strReturn += ',' + await LanguageManager.GetStringAsync("String_Space", strLanguage) + await LanguageManager.GetStringAsync("String_SpellExtended", strLanguage);
 
             return strReturn;
         }
@@ -881,7 +1174,28 @@ namespace Chummer
             return strReturn;
         }
 
+        /// <summary>
+        /// The name of the object as it should be displayed in lists.
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+
+            if (Limited)
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await LanguageManager.GetStringAsync("String_SpellLimited", strLanguage) + ')';
+            if (Alchemical)
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await LanguageManager.GetStringAsync("String_SpellAlchemical", strLanguage) + ')';
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage) + ')';
+            }
+            return strReturn;
+        }
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
         /// Does the spell cost Karma? Typically provided by improvements.
@@ -893,12 +1207,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Does the spell use Unarmed in place of Spellcasting for its casting test?
+        /// Does the spell use Unarmed in place of Spellcasting for its casting test and have its drain doubled?
         /// </summary>
-        public bool UsesUnarmed
+        public bool BarehandedAdept
         {
-            get => _blnUsesUnarmed;
-            set => _blnUsesUnarmed = value;
+            get => _blnBarehandedAdept;
+            set => _blnBarehandedAdept = value;
         }
 
         #endregion Properties
@@ -912,19 +1226,21 @@ namespace Chummer
         {
             get
             {
+                XPathNavigator objCategoryNode = _objCharacter.LoadDataXPath("spells.xml")
+                    .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + ']');
+                if (objCategoryNode == null)
+                    return null;
+                string strSkillKey = string.Empty;
+                objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
                 if (Alchemical)
                 {
-                    return _objCharacter.SkillsSection.GetActiveSkill("Alchemy");
+                    objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
                 }
-                switch (Category)
+                else if (BarehandedAdept)
                 {
-                    case "Enchantments":
-                        return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
-                    case "Rituals":
-                        return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
-                    default:
-                        return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
+                    objCategoryNode.TryGetStringFieldQuickly("@barehandedadeptskill", ref strSkillKey);
                 }
+                return string.IsNullOrEmpty(strSkillKey) ? null : _objCharacter.SkillsSection.GetActiveSkill(strSkillKey);
             }
         }
 
@@ -939,7 +1255,7 @@ namespace Chummer
                 Skill objSkill = Skill;
                 if (objSkill != null)
                 {
-                    intReturn = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
+                    intReturn = BarehandedAdept ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                     // Add any Specialization bonus if applicable.
                     intReturn += Skill.GetSpecializationBonus(Category);
                 }
@@ -967,7 +1283,7 @@ namespace Chummer
                     string strFormat = strSpace + "{0}" + strSpace + "({1})";
                     Skill objSkill = Skill;
                     CharacterAttrib objAttrib
-                        = _objCharacter.GetAttribute(UsesUnarmed ? "MAG" : (objSkill?.Attribute ?? "MAG"));
+                        = _objCharacter.GetAttribute(BarehandedAdept ? "MAG" : (objSkill?.Attribute ?? "MAG"));
                     if (objAttrib != null)
                     {
                         sbdReturn.AppendFormat(GlobalSettings.CultureInfo, strFormat,
@@ -976,7 +1292,7 @@ namespace Chummer
 
                     if (objSkill != null)
                     {
-                        int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
+                        int intPool = BarehandedAdept ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                         if (objAttrib != null)
                             intPool -= objAttrib.TotalValue;
                         if (sbdReturn.Length > 0)
@@ -1003,27 +1319,49 @@ namespace Chummer
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode()
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
-            return GetNode(GlobalSettings.Language);
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("spells.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("spells.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/spells/spell[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/spells/spell[id = "
+                                        + SourceIDString.CleanXPath()
+                                        + " or id = " + SourceIDString
+                                                        .ToUpperInvariant().CleanXPath()
+                                        + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
+            return _objCachedMyXmlNode;
         }
 
-        public XmlNode GetNode(string strLanguage)
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("spells.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/spells/spell[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/spells/spell[id = "
-                                                                           + SourceIDString.CleanXPath()
-                                                                           + " or id = " + SourceIDString
-                                                                               .ToUpperInvariant().CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
-            return _objCachedMyXmlNode;
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("spells.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/spells/spell[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/spells/spell[id = "
+                                        + SourceIDString.CleanXPath()
+                                        + " or id = " + SourceIDString
+                                                        .ToUpperInvariant().CleanXPath()
+                                        + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false)
@@ -1110,7 +1448,8 @@ namespace Chummer
 
                     case Improvement.ImprovementType.DrainValue:
                         {
-                            yield return objImprovement;
+                            if (string.IsNullOrEmpty(objImprovement.ImprovedName) || objImprovement.ImprovedName == Name)
+                                yield return objImprovement;
                             if (blnExitAfterFirst)
                                 yield break;
                         }
@@ -1142,7 +1481,7 @@ namespace Chummer
                             SourceName = objImprovement.SourceName,
                             ImprovedName = objImprovement.ImprovedName,
                             ImproveSource = objImprovement.ImproveSource,
-                            ImproveType = objImprovement.ImproveType,
+                            ImproveType = objImprovement.ImproveType
                         };
                     return null;
                 }
@@ -1207,15 +1546,12 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                string strMessage = LanguageManager.GetString("Message_DeleteSpell");
-                if (!CommonFunctions.ConfirmDelete(strMessage))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSpell")))
+                return false;
 
             _objCharacter.Spells.Remove(this);
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Spell, InternalId);
+            Dispose();
             return true;
         }
 

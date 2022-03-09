@@ -102,7 +102,7 @@ namespace Chummer
                 read = (T)Convert.ChangeType(fieldValue, typeof(T), GlobalSettings.InvariantCultureInfo);
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 //If we are debugging, great
                 //Utils.BreakIfDebug();
@@ -119,7 +119,7 @@ namespace Chummer
                         mth
                     );
 #else
-                string errorMsg = "Tried to read missing field \"" + field + "\"";
+                string errorMsg = "Tried to read missing field \"" + field + '\"';
 #endif
                 Log.Error(errorMsg);
                 //Finally, we have to assign an out parameter something, so default

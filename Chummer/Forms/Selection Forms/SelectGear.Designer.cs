@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectGear
+    partial class SelectGear
     {
         /// <summary>
         /// Required designer variable.
@@ -780,13 +780,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectGear";
+            this.Name = "SelectGear";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectGear";
             this.Text = "Select Gear";
-            this.Load += new System.EventHandler(this.frmSelectGear_Load);
+            this.Load += new System.EventHandler(this.SelectGear_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();

@@ -20,27 +20,83 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
     /// <summary>
-    /// Syntactic Sugar for wrapping a ReaderWriterLockSlim's EnterReadLock() and ExitReadLock() methods into something that hooks into `using`
+    /// Syntactic Sugar for wrapping a AsyncFriendlyReaderWriterLock's EnterReadLock() and ExitReadLock() methods into something that hooks into `using`
     /// </summary>
-    public sealed class EnterReadLock : IDisposable
+    public readonly struct EnterReadLock : IDisposable, IEquatable<EnterReadLock>
     {
-        private readonly ReaderWriterLockSlim _rwlMyLock;
+        private readonly AsyncFriendlyReaderWriterLock _rwlMyLock;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public EnterReadLock(ReaderWriterLockSlim rwlMyLock)
+        public static EnterReadLock Enter(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
+        {
+            rwlMyLock.EnterReadLock(token);
+            return new EnterReadLock(rwlMyLock);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static EnterReadLock Enter(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
+        {
+            AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
+            return Enter(rwlMyLock, token);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<EnterReadLock> EnterAsync(AsyncFriendlyReaderWriterLock rwlMyLock, CancellationToken token = default)
+        {
+            await rwlMyLock.EnterReadLockAsync(token).ConfigureAwait(false);
+            return new EnterReadLock(rwlMyLock);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ValueTask<EnterReadLock> EnterAsync(IHasLockObject rwlMyLockCarrier, CancellationToken token = default)
+        {
+            AsyncFriendlyReaderWriterLock rwlMyLock = rwlMyLockCarrier.LockObject;
+            return EnterAsync(rwlMyLock, token);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private EnterReadLock(AsyncFriendlyReaderWriterLock rwlMyLock)
         {
             _rwlMyLock = rwlMyLock;
-            _rwlMyLock.EnterReadLock();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
             _rwlMyLock.ExitReadLock();
+        }
+
+        /// <inheritdoc />
+        public bool Equals(EnterReadLock other)
+        {
+            return _rwlMyLock.Equals(other._rwlMyLock);
+        }
+
+        /// <inheritdoc />
+        public override bool Equals(object obj)
+        {
+            return obj is EnterReadLock other && Equals(other);
+        }
+
+        /// <inheritdoc />
+        public override int GetHashCode()
+        {
+            return _rwlMyLock.GetHashCode();
+        }
+
+        public static bool operator ==(EnterReadLock left, EnterReadLock right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(EnterReadLock left, EnterReadLock right)
+        {
+            return !(left == right);
         }
     }
 }

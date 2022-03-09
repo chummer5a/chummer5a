@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -51,9 +52,9 @@ namespace Chummer
             }
         }
 
-        private void PetControl_Load(object sender, EventArgs e)
+        private async void PetControl_Load(object sender, EventArgs e)
         {
-            LoadContactList();
+            await LoadContactList();
 
             DoDataBindings();
 
@@ -113,18 +114,24 @@ namespace Chummer
             cmsContact.Show(cmdLink, cmdLink.Left - 700, cmdLink.Top);
         }
 
-        private void tsContactOpen_Click(object sender, EventArgs e)
+        private async void tsContactOpen_Click(object sender, EventArgs e)
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x == _objContact.LinkedCharacter);
-                using (new CursorWait(this))
+                Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
+                    ? _objContact.LinkedCharacter
+                    : null;
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
-                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
-                    {
-                        objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
-                        Program.MainForm.OpenCharacter(objOpenCharacter);
-                    }
+                    if (objOpenCharacter == null)
+                        objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
+                    if (!Program.SwitchToOpenCharacter(objOpenCharacter))
+                        await Program.OpenCharacter(objOpenCharacter);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
             else
@@ -145,7 +152,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_FileNotFound"), _objContact.FileName), await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -154,12 +161,12 @@ namespace Chummer
             }
         }
 
-        private void tsAttachCharacter_Click(object sender, EventArgs e)
+        private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
+                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
             })
             {
                 if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
@@ -170,10 +177,11 @@ namespace Chummer
 
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
+                try
                 {
                     _objContact.FileName = openFileDialog.FileName;
-                    cmdLink.ToolTipText = LanguageManager.GetString("Tip_Contact_OpenFile");
+                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
 
                     // Set the relative path.
                     Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -183,32 +191,36 @@ namespace Chummer
 
                     ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
             }
         }
 
-        private void tsRemoveCharacter_Click(object sender, EventArgs e)
+        private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_RemoveCharacterAssociation"), LanguageManager.GetString("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"), await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                cmdLink.ToolTipText = LanguageManager.GetString("Tip_Contact_LinkFile");
+                cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile");
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
-        private void cmdNotes_Click(object sender, EventArgs e)
+        private async void cmdNotes_Click(object sender, EventArgs e)
         {
             using (EditNotes frmContactNotes = new EditNotes(_objContact.Notes, _objContact.NotesColor))
             {
-                frmContactNotes.ShowDialogSafe(this);
+                await frmContactNotes.ShowDialogSafeAsync(this);
                 if (frmContactNotes.DialogResult != DialogResult.OK)
                     return;
                 _objContact.Notes = frmContactNotes.Notes;
             }
 
-            string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
+            string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
             cmdNotes.ToolTipText = strTooltip.WordWrap();
@@ -219,29 +231,29 @@ namespace Chummer
 
         #region Methods
 
-        private void LoadContactList()
+        private async ValueTask LoadContactList()
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
             {
                 lstMetatypes.Add(ListItem.Blank);
-                string strSpace = LanguageManager.GetString("String_Space");
-                foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("critters.xml")
-                                                                      .SelectAndCacheExpression(
-                                                                          "/chummer/metatypes/metatype"))
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml"))
+                             .SelectAndCacheExpressionAsync(
+                                 "/chummer/metatypes/metatype"))
                 {
-                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
+                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                     XPathNodeIterator xmlMetavariantsList
-                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant");
+                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant");
                     if (xmlMetavariantsList.Count > 0)
                     {
                         string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                         foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                         {
                             string strMetavariantName
-                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                   ?? string.Empty;
                             if (lstMetatypes.All(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
@@ -249,8 +261,8 @@ namespace Chummer
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
-                                                                  objXmlMetavariantNode
-                                                                      .SelectSingleNodeAndCacheExpression("translate")
+                                                                  (await objXmlMetavariantNode
+                                                                      .SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                       ?.Value ?? strMetavariantName)));
                         }
                     }

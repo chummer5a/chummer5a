@@ -23,7 +23,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -36,9 +36,7 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        // TODO: check, if this can be removed???
-        public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
-
+        private bool _blnDisposeCharacterOnDispose;
         private TableView<Power> _table;
 
         public PowersTabUserControl()
@@ -62,7 +60,7 @@ namespace Chummer.UI.Powers
         {
             if (_objCharacter != null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 RealLoad();
         }
 
@@ -72,8 +70,9 @@ namespace Chummer.UI.Powers
                 _objCharacter = frmParent.CharacterObject;
             else
             {
-                Utils.BreakIfDebug();
+                _blnDisposeCharacterOnDispose = true;
                 _objCharacter = new Character();
+                Utils.BreakIfDebug();
             }
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
@@ -126,20 +125,20 @@ namespace Chummer.UI.Powers
 
         private void UnbindPowersTabUserControl()
         {
-            if (_objCharacter != null)
+            if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.Powers.ListChanged -= OnPowersListChanged;
                 _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
             }
         }
 
-        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Character.PowerPointsTotal) || e.PropertyName == nameof(Character.PowerPointsUsed))
-                CalculatePowerPoints();
+                await CalculatePowerPoints();
         }
 
-        private void OnPowersListChanged(object sender, ListChangedEventArgs e)
+        private async void OnPowersListChanged(object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
             {
@@ -149,14 +148,14 @@ namespace Chummer.UI.Powers
                         if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                         {
                             // recalculation of power points on rating/free levels change
-                            CalculatePowerPoints();
+                            await CalculatePowerPoints();
                         }
                         break;
                     }
                 case ListChangedType.Reset:
                 case ListChangedType.ItemAdded:
                 case ListChangedType.ItemDeleted:
-                    CalculatePowerPoints();
+                    await CalculatePowerPoints();
                     break;
             }
         }
@@ -217,17 +216,17 @@ namespace Chummer.UI.Powers
             }
         }
 
-        private void cmdAddPower_Click(object sender, EventArgs e)
+        private async void cmdAddPower_Click(object sender, EventArgs e)
         {
             // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = _objCharacter.LoadData("powers.xml");
+            XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml");
             bool blnAddAgain;
 
             do
             {
-                using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
+                using (SelectPower frmPickPower = new SelectPower(_objCharacter))
                 {
-                    frmPickPower.ShowDialogSafe(this);
+                    await frmPickPower.ShowDialogSafeAsync(this);
 
                     // Make sure the dialogue window was not canceled.
                     if (frmPickPower.DialogResult == DialogResult.Cancel)
@@ -237,12 +236,10 @@ namespace Chummer.UI.Powers
 
                     Power objPower = new Power(_objCharacter);
 
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + "]");
+                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + ']');
                     if (objPower.Create(objXmlPower))
                     {
                         _objCharacter.Powers.Add(objPower);
-
-                        MakeDirtyWithCharacterUpdate?.Invoke(null, null);
                     }
                 }
             }
@@ -252,12 +249,12 @@ namespace Chummer.UI.Powers
         /// <summary>
         /// Calculate the number of Adept Power Points used.
         /// </summary>
-        public void CalculatePowerPoints()
+        public async ValueTask CalculatePowerPoints()
         {
             decimal decPowerPointsTotal = _objCharacter.PowerPointsTotal;
             decimal decPowerPointsRemaining = decPowerPointsTotal - _objCharacter.PowerPointsUsed;
             lblPowerPoints.Text = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                LanguageManager.GetString("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, LanguageManager.GetString("String_Remaining"));
+                await LanguageManager.GetStringAsync("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, await LanguageManager.GetStringAsync("String_Remaining"));
         }
 
         private void InitializeTable()
@@ -299,7 +296,7 @@ namespace Chummer.UI.Powers
                     }
                 },
                 MinExtractor = (p => 0),
-                ValueGetter = (p => p.Rating),
+                ValueGetter = (p => p.Rating)
             })
             {
                 Text = "Rating",
@@ -312,7 +309,7 @@ namespace Chummer.UI.Powers
                                         " against another one of Type " + o2.GetType() + " in the ratingColumn." +
                                         Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
                     throw new ArgumentException(strMessage, nameof(o1));
-                },
+                }
             };
 
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
@@ -332,7 +329,7 @@ namespace Chummer.UI.Powers
                                         " against another one of Type " + o2.GetType() + " in the totalRatingColumn." +
                                         Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
                     throw new ArgumentException(strMessage, nameof(o1));
-                },
+                }
             };
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
@@ -354,7 +351,7 @@ namespace Chummer.UI.Powers
                 Text = "Source",
                 Extractor = (power => power.SourceDetail),
                 Tag = "Label_Source",
-                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip),
+                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
             };
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
@@ -363,7 +360,7 @@ namespace Chummer.UI.Powers
                 ValueGetter = p => p.DiscountedAdeptWay,
                 ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
                 VisibleExtractor = p => p.AdeptWayDiscountEnabled,
-                EnabledExtractor = p => (p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay),
+                EnabledExtractor = p => p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay,
                 Alignment = Alignment.Center
             })
             {
@@ -392,14 +389,14 @@ namespace Chummer.UI.Powers
             TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox
             {
                 Image = Resources.note_edit,
-                Size = GetImageSize(Resources.note_edit),
+                Size = GetImageSize(Resources.note_edit)
             })
             {
-                ClickHandler = p =>
+                ClickHandler = async p =>
                 {
                     using (EditNotes frmPowerNotes = new EditNotes(p.Notes, p.NotesColor))
                     {
-                        frmPowerNotes.ShowDialogSafe(this);
+                        await frmPowerNotes.ShowDialogSafeAsync(this);
                         if (frmPowerNotes.DialogResult == DialogResult.OK)
                             p.Notes = frmPowerNotes.Notes;
                     }
@@ -432,12 +429,17 @@ namespace Chummer.UI.Powers
                     Form frmParent = ParentForm;
                     if (p.FreeLevels > 0)
                     {
-                        string strImprovementSourceName = p.CharacterObject.Improvements.FirstOrDefault(x => x.ImproveType == Improvement.ImprovementType.AdeptPowerFreePoints && x.ImprovedName == p.Name && x.UniqueName == p.Extra)?.SourceName;
-                        Gear objGear = p.CharacterObject.Gear.FirstOrDefault(x => x.Bonded && x.InternalId == strImprovementSourceName);
-                        if (objGear != null)
+                        string strExtra = p.Extra;
+                        string strImprovementSourceName = ImprovementManager.GetCachedImprovementListForValueOf(p.CharacterObject, Improvement.ImprovementType.AdeptPowerFreePoints, p.Name)
+                                                           .Find(x => x.UniqueName == strExtra)?.SourceName;
+                        if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
                         {
-                            objGear.Equipped = false;
-                            objGear.Extra = string.Empty;
+                            Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
+                            if (objGear?.Bonded == true)
+                            {
+                                objGear.Equipped = false;
+                                objGear.Extra = string.Empty;
+                            }
                         }
                     }
                     p.DeletePower();
@@ -445,6 +447,7 @@ namespace Chummer.UI.Powers
 
                     if (frmParent is CharacterShared objParent)
                         objParent.IsCharacterUpdateRequested = true;
+                    return Task.CompletedTask;
                 },
                 EnabledExtractor = (p => p.FreeLevels == 0)
             });

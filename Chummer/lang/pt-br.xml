@@ -2136,7 +2136,7 @@
     </string>
     <string>
       <key>Message_AttributeMaximum</key>
-      <text>Você não pode ter mais do que um Atributo em seu valor máximo durante a criação de personagem.</text>
+      <text>Você não pode ter mais do que {0} Atributo(s) em seu valor máximo durante a criação de personagem.</text>
     </string>
     <string>
       <key>Message_AttributeBuildPoints</key>
@@ -5804,22 +5804,6 @@
       <text>Membros para Personagens Padrão:</text>
     </string>
     <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
-      <text>Pode comprar Qualidades (RC 40)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_KnowledgeMultiplier</key>
-      <text>Pontos de Conhecimento gratuitos igual a (INT+LOG)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactMultiplier</key>
-      <text>Pontos de Contato gratuitos igual a Carisma</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactPoints</key>
-      <text>Pontos de contato em vez de Contatos fixos (RC 40)</text>
-    </string>
-    <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
       <text>Atualizações Automáticas</text>
     </string>
@@ -6461,7 +6445,7 @@
     </string>
     <string>
       <key>Button_Options_PDFTest</key>
-      <text>Teste - Abrir na Página 5</text>
+      <text>Teste - Abrir na Página 3</text>
     </string>
     <string>
       <key>Checkbox_Options_OpenPDFsAsURLs</key>

@@ -156,14 +156,14 @@ namespace ChummerHub.Client.UI
                             using (_ = Timekeeper.StartSyncron("Loading Chummerfile", parentActivity,
                                 CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
                             {
-                                Character c = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(a => a.FileName == MyCharacterCache.FilePath);
+                                Character c = Program.OpenCharacters.FirstOrDefault(a => a.FileName == MyCharacterCache.FilePath);
                                 bool blnSuccess = true;
                                 if (c == null)
                                 {
                                     c = new Character { FileName = MyCharacterCache.FilePath };
                                     using (LoadingBar frmLoadingForm = new LoadingBar { CharacterFile = MyCharacterCache.FilePath })
                                     {
-                                        frmLoadingForm.Reset(36);
+                                        await frmLoadingForm.ResetAsync(36);
                                         frmLoadingForm.Show();
                                         myState.StatusText = "Loading chummer file...";
                                         myState.CurrentProgress += 10;
@@ -320,16 +320,16 @@ namespace ChummerHub.Client.UI
 
             if (e is MyUserState us)
             {
-                tbStatus.DoThreadSafe(() =>
+                tbStatus.DoThreadSafe(x =>
                 {
-                    if (!tbStatus.Text.Contains(us.StatusText))
-                        tbStatus.Text += us.StatusText + Environment.NewLine;
+                    if (!x.Text.Contains(us.StatusText))
+                        x.Text += us.StatusText + Environment.NewLine;
                 });
-                tbLink.DoThreadSafe(() =>
+                tbLink.DoThreadSafe(x =>
                 {
                     if (!string.IsNullOrEmpty(us.LinkText) && (us.LinkText != tbLink.Text))
                     {
-                        tbLink.Text = us.LinkText;
+                        x.Text = us.LinkText;
                     }
                 });
             }
@@ -337,15 +337,15 @@ namespace ChummerHub.Client.UI
         private void ShareChummer_RunWorkerCompleted(MyUserState us)
         {
             pgbStatus.DoThreadSafe(() => { pgbStatus.Value = 100; });
-            tbLink.DoThreadSafe(() =>
+            tbLink.DoThreadSafe(x =>
             {
-                tbLink.Text = us.LinkText;
+                x.Text = us.LinkText;
             });
-            tbStatus.DoThreadSafe(() =>
+            tbStatus.DoThreadSafe(x =>
             {
-                tbStatus.Text += "Link copied to clipboard." + Environment.NewLine;
+                x.Text += "Link copied to clipboard." + Environment.NewLine;
                 Clipboard.SetText(us.LinkText);
-                tbStatus.Text += "Process was completed" + Environment.NewLine;
+                x.Text += "Process was completed" + Environment.NewLine;
             });
         }
 

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chummer.Backend.Skills
@@ -64,7 +65,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public override int CurrentKarmaCost => Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
 
-        public override void WriteToDerived(XmlTextWriter objWriter)
+        public override void WriteToDerived(XmlWriter objWriter)
         {
             objWriter.WriteElementString("specific", Specific);
         }
@@ -88,9 +89,21 @@ namespace Chummer.Backend.Skills
                 : CharacterObject.TranslateExtra(Specific, strLanguage);
         }
 
+        public async ValueTask<string> DisplaySpecificAsync(string strLanguage)
+        {
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Specific
+                : await CharacterObject.TranslateExtraAsync(Specific, strLanguage);
+        }
+
         public override string DisplaySpecialization(string strLanguage)
         {
             return DisplaySpecific(strLanguage);
+        }
+
+        public override ValueTask<string> DisplaySpecializationAsync(string strLanguage)
+        {
+            return DisplaySpecificAsync(strLanguage);
         }
     }
 }

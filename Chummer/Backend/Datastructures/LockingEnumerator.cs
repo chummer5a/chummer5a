@@ -20,7 +20,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -28,87 +28,59 @@ namespace Chummer
     /// Special class that should be used instead of GetEnumerator for collections with an internal locking object
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public readonly struct LockingEnumerator<T> : IEnumerator<T>, IEquatable<LockingEnumerator<T>>
+    public sealed class LockingEnumerator<T> : IEnumerator<T>
     {
-        private readonly ReaderWriterLockSlim _rwlThis;
+        private readonly IHasLockObject _objMyParent;
 
-        private readonly IEnumerator<T> _objInternalEnumerator;
+        private IEnumerator<T> _objInternalEnumerator;
 
-        public LockingEnumerator(IEnumerable<T> lstEnumerable, ReaderWriterLockSlim rwlThis)
+        public static LockingEnumerator<T> Get(IHasLockObject objMyParent)
         {
-            _objInternalEnumerator = lstEnumerable.GetEnumerator();
-            _rwlThis = rwlThis;
+            objMyParent.LockObject.EnterReadLock();
+            return new LockingEnumerator<T>(objMyParent);
         }
 
-        public LockingEnumerator(IEnumerator<T> lstEnumerator, ReaderWriterLockSlim rwlThis)
+        public static async ValueTask<LockingEnumerator<T>> GetAsync(IHasLockObject objMyParent)
         {
-            _objInternalEnumerator = lstEnumerator;
-            _rwlThis = rwlThis;
+            await objMyParent.LockObject.EnterReadLockAsync();
+            return new LockingEnumerator<T>(objMyParent);
+        }
+
+        private LockingEnumerator(IHasLockObject objMyParent)
+        {
+            _objMyParent = objMyParent;
+        }
+
+        public void SetEnumerator(IEnumerator<T> objInternalEnumerator)
+        {
+            if (_objInternalEnumerator != null)
+                throw new ArgumentException(null, nameof(objInternalEnumerator));
+            _objInternalEnumerator = objInternalEnumerator;
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            using (new EnterReadLock(_rwlThis))
-                _objInternalEnumerator.Dispose();
+            _objInternalEnumerator.Dispose();
+            _objMyParent.LockObject.ExitReadLock();
         }
 
         /// <inheritdoc />
         public bool MoveNext()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _objInternalEnumerator.MoveNext();
+            return _objInternalEnumerator.MoveNext();
         }
 
         /// <inheritdoc />
         public void Reset()
         {
-            using (new EnterReadLock(_rwlThis))
-                _objInternalEnumerator.Reset();
+            _objInternalEnumerator.Reset();
         }
 
         /// <inheritdoc />
-        public T Current
-        {
-            get
-            {
-                using (new EnterReadLock(_rwlThis))
-                    return _objInternalEnumerator.Current;
-            }
-        }
+        public T Current => _objInternalEnumerator.Current;
 
         /// <inheritdoc />
         object IEnumerator.Current => Current;
-
-        /// <inheritdoc />
-        public bool Equals(LockingEnumerator<T> other)
-        {
-            return Equals(_rwlThis, other._rwlThis) && Equals(_objInternalEnumerator, other._objInternalEnumerator);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj != null && Equals((LockingEnumerator<T>)obj);
-        }
-
-        public override int GetHashCode()
-        {
-            return (_rwlThis, _objInternalEnumerator).GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return _objInternalEnumerator.ToString() + ' ' + _rwlThis;
-        }
-
-        public static bool operator ==(LockingEnumerator<T> left, LockingEnumerator<T> right)
-        {
-            return left.Equals(right);
-        }
-
-        public static bool operator !=(LockingEnumerator<T> left, LockingEnumerator<T> right)
-        {
-            return !(left == right);
-        }
     }
 }

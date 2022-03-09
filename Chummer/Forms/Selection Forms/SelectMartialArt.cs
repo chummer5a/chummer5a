@@ -20,12 +20,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectMartialArt : Form
+    public partial class SelectMartialArt : Form
     {
         private bool _blnLoading = true;
         private string _strSelectedMartialArt = string.Empty;
@@ -39,7 +40,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectMartialArt(Character objCharacter)
+        public SelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -52,7 +53,7 @@ namespace Chummer
             _xmlBaseMartialArtsTechniquesNode = xmlBaseMartialArtsDocumentNode.SelectSingleNode("/chummer/techniques");
         }
 
-        private void frmSelectMartialArt_Load(object sender, EventArgs e)
+        private async void SelectMartialArt_Load(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(_strForcedValue))
             {
@@ -67,7 +68,7 @@ namespace Chummer
 
             _blnLoading = false;
 
-            RefreshArtList();
+            await RefreshArtList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -86,7 +87,7 @@ namespace Chummer
             cmdOK_Click(sender, e);
         }
 
-        private void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstMartialArts_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -95,20 +96,20 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Populate the Martial Arts list.
-                XPathNavigator objXmlArt = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlArt = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[id = " + strSelectedId.CleanXPath() + ']');
 
                 if (objXmlArt != null)
                 {
-                    lblKarmaCost.Text = objXmlArt.SelectSingleNodeAndCacheExpression("cost")?.Value ?? 7.ToString(GlobalSettings.CultureInfo);
+                    lblKarmaCost.Text = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("cost"))?.Value ?? 7.ToString(GlobalSettings.CultureInfo);
                     lblKarmaCostLabel.Visible = !string.IsNullOrEmpty(lblKarmaCost.Text);
 
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTechniques))
                     {
-                        foreach (XPathNavigator xmlMartialArtsTechnique in objXmlArt.SelectAndCacheExpression(
+                        foreach (XPathNavigator xmlMartialArtsTechnique in await objXmlArt.SelectAndCacheExpressionAsync(
                                      "techniques/technique"))
                         {
                             string strLoopTechniqueName
-                                = xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpression("name")?.Value
+                                = (await xmlMartialArtsTechnique.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                   ?? string.Empty;
                             if (!string.IsNullOrEmpty(strLoopTechniqueName))
                             {
@@ -123,7 +124,7 @@ namespace Chummer
                                     sbdTechniques.Append(
                                         !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                         StringComparison.OrdinalIgnoreCase)
-                                            ? xmlTechniqueNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                            ? (await xmlTechniqueNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                               ?? strLoopTechniqueName
                                             : strLoopTechniqueName);
                                 }
@@ -135,9 +136,9 @@ namespace Chummer
 
                     gpbIncludedTechniques.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
 
-                    string strSource = objXmlArt.SelectSingleNodeAndCacheExpression("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strPage = objXmlArt.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlArt.SelectSingleNodeAndCacheExpression("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                    string strSource = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    string strPage = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                    SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;
@@ -161,9 +162,9 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshArtList();
+            await RefreshArtList();
         }
 
         #endregion Control Events
@@ -210,21 +211,21 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         /// <summary>
         /// Populate the Martial Arts list.
         /// </summary>
-        private void RefreshArtList()
+        private async ValueTask RefreshArtList()
         {
             string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (ShowQualities)
                 strFilter += " and isquality = " + bool.TrueString.CleanXPath();
             else
-                strFilter += " and not(isquality = " + bool.TrueString.CleanXPath() + ")";
+                strFilter += " and not(isquality = " + bool.TrueString.CleanXPath() + ')';
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
 
@@ -234,14 +235,14 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlArt in objArtList)
                 {
-                    string strId = objXmlArt.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
                     {
                         lstMartialArt.Add(new ListItem(
                                               strId,
-                                              objXmlArt.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                              ?? objXmlArt.SelectSingleNodeAndCacheExpression("name")?.Value
-                                              ?? LanguageManager.GetString("String_Unknown")));
+                                              (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                              ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                              ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }
 

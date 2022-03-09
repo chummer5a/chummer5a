@@ -181,7 +181,7 @@ namespace ChummerHub.Client.Sinners
             {
                 try
                 {
-                    using (new CursorWait(PluginHandler.MainForm, true))
+                    using (CursorWait.New(PluginHandler.MainForm, true))
                     {
                         try
                         {
@@ -402,13 +402,14 @@ namespace ChummerHub.Client.Sinners
                 // get all tags in the list with parent is null
                 foreach (Tag branch in tags.Where(t => t != null && t.MyParentTag == null))
                 {
+                    string strText = branch.TagName;
+                    if (!string.IsNullOrEmpty(branch.TagValue))
+                        strText += ": " + branch.TagValue;
                     TreeNode child = new TreeNode
                     {
-                        Text = branch.TagName,
+                        Text = strText,
                         Tag = branch.Id,
                     };
-                    if (!string.IsNullOrEmpty(branch.TagValue))
-                        child.Text += ": " + branch.TagValue;
                     if (!string.IsNullOrEmpty(branch.TagComment))
                         child.ToolTipText = branch.TagComment;
                     PopulateTree(ref child, branch.Tags.ToArray(), filtertags);
@@ -421,18 +422,18 @@ namespace ChummerHub.Client.Sinners
             {
                 foreach (Tag tag in tags)
                 {
-                    if (filtertags != null && (filtertags.All(x => x.TagName != tag.TagName) && tag.Tags.Count <= 0))
+                    if (filtertags != null && filtertags.All(x => x.TagName != tag.TagName) && tag.Tags.Count == 0)
                         continue;
+                    string strText = string.IsNullOrEmpty(tag.TagComment)
+                        ? tag.TagName
+                        : '(' + tag.TagComment + ") " + tag.TagName;
+                    if (!string.IsNullOrEmpty(tag.TagValue))
+                        strText += ": " + tag.TagValue;
                     TreeNode child = new TreeNode
                     {
-                        Text = string.Empty,
+                        Text = strText,
                         Tag = tag.Id
                     };
-                    if(!string.IsNullOrEmpty(tag.TagComment))
-                        child.Text = "(" + tag.TagComment + ") ";
-                    child.Text += tag.TagName;
-                    if (!string.IsNullOrEmpty(tag.TagValue))
-                        child.Text += ": " + tag.TagValue;
                     PopulateTree(ref child, tag.Tags?.ToArray(), filtertags);
                     root.Nodes.Add(child);
                 }
@@ -456,8 +457,8 @@ namespace ChummerHub.Client.Sinners
             {
                 MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
             }
-            object sinidob = null;
-            if (MyCharacterCache?.MyPluginDataDic?.TryGetValue("SINnerId", out sinidob) == true)
+
+            if (MyCharacterCache?.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob) == true)
             {
                 MySINnerFile.Id = (Guid)sinidob;
             }
@@ -491,7 +492,7 @@ namespace ChummerHub.Client.Sinners
                                 Task<ResultSinnerGetOwnedSINByAlias> objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
                                 if (objSearchTask.Status == TaskStatus.Created)
                                     objSearchTask.RunSynchronously();
-                                res = objSearchTask.Result;
+                                res = objSearchTask.GetAwaiter().GetResult();
                             }
                             else
                                 res =  await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
@@ -536,7 +537,7 @@ namespace ChummerHub.Client.Sinners
                                 "\tand use this new version from now on," + Environment.NewLine;
                             message += "but only on this client (NOT recommended)."
                                        + Environment.NewLine + Environment.NewLine;
-                            DialogResult result = PluginHandler.MainForm.ShowMessageBox(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
+                            DialogResult result = Program.ShowMessageBox(message, "SIN already found online", MessageBoxButtons.YesNoCancel,
                                 MessageBoxIcon.Asterisk);
                             switch (result)
                             {
@@ -593,15 +594,20 @@ namespace ChummerHub.Client.Sinners
                         UserRights = ucSINnersOptions.SINnerVisibility.UserRights
                     };
             }
-            if (!string.IsNullOrEmpty(Settings.Default.UserEmail) && MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == "delete.this.and.add@your.mail"))
+            if (!string.IsNullOrEmpty(Settings.Default.UserEmail) && MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a =>
+                    string.Equals(a.EMail, "delete.this.and.add@your.mail", StringComparison.OrdinalIgnoreCase)))
             {
-                List<SINnerUserRight> found = MySINnerFile.SiNnerMetaData.Visibility.UserRights.Where(a => a.EMail.ToLowerInvariant() == "delete.this.and.add@your.mail").ToList();
+                List<SINnerUserRight> found = MySINnerFile.SiNnerMetaData.Visibility.UserRights.Where(a =>
+                                                              string.Equals(
+                                                                  a.EMail, "delete.this.and.add@your.mail",
+                                                                  StringComparison.OrdinalIgnoreCase))
+                                                          .ToList();
                 foreach (SINnerUserRight one in found)
                     MySINnerFile.SiNnerMetaData.Visibility.UserRights.Remove(one);
             }
-            if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
+            if (MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
             {
-                MySINnerFile.SiNnerMetaData.Visibility.UserRights.Add(new SINnerUserRight()
+                MySINnerFile.SiNnerMetaData.Visibility.UserRights.Add(new SINnerUserRight
                 {
                     Id = Guid.NewGuid(),
                     CanEdit = true,
@@ -648,27 +654,34 @@ namespace ChummerHub.Client.Sinners
                 if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
                     File.Delete(file);
             }
-
-            CharacterCache summary = new CharacterCache(MyCharacter.FileName);
+            
             if (string.IsNullOrEmpty(MyCharacter.FileName))
                 return null;
             string tempfile = Path.Combine(tempDir, MyCharacter.FileName);
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
 
-            bool readCallback = MyCharacter.DoOnSaveCompleted.Remove(PluginHandler.MyOnSaveUpload);
+            bool readCallback = MyCharacter.DoOnSaveCompletedAsync.Remove(PluginHandler.MyOnSaveUpload);
 
             if (!File.Exists(MyCharacter.FileName))
             {
                 string path2 = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
                 CreateDirectoryRecursively(path2);
-                MyCharacter.Save(MyCharacter.FileName, false, false);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    MyCharacter.Save(MyCharacter.FileName, false, false);
+                else
+                    await MyCharacter.SaveAsync(MyCharacter.FileName, false, false);
             }
 
-            MyCharacter.Save(tempfile, false, false);
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                MyCharacter.Save(tempfile, false, false);
+            else
+                await MyCharacter.SaveAsync(tempfile, false, false);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (readCallback)
-                MyCharacter.DoOnSaveCompleted.Add(PluginHandler.MyOnSaveUpload);
+                MyCharacter.DoOnSaveCompletedAsync.Add(PluginHandler.MyOnSaveUpload);
 
             if (File.Exists(zipPath))
             {
@@ -695,22 +708,26 @@ namespace ChummerHub.Client.Sinners
         {
             string[] pathParts = path.Split('\\');
 
+            string strPrevious = string.Empty;
             for (int i = 0; i < pathParts.Length; i++)
             {
+                string strCurrent = pathParts[i];
                 if (i > 0)
-                    pathParts[i] = Path.Combine(pathParts[i - 1], pathParts[i]);
+                    strCurrent = Path.Combine(strPrevious, strCurrent);
 
-                if (!Directory.Exists(pathParts[i]))
+                if (!Directory.Exists(strCurrent))
                 {
                     try
                     {
-                        Directory.CreateDirectory(pathParts[i]);
+                        Directory.CreateDirectory(strCurrent);
                     }
                     catch (UnauthorizedAccessException e)
                     {
-                        throw new UnauthorizedAccessException("Path: " + pathParts[i], e);
+                        throw new UnauthorizedAccessException("Path: " + strCurrent, e);
                     }
                 }
+
+                strPrevious = strCurrent;
             }
         }
 
@@ -719,7 +736,7 @@ namespace ChummerHub.Client.Sinners
         {
             try
             {
-                using (new CursorWait(PluginHandler.MainForm, true))
+                using (CursorWait.New(PluginHandler.MainForm, true))
                 {
                     if (myState != null)
                     {
@@ -806,7 +823,7 @@ namespace ChummerHub.Client.Sinners
             catch(Exception e)
             {
                 Log.Error(e);
-                Program.MainForm.ShowMessageBox(e.ToString());
+                Program.ShowMessageBox(e.ToString());
             }
             return true;
         }
@@ -817,6 +834,7 @@ namespace ChummerHub.Client.Sinners
             // if the character is open in any forms or is linked to a character that is open.
             // So this will only dispose characters who are only temporarily opened purely to interact with this class
             MyCharacter?.Dispose();
+            MyCharacterCache?.Dispose();
         }
     }
 }

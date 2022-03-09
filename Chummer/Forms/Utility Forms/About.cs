@@ -38,7 +38,7 @@ namespace Chummer
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+                object[] attributes = typeof(Program).Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
                 if (attributes.Length > 0)
                 {
                     AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
@@ -47,17 +47,17 @@ namespace Chummer
                         return titleAttribute.Title;
                     }
                 }
-                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+                return System.IO.Path.GetFileNameWithoutExtension(typeof(Program).Assembly.CodeBase);
             }
         }
 
-        public static string AssemblyVersion => Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public static string AssemblyVersion => Utils.CurrentChummerVersion.ToString();
 
         public static string AssemblyDescription
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+                object[] attributes = typeof(Program).Assembly.GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
                 return attributes.Length == 0 ? string.Empty : ((AssemblyDescriptionAttribute)attributes[0]).Description.NormalizeLineEndings();
             }
         }
@@ -66,7 +66,7 @@ namespace Chummer
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+                object[] attributes = typeof(Program).Assembly.GetCustomAttributes(typeof(AssemblyProductAttribute), false);
                 return attributes.Length == 0 ? string.Empty : ((AssemblyProductAttribute)attributes[0]).Product.NormalizeLineEndings().WordWrap();
             }
         }
@@ -75,7 +75,7 @@ namespace Chummer
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+                object[] attributes = typeof(Program).Assembly.GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
                 return attributes.Length == 0 ? string.Empty : ((AssemblyCopyrightAttribute)attributes[0]).Copyright.NormalizeLineEndings().WordWrap();
             }
         }
@@ -84,7 +84,7 @@ namespace Chummer
         {
             get
             {
-                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+                object[] attributes = typeof(Program).Assembly.GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
                 return attributes.Length == 0 ? string.Empty : ((AssemblyCompanyAttribute)attributes[0]).Company.NormalizeLineEndings().WordWrap();
             }
         }
@@ -93,33 +93,33 @@ namespace Chummer
 
         #region Controls Methods
 
-        private void frmAbout_Load(object sender, EventArgs e)
+        private async void About_Load(object sender, EventArgs e)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
-            string strReturn = LanguageManager.GetString("Label_About", false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strReturn = await LanguageManager.GetStringAsync("Label_About", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "About";
             Text = strReturn + strSpace + AssemblyTitle;
             lblProductName.Text = AssemblyProduct;
-            strReturn = LanguageManager.GetString("String_Version", false);
+            strReturn = await LanguageManager.GetStringAsync("String_Version", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = "Version";
             lblVersion.Text = strReturn + strSpace + AssemblyVersion;
-            strReturn = LanguageManager.GetString("About_Copyright_Text", false);
+            strReturn = await LanguageManager.GetStringAsync("About_Copyright_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCopyright;
             lblCopyright.Text = strReturn;
-            strReturn = LanguageManager.GetString("About_Company_Text", false);
+            strReturn = await LanguageManager.GetStringAsync("About_Company_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyCompany;
             lblCompanyName.Text = strReturn;
-            strReturn = LanguageManager.GetString("About_Description_Text", false);
+            strReturn = await LanguageManager.GetStringAsync("About_Description_Text", false);
             if (string.IsNullOrEmpty(strReturn))
                 strReturn = AssemblyDescription;
             txtDescription.Text = strReturn;
             txtContributors.Text += Environment.NewLine + Environment.NewLine + string.Join(Environment.NewLine, Properties.Contributors.Usernames)
                                     + Environment.NewLine + "/u/Iridios";
-            txtDisclaimer.Text = LanguageManager.GetString("About_Label_Disclaimer_Text");
+            txtDisclaimer.Text = await LanguageManager.GetStringAsync("About_Label_Disclaimer_Text");
         }
 
         private void txt_KeyDown(object sender, KeyEventArgs e)

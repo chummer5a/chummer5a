@@ -22,15 +22,14 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IDisposable, IProducerConsumerCollection<T>
+    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IProducerConsumerCollection<T>, IHasLockObject, IAsyncEnumerable<T>
     {
         private readonly HashSet<T> _setData;
-        private readonly ReaderWriterLockSlim
-            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
         public LockingHashSet()
         {
@@ -60,91 +59,201 @@ namespace Chummer
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _setData.GetEnumerator().GetLockingType(_rwlThis);
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.Get(this);
+            objReturn.SetEnumerator(_setData.GetEnumerator());
+            return objReturn;
+        }
+
+        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync()
+        {
+            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this);
+            objReturn.SetEnumerator(_setData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
-            using (new EnterReadLock(_rwlThis))
-                return _setData.GetEnumerator().GetLockingType(_rwlThis);
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.Get(this);
+            objReturn.SetEnumerator(_setData.GetEnumerator());
+            return objReturn;
         }
 
         /// <inheritdoc />
         public bool Add(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 return _setData.Add(item);
+        }
+
+        public async ValueTask<bool> AddAsync(T item)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                return _setData.Add(item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public void UnionWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 _setData.UnionWith(other);
         }
 
         /// <inheritdoc />
         public void IntersectWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 _setData.IntersectWith(other);
         }
 
         /// <inheritdoc />
         public void ExceptWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 _setData.ExceptWith(other);
         }
 
         /// <inheritdoc />
         public void SymmetricExceptWith(IEnumerable<T> other)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 _setData.SymmetricExceptWith(other);
         }
 
         /// <inheritdoc />
         public bool IsSubsetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
                 return _setData.IsSubsetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsSupersetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
                 return _setData.IsSupersetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsProperSupersetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
                 return _setData.IsProperSupersetOf(other);
         }
 
         /// <inheritdoc />
         public bool IsProperSubsetOf(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
                 return _setData.IsProperSubsetOf(other);
         }
 
         /// <inheritdoc />
         public bool Overlaps(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
                 return _setData.Overlaps(other);
         }
 
         /// <inheritdoc />
         public bool SetEquals(IEnumerable<T> other)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
+                return _setData.SetEquals(other);
+        }
+        
+        public async ValueTask UnionWithAsync(IEnumerable<T> other)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _setData.UnionWith(other);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+        
+        public async ValueTask IntersectWithAsync(IEnumerable<T> other)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _setData.IntersectWith(other);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+        
+        public async ValueTask ExceptWithAsync(IEnumerable<T> other)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _setData.ExceptWith(other);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+        
+        public async ValueTask SymmetricExceptWithAsync(IEnumerable<T> other)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _setData.SymmetricExceptWith(other);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+        
+        public async ValueTask<bool> IsSubsetOfAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.IsSubsetOf(other);
+        }
+        
+        public async ValueTask<bool> IsSupersetOfAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.IsSupersetOf(other);
+        }
+        
+        public async ValueTask<bool> IsProperSupersetOfAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.IsProperSupersetOf(other);
+        }
+        
+        public async ValueTask<bool> IsProperSubsetOfAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.IsProperSubsetOf(other);
+        }
+        
+        public async ValueTask<bool> OverlapsAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.Overlaps(other);
+        }
+        
+        public async ValueTask<bool> SetEqualsAsync(IEnumerable<T> other)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _setData.SetEquals(other);
         }
 
@@ -158,21 +267,53 @@ namespace Chummer
         /// <inheritdoc />
         public void Clear()
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 _setData.Clear();
+        }
+
+        public async ValueTask ClearAsync()
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _setData.Clear();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public bool Contains(T item)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
+                return _setData.Contains(item);
+        }
+
+        public async ValueTask<bool> ContainsAsync(T item)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
                 return _setData.Contains(item);
         }
 
         /// <inheritdoc cref="ICollection.CopyTo" />
         public void CopyTo(T[] array, int arrayIndex)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
+            {
+                foreach (T objItem in _setData)
+                {
+                    array[arrayIndex] = objItem;
+                    ++arrayIndex;
+                }
+            }
+        }
+
+        /// <inheritdoc cref="ICollection.CopyTo" />
+        public async ValueTask CopyToAsync(T[] array, int arrayIndex)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (T objItem in _setData)
                 {
@@ -185,20 +326,33 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryAdd(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 return _setData.Add(item);
+        }
+
+        public async ValueTask<bool> TryAddAsync(T item)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                return _setData.Add(item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public bool TryTake(out T item)
         {
             // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
             {
-                if (Count > 0)
+                if (_setData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    item = this.First();
+                    item = _setData.First();
                     if (_setData.Remove(item))
                         return true;
                 }
@@ -210,9 +364,24 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
             {
-                T[] aobjReturn = new T[Count];
+                T[] aobjReturn = new T[_setData.Count];
+                int i = 0;
+                foreach (T objLoop in _setData)
+                {
+                    aobjReturn[i] = objLoop;
+                    ++i;
+                }
+                return aobjReturn;
+            }
+        }
+
+        public async ValueTask<T[]> ToArrayAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                T[] aobjReturn = new T[_setData.Count];
                 int i = 0;
                 foreach (T objLoop in _setData)
                 {
@@ -226,14 +395,39 @@ namespace Chummer
         /// <inheritdoc />
         public bool Remove(T item)
         {
-            using (new EnterWriteLock(_rwlThis))
+            using (LockObject.EnterWriteLock())
                 return _setData.Remove(item);
+        }
+
+        public async ValueTask<bool> RemoveAsync(T item)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                return _setData.Remove(item);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
-            using (new EnterReadLock(_rwlThis))
+            using (EnterReadLock.Enter(LockObject))
+            {
+                foreach (T objItem in _setData)
+                {
+                    array.SetValue(objItem, index);
+                    ++index;
+                }
+            }
+        }
+
+        public async ValueTask CopyToAsync(Array array, int index)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
             {
                 foreach (T objItem in _setData)
                 {
@@ -248,13 +442,13 @@ namespace Chummer
         {
             get
             {
-                using (new EnterReadLock(_rwlThis))
+                using (EnterReadLock.Enter(LockObject))
                     return _setData.Count;
             }
         }
 
         /// <inheritdoc />
-        public object SyncRoot => _rwlThis;
+        public object SyncRoot => LockObject;
 
         /// <inheritdoc />
         public bool IsSynchronized => true;
@@ -266,7 +460,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                _rwlThis?.Dispose();
+                LockObject.Dispose();
             }
         }
 
@@ -274,6 +468,21 @@ namespace Chummer
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await LockObject.DisposeAsync();
+            }
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            await DisposeAsync(true);
             GC.SuppressFinalize(this);
         }
     }

@@ -40,7 +40,7 @@ namespace ChummerHub.Client.Backend
                             if (!string.IsNullOrEmpty(classprop.ListInstanceNameFromProperty))
                             {
                                 tag.TagName = classprop.ListInstanceNameFromProperty;
-                                PropertyInfo childprop = obj.GetType().GetProperties().FirstOrDefault(x => x.Name == classprop.ListInstanceNameFromProperty);
+                                PropertyInfo childprop = obj.GetType().GetProperties().Find(x => x.Name == classprop.ListInstanceNameFromProperty);
                                 if (childprop == null)
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + obj.GetType() + ".");
                                 tag.TagValue += childprop.GetValue(obj);
@@ -75,7 +75,7 @@ namespace ChummerHub.Client.Backend
                             if (!string.IsNullOrEmpty(classprop.ListInstanceNameFromProperty))
                             {
                                 tag.TagName = classprop.ListInstanceNameFromProperty;
-                                PropertyInfo childprop = item.GetType().GetProperties().FirstOrDefault(x => x.Name == classprop.ListInstanceNameFromProperty);
+                                PropertyInfo childprop = item.GetType().GetProperties().Find(x => x.Name == classprop.ListInstanceNameFromProperty);
                                 if (childprop == null)
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + item.GetType() + ".");
                                 tag.TagValue += childprop.GetValue(item);
@@ -112,10 +112,14 @@ namespace ChummerHub.Client.Backend
             PropertyInfo[] aPropertyInfos = objPropertyHaver.GetType().GetProperties();
             foreach(string includeprop in objPropertyFilterAttribute.ListExtraProperties)
             {
-                PropertyInfo propfound = aPropertyInfos.FirstOrDefault(x => x.Name == includeprop);
+                PropertyInfo propfound = aPropertyInfos.Find(x => x.Name == includeprop);
                 if(propfound == null)
                 {
-                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + objPropertyHaver.GetType() + ".");
+                    //sometimes we simply don't have a specialication (for example)
+                    if (includeprop == "Specialization")
+                        continue;
+                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + objPropertyHaver.GetType() + " with name "+ objPropertyHaver.ToString()+".");
+
                 }
                 object includeInstance = propfound.GetValue(objPropertyHaver);
                 if(includeInstance != null && !string.IsNullOrEmpty(includeInstance.ToString()))

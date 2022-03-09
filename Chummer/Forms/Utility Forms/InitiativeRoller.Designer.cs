@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmInitRoller
+    partial class InitiativeRoller
     {
         /// <summary>
         /// Required designer variable.
@@ -118,13 +118,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmInitRoller";
+            this.Name = "InitiativeRoller";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "InitRoller_Header";
             this.Text = "{InitativeRoller}";
-            this.Load += new System.EventHandler(this.frmInitRoller_Load);
+            this.Load += new System.EventHandler(this.InitiativeRoller_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

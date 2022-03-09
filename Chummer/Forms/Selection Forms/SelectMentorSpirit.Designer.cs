@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectMentorSpirit
+    partial class SelectMentorSpirit
     {
         /// <summary>
         /// Required designer variable.
@@ -404,7 +404,7 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectMentorSpirit";
+            this.Name = "SelectMentorSpirit";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

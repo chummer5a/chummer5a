@@ -25,6 +25,6 @@ namespace Chummer.Backend.Equipment
     public enum CapacityStyle
     {
         Zero = 0,
-        Standard = 1,
+        Standard = 1
     }
 }

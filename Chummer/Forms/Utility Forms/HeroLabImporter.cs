@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -30,39 +31,45 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmHeroLabImporter : Form
+    public partial class HeroLabImporter : Form
     {
         private readonly ThreadSafeList<HeroLabCharacterCache> _lstCharacterCache = new ThreadSafeList<HeroLabCharacterCache>(1);
         private readonly LockingDictionary<string, Bitmap> _dicImages = new LockingDictionary<string, Bitmap>();
 
-        public frmHeroLabImporter()
+        public HeroLabImporter()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
-        private void cmdSelectFile_Click(object sender, EventArgs e)
+        private async void cmdSelectFile_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to possess.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = LanguageManager.GetString("DialogFilter_HeroLab") + '|' + LanguageManager.GetString("DialogFilter_All"),
-                Multiselect = false
-            })
+                   {
+                       Filter = await LanguageManager.GetStringAsync("DialogFilter_HeroLab") + '|'
+                           + await LanguageManager.GetStringAsync("DialogFilter_All"),
+                       Multiselect = false
+                   })
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
                     string strSelectedFile = openFileDialog.FileName;
-                    TreeNode objNode = CacheCharacters(strSelectedFile);
+                    TreeNode objNode = await CacheCharacters(strSelectedFile);
                     if (objNode != null)
                     {
                         treCharacterList.Nodes.Clear();
                         treCharacterList.Nodes.Add(objNode);
                         treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
                     }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
             }
         }
@@ -71,22 +78,27 @@ namespace Chummer
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        private TreeNode CacheCharacters(string strFile)
+        private async Task<TreeNode> CacheCharacters(string strFile)
         {
             if (!File.Exists(strFile))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine + Environment.NewLine + strFile);
+                Program.ShowMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), strFile));
                 return null;
             }
 
-            using (ThreadSafeList<XPathNavigator> lstCharacterXmlStatblocks = new ThreadSafeList<XPathNavigator>(3))
+            ThreadSafeList<XPathNavigator> lstCharacterXmlStatblocks = new ThreadSafeList<XPathNavigator>(3);
+            try
             {
                 try
                 {
                     using (ZipArchive zipArchive
-                        = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                           = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                     {
-                        Parallel.ForEach(zipArchive.Entries, entry =>
+                        // NOTE: Cannot parallelize because ZipFile.Open creates one handle on the entire zip file that gets messed up if we try to get it to read multiple files at once
+                        foreach (ZipArchiveEntry entry in zipArchive.Entries)
                         {
                             string strEntryFullName = entry.FullName;
                             if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)
@@ -95,14 +107,18 @@ namespace Chummer
                                 // If we run into any problems loading the character cache, fail out early.
                                 try
                                 {
-                                    XPathDocument xmlSourceDoc;
                                     using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                    using (XmlReader objXmlReader
-                                        = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                        xmlSourceDoc = new XPathDocument(objXmlReader);
-                                    XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    lstCharacterXmlStatblocks.Add(objToAdd);
+                                    {
+                                        await Task.Run(() =>
+                                        {
+                                            XPathDocument xmlSourceDoc;
+                                            using (XmlReader objXmlReader
+                                                   = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                                xmlSourceDoc = new XPathDocument(objXmlReader);
+                                            XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
+                                            lstCharacterXmlStatblocks.Add(objToAdd);
+                                        });
+                                    }
                                 }
                                 // If we run into any problems loading the character cache, fail out early.
                                 catch (IOException)
@@ -123,48 +139,52 @@ namespace Chummer
                                     Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
                                         ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
                                         : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                    while (!_dicImages.TryAdd(strKey, bmpNewMugshot))
+                                    while (!await _dicImages.TryAddAsync(strKey, bmpNewMugshot))
                                     {
-                                        if (_dicImages.TryRemove(strKey, out Bitmap bmpOldMugshot))
+                                        (bool blnSuccess, Bitmap bmpOldMugshot) =
+                                            await _dicImages.TryRemoveAsync(strKey);
+                                        if (blnSuccess)
                                             bmpOldMugshot?.Dispose();
                                     }
                                 }
                             }
-                        });
+                        }
                     }
                 }
                 catch (IOException)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         this,
-                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine
-                        + Environment.NewLine + strFile);
+                        string.Format(GlobalSettings.CultureInfo,
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
+                                      strFile));
                     return null;
                 }
                 catch (NotSupportedException)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         this,
-                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed") + Environment.NewLine
-                        + Environment.NewLine + strFile);
+                        string.Format(GlobalSettings.CultureInfo,
+                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"),
+                                      strFile));
                     return null;
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.MainForm.ShowMessageBox(
-                        this, LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                     return null;
                 }
 
                 string strFileText
-                    = strFile.CheapReplace(Application.StartupPath, () => "<" + Application.ProductName + ">");
+                    = await strFile.CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>');
                 TreeNode nodRootNode = new TreeNode
                 {
                     Text = strFileText,
                     ToolTipText = strFileText
                 };
 
-                XPathNavigator xmlMetatypesDocument = XmlManager.LoadXPath("metatypes.xml");
+                XPathNavigator xmlMetatypesDocument = await XmlManager.LoadXPathAsync("metatypes.xml");
                 foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
                 {
                     XPathNavigator xmlBaseCharacterNode
@@ -198,7 +218,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strRaceString))
                         {
                             foreach (XPathNavigator xmlMetatype in xmlMetatypesDocument.Select(
-                                "/chummer/metatypes/metatype"))
+                                         "/chummer/metatypes/metatype"))
                             {
                                 string strMetatypeName = xmlMetatype.SelectSingleNode("name")?.Value ?? string.Empty;
                                 if (strMetatypeName == strRaceString)
@@ -209,7 +229,7 @@ namespace Chummer
                                 }
 
                                 foreach (XPathNavigator xmlMetavariant in
-                                    xmlMetatype.SelectAndCacheExpression("metavariants/metavariant"))
+                                         await xmlMetatype.SelectAndCacheExpressionAsync("metavariants/metavariant"))
                                 {
                                     string strMetavariantName
                                         = xmlMetavariant.SelectSingleNode("name")?.Value ?? string.Empty;
@@ -228,14 +248,69 @@ namespace Chummer
                         objCache.Essence = xmlBaseCharacterNode
                                            .SelectSingleNode("attributes/attribute[@name = \"Essence\"]/@text")?.Value;
                         objCache.BuildMethod
-                            = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.Value == "25"
-                                ? nameof(CharacterBuildMethod.Priority)
-                                : nameof(CharacterBuildMethod.Karma);
+                            = xmlBaseCharacterNode.SelectSingleNode("creation/bp/@total")?.ValueAsInt <= 100
+                                ? CharacterBuildMethod.Priority
+                                : CharacterBuildMethod.Karma;
+
+                        string strSettingsSummary =
+                            xmlBaseCharacterNode.SelectSingleNode("settings/@summary")?.Value;
+                        if (!string.IsNullOrEmpty(strSettingsSummary))
+                        {
+                            int intSemicolonIndex;
+                            bool blnDoFullHouse = false;
+                            int intSourcebooksIndex
+                                = strSettingsSummary.IndexOf("Core Rulebooks:", StringComparison.OrdinalIgnoreCase);
+                            if (intSourcebooksIndex != -1)
+                            {
+                                intSemicolonIndex = strSettingsSummary.IndexOf(';', intSourcebooksIndex);
+                                if (intSourcebooksIndex + 16 < intSemicolonIndex)
+                                {
+                                    blnDoFullHouse
+                                        = true; // We probably have multiple books enabled, so use Full House instead
+                                }
+                            }
+
+                            string strHeroLabSettingsName = "Standard";
+
+                            int intCharCreationSystemsIndex =
+                                strSettingsSummary.IndexOf("Character Creation Systems:",
+                                                           StringComparison.OrdinalIgnoreCase);
+                            if (intCharCreationSystemsIndex != -1)
+                            {
+                                intSemicolonIndex = strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex);
+                                if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex)
+                                {
+                                    strHeroLabSettingsName = strSettingsSummary.Substring(
+                                                                                   intCharCreationSystemsIndex + 28,
+                                                                                   strSettingsSummary.IndexOf(
+                                                                                       ';', intCharCreationSystemsIndex)
+                                                                                   - 28 - intCharCreationSystemsIndex)
+                                                                               .Trim();
+                                    if (strHeroLabSettingsName == "Established Runners")
+                                        strHeroLabSettingsName = "Standard";
+                                }
+                            }
+
+                            if (strHeroLabSettingsName == "Standard")
+                            {
+                                if (blnDoFullHouse)
+                                {
+                                    strHeroLabSettingsName = objCache.BuildMethod == CharacterBuildMethod.Karma
+                                        ? "Full House (Point Buy)"
+                                        : "Full House";
+                                }
+                                else if (objCache.BuildMethod == CharacterBuildMethod.Karma)
+                                    strHeroLabSettingsName = "Point Buy";
+                            }
+
+                            objCache.SettingsName = strHeroLabSettingsName;
+                        }
 
                         objCache.Created = objCache.Karma != "0";
                         if (!objCache.Created)
                         {
-                            XPathNodeIterator xmlJournalEntries = xmlBaseCharacterNode.SelectAndCacheExpression("journals/journal");
+                            XPathNodeIterator xmlJournalEntries
+                                = await xmlBaseCharacterNode.SelectAndCacheExpressionAsync("journals/journal");
                             if (xmlJournalEntries?.Count > 1)
                             {
                                 objCache.Created = true;
@@ -248,28 +323,35 @@ namespace Chummer
                         }
 
                         string strImageString = xmlBaseCharacterNode.SelectSingleNode("images/image/@filename")?.Value;
-                        if (!string.IsNullOrEmpty(strImageString)
-                            && _dicImages.TryGetValue(strImageString, out Bitmap objTemp))
+                        if (!string.IsNullOrEmpty(strImageString))
                         {
-                            objCache.Mugshot = objTemp;
+                            (bool blnSuccess, Bitmap objTemp) = await _dicImages.TryGetValueAsync(strImageString);
+                            if (blnSuccess)
+                            {
+                                objCache.Mugshot = objTemp;
+                            }
                         }
 
                         objCache.FilePath = strFile;
                         TreeNode objNode = new TreeNode
                         {
-                            Text = CalculatedName(objCache),
-                            ToolTipText = strFile.CheapReplace(Application.StartupPath,
-                                                               () => "<" + Application.ProductName + ">")
+                            Text = await CalculatedName(objCache),
+                            ToolTipText = await strFile.CheapReplaceAsync(Utils.GetStartupPath,
+                                                                          () => '<' + Application.ProductName + '>')
                         };
                         nodRootNode.Nodes.Add(objNode);
 
-                        _lstCharacterCache.Add(objCache);
-                        objNode.Tag = _lstCharacterCache.IndexOf(objCache);
+                        await _lstCharacterCache.AddAsync(objCache);
+                        objNode.Tag = await _lstCharacterCache.IndexOfAsync(objCache);
                     }
                 }
 
                 nodRootNode.Expand();
                 return nodRootNode;
+            }
+            finally
+            {
+                await lstCharacterXmlStatblocks.DisposeAsync();
             }
         }
 
@@ -289,7 +371,8 @@ namespace Chummer
             internal string CharacterId { get; set; }
             internal string CharacterName { get; set; }
             internal string CharacterAlias { get; set; }
-            internal string BuildMethod { get; set; }
+            internal CharacterBuildMethod BuildMethod { get; set; }
+            internal string SettingsName { get; set; }
             internal string Essence { get; set; }
             internal Image Mugshot { get; set; }
             internal bool Created { get; set; }
@@ -302,21 +385,21 @@ namespace Chummer
         /// </summary>
         /// <param name="objCache"></param>
         /// <returns></returns>
-        private static string CalculatedName(HeroLabCharacterCache objCache)
+        private static async Task<string> CalculatedName(HeroLabCharacterCache objCache)
         {
             string strName = objCache.CharacterAlias;
             if (string.IsNullOrEmpty(strName))
             {
                 strName = objCache.CharacterName;
                 if (string.IsNullOrEmpty(strName))
-                    strName = LanguageManager.GetString("String_UnnamedCharacter");
+                    strName = await LanguageManager.GetStringAsync("String_UnnamedCharacter");
             }
-            string strBuildMethod = LanguageManager.GetString("String_" + objCache.BuildMethod, false);
+            string strBuildMethod = await LanguageManager.GetStringAsync("String_" + objCache.BuildMethod, false);
             if (string.IsNullOrEmpty(strBuildMethod))
-                strBuildMethod = LanguageManager.GetString("String_Unknown");
-            string strSpace = LanguageManager.GetString("String_Space");
+                strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             strName += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                       + LanguageManager.GetString(objCache.Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
+                       + await LanguageManager.GetStringAsync(objCache.Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
             return strName;
         }
 
@@ -324,13 +407,13 @@ namespace Chummer
         /// Update the labels and images based on the selected treenode.
         /// </summary>
         /// <param name="objCache"></param>
-        private void UpdateCharacter(HeroLabCharacterCache objCache)
+        private async Task UpdateCharacter(HeroLabCharacterCache objCache)
         {
             if (objCache != null)
             {
                 txtCharacterBio.Text = objCache.Description;
 
-                string strUnknown = LanguageManager.GetString("String_Unknown");
+                string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
 
                 lblCharacterName.Text = objCache.CharacterName;
                 if (string.IsNullOrEmpty(lblCharacterName.Text))
@@ -352,7 +435,7 @@ namespace Chummer
 
                 lblCareerKarma.Text = objCache.Karma;
                 if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
-                    lblCareerKarma.Text = LanguageManager.GetString("String_None");
+                    lblCareerKarma.Text = await LanguageManager.GetStringAsync("String_None");
                 lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
                 lblCareerKarma.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
 
@@ -365,21 +448,27 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
-                XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
+                XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
+                XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 if (objMetatypeNode == null)
                 {
-                    objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
-                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
+                    objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml");
+                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
                 }
 
-                string strMetatype = objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metatype;
+                string strMetatype = objMetatypeNode != null
+                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                      ?? objCache.Metatype
+                    : objCache.Metatype;
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
-                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + "]");
+                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
 
-                    strMetatype += " (" + (objMetatypeNode?.SelectSingleNode("translate")?.Value ?? objCache.Metavariant) + ')';
+                    strMetatype += " (" + (objMetatypeNode != null
+                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                          ?? objCache.Metavariant
+                        : objCache.Metavariant) + ')';
                 }
                 lblMetatype.Text = strMetatype;
                 if (string.IsNullOrEmpty(lblMetatype.Text))
@@ -415,7 +504,7 @@ namespace Chummer
 
         #region Form Methods
 
-        private void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treCharacterList_AfterSelect(object sender, TreeViewEventArgs e)
         {
             HeroLabCharacterCache objCache = null;
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
@@ -425,18 +514,13 @@ namespace Chummer
                 if (intIndex >= 0 && intIndex < _lstCharacterCache.Count)
                     objCache = _lstCharacterCache[intIndex];
             }
-            UpdateCharacter(objCache);
+            await UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
 
-        private void treCharacterList_DoubleClick(object sender, EventArgs e)
+        private async void cmdImport_Click(object sender, EventArgs e)
         {
-            DoImport();
-        }
-
-        private void cmdImport_Click(object sender, EventArgs e)
-        {
-            DoImport();
+            await DoImport();
         }
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
@@ -457,7 +541,7 @@ namespace Chummer
 
         #endregion Form Methods
 
-        private void DoImport()
+        private async Task DoImport()
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
             if (objSelectedNode == null || objSelectedNode.Level <= 0)
@@ -465,28 +549,94 @@ namespace Chummer
             int intIndex = Convert.ToInt32(objSelectedNode.Tag, GlobalSettings.InvariantCultureInfo);
             if (intIndex < 0 || intIndex >= _lstCharacterCache.Count)
                 return;
-            string strFile = _lstCharacterCache[intIndex]?.FilePath;
-            string strCharacterId = _lstCharacterCache[intIndex]?.CharacterId;
+            HeroLabCharacterCache objCache = _lstCharacterCache[intIndex];
+            if (objCache == null)
+                return;
+            string strFile = objCache.FilePath;
+            string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                cmdImport.Enabled = false;
-                cmdSelectFile.Enabled = false;
+                bool blnLoaded = false;
                 Character objCharacter = new Character();
-                Program.MainForm.OpenCharacters.Add(objCharacter);
-                //Timekeeper.Start("load_file");
-                bool blnLoaded = objCharacter.LoadFromHeroLabFile(strFile, strCharacterId);
-                //Timekeeper.Finish("load_file");
-                if (!blnLoaded)
+                try
                 {
-                    Program.MainForm.OpenCharacters.Remove(objCharacter);
+                    Program.OpenCharacters.Add(objCharacter);
+
+                    CharacterSettings objHeroLabSettings =
+                        SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                            x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
+                    if (objHeroLabSettings != null)
+                    {
+                        objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
+                    }
+                    else
+                    {
+                        objHeroLabSettings = SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
+                            x => x.Name.Contains(objCache.SettingsName) && x.BuildMethod == objCache.BuildMethod);
+                        if (objHeroLabSettings != null)
+                        {
+                            objCharacter.SettingsKey = objHeroLabSettings.DictionaryKey;
+                        }
+                        else if (SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                     GlobalSettings.DefaultCharacterSetting,
+                                     out CharacterSettings objDefaultCharacterSettings)
+                                 && objCache.BuildMethod.UsesPriorityTables()
+                                 == objDefaultCharacterSettings.BuildMethod.UsesPriorityTables())
+                        {
+                            objCharacter.SettingsKey = objDefaultCharacterSettings.DictionaryKey;
+                        }
+                        else
+                        {
+                            objCharacter.SettingsKey = SettingsManager.LoadedCharacterSettings.Values
+                                                                      .FirstOrDefault(
+                                                                          x => x.BuiltInOption
+                                                                               && x.BuildMethod == objCache.BuildMethod)
+                                                                      ?.DictionaryKey
+                                                       ?? SettingsManager.LoadedCharacterSettings.Values
+                                                                         .FirstOrDefault(
+                                                                             x => x.BuiltInOption
+                                                                                 && x.BuildMethod.UsesPriorityTables()
+                                                                                 == objCache.BuildMethod
+                                                                                     .UsesPriorityTables())
+                                                                         ?.DictionaryKey
+                                                       ?? GlobalSettings.DefaultCharacterSetting;
+                        }
+                    }
+
+                    DialogResult ePickBPResult = await this.DoThreadSafeFunc(ShowBPAsync);
+
+                    async ValueTask<DialogResult> ShowBPAsync()
+                    {
+                        using (SelectBuildMethod frmPickBP = new SelectBuildMethod(objCharacter, true))
+                        {
+                            await frmPickBP.ShowDialogSafeAsync(this);
+                            return frmPickBP.DialogResult;
+                        }
+                    }
+
+                    if (ePickBPResult != DialogResult.OK)
+                        return;
+                    //Timekeeper.Start("load_file");
+                    if (!await objCharacter.LoadFromHeroLabFileAsync(strFile, strCharacterId, objCharacter.SettingsKey))
+                        return;
+                    blnLoaded = true;
+                    //Timekeeper.Finish("load_file");
+                    await Program.OpenCharacter(objCharacter);
+                }
+                finally
+                {
                     cmdImport.Enabled = true;
                     cmdSelectFile.Enabled = true;
-                    return;
+                    if (!blnLoaded)
+                        Program.OpenCharacters.Remove(objCharacter);
                 }
-
-                Program.MainForm.OpenCharacter(objCharacter);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             Close();

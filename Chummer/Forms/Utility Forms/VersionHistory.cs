@@ -34,7 +34,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void frmHistory_Load(object sender, EventArgs e)
+        private async void VersionHistory_Load(object sender, EventArgs e)
         {
             // Display the contents of the changelog.txt file in the TextBox.
             try
@@ -43,7 +43,10 @@ namespace Chummer
             }
             catch
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_History_FileNotFound"), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(this,
+                    await LanguageManager.GetStringAsync("Message_History_FileNotFound"),
+                    await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation);
                 Close();
                 return;
             }

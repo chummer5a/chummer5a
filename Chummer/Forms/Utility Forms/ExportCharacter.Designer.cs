@@ -216,8 +216,8 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Export Character";
             this.UseWaitCursor = true;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmExport_FormClosing);
-            this.Load += new System.EventHandler(this.frmExport_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportCharacter_FormClosing);
+            this.Load += new System.EventHandler(this.ExportCharacter_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).EndInit();

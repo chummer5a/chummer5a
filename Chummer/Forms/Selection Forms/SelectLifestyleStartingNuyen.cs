@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
 
@@ -56,34 +57,67 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void frmLifestyleNuyen_Load(object sender, EventArgs e)
+        private async void SelectLifestyleStartingNuyen_Load(object sender, EventArgs e)
         {
-            RefreshSelectLifestyle();
+            await RefreshSelectLifestyle();
         }
 
-        private void nudDiceResult_ValueChanged(object sender, EventArgs e)
+        private async void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' + strSpace + '×'
-                             + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(_objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo)
-                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo);
+            await RefreshResultLabel();
         }
 
-        private void cboSelectLifestyle_SelectionChanged(object sender, EventArgs e)
+        private async ValueTask RefreshResultLabel()
+        {
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
+                                 strSpace + '×'
+                                 + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(
+                                     _objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo)
+                                 + strSpace + '=' + strSpace +
+                                 StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥',
+                                                        GlobalSettings.CultureInfo);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+        }
+
+        private async void cboSelectLifestyle_SelectionChanged(object sender, EventArgs e)
+        {
+            await RefreshBaseLifestyle();
+        }
+
+        private async ValueTask RefreshBaseLifestyle()
         {
             if (_blnIsSelectLifestyleRefreshing)
                 return;
             if (cboSelectLifestyle.SelectedIndex < 0)
                 return;
-            _objLifestyle = ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle;
-            lblDice.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle?.Dice ?? 0);
-            RefreshCalculation();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                _objLifestyle = ((ListItem) cboSelectLifestyle.SelectedItem).Value as Lifestyle;
+                lblDice.Text = string.Format(GlobalSettings.CultureInfo,
+                                             await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf"),
+                                             SelectedLifestyle?.Dice ?? 0);
+                await RefreshCalculation();
+                cmdRoll.Enabled = SelectedLifestyle?.Dice > 0;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void RefreshSelectLifestyle()
+        private ValueTask RefreshSelectLifestyle()
         {
             _blnIsSelectLifestyleRefreshing = true;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 try
                 {
@@ -127,15 +161,14 @@ namespace Chummer
                 finally
                 {
                     _blnIsSelectLifestyleRefreshing = false;
-                    cboSelectLifestyle_SelectionChanged(this, EventArgs.Empty);
-                    cmdRoll.Enabled = SelectedLifestyle?.Dice > 0;
                 }
+                return RefreshBaseLifestyle();
             }
         }
 
-        private void RefreshCalculation()
+        private ValueTask RefreshCalculation()
         {
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
             {
                 nudDiceResult.SuspendLayout();
                 nudDiceResult.MinimumAsInt =
@@ -143,22 +176,28 @@ namespace Chummer
                 nudDiceResult.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
                 nudDiceResult.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
                 nudDiceResult.ResumeLayout();
-                nudDiceResult_ValueChanged(this, EventArgs.Empty);
+                return RefreshResultLabel();
             }
         }
 
-        private void cmdRoll_Click(object sender, EventArgs e)
+        private async void cmdRoll_Click(object sender, EventArgs e)
         {
             if (SelectedLifestyle == null)
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 int intResult = 0;
                 for (int i = 0; i < SelectedLifestyle.Dice; ++i)
                 {
-                    intResult += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync();
                 }
+
                 nudDiceResult.ValueAsInt = intResult;
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -177,7 +216,7 @@ namespace Chummer
         public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * SelectedLifestyle?.Multiplier) ?? 0;
 
         /// <summary>
-        /// The currently selected lifestyl
+        /// The currently selected lifestyle
         /// </summary>
         public Lifestyle SelectedLifestyle => _objLifestyle;
 

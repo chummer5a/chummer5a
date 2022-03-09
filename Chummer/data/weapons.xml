@@ -2153,6 +2153,7 @@
       <range>Light Crossbows</range>
       <sizecategory>Light Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
+      <weapontype>grapplegun</weapontype>
     </weapon>
     <weapon>
       <id>87a94632-b229-44b7-a150-9808388cfa20</id>
@@ -5828,11 +5829,12 @@
       <page>26</page>
       <range>Tasers</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>dartgun</weapontype>
     </weapon>
     <weapon>
       <id>07200c8e-d3f3-4ec1-8911-11be322c6d5f</id>
       <name>Bola</name>
-      <category>Exotic Ranged Weapons</category>
+      <category>Gear</category>
       <type>Ranged</type>
       <conceal>-2</conceal>
       <accuracy>Physical</accuracy>
@@ -5841,13 +5843,14 @@
       <ap>+4</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>1</ammo>
+      <ammo>0</ammo>
       <avail>6</avail>
       <cost>75</cost>
       <source>RG</source>
       <page>26</page>
       <range>Shuriken</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <useskillspec>Bola</useskillspec>
     </weapon>
     <weapon>
       <id>a836fc0b-a1e1-491d-ad8d-7f803c88acdc</id>
@@ -5889,7 +5892,7 @@
       <ap>-</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>Special</ammo>
+      <ammo>10</ammo>
       <avail>11R</avail>
       <cost>5000</cost>
       <source>SR5</source>
@@ -5903,6 +5906,7 @@
       <range>Submachine Guns</range>
       <sizecategory>Submachine Guns</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <requireammo>False</requireammo>
     </weapon>
     <weapon>
       <id>da91e16e-df0f-475e-9a41-c342c59540ab</id>
@@ -5924,11 +5928,12 @@
       <ammocategory>Heavy Pistols</ammocategory>
       <range>Tasers</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>gun</weapontype>
     </weapon>
     <weapon>
       <id>04fd6c88-6d3c-4e5e-8490-4cf422f3e02e</id>
       <name>Monofilament Bola</name>
-      <category>Exotic Ranged Weapons</category>
+      <category>Gear</category>
       <type>Ranged</type>
       <conceal>-2</conceal>
       <accuracy>Physical</accuracy>
@@ -5937,13 +5942,14 @@
       <ap>+4//-8</ap>
       <mode>SS</mode>
       <rc>0</rc>
-      <ammo>1</ammo>
+      <ammo>0</ammo>
       <avail>18F</avail>
       <cost>4000</cost>
       <source>RG</source>
       <page>26</page>
       <range>Shuriken</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <useskillspec>Monofilament Bola</useskillspec>
     </weapon>
     <weapon>
       <id>eb9c657d-d98d-476e-8a86-40d83d8cb821</id>
@@ -5965,6 +5971,7 @@
       <ammocategory>Light Pistols</ammocategory>
       <range>Tasers</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>gun</weapontype>
     </weapon>
     <weapon>
       <id>9c3d9b2e-336e-4c37-b05d-07bea9ae9c3f</id>
@@ -6084,6 +6091,7 @@
       <ammocategory>Holdouts</ammocategory>
       <range>Tasers</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>gun</weapontype>
     </weapon>
     <weapon>
       <id>b312c6dd-56db-4569-b96d-32a9e290e78b</id>
@@ -7167,6 +7175,7 @@
       <spec>Grapple Gun</spec>
       <useskill>Exotic Ranged Weapon</useskill>
       <useskillspec>Grapple Gun</useskillspec>
+      <weapontype>grapplegun</weapontype>
     </weapon>
     <!-- End Region -->
     <!-- Region Run and Gun -->
@@ -7976,6 +7985,7 @@
       <spec>Grapple Gun</spec>
       <useskill>Exotic Ranged Weapon</useskill>
       <useskillspec>Grapple Gun</useskillspec>
+      <weapontype>grapplegun</weapontype>
     </weapon>
     <!-- End Region -->
     <!-- End Region-->
@@ -8006,6 +8016,7 @@
       <range>Heavy Crossbows</range>
       <sizecategory>Heavy Crossbows</sizecategory>
       <spec>Grapple Gun</spec>
+      <weapontype>grapplegun</weapontype>
     </weapon>
     <weapon>
       <id>a68d164d-4b79-47b9-ac89-4985ae18e882</id>
@@ -8273,6 +8284,7 @@
       <page>184</page>
       <range>Flamethrowers</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>flame</weapontype>
     </weapon>
     <weapon>
       <id>82aa8d25-179a-4c21-9a3c-61a171705f65</id>
@@ -8295,6 +8307,7 @@
       <hide />
       <range>Light Pistols</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>gun</weapontype>
     </weapon>
     <weapon>
       <id>176ab92a-0c00-48fe-a994-668903407fbf</id>
@@ -8583,6 +8596,7 @@
       <allowaccessory>False</allowaccessory>
       <range>Light Pistols</range>
       <spec>Microwave</spec>
+      <weapontype>energy</weapontype>
     </weapon>
     <weapon>
       <id>10fb69db-efd0-4f63-80a7-bda5ef0480a4</id>
@@ -8604,6 +8618,7 @@
       <allowaccessory>False</allowaccessory>
       <range>Light Pistols</range>
       <spec>Microwave</spec>
+      <weapontype>energy</weapontype>
     </weapon>
     <weapon>
       <id>bb17f788-f4d2-4a32-a758-2ed47a1beb63</id>
@@ -9172,6 +9187,8 @@
       <source>CA</source>
       <page>134</page>
       <spec>Modified Spray Pen</spec>
+      <!-- ReSharper disable once MarkupTextTypo -->
+      <weapontype>spraypen</weapontype>
     </weapon>
     <weapon>
       <id>bd9515ad-9d40-486e-974a-00babc4c24f9</id>
@@ -12467,6 +12484,7 @@
       <source>SL</source>
       <page>24</page>
       <addweapon>Krime Trollbow Horns</addweapon>
+      <spec>Bow</spec>
     </weapon>
     <weapon>
       <id>eaadb58d-9096-4528-8f1a-b6f0e33a903a</id>
@@ -12486,6 +12504,7 @@
       <source>SL</source>
       <page>24</page>
       <addweapon>Krime Trollbow Horns</addweapon>
+      <spec>Bow</spec>
     </weapon>
     <weapon>
       <id>027ec050-747c-4b2d-bbd0-bb7573825460</id>
@@ -12505,6 +12524,7 @@
       <source>SL</source>
       <page>24</page>
       <addweapon>Krime Trollbow Horns</addweapon>
+      <spec>Bow</spec>
     </weapon>
     <weapon>
       <id>fb54d2f2-b9ed-4c95-af38-345e5f2c666d</id>
@@ -12524,6 +12544,7 @@
       <source>SL</source>
       <page>24</page>
       <addweapon>Krime Trollbow Horns</addweapon>
+      <spec>Bow</spec>
     </weapon>
     <weapon>
       <id>0e881b55-4f29-4a79-a8e7-ca9dbdefcd94</id>
@@ -12543,6 +12564,7 @@
       <source>SL</source>
       <page>24</page>
       <addweapon>Krime Trollbow Horns</addweapon>
+      <spec>Bow</spec>
     </weapon>
     <weapon>
       <id>0d40d167-2fec-4173-854e-a62ac202c820</id>
@@ -12562,6 +12584,7 @@
       <source>SL</source>
       <page>24</page>
       <addweapon>Krime Trollbow Horns</addweapon>
+      <spec>Bow</spec>
     </weapon>
     <weapon>
       <id>84f3940c-95b0-42df-8142-2a6378908792</id>
@@ -12581,6 +12604,7 @@
       <source>SL</source>
       <page>24</page>
       <addweapon>Krime Trollbow Horns</addweapon>
+      <spec>Bow</spec>
     </weapon>
     <weapon>
       <id>a77f68e5-d05c-4591-a8f7-2cb8c3bfaa14</id>
@@ -13945,6 +13969,7 @@
       <range>Tasers</range>
       <sizecategory>Shotguns</sizecategory>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>gasgun</weapontype>
     </weapon>
     <weapon>
       <id>fb50cff6-1cf0-4686-9694-c5aa4cb2023d</id>
@@ -13996,6 +14021,7 @@
       </accessorymounts>
       <range>Light Pistols</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <weapontype>trackstopper</weapontype>
     </weapon>
     <weapon>
       <id>15c98062-1ac9-45d5-a1f6-6e414b97ea4e</id>
@@ -14069,7 +14095,7 @@
     <weapon>
       <id>5fb07347-76a1-4d15-b1b5-b24e3880563b</id>
       <name>Horizon-Flynn Defense-Com Commlink Holdout</name>
-      <category>Hold-outs</category>
+      <category>Holdouts</category>
       <type>Ranged</type>
       <conceal>-2</conceal>
       <accuracy>5</accuracy>
@@ -14817,6 +14843,30 @@
       <hide />
       <spec>Machine Guns</spec>
     </weapon>
+    <weapon>
+      <id>4629315e-9d09-4d04-92ac-3bad46675522</id>
+      <name>Ontario Arms Sling-Shot</name>
+      <category>Underbarrel Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <damage>Special</damage>
+      <mode>SA</mode>
+      <ammo>10(m)</ammo>
+      <avail>0</avail>
+	  <range>Shuriken</range>
+      <cost>150</cost>
+      <source>SOTG</source>
+      <page>13</page>
+      <useskill>Archery</useskill>
+	  <required>
+		<weapondetails>
+			<conceal operation="greaterthan">0</conceal>
+		</weapondetails>
+	  </required>
+	  <weapontype>slingshot</weapontype>
+	  <spec>Slingshots</spec>
+    </weapon>
     <!-- End Region -->
     <!-- Region Datapuls Verschlusssache (German) -->
     <weapon>
@@ -15290,10 +15340,10 @@
       <damage>11P</damage>
       <ap>-1</ap>
       <mode>SS</mode>
-      <rc>-</rc>
+      <rc>0</rc>
       <ammo>1(b)</ammo>
-      <avail>-</avail>
-      <cost>-</cost>
+      <avail>0</avail>
+      <cost>0</cost>
       <source>KK</source>
       <page>10</page>
       <accessories>
@@ -15525,10 +15575,10 @@
       <damage>Grenade</damage>
       <ap>-</ap>
       <mode>SS</mode>
-      <rc>-</rc>
+      <rc>0</rc>
       <ammo>4(m)</ammo>
-      <avail>-</avail>
-      <cost>-</cost>
+      <avail>0</avail>
+      <cost>0</cost>
       <source>KK</source>
       <page>13</page>
       <accessories>
@@ -16212,7 +16262,7 @@
       <id>5D5D9FC6-9CB9-40A4-8185-891E29DAECC5</id>
       <name>External Clip Port</name>
       <mount />
-      <avail>-</avail>
+      <avail>0</avail>
       <cost>1000</cost>
       <source>SR5</source>
       <page>458</page>

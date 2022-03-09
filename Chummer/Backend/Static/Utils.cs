@@ -19,33 +19,41 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security;
+#if DEBUG
 using System.Runtime.InteropServices;
+#endif
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 using Microsoft.Extensions.ObjectPool;
+using Microsoft.Win32;
 using NLog;
 
 namespace Chummer
 {
     public static class Utils
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void BreakIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached && !IsUnitTest)
+            if (Debugger.IsAttached)
                 Debugger.Break();
+#else
+            // Method intentionally left empty.
 #endif
         }
 
@@ -53,18 +61,20 @@ namespace Chummer
         public static void BreakOnErrorIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached && !IsUnitTest)
+            if (Debugger.IsAttached)
             {
                 int intErrorCode = Marshal.GetLastWin32Error();
                 if (intErrorCode != 0)
                     Debugger.Break();
             }
+#else
+            // Method intentionally left empty.
 #endif
         }
 
         // Need this as a Lazy, otherwise it won't fire properly in the designer if we just cache it, and the check itself is also quite expensive
         private static readonly Lazy<bool> s_BlnIsRunningInVisualStudio =
-            new Lazy<bool>(() => Process.GetCurrentProcess().ProcessName == "devenv");
+            new Lazy<bool>(() => Program.MyProcess.ProcessName == "devenv");
 
         /// <summary>
         /// Returns if we are running inside Visual Studio, e.g. if we are in the designer.
@@ -106,9 +116,60 @@ namespace Chummer
 
         public static string GetAutosavesFolderPath => Path.Combine(GetStartupPath, "saves", "autosave");
 
-        public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
+        public static ReadOnlyCollection<string> BasicDataFileNames { get; } = Array.AsReadOnly(new[]
+        {
+            "actions.xml",
+            "armor.xml",
+            "bioware.xml",
+            "books.xml",
+            "complexforms.xml",
+            "contacts.xml",
+            "critters.xml",
+            "critterpowers.xml",
+            "cyberware.xml",
+            "drugcomponents.xml",
+            "echoes.xml",
+            "options.xml",
+            "gear.xml",
+            "improvements.xml",
+            "licenses.xml",
+            "lifemodules.xml",
+            "lifestyles.xml",
+            "martialarts.xml",
+            "mentors.xml",
+            "metamagic.xml",
+            "metatypes.xml",
+            "options.xml",
+            "packs.xml",
+            "paragons.xml",
+            "powers.xml",
+            "priorities.xml",
+            "programs.xml",
+            "qualities.xml",
+            "ranges.xml",
+            "references.xml",
+            "settings.xml",
+            "sheets.xml",
+            "skills.xml",
+            "spells.xml",
+            "spiritpowers.xml",
+            "streams.xml",
+            "traditions.xml",
+            "vehicles.xml",
+            "weapons.xml"
+        });
 
-        public const int DefaultSleepDuration = 20;
+        private static readonly Lazy<Version> s_ObjCurrentChummerVersion = new Lazy<Version>(() => typeof(Program).Assembly.GetName().Version);
+
+        public static Version CurrentChummerVersion => s_ObjCurrentChummerVersion.Value;
+
+        public static bool IsMilestoneVersion => CurrentChummerVersion.Build == 0;
+
+        public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(CurrentChummerVersion) ?? 0;
+
+        public const int DefaultSleepDuration = 15;
+
+        public const int SleepEmergencyReleaseMaxTicks = 1000;
 
         /// <summary>
         /// Can the current user context write to a given file path?
@@ -174,7 +235,7 @@ namespace Chummer
                 //or does not exist (has already been processed)
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 BreakIfDebug();
                 return true;
@@ -190,6 +251,34 @@ namespace Chummer
         /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
         public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
         {
+            return SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout).GetAwaiter()
+                .GetResult();
+        }
+
+        /// <summary>
+        /// Wait for an open file to be available for deletion and then delete it.
+        /// </summary>
+        /// <param name="strPath">File path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static Task<bool> SafeDeleteFileAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeDeleteFileCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout);
+        }
+
+        /// <summary>
+        /// Wait for an open file to be available for deletion and then delete it.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strPath">File path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        private static async Task<bool> SafeDeleteFileCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout)
+        {
             if (string.IsNullOrEmpty(strPath))
                 return true;
             int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
@@ -197,7 +286,32 @@ namespace Chummer
             {
                 try
                 {
-                    File.Delete(strPath);
+                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase) && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
+                        if (blnShowUnauthorizedAccess)
+                        {
+                            if (Program.ShowMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                            : await LanguageManager.GetStringAsync(
+                                                "Message_Prompt_Delete_Existing_File"), strPath),
+                                    buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
+                                return false;
+                        }
+                        else
+                        {
+                            BreakIfDebug();
+                            return false;
+                        }
+                    }
+
+                    if (blnSync)
+                        File.Delete(strPath);
+                    else
+                        await Task.Run(() => File.Delete(strPath));
                 }
                 catch (PathTooLongException)
                 {
@@ -208,7 +322,10 @@ namespace Chummer
                 {
                     // We do not have sufficient privileges to delete this file.
                     if (blnShowUnauthorizedAccess)
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        Program.ShowMessageBox(blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
+                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                     return false;
                 }
                 catch (DirectoryNotFoundException)
@@ -227,7 +344,10 @@ namespace Chummer
                     //still being written to
                     //or being processed by another thread
                     //or does not exist (has already been processed)
-                    SafeSleep(intWaitInterval);
+                    if (blnSync)
+                        SafeSleep(intWaitInterval);
+                    else
+                        await SafeSleepAsync(intWaitInterval);
                     intTimeout -= intWaitInterval;
                 }
                 if (intTimeout < 0)
@@ -240,20 +360,249 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Wait for an open directory to be available for deletion and then delete it.
+        /// </summary>
+        /// <param name="strPath">Directory path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static bool SafeDeleteDirectory(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeDeleteDirectoryCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout).GetAwaiter()
+                .GetResult();
+        }
+
+        /// <summary>
+        /// Wait for an open directory to be available for deletion and then delete it.
+        /// </summary>
+        /// <param name="strPath">Directory path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static Task<bool> SafeDeleteDirectoryAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeDeleteDirectoryCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout);
+        }
+
+        /// <summary>
+        /// Wait for an open directory to be available for deletion and then delete it.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strPath">Directory path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the directory cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        private static async Task<bool> SafeDeleteDirectoryCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                return true;
+            if (!Directory.Exists(strPath))
+                return true;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                SafeClearDirectory(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
+                    intTimeout: intTimeout);
+            else
+                await SafeClearDirectoryAsync(strPath, blnShowUnauthorizedAccess: blnShowUnauthorizedAccess,
+                    intTimeout: intTimeout);
+            int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
+            while (Directory.Exists(strPath))
+            {
+                try
+                {
+                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase) && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
+                        if (blnShowUnauthorizedAccess)
+                        {
+                            if (Program.ShowMessageBox(
+                                    string.Format(GlobalSettings.CultureInfo,
+                                        blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                            : await LanguageManager.GetStringAsync(
+                                                "Message_Prompt_Delete_Existing_File"), strPath),
+                                    buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
+                                return false;
+                        }
+                        else
+                        {
+                            BreakIfDebug();
+                            return false;
+                        }
+                    }
+
+                    if (blnSync)
+                        Directory.Delete(strPath, true);
+                    else
+                        await Task.Run(() => Directory.Delete(strPath, true));
+                }
+                catch (PathTooLongException)
+                {
+                    // File path is somehow too long? File is not deleted, so return false.
+                    return false;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // We do not have sufficient privileges to delete this file.
+                    if (blnShowUnauthorizedAccess)
+                        Program.ShowMessageBox(blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning")
+                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
+                    return false;
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    // File doesn't exist.
+                    return true;
+                }
+                catch (FileNotFoundException)
+                {
+                    // File doesn't exist.
+                    return true;
+                }
+                catch (IOException)
+                {
+                    //the file is unavailable because it is:
+                    //still being written to
+                    //or being processed by another thread
+                    //or does not exist (has already been processed)
+                    if (blnSync)
+                        SafeSleep(intWaitInterval);
+                    else
+                        await SafeSleepAsync(intWaitInterval);
+                    intTimeout -= intWaitInterval;
+                }
+                if (intTimeout < 0)
+                {
+                    BreakIfDebug();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Safely deletes all files in a directory (though the directory itself remains).
+        /// </summary>
+        /// <param name="strPath">Directory path to clear.</param>
+        /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
+        /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static bool SafeClearDirectory(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeClearDirectoryCoreAsync(true, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
+                intTimeout).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Safely deletes all files in a directory (though the directory itself remains).
+        /// </summary>
+        /// <param name="strPath">Directory path to clear.</param>
+        /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
+        /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static Task<bool> SafeClearDirectoryAsync(string strPath, string strSearchPattern = "*", bool blnRecursive = true, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            return SafeClearDirectoryCoreAsync(false, strPath, strSearchPattern, blnRecursive, blnShowUnauthorizedAccess,
+                intTimeout);
+        }
+
+        /// <summary>
+        /// Safely deletes all files in a directory (though the directory itself remains).
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strPath">Directory path to clear.</param>
+        /// <param name="strSearchPattern">Search pattern to use for finding files to delete. Use "*" if you wish to clear all files.</param>
+        /// <param name="blnRecursive">Whether to a delete all subdirectories, too.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if a file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if directory does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        private static async Task<bool> SafeClearDirectoryCoreAsync(bool blnSync, string strPath, string strSearchPattern, bool blnRecursive, bool blnShowUnauthorizedAccess, int intTimeout)
+        {
+            if (string.IsNullOrEmpty(strPath) || !Directory.Exists(strPath))
+                return true;
+            if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase)
+                && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
+            {
+                // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
+                if (blnShowUnauthorizedAccess)
+                {
+                    if (Program.ShowMessageBox(
+                            string.Format(GlobalSettings.Language,
+                                blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File")
+                                    : await LanguageManager.GetStringAsync("Message_Prompt_Delete_Existing_File"),
+                                strPath),
+                            buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning)
+                        != DialogResult.Yes)
+                        return false;
+                }
+                else
+                {
+                    BreakIfDebug();
+                    return false;
+                }
+            }
+            string[] astrFilesToDelete = Directory.GetFiles(strPath, strSearchPattern,
+                                                            blnRecursive
+                                                                ? SearchOption.AllDirectories
+                                                                : SearchOption.TopDirectoryOnly);
+            if (blnSync)
+            {
+                object objSuccessLock = new object();
+                bool blnReturn = true;
+                Parallel.ForEach(astrFilesToDelete, () => true, (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout), blnLoop =>
+                {
+                    lock (objSuccessLock)
+                    {
+                        if (!blnLoop)
+                            // ReSharper disable once AccessToModifiedClosure
+                            blnReturn = false;
+                    }
+                });
+                return blnReturn;
+            }
+
+            Task<bool>[] atskSuccesses = new Task<bool>[astrFilesToDelete.Length];
+            for (int i = 0; i < astrFilesToDelete.Length; i++)
+            {
+                string strToDelete = astrFilesToDelete[i];
+                atskSuccesses[i] = SafeDeleteFileAsync(strToDelete, false, intTimeout);
+            }
+            foreach (Task<bool> x in atskSuccesses)
+            {
+                if (!await x)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Restarts Chummer5a.
         /// </summary>
         /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use Chummer's current language.</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
-        public static void RestartApplication(string strLanguage = "", string strText = "")
+        public static async ValueTask RestartApplication(string strLanguage = "", string strText = "")
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             if (!string.IsNullOrEmpty(strText))
             {
-                string text = LanguageManager.GetString(strText, strLanguage);
-                string caption = LanguageManager.GetString("MessageTitle_Options_CloseForms", strLanguage);
+                string text = await LanguageManager.GetStringAsync(strText, strLanguage);
+                string caption = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage);
 
-                if (Program.MainForm.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
             }
             // Need to do this here in case file names are changed while closing forms (because a character who previously did not have a filename was saved when prompted)
@@ -264,18 +613,18 @@ namespace Chummer
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
-                    DialogResult objResult = Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_UnsavedChanges", strLanguage), strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                    DialogResult objResult = Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnsavedChanges", strLanguage), strCharacterName), await LanguageManager.GetStringAsync("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                     switch (objResult)
                     {
                         case DialogResult.Yes:
                             {
                                 // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                                bool blnResult = objOpenCharacterForm.SaveCharacter();
+                                bool blnResult = await objOpenCharacterForm.SaveCharacter();
                                 if (!blnResult)
                                     return;
                                 // We saved a character as created, which closed the current form and added a new one
                                 // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                                if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                                if (!await Program.MainForm.OpenCharacterForms.ContainsAsync(objOpenCharacterForm))
                                     --i;
                                 break;
                             }
@@ -321,7 +670,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task StartStaTask(Action func)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread = new Thread(() =>
             {
                 try
@@ -352,7 +701,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task<T> StartStaTask<T>(Func<T> func)
         {
-            var tcs = new TaskCompletionSource<T>();
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
             Thread thread = new Thread(() =>
             {
                 try
@@ -376,7 +725,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task StartStaTask(Task func)
         {
-            var tcs = new TaskCompletionSource<bool>();
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
             Thread thread = new Thread(RunFunction);
             async void RunFunction()
             {
@@ -384,7 +733,7 @@ namespace Chummer
                 {
                     tcs.SetResult(await DummyFunction());
                     // This is needed because SetResult always needs a return type
-                    async Task<bool> DummyFunction()
+                    async ValueTask<bool> DummyFunction()
                     {
                         await func;
                         return true;
@@ -408,7 +757,7 @@ namespace Chummer
         /// <returns></returns>
         public static Task<T> StartStaTask<T>(Task<T> func)
         {
-            var tcs = new TaskCompletionSource<T>();
+            TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
             Thread thread = new Thread(RunFunction);
             async void RunFunction()
             {
@@ -434,6 +783,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConfiguredTaskAwaitable SafeSleepAsync()
         {
+            // ReSharper disable once IntroduceOptionalParameters.Global
             return SafeSleepAsync(DefaultSleepDuration);
         }
 
@@ -472,22 +822,8 @@ namespace Chummer
             for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
             {
                 Thread.Sleep(intDurationMilliseconds);
-                if (!EverDoEvents)
-                    return;
-                bool blnDoEvents = blnForceDoEvents || _blnIsOkToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        _blnIsOkToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
-                }
+                if (EverDoEvents)
+                    DoEventsSafe(blnForceDoEvents);
             }
         }
 
@@ -503,10 +839,26 @@ namespace Chummer
             SafeSleep(objTimeSpan.Milliseconds, blnForceDoEvents);
         }
 
+        public static void DoEventsSafe(bool blnForceDoEvents = false)
+        {
+            if (blnForceDoEvents || _blnIsOkToRunDoEvents)
+            {
+                try
+                {
+                    _blnIsOkToRunDoEvents = false;
+                    Application.DoEvents();
+                }
+                finally
+                {
+                    _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
+                }
+            }
+        }
+
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
         /// </summary>
-        private static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
+        public static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
 
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
@@ -534,6 +886,8 @@ namespace Chummer
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -552,6 +906,8 @@ namespace Chummer
             Task objTask = Task.Run(() => Parallel.Invoke(afuncToRun));
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -569,6 +925,8 @@ namespace Chummer
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             return objTask.Result;
         }
 
@@ -592,6 +950,8 @@ namespace Chummer
             Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -610,11 +970,15 @@ namespace Chummer
                 Task<T> objSyncTask = funcToRun.Invoke();
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
                 return objSyncTask.Result;
             }
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             return objTask.Result;
         }
 
@@ -634,6 +998,8 @@ namespace Chummer
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
                     aobjReturn[i] = objSyncTask.Result;
                 });
                 return aobjReturn;
@@ -644,6 +1010,8 @@ namespace Chummer
             Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -662,11 +1030,15 @@ namespace Chummer
                 Task objSyncTask = funcToRun.Invoke();
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
+                if (objSyncTask.Exception != null)
+                    throw objSyncTask.Exception;
                 return;
             }
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         /// <summary>
@@ -684,6 +1056,8 @@ namespace Chummer
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
+                    if (objSyncTask.Exception != null)
+                        throw objSyncTask.Exception;
                 });
                 return;
             }
@@ -693,6 +1067,8 @@ namespace Chummer
             Task objTask = Task.Run(() => Task.WhenAll(aobjTasks));
             while (!objTask.IsCompleted)
                 SafeSleep();
+            if (objTask.Exception != null)
+                throw objTask.Exception;
         }
 
         private static readonly Lazy<string> _strHumanReadableOSVersion = new Lazy<string>(GetHumanReadableOSVersion);
@@ -807,7 +1183,7 @@ namespace Chummer
                 if (strReturn.StartsWith("Windows") && !string.IsNullOrEmpty(objOSInfo.ServicePack))
                 {
                     //Append service pack to the OS name.  i.e. "Windows XP Service Pack 3"
-                    strReturn += " " + objOSInfo.ServicePack;
+                    strReturn += ' ' + objOSInfo.ServicePack;
                 }
             }
             catch (Exception e)
@@ -816,6 +1192,74 @@ namespace Chummer
                 strReturn = string.Empty;
             }
             return string.IsNullOrEmpty(strReturn) ? "Unknown" : strReturn;
+        }
+
+        public static void SetupWebBrowserRegistryKeys()
+        {
+            int intInternetExplorerVersionKey = GlobalSettings.EmulatedBrowserVersion * 1000;
+            string strChummerExeName = AppDomain.CurrentDomain.FriendlyName;
+            try
+            {
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey(
+                           "Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true))
+                    objRegistry?.SetValue(strChummerExeName, intInternetExplorerVersionKey, RegistryValueKind.DWord);
+
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey(
+                           "Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION", true))
+                    objRegistry?.SetValue(strChummerExeName, intInternetExplorerVersionKey, RegistryValueKind.DWord);
+
+                // These two needed to have WebBrowser control obey DPI settings for Chummer
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey(
+                           "Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL", true))
+                    objRegistry?.SetValue(strChummerExeName, 1, RegistryValueKind.DWord);
+
+                using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey(
+                           "Software\\WOW6432Node\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_96DPI_PIXEL", true))
+                    objRegistry?.SetValue(strChummerExeName, 1, RegistryValueKind.DWord);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Swallow this
+            }
+            catch (IOException)
+            {
+                // Swallow this
+            }
+            catch (SecurityException)
+            {
+                // Swallow this
+            }
+        }
+
+        private static readonly XmlWriterSettings _objStandardXmlWriterSettings = new XmlWriterSettings
+            { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t" };
+
+        public static XmlWriter GetStandardXmlWriter(Stream output)
+        {
+            return XmlWriter.Create(output, _objStandardXmlWriterSettings);
+        }
+
+        private static readonly XmlWriterSettings _objXslTransformXmlWriterSettings = new XmlWriterSettings
+            { Async = true, Encoding = Encoding.UTF8, Indent = true, IndentChars = "\t", ConformanceLevel = ConformanceLevel.Auto };
+
+        public static XmlWriter GetXslTransformXmlWriter(Stream output)
+        {
+            return XmlWriter.Create(output, _objXslTransformXmlWriterSettings);
+        }
+
+        private static string s_strTempPath = string.Empty;
+
+        /// <summary>
+        /// Gets a temporary file folder that is exclusive to Chummer and therefore can be manipulated at will without worrying about interfering with anything else.
+        /// Basically, like Path.GetTempPath(), but safer.
+        /// </summary>
+        public static string GetTempPath()
+        {
+            if (string.IsNullOrEmpty(s_strTempPath))
+                s_strTempPath = Path.Combine(Path.GetTempPath(), "Chummer");
+            if (!Directory.Exists(s_strTempPath))
+                Directory.CreateDirectory(s_strTempPath);
+            return s_strTempPath;
         }
 
         private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider();
@@ -850,5 +1294,32 @@ namespace Chummer
             = s_ObjObjectPoolProvider.Create(
                 new CollectionPooledObjectPolicy<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>,
                     KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>>>());
+
+        /// <summary>
+        /// Memory Pool for SemaphoreSlim with one allowed semaphore that is used for async-friendly thread safety stuff. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static ObjectPool<SemaphoreSlim> SemaphorePool { get; }
+            = s_ObjObjectPoolProvider.Create(new SemaphoreSlimPooledObjectPolicy());
+
+        private sealed class SemaphoreSlimPooledObjectPolicy : PooledObjectPolicy<SemaphoreSlim>
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public override SemaphoreSlim Create()
+            {
+                return new SemaphoreSlim(1, 1);
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            public override bool Return(SemaphoreSlim obj)
+            {
+                if (obj.CurrentCount != 1)
+                {
+                    throw new InvalidOperationException("Shouldn't be returning semaphore with a count != 1");
+                }
+
+                return true;
+            }
+        }
     }
 }

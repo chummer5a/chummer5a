@@ -25,7 +25,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public partial class frmSelectLifeModule : Form
+    public partial class SelectLifeModule : Form
     {
         public bool AddAgain { get; private set; }
         private readonly Character _objCharacter;
@@ -37,7 +37,7 @@ namespace Chummer
 
         private string _strWorkStage;
 
-        public frmSelectLifeModule(Character objCharacter, int intStage)
+        public SelectLifeModule(Character objCharacter, int intStage)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -47,9 +47,9 @@ namespace Chummer
             _xmlDocument = _objCharacter.LoadData("lifemodules.xml");
         }
 
-        private void frmSelectLifeModule_Load(object sender, EventArgs e)
+        private void SelectLifeModule_Load(object sender, EventArgs e)
         {
-            string strSelectString = "chummer/stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + "]";
+            string strSelectString = "chummer/stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + ']';
 
             XmlNode xmlStageNode = _xmlDocument.SelectSingleNode(strSelectString);
             if (xmlStageNode != null)
@@ -130,7 +130,7 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void treModules_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treModules_AfterSelect(object sender, TreeViewEventArgs e)
         {
             bool blnSelectAble;
             if (e.Node.Nodes.Count == 0)
@@ -148,7 +148,7 @@ namespace Chummer
             }
 
             _strSelectedId = (string)e.Node.Tag;
-            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, _objCharacter.LoadData("lifemodules.xml"));
+            XmlNode xmlSelectedNodeInfo = Quality.GetNodeOverrideable(_strSelectedId, await _objCharacter.LoadDataAsync("lifemodules.xml"));
 
             if (xmlSelectedNodeInfo != null)
             {
@@ -156,14 +156,15 @@ namespace Chummer
                 cmdOKAdd.Enabled = blnSelectAble;
 
                 lblBP.Text = xmlSelectedNodeInfo["karma"]?.InnerText ?? string.Empty;
-                lblSource.Text = xmlSelectedNodeInfo["source"]?.InnerText ?? string.Empty + LanguageManager.GetString("String_Space") + xmlSelectedNodeInfo["page"]?.InnerText;
+                lblSource.Text = xmlSelectedNodeInfo["source"]?.InnerText ?? string.Empty + await LanguageManager.GetStringAsync("String_Space") + xmlSelectedNodeInfo["page"]?.InnerText;
                 lblStage.Text = xmlSelectedNodeInfo["stage"]?.InnerText ?? string.Empty;
             }
             else
             {
-                lblBP.Text = LanguageManager.GetString("String_Error");
-                lblStage.Text = LanguageManager.GetString("String_Error");
-                lblSource.Text = LanguageManager.GetString("String_Error");
+                string strError = await LanguageManager.GetStringAsync("String_Error");
+                lblBP.Text = strError;
+                lblStage.Text = strError;
+                lblSource.Text = strError;
 
                 cmdOK.Enabled = false;
                 cmdOKAdd.Enabled = false;
@@ -181,7 +182,7 @@ namespace Chummer
             }
         }
 
-        private void chkLimitList_Click(object sender, EventArgs e)
+        private async void chkLimitList_Click(object sender, EventArgs e)
         {
             cboStage.BeginUpdate();
             lblStage.Visible = chkLimitList.Checked;
@@ -193,7 +194,7 @@ namespace Chummer
                 {
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStages))
                     {
-                        lstStages.Add(new ListItem("0", LanguageManager.GetString("String_All")));
+                        lstStages.Add(new ListItem("0", await LanguageManager.GetStringAsync("String_All")));
 
                         using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
                         {
@@ -257,7 +258,7 @@ namespace Chummer
             }
             else
             {
-                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = " + strSelected.CleanXPath() + "]")?.InnerText ?? string.Empty;
+                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = " + strSelected.CleanXPath() + ']')?.InnerText ?? string.Empty;
             }
             BuildTree(GetSelectString());
         }

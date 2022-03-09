@@ -19,40 +19,28 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectOptionalPower : Form
+    public partial class SelectOptionalPower : Form
     {
         private string _strReturnPower = string.Empty;
         private string _strReturnExtra = string.Empty;
-        private readonly List<ListItem> _lstPowerItems = Utils.ListItemListPool.Get();
+        private readonly Character _objCharacter;
+        private readonly List<Tuple<string, string>> _lstPowerExtraPairs;
 
         #region Control Events
 
-        public frmSelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
+        public SelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            foreach ((string strPowerName, string strPowerExtra) in lstPowerExtraPairs)
-            {
-                string strName = objCharacter.TranslateExtra(strPowerName);
-                if (!string.IsNullOrEmpty(strPowerExtra))
-                {
-                    strName += LanguageManager.GetString("String_Space") + '(' + objCharacter.TranslateExtra(strPowerExtra) + ')';
-                }
-                _lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
-            }
-            cboPower.BeginUpdate();
-            cboPower.PopulateWithListItems(_lstPowerItems);
-            if (_lstPowerItems.Count >= 1)
-                cboPower.SelectedIndex = 0;
-            else
-                cmdOK.Enabled = false;
-            cboPower.EndUpdate();
+            _objCharacter = objCharacter;
+            _lstPowerExtraPairs = lstPowerExtraPairs.ToList();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -65,10 +53,30 @@ namespace Chummer
             }
         }
 
-        private void frmSelectOptionalPower_Load(object sender, EventArgs e)
+        private async void SelectOptionalPower_Load(object sender, EventArgs e)
         {
-            if (_lstPowerItems.Count == 1)
-                cmdOK_Click(sender, e);
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPowerItems))
+            {
+                foreach ((string strPowerName, string strPowerExtra) in _lstPowerExtraPairs)
+                {
+                    string strName = string.IsNullOrEmpty(strPowerExtra)
+                        ? await _objCharacter.TranslateExtraAsync(strPowerName)
+                        : await _objCharacter.TranslateExtraAsync(strPowerName)
+                          + await LanguageManager.GetStringAsync("String_Space") + '('
+                          + await _objCharacter.TranslateExtraAsync(strPowerExtra) + ')';
+                    lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
+                }
+
+                cboPower.BeginUpdate();
+                cboPower.PopulateWithListItems(lstPowerItems);
+                if (lstPowerItems.Count >= 1)
+                    cboPower.SelectedIndex = 0;
+                else
+                    cmdOK.Enabled = false;
+                cboPower.EndUpdate();
+                if (lstPowerItems.Count == 1)
+                    cmdOK_Click(sender, e);
+            }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

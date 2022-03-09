@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    public sealed partial class frmSelectLimitModifier
+    public sealed partial class SelectLimitModifier
     {
         /// <summary>
         /// Required designer variable.
@@ -222,7 +222,7 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(112, 28);
             this.tlpButtons.TabIndex = 16;
             // 
-            // frmSelectLimitModifier
+            // SelectLimitModifier
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -233,11 +233,12 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(344, 151);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "frmSelectLimitModifier";
+            this.Name = "SelectLimitModifier";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "String_EnterLimitModifier";
             this.Text = "Enter a Limit Modifier";
+            this.Load += new System.EventHandler(this.SelectLimitModifier_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudBonus)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

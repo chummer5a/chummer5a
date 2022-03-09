@@ -2,7 +2,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    partial class frmSelectArmor
+    partial class SelectArmor
     {
         /// <summary>
         /// Required designer variable.
@@ -946,14 +946,14 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectArmor";
+            this.Name = "SelectArmor";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectArmor";
             this.Text = "Select Armor";
-            this.Load += new System.EventHandler(this.frmSelectArmor_Load);
+            this.Load += new System.EventHandler(this.SelectArmor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvArmor)).EndInit();
             this.tabControl.ResumeLayout(false);
             this.tabListDetail.ResumeLayout(false);

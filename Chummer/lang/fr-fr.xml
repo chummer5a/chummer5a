@@ -2147,7 +2147,7 @@
     </string>
     <string>
       <key>Message_AttributeMaximum</key>
-      <text>Vous ne pouvez pas avoir plus d'un Attribut à son maximum à la création du personnage.</text>
+      <text>Vous ne pouvez pas avoir plus de {0} Attribut(s) à son maximum à la création du personnage.</text>
     </string>
     <string>
       <key>Message_AttributeBuildPoints</key>
@@ -5550,7 +5550,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Button_Options_PDFTest</key>
-      <text>Test - Ouvrir à la page 5</text>
+      <text>Test - Ouvrir à la page 3</text>
     </string>
     <!-- Print Multiple Window -->
     <string>
@@ -6837,14 +6837,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Label_OtherRiggingInit</key>
       <text>Initiative d'Interfacé (RA) :</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_MayBuyQualities</key>
-      <text>Peut Acheter des traits (RC 40)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactPoints</key>
-      <text>Point de Contact au lieu de Contacts fixes (RC 40)</text>
     </string>
     <string>
       <key>String_AddLimitModifier</key>
@@ -8633,14 +8625,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Tab_Options_GitHubIssues</key>
       <text>GitHub Issues</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_KnowledgeMultiplier</key>
-      <text>Remplacer le multiplicateur pour les points de connaissance (INT + LOG)</text>
-    </string>
-    <string>
-      <key>Checkbox_Options_ContactMultiplier</key>
-      <text>Remplacer le multiplicateur de charisme pour les points de connexion</text>
     </string>
     <string>
       <key>Checkbox_Options_UseTotalValueForFreeKnowledge</key>

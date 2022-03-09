@@ -35,9 +35,10 @@ namespace Chummer
 {
     public static class LanguageManager
     {
-        private static readonly Dictionary<string, LanguageData> s_DictionaryLanguages = new Dictionary<string, LanguageData>();
-        private static readonly Dictionary<string, string> s_DictionaryEnglishStrings = new Dictionary<string, string>();
-        public static IReadOnlyDictionary<string, LanguageData> DictionaryLanguages => s_DictionaryLanguages;
+        private static readonly LockingDictionary<string, SemaphoreSlim> s_DicLanguageDataLockers = new LockingDictionary<string, SemaphoreSlim>();
+        private static readonly LockingDictionary<string, LanguageData> s_DicLanguageData = new LockingDictionary<string, LanguageData>();
+        private static readonly LockingDictionary<string, string> s_DicEnglishStrings = new LockingDictionary<string, string>();
+        public static IAsyncReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
         public static string ManagerErrorMessage { get; }
 
         #region Constructor
@@ -67,10 +68,10 @@ namespace Chummer
                             string strText = objNode.SelectSingleNodeAndCacheExpression("text")?.Value;
                             if (string.IsNullOrEmpty(strText))
                                 continue;
-                            if (s_DictionaryEnglishStrings.ContainsKey(strKey))
+                            if (s_DicEnglishStrings.ContainsKey(strKey))
                                 Utils.BreakIfDebug();
                             else
-                                s_DictionaryEnglishStrings.Add(strKey, strText.NormalizeLineEndings(true));
+                                s_DicEnglishStrings.Add(strKey, strText.NormalizeLineEndings(true));
                         }
                     }
                     else
@@ -105,7 +106,34 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true)
+        {
+            TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Translate an object int a specified language.
+        /// </summary>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
+        /// <param name="objObject">Object to translate.</param>
+        /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task TranslateWinFormAsync(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true)
+        {
+            return TranslateWinFormCoreAsync(false, objObject, strIntoLanguage, blnDoResumeLayout);
+        }
+
+        /// <summary>
+        /// Translate an object int a specified language.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
+        /// <param name="objObject">Object to translate.</param>
+        /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
+        private static async Task TranslateWinFormCoreAsync(bool blnSync, Control objObject, string strIntoLanguage, bool blnDoResumeLayout)
         {
             if (Utils.IsDesignerMode)
                 return;
@@ -113,12 +141,26 @@ namespace Chummer
                 objObject.SuspendLayout();
             if (string.IsNullOrEmpty(strIntoLanguage))
                 strIntoLanguage = GlobalSettings.Language;
-            if (LoadLanguage(strIntoLanguage))
+            bool blnLanguageLoaded = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LoadLanguage(strIntoLanguage)
+                : await LoadLanguageAsync(strIntoLanguage);
+            if (blnLanguageLoaded)
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
                 string strKey = strIntoLanguage.ToUpperInvariant();
-                if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
-                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                if (blnSync)
+                {
+                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                }
+                else
+                {
+                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey);
+                    if (blnSuccess)
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                }
+
                 UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
             }
             else if (!strIntoLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -127,24 +169,113 @@ namespace Chummer
                 objObject.ResumeLayout();
         }
 
+        /// <summary>
+        /// Load a language's string translations.
+        /// </summary>
+        /// <param name="strLanguage">Language whose data should be loaded.</param>
+        /// <returns>True if loading is successful, false if not.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool LoadLanguage(string strLanguage)
+        {
+            return LoadLanguageCoreAsync(true, strLanguage).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Load a language's string translations.
+        /// </summary>
+        /// <param name="strLanguage">Language whose data should be loaded.</param>
+        /// <returns>True if loading is successful, false if not.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<bool> LoadLanguageAsync(string strLanguage)
+        {
+            return LoadLanguageCoreAsync(false, strLanguage);
+        }
+
+        /// <summary>
+        /// Load a language's string translations.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strLanguage">Language whose data should be loaded.</param>
+        /// <returns>True if loading is successful, false if not.</returns>
+        private static async Task<bool> LoadLanguageCoreAsync(bool blnSync, string strLanguage)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return true;
             string strKey = strLanguage.ToUpperInvariant();
-            s_DictionaryLanguages.TryGetValue(strKey, out LanguageData objNewLanguage);
-            if (objNewLanguage == null)
+            SemaphoreSlim objLockerObject;
+            if (blnSync)
             {
-                if (s_DictionaryLanguages.ContainsKey(strKey))
-                    s_DictionaryLanguages.Remove(strKey);
-                objNewLanguage = new LanguageData(strLanguage);
-                s_DictionaryLanguages.Add(strKey, objNewLanguage);
+                // ReSharper disable once MethodHasAsyncOverload
+                while (!s_DicLanguageDataLockers.TryGetValue(strKey, out objLockerObject))
+                {
+                    objLockerObject = Utils.SemaphorePool.Get();
+                    // ReSharper disable once MethodHasAsyncOverload
+                    if (s_DicLanguageDataLockers.TryAdd(strKey, objLockerObject))
+                        break;
+                    objLockerObject.Dispose();
+                    Utils.SafeSleep();
+                }
             }
+            else
+            {
+                bool blnSuccess;
+                (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
+                while (!blnSuccess)
+                {
+                    objLockerObject = Utils.SemaphorePool.Get();
+                    if (await s_DicLanguageDataLockers.TryAddAsync(strKey, objLockerObject))
+                        break;
+                    objLockerObject.Dispose();
+                    await Utils.SafeSleepAsync();
+                    (blnSuccess, objLockerObject) = await s_DicLanguageDataLockers.TryGetValueAsync(strKey);
+                }
+            }
+
+            LanguageData objNewLanguage;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLockerObject.SafeWait();
+            else
+                await objLockerObject.WaitAsync();
+            try
+            {
+                if (blnSync)
+                {
+                    // ReSharper disable MethodHasAsyncOverload
+                    if (!s_DicLanguageData.TryGetValue(strKey, out objNewLanguage) || objNewLanguage == null)
+                    {
+                        if (s_DicLanguageData.ContainsKey(strKey))
+                            s_DicLanguageData.Remove(strKey);
+                        objNewLanguage = new LanguageData(strLanguage);
+                        s_DicLanguageData.Add(strKey, objNewLanguage);
+                    }
+                    // ReSharper restore MethodHasAsyncOverload
+                }
+                else
+                {
+                    bool blnSuccess;
+                    (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey);
+                    if (!blnSuccess || objNewLanguage == null)
+                    {
+                        if (await s_DicLanguageData.ContainsKeyAsync(strKey))
+                            await s_DicLanguageData.RemoveAsync(strKey);
+                        objNewLanguage = await Task.Run(() => new LanguageData(strLanguage));
+                        await s_DicLanguageData.AddAsync(strKey, objNewLanguage);
+                    }
+                }
+            }
+            finally
+            {
+                objLockerObject.Release();
+            }
+
             if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
             {
                 if (!objNewLanguage.ErrorAlreadyShown)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         "Language with code " + strLanguage + " could not be loaded for the following reasons:" +
                         Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -321,7 +452,7 @@ namespace Chummer
             if (eIntoRightToLeft == RightToLeft.Inherit && LoadLanguage(strIntoLanguage))
             {
                 string strKey = strIntoLanguage.ToUpperInvariant();
-                if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
+                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
                 {
                     eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 }
@@ -352,30 +483,98 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Overload for standard GetString method, using GlobalSettings.Language as default string, but explicitly defining if an error is returned or not.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<string> GetStringAsync(string strKey, bool blnReturnError)
+        {
+            return GetStringAsync(strKey, GlobalSettings.Language, blnReturnError);
+        }
+
+        /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strKey">Key to retrieve.</param>
         /// <param name="strLanguage">Language from which the string should be retrieved.</param>
         /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string GetString(string strKey, string strLanguage = "", bool blnReturnError = true)
+        {
+            return GetStringCoreAsync(true, strKey, strLanguage, blnReturnError).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Retrieve a string from the language file.
+        /// </summary>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="strLanguage">Language from which the string should be retrieved.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<string> GetStringAsync(string strKey, string strLanguage = "", bool blnReturnError = true)
+        {
+            return GetStringCoreAsync(false, strKey, strLanguage, blnReturnError);
+        }
+
+        /// <summary>
+        /// Retrieve a string from the language file.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strKey">Key to retrieve.</param>
+        /// <param name="strLanguage">Language from which the string should be retrieved.</param>
+        /// <param name="blnReturnError">Should an error string be returned if the key isn't found?</param>
+        private static async Task<string> GetStringCoreAsync(bool blnSync, string strKey, string strLanguage, bool blnReturnError)
         {
             if (Utils.IsDesignerMode)
                 return strKey;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strReturn;
-            if (LoadLanguage(strLanguage))
+            bool blnLanguageLoaded = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LoadLanguage(strLanguage)
+                : await LoadLanguageAsync(strLanguage);
+            if (blnLanguageLoaded)
             {
                 string strLanguageKey = strLanguage.ToUpperInvariant();
-                if (DictionaryLanguages.TryGetValue(strLanguageKey, out LanguageData objLanguageData) && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                if (blnSync)
                 {
-                    return strReturn;
+                    if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
+                        && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                    {
+                        return strReturn;
+                    }
+                }
+                else
+                {
+                    (bool blnSuccess, LanguageData objLanguageData)
+                        = await LoadedLanguageData.TryGetValueAsync(strLanguageKey);
+                    if (blnSuccess && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
+                    {
+                        return strReturn;
+                    }
                 }
             }
-            if (s_DictionaryEnglishStrings.TryGetValue(strKey, out strReturn))
+
+            if (blnSync)
             {
-                return strReturn;
+                // ReSharper disable once MethodHasAsyncOverload
+                if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
+                    return strReturn;
             }
+            else
+            {
+                bool blnSuccess;
+                (blnSuccess, strReturn)
+                    = await s_DicEnglishStrings.TryGetValueAsync(strKey);
+                if (blnSuccess)
+                    return strReturn;
+            }
+
             return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
 
@@ -389,7 +588,7 @@ namespace Chummer
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
         /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
         /// <returns></returns>
-        public static async Task<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
+        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
         {
             if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -477,7 +676,7 @@ namespace Chummer
                         // Use more expensive TranslateExtra if flag is set to use that
                         sbdReturn.Append(blnUseTranslateExtra
                                              ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter)
-                                             : GetString(strLoop, strLanguage, false));
+                                             : await GetStringAsync(strLoop, strLanguage, false));
                     }
                     // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
                     else
@@ -494,14 +693,52 @@ namespace Chummer
         /// Retrieve a string from the language file.
         /// </summary>
         /// <param name="strLanguage">Language whose document should be retrieved.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument GetDataDocument(string strLanguage)
         {
-            if (LoadLanguage(strLanguage))
+            return GetDataDocumentCoreAsync(true, strLanguage).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Retrieve a string from the language file.
+        /// </summary>
+        /// <param name="strLanguage">Language whose document should be retrieved.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<XPathDocument> GetDataDocumentAsync(string strLanguage)
+        {
+            return GetDataDocumentCoreAsync(false, strLanguage);
+        }
+
+        /// <summary>
+        /// Retrieve a string from the language file.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strLanguage">Language whose document should be retrieved.</param>
+        private static async Task<XPathDocument> GetDataDocumentCoreAsync(bool blnSync, string strLanguage)
+        {
+            bool blnLanguageLoaded = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LoadLanguage(strLanguage)
+                : await LoadLanguageAsync(strLanguage);
+            if (blnLanguageLoaded)
             {
                 string strKey = strLanguage.ToUpperInvariant();
-                if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
+                if (blnSync)
                 {
-                    return objLanguageData.DataDocument;
+                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                    {
+                        return objLanguageData.DataDocument;
+                    }
+                }
+                else
+                {
+                    (bool blnSuccess, LanguageData objLanguageData) = await LoadedLanguageData.TryGetValueAsync(strKey);
+                    if (blnSuccess)
+                    {
+                        return objLanguageData.DataDocument;
+                    }
                 }
             }
             return null;
@@ -511,7 +748,7 @@ namespace Chummer
         /// Check the Keys in the selected language file against the English version.
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
-        public static async Task VerifyStrings(string strLanguage)
+        public static async ValueTask VerifyStrings(string strLanguage)
         {
             string strMessage;
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -611,7 +848,7 @@ namespace Chummer
             }
 
             // Display the message.
-            Program.MainForm.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
+            Program.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
                 "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
@@ -669,7 +906,7 @@ namespace Chummer
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("traditions.xml", "/chummer/traditions/tradition[name != 'Custom']",
                     x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("weapons.xml", "/chummer/weapons/weapon",
-                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value)
             },
             new []
             {
@@ -698,12 +935,12 @@ namespace Chummer
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("mentors.xml", "/chummer/mentors/mentor/choices/choice",
                     x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("paragons.xml", "/chummer/mentors/mentor/choices/choice",
-                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value)
             },
             new []
             {
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("references.xml", "/chummer/rules/rule",
-                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
+                    x => x.SelectSingleNodeAndCacheExpression("name")?.Value, x => x.SelectSingleNodeAndCacheExpression("translate")?.Value)
             }
         };
 
@@ -718,20 +955,12 @@ namespace Chummer
                 + '(' + GetString("String_DescAdept", strLanguage) + ')';
         }
 
-        /// <summary>
-        /// Attempt to translate any Extra text for an item.
-        /// </summary>
-        /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
-        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
-        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public static string TranslateExtra(string strExtra, string strIntoLanguage = "", Character objCharacter = null,
-            string strPreferFile = "")
+        public static async ValueTask<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false)
         {
-            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-            // TODO: Do this overhaul.
-            return Utils.RunWithoutThreadLock(() => TranslateExtraAsync(strExtra, strIntoLanguage, objCharacter, strPreferFile));
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            return await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage) + await GetStringAsync("String_Space", strLanguage)
+                + '(' + await GetStringAsync("String_DescAdept", strLanguage) + ')';
         }
 
         /// <summary>
@@ -741,8 +970,42 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public static async Task<string> TranslateExtraAsync(string strExtra, string strIntoLanguage = "", Character objCharacter = null,
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TranslateExtra(string strExtra, string strIntoLanguage = "", Character objCharacter = null,
             string strPreferFile = "")
+        {
+            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
+            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+            // TODO: Do this overhaul.
+            return Utils.RunWithoutThreadLock(() => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile));
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<string> TranslateExtraAsync(string strExtra, string strIntoLanguage = "",
+                                                             Character objCharacter = null,
+                                                             string strPreferFile = "")
+        {
+            return TranslateExtraCoreAsync(false, strExtra, strIntoLanguage, objCharacter, strPreferFile);
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        private static async Task<string> TranslateExtraCoreAsync(bool blnSync, string strExtra, string strIntoLanguage, Character objCharacter, string strPreferFile)
         {
             if (string.IsNullOrEmpty(strExtra))
                 return string.Empty;
@@ -757,83 +1020,143 @@ namespace Chummer
                 switch (strExtra)
                 {
                     case "BOD":
-                        strReturn = GetString("String_AttributeBODShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeBODShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeBODShort", strIntoLanguage);
                         break;
 
                     case "AGI":
-                        strReturn = GetString("String_AttributeAGIShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeAGIShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeAGIShort", strIntoLanguage);
                         break;
 
                     case "REA":
-                        strReturn = GetString("String_AttributeREAShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeREAShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeREAShort", strIntoLanguage);
                         break;
 
                     case "STR":
-                        strReturn = GetString("String_AttributeSTRShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeSTRShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeSTRShort", strIntoLanguage);
                         break;
 
                     case "CHA":
-                        strReturn = GetString("String_AttributeCHAShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeCHAShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeCHAShort", strIntoLanguage);
                         break;
 
                     case "INT":
-                        strReturn = GetString("String_AttributeINTShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeINTShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeINTShort", strIntoLanguage);
                         break;
 
                     case "LOG":
-                        strReturn = GetString("String_AttributeLOGShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeLOGShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeLOGShort", strIntoLanguage);
                         break;
 
                     case "WIL":
-                        strReturn = GetString("String_AttributeWILShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeWILShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeWILShort", strIntoLanguage);
                         break;
 
                     case "EDG":
-                        strReturn = GetString("String_AttributeEDGShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeEDGShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeEDGShort", strIntoLanguage);
                         break;
 
                     case "MAG":
-                        strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeMAGShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeMAGShort", strIntoLanguage);
                         break;
 
                     case "MAGAdept":
-                        strReturn = MAGAdeptString(strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? MAGAdeptString(strIntoLanguage)
+                            : await MAGAdeptStringAsync(strIntoLanguage);
                         break;
 
                     case "RES":
-                        strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeRESShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeRESShort", strIntoLanguage);
                         break;
 
                     case "DEP":
-                        strReturn = GetString("String_AttributeDEPShort", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_AttributeDEPShort", strIntoLanguage)
+                            : await GetStringAsync("String_AttributeDEPShort", strIntoLanguage);
                         break;
 
                     case "Physical":
-                        strReturn = GetString("Node_Physical", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("Node_Physical", strIntoLanguage)
+                            : await GetStringAsync("Node_Physical", strIntoLanguage);
                         break;
 
                     case "Mental":
-                        strReturn = GetString("Node_Mental", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("Node_Mental", strIntoLanguage)
+                            : await GetStringAsync("Node_Mental", strIntoLanguage);
                         break;
 
                     case "Social":
-                        strReturn = GetString("Node_Social", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("Node_Social", strIntoLanguage)
+                            : await GetStringAsync("Node_Social", strIntoLanguage);
                         break;
 
                     case "Left":
-                        strReturn = GetString("String_Improvement_SideLeft", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_Improvement_SideLeft", strIntoLanguage)
+                            : await GetStringAsync("String_Improvement_SideLeft", strIntoLanguage);
                         break;
 
                     case "Right":
-                        strReturn = GetString("String_Improvement_SideRight", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_Improvement_SideRight", strIntoLanguage)
+                            : await GetStringAsync("String_Improvement_SideRight", strIntoLanguage);
                         break;
 
                     case "All":
-                        strReturn = GetString("String_All", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_All", strIntoLanguage)
+                            : await GetStringAsync("String_All", strIntoLanguage);
                         break;
 
                     case "None":
-                        strReturn = GetString("String_None", strIntoLanguage);
+                        strReturn = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetString("String_None", strIntoLanguage)
+                            : await GetStringAsync("String_None", strIntoLanguage);
                         break;
 
                     default:
@@ -851,60 +1174,21 @@ namespace Chummer
                         CancellationToken objCancellationToken = objCancellationTokenSource.Token;
                         if (!string.IsNullOrEmpty(strPreferFile))
                         {
-                            try
+                            if (blnSync)
                             {
-                                strTemp = await Task.Run(() =>
-                                {
-                                    string strInnerReturn = string.Empty;
-                                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
-                                                 Func<XPathNavigator, string>>> aobjPaths
-                                             in s_LstAXPathsToSearch)
-                                    {
-                                        Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
-                                                         (objXPathPair, objState) =>
-                                                         {
-                                                             if (objCancellationToken.IsCancellationRequested)
-                                                                 return;
-                                                             if (objState.ShouldExitCurrentIteration)
-                                                                 return;
-                                                             XPathNavigator xmlDocument = XmlManager.LoadXPath(
-                                                                 objXPathPair.Item1,
-                                                                 objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
-                                                                 strIntoLanguage);
-                                                             if (objCancellationToken.IsCancellationRequested)
-                                                                 return;
-                                                             if (objState.ShouldExitCurrentIteration)
-                                                                 return;
-                                                             foreach (XPathNavigator objNode in xmlDocument
-                                                                          .SelectAndCacheExpression(
-                                                                              objXPathPair.Item2))
-                                                             {
-                                                                 if (objCancellationToken.IsCancellationRequested ||
-                                                                     objState.ShouldExitCurrentIteration)
-                                                                     return;
-                                                                 if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                                                     continue;
-                                                                 string strTranslate = objXPathPair.Item4(objNode);
-                                                                 if (string.IsNullOrEmpty(strTranslate))
-                                                                     continue;
-                                                                 if (objCancellationToken.IsCancellationRequested ||
-                                                                     objState.ShouldExitCurrentIteration)
-                                                                     return;
-                                                                 objState.Break();
-                                                                 objCancellationTokenSource.Cancel(false);
-                                                                 strReturn = strTranslate;
-                                                                 return;
-                                                             }
-                                                         });
-                                        if (!string.IsNullOrEmpty(strInnerReturn))
-                                            return strInnerReturn;
-                                    }
-                                    return strInnerReturn;
-                                }, objCancellationTokenSource.Token);
+                                strTemp = FindString(strPreferFile);
                             }
-                            catch (TaskCanceledException)
+                            else
                             {
-                                //swallow this
+                                try
+                                {
+                                    strTemp = await Task.Run(() => FindString(strPreferFile),
+                                                             objCancellationTokenSource.Token);
+                                }
+                                catch (TaskCanceledException)
+                                {
+                                    //swallow this
+                                }
                             }
 
                             if (!string.IsNullOrEmpty(strTemp))
@@ -914,61 +1198,90 @@ namespace Chummer
                         if (objCancellationTokenSource.IsCancellationRequested)
                             break;
 
-                        try
+                        if (blnSync)
                         {
-                            strTemp = await Task.Run(() =>
-                            {
-                                string strInnerReturn = string.Empty;
-                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
-                                             Func<XPathNavigator, string>>> aobjPaths
-                                         in s_LstAXPathsToSearch)
-                                {
-                                    Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
-                                    {
-                                        if (objCancellationToken.IsCancellationRequested)
-                                            return;
-                                        if (objState.ShouldExitCurrentIteration)
-                                            return;
-                                        XPathNavigator xmlDocument = XmlManager.LoadXPath(
-                                            objXPathPair.Item1,
-                                            objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
-                                            strIntoLanguage);
-                                        if (objCancellationToken.IsCancellationRequested)
-                                            return;
-                                        if (objState.ShouldExitCurrentIteration)
-                                            return;
-                                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                                     objXPathPair.Item2))
-                                        {
-                                            if (objCancellationToken.IsCancellationRequested)
-                                                return;
-                                            if (objState.ShouldExitCurrentIteration)
-                                                return;
-                                            if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                                continue;
-                                            string strTranslate = objXPathPair.Item4(objNode);
-                                            if (string.IsNullOrEmpty(strTranslate))
-                                                continue;
-                                            if (objCancellationToken.IsCancellationRequested)
-                                                return;
-                                            if (objState.ShouldExitCurrentIteration)
-                                                return;
-                                            objState.Break();
-                                            objCancellationTokenSource.Cancel(false);
-                                            strInnerReturn = strTranslate;
-                                            return;
-                                        }
-                                    });
-                                    if (!string.IsNullOrEmpty(strInnerReturn))
-                                        return strInnerReturn;
-                                }
-
-                                return strInnerReturn;
-                            }, objCancellationTokenSource.Token);
+                            strTemp = FindString();
                         }
-                        catch (TaskCanceledException)
+                        else
                         {
-                            //swallow this
+                            try
+                            {
+                                strTemp = await Task.Run(() => FindString(), objCancellationTokenSource.Token);
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                //swallow this
+                            }
+                        }
+
+                        string FindString(string strPreferredFileName = "")
+                        {
+                            string strInnerReturn = string.Empty;
+                            foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                         Func<XPathNavigator, string>>> aobjPaths
+                                     in s_LstAXPathsToSearch)
+                            {
+                                IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                                    Func<XPathNavigator, string>>> lstToSearch
+                                    = !string.IsNullOrEmpty(strPreferredFileName)
+                                        ? aobjPaths.Where(x => x.Item1 == strPreferredFileName)
+                                        : aobjPaths;
+                                Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
+                                {
+                                    if (objState.ShouldExitCurrentIteration)
+                                        return string.Empty;
+                                    if (objCancellationToken.IsCancellationRequested)
+                                    {
+                                        objState.Stop();
+                                        return string.Empty;
+                                    }
+
+                                    XPathNavigator xmlDocument = XmlManager.LoadXPath(
+                                        objXPathPair.Item1,
+                                        objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
+                                        strIntoLanguage);
+                                    if (objState.ShouldExitCurrentIteration)
+                                        return string.Empty;
+                                    if (objCancellationToken.IsCancellationRequested)
+                                    {
+                                        objState.Stop();
+                                        return string.Empty;
+                                    }
+
+                                    foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                                 objXPathPair.Item2))
+                                    {
+                                        if (objState.ShouldExitCurrentIteration)
+                                            return string.Empty;
+                                        if (objCancellationToken.IsCancellationRequested)
+                                        {
+                                            objState.Stop();
+                                            return string.Empty;
+                                        }
+
+                                        if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                            continue;
+                                        string strTranslate = objXPathPair.Item4(objNode);
+                                        if (string.IsNullOrEmpty(strTranslate))
+                                            continue;
+                                        return strTranslate;
+                                    }
+
+                                    return string.Empty;
+                                }, strFound =>
+                                {
+                                    if (objCancellationToken.IsCancellationRequested)
+                                        return;
+                                    if (string.IsNullOrEmpty(strFound))
+                                        return;
+                                    strInnerReturn = strFound;
+                                    objCancellationTokenSource.Cancel(false);
+                                });
+                                if (!string.IsNullOrEmpty(strInnerReturn))
+                                    return strInnerReturn;
+                            }
+
+                            return strInnerReturn;
                         }
 
                         if (!string.IsNullOrEmpty(strTemp))
@@ -992,13 +1305,14 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string ReverseTranslateExtra(string strExtra, string strFromLanguage = "",
             Character objCharacter = null, string strPreferFile = "")
         {
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
             // TODO: Do this overhaul.
-            return Utils.RunWithoutThreadLock(() => ReverseTranslateExtraAsync(strExtra, strFromLanguage, objCharacter, strPreferFile));
+            return Utils.RunWithoutThreadLock(() => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile));
         }
 
         /// <summary>
@@ -1008,8 +1322,26 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public static async Task<string> ReverseTranslateExtraAsync(string strExtra, string strFromLanguage = "",
-            Character objCharacter = null, string strPreferFile = "")
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<string> ReverseTranslateExtraAsync(string strExtra, string strFromLanguage = "",
+                                                                    Character objCharacter = null,
+                                                                    string strPreferFile = "")
+        {
+            return ReverseTranslateExtraCoreAsync(false, strExtra, strFromLanguage, objCharacter, strPreferFile);
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item from a foreign language to the default one.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public static async Task<string> ReverseTranslateExtraCoreAsync(bool blnSync, string strExtra, string strFromLanguage,
+                                                                        Character objCharacter, string strPreferFile)
         {
             if (string.IsNullOrEmpty(strFromLanguage))
                 strFromLanguage = GlobalSettings.Language;
@@ -1017,45 +1349,65 @@ namespace Chummer
             if (strFromLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(strExtra))
                 return strExtra;
             // Attempt to translate CharacterAttribute names.
-            if (strExtra == GetString("String_AttributeBODShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeBODShort", strFromLanguage) : await GetStringAsync("String_AttributeBODShort", strFromLanguage)))
                 return "BOD";
-            if (strExtra == GetString("String_AttributeAGIShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeAGIShort", strFromLanguage) : await GetStringAsync("String_AttributeAGIShort", strFromLanguage)))
                 return "AGI";
-            if (strExtra == GetString("String_AttributeREAShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeREAShort", strFromLanguage) : await GetStringAsync("String_AttributeREAShort", strFromLanguage)))
                 return "REA";
-            if (strExtra == GetString("String_AttributeSTRShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeSTRShort", strFromLanguage) : await GetStringAsync("String_AttributeSTRShort", strFromLanguage)))
                 return "STR";
-            if (strExtra == GetString("String_AttributeCHAShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeCHAShort", strFromLanguage) : await GetStringAsync("String_AttributeCHAShort", strFromLanguage)))
                 return "CHA";
-            if (strExtra == GetString("String_AttributeINTShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeINTShort", strFromLanguage) : await GetStringAsync("String_AttributeINTShort", strFromLanguage)))
                 return "INT";
-            if (strExtra == GetString("String_AttributeLOGShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeLOGShort", strFromLanguage) : await GetStringAsync("String_AttributeLOGShort", strFromLanguage)))
                 return "LOG";
-            if (strExtra == GetString("String_AttributeWILShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeWILShort", strFromLanguage) : await GetStringAsync("String_AttributeWILShort", strFromLanguage)))
                 return "WIL";
-            if (strExtra == GetString("String_AttributeEDGShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeEDGShort", strFromLanguage) : await GetStringAsync("String_AttributeEDGShort", strFromLanguage)))
                 return "EDG";
-            if (strExtra == GetString("String_AttributeMAGShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeMAGShort", strFromLanguage) : await GetStringAsync("String_AttributeMAGShort", strFromLanguage)))
                 return "MAG";
-            if (strExtra == MAGAdeptString(strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? MAGAdeptString(strFromLanguage) : await MAGAdeptStringAsync(strFromLanguage)))
                 return "MAGAdept";
-            if (strExtra == GetString("String_AttributeRESShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeRESShort", strFromLanguage) : await GetStringAsync("String_AttributeRESShort", strFromLanguage)))
                 return "RES";
-            if (strExtra == GetString("String_AttributeDEPShort", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_AttributeDEPShort", strFromLanguage) : await GetStringAsync("String_AttributeDEPShort", strFromLanguage)))
                 return "DEP";
-            if (strExtra == GetString("Node_Physical", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("Node_Physical", strFromLanguage) : await GetStringAsync("Node_Physical", strFromLanguage)))
                 return "Physical";
-            if (strExtra == GetString("Node_Mental", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("Node_Mental", strFromLanguage) : await GetStringAsync("Node_Mental", strFromLanguage)))
                 return "Mental";
-            if (strExtra == GetString("Node_Social", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("Node_Social", strFromLanguage) : await GetStringAsync("Node_Social", strFromLanguage)))
                 return "Social";
-            if (strExtra == GetString("String_Improvement_SideLeft", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_Improvement_SideLeft", strFromLanguage) : await GetStringAsync("String_Improvement_SideLeft", strFromLanguage)))
                 return "Left";
-            if (strExtra == GetString("String_Improvement_SideRight", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_Improvement_SideRight", strFromLanguage) : await GetStringAsync("String_Improvement_SideRight", strFromLanguage)))
                 return "Right";
-            if (strExtra == GetString("String_All", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_All", strFromLanguage) : await GetStringAsync("String_All", strFromLanguage)))
                 return "All";
-            if (strExtra == GetString("String_None", strFromLanguage))
+            // ReSharper disable once MethodHasAsyncOverload
+            if (strExtra == (blnSync ? GetString("String_None", strFromLanguage) : await GetStringAsync("String_None", strFromLanguage)))
                 return "None";
             // If no original could be found, just use whatever we were passed.
             string strReturn = strExtra;
@@ -1072,62 +1424,20 @@ namespace Chummer
             CancellationToken objCancellationToken = objCancellationTokenSource.Token;
             if (!string.IsNullOrEmpty(strPreferFile))
             {
-                try
+                if (blnSync)
                 {
-                    strTemp = await Task.Run(() =>
-                    {
-                        string strInnerReturn = string.Empty;
-                        foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
-                                         Func<XPathNavigator, string>>>
-                                     aobjPaths
-                                 in s_LstAXPathsToSearch)
-                        {
-                            Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
-                                             (objXPathPair, objState) =>
-                                             {
-                                                 if (objCancellationToken.IsCancellationRequested)
-                                                     return;
-                                                 if (objState.ShouldExitCurrentIteration)
-                                                     return;
-                                                 XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
-                                                     objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
-                                                     strFromLanguage);
-                                                 if (objCancellationToken.IsCancellationRequested)
-                                                     return;
-                                                 if (objState.ShouldExitCurrentIteration)
-                                                     return;
-                                                 foreach (XPathNavigator objNode in
-                                                          xmlDocument.SelectAndCacheExpression(
-                                                              objXPathPair.Item2))
-                                                 {
-                                                     if (objCancellationToken.IsCancellationRequested)
-                                                         return;
-                                                     if (objState.ShouldExitCurrentIteration)
-                                                         return;
-                                                     if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                                         continue;
-                                                     string strOriginal = objXPathPair.Item3(objNode);
-                                                     if (string.IsNullOrEmpty(strOriginal))
-                                                         continue;
-                                                     if (objCancellationToken.IsCancellationRequested)
-                                                         return;
-                                                     if (objState.ShouldExitCurrentIteration)
-                                                         return;
-                                                     objState.Break();
-                                                     objCancellationTokenSource.Cancel(false);
-                                                     strInnerReturn = strOriginal;
-                                                     return;
-                                                 }
-                                             });
-                            if (!string.IsNullOrEmpty(strInnerReturn))
-                                return strInnerReturn;
-                        }
-                        return strInnerReturn;
-                    }, objCancellationTokenSource.Token);
+                    strTemp = FindString(strPreferFile);
                 }
-                catch (TaskCanceledException)
+                else
                 {
-                    //swallow this
+                    try
+                    {
+                        strTemp = await Task.Run(() => FindString(strPreferFile), objCancellationTokenSource.Token);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        //swallow this
+                    }
                 }
 
                 if (!string.IsNullOrEmpty(strTemp))
@@ -1137,61 +1447,86 @@ namespace Chummer
             if (objCancellationTokenSource.IsCancellationRequested)
                 return strReturn;
 
-            try
+            if (blnSync)
             {
-                strTemp = await Task.Run(() =>
-                {
-                    string strInnerReturn = string.Empty;
-                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
-                                     Func<XPathNavigator, string>>>
-                                 aobjPaths
-                             in s_LstAXPathsToSearch)
-                    {
-                        Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
-                        {
-                            if (objCancellationToken.IsCancellationRequested)
-                                return;
-                            if (objState.ShouldExitCurrentIteration)
-                                return;
-                            XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
-                                                                              objCharacter?.Settings
-                                                                                  .EnabledCustomDataDirectoryPaths,
-                                                                              strFromLanguage);
-                            if (objCancellationToken.IsCancellationRequested)
-                                return;
-                            if (objState.ShouldExitCurrentIteration)
-                                return;
-                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                         objXPathPair.Item2))
-                            {
-                                if (objCancellationToken.IsCancellationRequested)
-                                    return;
-                                if (objState.ShouldExitCurrentIteration)
-                                    return;
-                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                    continue;
-                                string strOriginal = objXPathPair.Item3(objNode);
-                                if (string.IsNullOrEmpty(strOriginal))
-                                    continue;
-                                if (objCancellationToken.IsCancellationRequested)
-                                    return;
-                                if (objState.ShouldExitCurrentIteration)
-                                    return;
-                                objState.Break();
-                                objCancellationTokenSource.Cancel(false);
-                                strInnerReturn = strOriginal;
-                                return;
-                            }
-                        });
-                        if (!string.IsNullOrEmpty(strInnerReturn))
-                            return strInnerReturn;
-                    }
-                    return strInnerReturn;
-                }, objCancellationTokenSource.Token);
+                strTemp = FindString();
             }
-            catch (TaskCanceledException)
+            else
             {
-                //swallow this
+                try
+                {
+                    strTemp = await Task.Run(() => FindString(), objCancellationTokenSource.Token);
+                }
+                catch (TaskCanceledException)
+                {
+                    //swallow this
+                }
+            }
+
+            string FindString(string strPreferredFileName = "")
+            {
+                string strInnerReturn = string.Empty;
+                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                 Func<XPathNavigator, string>>>
+                             aobjPaths
+                         in s_LstAXPathsToSearch)
+                {
+                    IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                        Func<XPathNavigator, string>>> lstToSearch
+                        = !string.IsNullOrEmpty(strPreferredFileName)
+                            ? aobjPaths.Where(x => x.Item1 == strPreferredFileName)
+                            : aobjPaths;
+                    Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
+                    {
+                        if (objState.ShouldExitCurrentIteration)
+                            return string.Empty;
+                        if (objCancellationToken.IsCancellationRequested)
+                        {
+                            objState.Stop();
+                            return string.Empty;
+                        }
+                        XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
+                                                                          objCharacter?.Settings
+                                                                              .EnabledCustomDataDirectoryPaths,
+                                                                          strFromLanguage);
+                        if (objState.ShouldExitCurrentIteration)
+                            return string.Empty;
+                        if (objCancellationToken.IsCancellationRequested)
+                        {
+                            objState.Stop();
+                            return string.Empty;
+                        }
+                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
+                                     objXPathPair.Item2))
+                        {
+                            if (objState.ShouldExitCurrentIteration)
+                                return string.Empty;
+                            if (objCancellationToken.IsCancellationRequested)
+                            {
+                                objState.Stop();
+                                return string.Empty;
+                            }
+                            if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                continue;
+                            string strOriginal = objXPathPair.Item3(objNode);
+                            if (string.IsNullOrEmpty(strOriginal))
+                                continue;
+                            return strOriginal;
+                        }
+                        return string.Empty;
+                    }, strFound =>
+                    {
+                        if (objCancellationToken.IsCancellationRequested)
+                            return;
+                        if (string.IsNullOrEmpty(strFound))
+                            return;
+                        strInnerReturn = strFound;
+                        objCancellationTokenSource.Cancel(false);
+                    });
+                    if (!string.IsNullOrEmpty(strInnerReturn))
+                        return strInnerReturn;
+                }
+                return strInnerReturn;
             }
 
             if (!string.IsNullOrEmpty(strTemp))
@@ -1327,17 +1662,17 @@ namespace Chummer
                         }
                         else
                         {
-                            ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + ".";
+                            ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + '.';
                         }
                     }
                     else
                     {
-                        ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + ".";
+                        ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: " + strExtraMessage + '.';
                     }
                 }
                 catch (Exception ex)
                 {
-                    ErrorMessage = "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex + ".";
+                    ErrorMessage = "Encountered the following the exception while loading " + strLanguage + ".xml into an XmlDocument: " + ex + '.';
                 }
             }
             else
@@ -1364,14 +1699,14 @@ namespace Chummer
                         DataDocument = null;
                         if (!string.IsNullOrEmpty(ErrorMessage))
                             ErrorMessage += Environment.NewLine;
-                        ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex + ".";
+                        ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex + '.';
                     }
                     catch (XmlException ex)
                     {
                         DataDocument = null;
                         if (!string.IsNullOrEmpty(ErrorMessage))
                             ErrorMessage += Environment.NewLine;
-                        ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex + ".";
+                        ErrorMessage += "Failed to load the data file " + strLanguage + "_data.xml into an XmlDocument: " + ex + '.';
                     }
                 }
                 catch (Exception ex)
@@ -1379,7 +1714,7 @@ namespace Chummer
                     DataDocument = null;
                     if (!string.IsNullOrEmpty(ErrorMessage))
                         ErrorMessage += Environment.NewLine;
-                    ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex + ".";
+                    ErrorMessage += "Encountered the following the exception while loading " + strLanguage + "_data.xml into an XmlDocument: " + ex + '.';
                 }
             }
             else

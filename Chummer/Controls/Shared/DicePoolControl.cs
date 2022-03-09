@@ -36,7 +36,11 @@ namespace Chummer.UI.Shared.Components
 
             CanEverBeRolled = CanEverBeRolled || GlobalSettings.AllowSkillDiceRolling;
             cmdRoll.Visible = CanBeRolled && CanEverBeRolled;
-            cmdRoll.ToolTipText = LanguageManager.GetString("Tip_DiceRoller");
+        }
+
+        private async void DicePoolControl_Load(object sender, EventArgs e)
+        {
+            cmdRoll.ToolTipText = await LanguageManager.GetStringAsync("Tip_DiceRoller");
         }
 
         private void cmdRoll_Click(object sender, EventArgs e)

@@ -51,10 +51,6 @@ namespace Chummer.UI.Skills
                 lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
                 lblName.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
 
-                int intMinimumSize;
-                using (Graphics g = CreateGraphics())
-                    intMinimumSize = (int)(25 * g.DpiX / 96.0f);
-
                 // Creating these controls outside of the designer saves on handles
                 if (skillGroup.CharacterObject.Created)
                 {
@@ -64,7 +60,6 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0),
                         Margin = new Padding(3, 6, 3, 6),
-                        MinimumSize = new Size(intMinimumSize, 0),
                         Name = "lblGroupRating",
                         TextAlign = ContentAlignment.MiddleRight
                     };
@@ -126,8 +121,9 @@ namespace Chummer.UI.Skills
                     tlpMain.Controls.Add(nudKarma, 3, 0);
                 }
 
+                AdjustForDpi();
                 this.UpdateLightDarkMode();
-                this.TranslateWinForm(string.Empty, false);
+                this.TranslateWinForm(blnDoResumeLayout: false);
             }
             finally
             {
@@ -147,9 +143,9 @@ namespace Chummer.UI.Skills
 
         #region Control Events
 
-        private void btnCareerIncrease_Click(object sender, EventArgs e)
+        private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
                     _skillGroup.CurrentDisplayName, _skillGroup.Rating + 1, _skillGroup.UpgradeKarmaCost);
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
@@ -221,6 +217,11 @@ namespace Chummer.UI.Skills
         #endregion ButtonWithToolTip Visibility workaround
 
         private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
+        {
+            AdjustForDpi();
+        }
+
+        private void AdjustForDpi()
         {
             if (lblGroupRating == null)
                 return;

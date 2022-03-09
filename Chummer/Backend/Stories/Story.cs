@@ -30,7 +30,7 @@ namespace Chummer
     {
         private readonly LockingDictionary<string, StoryModule> _dicPersistentModules = new LockingDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
-        private readonly EnhancedObservableCollection<StoryModule> _lstStoryModules = new EnhancedObservableCollection<StoryModule>();
+        private readonly ThreadSafeObservableCollection<StoryModule> _lstStoryModules = new ThreadSafeObservableCollection<StoryModule>();
         private bool _blnNeedToRegeneratePersistents = true;
 
         // Note: as long as this is only used to generate language-agnostic information, it can be cached once when the object is created and left that way.
@@ -79,13 +79,27 @@ namespace Chummer
             }
         }
 
-        public EnhancedObservableCollection<StoryModule> Modules => _lstStoryModules;
+        public ThreadSafeObservableCollection<StoryModule> Modules
+        {
+            get
+            {
+                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                    return _lstStoryModules;
+            }
+        }
 
-        public LockingDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
+        public LockingDictionary<string, StoryModule> PersistentModules
+        {
+            get
+            {
+                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                    return _dicPersistentModules;
+            }
+        }
 
         public StoryModule GeneratePersistentModule(string strFunction)
         {
-            XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + "]");
+            XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + ']');
             if (xmlStoryPool != null)
             {
                 XPathNodeIterator xmlPossibleStoryList = xmlStoryPool.SelectAndCacheExpression("story");
@@ -120,7 +134,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
-                    XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.SelectSingleNode("stories/story[id = " + strSelectedId.CleanXPath() + "]");
+                    XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.SelectSingleNode("stories/story[id = " + strSelectedId.CleanXPath() + ']');
                     if (xmlNewPersistentNode != null)
                     {
                         StoryModule objPersistentStoryModule = new StoryModule(_objCharacter)
@@ -138,7 +152,7 @@ namespace Chummer
             return null;
         }
 
-        public async Task GeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public async ValueTask GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage)
         {
             List<string> lstPersistentKeysToRemove = new List<string>(_dicPersistentModules.Count);
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
@@ -148,17 +162,17 @@ namespace Chummer
             }
 
             foreach (string strKey in lstPersistentKeysToRemove)
-                _dicPersistentModules.Remove(strKey);
+                await _dicPersistentModules.RemoveAsync(strKey);
 
             foreach (StoryModule objModule in Modules)
                 await objModule.TestRunToGeneratePersistents(objCulture, strLanguage);
             _blnNeedToRegeneratePersistents = false;
         }
 
-        public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage)
         {
             if (_blnNeedToRegeneratePersistents)
-                await GeneratePersistents(objCulture, strLanguage);
+                await GeneratePersistentsAsync(objCulture, strLanguage);
             string[] strModuleOutputStrings = new string[Modules.Count];
             for (int i = 0; i < Modules.Count; ++i)
             {
@@ -170,7 +184,8 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            _dicPersistentModules?.Dispose();
+            _dicPersistentModules.Dispose();
+            _lstStoryModules.Dispose();
         }
     }
 }

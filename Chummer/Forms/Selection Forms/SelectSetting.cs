@@ -27,20 +27,20 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectSetting : Form
+    public partial class SelectSetting : Form
     {
         private string _strSettingsFile = "default.xml";
 
         #region Control Events
 
-        public frmSelectSetting()
+        public SelectSetting()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
-        private void frmSelectSetting_Load(object sender, EventArgs e)
+        private async void SelectSetting_Load(object sender, EventArgs e)
         {
             // Build the list of XML files found in the settings directory.
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
@@ -68,7 +68,7 @@ namespace Chummer
 
                     lstSettings.Add(new ListItem(Path.GetFileName(strFileName),
                                                  objXmlDocument.CreateNavigator().SelectSingleNode("/settings/name")
-                                                               ?.Value ?? LanguageManager.GetString("String_Unknown")));
+                                                               ?.Value ?? await LanguageManager.GetStringAsync("String_Unknown")));
                 }
 
                 lstSettings.Sort(CompareListItems.CompareNames);

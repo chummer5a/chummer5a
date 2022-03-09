@@ -37,7 +37,10 @@ namespace ChummerHub.Client.Backend
                 if (_objRunningTask?.IsCompleted == false) // Wait for existing thread to shut down
                     await _objRunningTask;
             }
-            catch (TaskCanceledException) { }
+            catch (TaskCanceledException)
+            {
+                // Swallow and continue
+            }
             _objCancellationTokenSource = new CancellationTokenSource();
             _objRunningTask = Task.Run(RunChummerFilePipeThread, _objCancellationTokenSource.Token);
         }
@@ -128,7 +131,10 @@ namespace ChummerHub.Client.Backend
                         PipeTransmissionMode.Message, PipeOptions.None,
                         4028, 4028, ps))
                     {
-                        await server.WaitForConnectionAsync();
+                        await server.WaitForConnectionAsync(_objCancellationTokenSource.Token);
+
+                        if (_objCancellationTokenSource.IsCancellationRequested)
+                            throw new OperationCanceledException();
 
                         using (StreamReader reader = new StreamReader(server))
                         {
@@ -137,7 +143,10 @@ namespace ChummerHub.Client.Backend
                     }
 
                     if (text == EXIT_STRING)
-                        break;
+                        return;
+
+                    if (_objCancellationTokenSource.IsCancellationRequested)
+                        throw new OperationCanceledException();
 
                     OnReceiveString(text);
                 }
@@ -152,6 +161,7 @@ namespace ChummerHub.Client.Backend
                     await Chummer.Utils.SafeSleepAsync();
                 }
             }
+            throw new OperationCanceledException();
         }
 
         protected virtual void Dispose(bool disposing)

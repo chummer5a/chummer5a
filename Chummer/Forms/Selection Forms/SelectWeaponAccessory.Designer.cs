@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectWeaponAccessory
+    partial class SelectWeaponAccessory
     {
         /// <summary>
         /// Required designer variable.
@@ -641,13 +641,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectWeaponAccessory";
+            this.Name = "SelectWeaponAccessory";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectWeaponAccessory";
             this.Text = "Select an Accessory";
-            this.Load += new System.EventHandler(this.frmSelectWeaponAccessory_Load);
+            this.Load += new System.EventHandler(this.SelectWeaponAccessory_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
             this.tlpMain.ResumeLayout(false);

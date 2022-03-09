@@ -23,6 +23,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Xml;
 using Chummer.Annotations;
 using NLog;
@@ -80,7 +81,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -154,18 +155,26 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("sustainedobject");
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("force", Force.ToString(objCulture));
-            objWriter.WriteElementString("nethits", NetHits.ToString(objCulture));
-            objWriter.WriteElementString("self", SelfSustained.ToString(objCulture));
-            objWriter.WriteEndElement();
+            // <sustainedobject>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("sustainedobject");
+            try
+            {
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture));
+            }
+            finally
+            {
+                // </sustainedobject>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -244,6 +253,31 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public Task<string> DisplayNameShortAsync(string strLanguage)
+        {
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (_eLinkedObjectType)
+            {
+                case Improvement.ImprovementSource.Spell:
+                    if (_objLinkedObject is Spell objSpell)
+                        return objSpell.DisplayNameShortAsync(strLanguage).AsTask();
+                    break;
+                case Improvement.ImprovementSource.ComplexForm:
+                    if (_objLinkedObject is ComplexForm objComplexForm)
+                        return objComplexForm.DisplayNameShortAsync(strLanguage).AsTask();
+                    break;
+
+                case Improvement.ImprovementSource.CritterPower:
+                    if (_objLinkedObject is CritterPower objCritterPower)
+                        return objCritterPower.DisplayNameShortAsync(strLanguage).AsTask();
+                    break;
+            }
+            return LanguageManager.GetStringAsync("String_Unknown", strLanguage);
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed in lists.
         /// </summary>
         public string DisplayName(string strLanguage)
@@ -261,6 +295,31 @@ namespace Chummer
                     return (_objLinkedObject as CritterPower)?.DisplayName(strLanguage);
             }
             return LanguageManager.GetString("String_Unknown", strLanguage);
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public Task<string> DisplayNameAsync(string strLanguage)
+        {
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (_eLinkedObjectType)
+            {
+                case Improvement.ImprovementSource.Spell:
+                    if (_objLinkedObject is Spell objSpell)
+                        return objSpell.DisplayNameAsync(strLanguage).AsTask();
+                    break;
+                case Improvement.ImprovementSource.ComplexForm:
+                    if (_objLinkedObject is ComplexForm objComplexForm)
+                        return objComplexForm.DisplayNameAsync(strLanguage).AsTask();
+                    break;
+
+                case Improvement.ImprovementSource.CritterPower:
+                    if (_objLinkedObject is CritterPower objCritterPower)
+                        return objCritterPower.DisplayNameAsync(strLanguage).AsTask();
+                    break;
+            }
+            return LanguageManager.GetStringAsync("String_Unknown", strLanguage);
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);

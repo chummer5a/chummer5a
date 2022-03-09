@@ -29,7 +29,7 @@ using System.Xml.XPath;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class StoryModule : IHasName, IHasInternalId, IHasXmlNode
+    public class StoryModule : IHasName, IHasInternalId, IHasXmlDataNode
     {
         private readonly Dictionary<string, string> _dicEnglishTexts = new Dictionary<string, string>();
         private readonly Guid _guiInternalId;
@@ -114,9 +114,11 @@ namespace Chummer
             get => _guiSourceID;
             set
             {
-                if (_guiSourceID == value) return;
+                if (_guiSourceID == value)
+                    return;
                 _guiSourceID = value;
                 _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
         }
 
@@ -132,7 +134,7 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         public string DefaultKey
@@ -149,21 +151,21 @@ namespace Chummer
                 return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
             }
 
-            return GetNode(strLanguage)?.SelectSingleNode("alttexts/" + strKey)?.InnerText ??
+            return this.GetNodeXPath(strLanguage)?.SelectSingleNode("alttexts/" + strKey)?.Value ??
                    (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
         }
 
-        public Task TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public ValueTask<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
             return ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage, true);
         }
 
-        public async Task<string> PrintModule(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> PrintModule(CultureInfo objCulture, string strLanguage)
         {
             return (await ResolveMacros(DisplayText(DefaultKey, strLanguage), objCulture, strLanguage)).NormalizeWhiteSpace();
         }
 
-        public async Task<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false)
+        public async ValueTask<string> ResolveMacros(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents = false)
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
@@ -250,7 +252,7 @@ namespace Chummer
             return string.Concat(lstOutputStrings);
         }
 
-        public async Task<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents)
+        public async ValueTask<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents)
         {
             // Process Macros nested inside of single macro
             strInput = await ResolveMacros(strInput, objCulture, strLanguage, blnGeneratePersistents);
@@ -311,7 +313,7 @@ namespace Chummer
                     }
                 case "$Alias":
                     {
-                        return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : LanguageManager.GetString("String_Unknown", strLanguage);
+                        return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
                     }
                 case "$Name":
                     {
@@ -325,7 +327,7 @@ namespace Chummer
 
                             return _objCharacter.Name;
                         }
-                        return LanguageManager.GetString("String_Unknown", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
                     }
                 case "$Year":
                     {
@@ -340,16 +342,16 @@ namespace Chummer
                             return intBirthYear.ToString(objCulture);
                         }
 
-                        return LanguageManager.GetString("String_Unknown", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
                     }
                 case "$GetString":
                     {
-                        return LanguageManager.GetString(strArguments, strLanguage);
+                        return await LanguageManager.GetStringAsync(strArguments, strLanguage);
                     }
                 case "$XPath":
                     {
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strArguments, out bool blnIsSuccess);
-                        return blnIsSuccess ? objProcess.ToString() : LanguageManager.GetString("String_Unknown", strLanguage);
+                        return blnIsSuccess ? objProcess.ToString() : await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
                     }
                 case "$Index":
                     {
@@ -360,7 +362,7 @@ namespace Chummer
                             return strArgumentsSplit[Math.Max(0, Math.Min(intArgumentsCount - 1, intIndex + 1))];
                         }
 
-                        return LanguageManager.GetString("String_Unknown", strLanguage);
+                        return await LanguageManager.GetStringAsync("String_Unknown", strLanguage);
                     }
                 case "$LookupExtra":
                     {
@@ -386,7 +388,7 @@ namespace Chummer
                         if (intArgumentPipeIndex != -1)
                         {
                             string strMainOutput = strArguments.Substring(0, intArgumentPipeIndex);
-                            if (!string.IsNullOrEmpty(strMainOutput) && strMainOutput != LanguageManager.GetString("String_Error", strLanguage) && strMainOutput != LanguageManager.GetString("String_Unknown", strLanguage))
+                            if (!string.IsNullOrEmpty(strMainOutput) && strMainOutput != await LanguageManager.GetStringAsync("String_Error", strLanguage) && strMainOutput != await LanguageManager.GetStringAsync("String_Unknown", strLanguage))
                                 return strMainOutput;
                             if (intArgumentPipeIndex + 1 < strArguments.Length)
                                 return strArguments.Substring(intArgumentPipeIndex + 1);
@@ -406,27 +408,46 @@ namespace Chummer
             else if (ParentStory.PersistentModules.TryGetValue(strFunction, out StoryModule objInnerModule))
                 return await ResolveMacros(objInnerModule.DisplayText(strArguments, strLanguage), objCulture, strLanguage);
 
-            return LanguageManager.GetString("String_Error", strLanguage);
+            return await LanguageManager.GetStringAsync("String_Error", strLanguage);
         }
 
         public string InternalId => _guiInternalId == Guid.Empty ? string.Empty : _guiInternalId.ToString("D", GlobalSettings.InvariantCultureInfo);
 
-        public XmlNode GetNode()
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
-            return GetNode(GlobalSettings.Language);
-        }
-
-        public XmlNode GetNode(string strLanguage)
-        {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = _objCharacter.LoadData("stories.xml", strLanguage)
-                                               .SelectSingleNode(
-                                                   "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("stories.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("stories.xml", strLanguage))
+                .SelectSingleNode(
+                    "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
                                                    + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
                                                    + ']');
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        {
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("stories.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("stories.xml", strLanguage))
+                .SelectSingleNode(
+                    "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
+                                                   + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                   + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
     }
 }

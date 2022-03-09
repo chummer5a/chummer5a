@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    public sealed partial class frmSelectCyberwareSuite
+    public sealed partial class SelectCyberwareSuite
     {
         /// <summary>
         /// Required designer variable.
@@ -88,7 +88,6 @@ namespace Chummer
             this.lstCyberware.Name = "lstCyberware";
             this.tlpMain.SetRowSpan(this.lstCyberware, 3);
             this.lstCyberware.Size = new System.Drawing.Size(297, 417);
-            this.lstCyberware.Sorted = true;
             this.lstCyberware.TabIndex = 0;
             this.lstCyberware.SelectedIndexChanged += new System.EventHandler(this.lstCyberware_SelectedIndexChanged);
             this.lstCyberware.DoubleClick += new System.EventHandler(this.lstCyberware_DoubleClick);
@@ -274,13 +273,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectCyberwareSuite";
+            this.Name = "SelectCyberwareSuite";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectCyberwareSuite";
             this.Text = "Select a Cyberware Suite";
-            this.Load += new System.EventHandler(this.frmSelectCyberwareSuite_Load);
+            this.Load += new System.EventHandler(this.SelectCyberwareSuite_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

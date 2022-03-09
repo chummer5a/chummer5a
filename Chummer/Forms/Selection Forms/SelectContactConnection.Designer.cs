@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectContactConnection
+    partial class SelectContactConnection
     {
         /// <summary>
         /// Required designer variable.
@@ -319,13 +319,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectContactConnection";
+            this.Name = "SelectContactConnection";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectContactConnection";
             this.Text = "Advanced Contact Options";
-            this.Load += new System.EventHandler(this.frmSelectContactConnection_Load);
+            this.Load += new System.EventHandler(this.SelectContactConnection_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

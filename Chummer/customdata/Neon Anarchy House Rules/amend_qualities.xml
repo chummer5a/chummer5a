@@ -198,6 +198,13 @@
 			<hide />
 		</quality>
 		<quality>
+			<name>Made Man</name>
+			<bonus>
+				<addcontact amendoperation="remove" />
+			</bonus>
+			<notes operation="addnode">Manually add a free Group Contact with Connection between 1 and 3 to represent the relevant gang or syndicate.</notes>
+		</quality>
+		<quality>
 			<name>Massive Network</name>
 			<hide />
 		</quality>
@@ -230,6 +237,13 @@
 		<quality>
 			<name>Revels in Murder</name>
 			<hide />
+		</quality>
+		<quality>
+			<name>Sensei</name>
+			<bonus>
+				<selectcontact amendoperation="remove" />
+				<selecttext xml="skills.xml" xpath="/chummer/skillgroups/name | /chummer/skills/skill[not(skillgroup) or skillgroup = '']/name" allowedit="True" />
+			</bonus>
 		</quality>
 		<quality>
 			<name>Special Modifications</name>

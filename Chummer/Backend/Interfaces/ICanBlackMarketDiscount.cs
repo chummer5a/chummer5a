@@ -19,7 +19,7 @@
 
 namespace Chummer
 {
-    internal interface ICanBlackMarketDiscount
+    internal interface ICanBlackMarketDiscount : IHasCost
     {
         bool DiscountCost { get; set; }
     }

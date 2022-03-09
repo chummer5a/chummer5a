@@ -23,36 +23,20 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectAttribute : Form
+    public partial class SelectAttribute : Form
     {
         private string _strReturnValue = string.Empty;
 
-        private readonly List<ListItem> _lstAttributes = Utils.ListItemListPool.Get();
+        private readonly string[] _lstAttributeAbbrevs;
 
         #region Control Events
 
-        public frmSelectAttribute(params string[] lstAttributeAbbrevs)
+        public SelectAttribute(params string[] lstAttributeAbbrevs)
         {
+            _lstAttributeAbbrevs = lstAttributeAbbrevs;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            // Build the list of Attributes.
-            foreach (string strAbbrev in lstAttributeAbbrevs)
-            {
-                string strAttributeDisplayName = strAbbrev == "MAGAdept"
-                    ? LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ')'
-                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short");
-                _lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
-            }
-
-            cboAttribute.BeginUpdate();
-            cboAttribute.PopulateWithListItems(_lstAttributes);
-            if (_lstAttributes.Count >= 1)
-                cboAttribute.SelectedIndex = 0;
-            else
-                cmdOK.Enabled = false;
-            cboAttribute.EndUpdate();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -61,11 +45,28 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void frmSelectAttribute_Load(object sender, EventArgs e)
+        private async void SelectAttribute_Load(object sender, EventArgs e)
         {
-            if (_lstAttributes.Count == 1)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAttributes))
             {
-                cmdOK_Click(sender, e);
+                // Build the list of Attributes.
+                foreach (string strAbbrev in _lstAttributeAbbrevs)
+                {
+                    string strAttributeDisplayName = strAbbrev == "MAGAdept"
+                        ? await LanguageManager.MAGAdeptStringAsync()
+                        : await LanguageManager.GetStringAsync("String_Attribute" + strAbbrev + "Short");
+                    lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
+                }
+
+                cboAttribute.BeginUpdate();
+                cboAttribute.PopulateWithListItems(lstAttributes);
+                cboAttribute.EndUpdate();
+                if (lstAttributes.Count >= 1)
+                    cboAttribute.SelectedIndex = 0;
+                else if (lstAttributes.Count == 0)
+                    cmdOK.Enabled = false;
+                else
+                    cmdOK_Click(sender, e);
             }
         }
 

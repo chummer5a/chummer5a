@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -47,7 +48,7 @@ namespace Chummer
                     return;
                 string strDisplayText = string.Format(GlobalSettings.CultureInfo,
                     LanguageManager.GetString("String_Loading_Pattern"), value);
-                this.QueueThreadSafe(() => Text = strDisplayText);
+                this.QueueThreadSafe(x => x.Text = strDisplayText);
             }
         }
 
@@ -68,12 +69,31 @@ namespace Chummer
             if (this.IsNullOrDisposed())
                 return;
             string strNewText = LanguageManager.GetString("String_Initializing");
-            lblLoadingInfo.QueueThreadSafe(() => lblLoadingInfo.Text = strNewText);
-            pgbLoadingProgress.DoThreadSafe(() =>
+            lblLoadingInfo.QueueThreadSafe(x => x.Text = strNewText);
+            pgbLoadingProgress.DoThreadSafe(x =>
             {
-                pgbLoadingProgress.Value = 0;
-                pgbLoadingProgress.Maximum = intMaxProgressBarValue + 1;
+                ProgressBar objBar = (ProgressBar) x;
+                objBar.Value = 0;
+                objBar.Maximum = intMaxProgressBarValue + 1;
             });
+        }
+
+        /// <summary>
+        /// Resets the ProgressBar
+        /// </summary>
+        /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
+        public async ValueTask ResetAsync(int intMaxProgressBarValue = 100)
+        {
+            if (this.IsNullOrDisposed())
+                return;
+            string strNewText = await LanguageManager.GetStringAsync("String_Initializing");
+            await Task.WhenAll(lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText),
+                               pgbLoadingProgress.DoThreadSafeAsync(x =>
+                               {
+                                   ProgressBar objBar = (ProgressBar) x;
+                                   objBar.Value = 0;
+                                   objBar.Maximum = intMaxProgressBarValue + 1;
+                               }));
         }
 
         /// <summary>
@@ -126,8 +146,8 @@ namespace Chummer
             if (pgbLoadingProgress.Maximum > 2)
                 strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalSettings.CultureInfo)
                               + '/' + (pgbLoadingProgress.Maximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
-            lblLoadingInfo.QueueThreadSafe(() => lblLoadingInfo.Text = strNewText);
-            pgbLoadingProgress.QueueThreadSafe(() => pgbLoadingProgress.PerformStep());
+            lblLoadingInfo.QueueThreadSafe(x => x.Text = strNewText);
+            pgbLoadingProgress.QueueThreadSafe(x => ((ProgressBar)x).PerformStep());
         }
     }
 }

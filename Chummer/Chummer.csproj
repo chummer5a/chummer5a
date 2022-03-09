@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Chummer</RootNamespace>
     <AssemblyName>Chummer5</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -123,35 +123,35 @@
     <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.barcodes, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.barcodes.dll</HintPath>
+    <Reference Include="itext.barcodes, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.barcodes.dll</HintPath>
     </Reference>
-    <Reference Include="itext.commons, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.commons.7.2.0\lib\net461\itext.commons.dll</HintPath>
+    <Reference Include="itext.commons, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.commons.7.2.1\lib\net461\itext.commons.dll</HintPath>
     </Reference>
-    <Reference Include="itext.forms, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.forms.dll</HintPath>
+    <Reference Include="itext.forms, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.forms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.io, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.io.dll</HintPath>
+    <Reference Include="itext.io, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.io.dll</HintPath>
     </Reference>
-    <Reference Include="itext.kernel, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.kernel.dll</HintPath>
+    <Reference Include="itext.kernel, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.kernel.dll</HintPath>
     </Reference>
-    <Reference Include="itext.layout, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.layout.dll</HintPath>
+    <Reference Include="itext.layout, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.layout.dll</HintPath>
     </Reference>
-    <Reference Include="itext.pdfa, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.pdfa.dll</HintPath>
+    <Reference Include="itext.pdfa, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.pdfa.dll</HintPath>
     </Reference>
-    <Reference Include="itext.sign, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.sign.dll</HintPath>
+    <Reference Include="itext.sign, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.sign.dll</HintPath>
     </Reference>
-    <Reference Include="itext.styledxmlparser, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.styledxmlparser.dll</HintPath>
+    <Reference Include="itext.styledxmlparser, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.styledxmlparser.dll</HintPath>
     </Reference>
-    <Reference Include="itext.svg, Version=7.2.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.0\lib\net461\itext.svg.dll</HintPath>
+    <Reference Include="itext.svg, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.svg.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -187,8 +187,8 @@
     <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.ObjectPool, Version=6.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.ObjectPool.6.0.1\lib\net461\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.ObjectPool, Version=6.0.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.ObjectPool.6.0.2\lib\net461\Microsoft.Extensions.ObjectPool.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Extensions.Options, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Options.6.0.0\lib\net461\Microsoft.Extensions.Options.dll</HintPath>
@@ -200,7 +200,7 @@
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.13\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.14\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -307,8 +307,10 @@
     <Compile Include="Backend\Datastructures\LockingDictionaryEnumerator.cs" />
     <Compile Include="Backend\Datastructures\LockingEnumerator.cs" />
     <Compile Include="Backend\Datastructures\LockingHashSet.cs" />
+    <Compile Include="Backend\Datastructures\LockingOrderedSet.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\PropertyDependencyGraph.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeBindingList.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
@@ -320,10 +322,20 @@
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollectionWithMaxSize.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeQueue.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeStack.cs" />
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Helpers\AsyncFriendlyReaderWriterLock.cs" />
+    <Compile Include="Backend\Helpers\AsyncLock.cs" />
+    <Compile Include="Backend\Helpers\XmlElementWriteHelper.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncEnumerable.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncReadOnlyDictionary.cs" />
+    <Compile Include="Backend\Interfaces\IHasCost.cs" />
+    <Compile Include="Backend\Interfaces\IHasLockObject.cs" />
+    <Compile Include="Backend\Interfaces\IHasXmlDataNode.cs" />
     <Compile Include="Backend\Static\Extensions\BoolArrayExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\CollectionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DecimalExtensions.cs" />
@@ -339,19 +351,23 @@
     <Compile Include="Backend\Static\Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\RandomExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ReaderWriterLockSlimExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\SemaphoreSlimExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\VersionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XmlDocumentExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XmlWriterExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
+    <Compile Include="Backend\Static\Managers\ImprovementManager.cs" />
     <Compile Include="Forms\Character Forms\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
@@ -425,7 +441,6 @@
     <Compile Include="Backend\Uniques\Expenses.cs" />
     <Compile Include="Backend\Static\Managers\LanguageManager.cs" />
     <Compile Include="Backend\Datastructures\ListItem.cs" />
-    <Compile Include="Backend\Static\Log.cs" />
     <Compile Include="Backend\Static\GlobalSettings.cs" />
     <Compile Include="Backend\Helpers\ParameterAttribute.cs" />
     <Compile Include="Backend\Stories\StoryBuilder.cs" />
@@ -451,8 +466,6 @@
       <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
     </Compile>
     <Compile Include="Backend\Helpers\EnterReadLock.cs" />
-    <Compile Include="Backend\Helpers\EnterUpgradeableReadLock.cs" />
-    <Compile Include="Backend\Helpers\EnterWriteLock.cs" />
     <Compile Include="Backend\Helpers\FetchSafelyFromPool.cs" />
     <Compile Include="Backend\Interfaces\ICanBlackMarketDiscount.cs" />
     <Compile Include="Backend\Interfaces\ITranslatable.cs" />
@@ -780,7 +793,22 @@
     <Content Include="customdata\Delnar Skills Remake\amend_lifemodules.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Delnar Skills Remake\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar%27s One Karma Qualities\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar%27s One Karma Qualities\custom_books.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar%27s One Karma Qualities\custom_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar%27s One Karma Qualities\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\manifest.xml">
@@ -862,6 +890,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\In Debt Does Not Contribute to BP\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Jack of All Trades Applies Karma Modifiers in Create Mode\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Jack of All Trades Applies Karma Modifiers in Create Mode\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Kill Code Sprite Optional Powers\amend_sprite_critters.xml">
@@ -1038,6 +1072,15 @@
     <Content Include="customdata\Remove Automatics as a Skill\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Only Allow Basic Metatypes at Character Creation\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Only Allow Basic Metatypes at Character Creation\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Only Allow Basic Metatypes at Character Creation\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Rigger 5 Weapon Mounts - Allow Sporting Rifles\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1052,9 +1095,6 @@
     </Content>
     <Content Include="customdata\Shadowrun Missions Rules\custom_weapons.xml" />
     <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Shapeshifter Initiative Bonus\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Shadowrun Missions Neotokyo Rules\amend_gear.xml">
@@ -1085,6 +1125,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Stolen Gear Contributes to BP\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Sum-to-Ten Improved\amend_priorities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Sum-to-Ten Improved\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\amend_mentors.xml">
@@ -1138,11 +1184,11 @@
     <Compile Include="Controls\Skills\KnowledgeSkillControl.Designer.cs">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Skills\SkillControl2.cs">
+    <Compile Include="Controls\Skills\SkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Skills\SkillControl2.Designer.cs">
-      <DependentUpon>SkillControl2.cs</DependentUpon>
+    <Compile Include="Controls\Skills\SkillControl.Designer.cs">
+      <DependentUpon>SkillControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Skills\SkillGroupControl.cs">
       <SubType>UserControl</SubType>
@@ -1219,11 +1265,11 @@
     <Compile Include="Controls\Table\TextTableCell.Designer.cs">
       <DependentUpon>TextTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Utility Forms\DiceHitsTracker.cs">
+    <Compile Include="Forms\Selection Forms\SelectDiceHits.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\Utility Forms\DiceHitsTracker.Designer.cs">
-      <DependentUpon>DiceHitsTracker.cs</DependentUpon>
+    <Compile Include="Forms\Selection Forms\SelectDiceHits.Designer.cs">
+      <DependentUpon>SelectDiceHits.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Utility Forms\DiceRoller.cs">
       <SubType>Form</SubType>
@@ -1720,8 +1766,8 @@
     <EmbeddedResource Include="Controls\Skills\KnowledgeSkillControl.resx">
       <DependentUpon>KnowledgeSkillControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Skills\SkillControl2.resx">
-      <DependentUpon>SkillControl2.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\Skills\SkillControl.resx">
+      <DependentUpon>SkillControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Skills\SkillGroupControl.resx">
       <DependentUpon>SkillGroupControl.cs</DependentUpon>
@@ -1741,8 +1787,8 @@
     <EmbeddedResource Include="Controls\Table\TableRow.resx">
       <DependentUpon>TableRow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Utility Forms\DiceHitsTracker.resx">
-      <DependentUpon>DiceHitsTracker.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\Selection Forms\SelectDiceHits.resx">
+      <DependentUpon>SelectDiceHits.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\DiceRoller.resx">
       <DependentUpon>DiceRoller.cs</DependentUpon>
@@ -2252,9 +2298,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Point Priority Chargen\amend_echoes.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\Point Priority Chargen\amend_gameplayoptions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Point Priority Chargen\amend_mentors.xml">
@@ -4102,7 +4145,9 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_page_white.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_palette.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_picture.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_print.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_red.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_script_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_stand.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_star.png" />
@@ -11975,7 +12020,9 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_page_white.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_palette.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_picture.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_print.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_red.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_script_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_stand.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_star.png" />
@@ -18834,18 +18881,18 @@ copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
 echo "No .git directory found, skipping copying of hooks."
 )</PreBuildEvent>
   </PropertyGroup>
+  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
   </Target>
   <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
   <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
-  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

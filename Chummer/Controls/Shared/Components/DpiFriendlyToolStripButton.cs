@@ -71,7 +71,8 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
-            List<Image> lstImages = new List<Image>(Images);
+            List<Image> lstImages = new List<Image>(6);
+            lstImages.AddRange(Images);
             switch (lstImages.Count)
             {
                 case 0:

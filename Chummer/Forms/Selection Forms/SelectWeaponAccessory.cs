@@ -22,13 +22,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectWeaponAccessory : Form
+    public partial class SelectWeaponAccessory : Form
     {
         private string _strSelectedAccessory;
         private decimal _decMarkup;
@@ -47,7 +48,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectWeaponAccessory(Character objCharacter)
+        public SelectWeaponAccessory(Character objCharacter)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
@@ -63,7 +64,7 @@ namespace Chummer
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseChummerNode));
         }
 
-        private void frmSelectWeaponAccessory_Load(object sender, EventArgs e)
+        private async void SelectWeaponAccessory_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -79,13 +80,13 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             _blnLoading = false;
-            RefreshList();
+            await RefreshList();
         }
 
         /// <summary>
         /// Build the list of available weapon accessories.
         /// </summary>
-        private void RefreshList()
+        private async ValueTask RefreshList()
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAccessories))
             {
@@ -114,7 +115,7 @@ namespace Chummer
                 foreach (XPathNavigator objXmlAccessory in _xmlBaseChummerNode.Select(
                              "accessories/accessory" + strFilter))
                 {
-                    string strId = objXmlAccessory.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
                     if (!_objParentWeapon.CheckAccessoryRequirements(objXmlAccessory))
@@ -130,9 +131,9 @@ namespace Chummer
                     {
                         lstAccessories.Add(new ListItem(
                                                strId,
-                                               objXmlAccessory.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                               ?? objXmlAccessory.SelectSingleNodeAndCacheExpression("name")?.Value
-                                               ?? LanguageManager.GetString("String_Unknown")));
+                                               (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                               ?? (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                               ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                     else
                         ++intOverLimit;
@@ -144,7 +145,7 @@ namespace Chummer
                     // Add after sort so that it's always at the end
                     lstAccessories.Add(new ListItem(string.Empty, string.Format(
                                                         GlobalSettings.CultureInfo,
-                                                        LanguageManager.GetString("String_RestrictedItemsHidden"),
+                                                        await LanguageManager.GetStringAsync("String_RestrictedItemsHidden"),
                                                         intOverLimit)));
                 }
 
@@ -161,9 +162,9 @@ namespace Chummer
             }
         }
 
-        private void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstAccessory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -183,47 +184,47 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
-                RefreshList();
-            UpdateGearInfo();
+                await RefreshList();
+            await UpdateGearInfo();
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
-                RefreshList();
-            UpdateGearInfo();
+                await RefreshList();
+            await UpdateGearInfo();
         }
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void nudRating_ValueChanged(object sender, EventArgs e)
         {
-            UpdateGearInfo();
+            await UpdateGearInfo();
         }
 
-        private void cboMount_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboMount_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateMountFields(true);
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
-                UpdateGearInfo(false);
+                await UpdateGearInfo(false);
         }
 
-        private void cboExtraMount_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboExtraMount_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateMountFields(false);
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
-                UpdateGearInfo(false);
+                await UpdateGearInfo(false);
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void RefreshCurrentList(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         #endregion Control Events
@@ -276,7 +277,7 @@ namespace Chummer
                 //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
                 if (_objCharacter.BlackMarketDiscount && value != null)
                 {
-                    string strCategory = value.GetNode()?.SelectSingleNode("category")?.InnerText ?? string.Empty;
+                    string strCategory = value.GetNodeXPath()?.SelectSingleNode("category")?.Value ?? string.Empty;
                     _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
                 }
                 else
@@ -305,9 +306,9 @@ namespace Chummer
 
         #region Methods
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
         private void UpdateMountFields(bool boolChangeExtraMountFirst)
@@ -329,7 +330,7 @@ namespace Chummer
             }
         }
 
-        private void UpdateGearInfo(bool blnUpdateMountComboBoxes = true)
+        private async ValueTask UpdateGearInfo(bool blnUpdateMountComboBoxes = true)
         {
             if (_blnLoading)
                 return;
@@ -338,7 +339,7 @@ namespace Chummer
             string strSelectedId = lstAccessory.SelectedValue?.ToString();
             // Retrieve the information for the selected Accessory.
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = " + strSelectedId.CleanXPath() + "]");
+                xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = " + strSelectedId.CleanXPath() + ']');
             if (xmlAccessory == null)
             {
                 tlpRight.Visible = false;
@@ -393,7 +394,7 @@ namespace Chummer
             if (blnUpdateMountComboBoxes)
             {
                 string strDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value;
-                List<string> strMounts = new List<string>();
+                List<string> strMounts = new List<string>(1);
                 if (!string.IsNullOrEmpty(strDataMounts))
                 {
                     strMounts.AddRange(strDataMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
@@ -422,7 +423,7 @@ namespace Chummer
                 cboMount.SelectedIndex = 0;
                 lblMountLabel.Visible = true;
 
-                List<string> strExtraMounts = new List<string>();
+                List<string> strExtraMounts = new List<string>(1);
                 string strExtraMount = xmlAccessory.SelectSingleNode("extramount")?.Value;
                 if (!string.IsNullOrEmpty(strExtraMount))
                 {
@@ -467,8 +468,11 @@ namespace Chummer
             {
                 string strCost = "0";
                 if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
-                    strCost = strCost.CheapReplace("Weapon Cost", () => _objParentWeapon.OwnCost.ToString(GlobalSettings.InvariantCultureInfo))
-                        .CheapReplace("Weapon Total Cost", () => _objParentWeapon.MultipliableCost(null).ToString(GlobalSettings.InvariantCultureInfo))
+                    strCost = (await strCost.CheapReplaceAsync("Weapon Cost",
+                                () => _objParentWeapon.OwnCost.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplaceAsync("Weapon Total Cost",
+                                () => _objParentWeapon.MultipliableCost(null)
+                                    .ToString(GlobalSettings.InvariantCultureInfo)))
                         .Replace("Rating", nudRating.Value.ToString(GlobalSettings.CultureInfo));
                 if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                 {
@@ -490,7 +494,7 @@ namespace Chummer
                     }
                     else
                     {
-                        string strSpace = LanguageManager.GetString("String_Space");
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
                         lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strSpace + '-'
                                        + strSpace + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                     }
@@ -529,9 +533,9 @@ namespace Chummer
             }
 
             lblRatingLabel.Text = xmlAccessory.SelectSingleNode("ratinglabel") != null
-                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
-                    LanguageManager.GetString(xmlAccessory.SelectSingleNode("ratinglabel").Value))
-                : LanguageManager.GetString("Label_Rating");
+                ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
+                    await LanguageManager.GetStringAsync(xmlAccessory.SelectSingleNode("ratinglabel").Value))
+                : await LanguageManager.GetStringAsync("Label_Rating");
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
 
@@ -546,9 +550,9 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = false;
             }
 
-            string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = xmlAccessory.SelectSingleNode("altpage")?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+            string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strPage = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+            SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             tlpRight.Visible = true;
@@ -570,9 +574,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

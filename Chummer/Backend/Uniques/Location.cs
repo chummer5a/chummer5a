@@ -32,7 +32,7 @@ namespace Chummer
     /// A Location.
     /// </summary>
     [DebuggerDisplay("{nameof(Name)}")]
-    public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort
+    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IDisposable
     {
         private Guid _guiID;
         private string _strName;
@@ -40,6 +40,7 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
+        private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren = new ThreadSafeObservableCollection<IHasLocation>();
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -50,14 +51,15 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strName = strName;
             Parent = objParent;
-            Children.AddTaggedCollectionChanged(this, ChildrenOnCollectionChanged);
+            Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.BeforeClearCollectionChanged += ChildrenOnBeforeClearCollectionChanged;
         }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -102,7 +104,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        public void Print(XmlWriter objWriter, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -141,10 +143,10 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
                 return Name;
-            return LanguageManager.TranslateExtra(
+            return _objCharacter.TranslateExtra(
                 !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? LanguageManager.ReverseTranslateExtra(Name, GlobalSettings.Language, _objCharacter)
-                    : Name, strLanguage, _objCharacter);
+                    : Name, strLanguage);
         }
 
         /// <summary>
@@ -184,7 +186,14 @@ namespace Chummer
             set => _intSortOrder = value;
         }
 
-        public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
+        public ThreadSafeObservableCollection<IHasLocation> Children
+        {
+            get
+            {
+                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                    return _lstChildren;
+            }
+        }
 
         public ICollection<Location> Parent { get; }
 
@@ -215,6 +224,12 @@ namespace Chummer
 
         #endregion UI Methods
 
+        private void ChildrenOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            foreach (IHasLocation objOldItem in e.OldItems)
+                objOldItem.Location = null;
+        }
+
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -230,33 +245,42 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
+                    HashSet<IHasLocation> setNewItems = e.NewItems.OfType<IHasLocation>().ToHashSet();
                     foreach (IHasLocation objOldItem in e.OldItems)
-                        objOldItem.Location = null;
-                    foreach (IHasLocation objNewItem in e.NewItems)
+                    {
+                        if (!setNewItems.Contains(objOldItem))
+                            objOldItem.Location = null;
+                    }
+                    foreach (IHasLocation objNewItem in setNewItems)
                         objNewItem.Location = this;
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
                     foreach (IHasLocation objItem in Children)
-                    {
-                        objItem.Location = null;
-                    }
+                        objItem.Location = this;
                     break;
             }
         }
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation"));
-            }
-            foreach (IHasLocation item in Children)
-            {
-                item.Location = null;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation")))
+                return false;
 
-            return Parent.Remove(Parent.SingleOrDefault(i => i.InternalId == InternalId));
+            foreach (IHasLocation item in Children)
+                item.Location = null;
+
+            bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
+
+            Dispose();
+
+            return blnReturn;
+        }
+
+        /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
+        public void Dispose()
+        {
+            _lstChildren.Dispose();
         }
     }
 }

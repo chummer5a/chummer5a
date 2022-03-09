@@ -25,7 +25,7 @@ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    public partial class frmSelectSpec : Form
+    public partial class SelectSpec : Form
     {
         private readonly Skill _objSkill;
         private readonly Character _objCharacter;
@@ -34,7 +34,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectSpec(Skill skill)
+        public SelectSpec(Skill skill)
         {
             _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
             _objCharacter = skill.CharacterObject;
@@ -44,7 +44,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void frmSelectSpec_Load(object sender, EventArgs e)
+        private void SelectSpec_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
@@ -60,9 +60,9 @@ namespace Chummer
                 if (Mode == "Knowledge")
                     xmlParentSkill
                         = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = "
-                                                           + _objSkill.Name.CleanXPath() + "]")
+                                                           + _objSkill.Name.CleanXPath() + ']')
                           ?? _objXmlDocument.SelectSingleNode(
-                              "/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + "]");
+                              "/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + ']');
                 else
                     xmlParentSkill = _objXmlDocument.SelectSingleNode(
                         "/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and ("
@@ -153,10 +153,8 @@ namespace Chummer
                 {
                     return cboSpec.SelectedValue.ToString();
                 }
-                else
-                {
-                    return cboSpec.Text;
-                }
+
+                return cboSpec.Text;
             }
         }
 

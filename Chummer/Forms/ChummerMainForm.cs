@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -44,10 +43,8 @@ namespace Chummer
     {
         private bool _blnAbleToReceiveData;
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        private frmDiceRoller _frmRoller;
-        private LoadingBar _frmProgressBar;
-        private frmUpdate _frmUpdate;
-        private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
+        private DiceRoller _frmRoller;
+        private ChummerUpdater _frmUpdate;
         private readonly ThreadSafeObservableCollection<CharacterShared> _lstOpenCharacterForms = new ThreadSafeObservableCollection<CharacterShared>();
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
@@ -74,13 +71,12 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _strCurrentVersion =
-                string.Format(GlobalSettings.InvariantCultureInfo, "{0}.{1}.{2}", Program.CurrentVersion.Major, Program.CurrentVersion.Minor, Program.CurrentVersion.Build);
+            _strCurrentVersion = Utils.CurrentChummerVersion.ToString(3);
 
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalSettings.HideMasterIndex || isUnitTest)
             {
-                MasterIndex = new frmMasterIndex
+                MasterIndex = new MasterIndex
                 {
                     MdiParent = this
                 };
@@ -94,349 +90,363 @@ namespace Chummer
             }
         }
 
-        private static readonly ReadOnlyCollection<string> s_PreloadFileNames = Array.AsReadOnly(new[]
-        {
-            "actions.xml",
-            "armor.xml",
-            "bioware.xml",
-            "books.xml",
-            "complexforms.xml",
-            "contacts.xml",
-            "critters.xml",
-            "critterpowers.xml",
-            "cyberware.xml",
-            "drugcomponents.xml",
-            "echoes.xml",
-            "options.xml",
-            "gear.xml",
-            "improvements.xml",
-            "licenses.xml",
-            "lifemodules.xml",
-            "lifestyles.xml",
-            "martialarts.xml",
-            "mentors.xml",
-            "metamagic.xml",
-            "metatypes.xml",
-            "options.xml",
-            "packs.xml",
-            "powers.xml",
-            "priorities.xml",
-            "programs.xml",
-            "qualities.xml",
-            "ranges.xml",
-            "settings.xml",
-            "sheets.xml",
-            "skills.xml",
-            "spells.xml",
-            "spiritpowers.xml",
-            "streams.xml",
-            "traditions.xml",
-            "vehicles.xml",
-            "weapons.xml"
-        });
-
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
-        private async void frmChummerMain_Load(object sender, EventArgs e)
+        private async void ChummerMainForm_Load(object sender, EventArgs e)
         {
-            using (CustomActivity opFrmChummerMain = Timekeeper.StartSyncron("frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                try
+                using (CustomActivity opFrmChummerMain = Timekeeper.StartSyncron(
+                           "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
+                           _strCurrentVersion))
                 {
-                    opFrmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
-                    opFrmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
-
-                    if (MyStartupPvt != null)
+                    try
                     {
-                        MyStartupPvt.Duration = DateTimeOffset.UtcNow - MyStartupPvt.Timestamp;
-                        opFrmChummerMain.MyTelemetryClient.TrackPageView(MyStartupPvt);
-                    }
+                        opFrmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
+                        opFrmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
 
-                    NativeMethods.ChangeFilterStruct changeFilter = new NativeMethods.ChangeFilterStruct();
-                    changeFilter.size = (uint)Marshal.SizeOf(changeFilter);
-                    changeFilter.info = 0;
-                    if (NativeMethods.ChangeWindowMessageFilterEx(Handle, NativeMethods.WM_COPYDATA,
-                        NativeMethods.ChangeWindowMessageFilterExAction.Allow, ref changeFilter))
-                        _blnAbleToReceiveData = true;
-                    else
-                    {
-                        int intErrorCode = Marshal.GetLastWin32Error();
-                        Utils.BreakIfDebug();
-                        Log.Error("The error " + intErrorCode + " occurred while attempting to unblock WM_COPYDATA.");
-                    }
+                        if (MyStartupPvt != null)
+                        {
+                            MyStartupPvt.Duration = DateTimeOffset.UtcNow - MyStartupPvt.Timestamp;
+                            opFrmChummerMain.MyTelemetryClient.TrackPageView(MyStartupPvt);
+                        }
 
-                    Text = MainTitle;
+                        NativeMethods.ChangeFilterStruct changeFilter = new NativeMethods.ChangeFilterStruct();
+                        changeFilter.size = (uint) Marshal.SizeOf(changeFilter);
+                        changeFilter.info = 0;
+                        if (NativeMethods.ChangeWindowMessageFilterEx(Handle, NativeMethods.WM_COPYDATA,
+                                                                      NativeMethods.ChangeWindowMessageFilterExAction
+                                                                          .Allow, ref changeFilter))
+                            _blnAbleToReceiveData = true;
+                        else
+                        {
+                            int intErrorCode = Marshal.GetLastWin32Error();
+                            Utils.BreakIfDebug();
+                            Log.Error(
+                                "The error " + intErrorCode + " occurred while attempting to unblock WM_COPYDATA.");
+                        }
 
-                    //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
+                        Text = MainTitle;
 
-                    // If Automatic Updates are enabled, check for updates immediately.
+                        //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
+
+                        // If Automatic Updates are enabled, check for updates immediately.
 
 #if !DEBUG
                     Application.Idle += IdleUpdateCheck;
                     CheckForUpdate();
 #endif
 
-                    GlobalSettings.MruChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMruToolstripMenu(senderInner, eInner));
+                        GlobalSettings.MruChanged += PopulateMruToolstripMenu;
 
-                    // Delete the old executable if it exists (created by the update process).
-                    foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
-                    {
-                        Utils.SafeDeleteFile(strLoopOldFilePath);
-                    }
+                        // Populate the MRU list.
+                        await this.DoThreadSafeFunc(() => DoPopulateMruToolstripMenu());
 
-                    // Populate the MRU list.
-                    PopulateMruToolstripMenu(this, null);
+                        Program.MainForm = this;
 
-                    Program.MainForm = this;
-
-                    using (new CursorWait(this))
-                    using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1))
-                    {
-                        Task<ParallelLoopResult> objCharacterLoadingTask = null;
-                        using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalSettings.AllowEasterEggs ? 4 : 3) + s_PreloadFileNames.Count))
+                        CursorWait objCursorWait2 = await CursorWait.NewAsync(this);
+                        try
                         {
-                            // Attempt to cache all XML files that are used the most.
-                            using (_ = Timekeeper.StartSyncron("cache_load", opFrmChummerMain))
+                            ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1);
+                            try
                             {
-                                await Task.WhenAll(s_PreloadFileNames.Select(x => Task.Run(() =>
+                                Task objCharacterLoadingTask = null;
+                                using (Program.MainProgressBar
+                                           = await Program.CreateAndShowProgressBarAsync(
+                                               Text,
+                                               GlobalSettings.AllowEasterEggs ? 4 : 3))
                                 {
-                                    // Load default language data first for performance reasons
-                                    if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                                        XmlManager.Load(x, null, GlobalSettings.DefaultLanguage);
-                                    XmlManager.Load(x);
-                                    _frmProgressBar.PerformStep(Application.ProductName, LoadingBar.ProgressBarTextPatterns.Initializing);
-                                })));
-                                //Timekeeper.Finish("cache_load");
-                            }
+                                    Program.MainProgressBar.PerformStep(
+                                        await LanguageManager.GetStringAsync("String_UI"));
 
-                            _frmProgressBar.PerformStep(LanguageManager.GetString("String_UI"));
+                                    Program.OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
 
-                            _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
-
-                            // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
-                            bool blnShowTest = false;
-                            if (!Utils.IsUnitTest)
-                            {
-                                string[] strArgs = Environment.GetCommandLineArgs();
-                                ProcessCommandLineArguments(strArgs, out blnShowTest, out HashSet<string> setFilesToLoad, opFrmChummerMain);
-                                try
-                                {
-                                    if (Directory.Exists(Utils.GetAutosavesFolderPath))
+                                    // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
+                                    bool blnShowTest = false;
+                                    if (!Utils.IsUnitTest)
                                     {
-                                        // Always process newest autosave if all MRUs are empty
-                                        bool blnAnyAutosaveInMru
-                                            = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                              GlobalSettings.FavoriteCharacters.Count == 0;
-                                        FileInfo objMostRecentAutosave = null;
-                                        List<string> lstOldAutosaves = new List<string>();
-                                        DateTime objOldAutosaveTimeThreshold =
-                                            DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
-                                        foreach (string strAutosave in Directory.EnumerateFiles(
-                                                     Utils.GetAutosavesFolderPath,
-                                                     "*.chum5", SearchOption.AllDirectories))
+                                        string[] strArgs = Environment.GetCommandLineArgs();
+                                        ProcessCommandLineArguments(strArgs, out blnShowTest,
+                                                                    out HashSet<string> setFilesToLoad,
+                                                                    opFrmChummerMain);
+                                        try
                                         {
-                                            FileInfo objAutosave;
-                                            try
+                                            if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                             {
-                                                objAutosave = new FileInfo(strAutosave);
-                                            }
-                                            catch (System.Security.SecurityException)
-                                            {
-                                                continue;
-                                            }
-                                            catch (UnauthorizedAccessException)
-                                            {
-                                                continue;
+                                                // Always process newest autosave if all MRUs are empty
+                                                bool blnAnyAutosaveInMru
+                                                    = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
+                                                      GlobalSettings.FavoriteCharacters.Count == 0;
+                                                FileInfo objMostRecentAutosave = null;
+                                                List<string> lstOldAutosaves = new List<string>(10);
+                                                DateTime objOldAutosaveTimeThreshold =
+                                                    DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
+                                                foreach (string strAutosave in Directory.EnumerateFiles(
+                                                             Utils.GetAutosavesFolderPath,
+                                                             "*.chum5", SearchOption.AllDirectories))
+                                                {
+                                                    FileInfo objAutosave;
+                                                    try
+                                                    {
+                                                        objAutosave = new FileInfo(strAutosave);
+                                                    }
+                                                    catch (System.Security.SecurityException)
+                                                    {
+                                                        continue;
+                                                    }
+                                                    catch (UnauthorizedAccessException)
+                                                    {
+                                                        continue;
+                                                    }
+
+                                                    if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
+                                                        objMostRecentAutosave.LastWriteTimeUtc)
+                                                        objMostRecentAutosave = objAutosave;
+                                                    if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
+                                                            Path.GetFileName(x) == objAutosave.Name) ||
+                                                        GlobalSettings.FavoriteCharacters.Any(x =>
+                                                            Path.GetFileName(x) == objAutosave.Name))
+                                                        blnAnyAutosaveInMru = true;
+                                                    else if (objAutosave != objMostRecentAutosave &&
+                                                             objAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold
+                                                             &&
+                                                             !setFilesToLoad.Contains(strAutosave))
+                                                        lstOldAutosaves.Add(strAutosave);
+                                                }
+
+                                                if (objMostRecentAutosave != null)
+                                                {
+                                                    // Might have had a crash for an unsaved character, so prompt if we want to load them
+                                                    if (blnAnyAutosaveInMru &&
+                                                        !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
+                                                        GlobalSettings.MostRecentlyUsedCharacters.All(x =>
+                                                            Path.GetFileName(x) != objMostRecentAutosave.Name) &&
+                                                        GlobalSettings.FavoriteCharacters.All(x =>
+                                                            Path.GetFileName(x) != objMostRecentAutosave.Name))
+                                                    {
+                                                        if (Program.ShowMessageBox(
+                                                                string.Format(GlobalSettings.CultureInfo,
+                                                                              await LanguageManager.GetStringAsync(
+                                                                                  "Message_PossibleCrashAutosaveFound"),
+                                                                              objMostRecentAutosave.Name,
+                                                                              objMostRecentAutosave.LastWriteTimeUtc
+                                                                                  .ToLocalTime()),
+                                                                await LanguageManager.GetStringAsync(
+                                                                    "MessageTitle_AutosaveFound"),
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                            == DialogResult.Yes)
+                                                            setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                                        else
+                                                            lstOldAutosaves.Add(objMostRecentAutosave.FullName);
+                                                    }
+                                                    else if (objMostRecentAutosave.LastWriteTimeUtc
+                                                             < objOldAutosaveTimeThreshold)
+                                                        lstOldAutosaves.Add(objMostRecentAutosave.FullName);
+                                                }
+
+                                                // Delete all old autosaves
+                                                List<Task> lstTasks = new List<Task>(lstOldAutosaves.Count);
+                                                foreach (string strOldAutosave in lstOldAutosaves)
+                                                {
+                                                    lstTasks.Add(Utils.SafeDeleteFileAsync(strOldAutosave));
+                                                }
+
+                                                await Task.WhenAll(lstTasks);
                                             }
 
-                                            if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
-                                                objMostRecentAutosave.LastWriteTimeUtc)
-                                                objMostRecentAutosave = objAutosave;
-                                            if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
-                                                    Path.GetFileName(x) == objAutosave.Name) ||
-                                                GlobalSettings.FavoriteCharacters.Any(x =>
-                                                    Path.GetFileName(x) == objAutosave.Name))
-                                                blnAnyAutosaveInMru = true;
-                                            else if (objAutosave != objMostRecentAutosave &&
-                                                     objAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold &&
-                                                     !setFilesToLoad.Contains(strAutosave))
-                                                lstOldAutosaves.Add(strAutosave);
+                                            if (setFilesToLoad.Count > 0)
+                                            {
+                                                List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
+                                                foreach (string strFile in setFilesToLoad)
+                                                {
+                                                    tskLoadingTasks.Add(Task.Run(async () =>
+                                                    {
+                                                        Character objCharacter
+                                                            = await Program.LoadCharacterAsync(strFile);
+                                                        // ReSharper disable once AccessToDisposedClosure
+                                                        await lstCharactersToLoad
+                                                            .AddAsync(objCharacter);
+                                                    }));
+                                                }
+                                                objCharacterLoadingTask = Task.WhenAll(tskLoadingTasks);
+                                            }
                                         }
-
-                                        if (objMostRecentAutosave != null)
+                                        finally
                                         {
-                                            // Might have had a crash for an unsaved character, so prompt if we want to load them
-                                            if (blnAnyAutosaveInMru &&
-                                                !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
-                                                GlobalSettings.MostRecentlyUsedCharacters.All(x =>
-                                                    Path.GetFileName(x) != objMostRecentAutosave.Name) &&
-                                                GlobalSettings.FavoriteCharacters.All(x =>
-                                                    Path.GetFileName(x) != objMostRecentAutosave.Name)
-                                                && ShowMessageBox(
-                                                    string.Format(GlobalSettings.CultureInfo,
-                                                                  LanguageManager.GetString(
-                                                                      "Message_PossibleCrashAutosaveFound"),
-                                                                  objMostRecentAutosave.Name,
-                                                                  objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
-                                                    LanguageManager.GetString("MessageTitle_AutosaveFound"),
-                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                                                == DialogResult.Yes)
-                                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
-                                            else if (objMostRecentAutosave.LastWriteTimeUtc
-                                                     < objOldAutosaveTimeThreshold)
-                                                lstOldAutosaves.Add(objMostRecentAutosave.FullName);
-                                        }
-
-                                        // Delete all old autosaves
-                                        foreach (string strOldAutosave in lstOldAutosaves)
-                                        {
-                                            Utils.SafeDeleteFile(strOldAutosave);
+                                            Utils.StringHashSetPool.Return(setFilesToLoad);
                                         }
                                     }
 
-                                    if (setFilesToLoad.Count > 0)
-                                        objCharacterLoadingTask = Task.Run(() =>
-                                                                               Parallel.ForEach(setFilesToLoad, x =>
-                                                                               {
-                                                                                   Character objCharacter
-                                                                                       = LoadCharacter(x);
-                                                                                   // ReSharper disable once AccessToDisposedClosure
-                                                                                   lstCharactersToLoad
-                                                                                       .Add(objCharacter);
-                                                                               }));
+                                    Program.MainProgressBar.PerformStep(
+                                        await LanguageManager.GetStringAsync("Title_MasterIndex"));
+
+                                    if (MasterIndex != null)
+                                    {
+                                        if (CharacterRoster == null)
+                                            MasterIndex.WindowState = FormWindowState.Maximized;
+                                        MasterIndex.Show();
+                                    }
+
+                                    Program.MainProgressBar.PerformStep(
+                                        await LanguageManager.GetStringAsync("String_CharacterRoster"));
+
+                                    if (CharacterRoster != null)
+                                    {
+                                        if (MasterIndex == null)
+                                            CharacterRoster.WindowState = FormWindowState.Maximized;
+                                        CharacterRoster.Show();
+                                    }
+
+                                    if (GlobalSettings.AllowEasterEggs)
+                                    {
+                                        Program.MainProgressBar.PerformStep(
+                                            await LanguageManager.GetStringAsync("String_Chummy"));
+                                        _mascotChummy = new Chummy(null);
+                                        _mascotChummy.Show(this);
+                                    }
+
+                                    // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                                    if (MasterIndex != null && CharacterRoster != null)
+                                    {
+                                        MasterIndex.WindowState = FormWindowState.Maximized;
+                                        CharacterRoster.WindowState = FormWindowState.Maximized;
+                                    }
+
+                                    if (blnShowTest)
+                                    {
+                                        TestDataEntries frmTestData = new TestDataEntries();
+                                        frmTestData.Show();
+                                    }
                                 }
-                                finally
+
+                                Program.PluginLoader.CallPlugins(toolsMenu, opFrmChummerMain);
+
+                                // Set the Tag for each ToolStrip item so it can be translated.
+                                foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
                                 {
-                                    Utils.StringHashSetPool.Return(setFilesToLoad);
+                                    tssItem.UpdateLightDarkMode();
+                                    tssItem.TranslateToolStripItemsRecursively();
                                 }
+
+                                foreach (ToolStripMenuItem tssItem in mnuProcessFile.Items.OfType<ToolStripMenuItem>())
+                                {
+                                    tssItem.UpdateLightDarkMode();
+                                    tssItem.TranslateToolStripItemsRecursively();
+                                }
+
+                                if (objCharacterLoadingTask?.IsCompleted == false)
+                                    await objCharacterLoadingTask;
+                                if (lstCharactersToLoad.Count > 0)
+                                    await OpenCharacterList(lstCharactersToLoad);
                             }
-
-                            _frmProgressBar.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
-
-                            if (MasterIndex != null)
+                            finally
                             {
-                                if (CharacterRoster == null)
-                                    MasterIndex.WindowState = FormWindowState.Maximized;
-                                MasterIndex.Show();
-                            }
-
-                            _frmProgressBar.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
-
-                            if (CharacterRoster != null)
-                            {
-                                if (MasterIndex == null)
-                                    CharacterRoster.WindowState = FormWindowState.Maximized;
-                                CharacterRoster.Show();
-                            }
-
-                            if (GlobalSettings.AllowEasterEggs)
-                            {
-                                _frmProgressBar.PerformStep(LanguageManager.GetString("String_Chummy"));
-                                _mascotChummy = new Chummy(null);
-                                _mascotChummy.Show(this);
-                            }
-
-                            // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                            if (MasterIndex != null && CharacterRoster != null)
-                            {
-                                MasterIndex.WindowState = FormWindowState.Maximized;
-                                CharacterRoster.WindowState = FormWindowState.Maximized;
-                            }
-
-                            if (blnShowTest)
-                            {
-                                TestDataEntries frmTestData = new TestDataEntries();
-                                frmTestData.Show();
+                                await lstCharactersToLoad.DisposeAsync();
                             }
                         }
-
-                        Program.PluginLoader.CallPlugins(toolsMenu, opFrmChummerMain);
-
-                        // Set the Tag for each ToolStrip item so it can be translated.
-                        foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
+                        finally
                         {
-                            tssItem.UpdateLightDarkMode();
-                            tssItem.TranslateToolStripItemsRecursively();
+                            await objCursorWait2.DisposeAsync();
                         }
-
-                        foreach (ToolStripMenuItem tssItem in mnuProcessFile.Items.OfType<ToolStripMenuItem>())
+                    }
+                    catch (Exception ex)
+                    {
+                        if (opFrmChummerMain != null)
                         {
-                            tssItem.UpdateLightDarkMode();
-                            tssItem.TranslateToolStripItemsRecursively();
+                            opFrmChummerMain.SetSuccess(false);
+                            opFrmChummerMain.MyTelemetryClient.TrackException(ex);
                         }
 
-                        if (objCharacterLoadingTask?.IsCompleted == false)
-                            await objCharacterLoadingTask;
-                        if (lstCharactersToLoad.Count > 0)
-                            OpenCharacterList(lstCharactersToLoad);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (opFrmChummerMain != null)
-                    {
-                        opFrmChummerMain.SetSuccess(false);
-                        opFrmChummerMain.MyTelemetryClient.TrackException(ex);
-                    }
-                    Log.Error(ex);
-                    throw;
-                }
-
-                //sometimes the Configuration gets messed up - make sure it is valid!
-                try
-                {
-                    Size _ = Properties.Settings.Default.Size;
-                }
-                catch (ArgumentException ex)
-                {
-                    //the config is invalid - reset it!
-                    Properties.Settings.Default.Reset();
-                    Properties.Settings.Default.Save();
-                    Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
-                }
-                catch (System.Configuration.ConfigurationErrorsException ex)
-                {
-                    //the config is invalid - reset it!
-                    Properties.Settings.Default.Reset();
-                    Properties.Settings.Default.Save();
-                    Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
-                }
-
-                if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0 || !IsVisibleOnAnyScreen())
-                {
-                    int intDefaultWidth = 1280;
-                    int intDefaultHeight = 720;
-                    using (Graphics g = CreateGraphics())
-                    {
-                        intDefaultWidth = (int)(intDefaultWidth * g.DpiX / 96.0f);
-                        intDefaultHeight = (int)(intDefaultHeight * g.DpiY / 96.0f);
-                    }
-                    Size = new Size(intDefaultWidth, intDefaultHeight);
-                    StartPosition = FormStartPosition.CenterScreen;
-                }
-                else
-                {
-                    if (!Utils.IsUnitTest)
-                    {
-                        WindowState = Properties.Settings.Default.WindowState;
-                        if (WindowState == FormWindowState.Minimized)
-                            WindowState = FormWindowState.Normal;
+                        Log.Error(ex);
+                        throw;
                     }
 
-                    Location = Properties.Settings.Default.Location;
-                    Size = Properties.Settings.Default.Size;
+                    //sometimes the Configuration gets messed up - make sure it is valid!
+                    try
+                    {
+                        Size _ = Properties.Settings.Default.Size;
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        //the config is invalid - reset it!
+                        Properties.Settings.Default.Reset();
+                        Properties.Settings.Default.Save();
+                        Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                    }
+                    catch (System.Configuration.ConfigurationErrorsException ex)
+                    {
+                        //the config is invalid - reset it!
+                        Properties.Settings.Default.Reset();
+                        Properties.Settings.Default.Save();
+                        Log.Warn("Configuartion Settings were invalid and had to be reset. Exception: " + ex.Message);
+                    }
+
+                    if (Properties.Settings.Default.Size.Width == 0 || Properties.Settings.Default.Size.Height == 0
+                                                                    || !IsVisibleOnAnyScreen())
+                    {
+                        int intDefaultWidth = 1280;
+                        int intDefaultHeight = 720;
+                        using (Graphics g = CreateGraphics())
+                        {
+                            intDefaultWidth = (int) (intDefaultWidth * g.DpiX / 96.0f);
+                            intDefaultHeight = (int) (intDefaultHeight * g.DpiY / 96.0f);
+                        }
+
+                        Size = new Size(intDefaultWidth, intDefaultHeight);
+                        StartPosition = FormStartPosition.CenterScreen;
+                    }
+                    else
+                    {
+                        if (!Utils.IsUnitTest)
+                        {
+                            WindowState = Properties.Settings.Default.WindowState;
+                            if (WindowState == FormWindowState.Minimized)
+                                WindowState = FormWindowState.Normal;
+                        }
+
+                        Location = Properties.Settings.Default.Location;
+                        Size = Properties.Settings.Default.Size;
+                    }
+
+                    if (!Utils.IsUnitTest && GlobalSettings.StartupFullscreen)
+                        WindowState = FormWindowState.Maximized;
                 }
-                if (!Utils.IsUnitTest && GlobalSettings.StartupFullscreen)
-                    WindowState = FormWindowState.Maximized;
+
+                if (Utils.IsUnitTest)
+                {
+                    if (CharacterRoster != null)
+                    {
+                        if (MasterIndex != null)
+                        {
+                            while (!CharacterRoster.IsFinishedLoading || !MasterIndex.IsFinishedLoading)
+                                await Utils.SafeSleepAsync();
+                        }
+                        else
+                        {
+                            while (!CharacterRoster.IsFinishedLoading)
+                                await Utils.SafeSleepAsync();
+                        }
+                    }
+                    else if (MasterIndex != null)
+                    {
+                        while (!MasterIndex.IsFinishedLoading)
+                            await Utils.SafeSleepAsync();
+                    }
+                }
+
+                IsFinishedLoading = true;
             }
-
-            IsFinishedLoading = true;
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
-        private void LstCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private async void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -451,7 +461,7 @@ namespace Chummer
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
                         {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
-                            objCharacter.Dispose();
+                            await objCharacter.DisposeAsync();
                         }
                         break;
                     }
@@ -461,7 +471,7 @@ namespace Chummer
                         {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
                             if (!notifyCollectionChangedEventArgs.NewItems.Contains(objCharacter))
-                                objCharacter.Dispose();
+                                await objCharacter.DisposeAsync();
                         }
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
                             objCharacter.PropertyChanged += UpdateCharacterTabTitle;
@@ -472,7 +482,7 @@ namespace Chummer
 
         public CharacterRoster CharacterRoster { get; }
 
-        public frmMasterIndex MasterIndex { get; }
+        public MasterIndex MasterIndex { get; }
 
 #if !DEBUG
         private Uri UpdateLocation { get; } = new Uri(GlobalSettings.PreferNightlyBuilds
@@ -485,7 +495,7 @@ namespace Chummer
 
         private System.Threading.CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
 
-        private async Task DoCacheGitVersion()
+        private async ValueTask DoCacheGitVersion()
         {
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             System.Net.HttpWebRequest request;
@@ -598,18 +608,18 @@ namespace Chummer
                 if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested ||
                     Utils.GitUpdateAvailable <= 0)
                     return;
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 string strNewText = Application.ProductName + strSpace + '-' + strSpace +
-                                    LanguageManager.GetString("String_Version")
+                                    await LanguageManager.GetStringAsync("String_Version")
                                     + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
                                     + string.Format(GlobalSettings.CultureInfo,
-                                        LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
+                                        await LanguageManager.GetStringAsync("String_Update_Available"), Utils.CachedGitVersion);
                 await this.DoThreadSafeAsync(() =>
                 {
                     if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                     {
-                        _frmUpdate = new frmUpdate();
-                        _frmUpdate.FormClosed += ResetFrmUpdate;
+                        _frmUpdate = new ChummerUpdater();
+                        _frmUpdate.FormClosed += ResetChummerUpdater;
                         _frmUpdate.SilentMode = true;
                     }
                     Text = strNewText;
@@ -656,18 +666,32 @@ namespace Chummer
             }
         }
 
-        private void mnuGlobalSettings_Click(object sender, EventArgs e)
+        private async void mnuGlobalSettings_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
-            using (EditGlobalSettings frmOptions = new EditGlobalSettings())
-                frmOptions.ShowDialogSafe(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                    await frmOptions.ShowDialogSafeAsync(this);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
-        private void mnuCharacterSettings_Click(object sender, EventArgs e)
+        private async void mnuCharacterSettings_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
-            using (EditCharacterSettings frmCharacterOptions = new EditCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings))
-                frmCharacterOptions.ShowDialogSafe(this);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                using (EditCharacterSettings frmCharacterOptions = new EditCharacterSettings((tabForms.SelectedTab?.Tag as CharacterShared)?.CharacterObject?.Settings))
+                    await frmCharacterOptions.ShowDialogSafeAsync(this);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private void mnuToolsUpdate_Click(object sender, EventArgs e)
@@ -675,8 +699,8 @@ namespace Chummer
             // Only a single instance of the updater can be open, so either find the current instance and focus on it, or create a new one.
             if (_frmUpdate == null)
             {
-                _frmUpdate = new frmUpdate();
-                _frmUpdate.FormClosed += ResetFrmUpdate;
+                _frmUpdate = new ChummerUpdater();
+                _frmUpdate.FormClosed += ResetChummerUpdater;
                 _frmUpdate.Show();
             }
             // Silent updater is running, so make it visible
@@ -691,15 +715,15 @@ namespace Chummer
             }
         }
 
-        private void ResetFrmUpdate(object sender, EventArgs e)
+        private void ResetChummerUpdater(object sender, EventArgs e)
         {
             _frmUpdate = null;
         }
 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        private async void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             using (About showAbout = new About())
-                showAbout.ShowDialogSafe(this);
+                await showAbout.ShowDialogSafeAsync(this);
         }
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
@@ -728,21 +752,23 @@ namespace Chummer
             PrintMultipleCharactersForm.Show(this);
         }
 
-        private void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
+        private async void mnuHelpRevisionHistory_Click(object sender, EventArgs e)
         {
             using (VersionHistory frmShowHistory = new VersionHistory())
-                frmShowHistory.ShowDialogSafe(this);
+                await frmShowHistory.ShowDialogSafeAsync(this);
         }
 
-        private void mnuNewCritter_Click(object sender, EventArgs e)
+        private async void mnuNewCritter_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                using (Character objCharacter = new Character()) // Using is fine here because Dispose() code is skipped if the character is open in a form
+                Character objCharacter = new Character();
+                try
                 {
-                    using (frmSelectBuildMethod frmPickSetting = new frmSelectBuildMethod(objCharacter))
+                    using (SelectBuildMethod frmPickSetting = new SelectBuildMethod(objCharacter))
                     {
-                        frmPickSetting.ShowDialogSafe(this);
+                        await frmPickSetting.ShowDialogSafeAsync(this);
                         if (frmPickSetting.DialogResult == DialogResult.Cancel)
                             return;
                     }
@@ -753,26 +779,43 @@ namespace Chummer
                     objCharacter.Created = true;
 
                     // Show the Metatype selection window.
-                    using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
+                    using (SelectMetatypeKarma frmSelectMetatype
+                           = new SelectMetatypeKarma(objCharacter, "critters.xml"))
                     {
-                        frmSelectMetatype.ShowDialogSafe(this);
+                        await frmSelectMetatype.ShowDialogSafeAsync(this);
 
                         if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
                             return;
                     }
 
-                    OpenCharacter(objCharacter, false);
+                    Program.OpenCharacters.Add(objCharacter);
+                    await OpenCharacter(objCharacter, false);
                 }
+                finally
+                {
+                    await objCharacter.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
-        private void mnuMRU_Click(object sender, EventArgs e)
+        private async void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
-            using (new CursorWait(this))
-                OpenCharacter(LoadCharacter(strFileName));
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                await OpenCharacter(await Program.LoadCharacterAsync(strFileName));
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -796,7 +839,7 @@ namespace Chummer
             }
         }
 
-        private void frmChummerMain_MdiChildActivate(object sender, EventArgs e)
+        private async void ChummerMainForm_MdiChildActivate(object sender, EventArgs e)
         {
             // If there are no child forms, hide the tab control.
             if (ActiveMdiChild != null)
@@ -826,7 +869,7 @@ namespace Chummer
                     }
                     else
                     {
-                        string strTagText = LanguageManager.GetString(ActiveMdiChild.Tag?.ToString(), GlobalSettings.Language, false);
+                        string strTagText = await LanguageManager.GetStringAsync(ActiveMdiChild.Tag?.ToString(), GlobalSettings.Language, false);
                         if (!string.IsNullOrEmpty(strTagText))
                             tp.Text = strTagText;
                     }
@@ -876,13 +919,20 @@ namespace Chummer
             (tabForms.SelectedTab?.Tag as Form)?.Select();
         }
 
-        public bool SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMru)
+        /// <summary>
+        /// Switch to an open character form if one is available.
+        /// </summary>
+        /// <param name="objCharacter"></param>
+        /// <returns></returns>
+        public bool SwitchToOpenCharacter(Character objCharacter)
         {
-            if (objCharacter == null)
-                return false;
-            CharacterShared objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
-            if (objCharacterForm != null)
+            using (CursorWait.New(this))
             {
+                if (objCharacter == null)
+                    return false;
+                CharacterShared objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
+                if (objCharacterForm == null)
+                    return false;
                 foreach (TabPage objTabPage in tabForms.TabPages)
                 {
                     if (objTabPage.Tag != objCharacterForm)
@@ -892,13 +942,9 @@ namespace Chummer
                         _mascotChummy.CharacterObject = objCharacter;
                     return true;
                 }
+                objCharacterForm.BringToFront();
+                return true;
             }
-
-            if (!OpenCharacters.Contains(objCharacter))
-                return false;
-            using (new CursorWait(this))
-                OpenCharacter(objCharacter, blnIncludeInMru);
-            return true;
         }
 
         public void UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e)
@@ -924,7 +970,7 @@ namespace Chummer
                 // Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
                 if (_frmRoller == null)
                 {
-                    _frmRoller = new frmDiceRoller(this);
+                    _frmRoller = new DiceRoller(this);
                     _frmRoller.Show();
                 }
                 else
@@ -935,7 +981,7 @@ namespace Chummer
             else
             {
                 // No limit on the number of Dice Roller windows, so just create a new one.
-                frmDiceRoller frmRoller = new frmDiceRoller(this);
+                DiceRoller frmRoller = new DiceRoller(this);
                 frmRoller.Show();
             }
         }
@@ -982,29 +1028,35 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(objMyRectangle));
         }
 
-        private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
+        private async void ChummerMainForm_DragDrop(object sender, DragEventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 // Open each file that has been dropped into the window.
                 string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
                 if (s.Length == 0)
                     return;
-                Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(s.Length);
+                Character[] lstCharacters = new Character[s.Length];
+                Task<Character>[] tskCharacterLoads = new Task<Character>[s.Length];
+                // Array instead of concurrent bag because we want to preserve order
                 for (int i = 0; i < s.Length; ++i)
                 {
-                    dicIndexedStrings.Add(i, s[i]);
+                    string strFile = s[i];
+                    tskCharacterLoads[i] = Task.Run(() => Program.LoadCharacterAsync(strFile));
                 }
-
-                // Array with locker instead of concurrent bag because we want to preserve order
-                Character[] lstCharacters = new Character[s.Length];
-                await Task.WhenAll(dicIndexedStrings.Select(x =>
-                    Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
-                OpenCharacterList(lstCharacters);
+                await Task.WhenAll(tskCharacterLoads);
+                for (int i = 0; i < lstCharacters.Length; ++i)
+                    lstCharacters[i] = await tskCharacterLoads[i];
+                await OpenCharacterList(lstCharacters);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
         }
 
-        private void frmChummerMain_DragEnter(object sender, DragEventArgs e)
+        private void ChummerMainForm_DragEnter(object sender, DragEventArgs e)
         {
             // Only use a drop effect if a file is being dragged into the window.
             e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.All : DragDropEffects.None;
@@ -1017,10 +1069,10 @@ namespace Chummer
                 Process.Start(strTranslator);
         }
 
-        private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
+        private void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
         {
-            _lstCharacters.CollectionChanged -= LstCharactersOnCollectionChanged;
-            foreach (Character objCharacter in _lstCharacters)
+            Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
+            foreach (Character objCharacter in Program.OpenCharacters)
                 objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
 #if !DEBUG
             _objVersionUpdaterCancellationTokenSource?.Cancel(false);
@@ -1047,13 +1099,14 @@ namespace Chummer
             }
         }
 
-        private void mnuHeroLabImporter_Click(object sender, EventArgs e)
+        private async void mnuHeroLabImporter_Click(object sender, EventArgs e)
         {
-            if (ShowMessageBox(LanguageManager.GetString("Message_HeroLabImporterWarning"),
-                    LanguageManager.GetString("Message_HeroLabImporterWarning_Title"), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning"),
+                    await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title"),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            frmHeroLabImporter frmImporter = new frmHeroLabImporter();
+            HeroLabImporter frmImporter = new HeroLabImporter();
             frmImporter.Show();
         }
 
@@ -1074,19 +1127,19 @@ namespace Chummer
             }
         }
 
-        private void tsSave_Click(object sender, EventArgs e)
+        private async void tsSave_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.SaveCharacter();
+                await objShared.SaveCharacter();
             }
         }
 
-        private void tsSaveAs_Click(object sender, EventArgs e)
+        private async void tsSaveAs_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.SaveCharacterAs();
+                await objShared.SaveCharacterAs();
             }
         }
 
@@ -1098,15 +1151,15 @@ namespace Chummer
             }
         }
 
-        private void tsPrint_Click(object sender, EventArgs e)
+        private async void tsPrint_Click(object sender, EventArgs e)
         {
             if (tabForms.SelectedTab.Tag is CharacterShared objShared)
             {
-                objShared.DoPrint();
+                await objShared.DoPrint();
             }
         }
 
-        private void frmChummerMain_DpiChanged(object sender, DpiChangedEventArgs e)
+        private void ChummerMainForm_DpiChanged(object sender, DpiChangedEventArgs e)
         {
             tabForms.ItemSize = new Size(
                 tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
@@ -1116,107 +1169,21 @@ namespace Chummer
         #endregion Control Events
 
         #region Methods
-
-        private static bool _blnShowDevWarningAboutDebuggingOnlyOnce = true;
-
-        /// <summary>
-        /// This makes sure, that the MessageBox is shown in the UI Thread.
-        /// https://stackoverflow.com/questions/559252/does-messagebox-show-automatically-marshall-to-the-ui-thread
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="caption"></param>
-        /// <param name="icon"></param>
-        /// <param name="defaultButton"></param>
-        /// <param name="buttons"></param>
-        /// <returns></returns>
-        public DialogResult ShowMessageBox(string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
-        {
-            return ShowMessageBox(null, message, caption, buttons, icon);
-        }
-
-        public DialogResult ShowMessageBox(Control owner, string message, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defaultButton = MessageBoxDefaultButton.Button1)
-        {
-            if (Utils.IsUnitTest)
-            {
-                string msg = "We don't want to see MessageBoxes in Unit Tests!" + Environment.NewLine;
-                msg += "Caption: " + caption + Environment.NewLine;
-                msg += "Message: " + message;
-                throw new ArgumentException(msg);
-            }
-
-            if (owner == null)
-                owner = _frmProgressBar.IsNullOrDisposed() ? this as Control : _frmProgressBar;
-
-            if (owner.InvokeRequired)
-            {
-                if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
-                {
-                    _blnShowDevWarningAboutDebuggingOnlyOnce = false;
-                    //it works on my installation even in the debugger, so maybe we can ignore that...
-                    //WARNING from the link above (you can edit that out if it's not causing problem):
-                    //
-                    //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
-                    //other than the main/application thread, YOU NEED TO TURN OFF
-                    //the "Enable property evaluation and other implicit function calls" option, or else VS will
-                    //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
-                    //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
-                    //that setting off.
-                    Debugger.Break();
-                }
-
-                try
-                {
-                    return (DialogResult)owner.Invoke(new PassStringStringReturnDialogResultDelegate(ShowMessageBox),
-                        message, caption, buttons, icon, defaultButton);
-                }
-                catch (ObjectDisposedException)
-                {
-                    //if the main form is disposed, we really don't need to bother anymore...
-                }
-                catch (Exception e)
-                {
-                    string msg = "Could not show a MessageBox " + caption + ":" + Environment.NewLine;
-                    msg += message + Environment.NewLine + Environment.NewLine;
-                    msg += "Exception: " + e;
-                    Log.Fatal(e, msg);
-                }
-            }
-
-            return CenterableMessageBox.Show(_frmProgressBar.IsNullOrDisposed() ? this : _frmProgressBar as IWin32Window, message, caption, buttons, icon, defaultButton);
-        }
-
-        public delegate DialogResult PassStringStringReturnDialogResultDelegate(
-            string s1, string s2, MessageBoxButtons buttons,
-            MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
-
-        /// <summary>
-        /// Syntatic sugar for creating and displaying a frmLoading screen with specific text and progress bar size.
-        /// </summary>
-        /// <param name="strFile"></param>
-        /// <param name="intCount"></param>
-        /// <returns></returns>
-        public static LoadingBar CreateAndShowProgressBar(string strFile = "", int intCount = 1)
-        {
-            LoadingBar frmReturn = new LoadingBar { CharacterFile = strFile };
-            if (intCount > 0)
-                frmReturn.Reset(intCount);
-            frmReturn.Show();
-            return frmReturn;
-        }
-
         /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>
-        private void ShowNewForm(object sender, EventArgs e)
+        private async void ShowNewForm(object sender, EventArgs e)
         {
-            using (Character objCharacter = new Character())
+            Character objCharacter = new Character();
+            try
             {
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
                     // Show the BP selection window.
-                    using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
+                    using (SelectBuildMethod frmBP = new SelectBuildMethod(objCharacter))
                     {
-                        frmBP.ShowDialogSafe(this);
+                        await frmBP.ShowDialogSafeAsync(this);
                         if (frmBP.DialogResult != DialogResult.OK)
                             return;
                     }
@@ -1224,9 +1191,9 @@ namespace Chummer
                     // Show the Metatype selection window.
                     if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
                     {
-                        using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
+                        using (SelectMetatypePriority frmSelectMetatype = new SelectMetatypePriority(objCharacter))
                         {
-                            frmSelectMetatype.ShowDialogSafe(this);
+                            await frmSelectMetatype.ShowDialogSafeAsync(this);
 
                             if (frmSelectMetatype.DialogResult != DialogResult.OK)
                                 return;
@@ -1234,21 +1201,26 @@ namespace Chummer
                     }
                     else
                     {
-                        using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
+                        using (SelectMetatypeKarma frmSelectMetatype = new SelectMetatypeKarma(objCharacter))
                         {
-                            frmSelectMetatype.ShowDialogSafe(this);
+                            await frmSelectMetatype.ShowDialogSafeAsync(this);
 
                             if (frmSelectMetatype.DialogResult != DialogResult.OK)
                                 return;
                         }
                     }
 
-                    OpenCharacters.Add(objCharacter);
+                    Program.OpenCharacters.Add(objCharacter);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
                 }
 
-                using (new CursorWait(this))
+                objCursorWait = await CursorWait.NewAsync(this);
+                try
                 {
-                    frmCreate frmNewCharacter = new frmCreate(objCharacter)
+                    CharacterCreate frmNewCharacter = new CharacterCreate(objCharacter)
                     {
                         MdiParent = this
                     };
@@ -1259,6 +1231,14 @@ namespace Chummer
                     if (MdiChildren.Length > 1)
                         frmNewCharacter.WindowState = FormWindowState.Maximized;
                 }
+                finally
+                {
+                    await objCursorWait.DisposeAsync();
+                }
+            }
+            finally
+            {
+                await objCharacter.DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
             }
         }
 
@@ -1269,13 +1249,14 @@ namespace Chummer
         {
             if (Utils.IsUnitTest)
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
                 List<string> lstFilesToOpen;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
-                             LanguageManager.GetString("DialogFilter_All"),
+                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                             await LanguageManager.GetStringAsync("DialogFilter_All"),
                     Multiselect = true
                 })
                 {
@@ -1285,9 +1266,12 @@ namespace Chummer
                     lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
                     foreach (string strFile in openFileDialog.FileNames)
                     {
-                        Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                        Character objLoopCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
                         if (objLoopCharacter != null)
-                            SwitchToOpenCharacter(objLoopCharacter, true);
+                        {
+                            if (!SwitchToOpenCharacter(objLoopCharacter))
+                                await OpenCharacter(objLoopCharacter);
+                        }
                         else
                             lstFilesToOpen.Add(strFile);
                     }
@@ -1297,21 +1281,25 @@ namespace Chummer
                     return;
                 // Array instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                using (_frmProgressBar = CreateAndShowProgressBar(
-                    string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
-                    lstFilesToOpen.Count * Character.NumLoadingSections))
+                using (Program.MainProgressBar = await Program.CreateAndShowProgressBarAsync(
+                           string.Join(',' + await LanguageManager.GetStringAsync("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
+                           lstFilesToOpen.Count * Character.NumLoadingSections))
                 {
-                    Dictionary<int, string> dicIndexedStrings =
-                        new Dictionary<int, string>(lstFilesToOpen.Count);
+                    Task<Character>[] tskCharacterLoads = new Task<Character>[lstFilesToOpen.Count];
                     for (int i = 0; i < lstFilesToOpen.Count; ++i)
                     {
-                        dicIndexedStrings.Add(i, lstFilesToOpen[i]);
+                        string strFile = lstFilesToOpen[i];
+                        tskCharacterLoads[i] = Task.Run(() => Program.LoadCharacterAsync(strFile));
                     }
-
-                    await Task.WhenAll(dicIndexedStrings.Select(x =>
-                        Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
+                    await Task.WhenAll(tskCharacterLoads);
+                    for (int i = 0; i < lstCharacters.Length; ++i)
+                        lstCharacters[i] = await tskCharacterLoads[i];
                 }
-                OpenCharacterList(lstCharacters);
+                await OpenCharacterList(lstCharacters);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
             }
 
             //Timekeeper.Finish("load_sum");
@@ -1321,9 +1309,9 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character (not thread-safe).
         /// </summary>
-        public void OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
+        public Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
         {
-            OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
+            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
         }
 
         /// <summary>
@@ -1331,381 +1319,373 @@ namespace Chummer
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
         /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
-        public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
+        public async Task OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
         {
-            if (lstCharacters == null)
-                return;
-            List<Character> lstNewCharacters = lstCharacters.ToList();
-            if (lstNewCharacters.Count == 0)
-                return;
-            FormWindowState wsPreference = MdiChildren.Length == 0
-                                           || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
-                ? FormWindowState.Maximized
-                : FormWindowState.Normal;
-            List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
-            string strUI = LanguageManager.GetString("String_UI");
-            string strSpace = LanguageManager.GetString("String_Space");
-            using (_frmProgressBar = CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
             {
-                foreach (Character objCharacter in lstNewCharacters)
+                if (lstCharacters == null)
+                    return;
+                List<Character> lstNewCharacters = lstCharacters.ToList();
+                if (lstNewCharacters.Count == 0)
+                    return;
+                FormWindowState wsPreference = MdiChildren.Length == 0
+                                               || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
+                    ? FormWindowState.Maximized
+                    : FormWindowState.Normal;
+                List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>(lstNewCharacters.Count);
+                string strUI = await LanguageManager.GetStringAsync("String_UI");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                using (Program.MainProgressBar
+                           = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count))
                 {
-                    _frmProgressBar.PerformStep(objCharacter == null ? strUI : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
-                    if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
-                        continue;
-                    if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500) && ShowMessageBox(
-                        string.Format(LanguageManager.GetString("Message_TooManyHandlesWarning"), objCharacter.CharacterName),
-                        LanguageManager.GetString("MessageTitle_TooManyHandlesWarning"),
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    foreach (Character objCharacter in lstNewCharacters)
                     {
-                        if (OpenCharacters.All(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                            Program.MainForm.OpenCharacters.Remove(objCharacter);
-                        continue;
-                    }
-                    //Timekeeper.Start("load_event_time");
-                    // Show the character forms.
-                    this.DoThreadSafe(() =>
-                    {
-                        CharacterShared frmNewCharacter = objCharacter.Created
-                            ? (CharacterShared)new CharacterCareer(objCharacter)
-                            : new frmCreate(objCharacter);
-                        frmNewCharacter.MdiParent = this;
-                        frmNewCharacter.Show();
-                        lstNewFormsToProcess.Add(frmNewCharacter);
-                    });
-                    if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
-                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                        Program.MainProgressBar.PerformStep(objCharacter == null
+                                                                ? strUI
+                                                                : strUI + strSpace + '(' + objCharacter.CharacterName
+                                                                  + ')');
+                        if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
+                            continue;
+                        if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
+                            && Program.ShowMessageBox(
+                                string.Format(await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning"),
+                                              objCharacter.CharacterName),
+                                await LanguageManager.GetStringAsync("MessageTitle_TooManyHandlesWarning"),
+                                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                        {
+                            if (Program.OpenCharacters.All(
+                                    x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                Program.OpenCharacters.Remove(objCharacter);
+                            continue;
+                        }
 
-                    UpdateCharacterTabTitle(objCharacter,
-                        new PropertyChangedEventArgs(nameof(Character.CharacterName)));
-                    //Timekeeper.Finish("load_event_time");
+                        //Timekeeper.Start("load_event_time");
+                        // Show the character forms.
+                        await this.DoThreadSafeAsync(() =>
+                        {
+                            CharacterShared frmNewCharacter = objCharacter.Created
+                                ? (CharacterShared) new CharacterCareer(objCharacter)
+                                : new CharacterCreate(objCharacter);
+                            frmNewCharacter.MdiParent = this;
+                            frmNewCharacter.Show();
+                            lstNewFormsToProcess.Add(frmNewCharacter);
+                        });
+                        if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                            && File.Exists(objCharacter.FileName))
+                            GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+
+                        UpdateCharacterTabTitle(objCharacter,
+                                                new PropertyChangedEventArgs(nameof(Character.CharacterName)));
+                        //Timekeeper.Finish("load_event_time");
+                    }
+                }
+
+                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
+                    frmNewCharacter.QueueThreadSafe(() => frmNewCharacter.WindowState = wsPreference);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+        }
+
+        private async void mnuOpenForPrinting_Click(object sender, EventArgs e)
+        {
+            if (Utils.IsUnitTest)
+                return;
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                string strFile;
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                             await LanguageManager.GetStringAsync("DialogFilter_All")
+                })
+                {
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strFile = openFileDialog.FileName;
+                }
+
+                if (!File.Exists(strFile))
+                    return;
+
+                using (Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
+                                                ?? await Task.Run(() => Program.LoadCharacterAsync(strFile)))
+                {
+                    await OpenCharacterForPrinting(objCharacter);
                 }
             }
-
-            // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-            foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
-                frmNewCharacter.QueueThreadSafe(() => frmNewCharacter.WindowState = wsPreference);
-        }
-
-        /// <summary>
-        /// Load a Character from a file and return it (thread-safe).
-        /// </summary>
-        /// <param name="strFileName">File to load.</param>
-        /// <param name="strNewName">New name for the character.</param>
-        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
-        /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
-        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
-        public Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
-        {
-            return LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors, blnShowProgressBar).GetAwaiter().GetResult();
-        }
-
-        /// <summary>
-        /// Load a Character from a file and return it (thread-safe).
-        /// </summary>
-        /// <param name="strFileName">File to load.</param>
-        /// <param name="strNewName">New name for the character.</param>
-        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
-        /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
-        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
-        public Task<Character> LoadCharacterAsync(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
-        {
-            return LoadCharacterCoreAsync(false, strFileName, strNewName, blnClearFileName, blnShowErrors, blnShowProgressBar);
-        }
-
-        /// <summary>
-        /// Load a Character from a file and return it (thread-safe).
-        /// Uses flag hack method design outlined here to avoid locking:
-        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
-        /// </summary>
-        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
-        /// <param name="strFileName">File to load.</param>
-        /// <param name="strNewName">New name for the character.</param>
-        /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
-        /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
-        /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
-        private async Task<Character> LoadCharacterCoreAsync(bool blnSync, string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
-        {
-            if (string.IsNullOrEmpty(strFileName))
-                return null;
-            Character objCharacter = null;
-            if (File.Exists(strFileName) && strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+            finally
             {
-                //Timekeeper.Start("loading");
-                bool blnLoadAutosave = false;
-                string strAutosavesPath = Utils.GetAutosavesFolderPath;
-                if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
-                {
-                    objCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFileName);
-                    if (objCharacter != null)
-                        return objCharacter;
-                }
-                objCharacter = new Character
-                {
-                    FileName = strFileName
-                };
-                if (blnShowErrors) // Only do the autosave prompt if we will show prompts
-                {
-                    if (!strFileName.StartsWith(strAutosavesPath))
-                    {
-                        string strNewAutosaveName = Path.GetFileName(strFileName);
-                        if (!string.IsNullOrEmpty(strNewAutosaveName))
-                        {
-                            strNewAutosaveName = Path.Combine(strAutosavesPath, strNewAutosaveName);
-                            if (File.Exists(strNewAutosaveName) && File.GetLastWriteTimeUtc(strNewAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
-                            {
-                                blnLoadAutosave = true;
-                                objCharacter.FileName = strNewAutosaveName;
-                            }
-                        }
+                await objCursorWait.DisposeAsync();
+            }
+        }
 
-                        if (!blnLoadAutosave && !string.IsNullOrEmpty(strNewName))
-                        {
-                            string strOldAutosaveName = strNewName;
-                            foreach (var invalidChar in Path.GetInvalidFileNameChars())
-                            {
-                                strOldAutosaveName = strOldAutosaveName.Replace(invalidChar, '_');
-                            }
-
-                            if (!string.IsNullOrEmpty(strOldAutosaveName))
-                            {
-                                strOldAutosaveName = Path.Combine(strAutosavesPath, strOldAutosaveName);
-                                if (File.Exists(strOldAutosaveName) && File.GetLastWriteTimeUtc(strOldAutosaveName) > File.GetLastWriteTimeUtc(strFileName))
-                                {
-                                    blnLoadAutosave = true;
-                                    objCharacter.FileName = strOldAutosaveName;
-                                }
-                            }
-                        }
-                    }
-                    if (blnLoadAutosave && ShowMessageBox(
-                        string.Format(GlobalSettings.CultureInfo,
-                            LanguageManager.GetString("Message_AutosaveFound"),
-                            Path.GetFileName(strFileName),
-                            File.GetLastWriteTimeUtc(objCharacter.FileName).ToLocalTime(),
-                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
-                        LanguageManager.GetString("MessageTitle_AutosaveFound"),
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
-                    {
-                        blnLoadAutosave = false;
-                        objCharacter.FileName = strFileName;
-                    }
-                }
-                if (blnShowProgressBar && _frmProgressBar.IsNullOrDisposed())
+        /// <summary>
+        /// Open a character's print form up without necessarily opening them up fully for editing.
+        /// </summary>
+        public async Task OpenCharacterForPrinting(Character objCharacter)
+        {
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                // Character is already open in an existing form, so switch to it and make it open up its print viewer
+                if (SwitchToOpenCharacter(objCharacter))
                 {
-                    using (_frmProgressBar = CreateAndShowProgressBar(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
-                    {
-                        OpenCharacters.Add(objCharacter);
-                        //Timekeeper.Start("load_file");
-                        bool blnLoaded = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.Load(_frmProgressBar, blnShowErrors)
-                            : await objCharacter.LoadAsync(_frmProgressBar, blnShowErrors);
-                        //Timekeeper.Finish("load_file");
-                        if (!blnLoaded)
-                        {
-                            OpenCharacters.Remove(objCharacter);
-                            return null;
-                        }
-                    }
+                    CharacterShared objOpenForm = OpenCharacterForms.Find(x => x.CharacterObject == objCharacter);
+                    if (objOpenForm != null)
+                        await objOpenForm.DoPrint();
                 }
                 else
                 {
-                    OpenCharacters.Add(objCharacter);
-                    //Timekeeper.Start("load_file");
-                    bool blnLoaded;
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        blnLoaded = objCharacter.Load(blnShowProgressBar ? _frmProgressBar : null, blnShowErrors);
-                    else
-                        blnLoaded = await objCharacter.LoadAsync(blnShowProgressBar ? _frmProgressBar : null,
-                            blnShowErrors);
-                    //Timekeeper.Finish("load_file");
-                    if (!blnLoaded)
+                    using (CharacterSheetViewer frmViewer = this.DoThreadSafeFunc(() => new CharacterSheetViewer()))
                     {
-                        OpenCharacters.Remove(objCharacter);
-                        return null;
+                        await frmViewer.SetCharacters(objCharacter);
+                        await frmViewer.ShowDialogSafeAsync(this);
                     }
                 }
-
-                // If a new name is given, set the character's name to match (used in cloning).
-                if (!string.IsNullOrEmpty(strNewName))
-                    objCharacter.Name = strNewName;
-                // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
-                if (blnClearFileName)
-                    objCharacter.FileName = string.Empty;
-                // Restore original filename if we loaded from an autosave
-                if (blnLoadAutosave)
-                    objCharacter.FileName = strFileName;
-                // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
-                if (objCharacter.FileName.StartsWith(strAutosavesPath))
-                    objCharacter.FileName = string.Empty;
             }
-            else if (blnShowErrors)
+            finally
             {
-                ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), strFileName),
-                    LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                await objCursorWait.DisposeAsync();
             }
-            return objCharacter;
+        }
+
+        private async void mnuOpenForExport_Click(object sender, EventArgs e)
+        {
+            if (Utils.IsUnitTest)
+                return;
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                string strFile;
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                       {
+                           Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' +
+                                    await LanguageManager.GetStringAsync("DialogFilter_All")
+                       })
+                {
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strFile = openFileDialog.FileName;
+                }
+
+                if (!File.Exists(strFile))
+                    return;
+
+                using (Character objCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile)
+                                                ?? await Task.Run(() => Program.LoadCharacterAsync(strFile)))
+                {
+                    await OpenCharacterForExport(objCharacter);
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
+        }
+
+        /// <summary>
+        /// Open a character for exporting without necessarily opening them up fully for editing.
+        /// </summary>
+        public async Task OpenCharacterForExport(Character objCharacter)
+        {
+            CursorWait objCursorWait = await CursorWait.NewAsync(this);
+            try
+            {
+                // Character is already open in an existing form, so switch to it and make it open up its exporter
+                if (SwitchToOpenCharacter(objCharacter))
+                {
+                    CharacterShared objOpenForm = OpenCharacterForms.Find(x => x.CharacterObject == objCharacter);
+                    if (objOpenForm != null)
+                        await objOpenForm.DoExport();
+                }
+                else
+                {
+                    using (ExportCharacter frmExportCharacter
+                           = this.DoThreadSafeFunc(() => new ExportCharacter(objCharacter)))
+                        await frmExportCharacter.ShowDialogSafeAsync(this);
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync();
+            }
         }
 
         /// <summary>
         /// Populate the MRU items.
         /// </summary>
-        public void PopulateMruToolstripMenu(object sender, TextEventArgs e)
+        private async void PopulateMruToolstripMenu(object sender, TextEventArgs e)
         {
-            SuspendLayout();
-            mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
-                                          || GlobalSettings.MostRecentlyUsedCharacters.Count > 0;
+            await this.DoThreadSafeFunc(() => DoPopulateMruToolstripMenu(e?.Text));
+        }
 
-            if (e?.Text != "mru")
+        private async ValueTask DoPopulateMruToolstripMenu(string strText = "")
+        {
+            menuStrip.SuspendLayout();
+            try
             {
+                mnuFileMRUSeparator.Visible = GlobalSettings.FavoriteCharacters.Count > 0
+                                              || GlobalSettings.MostRecentlyUsedCharacters.Count > 0;
+
+                if (strText != "mru")
+                {
+                    for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+                    {
+                        DpiFriendlyToolStripMenuItem objItem;
+                        switch (i)
+                        {
+                            case 0:
+                                objItem = mnuStickyMRU0;
+                                break;
+
+                            case 1:
+                                objItem = mnuStickyMRU1;
+                                break;
+
+                            case 2:
+                                objItem = mnuStickyMRU2;
+                                break;
+
+                            case 3:
+                                objItem = mnuStickyMRU3;
+                                break;
+
+                            case 4:
+                                objItem = mnuStickyMRU4;
+                                break;
+
+                            case 5:
+                                objItem = mnuStickyMRU5;
+                                break;
+
+                            case 6:
+                                objItem = mnuStickyMRU6;
+                                break;
+
+                            case 7:
+                                objItem = mnuStickyMRU7;
+                                break;
+
+                            case 8:
+                                objItem = mnuStickyMRU8;
+                                break;
+
+                            case 9:
+                                objItem = mnuStickyMRU9;
+                                break;
+
+                            default:
+                                continue;
+                        }
+
+                        if (i < GlobalSettings.FavoriteCharacters.Count)
+                        {
+                            objItem.Text = GlobalSettings.FavoriteCharacters[i];
+                            objItem.Tag = GlobalSettings.FavoriteCharacters[i];
+                            objItem.Visible = true;
+                        }
+                        else
+                        {
+                            objItem.Visible = false;
+                        }
+                    }
+                }
+
+                mnuMRU0.Visible = false;
+                mnuMRU1.Visible = false;
+                mnuMRU2.Visible = false;
+                mnuMRU3.Visible = false;
+                mnuMRU4.Visible = false;
+                mnuMRU5.Visible = false;
+                mnuMRU6.Visible = false;
+                mnuMRU7.Visible = false;
+                mnuMRU8.Visible = false;
+                mnuMRU9.Visible = false;
+
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                int i2 = 0;
                 for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
                 {
+                    if (i2 >= GlobalSettings.MostRecentlyUsedCharacters.Count ||
+                        i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
+                        continue;
+                    string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
+                    if (await GlobalSettings.FavoriteCharacters.ContainsAsync(strFile))
+                        continue;
                     DpiFriendlyToolStripMenuItem objItem;
-                    switch (i)
+                    switch (i2)
                     {
                         case 0:
-                            objItem = mnuStickyMRU0;
+                            objItem = mnuMRU0;
                             break;
 
                         case 1:
-                            objItem = mnuStickyMRU1;
+                            objItem = mnuMRU1;
                             break;
 
                         case 2:
-                            objItem = mnuStickyMRU2;
+                            objItem = mnuMRU2;
                             break;
 
                         case 3:
-                            objItem = mnuStickyMRU3;
+                            objItem = mnuMRU3;
                             break;
 
                         case 4:
-                            objItem = mnuStickyMRU4;
+                            objItem = mnuMRU4;
                             break;
 
                         case 5:
-                            objItem = mnuStickyMRU5;
+                            objItem = mnuMRU5;
                             break;
 
                         case 6:
-                            objItem = mnuStickyMRU6;
+                            objItem = mnuMRU6;
                             break;
 
                         case 7:
-                            objItem = mnuStickyMRU7;
+                            objItem = mnuMRU7;
                             break;
 
                         case 8:
-                            objItem = mnuStickyMRU8;
+                            objItem = mnuMRU8;
                             break;
 
                         case 9:
-                            objItem = mnuStickyMRU9;
+                            objItem = mnuMRU9;
                             break;
 
                         default:
                             continue;
                     }
 
-                    if (i < GlobalSettings.FavoriteCharacters.Count)
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    if (i2 <= 9
+                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                        && i2 >= 0)
                     {
-                        objItem.Text = GlobalSettings.FavoriteCharacters[i];
-                        objItem.Tag = GlobalSettings.FavoriteCharacters[i];
-                        objItem.Visible = true;
+                        string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
+                        objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
                     }
                     else
-                    {
-                        objItem.Visible = false;
-                    }
+                        objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile;
+
+                    objItem.Tag = strFile;
+                    objItem.Visible = true;
+
+                    ++i2;
                 }
             }
-
-            mnuMRU0.Visible = false;
-            mnuMRU1.Visible = false;
-            mnuMRU2.Visible = false;
-            mnuMRU3.Visible = false;
-            mnuMRU4.Visible = false;
-            mnuMRU5.Visible = false;
-            mnuMRU6.Visible = false;
-            mnuMRU7.Visible = false;
-            mnuMRU8.Visible = false;
-            mnuMRU9.Visible = false;
-
-            string strSpace = LanguageManager.GetString("String_Space");
-            int i2 = 0;
-            for (int i = 0; i < GlobalSettings.MaxMruSize; ++i)
+            finally
             {
-                if (i2 >= GlobalSettings.MostRecentlyUsedCharacters.Count ||
-                    i >= GlobalSettings.MostRecentlyUsedCharacters.Count)
-                    continue;
-                string strFile = GlobalSettings.MostRecentlyUsedCharacters[i];
-                if (GlobalSettings.FavoriteCharacters.Contains(strFile))
-                    continue;
-                DpiFriendlyToolStripMenuItem objItem;
-                switch (i2)
-                {
-                    case 0:
-                        objItem = mnuMRU0;
-                        break;
-
-                    case 1:
-                        objItem = mnuMRU1;
-                        break;
-
-                    case 2:
-                        objItem = mnuMRU2;
-                        break;
-
-                    case 3:
-                        objItem = mnuMRU3;
-                        break;
-
-                    case 4:
-                        objItem = mnuMRU4;
-                        break;
-
-                    case 5:
-                        objItem = mnuMRU5;
-                        break;
-
-                    case 6:
-                        objItem = mnuMRU6;
-                        break;
-
-                    case 7:
-                        objItem = mnuMRU7;
-                        break;
-
-                    case 8:
-                        objItem = mnuMRU8;
-                        break;
-
-                    case 9:
-                        objItem = mnuMRU9;
-                        break;
-
-                    default:
-                        continue;
-                }
-
-                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (i2 <= 9
-                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                    && i2 >= 0)
-                {
-                    string strNumAsString = (i2 + 1).ToString(GlobalSettings.CultureInfo);
-                    objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
-                }
-                else
-                    objItem.Text = (i2 + 1).ToString(GlobalSettings.CultureInfo) + strSpace + strFile;
-                objItem.Tag = strFile;
-                objItem.Visible = true;
-
-                ++i2;
+                menuStrip.ResumeLayout();
             }
-
-            ResumeLayout();
         }
 
         public void OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0)
@@ -1714,7 +1694,7 @@ namespace Chummer
             {
                 if (_frmRoller == null)
                 {
-                    _frmRoller = new frmDiceRoller(this, objCharacter?.Qualities, intDice);
+                    _frmRoller = new DiceRoller(this, objCharacter?.Qualities, intDice);
                     _frmRoller.Show();
                 }
                 else
@@ -1726,7 +1706,7 @@ namespace Chummer
             }
             else
             {
-                frmDiceRoller frmRoller = new frmDiceRoller(this, objCharacter?.Qualities, intDice);
+                DiceRoller frmRoller = new DiceRoller(this, objCharacter?.Qualities, intDice);
                 frmRoller.Show();
             }
         }
@@ -1736,9 +1716,9 @@ namespace Chummer
             GlobalSettings.MostRecentlyUsedCharacters.Clear();
         }
 
-        private void mnuRestart_Click(object sender, EventArgs e)
+        private async void mnuRestart_Click(object sender, EventArgs e)
         {
-            Utils.RestartApplication(string.Empty, "Message_Options_Restart");
+            await Utils.RestartApplication(string.Empty, "Message_Options_Restart");
         }
 
         protected override void WndProc(ref Message m)
@@ -1748,10 +1728,10 @@ namespace Chummer
             else if (m.Msg == NativeMethods.WM_COPYDATA && _blnAbleToReceiveData)
             {
                 ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
-                Task<ParallelLoopResult> objCharacterLoadingTask = null;
+                Task objCharacterLoadingTask = null;
 
-                using (_frmProgressBar = CreateAndShowProgressBar())
-                using (new CursorWait(this))
+                using (Program.MainProgressBar = Program.CreateAndShowProgressBar())
+                using (CursorWait.New(this))
                 {
                     // Extract the file name
                     NativeMethods.CopyDataStruct objReceivedData = (NativeMethods.CopyDataStruct)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.CopyDataStruct));
@@ -1806,7 +1786,7 @@ namespace Chummer
                                         x => Path.GetFileName(x) != objMostRecentAutosave.Name)
                                     && GlobalSettings.FavoriteCharacters.All(
                                         x => Path.GetFileName(x) != objMostRecentAutosave.Name)
-                                    && ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                    && Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                     LanguageManager.GetString(
                                                                         "Message_PossibleCrashAutosaveFound"),
                                                                     objMostRecentAutosave.Name,
@@ -1821,19 +1801,28 @@ namespace Chummer
                             }
 
                             if (setFilesToLoad.Count > 0)
-                                objCharacterLoadingTask = Task.Run(() =>
-                                                                       Parallel.ForEach(setFilesToLoad, x =>
-                                                                       {
-                                                                           Character objCharacter = LoadCharacter(x);
-                                                                           lstCharactersToLoad.Add(objCharacter);
-                                                                       }));
+                            {
+                                List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
+                                foreach (string strFile in setFilesToLoad)
+                                {
+                                    tskLoadingTasks.Add(Task.Run(async () =>
+                                    {
+                                        Character objCharacter
+                                            = await Program.LoadCharacterAsync(strFile);
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        await lstCharactersToLoad
+                                            .AddAsync(objCharacter);
+                                    }));
+                                }
+                                objCharacterLoadingTask = Task.WhenAll(tskLoadingTasks);
+                            }
                         }
                         finally
                         {
                             Utils.StringHashSetPool.Return(setFilesToLoad);
                         }
 
-                        _frmProgressBar.PerformStep();
+                        Program.MainProgressBar.PerformStep();
 
                         if (blnShowTest)
                         {
@@ -1847,8 +1836,9 @@ namespace Chummer
                     if (objCharacterLoadingTask?.IsCompleted == false)
                         await objCharacterLoadingTask;
                     if (lstCharactersToLoad.Count > 0)
-                        OpenCharacterList(lstCharactersToLoad);
-                    lstCharactersToLoad.Dispose();
+                        // ReSharper disable once AccessToDisposedClosure
+                        await this.DoThreadSafeFunc(() => OpenCharacterList(lstCharactersToLoad));
+                    await lstCharactersToLoad.DisposeAsync();
                 });
             }
             base.WndProc(ref m);
@@ -1912,7 +1902,7 @@ namespace Chummer
                                     {
                                         throw new ArgumentException(
                                             "Chummer started with unknown command line arguments: " +
-                                            strArgs.Aggregate((j, k) => j + " " + k));
+                                            strArgs.Aggregate((j, k) => j + ' ' + k));
                                     }
 
                                     if (Path.GetExtension(strArg) != ".chum5")
@@ -1949,18 +1939,16 @@ namespace Chummer
         /// <summary>
         /// The frmDiceRoller window being used by the application.
         /// </summary>
-        public frmDiceRoller RollerWindow
+        public DiceRoller RollerWindow
         {
             get => _frmRoller;
             set => _frmRoller = value;
         }
 
-        public ThreadSafeObservableCollection<Character> OpenCharacters => _lstCharacters;
-
         public ThreadSafeObservableCollection<CharacterShared> OpenCharacterForms => _lstOpenCharacterForms;
 
         /// <summary>
-        /// Set to True at the end of the OnLoad method. Useful for unit testing because the load method is executed asynchronously, so form might end up getting closed before it fully loads.
+        /// Set to True at the end of the OnLoad method. Useful because the load method is executed asynchronously, so form might end up getting closed before it fully loads.
         /// </summary>
         public bool IsFinishedLoading { get; private set; }
 

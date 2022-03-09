@@ -27,7 +27,7 @@ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    public partial class frmSelectSkill : Form
+    public partial class SelectSkill : Form
     {
         private string _strReturnValue = string.Empty;
         private string _strIncludeCategory = string.Empty;
@@ -49,7 +49,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectSkill(Character objCharacter, string strSource = "")
+        public SelectSkill(Character objCharacter, string strSource = "")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _strSourceName = strSource;
@@ -59,7 +59,7 @@ namespace Chummer
             _objXmlDocument = _objCharacter.LoadDataXPath("skills.xml");
         }
 
-        private void frmSelectSkill_Load(object sender, EventArgs e)
+        private async void SelectSkill_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
@@ -174,7 +174,7 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlSkill in objXmlSkillList)
                     {
-                        string strXmlSkillName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        string strXmlSkillName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                         Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
                         if (objExistingSkill == null)
                         {
@@ -190,7 +190,7 @@ namespace Chummer
                         }
 
                         lstSkills.Add(new ListItem(strXmlSkillName,
-                                                   objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                    ?? strXmlSkillName));
                     }
                 }
@@ -225,11 +225,11 @@ namespace Chummer
                             XPathNavigator objXmlSkill = _objXmlDocument.SelectSingleNode(
                                 "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath()
                                                                   + " and name = " + objExoticSkill.Name.CleanXPath()
-                                                                  + "]");
+                                                                  + ']');
                             lstSkills.Add(new ListItem(objExoticSkill.DictionaryKey,
-                                                       (objXmlSkill.SelectSingleNode("translate")?.Value
+                                                       ((await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                         ?? objExoticSkill.CurrentDisplayName)
-                                                       + LanguageManager.GetString("String_Space") + '('
+                                                       + await LanguageManager.GetStringAsync("String_Space") + '('
                                                        + objExoticSkill.CurrentDisplaySpecialization + ')'));
                         }
                     }
@@ -237,10 +237,10 @@ namespace Chummer
 
                 if (lstSkills.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(
+                    Program.ShowMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      LanguageManager.GetString("Message_Improvement_EmptySelectionListNamed"),
+                                      await LanguageManager.GetStringAsync("Message_Improvement_EmptySelectionListNamed"),
                                       _strSourceName));
                     DialogResult = DialogResult.Cancel;
                     return;

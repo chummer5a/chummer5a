@@ -18,7 +18,7 @@ namespace Chummer.UI.Powers
                 components?.Dispose();
                 _table?.Dispose();
                 UnbindPowersTabUserControl();
-                if (!(ParentForm is CharacterShared frmParent) || frmParent.CharacterObject != _objCharacter)
+                if (_blnDisposeCharacterOnDispose)
                     _objCharacter?.Dispose();
             }
             base.Dispose(disposing);

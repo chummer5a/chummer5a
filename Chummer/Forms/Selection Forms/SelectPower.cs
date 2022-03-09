@@ -21,12 +21,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
 namespace Chummer
 {
-    public partial class frmSelectPower : Form
+    public partial class SelectPower : Form
     {
         private bool _blnLoading = true;
         private string _strLimitToPowers;
@@ -38,7 +39,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectPower(Character objCharacter)
+        public SelectPower(Character objCharacter)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -48,20 +49,19 @@ namespace Chummer
             _xmlBasePowerDataNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private void frmSelectPower_Load(object sender, EventArgs e)
+        private async void SelectPower_Load(object sender, EventArgs e)
         {
             _blnLoading = false;
-
-            BuildPowerList();
+            await BuildPowerList();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
-            AcceptForm();
+            await AcceptForm();
         }
 
-        private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -69,16 +69,16 @@ namespace Chummer
             string strSelectedId = lstPowers.SelectedValue?.ToString();
             XPathNavigator objXmlPower = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + "]");
+                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
 
             if (objXmlPower != null)
             {
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 // Display the information for the selected Power.
                 string strPowerPointsText = objXmlPower.SelectSingleNode("points")?.Value ?? string.Empty;
                 if (objXmlPower.SelectSingleNode("levels")?.Value == bool.TrueString)
                 {
-                    strPowerPointsText += strSpace + '/' + strSpace + LanguageManager.GetString("Label_Power_Level");
+                    strPowerPointsText += strSpace + '/' + strSpace + await LanguageManager.GetStringAsync("Label_Power_Level");
                 }
                 string strExtrPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
                 if (!string.IsNullOrEmpty(strExtrPointCost))
@@ -87,9 +87,9 @@ namespace Chummer
                 }
                 lblPowerPoints.Text = strPowerPointsText;
 
-                string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                string strPage = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
+                SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);
@@ -108,15 +108,15 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            AcceptForm();
+            await AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildPowerList();
+            await BuildPowerList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -202,7 +202,7 @@ namespace Chummer
 
         #region Methods
 
-        private void BuildPowerList()
+        private async ValueTask BuildPowerList()
         {
             if (_blnLoading)
                 return;
@@ -228,14 +228,14 @@ namespace Chummer
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPower))
             {
-                foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + "]"))
+                foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + ']'))
                 {
                     decimal decPoints
-                        = Convert.ToDecimal(objXmlPower.SelectSingleNodeAndCacheExpression("points")?.Value,
+                        = Convert.ToDecimal((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("points"))?.Value,
                                             GlobalSettings.InvariantCultureInfo);
-                    string strExtraPointCost = objXmlPower.SelectSingleNodeAndCacheExpression("extrapointcost")?.Value;
-                    string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value
-                                     ?? LanguageManager.GetString("String_Unknown");
+                    string strExtraPointCost = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("extrapointcost"))?.Value;
+                    string strName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown");
                     if (!string.IsNullOrEmpty(strExtraPointCost)
                         && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
                     {
@@ -253,8 +253,8 @@ namespace Chummer
                         continue;
 
                     lstPower.Add(new ListItem(
-                                     objXmlPower.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
-                                     objXmlPower.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value ?? string.Empty,
+                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                 }
 
                 lstPower.Sort(CompareListItems.CompareNames);
@@ -274,15 +274,15 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             string strSelectedId = lstPowers.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Check to see if the user needs to select anything for the Power.
-                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + "]");
+                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
 
-                if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (objXmlPower.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
                     SelectedPower = strSelectedId;
                     DialogResult = DialogResult.OK;
@@ -290,9 +290,9 @@ namespace Chummer
             }
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

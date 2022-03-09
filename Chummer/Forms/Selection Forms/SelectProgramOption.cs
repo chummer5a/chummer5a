@@ -23,7 +23,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public partial class frmSelectProgramOption : Form
+    public partial class SelectProgramOption : Form
     {
         private string _strSelectedOption = string.Empty;
         private string _strProgramName = string.Empty;
@@ -37,7 +37,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectProgramOption(Character objCharacter)
+        public SelectProgramOption(Character objCharacter)
         {
             InitializeComponent();
             this.TranslateWinForm();
@@ -47,13 +47,13 @@ namespace Chummer
             _objXmlDocument = XmlManager.Load("complexforms.xml", objCharacter.Options.CustomDataDictionary);
         }
 
-        private void frmSelectProgramOption_Load(object sender, EventArgs e)
+        private void SelectProgramOption_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstOption))
             {
                 // Populate the Program list.
                 XmlNodeList objXmlOptionList
-                    = _objXmlDocument.SelectNodes("/chummer/options/option[" + _objCharacter.Options.BookXPath() + "]");
+                    = _objXmlDocument.SelectNodes("/chummer/options/option[" + _objCharacter.Options.BookXPath() + ']');
 
                 foreach (XmlNode objXmlOption in objXmlOptionList)
                 {
@@ -87,7 +87,7 @@ namespace Chummer
             string strSelectedId = lstOptions.SelectedValue?.ToString();
             XmlNode xmlOption = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = " + strSelectedId.CleanXPath() + "]");
+                xmlOption = _objXmlDocument.SelectSingleNode("/chummer/options/option[name = " + strSelectedId.CleanXPath() + ']');
 
             if (xmlOption != null)
             {

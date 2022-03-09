@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectContactConnection : Form
+    public partial class SelectContactConnection : Form
     {
         private int _intMembership;
         private int _intAreaOfInfluence;
@@ -36,7 +36,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectContactConnection()
+        public SelectContactConnection()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -83,34 +83,34 @@ namespace Chummer
             ValuesChanged();
         }
 
-        private void frmSelectContactConnection_Load(object sender, EventArgs e)
+        private async void SelectContactConnection_Load(object sender, EventArgs e)
         {
             // Populate the fields with their data.
             // Membership.
-            cboMembership.Items.Add("+0: " + LanguageManager.GetString("String_None"));
-            cboMembership.Items.Add("+1: " + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectContactConnection_Members"), "2-19"));
-            cboMembership.Items.Add("+2: " + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectContactConnection_Members"), "20-99"));
-            cboMembership.Items.Add("+4: " + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectContactConnection_Members"), "100-1000"));
-            cboMembership.Items.Add("+6: " + string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_SelectContactConnection_Members"), "1000+"));
+            cboMembership.Items.Add("+0: " + await LanguageManager.GetStringAsync("String_None"));
+            cboMembership.Items.Add("+1: " + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_SelectContactConnection_Members"), "2-19"));
+            cboMembership.Items.Add("+2: " + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_SelectContactConnection_Members"), "20-99"));
+            cboMembership.Items.Add("+4: " + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_SelectContactConnection_Members"), "100-1000"));
+            cboMembership.Items.Add("+6: " + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_SelectContactConnection_Members"), "1000+"));
 
             // Area of Influence.
-            cboAreaOfInfluence.Items.Add("+0: " + LanguageManager.GetString("String_None"));
-            cboAreaOfInfluence.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_AreaDistrict"));
-            cboAreaOfInfluence.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_AreaSprawlwide"));
-            cboAreaOfInfluence.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_AreaNational"));
-            cboAreaOfInfluence.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_AreaGlobal"));
+            cboAreaOfInfluence.Items.Add("+0: " + await LanguageManager.GetStringAsync("String_None"));
+            cboAreaOfInfluence.Items.Add("+1: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaDistrict"));
+            cboAreaOfInfluence.Items.Add("+2: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaSprawlwide"));
+            cboAreaOfInfluence.Items.Add("+4: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaNational"));
+            cboAreaOfInfluence.Items.Add("+6: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_AreaGlobal"));
 
             // Magical Resources.
-            cboMagicalResources.Items.Add("+0: " + LanguageManager.GetString("String_None"));
-            cboMagicalResources.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_MagicalMinority"));
-            cboMagicalResources.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_MagicalMost"));
-            cboMagicalResources.Items.Add("+6: " + LanguageManager.GetString("String_SelectContactConnection_MagicalVast"));
+            cboMagicalResources.Items.Add("+0: " + await LanguageManager.GetStringAsync("String_None"));
+            cboMagicalResources.Items.Add("+1: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalMinority"));
+            cboMagicalResources.Items.Add("+4: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalMost"));
+            cboMagicalResources.Items.Add("+6: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_MagicalVast"));
 
             // Matrix Resources.
-            cboMatrixResources.Items.Add("+0: " + LanguageManager.GetString("String_None"));
-            cboMatrixResources.Items.Add("+1: " + LanguageManager.GetString("String_SelectContactConnection_MatrixActive"));
-            cboMatrixResources.Items.Add("+2: " + LanguageManager.GetString("String_SelectContactConnection_MatrixBroad"));
-            cboMatrixResources.Items.Add("+4: " + LanguageManager.GetString("String_SelectContactConnection_MatrixPervasive"));
+            cboMatrixResources.Items.Add("+0: " + await LanguageManager.GetStringAsync("String_None"));
+            cboMatrixResources.Items.Add("+1: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixActive"));
+            cboMatrixResources.Items.Add("+2: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixBroad"));
+            cboMatrixResources.Items.Add("+4: " + await LanguageManager.GetStringAsync("String_SelectContactConnection_MatrixPervasive"));
 
             // Select the appropriate field values.
             _blnSkipUpdate = true;

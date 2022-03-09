@@ -32,8 +32,9 @@ namespace ChummerHub.Client.Sinners
 
         public static string GetHashString(string inputString)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in GetHash(inputString))
+            byte[] achrHash = GetHash(inputString);
+            StringBuilder sb = new StringBuilder(achrHash.Length);
+            foreach (byte b in achrHash)
                 sb.Append(b.ToString("X2", CultureInfo.InvariantCulture));
 
             return sb.ToString();

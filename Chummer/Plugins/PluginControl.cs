@@ -42,7 +42,7 @@ namespace Chummer.Plugins
 
         IEnumerable<TabPage> GetTabPages(CharacterCareer input);
 
-        IEnumerable<TabPage> GetTabPages(frmCreate input);
+        IEnumerable<TabPage> GetTabPages(CharacterCreate input);
 
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
 
@@ -232,9 +232,7 @@ namespace Chummer.Plugins
                 }
                 _objCatalog = new AggregateCatalog();
                 //delete old NeonJungleLC-Plugin
-                string neon = Path.Combine(path, "NeonJungleLC");
-                if (Directory.Exists(neon))
-                    Directory.Delete(neon, true);
+                Utils.SafeDeleteDirectory(Path.Combine(path, "NeonJungleLC"));
                 string[] plugindirectories = Directory.GetDirectories(path);
                 if (plugindirectories.Length == 0)
                 {
@@ -243,6 +241,12 @@ namespace Chummer.Plugins
 
                 foreach (string plugindir in plugindirectories)
                 {
+                    if (plugindir.Contains("SamplePlugin", StringComparison.OrdinalIgnoreCase))
+                    {
+                        Log.Warn("Found an old SamplePlugin (not maintaned anymore) and deleteing it to not mess with the plugin catalog composition.");
+                        Utils.SafeDeleteDirectory(plugindir);
+                        continue;
+                    }
                     Log.Trace("Searching in " + plugindir + " for plugin.txt or dlls containing the interface.");
                     //search for a text file that tells me what dll to parse
                     string infofile = Path.Combine(plugindir, "plugin.txt");
@@ -286,14 +290,33 @@ namespace Chummer.Plugins
 
                 //Fill the imports of this object
                 StartWatch();
-                _container.ComposeParts(this);
+                try
+                {
+                    _container.ComposeParts(this);
+                }
+                catch(ReflectionTypeLoadException e)
+                {
+                    if (Program.ChummerTelemetryClient != null)
+                    {
+                        foreach (var except in e.LoaderExceptions)
+                        {
+                            Program.ChummerTelemetryClient.TrackException(except);
+                        }
+                        Program.ChummerTelemetryClient.Flush();
+                        string msg = $"Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: {Properties.Settings.Default.UploadClientId}";
+                        Log.Info(e, msg);
+                    }
+                    else
+                    {
+                        Log.Error(e, "Plugins (at least not all of them) could not be loaded. Please allow logging to upload logs.");
+                    }
+                }
 
-                Log.Info("Plugins found: " + MyPlugins.Count);
                 if (MyPlugins.Count == 0)
                 {
-                    throw new ArgumentException("No plugins found in " + path + ".");
+                    throw new ArgumentException("No plugins found in " + path + '.');
                 }
-                Log.Info("Plugins active: " + MyActivePlugins.Count);
+                Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: " + MyActivePlugins.Count);
                 foreach (IPlugin plugin in MyActivePlugins)
                 {
                     try
@@ -336,7 +359,7 @@ namespace Chummer.Plugins
         {
             get
             {
-                List<IPlugin> result = new List<IPlugin>();
+                List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
                 if (!GlobalSettings.PluginsEnabled)
                     return result;
                 foreach (IPlugin plugin in MyPlugins)
@@ -452,7 +475,7 @@ namespace Chummer.Plugins
             }
         }
 
-        internal void CallPlugins(frmCreate frmCreate, CustomActivity parentActivity)
+        internal void CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity)
         {
             foreach (IPlugin plugin in MyActivePlugins)
             {

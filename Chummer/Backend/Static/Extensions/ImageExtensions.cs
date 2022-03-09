@@ -60,7 +60,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = -1)
         {
-            return string.IsNullOrEmpty(strBase64String) ? new Task<string>(() => string.Empty) : GetImage();
+            return string.IsNullOrEmpty(strBase64String) ? Task.FromResult(string.Empty) : GetImage();
             // Split into a private method for performance reasons
             async Task<string> GetImage()
             {
@@ -128,7 +128,7 @@ namespace Chummer
         public static Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return new Task<Image>(() => null);
+                return Task.FromResult<Image>(null);
             int intImageWidth = imgToConvert.Width;
             int intImageHeight = imgToConvert.Height;
             if (blnKeepAspectRatio)
@@ -201,7 +201,7 @@ namespace Chummer
         public static Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return new Task<Image>(() => null);
+                return Task.FromResult<Image>(null);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
@@ -280,7 +280,7 @@ namespace Chummer
         /// <param name="strBase64String">String to convert.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<Image> ToImageAsync(this string strBase64String)
+        public static async ValueTask<Image> ToImageAsync(this string strBase64String)
         {
             Image imgReturn = null;
             try
@@ -310,7 +310,7 @@ namespace Chummer
         /// <param name="eFormat">Pixel format in which the Bitmap is returned.</param>
         /// <returns>Image from the Base64 string.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat)
+        public static async ValueTask<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat)
         {
             using (Image imgInput = await strBase64String.ToImageAsync())
             {
@@ -394,7 +394,7 @@ namespace Chummer
         public static Task<string> ToBase64StringAsync(this Image imgToConvert, ImageFormat eOverrideFormat = null)
         {
             if (imgToConvert == null)
-                return new Task<string>(() => string.Empty);
+                return Task.FromResult(string.Empty);
             return Task.Run(() =>
             {
                 // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
@@ -431,7 +431,7 @@ namespace Chummer
         public static Task<string> ToBase64StringAsync(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters)
         {
             if (imgToConvert == null)
-                return new Task<string>(() => string.Empty);
+                return Task.FromResult(string.Empty);
             return Task.Run(() =>
             {
                 // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
@@ -474,7 +474,7 @@ namespace Chummer
         public static Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = -1)
         {
             if (imgToConvert == null)
-                return new Task<string>(() => string.Empty);
+                return Task.FromResult(string.Empty);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(imgToConvert, intQuality)) }
@@ -501,7 +501,8 @@ namespace Chummer
         /// <returns>The encoder of <paramref name="eFormat"/> if one is found, otherwise null.</returns>
         public static ImageCodecInfo GetEncoder(this ImageFormat eFormat)
         {
-            return Array.Find(ImageCodecInfo.GetImageDecoders(), objCodec => objCodec.FormatID == eFormat.Guid);
+            Guid objTargetGuid = eFormat.Guid;
+            return Array.Find(ImageCodecInfo.GetImageDecoders(), objCodec => objCodec.FormatID == objTargetGuid);
         }
 
         /// <summary>

@@ -22,13 +22,13 @@
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema spells.xsd">
 
   <categories>
-    <category>Combat</category>
-    <category>Detection</category>
-    <category>Health</category>
-    <category>Illusion</category>
-    <category>Manipulation</category>
-    <category>Enchantments</category>
-    <category>Rituals</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Combat</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Detection</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Health</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Illusion</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Manipulation</category>
+    <category useskill="Artificing">Enchantments</category>
+    <category useskill="Ritual Spellcasting">Rituals</category>
   </categories>
   <spells>
     <!-- Region SR5 -->

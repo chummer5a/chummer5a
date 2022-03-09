@@ -457,19 +457,21 @@
           <xs:element name="onConnectionOverflow" minOccurs="0" maxOccurs="1" type="NLog.Targets.NetworkTargetConnectionsOverflowAction" />
           <xs:element name="onOverflow" minOccurs="0" maxOccurs="1" type="NLog.Targets.NetworkTargetOverflowAction" />
           <xs:element name="keepConnection" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
           <xs:element name="ndlcItemSeparator" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
+          <xs:element name="ndcItemSeparator" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="includeScopeProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeSourceInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="loggerName" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="includeNLogData" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeCallSite" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="appInfo" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="ndcItemSeparator" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="loggerName" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="optimizeBufferReuse" minOccurs="0" maxOccurs="1" type="xs:boolean" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
@@ -552,14 +554,19 @@
             <xs:documentation>NDLC item separator.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="ndcItemSeparator" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>NDC item separator.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeScopeProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to include  dictionary contents.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeSourceInfo" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include source info (file name and line number) in the information sent over the network.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="loggerName" type="SimpleLayoutAttribute">
-          <xs:annotation>
-            <xs:documentation>Renderer for log4j:event logger-xml-attribute (Default ${logger})</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeNLogData" type="xs:boolean">
@@ -587,6 +594,11 @@
             <xs:documentation>Indicates whether to include  dictionary contents.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="includeEventProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeCallSite" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include call site (class and method name) in the information sent over the network.</xs:documentation>
@@ -602,9 +614,9 @@
             <xs:documentation>AppInfo field. By default it's the friendly name of the current AppDomain.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="ndcItemSeparator" type="xs:string">
+        <xs:attribute name="loggerName" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>NDC item separator.</xs:documentation>
+            <xs:documentation>Renderer for log4j:event logger-xml-attribute (Default ${logger})</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="optimizeBufferReuse" type="xs:boolean">
@@ -2240,19 +2252,21 @@
           <xs:element name="onConnectionOverflow" minOccurs="0" maxOccurs="1" type="NLog.Targets.NetworkTargetConnectionsOverflowAction" />
           <xs:element name="onOverflow" minOccurs="0" maxOccurs="1" type="NLog.Targets.NetworkTargetOverflowAction" />
           <xs:element name="keepConnection" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
           <xs:element name="ndlcItemSeparator" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
+          <xs:element name="ndcItemSeparator" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="includeScopeProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeSourceInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="loggerName" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="includeNLogData" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeCallSite" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="appInfo" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="ndcItemSeparator" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="loggerName" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="optimizeBufferReuse" minOccurs="0" maxOccurs="1" type="xs:boolean" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
@@ -2335,14 +2349,19 @@
             <xs:documentation>NDLC item separator.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="ndcItemSeparator" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>NDC item separator.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeScopeProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to include  dictionary contents.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeSourceInfo" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include source info (file name and line number) in the information sent over the network.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="loggerName" type="SimpleLayoutAttribute">
-          <xs:annotation>
-            <xs:documentation>Renderer for log4j:event logger-xml-attribute (Default ${logger})</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeNLogData" type="xs:boolean">
@@ -2370,6 +2389,11 @@
             <xs:documentation>Indicates whether to include  dictionary contents.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="includeEventProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeCallSite" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include call site (class and method name) in the information sent over the network.</xs:documentation>
@@ -2385,9 +2409,9 @@
             <xs:documentation>AppInfo field. By default it's the friendly name of the current AppDomain.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="ndcItemSeparator" type="xs:string">
+        <xs:attribute name="loggerName" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>NDC item separator.</xs:documentation>
+            <xs:documentation>Renderer for log4j:event logger-xml-attribute (Default ${logger})</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="optimizeBufferReuse" type="xs:boolean">
@@ -2993,9 +3017,11 @@
           <xs:element name="excludeEmptyProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="excludeProperties" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeGdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeScopeProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="maxRecursionLimit" minOccurs="0" maxOccurs="1" type="xs:integer" />
         </xs:choice>
         <xs:attribute name="escapeForwardSlash" type="xs:boolean">
@@ -3028,6 +3054,11 @@
             <xs:documentation>Option to include all properties from the log event (as JSON)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="includeEventProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to include all properties from the log event (as JSON)</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
@@ -3039,6 +3070,11 @@
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeMdlc" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
           </xs:annotation>
@@ -3123,10 +3159,12 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeCallSite" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeNdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeScopeProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="includeSourceInfo" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.NLogViewerParameterInfo" />
         </xs:choice>
@@ -3138,6 +3176,11 @@
         <xs:attribute name="includeCallSite" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include call site (class and method name) in the information sent over the network.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeEventProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to include all properties from the log events</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeMdc" type="xs:boolean">
@@ -3158,6 +3201,11 @@
         <xs:attribute name="includeNdlc" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include contents of the  stack.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeScopeProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeSourceInfo" type="xs:boolean">
@@ -3186,34 +3234,46 @@
     <xs:complexContent>
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-          <xs:element name="excludeProperties" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="maxRecursionLimit" minOccurs="0" maxOccurs="1" type="xs:integer" />
-          <xs:element name="propertiesCollectionItemName" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="propertiesElementKeyAttribute" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="propertiesElementName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="propertiesCollectionItemName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="maxRecursionLimit" minOccurs="0" maxOccurs="1" type="xs:integer" />
+          <xs:element name="includeScopeProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="propertiesElementValueAttribute" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.XmlAttribute" />
-          <xs:element name="elementName" minOccurs="0" maxOccurs="1" type="xs:string" />
-          <xs:element name="element" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.XmlElement" />
-          <xs:element name="elementValue" minOccurs="0" maxOccurs="1" type="Layout" />
-          <xs:element name="includeEmptyValue" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-          <xs:element name="indentXml" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="excludeProperties" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="propertiesElementName" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="elementEncode" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="indentXml" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="includeEmptyValue" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+          <xs:element name="elementValue" minOccurs="0" maxOccurs="1" type="Layout" />
+          <xs:element name="element" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.XmlElement" />
+          <xs:element name="elementName" minOccurs="0" maxOccurs="1" type="xs:string" />
+          <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.XmlAttribute" />
         </xs:choice>
-        <xs:attribute name="excludeProperties" type="xs:string">
-          <xs:annotation>
-            <xs:documentation>List of property names to exclude when  is true</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
         <xs:attribute name="includeAllProperties" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="includeMdc" type="xs:boolean">
+        <xs:attribute name="propertiesElementKeyAttribute" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>XML attribute name to use when rendering property-key When null (or empty) then key-attribute is not included</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="propertiesCollectionItemName" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>XML element name to use for rendering IList-collections items</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="maxRecursionLimit" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>How far should the XML serializer follow object references before backing off</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
           </xs:annotation>
@@ -3223,24 +3283,14 @@
             <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="maxRecursionLimit" type="xs:integer">
+        <xs:attribute name="includeMdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>How far should the XML serializer follow object references before backing off</xs:documentation>
+            <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="propertiesCollectionItemName" type="xs:string">
+        <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>XML element name to use for rendering IList-collections items</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="propertiesElementKeyAttribute" type="xs:string">
-          <xs:annotation>
-            <xs:documentation>XML attribute name to use when rendering property-key When null (or empty) then key-attribute is not included</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="propertiesElementName" type="xs:string">
-          <xs:annotation>
-            <xs:documentation>XML element name to use when rendering properties</xs:documentation>
+            <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="propertiesElementValueAttribute" type="xs:string">
@@ -3248,24 +3298,14 @@
             <xs:documentation>XML attribute name to use when rendering property-value When null (or empty) then value-attribute is not included and value is formatted as XML-element-value</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="elementName" type="xs:string">
+        <xs:attribute name="excludeProperties" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Name of the root XML element</xs:documentation>
+            <xs:documentation>List of property names to exclude when  is true</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="elementValue" type="SimpleLayoutAttribute">
+        <xs:attribute name="propertiesElementName" type="xs:string">
           <xs:annotation>
-            <xs:documentation>Value inside the root XML element</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="includeEmptyValue" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Whether a ElementValue with empty value should be included in the output</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="indentXml" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Auto indent and create new lines</xs:documentation>
+            <xs:documentation>XML element name to use when rendering properties</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="elementEncode" type="xs:boolean">
@@ -3273,36 +3313,28 @@
             <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="indentXml" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Auto indent and create new lines</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeEmptyValue" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether a ElementValue with empty value should be included in the output</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="elementValue" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Value inside the root XML element</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="elementName" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Name of the root XML element</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="NLog.Layouts.XmlAttribute">
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="layout" minOccurs="0" maxOccurs="1" type="Layout" />
-      <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" />
-      <xs:element name="encode" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-      <xs:element name="includeEmptyValue" minOccurs="0" maxOccurs="1" type="xs:boolean" />
-    </xs:choice>
-    <xs:attribute name="layout" type="SimpleLayoutAttribute">
-      <xs:annotation>
-        <xs:documentation>Layout that will be rendered as the attribute's value.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="name" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>Name of the attribute.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="encode" type="xs:boolean">
-      <xs:annotation>
-        <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="includeEmptyValue" type="xs:boolean">
-      <xs:annotation>
-        <xs:documentation>Whether an attribute with empty value should be included in the output</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="NLog.Layouts.XmlElement">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -3315,8 +3347,10 @@
       <xs:element name="indentXml" minOccurs="0" maxOccurs="1" type="xs:boolean" />
       <xs:element name="excludeProperties" minOccurs="0" maxOccurs="1" type="xs:string" />
       <xs:element name="includeAllProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+      <xs:element name="includeEventProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
       <xs:element name="includeMdc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
       <xs:element name="includeMdlc" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+      <xs:element name="includeScopeProperties" minOccurs="0" maxOccurs="1" type="xs:boolean" />
       <xs:element name="maxRecursionLimit" minOccurs="0" maxOccurs="1" type="xs:integer" />
       <xs:element name="propertiesCollectionItemName" minOccurs="0" maxOccurs="1" type="xs:string" />
       <xs:element name="propertiesElementKeyAttribute" minOccurs="0" maxOccurs="1" type="xs:string" />
@@ -3358,12 +3392,22 @@
         <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+    <xs:attribute name="includeEventProperties" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
     <xs:attribute name="includeMdc" type="xs:boolean">
       <xs:annotation>
         <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="includeMdlc" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="includeScopeProperties" type="xs:boolean">
       <xs:annotation>
         <xs:documentation>Indicates whether to include contents of the  dictionary.</xs:documentation>
       </xs:annotation>
@@ -3391,6 +3435,34 @@
     <xs:attribute name="propertiesElementValueAttribute" type="xs:string">
       <xs:annotation>
         <xs:documentation>XML attribute name to use when rendering property-value When null (or empty) then value-attribute is not included and value is formatted as XML-element-value</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="NLog.Layouts.XmlAttribute">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="layout" minOccurs="0" maxOccurs="1" type="Layout" />
+      <xs:element name="name" minOccurs="0" maxOccurs="1" type="xs:string" />
+      <xs:element name="encode" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+      <xs:element name="includeEmptyValue" minOccurs="0" maxOccurs="1" type="xs:boolean" />
+    </xs:choice>
+    <xs:attribute name="layout" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Layout that will be rendered as the attribute's value.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="name" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Name of the attribute.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="encode" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Determines whether or not this attribute will be Xml encoded.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="includeEmptyValue" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Whether an attribute with empty value should be included in the output</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>

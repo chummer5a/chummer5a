@@ -34,6 +34,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillsTabUserControl : UserControl
     {
+        private bool _blnDisposeCharacterOnDispose;
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         private BindingListDisplay<Skill> _lstActiveSkills;
@@ -79,7 +80,7 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter != null)
                 return;
-            using (new CursorWait(this))
+            using (CursorWait.New(this))
                 RealLoad();
         }
 
@@ -89,6 +90,7 @@ namespace Chummer.UI.Skills
                 _objCharacter = frmParent.CharacterObject;
             else
             {
+                _blnDisposeCharacterOnDispose = true;
                 _objCharacter = new Character();
                 Utils.BreakIfDebug();
             }
@@ -118,7 +120,7 @@ namespace Chummer.UI.Skills
             };
             Control MakeActiveSkill(Skill arg)
             {
-                SkillControl2 objSkillControl = new SkillControl2(arg);
+                SkillControl objSkillControl = new SkillControl(arg);
                 objSkillControl.CustomAttributeChanged += Control_CustomAttributeChanged;
                 return objSkillControl;
             }
@@ -241,7 +243,7 @@ namespace Chummer.UI.Skills
                 lblKnowledgeSkillPointsTitle.Visible = false;
             }
 
-            btnExotic.Visible = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
+            btnExotic.Visible = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + ']') != null;
 
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
@@ -286,7 +288,7 @@ namespace Chummer.UI.Skills
             {
                 int intNameLabelWidth = lblActiveSkills.PreferredWidth;
                 int intRatingLabelWidth = lblActiveSp.PreferredWidth;
-                foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+                foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
                 {
                     intNameLabelWidth = Math.Max(intNameLabelWidth, objSkillControl.NameWidth);
                     intRatingLabelWidth = Math.Max(intRatingLabelWidth, objSkillControl.NudSkillWidth);
@@ -297,7 +299,7 @@ namespace Chummer.UI.Skills
                     lblActiveKarma.Margin.Top,
                     lblActiveKarma.Margin.Right,
                     lblActiveKarma.Margin.Bottom);
-                foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+                foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
                 {
                     objSkillControl.MoveControls(intNameLabelWidth);
                 }
@@ -357,7 +359,7 @@ namespace Chummer.UI.Skills
 
         private void UnbindSkillsTabUserControl()
         {
-            if (_objCharacter != null)
+            if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
                 _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
@@ -481,11 +483,11 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<Skill>>(LanguageManager.GetString("Skill_SortCategory"),
                     new SkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.DisplayCategory(GlobalSettings.Language), y.DisplayCategory(GlobalSettings.Language), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, false, GlobalSettings.CultureInfo);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
-                    })),
+                    }))
             };
 
             return ret;
@@ -602,11 +604,11 @@ namespace Chummer.UI.Skills
                 new Tuple<string, IComparer<KnowledgeSkill>>(LanguageManager.GetString("Skill_SortCategory"),
                     new KnowledgeSkillSorter((x, y) =>
                     {
-                        int intReturn = string.Compare(x.DisplayCategory(GlobalSettings.Language), y.DisplayCategory(GlobalSettings.Language), false, GlobalSettings.CultureInfo);
+                        int intReturn = string.Compare(x.CurrentDisplayCategory, y.CurrentDisplayCategory, false, GlobalSettings.CultureInfo);
                         if (intReturn == 0)
                             intReturn = SkillsSection.CompareSkills(x, y);
                         return intReturn;
-                    })),
+                    }))
             };
 
             return ret;
@@ -659,7 +661,7 @@ namespace Chummer.UI.Skills
         private void Control_CustomAttributeChanged(object sender, EventArgs e)
         {
             bool blnVisible = false;
-            foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+            foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
             {
                 if (objSkillControl.CustomAttributeSet)
                 {
@@ -722,12 +724,12 @@ namespace Chummer.UI.Skills
             }
         }
 
-        private void btnExotic_Click(object sender, EventArgs e)
+        private async void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            using (frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter))
+            using (SelectExoticSkill frmPickExoticSkill = new SelectExoticSkill(_objCharacter))
             {
-                frmPickExoticSkill.ShowDialogSafe(this);
+                await frmPickExoticSkill.ShowDialogSafeAsync(this);
 
                 if (frmPickExoticSkill.DialogResult != DialogResult.OK)
                     return;
@@ -739,14 +741,14 @@ namespace Chummer.UI.Skills
             // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
             if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"));
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"));
                 _objCharacter.SkillsSection.Skills.Remove(objSkill);
                 return;
             }
             objSkill.Upgrade();
         }
 
-        private void btnKnowledge_Click(object sender, EventArgs e)
+        private async void btnKnowledge_Click(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -754,16 +756,16 @@ namespace Chummer.UI.Skills
 
                 Form frmToUse = ParentForm ?? Program.MainForm;
 
-                DialogResult eResult = frmToUse.DoThreadSafeFunc(() =>
+                DialogResult eResult = await frmToUse.DoThreadSafeFunc(async x =>
                 {
-                    using (frmSelectItem form = new frmSelectItem
+                    using (SelectItem form = new SelectItem
                            {
-                               Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
+                               Description = await LanguageManager.GetStringAsync("Label_Options_NewKnowledgeSkill")
                            })
                     {
                         form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
 
-                        form.ShowDialogSafe(frmToUse);
+                        await form.ShowDialogSafeAsync(x);
 
                         if (form.DialogResult == DialogResult.OK)
                             strSelectedSkill = form.SelectedItem;
@@ -782,13 +784,13 @@ namespace Chummer.UI.Skills
                 if (_objCharacter.SkillsSection.HasAvailableNativeLanguageSlots
                     && (skill.IsLanguage || string.IsNullOrEmpty(skill.Type)))
                 {
-                    DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
+                    DialogResult eDialogResult = Program.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      LanguageManager.GetString("Message_NewNativeLanguageSkill"),
+                                      await LanguageManager.GetStringAsync("Message_NewNativeLanguageSkill"),
                                       1 + ImprovementManager.ValueOf(
                                           _objCharacter, Improvement.ImprovementType.NativeLanguageLimit),
                                       skill.WritableName),
-                        LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
+                        await LanguageManager.GetStringAsync("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
                     switch (eDialogResult)
                     {
                         case DialogResult.Cancel:
@@ -815,7 +817,7 @@ namespace Chummer.UI.Skills
         private void btnResetCustomDisplayAttribute_Click(object sender, EventArgs e)
         {
             _lstActiveSkills.SuspendLayout();
-            foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+            foreach (SkillControl objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
             {
                 if (objSkillControl.CustomAttributeSet)
                     objSkillControl.ResetSelectAttribute(sender, e);

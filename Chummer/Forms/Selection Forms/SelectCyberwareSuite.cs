@@ -27,7 +27,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public sealed partial class frmSelectCyberwareSuite : Form
+    public sealed partial class SelectCyberwareSuite : Form
     {
         private string _strSelectedSuite = string.Empty;
         private readonly Improvement.ImprovementSource _eSource;
@@ -39,7 +39,7 @@ namespace Chummer
 
         #region Control events
 
-        public frmSelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
+        public SelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
             _eSource = eSource;
@@ -72,42 +72,58 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void frmSelectCyberwareSuite_Load(object sender, EventArgs e)
+        private void SelectCyberwareSuite_Load(object sender, EventArgs e)
         {
             if (_objCharacter.IsAI)
                 return;
 
-            List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource).ToList();
-
-            using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
-                if (xmlSuiteList?.Count > 0)
-                    foreach (XmlNode objXmlSuite in xmlSuiteList)
-                    {
-                        string strName = objXmlSuite["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName))
-                        {
-                            string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                            if (string.IsNullOrEmpty(strGrade))
-                            {
-                                if (lstGrades.All(x => x.Name != strGrade))
-                                    continue;
-                                // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-                                switch (_eSource)
-                                {
-                                    case Improvement.ImprovementSource.Bioware when ImprovementManager
-                                        .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableBiowareGrade)
-                                        .Any(x => strGrade.Contains(x.ImprovedName)):
-                                    case Improvement.ImprovementSource.Cyberware when ImprovementManager
-                                        .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableCyberwareGrade)
-                                        .Any(x => strGrade.Contains(x.ImprovedName)):
-                                        continue;
-                                }
-                            }
-                            lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
-                        }
-                    }
             lstCyberware.ValueMember = nameof(ListItem.Value);
             lstCyberware.DisplayMember = nameof(ListItem.Name);
+
+            using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
+            {
+                if (xmlSuiteList?.Count > 0)
+                {
+                    List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource).ToList();
+
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                               out List<ListItem> lstSuitesToAdd))
+                    {
+                        foreach (XmlNode objXmlSuite in xmlSuiteList)
+                        {
+                            string strName = objXmlSuite["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
+                                if (string.IsNullOrEmpty(strGrade))
+                                {
+                                    if (lstGrades.All(x => x.Name != strGrade))
+                                        continue;
+                                    // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+                                    switch (_eSource)
+                                    {
+                                        case Improvement.ImprovementSource.Bioware when ImprovementManager
+                                            .GetCachedImprovementListForValueOf(_objCharacter,
+                                                Improvement.ImprovementType.DisableBiowareGrade)
+                                            .Any(x => strGrade.Contains(x.ImprovedName)):
+                                        case Improvement.ImprovementSource.Cyberware when ImprovementManager
+                                            .GetCachedImprovementListForValueOf(_objCharacter,
+                                                Improvement.ImprovementType.DisableCyberwareGrade)
+                                            .Any(x => strGrade.Contains(x.ImprovedName)):
+                                            continue;
+                                    }
+                                }
+
+                                lstSuitesToAdd.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, objXmlSuite["translate"]?.InnerText ?? strName));
+                            }
+                        }
+
+                        lstSuitesToAdd.Sort(CompareListItems.CompareNames);
+
+                        lstCyberware.DataSource = lstSuitesToAdd;
+                    }
+                }
+            }
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
@@ -118,7 +134,7 @@ namespace Chummer
             Grade objGrade = null;
             if (strSelectedSuite != null)
             {
-                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + strSelectedSuite.CleanXPath() + "]");
+                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + strSelectedSuite.CleanXPath() + ']');
                 string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {
@@ -142,7 +158,7 @@ namespace Chummer
             decimal decTotalESS = 0.0m;
             decimal decTotalCost = 0;
 
-            List<Cyberware> lstSuiteCyberwares = new List<Cyberware>();
+            List<Cyberware> lstSuiteCyberwares = new List<Cyberware>(5);
             ParseNode(xmlSuite, objGrade, lstSuiteCyberwares);
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdCyberwareLabelString))
@@ -150,7 +166,7 @@ namespace Chummer
                 foreach (Cyberware objCyberware in lstSuiteCyberwares)
                 {
                     WriteList(sbdCyberwareLabelString, objCyberware, 0);
-                    decTotalCost += objCyberware.CurrentTotalCost;
+                    decTotalCost += objCyberware.TotalCost;
                     decTotalESS += objCyberware.CalculatedESS;
                 }
                 lblCyberware.Text = sbdCyberwareLabelString.ToString();
@@ -264,10 +280,10 @@ namespace Chummer
                         xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
 
                         // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
-                        XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = " + strName.CleanXPath() + "]");
+                        XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = " + strName.CleanXPath() + ']');
 
-                        List<Weapon> lstWeapons = new List<Weapon>();
-                        List<Vehicle> lstVehicles = new List<Vehicle>();
+                        List<Weapon> lstWeapons = new List<Weapon>(1);
+                        List<Vehicle> lstVehicles = new List<Vehicle>(1);
                         Cyberware objCyberware = new Cyberware(_objCharacter);
                         objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
                         objCyberware.Suite = true;

@@ -17,36 +17,76 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
     public static class EnumeratorExtensions
     {
-        /// <summary>
-        /// Syntactic sugar to get a locking version of GetEnumerator
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstEnumerator"></param>
-        /// <param name="rwlThis"></param>
-        /// <returns></returns>
-        public static IEnumerator<T> GetLockingType<T>(this IEnumerator<T> lstEnumerator,
-                                                       ReaderWriterLockSlim rwlThis)
+        public static void ForEach<T>(this IEnumerator<T> objEnumerator, Action<T> objFuncToRun)
         {
-            return new LockingEnumerator<T>(lstEnumerator, rwlThis);
+            while (objEnumerator.MoveNext())
+                objFuncToRun.Invoke(objEnumerator.Current);
         }
 
-        /// <summary>
-        /// Syntactic sugar to get a locking version of GetEnumerator
-        /// </summary>
-        /// <param name="dicCollection"></param>
-        /// <param name="rwlThis"></param>
-        /// <returns></returns>
-        public static IDictionaryEnumerator GetLockingDictionaryEnumerator(this IDictionary dicCollection, ReaderWriterLockSlim rwlThis)
+        public static async ValueTask ForEachAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Action<T> objFuncToRun)
         {
-            return new LockingDictionaryEnumerator(dicCollection, rwlThis);
+            IEnumerator<T> objEnumerator = await tskEnumerator;
+            while (objEnumerator.MoveNext())
+                objFuncToRun.Invoke(objEnumerator.Current);
+        }
+
+        public static async ValueTask ForEachAsync<T>(this IEnumerator<T> objEnumerator, Func<T, Task> objFuncToRun)
+        {
+            while (objEnumerator.MoveNext())
+                await objFuncToRun.Invoke(objEnumerator.Current);
+        }
+
+        public static async ValueTask ForEachAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, Task> objFuncToRun)
+        {
+            IEnumerator<T> objEnumerator = await tskEnumerator;
+            while (objEnumerator.MoveNext())
+                await objFuncToRun.Invoke(objEnumerator.Current);
+        }
+
+        public static void ForEachWithBreak<T>(this IEnumerator<T> objEnumerator, Func<T, bool> objFuncToRunWithPossibleTerminate)
+        {
+            while (objEnumerator.MoveNext())
+            {
+                if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                    return;
+            }
+        }
+
+        public static async ValueTask ForEachWithBreakAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, bool> objFuncToRunWithPossibleTerminate)
+        {
+            IEnumerator<T> objEnumerator = await tskEnumerator;
+            while (objEnumerator.MoveNext())
+            {
+                if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                    return;
+            }
+        }
+
+        public static async ValueTask ForEachWithBreakAsync<T>(this IEnumerator<T> objEnumerator, Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
+        {
+            while (objEnumerator.MoveNext())
+            {
+                if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                    return;
+            }
+        }
+
+        public static async ValueTask ForEachWithBreakAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, Task<bool>> objFuncToRunWithPossibleTerminate)
+        {
+            IEnumerator<T> objEnumerator = await tskEnumerator;
+            while (objEnumerator.MoveNext())
+            {
+                if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                    return;
+            }
         }
     }
 }

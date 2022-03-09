@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -43,7 +44,7 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
-            List<Image> lstImages = new List<Image>(Images);
+            List<Image> lstImages = Images.ToList();
             switch (lstImages.Count)
             {
                 case 0:

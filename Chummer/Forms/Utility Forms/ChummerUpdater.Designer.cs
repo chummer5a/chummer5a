@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmUpdate
+    partial class ChummerUpdater
     {
         /// <summary>
         /// Required designer variable.
@@ -32,7 +32,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmUpdate));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChummerUpdater));
             this.webNotes = new System.Windows.Forms.WebBrowser();
             this.cmdUpdate = new System.Windows.Forms.Button();
             this.pgbOverallProgress = new System.Windows.Forms.ProgressBar();
@@ -188,11 +188,11 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmUpdate";
+            this.Name = "ChummerUpdater";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.Text = "Chummer Updater";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmUpdate_FormClosing);
-            this.Load += new System.EventHandler(this.frmUpdate_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChummerUpdater_FormClosing);
+            this.Load += new System.EventHandler(this.ChummerUpdater_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);

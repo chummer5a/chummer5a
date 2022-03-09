@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
@@ -30,7 +31,7 @@ using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    public partial class frmSelectLifestyleQuality : Form
+    public partial class SelectLifestyleQuality : Form
     {
         private bool _blnLoading = true;
         private string _strSelectedQuality = string.Empty;
@@ -53,7 +54,7 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
+        public SelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -68,7 +69,7 @@ namespace Chummer
             _objCritterDocument = _objCharacter.LoadData("critters.xml");
         }
 
-        private void frmSelectLifestyleQuality_Load(object sender, EventArgs e)
+        private async void SelectLifestyleQuality_Load(object sender, EventArgs e)
         {
             // Populate the Quality Category list.
             using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
@@ -78,7 +79,7 @@ namespace Chummer
                     foreach (XmlNode objXmlCategory in objXmlCategoryList)
                     {
                         string strCategory = objXmlCategory.InnerText;
-                        if (AnyItemInList(strCategory))
+                        if (await AnyItemInList(strCategory))
                         {
                             _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
                         }
@@ -90,7 +91,7 @@ namespace Chummer
 
             if (_lstCategory.Count > 0)
             {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
+                _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
@@ -105,19 +106,19 @@ namespace Chummer
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
             if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
-                lblBPLabel.Text = LanguageManager.GetString("Label_LP");
+                lblBPLabel.Text = await LanguageManager.GetStringAsync("Label_LP");
 
             _blnLoading = false;
 
-            RefreshList(cboCategory.SelectedValue?.ToString());
+            await RefreshList(cboCategory.SelectedValue?.ToString());
         }
 
-        private void RefreshListControlWithCurrentCategory(object sender, EventArgs e)
+        private async void RefreshListControlWithCurrentCategory(object sender, EventArgs e)
         {
-            RefreshList(cboCategory.SelectedValue?.ToString());
+            await RefreshList(cboCategory.SelectedValue?.ToString());
         }
 
-        private void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstLifestyleQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -128,7 +129,7 @@ namespace Chummer
                 return;
             }
 
-            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedLifestyleId.CleanXPath() + "]");
+            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedLifestyleId.CleanXPath() + ']');
             if (objXmlQuality == null)
             {
                 tlpRight.Visible = false;
@@ -138,14 +139,14 @@ namespace Chummer
             SuspendLayout();
             int intBP = 0;
             objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
-            lblBP.Text = chkFree.Checked ? LanguageManager.GetString("Checkbox_Free") : intBP.ToString(GlobalSettings.CultureInfo);
+            lblBP.Text = chkFree.Checked ? await LanguageManager.GetStringAsync("Checkbox_Free") : intBP.ToString(GlobalSettings.CultureInfo);
             lblBPLabel.Visible = !string.IsNullOrEmpty(lblBP.Text);
 
-            string strSource = objXmlQuality["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
+            string strSource = objXmlQuality["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
+            string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
             }
             else
@@ -170,11 +171,11 @@ namespace Chummer
             {
                 if (chkFree.Checked)
                 {
-                    lblCost.Text = LanguageManager.GetString("Checkbox_Free");
+                    lblCost.Text = await LanguageManager.GetStringAsync("Checkbox_Free");
                 }
                 else if (objXmlQuality["allowed"]?.InnerText.Contains(_strSelectedLifestyle) == true)
                 {
-                    lblCost.Text = LanguageManager.GetString("String_LifestyleFreeNuyen");
+                    lblCost.Text = await LanguageManager.GetStringAsync("String_LifestyleFreeNuyen");
                 }
                 else
                 {
@@ -212,16 +213,16 @@ namespace Chummer
             return s_LifestylesSorted[intMin];
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             _blnAddAgain = false;
-            AcceptForm();
+            await AcceptForm();
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -313,22 +314,20 @@ namespace Chummer
 
         #region Methods
 
-        private bool AnyItemInList(string strCategory = "")
+        private ValueTask<bool> AnyItemInList(string strCategory = "")
         {
-            RefreshList(out bool blnReturn, strCategory, false);
-            return blnReturn;
+            return RefreshList(strCategory, false);
         }
 
-        private void RefreshList(string strCategory = "")
+        private ValueTask<bool> RefreshList(string strCategory = "")
         {
-            RefreshList(out bool _, strCategory, true);
+            return RefreshList(strCategory, true);
         }
 
-        private void RefreshList(out bool blnAnyItem, string strCategory, bool blnDoUIUpdate)
+        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate)
         {
-            blnAnyItem = false;
             if (_blnLoading && blnDoUIUpdate)
-                return;
+                return false;
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
@@ -385,18 +384,17 @@ namespace Chummer
                                 continue;
                             if (!blnDoUIUpdate)
                             {
-                                blnAnyItem = true;
-                                return;
+                                return true;
                             }
-                            if (!chkLimitList.Checked || RequirementMet(objXmlQuality, false))
-                            {
-                                blnAnyItem = true;
-                                lstLifestyleQuality.Add(
-                                    new ListItem(
-                                        strId,
-                                        objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText
-                                        ?? LanguageManager.GetString("String_Unknown")));
-                            }
+
+                            if (chkLimitList.Checked && !await RequirementMet(objXmlQuality, false))
+                                continue;
+
+                            lstLifestyleQuality.Add(
+                                new ListItem(
+                                    strId,
+                                    objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText
+                                    ?? await LanguageManager.GetStringAsync("String_Unknown")));
                         }
                     }
                 }
@@ -417,6 +415,8 @@ namespace Chummer
 
                     lstLifestyleQualities.EndUpdate();
                 }
+
+                return lstLifestyleQuality?.Count > 0;
             }
             finally
             {
@@ -428,13 +428,13 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             string strSelectedSourceIDString = lstLifestyleQualities.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedSourceIDString))
                 return;
-            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedSourceIDString.CleanXPath() + "]");
-            if (objNode == null || !RequirementMet(objNode, true))
+            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedSourceIDString.CleanXPath() + ']');
+            if (objNode == null || !await RequirementMet(objNode, true))
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
@@ -448,7 +448,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objXmlQuality">XmlNode of the Quality.</param>
         /// <param name="blnShowMessage">Whether or not a message should be shown if the requirements are not met.</param>
-        private bool RequirementMet(XmlNode objXmlQuality, bool blnShowMessage)
+        private async ValueTask<bool> RequirementMet(XmlNode objXmlQuality, bool blnShowMessage)
         {
             // Ignore the rules.
             if (_objCharacter.IgnoreRules)
@@ -463,7 +463,7 @@ namespace Chummer
                     if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
                     {
                         if (blnShowMessage)
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectQuality_QualityLimit"), LanguageManager.GetString("MessageTitle_SelectQuality_QualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectQuality_QualityLimit"), await LanguageManager.GetStringAsync("MessageTitle_SelectQuality_QualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
                     }
                 }
@@ -525,10 +525,10 @@ namespace Chummer
                                         XmlNode objNode
                                             = _objMetatypeDocument.SelectSingleNode(
                                                   "/chummer/metatypes/metatype[name = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]") ??
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']') ??
                                               _objCritterDocument.SelectSingleNode(
                                                   "/chummer/metatypes/metatype[name = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]");
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']');
                                         sbdForbidden.AppendLine().Append('\t')
                                                     .Append(
                                                         objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
@@ -544,10 +544,10 @@ namespace Chummer
                                         XmlNode objNode
                                             = _objMetatypeDocument.SelectSingleNode(
                                                   "/chummer/categories/category[. = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]") ??
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']') ??
                                               _objCritterDocument.SelectSingleNode(
                                                   "/chummer/categories/category[. = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]");
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']');
                                         sbdForbidden.AppendLine().Append('\t').Append(
                                             objNode.Attributes["translate"]?.InnerText ?? objXmlForbidden.InnerText);
                                     }
@@ -562,10 +562,10 @@ namespace Chummer
                                         XmlNode objNode
                                             = _objMetatypeDocument.SelectSingleNode(
                                                   "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]") ??
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']') ??
                                               _objCritterDocument.SelectSingleNode(
                                                   "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                  + objXmlForbidden.InnerText.CleanXPath() + "]");
+                                                  + objXmlForbidden.InnerText.CleanXPath() + ']');
                                         sbdForbidden.AppendLine().Append('\t')
                                                     .Append(
                                                         objNode["translate"]?.InnerText ?? objXmlForbidden.InnerText);
@@ -577,8 +577,7 @@ namespace Chummer
                                     // Check to see if the character has a Metagenic Quality.
                                     foreach (Quality objQuality in _objCharacter.Qualities)
                                     {
-                                        XmlNode objXmlCheck = objQuality.GetNode();
-                                        if (objXmlCheck["metagenic"]?.InnerText == bool.TrueString)
+                                        if ((await objQuality.GetNodeXPathAsync())?.SelectSingleNode("metagenic")?.Value == bool.TrueString)
                                         {
                                             blnRequirementForbidden = true;
                                             sbdForbidden.AppendLine().Append('\t')
@@ -596,11 +595,11 @@ namespace Chummer
                     if (blnRequirementForbidden)
                     {
                         if (blnShowMessage)
-                            Program.MainForm.ShowMessageBox(this,
-                                                            LanguageManager.GetString(
+                            Program.ShowMessageBox(this,
+                                                            await LanguageManager.GetStringAsync(
                                                                 "Message_SelectQuality_QualityRestriction")
                                                             + sbdForbidden,
-                                                            LanguageManager.GetString(
+                                                            await LanguageManager.GetStringAsync(
                                                                 "MessageTitle_SelectQuality_QualityRestriction"),
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return false;
@@ -617,7 +616,7 @@ namespace Chummer
 
                     // Loop through the oneof requirements.
                     XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof");
-                    XmlDocument objXmlQualityDocument = _objCharacter.LoadData("qualities.xml");
+                    XmlDocument objXmlQualityDocument = await _objCharacter.LoadDataAsync("qualities.xml");
                     foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                     {
                         bool blnOneOfMet = false;
@@ -625,7 +624,7 @@ namespace Chummer
                                                                       out StringBuilder sbdThisRequirement))
                         {
                             sbdThisRequirement.AppendLine()
-                                              .Append(LanguageManager.GetString("Message_SelectQuality_OneOf"));
+                                              .Append(await LanguageManager.GetStringAsync("Message_SelectQuality_OneOf"));
                             using (XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes)
                             {
                                 foreach (XmlNode objXmlRequired in objXmlOneOfList)
@@ -732,10 +731,10 @@ namespace Chummer
                                                 XmlNode objNode =
                                                     _objMetatypeDocument.SelectSingleNode(
                                                         "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
-                                                        objXmlRequired.InnerText.CleanXPath() + "]") ??
+                                                        objXmlRequired.InnerText.CleanXPath() + ']') ??
                                                     _objCritterDocument.SelectSingleNode(
                                                         "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
-                                                        objXmlRequired.InnerText.CleanXPath() + "]");
+                                                        objXmlRequired.InnerText.CleanXPath() + ']');
                                                 sbdThisRequirement.AppendLine().Append('\t')
                                                                   .Append(objNode["translate"]?.InnerText
                                                                           ?? objXmlRequired.InnerText);
@@ -746,7 +745,7 @@ namespace Chummer
                                         case "inherited":
                                             sbdThisRequirement.AppendLine().Append('\t')
                                                               .Append(
-                                                                  LanguageManager.GetString(
+                                                                  await LanguageManager.GetStringAsync(
                                                                       "Message_SelectQuality_Inherit"));
                                             break;
 
@@ -758,7 +757,7 @@ namespace Chummer
                                             else
                                                 sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
                                                     GlobalSettings.CultureInfo,
-                                                    LanguageManager.GetString("Message_SelectQuality_RequireKarma"),
+                                                    await LanguageManager.GetStringAsync("Message_SelectQuality_RequireKarma"),
                                                     objXmlRequired.InnerText);
                                             break;
 
@@ -863,17 +862,10 @@ namespace Chummer
                                             foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes("cyberware"))
                                             {
                                                 foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(
-                                                             objCyberware =>
-                                                                 (objCyberware.Name == objXmlCyberware.InnerText)))
+                                                             objCyberware => objCyberware.Name == objXmlCyberware.InnerText))
                                                 {
-                                                    if (objXmlCyberware.Attributes["select"] == null)
-                                                    {
-                                                        intTotal++;
-                                                        break;
-                                                    }
-
-                                                    if (objXmlCyberware.Attributes["select"].InnerText
-                                                        == objCyberware.Extra)
+                                                    string strSelect = objXmlCyberware.Attributes["select"]?.InnerText;
+                                                    if (string.IsNullOrEmpty(strSelect) || strSelect == objCyberware.Extra)
                                                     {
                                                         intTotal++;
                                                         break;
@@ -899,14 +891,8 @@ namespace Chummer
                                                              objCyberware =>
                                                                  objCyberware.Name.Contains(objXmlCyberware.InnerText)))
                                                 {
-                                                    if (objXmlCyberware.Attributes["select"] == null)
-                                                    {
-                                                        intTotal++;
-                                                        break;
-                                                    }
-
-                                                    if (objXmlCyberware.Attributes["select"].InnerText
-                                                        == objCyberware.Extra)
+                                                    string strSelect = objXmlCyberware.Attributes["select"]?.InnerText;
+                                                    if (string.IsNullOrEmpty(strSelect) || strSelect == objCyberware.Extra)
                                                     {
                                                         intTotal++;
                                                         break;
@@ -922,14 +908,8 @@ namespace Chummer
                                                 {
                                                     if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
                                                     {
-                                                        if (objXmlCyberware.Attributes["select"] == null)
-                                                        {
-                                                            intTotal++;
-                                                            break;
-                                                        }
-
-                                                        if (objXmlCyberware.Attributes["select"].InnerText
-                                                            == objCyberware.Extra)
+                                                        string strSelect = objXmlCyberware.Attributes["select"]?.InnerText;
+                                                        if (string.IsNullOrEmpty(strSelect) || strSelect == objCyberware.Extra)
                                                         {
                                                             intTotal++;
                                                             break;
@@ -1001,7 +981,7 @@ namespace Chummer
                                                                       out StringBuilder sbdThisRequirement))
                         {
                             sbdThisRequirement.AppendLine()
-                                              .Append(LanguageManager.GetString("Message_SelectQuality_AllOf"));
+                                              .Append(await LanguageManager.GetStringAsync("Message_SelectQuality_AllOf"));
                             using (XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes)
                             {
                                 foreach (XmlNode objXmlRequired in objXmlAllOfList)
@@ -1086,10 +1066,10 @@ namespace Chummer
                                                 XmlNode objNode =
                                                     _objMetatypeDocument.SelectSingleNode(
                                                         "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
-                                                        objXmlRequired.InnerText.CleanXPath() + "]") ??
+                                                        objXmlRequired.InnerText.CleanXPath() + ']') ??
                                                     _objCritterDocument.SelectSingleNode(
                                                         "/chummer/metatypes/metatype/metavariants/metavariant[name = " +
-                                                        objXmlRequired.InnerText.CleanXPath() + "]");
+                                                        objXmlRequired.InnerText.CleanXPath() + ']');
                                                 sbdThisRequirement.AppendLine().Append('\t')
                                                                   .Append(objNode["translate"]?.InnerText
                                                                           ?? objXmlRequired.InnerText);
@@ -1100,7 +1080,7 @@ namespace Chummer
                                         case "inherited":
                                             sbdThisRequirement.AppendLine().Append('\t')
                                                               .Append(
-                                                                  LanguageManager.GetString(
+                                                                  await LanguageManager.GetStringAsync(
                                                                       "Message_SelectQuality_Inherit"));
                                             break;
 
@@ -1112,7 +1092,7 @@ namespace Chummer
                                             else
                                                 sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
                                                     GlobalSettings.CultureInfo,
-                                                    LanguageManager.GetString("Message_SelectQuality_RequireKarma"),
+                                                    await LanguageManager.GetStringAsync("Message_SelectQuality_RequireKarma"),
                                                     objXmlRequired.InnerText);
                                             break;
 
@@ -1345,10 +1325,10 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            string strMessage = LanguageManager.GetString("Message_SelectQuality_QualityRequirement");
+                            string strMessage = await LanguageManager.GetStringAsync("Message_SelectQuality_QualityRequirement");
                             strMessage += sbdRequirement.ToString();
-                            Program.MainForm.ShowMessageBox(this, strMessage,
-                                                            LanguageManager.GetString(
+                            Program.ShowMessageBox(this, strMessage,
+                                                            await LanguageManager.GetStringAsync(
                                                                 "MessageTitle_SelectQuality_QualityRequirement"),
                                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
@@ -1361,9 +1341,9 @@ namespace Chummer
             return true;
         }
 
-        private void OpenSourceFromLabel(object sender, EventArgs e)
+        private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender);
         }
 
         #endregion Methods

@@ -42,26 +42,26 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void frmReload_Load(object sender, EventArgs e)
+        private async void ReloadWeapon_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstAmmo))
             {
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstAmmo)
                 {
-                    string strName = objGear.DisplayNameShort(GlobalSettings.Language) + " x"
+                    string strName = await objGear.DisplayNameShortAsync(GlobalSettings.Language) + " x"
                         + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
                     if (objGear.Rating > 0)
-                        strName += strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace
+                        strName += strSpace + '(' + await LanguageManager.GetStringAsync(objGear.RatingLabel) + strSpace
                                    + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
 
                     if (objGear.Parent is Gear objParent)
                     {
-                        if (!string.IsNullOrEmpty(objParent.DisplayNameShort(GlobalSettings.Language)))
+                        if (!string.IsNullOrEmpty(await objParent.DisplayNameShortAsync(GlobalSettings.Language)))
                         {
-                            strName += strSpace + '(' + objParent.DisplayNameShort(GlobalSettings.Language);
+                            strName += strSpace + '(' + await objParent.DisplayNameShortAsync(GlobalSettings.Language);
                             if (objParent.Location != null)
                                 strName += strSpace + '@' + strSpace + objParent.Location.DisplayName();
                             strName += ')';

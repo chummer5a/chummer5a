@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmGMDashboard
+    partial class GameMasterDashboard
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmGMDashboard));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameMasterDashboard));
             this.tableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -128,7 +128,7 @@ namespace Chummer
             this.aboutToolStripMenuItem.Tag = "Label_About";
             this.aboutToolStripMenuItem.Text = "{About}";
             // 
-            // frmGMDashboard
+            // GameMasterDashboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -136,7 +136,7 @@ namespace Chummer
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "frmGMDashboard";
+            this.Name = "GameMasterDashboard";
             this.Tag = "String_Dashboard";
             this.Text = "{Dashboard}";
             this.TopMost = true;

@@ -21,6 +21,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -32,29 +33,31 @@ namespace Chummer.UI.Attributes
     {
         public event EventHandler ValueChanged;
 
-        private readonly CharacterAttrib _objAttribute;
+        private readonly string _strAttributeName;
         private int _oldBase;
         private int _oldKarma;
         private readonly Character _objCharacter;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly BindingSource _dataSource;
 
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudBase;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdBurnEdge;
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdImproveATT;
 
         public AttributeControl(CharacterAttrib attribute)
         {
             if (attribute == null)
                 return;
-            _objAttribute = attribute;
+            _strAttributeName = attribute.Abbrev;
             _objCharacter = attribute.CharacterObject;
+            _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
 
             InitializeComponent();
 
             SuspendLayout();
-            _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
-            _objCharacter.AttributeSection.PropertyChanged += AttributePropertyChanged;
             //Display
             lblName.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted));
             lblValue.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayValue));
@@ -99,11 +102,11 @@ namespace Chummer.UI.Attributes
             }
             else
             {
-                while (_objAttribute.KarmaMaximum < 0 && _objAttribute.Base > 0)
-                    --_objAttribute.Base;
+                while (AttributeObject.KarmaMaximum < 0 && AttributeObject.Base > 0)
+                    --AttributeObject.Base;
                 // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
-                if (_objAttribute.Karma > _objAttribute.KarmaMaximum)
-                    _objAttribute.Karma = _objAttribute.KarmaMaximum;
+                if (AttributeObject.Karma > AttributeObject.KarmaMaximum)
+                    AttributeObject.Karma = AttributeObject.KarmaMaximum;
 
                 nudKarma = new NumericUpDownEx
                 {
@@ -148,13 +151,6 @@ namespace Chummer.UI.Attributes
 
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-        }
-
-        private void AttributePropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName != nameof(AttributeSection.AttributeCategory)) return;
-            _dataSource.DataSource = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
-            _dataSource.ResetBindings(false);
         }
 
         public void UpdateWidths(int intNameWidth, int intNudKarmaWidth, int intValueWidth, int intLimitsWidth)
@@ -205,44 +201,40 @@ namespace Chummer.UI.Attributes
 
         private void UnbindAttributeControl()
         {
-            _objCharacter.AttributeSection.PropertyChanged -= AttributePropertyChanged;
-
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
             }
         }
 
-        private void cmdImproveATT_Click(object sender, EventArgs e)
+        private async void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
-            int intUpgradeKarmaCost = attrib.UpgradeKarmaCost;
+            int intUpgradeKarmaCost = AttributeObject.UpgradeKarmaCost;
 
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
             if (intUpgradeKarmaCost > _objCharacter.Karma)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"), attrib.DisplayNameFormatted, attrib.Value + 1, intUpgradeKarmaCost);
+            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"), AttributeObject.DisplayNameFormatted, AttributeObject.Value + 1, intUpgradeKarmaCost);
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            attrib.Upgrade();
+            AttributeObject.Upgrade();
             ValueChanged?.Invoke(this, e);
         }
 
-        private void nudBase_ValueChanged(object sender, EventArgs e)
+        private async void nudBase_ValueChanged(object sender, EventArgs e)
         {
-            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             int intValue = ((NumericUpDownEx)sender).ValueAsInt;
             if (intValue == _oldBase)
                 return;
-            if (!CanBeMetatypeMax(
+            if (!await CanBeMetatypeMax(
                 Math.Max(
-                    nudKarma.ValueAsInt + attrib.FreeBase + attrib.RawMinimum +
-                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + intValue))
+                    nudKarma.ValueAsInt + AttributeObject.FreeBase + AttributeObject.RawMinimum +
+                    AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
             {
                 decimal newValue = Math.Max(nudBase.Value - 1, 0);
                 if (newValue > nudBase.Maximum)
@@ -260,21 +252,20 @@ namespace Chummer.UI.Attributes
             _oldBase = intValue;
         }
 
-        private void nudKarma_ValueChanged(object sender, EventArgs e)
+        private async void nudKarma_ValueChanged(object sender, EventArgs e)
         {
-            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             int intValue = ((NumericUpDownEx)sender).ValueAsInt;
             if (intValue == _oldKarma)
                 return;
-            if (!CanBeMetatypeMax(
+            if (!await CanBeMetatypeMax(
                 Math.Max(
-                    nudBase.ValueAsInt + attrib.FreeBase + attrib.RawMinimum +
-                    attrib.AttributeValueModifiers, attrib.TotalMinimum) + intValue))
+                    nudBase.ValueAsInt + AttributeObject.FreeBase + AttributeObject.RawMinimum +
+                    AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
             {
                 // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
-                if (_oldKarma > attrib.KarmaMaximum)
+                if (_oldKarma > AttributeObject.KarmaMaximum)
                 {
-                    _oldKarma = attrib.KarmaMaximum - 1;
+                    _oldKarma = AttributeObject.KarmaMaximum - 1;
                 }
                 if (_oldKarma < 0)
                 {
@@ -303,53 +294,54 @@ namespace Chummer.UI.Attributes
         /// attribute at their natural maximum limit; the special attributes of Magic, Edge,
         /// and Resonance are not included in this limitation.
         /// </summary>
-        private bool CanBeMetatypeMax(int intValue)
+        private async ValueTask<bool> CanBeMetatypeMax(int intValue)
         {
-            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
-            if (_objCharacter.IgnoreRules || attrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Special)
-                return true;
-            int intTotalMaximum = attrib.TotalMaximum;
+            int intTotalMaximum = AttributeObject.TotalMaximum;
             if (intValue < intTotalMaximum || intTotalMaximum == 0)
                 return true;
-            //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
-            //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value.
-            int intMaxOtherAttributesAtMax = _objCharacter.Settings.Allow2ndMaxAttribute ? 1 : 0;
-            int intNumOtherAttributeAtMax = _objCharacter.AttributeSection.AttributeList.Count(att =>
-                att.AtMetatypeMaximum && att.Abbrev != AttributeName && att.MetatypeCategory == CharacterAttrib.AttributeCategory.Standard);
 
-            if (intNumOtherAttributeAtMax <= intMaxOtherAttributesAtMax) return true;
-            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_AttributeMaximum"),
-                LanguageManager.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
+            if (_objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject))
+                return true;
+
+            Program.ShowMessageBox(
+                string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_AttributeMaximum"),
+                              _objCharacter.Settings.MaxNumberMaxAttributesCreate),
+                await LanguageManager.GetStringAsync("MessageTitle_Attribute"), MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
             return false;
         }
 
-        public string AttributeName => _objAttribute.Abbrev;
+        public string AttributeName => _strAttributeName;
+
+        private CharacterAttrib _objCachedCharacterAttrib;
+
+        public CharacterAttrib AttributeObject =>
+            _objCachedCharacterAttrib ?? (_objCachedCharacterAttrib =
+                _objCharacter.AttributeSection.GetAttributeByName(AttributeName));
 
         [UsedImplicitly]
         public int NameWidth => lblName.PreferredWidth;
 
-        private void cmdBurnEdge_Click(object sender, EventArgs e)
+        private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
-            if (_objAttribute.Value <= 0)
+            if (AttributeObject.Value <= 0)
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotBurnEdge"), LanguageManager.GetString("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
 
             // Verify that the user wants to Burn a point of Edge.
-            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BurnEdge"), LanguageManager.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_BurnEdge"), await LanguageManager.GetStringAsync("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-            _objAttribute.Degrade(1);
+            AttributeObject.Degrade(1);
             ValueChanged?.Invoke(this, e);
         }
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
-            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != attrib.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
+            if (nudBase.Value + Math.Max(nudKarma.Value, 0) != AttributeObject.TotalMaximum || nudKarma.Value == nudKarma.Minimum)
                 return;
             if (nudKarma.Value - nudBase.Increment >= 0)
             {
@@ -363,8 +355,7 @@ namespace Chummer.UI.Attributes
 
         private void nudKarma_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
-            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
-            if (nudBase.Value + nudKarma.Value != attrib.TotalMaximum || nudBase.Value == nudBase.Minimum)
+            if (nudBase.Value + nudKarma.Value != AttributeObject.TotalMaximum || nudBase.Value == nudBase.Minimum)
                 return;
             if (nudBase.Value - nudKarma.Increment >= 0)
             {

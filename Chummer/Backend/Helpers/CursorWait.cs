@@ -19,40 +19,98 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using NLog;
 
 namespace Chummer
 {
-    public sealed class CursorWait : IDisposable
+    public sealed class CursorWait : IDisposable, IAsyncDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-        private static readonly object s_ObjApplicationWaitCursorsLock = new object();
         private static int _intApplicationWaitCursors;
-        private static readonly LockingDictionary<Control, ThreadSafeList<CursorWait>> s_DicWaitingControls = new LockingDictionary<Control, ThreadSafeList<CursorWait>>();
+        private static readonly LockingDictionary<Control, int> s_DicWaitCursorControls = new LockingDictionary<Control, int>();
+        private static readonly LockingDictionary<Control, int> s_DicApplicationStartingControls = new LockingDictionary<Control, int>();
+        private readonly bool _blnAppStartingCursor;
+        private bool _blnDisposed;
         private readonly Control _objControl;
         private readonly Form _frmControlTopParent;
         private readonly Stopwatch _objTimer = new Stopwatch();
         private readonly Guid _guidInstance = Guid.NewGuid();
 
-        public CursorWait(Control objControl = null, bool blnAppStarting = false)
+        public static CursorWait New(Control objControl = null, bool blnAppStarting = false)
         {
-            if (objControl.IsNullOrDisposed())
+            CursorWait objReturn = new CursorWait(objControl, blnAppStarting);
+            if (objReturn._objControl.IsNullOrDisposed())
             {
-                _objControl = null;
-                lock (s_ObjApplicationWaitCursorsLock)
+                if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
                 {
-                    ++_intApplicationWaitCursors;
-                    if (_intApplicationWaitCursors > 0)
-                        Application.UseWaitCursor = true;
+                    Application.UseWaitCursor = true;
                 }
-                return;
+                return objReturn;
             }
-            _objTimer.Start();
-            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + _guidInstance + "\".");
+            objReturn._objTimer.Start();
+            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + objReturn._guidInstance + "\".");
+
+            if (objReturn._objControl != null)
+            {
+                if (objReturn._blnAppStartingCursor)
+                {
+
+                    s_DicApplicationStartingControls.AddOrUpdate(objReturn._objControl, 1,
+                                                                 (x, y) => Interlocked.Increment(ref y));
+                    if (!s_DicWaitCursorControls.TryGetValue(objReturn._objControl, out int intExitingWaits)
+                        || intExitingWaits == 0)
+                        objReturn.SetControlCursor(Cursors.AppStarting);
+                }
+                else
+                {
+                    s_DicWaitCursorControls.AddOrUpdate(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
+                    objReturn.SetControlCursor(Cursors.WaitCursor);
+                }
+            }
+            return objReturn;
+        }
+
+        public static async ValueTask<CursorWait> NewAsync(Control objControl = null, bool blnAppStarting = false)
+        {
+            CursorWait objReturn = new CursorWait(objControl, blnAppStarting);
+            if (objReturn._objControl.IsNullOrDisposed())
+            {
+                if (Interlocked.Increment(ref _intApplicationWaitCursors) == 1)
+                {
+                    Application.UseWaitCursor = true;
+                }
+                return objReturn;
+            }
+            objReturn._objTimer.Start();
+            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + objReturn._guidInstance + "\".");
+
+            if (objReturn._objControl != null)
+            {
+                if (objReturn._blnAppStartingCursor)
+                {
+
+                    await s_DicApplicationStartingControls.AddOrUpdateAsync(objReturn._objControl, 1,
+                                                                            (x, y) => Interlocked.Increment(ref y));
+                    if (!s_DicWaitCursorControls.TryGetValue(objReturn._objControl, out int intExitingWaits)
+                        || intExitingWaits == 0)
+                        objReturn.SetControlCursor(Cursors.AppStarting);
+                }
+                else
+                {
+                    await s_DicWaitCursorControls.AddOrUpdateAsync(objReturn._objControl, 1, (x, y) => Interlocked.Increment(ref y));
+                    objReturn.SetControlCursor(Cursors.WaitCursor);
+                }
+            }
+            return objReturn;
+        }
+
+        private CursorWait(Control objControl = null, bool blnAppStarting = false)
+        {
             _objControl = objControl;
             Form frmControl = _objControl as Form;
-            CursorToUse = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
             if (frmControl?.IsMdiChild != false)
             {
                 if (frmControl != null)
@@ -75,58 +133,8 @@ namespace Chummer
                     }
                 }
             }
-            ThreadSafeList<CursorWait> lstNew = new ThreadSafeList<CursorWait>(1);
-            while (_objControl != null && !s_DicWaitingControls.TryAdd(_objControl, lstNew))
-            {
-                if (!s_DicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstExisting))
-                    continue;
-                lstNew.Dispose();
-                CursorWait objLastCursorWait = null;
-                // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
-                bool blnDoLoop = true;
-                while (blnDoLoop)
-                {
-                    blnDoLoop = false;
-                    int intIndex = lstExisting.Count - 1;
-                    if (intIndex >= 0)
-                    {
-                        try
-                        {
-                            objLastCursorWait = lstExisting[intIndex];
-                        }
-                        catch (ArgumentOutOfRangeException)
-                        {
-                            blnDoLoop = true;
-                        }
-                    }
-                }
-                lstExisting.Add(this);
-                if (blnAppStarting)
-                {
-                    if (objLastCursorWait == null)
-                        SetControlCursor(CursorToUse);
-                    else if (objLastCursorWait.CursorToUse == Cursors.WaitCursor)
-                        CursorToUse = Cursors.WaitCursor;
-                }
-                else if (objLastCursorWait == null || objLastCursorWait.CursorToUse == Cursors.AppStarting)
-                    SetControlCursor(CursorToUse);
-                return;
-            }
-            // Here for safety purposes
-            if (_objControl.IsNullOrDisposed())
-            {
-                _objControl = null;
-                _frmControlTopParent = null;
-                lock (s_ObjApplicationWaitCursorsLock)
-                {
-                    ++_intApplicationWaitCursors;
-                    if (_intApplicationWaitCursors > 0)
-                        Application.UseWaitCursor = true;
-                }
-                return;
-            }
-            lstNew.Add(this);
-            SetControlCursor(CursorToUse);
+
+            _blnAppStartingCursor = blnAppStarting;
         }
 
         private void SetControlCursor(Cursor objCursor)
@@ -136,25 +144,21 @@ namespace Chummer
                 // Only wait for the cursor change if we're changing to or from a full waiting cursor
                 if (objCursor == Cursors.WaitCursor || _objControl.Cursor == Cursors.WaitCursor)
                 {
-                    _objControl.DoThreadSafe(() => _objControl.Cursor = objCursor);
-                    _frmControlTopParent?.DoThreadSafe(() => _frmControlTopParent.Cursor = objCursor);
+                    _objControl.DoThreadSafe(x => x.Cursor = objCursor);
+                    _frmControlTopParent?.DoThreadSafe(x => x.Cursor = objCursor);
                 }
                 else
                 {
-                    _objControl.QueueThreadSafe(() => _objControl.Cursor = objCursor);
-                    _frmControlTopParent?.QueueThreadSafe(() => _frmControlTopParent.Cursor = objCursor);
+                    _objControl.QueueThreadSafe(x => x.Cursor = objCursor);
+                    _frmControlTopParent?.QueueThreadSafe(x => x.Cursor = objCursor);
                 }
             }
             else
             {
-                _objControl.DoThreadSafe(() => _objControl.ResetCursor());
-                _frmControlTopParent?.DoThreadSafe(() => _frmControlTopParent.ResetCursor());
+                _objControl.DoThreadSafe(x => x.ResetCursor());
+                _frmControlTopParent?.DoThreadSafe(x => x.ResetCursor());
             }
         }
-
-        public Cursor CursorToUse { get; }
-
-        private bool _blnDisposed;
 
         public void Dispose()
         {
@@ -163,57 +167,70 @@ namespace Chummer
             _blnDisposed = true;
             if (_objControl == null)
             {
-                lock (s_ObjApplicationWaitCursorsLock)
+                if (Interlocked.Decrement(ref _intApplicationWaitCursors) == 0)
                 {
-                    --_intApplicationWaitCursors;
-                    if (_intApplicationWaitCursors <= 0)
-                        Application.UseWaitCursor = false;
+                    Application.UseWaitCursor = false;
                 }
                 return;
             }
             Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + _guidInstance + "\" after " + _objTimer.ElapsedMilliseconds + "ms.");
             _objTimer.Stop();
-            if (!s_DicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstCursorWaits) || lstCursorWaits == null || lstCursorWaits.Count == 0)
+            if (_blnAppStartingCursor)
             {
-                Utils.BreakIfDebug();
-                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + _guidInstance + "\" somehow does not have a CursorWait list defined for it");
-                throw new InvalidOperationException(nameof(lstCursorWaits));
+                if (s_DicApplicationStartingControls.RemoveOrUpdate(_objControl, (x, y) => y <= 1,
+                                                                    (x, y) => Interlocked.Decrement(ref y))
+                    && (!s_DicWaitCursorControls.TryGetValue(_objControl, out int intExitingWaits)
+                        || intExitingWaits == 0))
+                    SetControlCursor(null);
             }
-
-            int intMyIndex = lstCursorWaits.FindLastIndex(x => x.Equals(this));
-            if (intMyIndex < 0 || !lstCursorWaits.Remove(this))
+            else
             {
-                Utils.BreakIfDebug();
-                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + _guidInstance + "\" somehow is not in the CursorWait list defined for it");
-                throw new InvalidOperationException(nameof(intMyIndex));
-            }
-            if (intMyIndex >= lstCursorWaits.Count)
-            {
-                CursorWait objPreviousCursorWait = null;
-                // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
-                bool blnDoLoop = true;
-                while (blnDoLoop)
+                if (s_DicWaitCursorControls.RemoveOrUpdate(_objControl, (x, y) => y <= 1,
+                                                           (x, y) => Interlocked.Decrement(ref y)))
                 {
-                    blnDoLoop = false;
-                    int intIndex = lstCursorWaits.Count - 1;
-                    if (intIndex >= 0)
-                    {
-                        try
-                        {
-                            objPreviousCursorWait = lstCursorWaits[intIndex];
-                        }
-                        catch (ArgumentOutOfRangeException)
-                        {
-                            blnDoLoop = true;
-                        }
-                    }
+                    if (s_DicApplicationStartingControls.TryGetValue(_objControl, out int intExitingWaits) && intExitingWaits > 0)
+                        SetControlCursor(Cursors.AppStarting);
+                    else
+                        SetControlCursor(null);
                 }
-                SetControlCursor(objPreviousCursorWait?.CursorToUse);
             }
-            if (lstCursorWaits.Count != 0)
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            if (_blnDisposed)
                 return;
-            s_DicWaitingControls.Remove(_objControl);
-            lstCursorWaits.Dispose();
+            _blnDisposed = true;
+            if (_objControl == null)
+            {
+                if (Interlocked.Decrement(ref _intApplicationWaitCursors) == 0)
+                {
+                    Application.UseWaitCursor = false;
+                }
+                return;
+            }
+            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + _guidInstance + "\" after " + _objTimer.ElapsedMilliseconds + "ms.");
+            _objTimer.Stop();
+            if (_blnAppStartingCursor)
+            {
+                if (await s_DicApplicationStartingControls.RemoveOrUpdateAsync(_objControl, (x, y) => y <= 1,
+                                                                               (x, y) => Interlocked.Decrement(ref y))
+                    && (!s_DicWaitCursorControls.TryGetValue(_objControl, out int intExitingWaits)
+                        || intExitingWaits == 0))
+                    SetControlCursor(null);
+            }
+            else
+            {
+                if (await s_DicWaitCursorControls.RemoveOrUpdateAsync(_objControl, (x, y) => y <= 1,
+                                                                      (x, y) => Interlocked.Decrement(ref y)))
+                {
+                    if (s_DicApplicationStartingControls.TryGetValue(_objControl, out int intExitingWaits) && intExitingWaits > 0)
+                        SetControlCursor(Cursors.AppStarting);
+                    else
+                        SetControlCursor(null);
+                }
+            }
         }
     }
 }

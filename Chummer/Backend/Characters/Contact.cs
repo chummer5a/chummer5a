@@ -43,7 +43,7 @@ namespace Chummer
     {
         Contact = 0,
         Enemy = 1,
-        Pet = 2,
+        Pet = 2
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ namespace Chummer
         private bool _blnGroupEnabled = true;
         private bool _blnReadOnly;
         private bool _blnFree;
-        private readonly List<Image> _lstMugshots = new List<Image>(1);
+        private readonly ThreadSafeList<Image> _lstMugshots = new ThreadSafeList<Image>(1);
         private int _intMainMugshotIndex = -1;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -290,52 +290,132 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
+        {
+            SaveCoreAsync(true, objWriter).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        public Task SaveAsync(XmlWriter objWriter)
+        {
+            return SaveCoreAsync(false, objWriter);
+        }
+
+        /// <summary>
+        /// Save the object's XML to the XmlWriter.
+        /// </summary>
+        /// <param name="blnSync"></param>
+        /// <param name="objWriter">XmlTextWriter to write with.</param>
+        private async Task SaveCoreAsync(bool blnSync, XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("contact");
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("role", _strRole);
-            objWriter.WriteElementString("location", _strLocation);
-            objWriter.WriteElementString("connection", _intConnection.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("metatype", _strMetatype);
-            objWriter.WriteElementString("gender", _strGender);
-            objWriter.WriteElementString("age", _strAge);
-            objWriter.WriteElementString("contacttype", _strType);
-            objWriter.WriteElementString("preferredpayment", _strPreferredPayment);
-            objWriter.WriteElementString("hobbiesvice", _strHobbiesVice);
-            objWriter.WriteElementString("personallife", _strPersonalLife);
-            objWriter.WriteElementString("type", _eContactType.ToString());
-            objWriter.WriteElementString("file", _strFileName);
-            objWriter.WriteElementString("relative", _strRelativeName);
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
-            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            objWriter.WriteElementString("groupname", _strGroupName);
-            objWriter.WriteElementString("colour", _objColour.ToArgb().ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("blackmail", _blnBlackmail.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("groupenabled", _blnGroupEnabled.ToString(GlobalSettings.InvariantCultureInfo));
-
-            if (_blnReadOnly)
-                objWriter.WriteElementString("readonly", string.Empty);
-
-            if (_strUnique != null)
+            if (blnSync)
             {
-                objWriter.WriteElementString("guid", _strUnique);
+                // ReSharper disable MethodHasAsyncOverload
+                objWriter.WriteStartElement("contact");
+                objWriter.WriteElementString("name", _strName);
+                objWriter.WriteElementString("role", _strRole);
+                objWriter.WriteElementString("location", _strLocation);
+                objWriter.WriteElementString("connection",
+                                             _intConnection.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("metatype", _strMetatype);
+                objWriter.WriteElementString("gender", _strGender);
+                objWriter.WriteElementString("age", _strAge);
+                objWriter.WriteElementString("contacttype", _strType);
+                objWriter.WriteElementString("preferredpayment", _strPreferredPayment);
+                objWriter.WriteElementString("hobbiesvice", _strHobbiesVice);
+                objWriter.WriteElementString("personallife", _strPersonalLife);
+                objWriter.WriteElementString("type", _eContactType.ToString());
+                objWriter.WriteElementString("file", _strFileName);
+                objWriter.WriteElementString("relative", _strRelativeName);
+                objWriter.WriteElementString(
+                    "notes",
+                    System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+                                                                 string.Empty));
+                objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
+                objWriter.WriteElementString("groupname", _strGroupName);
+                objWriter.WriteElementString(
+                    "colour", _objColour.ToArgb().ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("blackmail", _blnBlackmail.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("groupenabled",
+                                             _blnGroupEnabled.ToString(GlobalSettings.InvariantCultureInfo));
+
+                if (_blnReadOnly)
+                    objWriter.WriteElementString("readonly", string.Empty);
+
+                if (_strUnique != null)
+                    objWriter.WriteElementString("guid", _strUnique);
+
+                SaveMugshots(objWriter);
+
+                objWriter.WriteEndElement();
+                // ReSharper restore MethodHasAsyncOverload
             }
+            else
+            {
+                // <contact>
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("contact");
+                try
+                {
+                    await objWriter.WriteElementStringAsync("name", _strName);
+                    await objWriter.WriteElementStringAsync("role", _strRole);
+                    await objWriter.WriteElementStringAsync("location", _strLocation);
+                    await objWriter.WriteElementStringAsync("connection",
+                                                            _intConnection.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync(
+                        "loyalty", _intLoyalty.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("metatype", _strMetatype);
+                    await objWriter.WriteElementStringAsync("gender", _strGender);
+                    await objWriter.WriteElementStringAsync("age", _strAge);
+                    await objWriter.WriteElementStringAsync("contacttype", _strType);
+                    await objWriter.WriteElementStringAsync("preferredpayment", _strPreferredPayment);
+                    await objWriter.WriteElementStringAsync("hobbiesvice", _strHobbiesVice);
+                    await objWriter.WriteElementStringAsync("personallife", _strPersonalLife);
+                    await objWriter.WriteElementStringAsync("type", _eContactType.ToString());
+                    await objWriter.WriteElementStringAsync("file", _strFileName);
+                    await objWriter.WriteElementStringAsync("relative", _strRelativeName);
+                    await objWriter.WriteElementStringAsync(
+                        "notes",
+                        System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]",
+                                                                     string.Empty));
+                    await objWriter.WriteElementStringAsync("notesColor", ColorTranslator.ToHtml(_colNotes));
+                    await objWriter.WriteElementStringAsync("groupname", _strGroupName);
+                    await objWriter.WriteElementStringAsync(
+                        "colour", _objColour.ToArgb().ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync(
+                        "group", _blnIsGroup.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync(
+                        "family", _blnFamily.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("blackmail",
+                                                            _blnBlackmail.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("free", _blnFree.ToString(GlobalSettings.InvariantCultureInfo));
+                    await objWriter.WriteElementStringAsync("groupenabled",
+                                                            _blnGroupEnabled.ToString(GlobalSettings.InvariantCultureInfo));
 
-            SaveMugshots(objWriter);
+                    if (_blnReadOnly)
+                        await objWriter.WriteElementStringAsync("readonly", string.Empty);
 
-            /* Disabled for now because we cannot change any properties in the linked character anyway
-            if (LinkedCharacter?.IsSaving == false && !Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == LinkedCharacter))
-                LinkedCharacter.Save();
-            */
+                    if (_strUnique != null)
+                    {
+                        await objWriter.WriteElementStringAsync("guid", _strUnique);
+                    }
 
-            objWriter.WriteEndElement();
+                    await SaveMugshotsAsync(objWriter);
+                }
+                finally
+                {
+                    // </contact>
+                    await objBaseElement.DisposeAsync();
+                }
+            }
         }
 
         /// <summary>
@@ -399,37 +479,44 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("contact");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", Name);
-            objWriter.WriteElementString("role", DisplayRoleMethod(strLanguageToPrint));
-            objWriter.WriteElementString("location", Location);
-            if (!IsGroup)
-                objWriter.WriteElementString("connection", Connection.ToString(objCulture));
-            else
-                objWriter.WriteElementString("connection", LanguageManager.GetString("String_Group", strLanguageToPrint) + "(" + Connection.ToString(objCulture) + ')');
-            objWriter.WriteElementString("loyalty", Loyalty.ToString(objCulture));
-            objWriter.WriteElementString("metatype", DisplayMetatypeMethod(strLanguageToPrint));
-            objWriter.WriteElementString("gender", DisplayGenderMethod(strLanguageToPrint));
-            objWriter.WriteElementString("age", DisplayAgeMethod(strLanguageToPrint));
-            objWriter.WriteElementString("contacttype", DisplayTypeMethod(strLanguageToPrint));
-            objWriter.WriteElementString("preferredpayment", DisplayPreferredPaymentMethod(strLanguageToPrint));
-            objWriter.WriteElementString("hobbiesvice", DisplayHobbiesViceMethod(strLanguageToPrint));
-            objWriter.WriteElementString("personallife", DisplayPersonalLifeMethod(strLanguageToPrint));
-            objWriter.WriteElementString("type", LanguageManager.GetString("String_" + EntityType, strLanguageToPrint));
-            objWriter.WriteElementString("forcedloyalty", ForcedLoyalty.ToString(objCulture));
-            objWriter.WriteElementString("blackmail", Blackmail.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("family", Family.ToString(GlobalSettings.InvariantCultureInfo));
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
+            // <contact>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("contact");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("name", Name);
+                await objWriter.WriteElementStringAsync("role", DisplayRoleMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("location", Location);
+                if (!IsGroup)
+                    await objWriter.WriteElementStringAsync("connection", Connection.ToString(objCulture));
+                else
+                    await objWriter.WriteElementStringAsync("connection", await LanguageManager.GetStringAsync("String_Group", strLanguageToPrint) + '(' + Connection.ToString(objCulture) + ')');
+                await objWriter.WriteElementStringAsync("loyalty", Loyalty.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("metatype", DisplayMetatypeMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("gender", DisplayGenderMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("age", DisplayAgeMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("contacttype", DisplayTypeMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("preferredpayment", DisplayPreferredPaymentMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("hobbiesvice", DisplayHobbiesViceMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("personallife", DisplayPersonalLifeMethod(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("type", await LanguageManager.GetStringAsync("String_" + EntityType, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("forcedloyalty", ForcedLoyalty.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("blackmail", Blackmail.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("family", Family.ToString(GlobalSettings.InvariantCultureInfo));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
 
-            PrintMugshots(objWriter);
-
-            objWriter.WriteEndElement();
+                await PrintMugshots(objWriter);
+            }
+            finally
+            {
+                // </contact>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Save, Load, and Print Methods
@@ -567,14 +654,14 @@ namespace Chummer
             if (LinkedCharacter != null)
             {
                 // Update character information fields.
-                XPathNavigator objMetatypeNode = _objCharacter.GetNode(true);
+                XPathNavigator objMetatypeNode = _objCharacter.GetNodeXPath(true);
 
                 strReturn = objMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? _objCharacter.TranslateExtra(LinkedCharacter.Metatype, strLanguage, "metatypes.xml");
 
                 if (LinkedCharacter.MetavariantGuid == Guid.Empty)
                     return strReturn;
                 objMetatypeNode = objMetatypeNode
-                    .SelectSingleNode("metavariants/metavariant[id = " + LinkedCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + "]");
+                    .SelectSingleNode("metavariants/metavariant[id = " + LinkedCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
 
                 string strMetatypeTranslate = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value;
                 strReturn += LanguageManager.GetString("String_Space", strLanguage)
@@ -1076,7 +1163,7 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
+                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
                         LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -1085,8 +1172,8 @@ namespace Chummer
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
                 if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
                 {
-                    Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                    _objLinkedCharacter = objOpenCharacter ?? Program.MainForm.LoadCharacter(strFile, string.Empty, false, false);
+                    Character objOpenCharacter = Program.OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                    _objLinkedCharacter = objOpenCharacter ?? Program.LoadCharacter(strFile, string.Empty, false, false);
                     if (_objLinkedCharacter != null)
                         CharacterObject.LinkedCharacters.Add(_objLinkedCharacter);
                 }
@@ -1096,11 +1183,11 @@ namespace Chummer
                 if (objOldLinkedCharacter != null)
                 {
                     objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
-                    if (Program.MainForm.OpenCharacters.Contains(objOldLinkedCharacter))
+                    if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                     {
-                        if (Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
+                        if (Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
                             && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != objOldLinkedCharacter))
-                            Program.MainForm.OpenCharacters.Remove(objOldLinkedCharacter);
+                            Program.OpenCharacters.Remove(objOldLinkedCharacter);
                     }
                     else
                         objOldLinkedCharacter.Dispose();
@@ -1164,7 +1251,16 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public List<Image> Mugshots => LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
+        public ThreadSafeList<Image> Mugshots
+        {
+            get
+            {
+                using (EnterReadLock.Enter(CharacterObject.LockObject))
+                {
+                    return LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
+                }
+            }
+        }
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -1216,31 +1312,82 @@ namespace Chummer
                     LinkedCharacter.MainMugshotIndex = value;
                 else
                 {
-                    if (value >= _lstMugshots.Count || value < -1)
+                    if (value < -1)
                         value = -1;
-                    if (_intMainMugshotIndex != value)
+                    else if (value >= 0)
                     {
-                        _intMainMugshotIndex = value;
-                        OnPropertyChanged();
+                        using (EnterReadLock.Enter(_objCharacter.LockObject))
+                        {
+                            if (value >= Mugshots.Count)
+                                value = -1;
+                        }
+                    }
+
+                    using (EnterReadLock.Enter(_objCharacter.LockObject))
+                    {
+                        if (_intMainMugshotIndex == value)
+                            return;
+                        using (_objCharacter.LockObject.EnterWriteLock())
+                        {
+                            _intMainMugshotIndex = value;
+                            OnPropertyChanged();
+                        }
                     }
                 }
             }
         }
 
-        public void SaveMugshots(XmlTextWriter objWriter)
+        public void SaveMugshots(XmlWriter objWriter)
+        {
+            SaveMugshotsCore(true, objWriter).GetAwaiter().GetResult();
+        }
+
+        public Task SaveMugshotsAsync(XmlWriter objWriter)
+        {
+            return SaveMugshotsCore(false, objWriter);
+        }
+
+        public async Task SaveMugshotsCore(bool blnSync, XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteElementString("mainmugshotindex",
-                MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
-            // <mugshot>
-            objWriter.WriteStartElement("mugshots");
-            foreach (Image imgMugshot in Mugshots)
+            if (blnSync)
             {
-                objWriter.WriteElementString("mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
+                objWriter.WriteElementString("mainmugshotindex",
+                                             MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
+                // <mugshot>
+                // ReSharper disable once MethodHasAsyncOverload
+                using (objWriter.StartElement("mugshots"))
+                {
+                    foreach (Image imgMugshot in Mugshots)
+                    {
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objWriter.WriteElementString(
+                            "mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
+                    }
+                }
+                // </mugshot>
             }
-            // </mugshot>
-            objWriter.WriteEndElement();
+            else
+            {
+                await objWriter.WriteElementStringAsync("mainmugshotindex",
+                                                        MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
+                // <mugshots>
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mugshots");
+                try
+                {
+                    foreach (Image imgMugshot in Mugshots)
+                    {
+                        await objWriter.WriteElementStringAsync(
+                            "mugshot", await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot));
+                    }
+                }
+                finally
+                {
+                    // </mugshots>
+                    await objBaseElement.DisposeAsync();
+                }
+            }
         }
 
         public void LoadMugshots(XPathNavigator xmlSavedNode)
@@ -1269,12 +1416,12 @@ namespace Chummer
             }
         }
 
-        public void PrintMugshots(XmlTextWriter objWriter)
+        public async ValueTask PrintMugshots(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
             if (LinkedCharacter != null)
-                LinkedCharacter.PrintMugshots(objWriter);
+                await LinkedCharacter.PrintMugshots(objWriter);
             else if (Mugshots.Count > 0)
             {
                 // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
@@ -1289,7 +1436,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                        Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                     }
                 }
                 Guid guiImage = Guid.NewGuid();
@@ -1300,35 +1447,48 @@ namespace Chummer
                         guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) + ".jpg");
                     imgMainMugshot.Save(imgMugshotPath);
                     // <mainmugshotpath />
-                    objWriter.WriteElementString("mainmugshotpath",
+                    await objWriter.WriteElementStringAsync("mainmugshotpath",
                         "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
                     // <mainmugshotbase64 />
-                    objWriter.WriteElementString("mainmugshotbase64", imgMainMugshot.ToBase64StringAsJpeg());
+                    await objWriter.WriteElementStringAsync("mainmugshotbase64", await imgMainMugshot.ToBase64StringAsJpegAsync());
                 }
-                // <othermugshots>
-                objWriter.WriteElementString("hasothermugshots",
+                // <hasothermugshots>
+                await objWriter.WriteElementStringAsync("hasothermugshots",
                     (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteStartElement("othermugshots");
-                for (int i = 0; i < Mugshots.Count; ++i)
+                // <othermugshots>
+                XmlElementWriteHelper objOtherMugshotsElement = await objWriter.StartElementAsync("othermugshots");
+                try
                 {
-                    if (i == MainMugshotIndex)
-                        continue;
-                    Image imgMugshot = Mugshots[i];
-                    objWriter.WriteStartElement("mugshot");
+                    for (int i = 0; i < Mugshots.Count; ++i)
+                    {
+                        if (i == MainMugshotIndex)
+                            continue;
+                        Image imgMugshot = Mugshots[i];
+                        // <mugshot>
+                        XmlElementWriteHelper objMugshotElement = await objWriter.StartElementAsync("mugshot");
+                        try
+                        {
+                            await objWriter.WriteElementStringAsync("stringbase64", await imgMugshot.ToBase64StringAsJpegAsync());
 
-                    objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64StringAsJpeg());
-
-                    string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                        guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
-                        i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
-                    imgMugshot.Save(imgMugshotPath);
-                    objWriter.WriteElementString("temppath",
-                        "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
-
-                    objWriter.WriteEndElement();
+                            string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
+                                                                 guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
+                                                                 i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
+                            imgMugshot.Save(imgMugshotPath);
+                            await objWriter.WriteElementStringAsync("temppath",
+                                                                    "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));
+                        }
+                        finally
+                        {
+                            // </mugshot>
+                            await objMugshotElement.DisposeAsync();
+                        }
+                    }
                 }
-                // </mugshots>
-                objWriter.WriteEndElement();
+                finally
+                {
+                    // </othermugshots>
+                    await objOtherMugshotsElement.DisposeAsync();
+                }
             }
         }
 
@@ -1337,12 +1497,13 @@ namespace Chummer
             if (_lstCachedContactArchetypes != null)
                 Utils.ListItemListPool.Return(_lstCachedContactArchetypes);
             if (_objLinkedCharacter != null && !Utils.IsUnitTest
-                                            && Program.MainForm.OpenCharacters.Contains(_objLinkedCharacter)
-                                            && Program.MainForm.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
+                                            && Program.OpenCharacters.Contains(_objLinkedCharacter)
+                                            && Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(_objLinkedCharacter))
                                             && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
-                Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
+                Program.OpenCharacters.Remove(_objLinkedCharacter);
             foreach (Image imgMugshot in _lstMugshots)
                 imgMugshot.Dispose();
+            _lstMugshots.Dispose();
         }
 
         #endregion IHasMugshots

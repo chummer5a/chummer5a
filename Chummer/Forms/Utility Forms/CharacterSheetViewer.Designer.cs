@@ -18,6 +18,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
+                _lstCharacters.Dispose();
                 _objRefresherCancellationTokenSource?.Dispose();
                 _objOutputGeneratorCancellationTokenSource?.Dispose();
             }
@@ -255,9 +256,9 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CharacterViewer";
             this.Text = "Character Viewer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmViewer_FormClosing);
-            this.Load += new System.EventHandler(this.frmViewer_Load);
-            this.CursorChanged += new System.EventHandler(this.frmViewer_CursorChanged);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CharacterSheetViewer_FormClosing);
+            this.Load += new System.EventHandler(this.CharacterSheetViewer_Load);
+            this.CursorChanged += new System.EventHandler(this.CharacterSheetViewer_CursorChanged);
             this.cmsSaveButton.ResumeLayout(false);
             this.cmsPrintButton.ResumeLayout(false);
             this.tlpMain.ResumeLayout(false);

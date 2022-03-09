@@ -735,6 +735,9 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
+      <mods>
+        <name>Off-Road Suspension</name>
+      </mods>
       <seats>6</seats>
     </vehicle>
     <vehicle>
@@ -3419,6 +3422,10 @@
           <maxrating>3</maxrating>
         </gear>
       </gears>
+      <mods>
+        <mod name="Speakers" />
+        <mod name="Strobes" />
+      </mods>
     </vehicle>
     <vehicle>
       <id>8b1aff5b-a9a3-4fdc-a10c-de56d88e4b91</id>
@@ -4213,8 +4220,8 @@
           <rating>4</rating>
           <maxrating>4</maxrating>
           <gears>
-            <gear rating="6">Geiger Counter</gear>
-            <gear rating="8">Olfactory Sensor</gear>
+            <gear rating="6" consumecapacity="True">Geiger Counter</gear>
+            <gear rating="8" consumecapacity="True">Olfactory Scanner</gear>
           </gears>
         </gear>
       </gears>
@@ -4241,7 +4248,7 @@
           <rating>2</rating>
           <maxrating>3</maxrating>
         </gear>
-        <gear rating="6">Radio Signal Scanner</gear>
+        <gear rating="6" consumecapacity="True">Radio Signal Scanner</gear>
       </gears>
       <modslots>1</modslots>
     </vehicle>
@@ -4345,14 +4352,14 @@
           <rating>8</rating>
           <maxrating>8</maxrating>
           <gears>
-            <gear rating="8">Atmosphere Sensor</gear>
-            <gear rating="8">Camera</gear>
-            <gear rating="8">Geiger Counter</gear>
-            <gear rating="8">MAD Scanner</gear>
-            <gear rating="8">Olfactory Sensor</gear>
-            <gear rating="8">Radio Signal Scanner</gear>
-            <gear rating="8">Ultrasound</gear>
-            <gear rating="8">X-Ray</gear>
+            <gear rating="8" consumecapacity="True">Atmosphere Sensor</gear>
+            <gear rating="8" consumecapacity="True">Camera</gear>
+            <gear rating="8" consumecapacity="True">Geiger Counter</gear>
+            <gear rating="8" consumecapacity="True">MAD Scanner</gear>
+            <gear rating="8" consumecapacity="True">Olfactory Scanner</gear>
+            <gear rating="8" consumecapacity="True">Radio Signal Scanner</gear>
+            <gear rating="8" consumecapacity="True">Ultrasound</gear>
+            <gear rating="8" consumecapacity="True">X-Ray</gear>
           </gears>
         </gear>
       </gears>
@@ -10081,7 +10088,7 @@
       <source>KK</source>
       <accel>2</accel>
       <armor>5</armor>
-      <avail>-</avail>
+      <avail>0</avail>
       <body>4</body>
       <category>Cars</category>
       <cost>10000</cost>
@@ -10109,7 +10116,7 @@
       <source>KK</source>
       <accel>1</accel>
       <armor>5</armor>
-      <avail>-</avail>
+      <avail>0</avail>
       <body>9</body>
       <category>Cars</category>
       <cost>22000</cost>
@@ -10221,7 +10228,7 @@
       <name>Krime Big Bazoo Redline</name>
       <page>31</page>
       <source>KK</source>
-      <accel>5</accel>
+      <accel>2</accel>
       <armor>6</armor>
       <avail>5</avail>
       <body>9</body>
@@ -10231,7 +10238,7 @@
       <pilot>1</pilot>
       <seats>4</seats>
       <sensor>1</sensor>
-      <speed>3</speed>
+      <speed>5</speed>
       <gears>
         <gear>
           <name>Sensor Array</name>
@@ -10260,7 +10267,7 @@
       <pilot>1</pilot>
       <seats>4</seats>
       <sensor>1</sensor>
-      <speed>3</speed>
+      <speed>5</speed>
       <gears>
         <gear>
           <name>Sensor Array</name>
@@ -10692,6 +10699,30 @@
         </vehicledetails>
       </required>
     </mod>
+    <mod>
+      <id>62C611C4-F081-43AD-8EFD-02FFDFE3014C</id>
+      <name>Speakers</name>
+      <page>128</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
+    <mod>
+      <id>C8B47C0A-A13C-448E-B360-EB73C6BC8DCB</id>
+      <name>Strobes</name>
+      <page>128</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <hide />
+    </mod>
     <!-- End Region -->
     <!-- Region Powertrain-->
     <mod>
@@ -10701,7 +10732,7 @@
       <source>R5</source>
       <avail>6</avail>
       <category>Powertrain</category>
-      <cost>FixedValues(Acceleration * 10000,Acceleration * 25000)</cost>
+      <cost>FixedValues(number(Acceleration = 0) * 5000 + Acceleration * 10000,number(Acceleration = 0) * 12500 + Acceleration * 25000)</cost>
       <rating>2</rating>
       <slots>FixedValues(4,8)</slots>
       <bonus>
@@ -10732,7 +10763,7 @@
       <source>R5</source>
       <avail>(12 + 4*number(Body > 12))R</avail>
       <category>Powertrain</category>
-      <cost>Body * 3000 + (Body * 1000)*number(Body > 12)</cost>
+      <cost>number(Body = 0) * 1500 + Body * 3000 + (Body * 1000)*number(Body > 12)</cost>
       <rating>0</rating>
       <slots>5 + 5*number(Body > 12)</slots>
     </mod>
@@ -10743,7 +10774,7 @@
       <source>R5</source>
       <avail>FixedValues(6,8,10)</avail>
       <category>Powertrain</category>
-      <cost>FixedValues(Handling*2000,Handling*5000,Handling*12000)</cost>
+      <cost>FixedValues(number(Handling = 0) * 1000 + Handling*2000,number(Handling = 0) * 2500 + Handling*5000,number(Handling = 0) * 6000 + Handling*12000)</cost>
       <rating>3</rating>
       <slots>FixedValues(4,10,18)</slots>
       <bonus>
@@ -10780,7 +10811,7 @@
       <source>R5</source>
       <avail>10</avail>
       <category>Powertrain</category>
-      <cost>Body * 1000</cost>
+      <cost>number(Body = 0) * 500 + Body * 1000</cost>
       <rating>0</rating>
       <slots>4</slots>
     </mod>
@@ -10828,7 +10859,7 @@
       <source>R5</source>
       <avail>16F</avail>
       <category>Powertrain</category>
-      <cost>Body * 5000</cost>
+      <cost>number(Body = 0) * 2500 + Body * 5000</cost>
       <rating>0</rating>
       <slots>10</slots>
     </mod>
@@ -10850,7 +10881,7 @@
       <source>R5</source>
       <avail>6</avail>
       <category>Powertrain</category>
-      <cost>Body * 200</cost>
+      <cost>number(Body = 0) * 100 + Body * 200</cost>
       <rating>0</rating>
       <slots>4</slots>
     </mod>
@@ -10861,7 +10892,7 @@
       <source>R5</source>
       <avail>12R</avail>
       <category>Powertrain</category>
-      <cost>Body * 2000</cost>
+      <cost>number(Body = 0) * 1000 + Body * 2000</cost>
       <rating>0</rating>
       <slots>8</slots>
     </mod>
@@ -10872,7 +10903,7 @@
       <source>R5</source>
       <avail>12</avail>
       <category>Powertrain</category>
-      <cost>Body * 1000</cost>
+      <cost>number(Body = 0) * 500 + Body * 1000</cost>
       <rating>0</rating>
       <slots>8</slots>
     </mod>
@@ -10883,7 +10914,7 @@
       <source>R5</source>
       <avail>12R</avail>
       <category>Powertrain</category>
-      <cost>Body * 3000</cost>
+      <cost>number(Body = 0) * 1500 + Body * 3000</cost>
       <rating>0</rating>
       <slots>10</slots>
     </mod>
@@ -10894,7 +10925,7 @@
       <source>R5</source>
       <avail>10</avail>
       <category>Powertrain</category>
-      <cost>Body * 1000</cost>
+      <cost>number(Body = 0) * 500 + Body * 1000</cost>
       <rating>0</rating>
       <slots>6</slots>
     </mod>
@@ -10905,7 +10936,7 @@
       <source>R5</source>
       <avail>12</avail>
       <category>Powertrain</category>
-      <cost>Body * 2000</cost>
+      <cost>number(Body = 0) * 1000 + Body * 2000</cost>
       <rating>0</rating>
       <slots>8</slots>
     </mod>
@@ -10916,7 +10947,7 @@
       <source>R5</source>
       <avail>FixedValues(6,8,12)</avail>
       <category>Powertrain</category>
-      <cost>FixedValues(Speed * 2000,Speed * 5000,Speed * 12000)</cost>
+      <cost>FixedValues(number(Speed = 0) * 1000 + Speed * 2000,number(Speed = 0) * 2500 + Speed * 5000,number(Speed = 0) * 6000 + Speed * 12000)</cost>
       <rating>3</rating>
       <slots>FixedValues(5,14,20)</slots>
       <bonus>
@@ -11205,7 +11236,7 @@
       <source>R5</source>
       <avail>6R</avail>
       <category>Weapons</category>
-      <cost>Body * 250</cost>
+      <cost>number(Body = 0) * 125 + Body * 250</cost>
       <rating>0</rating>
       <slots>1</slots>
     </mod>
@@ -11262,7 +11293,7 @@
       <source>R5</source>
       <avail>12F</avail>
       <category>Body</category>
-      <cost>Body * 1000</cost>
+      <cost>number(Body = 0) * 500 + Body * 1000</cost>
       <rating>0</rating>
       <slots>2</slots>
     </mod>
@@ -11309,7 +11340,7 @@
       <source>R5</source>
       <avail>8</avail>
       <category>Body</category>
-      <cost>FixedValues(Body * 500,Body * 2000)</cost>
+      <cost>FixedValues(number(Body = 0) * 250 + Body * 500,number(Body = 0) * 1000 + Body * 2000)</cost>
       <rating>2</rating>
       <slots>2</slots>
     </mod>
@@ -11353,7 +11384,7 @@
       <source>R5</source>
       <avail>(Rating * 3)R</avail>
       <category>Body</category>
-      <cost>Rating * Body * 1000</cost>
+      <cost>Rating * (number(Body = 0) * 500 + Body * 1000)</cost>
       <rating>4</rating>
       <slots>Rating</slots>
     </mod>
@@ -11452,7 +11483,7 @@
       <source>R5</source>
       <avail>6R</avail>
       <category>Electromagnetic</category>
-      <cost>Body * 500</cost>
+      <cost>number(Body = 0) * 250 + Body * 500</cost>
       <rating>0</rating>
       <slots>2</slots>
     </mod>
@@ -11557,7 +11588,7 @@
       <source>R5</source>
       <avail>6</avail>
       <category>Electromagnetic</category>
-      <cost>Body * 500</cost>
+      <cost>number(Body = 0) * 250 + Body * 500</cost>
       <rating>0</rating>
       <slots>2</slots>
     </mod>
@@ -11568,7 +11599,7 @@
       <source>R5</source>
       <avail>8</avail>
       <category>Electromagnetic</category>
-      <cost>Body * 500</cost>
+      <cost>number(Body = 0) * 250 + Body * 500</cost>
       <rating>0</rating>
       <slots>3</slots>
     </mod>
@@ -11650,7 +11681,7 @@
       <source>HT</source>
       <avail>0</avail>
       <category>Cosmetic</category>
-      <cost>Body * 2</cost>
+      <cost>number(Body = 0) + Body * 2</cost>
       <rating>0</rating>
       <slots>0</slots>
     </mod>
@@ -11794,7 +11825,7 @@
       <source>R5</source>
       <avail>4R</avail>
       <category>All</category>
-      <cost>Body * 150</cost>
+      <cost>number(Body = 0) * 75 + Body * 150</cost>
       <rating>0</rating>
       <slots>1</slots>
       <optionaldrone />
@@ -11906,7 +11937,7 @@
       <source>R5</source>
       <avail>FixedValues(2,4,8,12R)</avail>
       <category>All</category>
-      <cost>FixedValues(Body * Body * 100,Body * Body * 500,Body * Body * 1000,Body * Body * 5000)</cost>
+      <cost>FixedValues(number(Body = 0) * 25 + Body * Body * 100,number(Body = 0) * 125 + Body * Body * 500,number(Body = 0) * 250 + Body * Body * 1000,number(Body = 0) * 1250 + Body * Body * 5000)</cost>
       <rating>4</rating>
       <slots>0</slots>
       <optionaldrone />
@@ -11923,7 +11954,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * Body * 100</cost>
+      <cost>number(Body = 0) * 25 + Body * Body * 100</cost>
       <rating>0</rating>
       <slots>1</slots>
       <optionaldrone />
@@ -11940,7 +11971,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * Body * 1000</cost>
+      <cost>number(Body = 0) * 250 + Body * Body * 1000</cost>
       <rating>0</rating>
       <slots>2</slots>
       <optionaldrone />
@@ -11957,7 +11988,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * 100</cost>
+      <cost>number(Body = 0) * 50 + Body * 100</cost>
       <rating>0</rating>
       <slots>1</slots>
       <optionaldrone />
@@ -12186,7 +12217,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * 300</cost>
+      <cost>number(Body = 0) * 150 + Body * 300</cost>
       <rating>0</rating>
       <slots>0</slots>
       <optionaldrone />
@@ -12203,7 +12234,7 @@
       <source>R5</source>
       <avail>0</avail>
       <category>All</category>
-      <cost>Body * 75</cost>
+      <cost>number(Body = 0) * 37.5 + Body * 75</cost>
       <rating>0</rating>
       <slots>0</slots>
       <optionaldrone />
@@ -12421,7 +12452,7 @@
       <source>SS</source>
       <avail>12R</avail>
       <category>All</category>
-      <cost>Body * 2000</cost>
+      <cost>number(Body = 0) * 1000 + Body * 2000</cost>
       <rating>0</rating>
       <slots>0</slots>
     </mod>
@@ -12646,7 +12677,7 @@
       <source>R5</source>
       <avail>Rating * 2</avail>
       <category>Handling</category>
-      <cost>Body * Rating * 200</cost>
+      <cost>Rating * (number(Body = 0) * 100 + Body * 200)</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>(Rating - Handling - 1) * number(Rating - Handling - 1 >= 0)</slots>
@@ -12669,7 +12700,7 @@
       <source>R5</source>
       <avail>Rating * 2</avail>
       <category>Speed</category>
-      <cost>Body * Rating * 400</cost>
+      <cost>Rating * (number(Body = 0) * 200 + Body * 400)</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>(Rating - Speed - 1) * number(Rating - Speed - 1 >= 0)</slots>
@@ -12692,7 +12723,7 @@
       <source>R5</source>
       <avail>Rating * 4</avail>
       <category>Acceleration</category>
-      <cost>Body * Rating * 200</cost>
+      <cost>Rating * (number(Body = 0) * 100 + Body * 200)</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>(Rating - Acceleration - 1) * number(Rating - Acceleration - 1 >= 0)</slots>
@@ -12715,7 +12746,7 @@
       <source>R5</source>
       <avail>FixedValues(1,2,3,4,5,6,7R,8R,9R,10R,11R,12R,RatingF)</avail>
       <category>Armor</category>
-      <cost>Rating * Body * 200</cost>
+      <cost>Rating * (number(Body = 0) * 100 + Body * 200)</cost>
       <rating>99</rating>
       <ratinglabel>String_UpgradedRating</ratinglabel>
       <slots>(Rating - Armor - 3) * number(Rating - Armor - 3 >= 0)</slots>
@@ -12901,7 +12932,7 @@
       <source>2050</source>
       <avail>4</avail>
       <category>Cosmetic</category>
-      <cost>Body * 1000</cost>
+      <cost>number(Body = 0) * 500 + Body * 1000</cost>
       <rating>0</rating>
       <slots>0</slots>
       <required>

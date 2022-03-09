@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 
 namespace ChummerHub.Data
 {
@@ -16,13 +17,13 @@ namespace ChummerHub.Data
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext'
     {
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.HostingEnvironment'
-        public IHostingEnvironment HostingEnvironment { get; set; }
+        public IHostEnvironment HostingEnvironment { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.HostingEnvironment'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Configuration'
         public IConfiguration Configuration { get; set; }
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Configuration'
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>, IHostingEnvironment)'
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHostingEnvironment env)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHostEnvironment env)
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>, IHostingEnvironment)'
             : base(options)
         {

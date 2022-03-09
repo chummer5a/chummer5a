@@ -60,8 +60,6 @@ namespace Chummer
         private bool _blnDoingCopy;
 
         // Settings.
-        // ReSharper disable once InconsistentNaming
-        private bool _blnAllow2ndMaxAttribute;
 
         private bool _blnAllowBiowareSuites;
         private bool _blnAllowCyberwareESSDiscounts;
@@ -71,6 +69,7 @@ namespace Chummer
         private bool _blnAllowObsolescentUpgrade;
         private bool _blnDontUseCyberlimbCalculation;
         private bool _blnAllowSkillRegrouping = true;
+        private bool _blnSpecializationsBreakSkillGroups = true;
         private bool _blnAlternateMetatypeAttributeKarma;
         private bool _blnArmorDegradation;
         private bool _blnStrictSkillGroupsInCreateMode;
@@ -109,6 +108,19 @@ namespace Chummer
         private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
         private string _strBoundSpiritExpression = "{CHA}";
         private string _strRegisteredSpriteExpression = "{LOG}";
+        private string _strLiftLimitExpression = "{STR} * 15";
+        private string _strCarryLimitExpression = "{STR} * 10";
+        private string _strEncumbranceIntervalExpression = "15";
+        private bool _blnDoEncumbrancePenaltyPhysicalLimit = true;
+        private bool _blnDoEncumbrancePenaltyMovementSpeed;
+        private bool _blnDoEncumbrancePenaltyAgility;
+        private bool _blnDoEncumbrancePenaltyReaction;
+        private bool _blnDoEncumbrancePenaltyWoundModifier;
+        private int _intEncumbrancePenaltyPhysicalLimit = 1;
+        private int _intEncumbrancePenaltyMovementSpeed = 1;
+        private int _intEncumbrancePenaltyAgility = 1;
+        private int _intEncumbrancePenaltyReaction = 1;
+        private int _intEncumbrancePenaltyWoundModifier = 1;
         private bool _blnDoNotRoundEssenceInternally;
         private bool _blnEnableEnemyTracking;
         private bool _blnEnemyKarmaQualityLimit = true;
@@ -127,6 +139,7 @@ namespace Chummer
         private bool _blnMysAdeptSecondMAGAttribute;
         private bool _blnReverseAttributePriorityOrder;
         private string _strNuyenFormat = "#,0.##";
+        private string _strWeightFormat = "#,0.###";
         private bool _blnCompensateSkillGroupKarmaDifference;
         private bool _blnIncreasedImprovedAbilityMultiplier;
         private bool _blnAllowFreeGrids;
@@ -138,6 +151,21 @@ namespace Chummer
         private bool _blnUnclampAttributeMinimum;
         private bool _blnDroneMods;
         private bool _blnDroneModsMaximumPilot;
+        private int _intMaxNumberMaxAttributesCreate = 1;
+        private int _intMaxSkillRatingCreate = 6;
+        private int _intMaxKnowledgeSkillRatingCreate = 6;
+        private int _intMaxSkillRating = 12;
+        private int _intMaxKnowledgeSkillRating = 12;
+
+        // Initiative variables
+        private int _intMinInitiativeDice = 1;
+        private int _intMaxInitiativeDice = 5;
+        private int _intMinAstralInitiativeDice = 3;
+        private int _intMaxAstralInitiativeDice = 5;
+        private int _intMinColdSimInitiativeDice = 3;
+        private int _intMaxColdSimInitiativeDice = 5;
+        private int _intMinHotSimInitiativeDice = 4;
+        private int _intMaxHotSimInitiativeDice = 5;
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
@@ -229,7 +257,7 @@ namespace Chummer
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
-        private readonly HashSet<string> _lstBooks = Utils.StringHashSetPool.Get();
+        private readonly HashSet<string> _setBooks = Utils.StringHashSetPool.Get();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -268,6 +296,8 @@ namespace Chummer
                     _intCachedMinNuyenDecimals = -1;
                 if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
                     _intCachedEssenceDecimals = -1;
+                if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
+                    _intCachedWeightDecimals = -1;
                 if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
                     RecalculateEnabledCustomDataDirectories();
                 if (setNamesOfChangedProperties.Contains(nameof(Books)))
@@ -309,6 +339,9 @@ namespace Chummer
                 ),
                 new DependencyGraphNode<string, CharacterSettings>(nameof(EssenceDecimals),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(EssenceFormat))
+                ),
+                new DependencyGraphNode<string, CharacterSettings>(nameof(WeightDecimals),
+                    new DependencyGraphNode<string, CharacterSettings>(nameof(WeightFormat))
                 ),
                 new DependencyGraphNode<string, CharacterSettings>(nameof(BuiltInOption),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(SourceId))
@@ -361,9 +394,11 @@ namespace Chummer
             if (objOther == null)
                 return;
             _blnDoingCopy = true;
-            List<string> lstPropertiesToUpdate = new List<string>();
+            List<string> lstPropertiesToUpdate;
             try
             {
+                PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+                lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
                 if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                 {
                     lstPropertiesToUpdate.Add(nameof(SourceId));
@@ -385,22 +420,14 @@ namespace Chummer
                 }
 
                 // Copy over via properties in order to trigger OnPropertyChanged as appropriate
-                PropertyInfo[] aobjProperties = GetType().GetProperties();
-                PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
-                foreach (PropertyInfo objOtherProperty in aobjOtherProperties.Where(x => x.CanRead && x.CanWrite))
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
                 {
-                    foreach (PropertyInfo objProperty in Array.FindAll(aobjProperties,
-                                                                       x => x.Name == objOtherProperty.Name
-                                                                            && x.PropertyType
-                                                                            == objOtherProperty.PropertyType))
-                    {
-                        object objMyValue = objProperty.GetValue(this);
-                        object objOtherValue = objOtherProperty.GetValue(objOther);
-                        if (objMyValue.Equals(objOtherValue))
-                            continue;
-                        lstPropertiesToUpdate.Add(objProperty.Name);
-                        objProperty.SetValue(this, objOtherValue);
-                    }
+                    object objMyValue = objProperty.GetValue(this);
+                    object objOtherValue = objProperty.GetValue(objOther);
+                    if (objMyValue.Equals(objOtherValue))
+                        continue;
+                    lstPropertiesToUpdate.Add(objProperty.Name);
+                    objProperty.SetValue(this, objOtherValue);
                 }
 
                 if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
@@ -413,13 +440,13 @@ namespace Chummer
                     }
                 }
 
-                if (!_lstBooks.SetEquals(objOther._lstBooks))
+                if (!_setBooks.SetEquals(objOther._setBooks))
                 {
                     lstPropertiesToUpdate.Add(nameof(Books));
-                    _lstBooks.Clear();
-                    foreach (string strBook in objOther._lstBooks)
+                    _setBooks.Clear();
+                    foreach (string strBook in objOther._setBooks)
                     {
-                        _lstBooks.Add(strBook);
+                        _setBooks.Add(strBook);
                     }
                 }
 
@@ -443,6 +470,55 @@ namespace Chummer
             OnMultiplePropertyChanged(lstPropertiesToUpdate);
         }
 
+        public IEnumerable<string> GetDifferingPropertyNames(CharacterSettings objOther)
+        {
+            PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+            if (objOther == null)
+            {
+                yield return nameof(SourceId);
+                yield return nameof(FileName);
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                    yield return objProperty.Name;
+                yield return nameof(CustomDataDirectoryKeys);
+                yield return nameof(Books);
+                yield return nameof(BannedWareGrades);
+                yield break;
+            }
+            if (!_guiSourceId.Equals(objOther._guiSourceId))
+            {
+                yield return nameof(SourceId);
+            }
+            if (!_strFileName.Equals(objOther._strFileName))
+            {
+                yield return nameof(FileName);
+            }
+
+            // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+            {
+                object objMyValue = objProperty.GetValue(this);
+                object objOtherValue = objProperty.GetValue(objOther);
+                if (objMyValue.Equals(objOtherValue))
+                    continue;
+                yield return objProperty.Name;
+            }
+
+            if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+            {
+                yield return nameof(CustomDataDirectoryKeys);
+            }
+
+            if (!_setBooks.SetEquals(objOther._setBooks))
+            {
+                yield return nameof(Books);
+            }
+
+            if (!BannedWareGrades.SetEquals(objOther.BannedWareGrades))
+            {
+                yield return nameof(BannedWareGrades);
+            }
+        }
+
         public bool HasIdenticalSettings(CharacterSettings objOther)
         {
             if (objOther == null)
@@ -454,49 +530,21 @@ namespace Chummer
             if (GetEquatableHashCode() != objOther.GetEquatableHashCode())
                 return false;
 
-            PropertyInfo[] aobjPropertyInfos = GetType().GetProperties();
-            List<PropertyInfo> lstPropertyInfos
-                = new List<PropertyInfo>(aobjPropertyInfos.Length);
-            lstPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
-            aobjPropertyInfos = objOther.GetType().GetProperties();
-            List<PropertyInfo> lstOtherPropertyInfos
-                = new List<PropertyInfo>(aobjPropertyInfos.Length);
-            lstOtherPropertyInfos.AddRange(aobjPropertyInfos.Where(x => x.PropertyType.IsValueType));
-
-            if (lstPropertyInfos.Count != lstOtherPropertyInfos.Count)
-                return false;
-
-            for (int i = lstPropertyInfos.Count - 1; i >= 0; --i)
+            PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+            foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType && x.CanRead))
             {
-                PropertyInfo objPropertyInfo = lstPropertyInfos[i];
-                int intOtherIndex
-                    = lstOtherPropertyInfos.FindIndex(x => x.Name == objPropertyInfo.Name
-                                                           && x.PropertyType == objPropertyInfo.PropertyType);
-                if (intOtherIndex < 0)
+                object objMyValue = objProperty.GetValue(this);
+                object objOtherValue = objProperty.GetValue(objOther);
+                if (!objMyValue.Equals(objOtherValue))
                     return false;
-                PropertyInfo objOtherPropertyInfo = lstOtherPropertyInfos[intOtherIndex];
-                object objMyValue = objPropertyInfo.GetValue(this);
-                object objOtherValue = objOtherPropertyInfo.GetValue(objOther);
-                if (objMyValue.Equals(objOtherValue))
-                {
-                    // Removed checked property from the other list, both to speed up future checks and to make last check easier
-                    lstOtherPropertyInfos.RemoveAt(intOtherIndex);
-                }
-                else
-                {
-                    return false;
-                }
             }
-            // This will only happen if there are any properties in other that haven't been accounted for in this object
-            if (lstOtherPropertyInfos.Count > 0)
-                return false;
 
             if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther._dicCustomDataDirectoryKeys))
                 return false;
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
-            return _lstBooks.SetEquals(objOther._lstBooks) && BannedWareGrades.SetEquals(objOther.BannedWareGrades);
+            return _setBooks.SetEquals(objOther._setBooks) && BannedWareGrades.SetEquals(objOther.BannedWareGrades);
         }
 
         /// <summary>
@@ -512,7 +560,6 @@ namespace Chummer
                 int hashCode = _guiSourceId.GetHashCode();
                 hashCode = (hashCode * 397) ^ (_strFileName?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strName?.GetHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ _blnAllow2ndMaxAttribute.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowBiowareSuites.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowCyberwareESSDiscounts.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowEditPartOfBaseWeapon.GetHashCode();
@@ -521,6 +568,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnAllowObsolescentUpgrade.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDontUseCyberlimbCalculation.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowSkillRegrouping.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnSpecializationsBreakSkillGroups.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAlternateMetatypeAttributeKarma.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnArmorDegradation.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnStrictSkillGroupsInCreateMode.GetHashCode();
@@ -559,6 +607,19 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ (_strChargenKarmaToNuyenExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strBoundSpiritExpression?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_strRegisteredSpriteExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strLiftLimitExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strCarryLimitExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strEncumbranceIntervalExpression?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyPhysicalLimit.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyMovementSpeed.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyAgility.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyReaction.GetHashCode();
+                hashCode = (hashCode * 397) ^ _blnDoEncumbrancePenaltyWoundModifier.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyPhysicalLimit.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyMovementSpeed.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyAgility.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyReaction.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intEncumbrancePenaltyWoundModifier.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDoNotRoundEssenceInternally.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnEnableEnemyTracking.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnEnemyKarmaQualityLimit.GetHashCode();
@@ -577,6 +638,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnMysAdeptSecondMAGAttribute.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnReverseAttributePriorityOrder.GetHashCode();
                 hashCode = (hashCode * 397) ^ (_strNuyenFormat?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_strWeightFormat?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ _blnCompensateSkillGroupKarmaDifference.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnIncreasedImprovedAbilityMultiplier.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnAllowFreeGrids.GetHashCode();
@@ -588,6 +650,19 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _blnUnclampAttributeMinimum.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDroneMods.GetHashCode();
                 hashCode = (hashCode * 397) ^ _blnDroneModsMaximumPilot.GetHashCode();
+                hashCode = (hashCode * 397) ^ _intMaxNumberMaxAttributesCreate;
+                hashCode = (hashCode * 397) ^ _intMaxSkillRatingCreate;
+                hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRatingCreate;
+                hashCode = (hashCode * 397) ^ _intMaxSkillRating;
+                hashCode = (hashCode * 397) ^ _intMaxKnowledgeSkillRating;
+                hashCode = (hashCode * 397) ^ _intMinInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMaxInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMinAstralInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMaxAstralInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMinColdSimInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMaxColdSimInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMinHotSimInitiativeDice;
+                hashCode = (hashCode * 397) ^ _intMaxHotSimInitiativeDice;
                 hashCode = (hashCode * 397) ^ _intKarmaAttribute;
                 hashCode = (hashCode * 397) ^ _intKarmaCarryover;
                 hashCode = (hashCode * 397) ^ _intKarmaContact;
@@ -644,7 +719,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories?.GetEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectoryGuids?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_lstEnabledCustomDataDirectoryPaths?.GetEnsembleHashCode() ?? 0);
-                hashCode = (hashCode * 397) ^ (_lstBooks?.GetOrderInvariantEnsembleHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (_setBooks?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (BannedWareGrades?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (RedlinerExcludes?.GetOrderInvariantEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ KarmaMAGInitiationGroupPercent.GetHashCode();
@@ -654,6 +729,7 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ KarmaMAGInitiationSchoolingPercent.GetHashCode();
                 hashCode = (hashCode * 397) ^ KarmaRESInitiationSchoolingPercent.GetHashCode();
                 hashCode = (hashCode * 397) ^ SpecializationBonus;
+                hashCode = (hashCode * 397) ^ ExpertiseBonus;
                 return hashCode;
             }
         }
@@ -675,7 +751,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     return false;
                 }
             }
@@ -684,12 +760,7 @@ namespace Chummer
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
             using (FileStream objStream = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
             {
-                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                {
-                    Formatting = Formatting.Indented,
-                    Indentation = 1,
-                    IndentChar = '\t'
-                })
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     objWriter.WriteStartDocument();
 
@@ -725,8 +796,6 @@ namespace Chummer
                     objWriter.WriteElementString("ignoreart", _blnIgnoreArt.ToString(GlobalSettings.InvariantCultureInfo));
                     // <cyberlegmovement />
                     objWriter.WriteElementString("cyberlegmovement", _blnCyberlegMovement.ToString(GlobalSettings.InvariantCultureInfo));
-                    // <allow2ndmaxattribute />
-                    objWriter.WriteElementString("allow2ndmaxattribute", _blnAllow2ndMaxAttribute.ToString(GlobalSettings.InvariantCultureInfo));
                     // <contactpointsexpression />
                     objWriter.WriteElementString("contactpointsexpression", _strContactPointsExpression);
                     // <knowledgepointsexpression />
@@ -737,6 +806,32 @@ namespace Chummer
                     objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
                     // <compiledspriteexpression />
                     objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
+                    // <liftlimitexpression />
+                    objWriter.WriteElementString("liftlimitexpression", _strLiftLimitExpression);
+                    // <carrylimitexpression />
+                    objWriter.WriteElementString("carrylimitexpression", _strCarryLimitExpression);
+                    // <encumbranceintervalexpression />
+                    objWriter.WriteElementString("encumbranceintervalexpression", _strEncumbranceIntervalExpression);
+                    // <doencumbrancepenaltyphysicallimit />
+                    objWriter.WriteElementString("doencumbrancepenaltyphysicallimit", _blnDoEncumbrancePenaltyPhysicalLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <doencumbrancepenaltymovementspeed />
+                    objWriter.WriteElementString("doencumbrancepenaltymovementspeed", _blnDoEncumbrancePenaltyMovementSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <doencumbrancepenaltyagility />
+                    objWriter.WriteElementString("doencumbrancepenaltyagility", _blnDoEncumbrancePenaltyAgility.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <doencumbrancepenaltyreaction />
+                    objWriter.WriteElementString("doencumbrancepenaltyreaction", _blnDoEncumbrancePenaltyReaction.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <doencumbrancepenaltywoundmodifier />
+                    objWriter.WriteElementString("doencumbrancepenaltywoundmodifier", _blnDoEncumbrancePenaltyWoundModifier.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltyphysicallimit />
+                    objWriter.WriteElementString("encumbrancepenaltyphysicallimit", _intEncumbrancePenaltyPhysicalLimit.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltymovementspeed />
+                    objWriter.WriteElementString("encumbrancepenaltymovementspeed", _intEncumbrancePenaltyMovementSpeed.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltyagility />
+                    objWriter.WriteElementString("encumbrancepenaltyagility", _intEncumbrancePenaltyAgility.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltyreaction />
+                    objWriter.WriteElementString("encumbrancepenaltyreaction", _intEncumbrancePenaltyReaction.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <encumbrancepenaltywoundmodifier />
+                    objWriter.WriteElementString("encumbrancepenaltywoundmodifier", _intEncumbrancePenaltyWoundModifier.ToString(GlobalSettings.InvariantCultureInfo));
                     // <dronearmormultiplierenabled />
                     objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                     // <dronearmorflatnumber />
@@ -751,6 +846,8 @@ namespace Chummer
                     objWriter.WriteElementString("esslossreducesmaximumonly", _blnESSLossReducesMaximumOnly.ToString(GlobalSettings.InvariantCultureInfo));
                     // <allowskillregrouping />
                     objWriter.WriteElementString("allowskillregrouping", _blnAllowSkillRegrouping.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <specializationsbreakskillgroups />
+                    objWriter.WriteElementString("specializationsbreakskillgroups", _blnSpecializationsBreakSkillGroups.ToString(GlobalSettings.InvariantCultureInfo));
                     // <metatypecostskarma />
                     objWriter.WriteElementString("metatypecostskarma", _blnMetatypeCostsKarma.ToString(GlobalSettings.InvariantCultureInfo));
                     // <metatypecostskarmamultiplier />
@@ -797,6 +894,8 @@ namespace Chummer
                     objWriter.WriteElementString("enemykarmaqualitylimit", _blnEnemyKarmaQualityLimit.ToString(GlobalSettings.InvariantCultureInfo));
                     // <nuyenformat />
                     objWriter.WriteElementString("nuyenformat", _strNuyenFormat);
+                    // <weightformat />
+                    objWriter.WriteElementString("weightformat", _strWeightFormat);
                     // <essencedecimals />
                     objWriter.WriteElementString("essenceformat", _strEssenceFormat);
                     // <enforcecapacity />
@@ -853,9 +952,36 @@ namespace Chummer
                     objWriter.WriteElementString("dronemods", _blnDroneMods.ToString(GlobalSettings.InvariantCultureInfo));
                     // <dronemodsmaximumpilot />
                     objWriter.WriteElementString("dronemodsmaximumpilot", _blnDroneModsMaximumPilot.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxnumbermaxattributescreate />
+                    objWriter.WriteElementString("maxnumbermaxattributescreate", _intMaxNumberMaxAttributesCreate.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxskillratingcreate />
+                    objWriter.WriteElementString("maxskillratingcreate", _intMaxSkillRatingCreate.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxknowledgeskillratingcreate />
+                    objWriter.WriteElementString("maxknowledgeskillratingcreate", _intMaxKnowledgeSkillRatingCreate.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxskillrating />
+                    objWriter.WriteElementString("maxskillrating", _intMaxSkillRating.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxknowledgeskillrating />
+                    objWriter.WriteElementString("maxknowledgeskillrating", _intMaxKnowledgeSkillRating.ToString(GlobalSettings.InvariantCultureInfo));
 
-                    // <DicePenaltySustaining />
+                    // <dicepenaltysustaining />
                     objWriter.WriteElementString("dicepenaltysustaining", _intDicePenaltySustaining.ToString(GlobalSettings.InvariantCultureInfo));
+
+                    // <mininitiativedice />
+                    objWriter.WriteElementString("mininitiativedice", _intMinInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxinitiativedice />
+                    objWriter.WriteElementString("maxinitiativedice", _intMaxInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <minastralinitiativedice />
+                    objWriter.WriteElementString("minastralinitiativedice", _intMinAstralInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxastralinitiativedice />
+                    objWriter.WriteElementString("maxastralinitiativedice", _intMaxAstralInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <mincoldsiminitiativedice />
+                    objWriter.WriteElementString("mincoldsiminitiativedice", _intMinColdSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxcoldsiminitiativedice />
+                    objWriter.WriteElementString("maxcoldsiminitiativedice", _intMaxColdSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <minhotsiminitiativedice />
+                    objWriter.WriteElementString("minhotsiminitiativedice", _intMinHotSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
+                    // <maxhotsiminitiativedice />
+                    objWriter.WriteElementString("maxhotsiminitiativedice", _intMaxHotSimInitiativeDice.ToString(GlobalSettings.InvariantCultureInfo));
 
                     // <karmacost>
                     objWriter.WriteStartElement("karmacost");
@@ -956,7 +1082,7 @@ namespace Chummer
                     {
                         foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
                         {
-                            if (_lstBooks.Contains(objAllowedBook.Value))
+                            if (_setBooks.Contains(objAllowedBook.Value))
                                 setAllowedBooks.Add(objAllowedBook.Value);
                         }
 
@@ -980,7 +1106,7 @@ namespace Chummer
                         bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
                         if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
                             x => x.DirectoryPath.StartsWith(strCustomDataRootPath)
-                                 && x.Name.Equals(strDirectoryName, StringComparison.OrdinalIgnoreCase)))
+                                 && x.CharacterSettingsSaveKey.Equals(strDirectoryName, StringComparison.OrdinalIgnoreCase)))
                             continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
                         objWriter.WriteStartElement("customdatadirectoryname");
                         objWriter.WriteElementString("directoryname", strDirectoryName);
@@ -1060,14 +1186,14 @@ namespace Chummer
                 catch (IOException)
                 {
                     if (blnShowDialogs)
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     return false;
                 }
                 catch (XmlException)
                 {
                     if (blnShowDialogs)
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                        Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     return false;
                 }
@@ -1075,7 +1201,7 @@ namespace Chummer
             else
             {
                 if (blnShowDialogs)
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"), LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"), MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 return false;
             }
@@ -1126,8 +1252,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("ignoreart", ref _blnIgnoreArt);
             // Use Cyberleg Stats for Movement
             objXmlNode.TryGetBoolFieldQuickly("cyberlegmovement", ref _blnCyberlegMovement);
-            // Allow a 2nd Max Attribute
-            objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref _blnAllow2ndMaxAttribute);
             // XPath expression for contact points
             if (!objXmlNode.TryGetStringFieldQuickly("contactpointsexpression", ref _strContactPointsExpression))
             {
@@ -1163,10 +1287,25 @@ namespace Chummer
             // A very hacky legacy shim, but also works as a bit of a sanity check
             else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
             {
-                _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                _strChargenKarmaToNuyenExpression = '(' + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
             }
+            // Various expressions used to determine certain character stats
             objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
             objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
+            objXmlNode.TryGetStringFieldQuickly("liftlimitexpression", ref _strLiftLimitExpression);
+            objXmlNode.TryGetStringFieldQuickly("carrylimitexpression", ref _strCarryLimitExpression);
+            objXmlNode.TryGetStringFieldQuickly("encumbranceintervalexpression", ref _strEncumbranceIntervalExpression);
+            // Whether to apply certain penalties to encumbrance and, if so, how much per tick
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyphysicallimit", ref _blnDoEncumbrancePenaltyPhysicalLimit);
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltymovementspeed", ref _blnDoEncumbrancePenaltyMovementSpeed);
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyagility", ref _blnDoEncumbrancePenaltyAgility);
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltyreaction", ref _blnDoEncumbrancePenaltyReaction);
+            objXmlNode.TryGetBoolFieldQuickly("doencumbrancepenaltywoundmodifier", ref _blnDoEncumbrancePenaltyWoundModifier);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyphysicallimit", ref _intEncumbrancePenaltyPhysicalLimit);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltymovementspeed", ref _intEncumbrancePenaltyMovementSpeed);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyagility", ref _intEncumbrancePenaltyAgility);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltyreaction", ref _intEncumbrancePenaltyReaction);
+            objXmlNode.TryGetInt32FieldQuickly("encumbrancepenaltywoundmodifier", ref _intEncumbrancePenaltyWoundModifier);
             // Drone Armor Multiplier Enabled
             objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
             // Drone Armor Multiplier Value
@@ -1181,6 +1320,8 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("esslossreducesmaximumonly", ref _blnESSLossReducesMaximumOnly);
             // Allow Skill Regrouping.
             objXmlNode.TryGetBoolFieldQuickly("allowskillregrouping", ref _blnAllowSkillRegrouping);
+            // Whether skill specializations break skill groups.
+            objXmlNode.TryGetBoolFieldQuickly("specializationsbreakskillgroups", ref _blnSpecializationsBreakSkillGroups);
             // Metatype Costs Karma.
             objXmlNode.TryGetBoolFieldQuickly("metatypecostskarma", ref _blnMetatypeCostsKarma);
             // Allow characters to spend karma before attribute points.
@@ -1233,6 +1374,13 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("enemykarmaqualitylimit", ref _blnEnemyKarmaQualityLimit);
             // Format in which nuyen values are displayed
             objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
+            // Format in which weight values are displayed
+            if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat))
+            {
+                int intDecimalPlaces = _strWeightFormat.IndexOf('.');
+                if (intDecimalPlaces == -1)
+                    _strWeightFormat += ".###";
+            }
             // Format in which essence values should be displayed (and to which they should be rounded)
             if (!objXmlNode.TryGetStringFieldQuickly("essenceformat", ref _strEssenceFormat))
             {
@@ -1312,8 +1460,40 @@ namespace Chummer
             if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
                 GlobalSettings.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty, true);
 
+            // Maximum number of attributes at metatype maximum in character creation
+            if (!objXmlNode.TryGetInt32FieldQuickly("maxnumbermaxattributescreate",
+                                                    ref _intMaxNumberMaxAttributesCreate))
+            {
+                // Legacy shim
+                bool blnTemp = false;
+                if (objXmlNode.TryGetBoolFieldQuickly("allow2ndmaxattribute", ref blnTemp) && blnTemp)
+                    _intMaxNumberMaxAttributesCreate = 2;
+            }
+            // Maximum skill rating in character creation
+            objXmlNode.TryGetInt32FieldQuickly("maxskillratingcreate", ref _intMaxSkillRatingCreate);
+            // Maximum knowledge skill rating in character creation
+            objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillratingcreate", ref _intMaxKnowledgeSkillRatingCreate);
+            // Maximum skill rating
+            if (objXmlNode.TryGetInt32FieldQuickly("maxskillrating", ref _intMaxSkillRating)
+                && _intMaxSkillRatingCreate > _intMaxSkillRating)
+                _intMaxSkillRatingCreate = _intMaxSkillRating;
+            // Maximum knowledge skill rating
+            if (objXmlNode.TryGetInt32FieldQuickly("maxknowledgeskillrating", ref _intMaxKnowledgeSkillRating)
+                && _intMaxKnowledgeSkillRatingCreate > _intMaxKnowledgeSkillRating)
+                _intMaxKnowledgeSkillRatingCreate = _intMaxKnowledgeSkillRating;
+
             //House Rule: The DicePenalty per sustained spell or form
             objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
+
+            // Initiative dice
+            objXmlNode.TryGetInt32FieldQuickly("mininitiativedice", ref _intMinInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("maxinitiativedice", ref _intMaxInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("minastralinitiativedice", ref _intMinAstralInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("maxastralinitiativedice", ref _intMaxAstralInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("mincoldsiminitiativedice", ref _intMinColdSimInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("maxcoldsiminitiativedice", ref _intMaxColdSimInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
+            objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
 
             XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost");
             // Attempt to populate the Karma values.
@@ -1428,16 +1608,16 @@ namespace Chummer
             }
 
             // Load Books.
-            _lstBooks.Clear();
+            _setBooks.Clear();
             foreach (XPathNavigator xmlBook in objXmlNode.SelectAndCacheExpression("books/book"))
-                _lstBooks.Add(xmlBook.Value);
+                _setBooks.Add(xmlBook.Value);
             // Legacy sweep for sourcebooks
             if (xmlLegacyCharacterNavigator != null)
             {
                 foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression("sources/source"))
                 {
                     if (!string.IsNullOrEmpty(xmlBook.Value))
-                        _lstBooks.Add(xmlBook.Value);
+                        _setBooks.Add(xmlBook.Value);
                 }
             }
 
@@ -1445,7 +1625,7 @@ namespace Chummer
             int intTopMostOrder = 0;
             int intBottomMostOrder = 0;
             Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
-                new Dictionary<int, Tuple<string, bool>>();
+                new Dictionary<int, Tuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
             bool blnNeedToProcessInfosWithoutLoadOrder = false;
             foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression("customdatadirectorynames/customdatadirectoryname"))
             {
@@ -1607,7 +1787,7 @@ namespace Chummer
                                                              "/chummer/books/book[permanent]/code"))
             {
                 if (!string.IsNullOrEmpty(xmlBook.Value))
-                    _lstBooks.Add(xmlBook.Value);
+                    _setBooks.Add(xmlBook.Value);
             }
 
             RecalculateBookXPath();
@@ -1892,101 +2072,13 @@ namespace Chummer
         #endregion Build Properties
 
         #region Properties and Methods
-
-        /// <summary>
-        /// Load the Settings from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
-        /// </summary>
-        public void LoadFromRegistry()
-        {
-            if (GlobalSettings.ChummerRegistryKey == null)
-                return;
-
-            // More Lethal Gameplay.
-            GlobalSettings.LoadBoolFromRegistry(ref _blnMoreLethalGameplay, "morelethalgameplay", string.Empty, true);
-
-            // Spirit Force Based on Total MAG.
-            GlobalSettings.LoadBoolFromRegistry(ref _blnSpiritForceBasedOnTotalMAG, "spiritforcebasedontotalmag", string.Empty, true);
-
-            // Skill Defaulting Includes modifiers.
-            bool blnTemp = false;
-            GlobalSettings.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
-
-            // Nuyen per Build Point
-            GlobalSettings.LoadDecFromRegistry(ref _decNuyenPerBPWftM, "nuyenperbp", string.Empty, true);
-            _decNuyenPerBPWftP = _decNuyenPerBPWftM;
-
-            // No Single Armor Encumbrance
-            GlobalSettings.LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance", string.Empty, true);
-
-            // Essence Loss Reduces Maximum Only.
-            GlobalSettings.LoadBoolFromRegistry(ref _blnESSLossReducesMaximumOnly, "esslossreducesmaximumonly", string.Empty, true);
-
-            // Allow Skill Regrouping.
-            GlobalSettings.LoadBoolFromRegistry(ref _blnAllowSkillRegrouping, "allowskillregrouping", string.Empty, true);
-
-            // Attempt to populate the Karma values.
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaAttribute, "karmaattribute", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaQuality, "karmaquality", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaSpecialization, "karmaspecialization", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaKnoSpecialization, "karmaknospecialization", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaNewKnowledgeSkill, "karmanewknowledgeskill", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaNewActiveSkill, "karmanewactiveskill", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaNewSkillGroup, "karmanewskillgroup", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaImproveKnowledgeSkill, "karmaimproveknowledgeskill", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaImproveActiveSkill, "karmaimproveactiveskill", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaImproveSkillGroup, "karmaimproveskillgroup", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaSpell, "karmaspell", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaEnhancement, "karmaenhancement", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaNewComplexForm, "karmanewcomplexform", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaNewAIProgram, "karmanewaiprogram", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaNewAIAdvancedProgram, "karmanewaiadvancedprogram", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaContact, "karmacontact", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaEnemy, "karmaenemy", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaCarryover, "karmacarryover", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaSpirit, "karmaspirit", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaTechnique, "karmamaneuver", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaInitiation, "karmainitiation", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaInitiationFlat, "karmainitiationflat", string.Empty, true);
-            GlobalSettings.LoadInt32FromRegistry(ref _intKarmaMetamagic, "karmametamagic", string.Empty, true);
-
-            // Retrieve the sourcebooks that are in the Registry.
-            string strBookList;
-            object objBooksKeyValue = GlobalSettings.ChummerRegistryKey.GetValue("books");
-            if (objBooksKeyValue != null)
-            {
-                strBookList = objBooksKeyValue.ToString();
-            }
-            else
-            {
-                // We were unable to get the Registry key which means the book options have not been saved yet, so create the default values.
-                strBookList = "Shadowrun 5th Edition";
-                GlobalSettings.ChummerRegistryKey.SetValue("books", strBookList);
-            }
-            string[] strBooks = strBookList.Split(',');
-
-            XPathNavigator objXmlDocument = XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths);
-
-            foreach (string strBookName in strBooks)
-            {
-                string strCode = objXmlDocument.SelectSingleNode("/chummer/books/book[name = " + strBookName.CleanXPath() + " and not(hide)]/code")?.Value;
-                if (!string.IsNullOrEmpty(strCode))
-                {
-                    _lstBooks.Add(strCode);
-                }
-            }
-            RecalculateBookXPath();
-
-            // Delete the Registry keys ones the values have been retrieve since they will no longer be used.
-            GlobalSettings.ChummerRegistryKey.DeleteValue("books");
-        }
-
         /// <summary>
         /// Determine whether or not a given book is in use.
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         public bool BookEnabled(string strCode)
         {
-            return _lstBooks.Contains(strCode);
+            return _setBooks.Contains(strCode);
         }
 
         /// <summary>
@@ -1999,7 +2091,7 @@ namespace Chummer
             {
                 if (excludeHidden)
                     sbdPath.Append("not(hide)");
-                if (string.IsNullOrWhiteSpace(_strBookXPath) && _lstBooks.Count > 0)
+                if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
                 {
                     RecalculateBookXPath();
                 }
@@ -2008,7 +2100,7 @@ namespace Chummer
                 {
                     if (sbdPath.Length != 0)
                         sbdPath.Append(" and ");
-                    sbdPath.Append(_strBookXPath);
+                    sbdPath.Append("(ignoresourcedisabled or ").Append(_strBookXPath).Append(')');
                 }
                 else
                 {
@@ -2043,7 +2135,7 @@ namespace Chummer
                                                           out StringBuilder sbdBookXPath))
             {
                 sbdBookXPath.Append('(');
-                foreach (string strBook in _lstBooks)
+                foreach (string strBook in _setBooks)
                 {
                     if (!string.IsNullOrWhiteSpace(strBook))
                     {
@@ -2381,23 +2473,6 @@ namespace Chummer
         public bool MysAdeptSecondMAGAttributeEnabled => !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPpCareer;
 
         /// <summary>
-        /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
-        /// </summary>
-        // ReSharper disable once InconsistentNaming
-        public bool Allow2ndMaxAttribute
-        {
-            get => _blnAllow2ndMaxAttribute;
-            set
-            {
-                if (_blnAllow2ndMaxAttribute != value)
-                {
-                    _blnAllow2ndMaxAttribute = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
         /// The XPath expression to use to determine how many contact points the character has
         /// </summary>
         public string ContactPointsExpression
@@ -2570,14 +2645,30 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Sourcebooks.
+        /// Whether or not specializations in an active skill (permanently) break a skill group.
         /// </summary>
-        public HashSet<string> BooksWritable => _lstBooks;
+        public bool SpecializationsBreakSkillGroups
+        {
+            get => _blnSpecializationsBreakSkillGroups;
+            set
+            {
+                if (_blnSpecializationsBreakSkillGroups != value)
+                {
+                    _blnSpecializationsBreakSkillGroups = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Sourcebooks.
         /// </summary>
-        public IReadOnlyCollection<string> Books => _lstBooks;
+        public HashSet<string> BooksWritable => _setBooks;
+
+        /// <summary>
+        /// Sourcebooks.
+        /// </summary>
+        public IReadOnlyCollection<string> Books => _setBooks;
 
         /// <summary>
         /// File name of the option (if it is not a built-in one).
@@ -2989,6 +3080,278 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Format in which weight values should be displayed (does not include kg units).
+        /// </summary>
+        public string WeightFormat
+        {
+            get => _strWeightFormat;
+            set
+            {
+                if (_strWeightFormat != value)
+                {
+                    _strWeightFormat = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        private int _intCachedWeightDecimals = -1;
+
+        /// <summary>
+        /// Number of decimal places to round to when calculating Essence.
+        /// </summary>
+        public int WeightDecimals
+        {
+            get
+            {
+                if (_intCachedWeightDecimals >= 0)
+                    return _intCachedWeightDecimals;
+                string strWeightFormat = WeightFormat;
+                int intDecimalPlaces = strWeightFormat.IndexOf('.');
+                intDecimalPlaces = strWeightFormat.Length - intDecimalPlaces - 1;
+
+                return _intCachedWeightDecimals = intDecimalPlaces;
+            }
+            set
+            {
+                int intCurrentWeightDecimals = WeightDecimals;
+                int intNewWeightDecimals = Math.Max(value, 0);
+                if (intNewWeightDecimals < intCurrentWeightDecimals)
+                {
+                    WeightFormat = EssenceFormat.Substring(0, EssenceFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals));
+                }
+                else if (intNewWeightDecimals > intCurrentWeightDecimals)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdWeightFormat))
+                    {
+                        sbdWeightFormat.Append(string.IsNullOrEmpty(WeightFormat) ? "#,0" : WeightFormat);
+                        if (intCurrentWeightDecimals == 0)
+                        {
+                            sbdWeightFormat.Append('.');
+                        }
+                        for (int i = intCurrentWeightDecimals; i < intNewWeightDecimals; ++i)
+                        {
+                            sbdWeightFormat.Append('#');
+                        }
+                        WeightFormat = sbdWeightFormat.ToString();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the maximum weight the character can lift in kg
+        /// </summary>
+        public string LiftLimitExpression
+        {
+            get => _strLiftLimitExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strLiftLimitExpression != strNewValue)
+                {
+                    _strLiftLimitExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the maximum weight the character can carry in kg
+        /// </summary>
+        public string CarryLimitExpression
+        {
+            get => _strCarryLimitExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strCarryLimitExpression != strNewValue)
+                {
+                    _strCarryLimitExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine the amount of weight necessary to increase encumbrance penalties by one tick
+        /// </summary>
+        public string EncumbranceIntervalExpression
+        {
+            get => _strEncumbranceIntervalExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strEncumbranceIntervalExpression != strNewValue)
+                {
+                    _strEncumbranceIntervalExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Physical Limit from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyPhysicalLimit
+        {
+            get => _blnDoEncumbrancePenaltyPhysicalLimit;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyPhysicalLimit != value)
+                {
+                    _blnDoEncumbrancePenaltyPhysicalLimit = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Physical Limit that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyPhysicalLimit
+        {
+            get => _intEncumbrancePenaltyPhysicalLimit;
+            set
+            {
+                if (_intEncumbrancePenaltyPhysicalLimit != value)
+                {
+                    _intEncumbrancePenaltyPhysicalLimit = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Movement Speeds from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyMovementSpeed
+        {
+            get => _blnDoEncumbrancePenaltyMovementSpeed;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyMovementSpeed != value)
+                {
+                    _blnDoEncumbrancePenaltyMovementSpeed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Movement Speeds that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyMovementSpeed
+        {
+            get => _intEncumbrancePenaltyMovementSpeed;
+            set
+            {
+                if (_intEncumbrancePenaltyMovementSpeed != value)
+                {
+                    _intEncumbrancePenaltyMovementSpeed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Agility from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyAgility
+        {
+            get => _blnDoEncumbrancePenaltyAgility;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyAgility != value)
+                {
+                    _blnDoEncumbrancePenaltyAgility = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Agility that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyAgility
+        {
+            get => _intEncumbrancePenaltyAgility;
+            set
+            {
+                if (_intEncumbrancePenaltyAgility != value)
+                {
+                    _intEncumbrancePenaltyAgility = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Reaction from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyReaction
+        {
+            get => _blnDoEncumbrancePenaltyReaction;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyReaction != value)
+                {
+                    _blnDoEncumbrancePenaltyReaction = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Reaction that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyReaction
+        {
+            get => _intEncumbrancePenaltyReaction;
+            set
+            {
+                if (_intEncumbrancePenaltyReaction != value)
+                {
+                    _intEncumbrancePenaltyReaction = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Should we apply a penalty to Physical Active and Weapon skills from encumbrance?
+        /// </summary>
+        public bool DoEncumbrancePenaltyWoundModifier
+        {
+            get => _blnDoEncumbrancePenaltyWoundModifier;
+            set
+            {
+                if (_blnDoEncumbrancePenaltyWoundModifier != value)
+                {
+                    _blnDoEncumbrancePenaltyWoundModifier = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The penalty to Reaction that should come from one encumbrance tick
+        /// </summary>
+        public int EncumbrancePenaltyWoundModifier
+        {
+            get => _intEncumbrancePenaltyWoundModifier;
+            set
+            {
+                if (_intEncumbrancePenaltyWoundModifier != value)
+                {
+                    _intEncumbrancePenaltyWoundModifier = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private int _intCachedEssenceDecimals = -1;
 
         /// <summary>
@@ -3391,6 +3754,90 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum number of attributes at metatype maximum in character creation
+        /// </summary>
+        public int MaxNumberMaxAttributesCreate
+        {
+            get => _intMaxNumberMaxAttributesCreate;
+            set
+            {
+                if (_intMaxNumberMaxAttributesCreate != value)
+                {
+                    _intMaxNumberMaxAttributesCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum skill rating in character creation
+        /// </summary>
+        public int MaxSkillRatingCreate
+        {
+            get => _intMaxSkillRatingCreate;
+            set
+            {
+                if (_intMaxSkillRatingCreate != value)
+                {
+                    _intMaxSkillRatingCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum knowledge skill rating in character creation
+        /// </summary>
+        public int MaxKnowledgeSkillRatingCreate
+        {
+            get => _intMaxKnowledgeSkillRatingCreate;
+            set
+            {
+                if (_intMaxKnowledgeSkillRatingCreate != value)
+                {
+                    _intMaxKnowledgeSkillRatingCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum skill rating
+        /// </summary>
+        public int MaxSkillRating
+        {
+            get => _intMaxSkillRating;
+            set
+            {
+                if (_intMaxSkillRating != value)
+                {
+                    _intMaxSkillRating = value;
+                    if (MaxSkillRatingCreate > value)
+                        MaxSkillRatingCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum knowledge skill rating
+        /// </summary>
+        public int MaxKnowledgeSkillRating
+        {
+            get => _intMaxKnowledgeSkillRating;
+            set
+            {
+                if (_intMaxKnowledgeSkillRating != value)
+                {
+                    _intMaxKnowledgeSkillRating = value;
+                    if (MaxKnowledgeSkillRatingCreate > value)
+                        MaxKnowledgeSkillRatingCreate = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
         /// Whether Life Modules should automatically generate a character background.
         /// </summary>
         public bool AutomaticBackstory
@@ -3571,6 +4018,138 @@ namespace Chummer
         }
 
         #endregion Properties and Methods
+
+        #region Initiative Dice Properties
+
+        /// <summary>
+        /// Minimum number of initiative dice
+        /// </summary>
+        public int MinInitiativeDice
+        {
+            get => _intMinInitiativeDice;
+            set
+            {
+                if (_intMinInitiativeDice != value)
+                {
+                    _intMinInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice
+        /// </summary>
+        public int MaxInitiativeDice
+        {
+            get => _intMaxInitiativeDice;
+            set
+            {
+                if (_intMaxInitiativeDice != value)
+                {
+                    _intMaxInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minimum number of initiative dice in Astral
+        /// </summary>
+        public int MinAstralInitiativeDice
+        {
+            get => _intMinAstralInitiativeDice;
+            set
+            {
+                if (_intMinAstralInitiativeDice != value)
+                {
+                    _intMinAstralInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in Astral
+        /// </summary>
+        public int MaxAstralInitiativeDice
+        {
+            get => _intMaxAstralInitiativeDice;
+            set
+            {
+                if (_intMaxAstralInitiativeDice != value)
+                {
+                    _intMaxAstralInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minimum number of initiative dice in cold sim VR
+        /// </summary>
+        public int MinColdSimInitiativeDice
+        {
+            get => _intMinColdSimInitiativeDice;
+            set
+            {
+                if (_intMinColdSimInitiativeDice != value)
+                {
+                    _intMinColdSimInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in cold sim VR
+        /// </summary>
+        public int MaxColdSimInitiativeDice
+        {
+            get => _intMaxColdSimInitiativeDice;
+            set
+            {
+                if (_intMaxColdSimInitiativeDice != value)
+                {
+                    _intMaxColdSimInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Minimum number of initiative dice in hot sim VR
+        /// </summary>
+        public int MinHotSimInitiativeDice
+        {
+            get => _intMinHotSimInitiativeDice;
+            set
+            {
+                if (_intMinHotSimInitiativeDice != value)
+                {
+                    _intMinHotSimInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of initiative dice in hot sim VR
+        /// </summary>
+        public int MaxHotSimInitiativeDice
+        {
+            get => _intMaxHotSimInitiativeDice;
+            set
+            {
+                if (_intMaxHotSimInitiativeDice != value)
+                {
+                    _intMaxHotSimInitiativeDice = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion
 
         #region Karma
 
@@ -4303,14 +4882,19 @@ namespace Chummer
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
-        public int SpecializationBonus { get; } = 2;
+        public int SpecializationBonus => 2;
+
+        /// <summary>
+        /// The value by which Expertise Specializations add to dicepool (does not stack with SpecializationBonus).
+        /// </summary>
+        public int ExpertiseBonus => 3;
 
         #endregion Constant Values
 
         /// <inheritdoc />
         public void Dispose()
         {
-            Utils.StringHashSetPool.Return(_lstBooks);
+            Utils.StringHashSetPool.Return(_setBooks);
             Utils.StringHashSetPool.Return(BannedWareGrades);
             Utils.StringHashSetPool.Return(RedlinerExcludes);
         }

@@ -91,7 +91,7 @@ namespace Chummer
             ResourceSet rsOriginal = rm.GetResourceSet(Thread.CurrentThread.CurrentUICulture, true, true);
             ResourceSet rsTranslated = rm.GetResourceSet(targetCulture, true, true);
 
-            var result = exception.Message;
+            string result = exception.Message;
 
             foreach (DictionaryEntry item in rsOriginal)
             {
@@ -106,12 +106,12 @@ namespace Chummer
                 }
                 else if (!string.IsNullOrEmpty(translated))
                 {
-                    var pattern = Regex.Escape(message);
+                    string pattern = Regex.Escape(message);
                     pattern = Regex.Replace(pattern, @"\\{([0-9]+)\}", "(?<group$1>.*)");
 
-                    var regex = new Regex(pattern);
+                    Regex regex = new Regex(pattern);
 
-                    var replacePattern = translated;
+                    string replacePattern = translated;
                     replacePattern = Regex.Replace(replacePattern, "{([0-9]+)}", "${group$1}");
                     replacePattern = replacePattern.Replace("\\$", "$");
 

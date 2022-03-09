@@ -19,7 +19,7 @@
 
 namespace Chummer
 {
-    internal interface IHasStolenProperty
+    internal interface IHasStolenProperty : IHasCost
     {
         bool Stolen { get; set; }
 

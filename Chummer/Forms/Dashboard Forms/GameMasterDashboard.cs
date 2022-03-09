@@ -21,30 +21,30 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmGMDashboard : Form
+    public partial class GameMasterDashboard : Form
     {
-        private readonly frmInitiative frmInitative;
+        private readonly InitiativeTracker frmInitative;
         private enum DashBoardPages { CM, Skills, Vassels, Vehicles, Dice, TempBonus }
 
         #region Singleton
 
-        private static frmGMDashboard _instance;
+        private static GameMasterDashboard _instance;
         /// <summary>
         /// The singleton instance of this object.
         /// </summary>
-        public static frmGMDashboard Instance => _instance ?? (_instance = new frmGMDashboard());
+        public static GameMasterDashboard Instance => _instance ?? (_instance = new GameMasterDashboard());
 
-        protected frmGMDashboard()
+        protected GameMasterDashboard()
         {
             InitializeComponent();
             UpdateTabs();
             this.TranslateWinForm();
             frmInitative = new frmInitiative();
             frmInitative.Hide();
-            VisibleChanged += frmGMDashboard_VisibleChanged;
+            VisibleChanged += GameMasterDashboard_VisibleChanged;
             frmInitative.InitUC.CurrentCharacterChanged += InitUC_CurrentCharacterChanged;
             frmInitative.FormClosing += frmInitative_FormClosing;
-            FormClosing += frmGMDashboard_FormClosing;
+            FormClosing += GameMasterDashboard_FormClosing;
             frmInitative.TopMost = true;
             CenterToParent();
             // auto hide the form at creation
@@ -77,7 +77,7 @@ namespace Chummer
          * When the user attempts to close the main Dashboard, hide
          * it instead
          */
-        void frmGMDashboard_FormClosing(object sender, FormClosingEventArgs e)
+        void GameMasterDashboard_FormClosing(object sender, FormClosingEventArgs e)
         {
             exitToolStripMenuItem_Click(sender, null);
             e.Cancel = true;
@@ -115,7 +115,7 @@ namespace Chummer
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        void frmGMDashboard_VisibleChanged(object sender, EventArgs e)
+        void GameMasterDashboard_VisibleChanged(object sender, EventArgs e)
         {
             frmInitative.Visible = Visible;
         }

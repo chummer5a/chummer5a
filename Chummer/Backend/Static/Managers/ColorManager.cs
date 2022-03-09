@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.UI.Skills;
 using Chummer.UI.Table;
@@ -119,10 +120,17 @@ namespace Chummer
                 if (_blnIsLightMode == value)
                     return;
                 _blnIsLightMode = value;
-                Program.MainForm?.DoThreadSafe(() =>
+                Program.MainForm?.DoThreadSafe(async x =>
                 {
-                    using (new CursorWait(Program.MainForm))
-                        Program.MainForm.UpdateLightDarkMode();
+                    CursorWait objCursorWait = await CursorWait.NewAsync(x);
+                    try
+                    {
+                        ((ChummerMainForm) x).UpdateLightDarkMode();
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
+                    }
                 });
             }
         }
@@ -148,6 +156,22 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
+        /// </summary>
+        /// <param name="objColor">Color whose lightness and saturation should be adjusted for Dark Mode.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
+        public static async Task<Color> GenerateDarkModeColorAsync(Color objColor)
+        {
+            (bool blnSuccess, Color objDarkModeColor) = await s_DicDarkModeColors.TryGetValueAsync(objColor);
+            if (!blnSuccess)
+            {
+                objDarkModeColor = GetDarkModeVersion(objColor);
+                await s_DicDarkModeColors.TryAddAsync(objColor, objDarkModeColor);
+            }
+            return objDarkModeColor;
+        }
+
+        /// <summary>
         /// Returns an inverted version of a color that has gone through GenerateDarkModeColor()
         /// </summary>
         /// <param name="objColor">Color whose Dark Mode conversions for lightness and saturation should be inverted.</param>
@@ -163,6 +187,22 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns an inverted version of a color that has gone through GenerateDarkModeColor()
+        /// </summary>
+        /// <param name="objColor">Color whose Dark Mode conversions for lightness and saturation should be inverted.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
+        public static async Task<Color> GenerateInverseDarkModeColorAsync(Color objColor)
+        {
+            (bool blnSuccess, Color objInverseDarkModeColor) = await s_DicInverseDarkModeColors.TryGetValueAsync(objColor);
+            if (!blnSuccess)
+            {
+                objInverseDarkModeColor = InverseGetDarkModeVersion(objColor);
+                await s_DicInverseDarkModeColors.TryAddAsync(objColor, objInverseDarkModeColor);
+            }
+            return objInverseDarkModeColor;
+        }
+
+        /// <summary>
         /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
         /// </summary>
         /// <param name="objColor">Color as it would be in Light mode</param>
@@ -173,6 +213,16 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
+        /// </summary>
+        /// <param name="objColor">Color as it would be in Light mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to dark mode.</returns>
+        public static Task<Color> GenerateCurrentModeColorAsync(Color objColor)
+        {
+            return IsLightMode ? Task.FromResult(objColor) : GenerateDarkModeColorAsync(objColor);
+        }
+
+        /// <summary>
         /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
         /// </summary>
         /// <param name="objColor">Color as it is shown in current color mode</param>
@@ -180,6 +230,16 @@ namespace Chummer
         public static Color GenerateModeIndependentColor(Color objColor)
         {
             return IsLightMode ? objColor : GenerateInverseDarkModeColor(objColor);
+        }
+
+        /// <summary>
+        /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
+        /// </summary>
+        /// <param name="objColor">Color as it is shown in current color mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to light mode.</returns>
+        public static Task<Color> GenerateModeIndependentColorAsync(Color objColor)
+        {
+            return IsLightMode ? Task.FromResult(objColor) : GenerateInverseDarkModeColorAsync(objColor);
         }
 
         /// <summary>
@@ -208,6 +268,37 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
+        /// </summary>
+        /// <param name="objColor">Color whose lightness should be dimmed.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
+        public static async Task<Color> GenerateCurrentModeDimmedColorAsync(Color objColor)
+        {
+            bool blnSuccess;
+            Color objRetColor;
+            if (IsLightMode)
+            {
+                (blnSuccess, objRetColor) = await s_DicDimmedColors.TryGetValueAsync(objColor);
+                if (!blnSuccess)
+                {
+                    objRetColor = GetDimmedVersion(objColor);
+                    await s_DicDimmedColors.TryAddAsync(objColor, objRetColor);
+                }
+            }
+            else
+            {
+                (blnSuccess, objRetColor) = await s_DicBrightenedColors.TryGetValueAsync(objColor);
+                if (!blnSuccess)
+                {
+                    objRetColor = GetBrightenedVersion(objColor);
+                    await s_DicBrightenedColors.TryAddAsync(objColor, objRetColor);
+                }
+            }
+
+            return objRetColor;
+        }
+
+        /// <summary>
         /// Because the transforms applied to convert a Light Mode color to Dark Mode cannot produce some ranges of lightness and saturation, not all colors are valid in Dark Mode.
         /// This function takes a color intended for Dark Mode and converts it to the closest possible color that is valid in Dark Mode.
         /// If the original color is valid in Dark Mode to begin with, the transforms should end up reproducing it.
@@ -217,6 +308,18 @@ namespace Chummer
         private static Color TransformToDarkModeValidVersion(Color objColor)
         {
             return GenerateDarkModeColor(GenerateInverseDarkModeColor(objColor));
+        }
+
+        /// <summary>
+        /// Because the transforms applied to convert a Light Mode color to Dark Mode cannot produce some ranges of lightness and saturation, not all colors are valid in Dark Mode.
+        /// This function takes a color intended for Dark Mode and converts it to the closest possible color that is valid in Dark Mode.
+        /// If the original color is valid in Dark Mode to begin with, the transforms should end up reproducing it.
+        /// </summary>
+        /// <param name="objColor">Color to adjust, originally specified within Dark Mode.</param>
+        /// <returns>New Color very similar to <paramref name="objColor"/>, but with lightness and saturation values set to within the range allowable in Dark Mode.</returns>
+        private static async Task<Color> TransformToDarkModeValidVersionAsync(Color objColor)
+        {
+            return await GenerateDarkModeColorAsync(await GenerateInverseDarkModeColorAsync(objColor));
         }
 
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;
@@ -355,7 +458,7 @@ namespace Chummer
             float fltNewValue = fltNewLightness + objColor.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
             float fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
             // Lighten dark colors a little by increasing value so that we don't warp colors that are highly saturated to begin with.
-            fltNewValue += 0.2f * (1.0f - Convert.ToSingle(Math.Sqrt(fltNewValue)));
+            fltNewValue += 0.14f * (1.0f - Convert.ToSingle(Math.Sqrt(fltNewValue)));
             fltNewValue = Math.Min(fltNewValue, 1.0f);
             Color objColorIntermediate = FromHsv(fltHue, fltSaturationHsv, fltNewValue);
             fltNewLightness = objColorIntermediate.GetBrightness();
@@ -392,16 +495,19 @@ namespace Chummer
                 fltLightness = objColorIntermediate.GetBrightness(); // It's called Brightness, but it's actually Lightness
                 fltValue = fltLightness + objColorIntermediate.GetSaturation() * Math.Min(fltLightness, 1 - fltLightness);
             }
-            // y + 0.2(1 - sqrt(y)) = m is the regular transform where y is the Dark Mode Value pre-adjustment and m is the Dark Mode Value post-adjustment
+            // y + 0.14(1 - sqrt(y)) = m is the regular transform where y is the Dark Mode Value pre-adjustment and m is the Dark Mode Value post-adjustment
             // To get it back, we need to solve for y knowing only m:
-            // 1 - sqrt(y) + 5y - 5m = 0
-            // 1 + 5y - 5m = sqrt(y)
-            // 1 + 25y^2 + 25m^2 + 10y - 10m - 50my = y
-            // 25y^2 + (9 - 50m)y + 25m^2 - 10m + 1 = 0
-            // y = (50m - 9 +/- sqrt((9 - 50m)^2 - 100(25m^2 - 10m + 1)))/50 = (50m - 9 +/- sqrt(2500m^2 - 900m + 81 - 2500m^2 + 1000m - 100))/50
-            // y = (50m - 9 +/- sqrt(100m - 19))/50 = m - 18/100 +/- sqrt(m - 19/100)/5
-            // Because expression for y must be the same across all m, only positive result is valid, therefore: y = m - 18/100 + sqrt(m - 19/100)/5
-            float fltNewValue = Math.Min((float)((50 * fltValue + Math.Sqrt(100 * fltValue - 19) - 9) / 50.0f), 1.0f);
+            // 1 - sqrt(y) + 50/7*y - 50/7*m = 0
+            // 1 + 50/7*y - 50/7*m = sqrt(y)
+            // 1 + 2500/49*y^2 + 2500/49*m^2 + 100/7*y - 100/7*m - 5000/49*my = y
+            // 2500/49*y^2 + (93/7 - 5000/49*m)y + 2500/49*m^2 - 100/7*m + 1 = 0
+            // 2500/7*y^2 + (93 - 5000m/7)y + 2500/7*m^2 - 100m + 7 = 0
+            // y = (5000m/7 - 93 +/- sqrt((93 - 5000m/7)^2 - 10000/7*(2500/7*m^2 - 100m + 7)))/5000*7
+            // y = (5000m - 651 +/- 7*sqrt(25000000m^2/49 - 930000m/7 + 8649 - 25000000m^2/49 + 1000000m/7 - 10000))/5000
+            // y = (5000m - 651 +/- 7*sqrt(10000m - 1351))/5000
+            // y = m - 0.1302 +/- 0.14*sqrt(m - 0.1351)
+            // Because expression for y must be the same across all m, only positive result is valid, therefore: y = m - 0.1302 + 0.14*sqrt(m - 0.1351)
+            float fltNewValue = Math.Min((float)(fltValue - 0.1302 + 0.14*Math.Sqrt(fltValue - 0.1351)), 1.0f);
             // Now convert to Lightness so we can flip it
             float fltNewLightness = fltNewValue * (1 - fltNewSaturationHsv / 2.0f);
             float fltNewSaturationHsl = fltNewLightness == 0
@@ -531,7 +637,7 @@ namespace Chummer
 
                 case ContactControl _:
                 case PetControl _:
-                case SkillControl2 _:
+                case SkillControl _:
                 case KnowledgeSkillControl _:
                     // These controls have colors that are always data-bound
                     break;
@@ -737,9 +843,9 @@ namespace Chummer
             }
 
             return Color.FromArgb(chrAlpha,
-                Convert.ToByte(dblRed * 255.0),
-                Convert.ToByte(dblGreen * 255.0),
-                Convert.ToByte(dblBlue * 255.0));
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero)) , byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue));
         }
 
         /// <summary>
@@ -817,9 +923,9 @@ namespace Chummer
             }
 
             return Color.FromArgb(chrAlpha,
-                Convert.ToByte(dblRed * 255.0),
-                Convert.ToByte(dblGreen * 255.0),
-                Convert.ToByte(dblBlue * 255.0));
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblRed * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblGreen * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue),
+                Math.Max(Math.Min(Convert.ToInt32(Math.Round(dblBlue * byte.MaxValue, MidpointRounding.AwayFromZero)), byte.MaxValue), byte.MinValue));
         }
 
         #endregion Color Utility Methods

@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -79,7 +80,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -119,18 +120,26 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with</param>
         /// <param name="objCulture">Culture in which to print</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("limitmodifier");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", DisplayName(objCulture, strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("condition", _objCharacter.TranslateExtra(Condition, strLanguageToPrint));
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            // <limitmodifier>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("limitmodifier");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(objCulture, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("condition", await _objCharacter.TranslateExtraAsync(Condition, strLanguageToPrint));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </limitmodifier>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -233,6 +242,29 @@ namespace Chummer
             return _strCachedDisplayCondition;
         }
 
+        public async ValueTask<string> DisplayConditionAsync(string strLanguage)
+        {
+            // If we've already cached a value for this, just return it.
+            // (Ghetto fix cache culture tag and compare to current?)
+            if (!string.IsNullOrWhiteSpace(_strCachedDisplayCondition) && strLanguage == _strCachedDisplayConditionLanguage)
+            {
+                return _strCachedDisplayCondition;
+            }
+
+            _strCachedDisplayConditionLanguage = strLanguage;
+            // Assume that if the original string contains spaces it's not a
+            // valid language key. Spare checking it against the dictionary.
+            _strCachedDisplayCondition = _strCondition.Contains(' ')
+                ? _strCondition
+                : await LanguageManager.GetStringAsync(_strCondition, strLanguage, false);
+            if (string.IsNullOrWhiteSpace(_strCachedDisplayCondition))
+            {
+                _strCachedDisplayCondition = _strCondition;
+            }
+
+            return _strCachedDisplayCondition;
+        }
+
         /// <summary>
         /// Bonus.
         /// </summary>
@@ -275,6 +307,22 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             string strReturn = DisplayNameShort + strSpace + '[' + strBonus + ']';
             string strCondition = DisplayCondition(strLanguage);
+            if (!string.IsNullOrEmpty(strCondition))
+                strReturn += strSpace + '(' + strCondition + ')';
+            return strReturn;
+        }
+
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        {
+            string strBonus;
+            if (_intBonus > 0)
+                strBonus = '+' + _intBonus.ToString(objCulture);
+            else
+                strBonus = _intBonus.ToString(objCulture);
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage);
+            string strReturn = DisplayNameShort + strSpace + '[' + strBonus + ']';
+            string strCondition = await DisplayConditionAsync(strLanguage);
             if (!string.IsNullOrEmpty(strCondition))
                 strReturn += strSpace + '(' + strCondition + ')';
             return strReturn;
@@ -326,7 +374,7 @@ namespace Chummer
 
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
-            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.ShowMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }
     }

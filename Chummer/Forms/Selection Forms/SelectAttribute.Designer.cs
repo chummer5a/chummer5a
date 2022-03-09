@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectAttribute
+    partial class SelectAttribute
     {
         /// <summary>
         /// Required designer variable.
@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                Utils.ListItemListPool.Return(_lstAttributes);
             }
             base.Dispose(disposing);
         }
@@ -161,13 +160,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectAttribute";
+            this.Name = "SelectAttribute";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectAttribute";
             this.Text = "Choose an Attribute";
-            this.Load += new System.EventHandler(this.frmSelectAttribute_Load);
+            this.Load += new System.EventHandler(this.SelectAttribute_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

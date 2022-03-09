@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -84,8 +85,7 @@ namespace Chummer
                     // +1 compared to normal because this Grade's effect has not been processed yet.
                     : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
                 ImprovementManager.CreateImprovement(_objCharacter, "RESBase", Improvement.ImprovementSource.CyberadeptDaemon,
-                    _guiID.ToString("D", GlobalSettings.InvariantCultureInfo),
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
+                    InternalId, Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
                 ImprovementManager.Commit(_objCharacter);
             }
         }
@@ -94,7 +94,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -137,20 +137,28 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("initiationgrade");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("grade", Grade.ToString(objCulture));
-            objWriter.WriteElementString("group", Group.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo));
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            // <initiationgrade>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("initiationgrade");
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("grade", Grade.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("group", Group.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo));
+                await objWriter.WriteElementStringAsync("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo));
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
+            {
+                // </initiationgrade>
+                await objBaseElement.DisposeAsync();
+            }
         }
 
         #endregion Constructor, Create, Save, and Load Methods
@@ -351,7 +359,7 @@ namespace Chummer
             {
                 if (Grade != _objCharacter.InitiateGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
                         LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return false;
@@ -364,7 +372,7 @@ namespace Chummer
             {
                 if (Grade != _objCharacter.SubmersionGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                    Program.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
                         LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                     return false;
@@ -373,7 +381,7 @@ namespace Chummer
                 if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
                     return false;
 
-                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, InternalId);
             }
             else
                 return false;

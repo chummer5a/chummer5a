@@ -34,21 +34,19 @@ namespace Chummer
         public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize) : base(list)
         {
             _intMaxSize = intMaxSize;
-            using (new EnterWriteLock(LockerObject))
-            {
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
-            }
+            _blnSkipCollectionChanged = true;
+            while (Count > _intMaxSize)
+                RemoveAt(Count - 1);
+            _blnSkipCollectionChanged = false;
         }
 
         public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize) : base(collection)
         {
             _intMaxSize = intMaxSize;
-            using (new EnterWriteLock(LockerObject))
-            {
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
-            }
+            _blnSkipCollectionChanged = true;
+            while (Count > _intMaxSize)
+                RemoveAt(Count - 1);
+            _blnSkipCollectionChanged = false;
         }
 
         private bool _blnSkipCollectionChanged;
@@ -56,19 +54,16 @@ namespace Chummer
         /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            using (new EnterUpgradeableReadLock(LockerObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (_blnSkipCollectionChanged)
                     return;
                 if (e.Action == NotifyCollectionChangedAction.Reset)
                 {
                     _blnSkipCollectionChanged = true;
-                    using (new EnterWriteLock(LockerObject))
-                    {
-                        // Remove all entries greater than the allowed size
-                        while (Count > _intMaxSize)
-                            RemoveAt(Count - 1);
-                    }
+                    // Remove all entries greater than the allowed size
+                    while (Count > _intMaxSize)
+                        RemoveItem(Count - 1);
                     _blnSkipCollectionChanged = false;
                 }
             }
@@ -78,22 +73,20 @@ namespace Chummer
         /// <inheritdoc />
         protected override void InsertItem(int index, T item)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
-            using (new EnterWriteLock(LockerObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (index >= _intMaxSize)
                     return;
-                base.InsertItem(index, item);
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
+                while (Count >= _intMaxSize)
+                    RemoveItem(Count - 1);
             }
+            base.InsertItem(index, item);
         }
 
         /// <inheritdoc />
         public override bool TryAdd(T item)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            using (new EnterWriteLock(LockerObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (Count >= _intMaxSize)
                     return false;

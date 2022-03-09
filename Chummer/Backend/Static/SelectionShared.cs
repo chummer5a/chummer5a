@@ -77,7 +77,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             string.Format(
                                 GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Message_SelectGeneric_ChargenRestriction"),
@@ -98,7 +98,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             string.Format(
                                 GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Message_SelectGeneric_CareerOnlyRestriction"),
@@ -115,7 +115,7 @@ namespace Chummer
                 {
                     if (blnShowMessage)
                     {
-                        Program.MainForm.ShowMessageBox(
+                        Program.ShowMessageBox(
                             string.Format(
                                 GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction"),
@@ -159,7 +159,7 @@ namespace Chummer
                         objCharacter.AttributeSection.ProcessAttributesInXPath(sbdLimitString, strLimitString);
                         foreach (string strLimb in Character.LimbStrings)
                         {
-                            sbdLimitString.CheapReplace(strLimitString, "{" + strLimb + "}",
+                            sbdLimitString.CheapReplace(strLimitString, '{' + strLimb + '}',
                                                         () => (string.IsNullOrEmpty(strLocation)
                                                                 ? objCharacter.LimbCount(strLimb)
                                                                 : objCharacter.LimbCount(strLimb) / 2)
@@ -329,7 +329,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            Program.MainForm.ShowMessageBox(
+                            Program.ShowMessageBox(
                                 string.Format(
                                     GlobalSettings.CultureInfo,
                                     LanguageManager.GetString("Message_SelectGeneric_Limit"),
@@ -358,7 +358,7 @@ namespace Chummer
                         {
                             if (blnShowMessage)
                             {
-                                Program.MainForm.ShowMessageBox(
+                                Program.ShowMessageBox(
                                     string.Format(
                                         GlobalSettings.CultureInfo,
                                         LanguageManager.GetString("Message_SelectGeneric_Restriction"),
@@ -466,7 +466,7 @@ namespace Chummer
                     {
                         if (blnShowMessage)
                         {
-                            Program.MainForm.ShowMessageBox(
+                            Program.ShowMessageBox(
                                 string.Format(
                                     GlobalSettings.CultureInfo,
                                     LanguageManager.GetString("Message_SelectGeneric_Requirement"),
@@ -666,7 +666,7 @@ namespace Chummer
                                   + strSpace + (!string.IsNullOrEmpty(strTranslate)
                                       ? strTranslate
                                       : strNodeInnerText);
-                        }
+                    }
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         if (objParent is Cyberware objCyberware)
@@ -701,7 +701,7 @@ namespace Chummer
                                   + strSpace + (!string.IsNullOrEmpty(strTranslate)
                                       ? strTranslate
                                       : strNodeInnerText);
-                        }
+                    }
                     if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
                     {
                         if (objParent is Cyberware objCyberware)
@@ -1591,7 +1591,7 @@ namespace Chummer
                     }
                 case "weapondetails" when objParent is Weapon objWeapon:
                     {
-                        return objWeapon.GetNode().CreateNavigator().ProcessFilterOperationNode(xmlNode, false);
+                        return objWeapon.GetNodeXPath().ProcessFilterOperationNode(xmlNode, false);
                     }
                 case "armormod":
                     {

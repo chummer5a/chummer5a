@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading.Tasks;
 using NLog;
 
 namespace Chummer
@@ -53,16 +54,41 @@ namespace Chummer
             return dependencyActivity;
         }
 
+        [CLSCompliant(false)]
+        public static async ValueTask<CustomActivity> StartSyncronAsync(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target)
+        {
+            CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
+            await s_DictionaryStarts.TryAddAsync(taskname, s_Time.Elapsed);
+            return dependencyActivity;
+        }
+
+        [CLSCompliant(false)]
+        public static async ValueTask<CustomActivity> StartSyncronAsync(string taskname, CustomActivity parentActivity)
+        {
+            CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity);
+            await s_DictionaryStarts.TryAddAsync(taskname, s_Time.Elapsed);
+            return dependencyActivity;
+        }
+
         public static TimeSpan Elapsed(string taskname)
         {
             if (s_DictionaryStarts.TryGetValue(taskname, out TimeSpan objStartTimeSpan))
             {
                 return s_Time.Elapsed - objStartTimeSpan;
             }
-            else
+
+            return TimeSpan.Zero;
+        }
+
+        public static async ValueTask<TimeSpan> ElapsedAsync(string taskname)
+        {
+            (bool blnSuccess, TimeSpan objStartTimeSpan) = await s_DictionaryStarts.TryGetValueAsync(taskname);
+            if (blnSuccess)
             {
-                return TimeSpan.Zero;
+                return s_Time.Elapsed - objStartTimeSpan;
             }
+
+            return TimeSpan.Zero;
         }
 
         public static TimeSpan Finish(string taskname)
@@ -80,14 +106,35 @@ namespace Chummer
                 Debug.WriteLine(strLogEntry);
 #endif
 
-                if (s_DictionaryStatistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
-                {
-                    s_DictionaryStatistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
-                }
-                else
-                {
-                    s_DictionaryStatistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
-                }
+                s_DictionaryStatistics.AddOrUpdate(taskname, x => new Tuple<TimeSpan, int>(final, 1),
+                                                   (x, y) => new Tuple<TimeSpan, int>(
+                                                       y.Item1 + final, y.Item2 + 1));
+            }
+            else
+            {
+                Debug.WriteLine("Non started task \"" + taskname + "\" finished");
+            }
+            return final;
+        }
+
+        public static async ValueTask<TimeSpan> FinishAsync(string taskname)
+        {
+            TimeSpan final = TimeSpan.Zero;
+            if (s_DictionaryStarts.TryRemove(taskname, out TimeSpan objStartTimeSpan))
+            {
+                final = s_Time.Elapsed - objStartTimeSpan;
+
+#if DEBUG
+                string strLogEntry = string.Format(GlobalSettings.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
+                                                   taskname, final);
+                //Log.Trace(strLogEntry);
+
+                Debug.WriteLine(strLogEntry);
+#endif
+
+                await s_DictionaryStatistics.AddOrUpdateAsync(taskname, x => new Tuple<TimeSpan, int>(final, 1),
+                                                              (x, y) => new Tuple<TimeSpan, int>(
+                                                                  y.Item1 + final, y.Item2 + 1));
             }
             else
             {

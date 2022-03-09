@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -32,7 +33,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty, ICanRemove
+    public sealed class Drug : IHasName, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -90,11 +91,12 @@ namespace Chummer.Backend.Equipment
         {
             objXmlData.TryGetField("guid", Guid.TryParse, out _guiID);
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetField("id", Guid.TryParse, out _guiSourceID);
+                this.GetNodeXPath()?.TryGetField("id", Guid.TryParse, out _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
             objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
@@ -115,10 +117,11 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objXmlData)
         {
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
             if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
             Grade = Grade.ConvertToCyberwareGrade(objXmlData["grade"]?.InnerText, Improvement.ImprovementSource.Drug, _objCharacter);
@@ -134,11 +137,6 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
-            {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-            }
             objXmlData.TryGetStringFieldQuickly("availability", ref _strAvailability);
             objXmlData.TryGetDecFieldQuickly("cost", ref _decCost);
             objXmlData.TryGetDecFieldQuickly("quantity", ref _decQty);
@@ -191,83 +189,168 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("drug");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
-            objWriter.WriteElementString("category_english", Category);
-            if (Grade != null)
-                objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("qty", Quantity.ToString("#,0.##", objCulture));
-            objWriter.WriteElementString("addictionthreshold", AddictionThreshold.ToString(objCulture));
-            objWriter.WriteElementString("addictionrating", AddictionRating.ToString(objCulture));
-            objWriter.WriteElementString("initiative", Initiative.ToString(objCulture));
-            objWriter.WriteElementString("initiativedice", InitiativeDice.ToString(objCulture));
-            objWriter.WriteElementString("speed", Speed.ToString(objCulture));
-            objWriter.WriteElementString("duration", Duration.ToString(objCulture));
-            objWriter.WriteElementString("crashdamage", CrashDamage.ToString(objCulture));
-            objWriter.WriteElementString("avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint));
-            objWriter.WriteElementString("avail_english", TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage));
-            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-
-            objWriter.WriteStartElement("attributes");
-            foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
+            // <drug>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("drug");
+            try
             {
-                if (objAttribute.Value != 0)
+                await objWriter.WriteElementStringAsync("guid", InternalId);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("name_english", Name);
+                await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("category_english", Category);
+                if (Grade != null)
+                    await objWriter.WriteElementStringAsync("grade", await Grade.DisplayNameAsync(strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("qty", Quantity.ToString("#,0.##", objCulture));
+                await objWriter.WriteElementStringAsync("addictionthreshold", AddictionThreshold.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("addictionrating", AddictionRating.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("initiative", Initiative.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("initiativedice", InitiativeDice.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("speed", Speed.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("duration", Duration.ToString(objCulture));
+                await objWriter.WriteElementStringAsync("crashdamage", CrashDamage.ToString(objCulture));
+                await objWriter.WriteElementStringAsync(
+                    "avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint));
+                await objWriter.WriteElementStringAsync("avail_english",
+                                                        TotalAvail(GlobalSettings.CultureInfo,
+                                                                   GlobalSettings.DefaultLanguage));
+                await objWriter.WriteElementStringAsync(
+                    "cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+
+                // <attributes>
+                XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes");
+                try
                 {
-                    objWriter.WriteStartElement("attribute");
-                    objWriter.WriteElementString("name", LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short", strLanguageToPrint));
-                    objWriter.WriteElementString("name_english", objAttribute.Key);
-                    objWriter.WriteElementString("value", objAttribute.Value.ToString("+#.#;-#.#", objCulture));
-                    objWriter.WriteEndElement();
+                    foreach (KeyValuePair<string, decimal> objAttribute in Attributes)
+                    {
+                        if (objAttribute.Value != 0)
+                        {
+                            // <attribute>
+                            XmlElementWriteHelper objAttributeElement = await objWriter.StartElementAsync("attribute");
+                            try
+                            {
+                                await objWriter.WriteElementStringAsync(
+                                    "name",
+                                    await LanguageManager.GetStringAsync(
+                                        "String_Attribute" + objAttribute.Key + "Short",
+                                        strLanguageToPrint));
+                                await objWriter.WriteElementStringAsync("name_english", objAttribute.Key);
+                                await objWriter.WriteElementStringAsync(
+                                    "value", objAttribute.Value.ToString("+#.#;-#.#", objCulture));
+                            }
+                            finally
+                            {
+                                // </attribute>
+                                await objAttributeElement.DisposeAsync();
+                            }
+                        }
+                    }
                 }
-            }
-            objWriter.WriteEndElement();
-
-            objWriter.WriteStartElement("limits");
-            foreach (KeyValuePair<string, int> objLimit in Limits)
-            {
-                if (objLimit.Value != 0)
+                finally
                 {
-                    objWriter.WriteStartElement("limit");
-                    objWriter.WriteElementString("name", LanguageManager.GetString("Node_" + objLimit.Key, strLanguageToPrint));
-                    objWriter.WriteElementString("name_english", objLimit.Key);
-                    objWriter.WriteElementString("value", objLimit.Value.ToString("+#;-#", objCulture));
-                    objWriter.WriteEndElement();
+                    // </attributes>
+                    await objAttributesElement.DisposeAsync();
                 }
-            }
-            objWriter.WriteEndElement();
 
-            objWriter.WriteStartElement("qualities");
-            foreach (string strQualityText in Qualities.Select(x => x.InnerText))
+                // <limits>
+                XmlElementWriteHelper objLimitsElement = await objWriter.StartElementAsync("limits");
+                try
+                {
+                    foreach (KeyValuePair<string, int> objLimit in Limits)
+                    {
+                        if (objLimit.Value != 0)
+                        {
+                            // <limit>
+                            XmlElementWriteHelper objLimitElement = await objWriter.StartElementAsync("limit");
+                            try
+                            {
+                                await objWriter.WriteElementStringAsync(
+                                    "name",
+                                    await LanguageManager.GetStringAsync("Node_" + objLimit.Key, strLanguageToPrint));
+                                await objWriter.WriteElementStringAsync("name_english", objLimit.Key);
+                                await objWriter.WriteElementStringAsync(
+                                    "value", objLimit.Value.ToString("+#;-#", objCulture));
+                            }
+                            finally
+                            {
+                                // </limit>
+                                await objLimitElement.DisposeAsync();
+                            }
+                        }
+                    }
+                }
+                finally
+                {
+                    // </limits>
+                    await objLimitsElement.DisposeAsync();
+                }
+
+                // <qualities>
+                XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities");
+                try
+                {
+                    foreach (string strQualityText in Qualities.Select(x => x.InnerText))
+                    {
+                        // <quality>
+                        XmlElementWriteHelper objQualityElement = await objWriter.StartElementAsync("quality");
+                        try
+                        {
+                            await objWriter.WriteElementStringAsync(
+                                "name", await _objCharacter.TranslateExtraAsync(strQualityText, strLanguageToPrint));
+                            await objWriter.WriteElementStringAsync("name_english", strQualityText);
+                        }
+                        finally
+                        {
+                            // </quality>
+                            await objQualityElement.DisposeAsync();
+                        }
+                    }
+                }
+                finally
+                {
+                    // </qualities>
+                    await objQualitiesElement.DisposeAsync();
+                }
+
+                // <infos>
+                XmlElementWriteHelper objInfosElement = await objWriter.StartElementAsync("infos");
+                try
+                {
+                    foreach (string strInfo in Infos)
+                    {
+                        // <info>
+                        XmlElementWriteHelper objInfoElement = await objWriter.StartElementAsync("info");
+                        try
+                        {
+                            await objWriter.WriteElementStringAsync(
+                                "name", await _objCharacter.TranslateExtraAsync(strInfo, strLanguageToPrint));
+                            await objWriter.WriteElementStringAsync("name_english", strInfo);
+                        }
+                        finally
+                        {
+                            // </info>
+                            await objInfoElement.DisposeAsync();
+                        }
+                    }
+                }
+                finally
+                {
+                    // </infos>
+                    await objInfosElement.DisposeAsync();
+                }
+
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes);
+            }
+            finally
             {
-                objWriter.WriteStartElement("quality");
-                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(strQualityText, strLanguageToPrint));
-                objWriter.WriteElementString("name_english", strQualityText);
-                objWriter.WriteEndElement();
+                // </drug>
+                await objBaseElement.DisposeAsync();
             }
-            objWriter.WriteEndElement();
-
-            objWriter.WriteStartElement("infos");
-            foreach (string strInfo in Infos)
-            {
-                objWriter.WriteStartElement("info");
-                objWriter.WriteElementString("name", _objCharacter.TranslateExtra(strInfo, strLanguageToPrint));
-                objWriter.WriteElementString("name_english", strInfo);
-                objWriter.WriteEndElement();
-            }
-            objWriter.WriteEndElement();
-
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-
-            objWriter.WriteEndElement();
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -315,7 +398,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Components of the Drug.
         /// </summary>
-        public EnhancedObservableCollection<DrugComponent> Components { get; } = new EnhancedObservableCollection<DrugComponent>();
+        public ThreadSafeObservableCollection<DrugComponent> Components
+        {
+            get
+            {
+                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                    return _lstComponents;
+            }
+        }
 
         /// <summary>
         /// Name of the Drug.
@@ -335,6 +425,17 @@ namespace Chummer.Backend.Equipment
                 return Category;
 
             return _objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+        }
+
+        /// <summary>
+        /// Translated Category.
+        /// </summary>
+        public async ValueTask<string> DisplayCategoryAsync(string strLanguage)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Category;
+
+            return (await _objCharacter.LoadDataXPathAsync("gear.xml")).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -688,6 +789,16 @@ namespace Chummer.Backend.Equipment
                 : _objCharacter.TranslateExtra(Name, strLanguage);
         }
 
+        /// <summary>
+        /// The name of the object as it should appear on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage)
+        {
+            return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Name
+                : await _objCharacter.TranslateExtraAsync(Name, strLanguage);
+        }
+
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
         /// <summary>
@@ -698,6 +809,17 @@ namespace Chummer.Backend.Equipment
             string strReturn = DisplayNameShort(strLanguage);
             if (Quantity != 1)
                 strReturn = Quantity.ToString("#,0.##", objCulture) + LanguageManager.GetString("String_Space", strLanguage) + strReturn;
+            return strReturn;
+        }
+
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage)
+        {
+            string strReturn = await DisplayNameShortAsync(strLanguage);
+            if (Quantity != 1)
+                strReturn = Quantity.ToString("#,0.##", objCulture) + await LanguageManager.GetStringAsync("String_Space", strLanguage) + strReturn;
             return strReturn;
         }
 
@@ -969,7 +1091,7 @@ namespace Chummer.Backend.Equipment
             foreach (KeyValuePair<string, int> objLimit in Limits)
             {
                 if (objLimit.Value == 0) continue;
-                var i = new Improvement(_objCharacter)
+                Improvement i = new Improvement(_objCharacter)
                 {
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
@@ -996,7 +1118,7 @@ namespace Chummer.Backend.Equipment
 
             if (Initiative != 0)
             {
-                var i = new Improvement(_objCharacter)
+                Improvement i = new Improvement(_objCharacter)
                 {
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
@@ -1010,7 +1132,7 @@ namespace Chummer.Backend.Equipment
 
             if (InitiativeDice != 0)
             {
-                var i = new Improvement(_objCharacter)
+                Improvement i = new Improvement(_objCharacter)
                 {
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
@@ -1027,7 +1149,7 @@ namespace Chummer.Backend.Equipment
                 XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
-                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + "]");
+                    XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + ']');
                     if (objXmlSelectedQuality == null)
                         continue;
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
@@ -1043,7 +1165,7 @@ namespace Chummer.Backend.Equipment
                         if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
                             xpnSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
                         {
-                            List<Weapon> lstWeapons = new List<Weapon>();
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objAddQuality = new Quality(_objCharacter);
                             objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, Name);
 
@@ -1056,7 +1178,7 @@ namespace Chummer.Backend.Equipment
                             _objCharacter.Qualities.Add(objAddQuality);
                             foreach (Weapon objWeapon in lstWeapons)
                                 _objCharacter.Weapons.Add(objWeapon);
-                            var objImprovement = new Improvement(_objCharacter)
+                            Improvement objImprovement = new Improvement(_objCharacter)
                             {
                                 ImprovedName = objAddQuality.InternalId,
                                 ImproveSource = Improvement.ImprovementSource.Drug,
@@ -1085,27 +1207,50 @@ namespace Chummer.Backend.Equipment
             _objCharacter.Improvements.AddRange(lstImprovements);
         }
 
-        public XmlNode GetNode()
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
-            return GetNode(GlobalSettings.Language);
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("drugcomponents.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/drugcomponents/drugcomponent[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/drugcomponents/drugcomponent[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
+            return _objCachedMyXmlNode;
         }
 
-        public XmlNode GetNode(string strLanguage)
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+        private readonly ThreadSafeObservableCollection<DrugComponent> _lstComponents = new ThreadSafeObservableCollection<DrugComponent>();
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("drugcomponents.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/drugcomponents/drugcomponent[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/drugcomponents/drugcomponent[id = "
-                                                                           + SourceIDString.CleanXPath() + " or id = "
-                                                                           + SourceIDString.ToUpperInvariant()
-                                                                               .CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
-            return _objCachedMyXmlNode;
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("drugcomponents.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/drugcomponents/drugcomponent[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/drugcomponents/drugcomponent[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         public bool Remove(bool blnConfirmDelete = true)
@@ -1116,16 +1261,25 @@ namespace Chummer.Backend.Equipment
             }
             _objCharacter.Drugs.Remove(this);
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Drug, InternalId);
+
+            Dispose();
+
             return true;
         }
 
         #endregion Methods
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            _lstComponents.Dispose();
+        }
     }
 
     /// <summary>
     /// Drug Component.
     /// </summary>
-    public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
+    public class DrugComponent : IHasName, IHasInternalId, IHasXmlDataNode
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guidId;
@@ -1155,10 +1309,11 @@ namespace Chummer.Backend.Equipment
         public void Load(XmlNode objXmlData)
         {
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
             if (!objXmlData.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalSettings.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -1335,13 +1490,13 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            XmlNode xmlGearDataNode = GetNode(strLanguage);
-            if (xmlGearDataNode?["name"]?.InnerText == "Custom Item")
+            XPathNavigator xmlGearDataNode = this.GetNodeXPath(strLanguage);
+            if (xmlGearDataNode?.SelectSingleNode("name")?.Value == "Custom Item")
             {
                 return _objCharacter.TranslateExtra(Name, strLanguage);
             }
 
-            return xmlGearDataNode?["translate"]?.InnerText ?? Name;
+            return xmlGearDataNode?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
         /// <summary>
@@ -1408,7 +1563,7 @@ namespace Chummer.Backend.Equipment
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
+            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
@@ -1725,27 +1880,49 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public XmlNode GetNode()
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
         {
-            return GetNode(GlobalSettings.Language);
+            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
+                                            && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXmlNode;
+            _objCachedMyXmlNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("drugcomponents.xml", strLanguage)
+                    : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/drugcomponents/drugcomponent[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/drugcomponents/drugcomponent[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
+            _strCachedXmlNodeLanguage = strLanguage;
+            return _objCachedMyXmlNode;
         }
 
-        public XmlNode GetNode(string strLanguage)
+        private XPathNavigator _objCachedMyXPathNode;
+        private string _strCachedXPathNodeLanguage = string.Empty;
+
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
-            {
-                _objCachedMyXmlNode = _objCharacter.LoadData("drugcomponents.xml", strLanguage)
-                                                   .SelectSingleNode(SourceID == Guid.Empty
-                                                                         ? "/chummer/drugcomponents/drugcomponent[name = "
-                                                                           + Name.CleanXPath() + ']'
-                                                                         : "/chummer/drugcomponents/drugcomponent[id = "
-                                                                           + SourceIDString.CleanXPath() + " or id = "
-                                                                           + SourceIDString.ToUpperInvariant()
-                                                                               .CleanXPath()
-                                                                           + ']');
-                _strCachedXmlNodeLanguage = strLanguage;
-            }
-            return _objCachedMyXmlNode;
+            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
+                                              && !GlobalSettings.LiveCustomData)
+                return _objCachedMyXPathNode;
+            _objCachedMyXPathNode = (blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage)
+                    : await _objCharacter.LoadDataXPathAsync("drugcomponents.xml", strLanguage))
+                .SelectSingleNode(SourceID == Guid.Empty
+                                      ? "/chummer/drugcomponents/drugcomponent[name = "
+                                        + Name.CleanXPath() + ']'
+                                      : "/chummer/drugcomponents/drugcomponent[id = "
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                                        .CleanXPath()
+                                        + ']');
+            _strCachedXPathNodeLanguage = strLanguage;
+            return _objCachedMyXPathNode;
         }
 
         #endregion Methods

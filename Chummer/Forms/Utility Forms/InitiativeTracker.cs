@@ -21,7 +21,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmInitiative : Form
+    public partial class InitiativeTracker : Form
     {
         #region Properties
 
@@ -32,7 +32,7 @@ namespace Chummer
 
         #endregion Properties
 
-        public frmInitiative()
+        public InitiativeTracker()
         {
             InitializeComponent();
             CenterToParent();

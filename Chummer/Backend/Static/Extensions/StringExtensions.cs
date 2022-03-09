@@ -39,6 +39,23 @@ namespace Chummer
             return strInput == EmptyGuid;
         }
 
+        public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks)
+        {
+            bool blnAddSeparator = false;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (Task<string> tskString in lstStringTasks)
+                {
+                    sbdReturn.Append(await tskString);
+                    if (blnAddSeparator)
+                        sbdReturn.Append(strSeparator);
+                    else
+                        blnAddSeparator = true;
+                }
+                return sbdReturn.ToString();
+            }
+        }
+
         /// <summary>
         /// Identical to string::Replace(), but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
         /// </summary>
@@ -518,12 +535,24 @@ namespace Chummer
         /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
         public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, params char[] achrChars)
         {
+            return IsLegalCharsOnly(strInput, blnWhitelist, Array.AsReadOnly(achrChars));
+        }
+
+        /// <summary>
+        /// Returns whether a string contains only legal characters.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="blnWhitelist">Whether the list of chars is a whitelist and the string can only contain characters in the list (true) or a blacklist and the string cannot contain any characts in the list (false).</param>
+        /// <param name="achrChars">List of chars against which to check the string.</param>
+        /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
+        public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, IReadOnlyList<char> achrChars)
+        {
             if (strInput == null)
                 return false;
             int intLength = strInput.Length;
             if (intLength == 0)
                 return true;
-            int intLegalCharsLength = achrChars.Length;
+            int intLegalCharsLength = achrChars.Count;
             if (intLegalCharsLength == 0)
                 return true;
             for (int i = 0; i < intLength; ++i)
@@ -949,6 +978,101 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison);
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison);
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                    {
+                        return strInput.Replace(strOldValue, await funcNewValueFactory.Invoke());
+                    }
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    return strInput.Replace(strOldValue, await funcNewValueFactory.Invoke(), eStringComparison);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison);
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            return await CheapReplaceAsync(await strInputTask, strOldValue, funcNewValueFactory, eStringComparison);
+        }
+
+        /// <summary>
         /// Tests whether a given string is a Guid. Returns false if not.
         /// </summary>
         /// <param name="strGuid">String to test.</param>
@@ -1187,7 +1311,7 @@ namespace Chummer
             {
                 if (!s_RtbRtfManipulator.IsHandleCreated)
                     s_RtbRtfManipulator.CreateControl();
-                s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Text = strInput);
+                s_RtbRtfManipulator.DoThreadSafe(x => x.Text = strInput);
                 return s_RtbRtfManipulator.Rtf;
             }
         }
@@ -1211,7 +1335,7 @@ namespace Chummer
                         s_RtbRtfManipulator.CreateControl();
                     try
                     {
-                        s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
+                        s_RtbRtfManipulator.DoThreadSafe(x => ((RichTextBox)x).Rtf = strInput);
                     }
                     catch (ArgumentException)
                     {
@@ -1250,7 +1374,7 @@ namespace Chummer
                             s_RtbRtfManipulator.CreateControl();
                         try
                         {
-                            s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
+                            s_RtbRtfManipulator.DoThreadSafe(x => ((RichTextBox)x).Rtf = strInput);
                         }
                         catch (ArgumentException)
                         {

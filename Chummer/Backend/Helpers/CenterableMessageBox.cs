@@ -129,14 +129,14 @@ namespace Chummer
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct CwpRetStruct : IEquatable<CwpRetStruct>
+        public readonly struct CwpRetStruct : IEquatable<CwpRetStruct>
         {
-            public IntPtr lResult;
-            public IntPtr lParam;
-            public IntPtr wParam;
+            public readonly IntPtr lResult;
+            public readonly IntPtr lParam;
+            public readonly IntPtr wParam;
             [CLSCompliant(false)]
-            public uint message;
-            public IntPtr hwnd;
+            public readonly uint message;
+            public readonly IntPtr hwnd;
 
             public override int GetHashCode()
             {

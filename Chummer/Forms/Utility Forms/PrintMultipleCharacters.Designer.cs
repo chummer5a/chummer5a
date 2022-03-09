@@ -154,7 +154,7 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(112, 87);
             this.tlpButtons.TabIndex = 5;
             // 
-            // frmPrintMultiple
+            // PrintMultipleCharacters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -165,13 +165,14 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmPrintMultiple";
+            this.Name = "PrintMultipleCharacters";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_PrintMultiple";
             this.Text = "Select Characters to Print";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmPrintMultiple_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PrintMultipleCharacters_FormClosing);
+            this.Load += new System.EventHandler(this.PrintMultipleCharacters_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

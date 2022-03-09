@@ -27,7 +27,7 @@ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class frmSelectItem : Form
+    public partial class SelectItem : Form
     {
         private readonly List<Gear> _lstGear = new List<Gear>();
         private readonly List<Vehicle> _lstVehicles = new List<Vehicle>();
@@ -40,14 +40,14 @@ namespace Chummer
 
         #region Control Events
 
-        public frmSelectItem()
+        public SelectItem()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
         }
 
-        private void frmSelectItem_Load(object sender, EventArgs e)
+        private async void SelectItem_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
@@ -55,7 +55,7 @@ namespace Chummer
                 {
                     case "Gear":
                     {
-                        string strSpace = LanguageManager.GetString("String_Space");
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
                         cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
@@ -76,7 +76,7 @@ namespace Chummer
 
                                 if (objGear.Rating > 0)
                                     sbdAmmoName.Append(strSpace).Append('(')
-                                               .Append(LanguageManager.GetString(objGear.RatingLabel)).Append(strSpace)
+                                               .Append(await LanguageManager.GetStringAsync(objGear.RatingLabel)).Append(strSpace)
                                                .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
                                 sbdAmmoName.Append(strSpace).Append('x')
                                            .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
@@ -114,14 +114,14 @@ namespace Chummer
                         cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
                         if (!_objCharacter.Settings.LicenseRestricted)
                         {
-                            foreach (XPathNavigator objNode in _objCharacter.LoadDataXPath("licenses.xml")
-                                                                            .SelectAndCacheExpression(
-                                                                                "/chummer/licenses/license"))
+                            foreach (XPathNavigator objNode in await (await _objCharacter.LoadDataXPathAsync("licenses.xml"))
+                                         .SelectAndCacheExpressionAsync(
+                                             "/chummer/licenses/license"))
                             {
                                 string strInnerText = objNode.Value;
                                 if (!string.IsNullOrEmpty(strInnerText))
                                     lstItems.Add(new ListItem(strInnerText,
-                                                              objNode.SelectSingleNodeAndCacheExpression("@translate")
+                                                              (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate"))
                                                                      ?.Value ?? strInnerText));
                             }
                         }

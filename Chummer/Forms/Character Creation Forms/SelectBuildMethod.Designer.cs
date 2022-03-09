@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    public sealed partial class frmSelectBuildMethod
+    public sealed partial class SelectBuildMethod
     {
         /// <summary>
         /// Required designer variable.
@@ -148,7 +148,7 @@ namespace Chummer
             this.lblMaxNuyenLabel.Size = new System.Drawing.Size(94, 13);
             this.lblMaxNuyenLabel.TabIndex = 15;
             this.lblMaxNuyenLabel.Tag = "Label_SelectBP_MaxNuyen";
-            this.lblMaxNuyenLabel.Text = "Nuyen Karma Max";
+            this.lblMaxNuyenLabel.Text = "Max Nuyen Karma";
             this.lblMaxNuyenLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tlpMain
@@ -522,7 +522,7 @@ namespace Chummer
             this.lblStartingKarma.Size = new System.Drawing.Size(100, 23);
             this.lblStartingKarma.TabIndex = 0;
             // 
-            // frmSelectBuildMethod
+            // SelectBuildMethod
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -534,13 +534,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectBuildMethod";
+            this.Name = "SelectBuildMethod";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectBP";
             this.Text = "Select Build Method";
-            this.Load += new System.EventHandler(this.frmSelectBuildMethod_Load);
+            this.Load += new System.EventHandler(this.SelectBuildMethod_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpSummary.ResumeLayout(false);

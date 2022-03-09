@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
@@ -47,7 +48,7 @@ namespace Chummer
             MoveControls();
         }
 
-        private void frmNaturalWeapon_Load(object sender, EventArgs e)
+        private async void CreateNaturalWeapon_Load(object sender, EventArgs e)
         {
             // Load the list of Combat Active Skills and populate the Skills list.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
@@ -73,8 +74,8 @@ namespace Chummer
                                                i.ToString(GlobalSettings.CultureInfo)));
                 }
 
-                lstDVType.Add(new ListItem("P", LanguageManager.GetString("String_DamagePhysical")));
-                lstDVType.Add(new ListItem("S", LanguageManager.GetString("String_DamageStun")));
+                lstDVType.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_DamagePhysical")));
+                lstDVType.Add(new ListItem("S", await LanguageManager.GetStringAsync("String_DamageStun")));
 
                 // Bind the Lists to the ComboBoxes.
                 cboSkill.BeginUpdate();
@@ -99,9 +100,9 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm();
         }
 
         #endregion Control Events
@@ -124,7 +125,7 @@ namespace Chummer
             nudReach.Left = lblReach.Left + intWidth + 6;
         }
 
-        private void AcceptForm()
+        private async ValueTask AcceptForm()
         {
             // Assemble the DV from the fields.
             string strDamage = cboDVBase.SelectedValue.ToString();
@@ -155,7 +156,7 @@ namespace Chummer
                 _objWeapon = new Weapon(_objCharacter)
                 {
                     Name = txtName.Text,
-                    Category = LanguageManager.GetString("Tab_Critter"),
+                    Category = await LanguageManager.GetStringAsync("Tab_Critter"),
                     RangeType = "Melee",
                     Reach = nudReach.ValueAsInt,
                     Damage = strDamage,

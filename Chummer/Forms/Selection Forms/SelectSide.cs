@@ -23,28 +23,17 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class frmSelectSide : Form
+    public partial class SelectSide : Form
     {
         private string _strSelectedSide = string.Empty;
 
         #region Control Events
 
-        public frmSelectSide()
+        public SelectSide()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            // Create a list for the sides.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
-            {
-                lstSides.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
-                lstSides.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
-
-                cboSide.BeginUpdate();
-                cboSide.PopulateWithListItems(lstSides);
-                cboSide.EndUpdate();
-            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -53,8 +42,20 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private void frmSelectSide_Load(object sender, EventArgs e)
+        private async void SelectSide_Load(object sender, EventArgs e)
         {
+            // Create a list for the sides.
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
+            {
+                lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
+                lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
+                lstSides.Sort(CompareListItems.CompareNames);
+
+                cboSide.BeginUpdate();
+                cboSide.PopulateWithListItems(lstSides);
+                cboSide.EndUpdate();
+            }
+
             // Select the first item in the list.
             cboSide.SelectedIndex = 0;
         }
@@ -84,9 +85,8 @@ namespace Chummer
         /// <param name="strSide">Value to force.</param>
         public void ForceValue(string strSide)
         {
-            cboSide.SelectedValue = strSide;
-            cboSide.Text = strSide;
-            cmdOK_Click(this, null);
+            _strSelectedSide = strSide;
+            DialogResult = DialogResult.OK;
         }
 
         #endregion Methods

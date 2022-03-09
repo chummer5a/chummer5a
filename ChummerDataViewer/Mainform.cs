@@ -176,16 +176,14 @@ namespace ChummerDataViewer
             bool versionOk = true;
             bool buildOk = true;
 
-            if (cboVersion.SelectedItem != null)
+            if (cboVersion.SelectedItem != null && !report.Version.Equals(cboVersion.SelectedItem))
             {
-                if (!report.Version.Equals(cboVersion.SelectedItem))
-                    versionOk = false;
+                versionOk = false;
             }
 
-            if (cboBuild.SelectedItem != null)
+            if (cboBuild.SelectedItem != null && !report.BuildType.Equals(cboBuild.SelectedItem))
             {
-                if (!report.BuildType.Equals(cboBuild.SelectedItem))
-                    buildOk = false;
+                buildOk = false;
             }
 
             return buildOk && versionOk;

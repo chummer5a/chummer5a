@@ -110,7 +110,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ Any() call.
+        /// Syntactic sugar for LINQ Any() call that will use List::Exists() if possible.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lstCollection"></param>
@@ -118,11 +118,13 @@ namespace Chummer
         /// <returns></returns>
         public static bool Exists<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
+            if (lstCollection is List<T> lstCastedCollection)
+                return lstCastedCollection.Exists(predicate);
             return lstCollection.Any(x => predicate(x));
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ FirstOrDefault call.
+        /// Syntactic sugar for LINQ FirstOrDefault call that will use List::Find() if possible.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lstCollection"></param>
@@ -130,11 +132,13 @@ namespace Chummer
         /// <returns></returns>
         public static T Find<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
+            if (lstCollection is List<T> lstCastedCollection)
+                return lstCastedCollection.Find(predicate);
             return lstCollection.FirstOrDefault(x => predicate(x));
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ LastOrDefault call.
+        /// Syntactic sugar for LINQ LastOrDefault call that will use List::FindLast() if possible.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="lstCollection"></param>
@@ -142,7 +146,23 @@ namespace Chummer
         /// <returns></returns>
         public static T FindLast<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
+            if (lstCollection is List<T> lstCastedCollection)
+                return lstCastedCollection.FindLast(predicate);
             return lstCollection.LastOrDefault(x => predicate(x));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for LINQ Where().ToList() call that will use List::FindAll() if possible.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="lstCollection"></param>
+        /// <param name="predicate"></param>
+        /// <returns></returns>
+        public static List<T> FindAll<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
+        {
+            if (lstCollection is List<T> lstCastedCollection)
+                return lstCastedCollection.FindAll(predicate);
+            return lstCollection.Where(x => predicate(x)).ToList();
         }
     }
 }

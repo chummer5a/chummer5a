@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectPower
+    partial class SelectPower
     {
         /// <summary>
         /// Required designer variable.
@@ -270,13 +270,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectPower";
+            this.Name = "SelectPower";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectPower";
             this.Text = "Select a Power";
-            this.Load += new System.EventHandler(this.frmSelectPower_Load);
+            this.Load += new System.EventHandler(this.SelectPower_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

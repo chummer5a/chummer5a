@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -31,9 +32,10 @@ namespace Chummer
     {
         /// <summary>
         /// CollectionChanged event subscription that will fire right before the collection is cleared.
-        /// To make things easy, all of the collections elements will be present in e.NewItems.
+        /// To make things easy, all of the collections elements will be present in e.OldItems.
         /// </summary>
-        public event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1070:Do not declare event fields as virtual", Justification = "We do want to override this, actually. Just make sure that any override has explicit adders and removers defined.")]
+        public virtual event NotifyCollectionChangedEventHandler BeforeClearCollectionChanged;
 
         /// <inheritdoc />
         public EnhancedObservableCollection()
@@ -55,7 +57,7 @@ namespace Chummer
         {
             using (BlockReentrancy())
             {
-                BeforeClearCollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset, Items));
+                BeforeClearCollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, (IList)Items));
             }
             base.ClearItems();
         }

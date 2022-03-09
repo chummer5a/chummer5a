@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmSelectSetting
+    partial class SelectSetting
     {
         /// <summary>
         /// Required designer variable.
@@ -161,13 +161,13 @@ namespace Chummer
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmSelectSetting";
+            this.Name = "SelectSetting";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectSetting";
             this.Text = "Select Setting";
-            this.Load += new System.EventHandler(this.frmSelectSetting_Load);
+            this.Load += new System.EventHandler(this.SelectSetting_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);

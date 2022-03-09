@@ -1,4 +1,197 @@
-Future Build 217
+Future Build 223
+Application Changes:
+- Characters can now be opened up directly for printing (including exporting to PDF) or for exporting without needing to fully open a character for editing.
+- Changing the rating of a knowsoft or linguasoft after it has been bought no longer causes Chummer to crash. Fixes #4708.
+- Skill group rating maxima now also follow values set in character settings for maximum skill ratings.
+- Disabling the setting that allows skills to be regrouped now properly makes skill groups remain broken after character creation if they are broken at least once.
+- Fixed issues where setting a character to ignore character creation rules still did not allow them to spend skill points and karma as freely as they should have.
+- The house rule to compensate the karma cost for raising the last skill in a broken skill group is no longer overwritten by bonuses that set a minimum karma cost for learning skills.
+- Added a house rule that allows specializations to no longer break skill groups.
+- Going under a character's total native language limit at character creation now only gives a warning during character validation instead of preventing export to career mode outright.
+- Fixed a typo that caused Chummer to treat the maximum knowledge skill rating at character creation as the maximum knowledge skill rating overall.
+- Critters can now have karma spent on improving their abilities without having to save and then reload their file.
+- Creating certain improvements no longer causes Chummer to crash.
+- Adding and/or removing lifestyle qualities no longer generates orphaned improvements.
+- Encumbrance penalties and maximum skill ratings can now properly be modified through the Character Settings window.
+- Fixed a crash when adding cyberware or bioware that requires a specific side to be picked.
+- Characters with natural weapons can now be saved properly.
+- If a user has some custom PACKS already created, creating new custom PACKS now properly lists all PACKS under one `packs` XML node instead of under multiple different versions of it.
+- The skills used by different spell categories have now been unhardcoded.
+- Chummer now treats items with an availability or cost defined as just a hyphen as them having 0 in these values instead of crashing.
+- Ammo types that modify a weapon's range now have that modification properly represented.
+- Changing the character settings of a currently open character now properly causes the new settings to be reflected in the open character's form.
+- Checking the "Free" box when acquiring new items in career mode now always universally just skips the purchasing process instead of setting the item's cost to 0.
+
+Data Changes:
+- One with the Matrix I, II, and III can no longer be taken multiple times.
+- Fixed Hedge Witch/Wizard drain reduction not working properly. Existing character with this quality will need to remove and then re-add it to see the effects (or reapply improvements). Fixes #4715.
+- Dedicated Spellslinger and Dedicated Conjurer now properly disable access to the Summoning and Binding skills and the Spellcasting skill respectively.
+- Delnar Skills Remake now reports the appropriate dice pools for rituals (based on Ceremony) and enchantments (based on Arcana).
+- Neural Amplifiers (Learning Stimulus) has had its backend modified so that it stacks and works better together with other karma cost-modifying improvements. 
+
+Changed/New Strings:
+- Checkbox_Options_SpecializationsBreakSkillGroups
+- MessageTitle_ExtraNativeLanguages
+- Message_ExtraNativeLanguages
+- Menu_Main_OpenForPrinting
+- Menu_Main_OpenForExport
+
+Removed Strings:
+- Message_UnderLanguageLimit
+
+Build 222
+Application Changes:
+- Changing AGI or STR values now properly updates movement speeds in the UI.
+- Cyberware and bioware with pair bonuses and/or wireless pair bonuses but no `<pairinclude>` or `<wirelesspairinclude>` nodes specified now still have those bonuses applied properly for every pair of item.
+- The default Internet Explorer version emulated for the character sheet viewer is now 11 instead of 8.
+- Fixed a rare crash that could happen when attempting to print a character.
+- Changelogs for newer versions of Chummer now properly show up in the updater before they are downloaded.
+- Fixed a rare crash when attempting to convert certain colors to and/or from their dark mode versions.
+- Startup times for users with watch folders has been decreased by about 20%.
+- Fixed an issue where some cyberware with wireless bonuses that depend on either the presence of other cyberware or on there being multiple instances of the same cyberware would cause that cyberware's bonuses to mysteriously disappear.
+- Barehanded Adept now properly allows characters to learn spells with a Touch or Touch (Area) range.
+- Spells bought as part of Barehanded Adept are now marked as such in exports.
+- Barehanded Adept spells now properly have their drain values doubled, and the tooltip for their drain values now only show forces up to a third of their Magic attribute rounded up (which is the limit imposed by the quality).
+- Tooltips for drain and fading values are now less confusing about how modifiers are incorporated.
+- Attempting to undo increasing a skill group that is broken at the time of the undo now properly causes Chummer to not follow through with the undo.
+- Paragons from Kill Code now show up in the Master Index.
+- Added backend support for Shadowrun 5e's encumbrance rules as they are stated on p. 420 of the core rulebook. Because no item weights are specified in any of the books, items do not weigh anything in Chummer by default, but custom datasets can add weights to weapons, weapon accessories, armor, armor mods, gear, and cyberware with the `<weight>` node. Weights specified this way fully support both decimals and calculated quantities similar to how costs can be specified.
+- Exposed a large amount of options for dealing with encumbrance and weights to character settings. Among other things, carry limits and the interval at which encumbrance penalty ticks are applied can be custom-defined by settings, and penalties to Physical Limit, movement speeds, Agility, and/or Reaction and/or adding extra Wound Modifiers can all be selected as encumbrance penalties.
+- Added the ability to change the maximum number of attributes at a character's metatype maximum via character settings.
+- Added the ability to change the maximum rating for active skills and the maximum rating for knowledge skills both at character creation and in-game via character settings.
+- Weapons can now be equipped or unequipped, and underbarrel weapons, weapon accessories, and gear that come built into a weapon or weapon accessory now properly cannot be unequipped/uninstalled.
+- Fixed a crash that would happen when selecting irremovable weapons on characters with Black Market Discount.
+- Fixed Adapsin grades showing up for characters without Adapsin.
+- Deleting qualities with levels no longer causes Chummer to crash.
+- The Cyberadept Stream's Daemon now negates the proper amount of Resonance reduction from Essence lost to cyberware under the setting where Essence loss does not affect the karma cost for increasing special attributes.
+- Fixed various crashes when adding or removing certain types of cyberware, bioware, adept powers, or qualities that interacted with augmented attributes.
+- The calendar tab now properly support colored entries.
+- Removing newly added qualities that give natural weapons now properly removes said weapons. Due to technical limitations, existing natural weapon entries added by qualities in older versions of Chummer will still not be removed.
+- The Hero Lab Importer tool no longer crashes after selecting a .por file. Fixes #4701.
+- Fixed some instances of re-applying improvements from old saves not working properly.
+- The Hero Lab Importer tool now prompts the user to select a settings file for an imported character instead of choosing one automatically. Fixes #4704.
+- Fixed an issue where technomancer Fading dice were not determined correctly.
+
+Data Changes:
+- The Sound Link Audio Enhancement entry has had its sourcebook reference changed to RF 247, as it is the only place where the gear's price is listed.
+- Barehanded Adept no longer shows "T, T (A)" after its name after it is added.
+- Vehicle and drone mods that rely on a vehicle stat to calculate costs now properly use a value of 0.5 in place of that stat for vehicles and drones with a stat of 0 (e.g. Body 0 drones).
+- Fixed the Speed and Acceleration of the Big Bazoo Redline and Big Bazoo Chrome.
+- Updated the Essence cost and Availability of Skillwires to the latest printing of the core rulebook.
+
+Changed/New Strings:
+- Tip_SpellDrain
+- Tip_SpellDrainBase
+- Tip_ComplexFormFading
+- Tip_ComplexFormFadingBase
+- Message_UndoBrokenSkillGroup
+- MessageTitle_UndoBrokenSkillGroup
+- Label_OtherLiftAndCarryLimits
+- Label_OtherLiftAndCarryLimitsFormat
+- Tip_OtherLiftAndCarryLimits
+- String_Encumbrance
+- Label_CarriedWeight
+- Label_CharacterOptions_WeightDecimalPlaces
+- Label_CharacterOptions_LiftLimit
+- Label_CharacterOptions_CarryLimit
+- Label_CharacterOptions_EncumbranceIntervalLeft
+- Label_CharacterOptions_EncumbranceIntervalRight
+- Label_CharacterOptions_EncumbrancePenaltiesHeader
+- Checkbox_CharacterOptions_EncumbrancePenaltyPhysicalLimit
+- Checkbox_CharacterOptions_EncumbrancePenaltyMovementSpeed
+- Checkbox_CharacterOptions_EncumbrancePenaltyAgility
+- Checkbox_CharacterOptions_EncumbrancePenaltyReaction
+- Checkbox_CharacterOptions_EncumbrancePenaltyWoundModifier
+- Label_OtherLiftAndCarryHits
+- Label_SelectBP_MaxNuyen
+- Message_AttributeMaximum
+- Message_TooManyAttributesAtMax
+- Label_CharacterOptions_MaxNumberMaxAttributes
+- Label_CharacterOptions_MaxSkillRating
+- Label_CharacterOptions_MaxKnowledgeSkillRating
+
+Removed Strings:
+- Tip_LiftAndCarry
+- Tip_WeaponInstalled
+
+Build 221
+Application Changes:
+- Saved character settings files properly exclude disabled custom data directories that are present in the Chummer customdata folder.
+- Added support for enabling individual items in Chummer on a case-by-case basis without needing to enable the entire sourcebook that contains them. Any item with a `<ignoresourcedisabled />` node inside of it can show up in Chummer regardless of whether or not its sourcebook is enabled.
+- Fixed some crashes that could occur when opening characters under certain software conditions.
+- When switching attribute categories as a shifter, the cursor now changes to a waiting/hourglass one until all the needed changes have been processed.
+- Fixed a null reference when canceling out of the Advanced Lifestyle window.
+- The prompt for whether or not the user wishes to delete an existing file outside of the Chummer directory now properly shows up instead of just showing the current UI language's code.
+- Fixed various issues with advanced lifestyles' stats not updating properly when modifying them.
+- Advanced lifestyles' lifestyle qualities' LP costs are now properly accounted for.
+- Selling gear, weapons, and cyberware that are not inside something else now properly gives characters money.
+- The Select Vehicle window no longer automatically resizes to an unusable size on smaller screens.
+- Removing qualities that have added other qualities, e.g. Prototype Transhuman, no longer causes a crash.
+- Changing the rating of a piece of 'ware after it has been added to a character now properly propagates those changes through any rating-dependent improvements and bonuses the 'ware has.
+- Fixed an assortment of issues where attribute controls were not properly in sync with underlying attribute values, e.g. burning Edge would not decrease the shown Edge value.
+- Swapping back and forth between forms as a shapeshifter and then doing anything to modify any attribute no longer slows Chummer down to a crawl.
+- Trying to add or edit a weapon mount no longer causes a crash. Fixes #4682.
+- Improvements that modify drain and/or fading values can now do so on an individual spell and/or complex form basis respectively. To do this, use add a `specific` attribute to the `drainvalue` or `fadingvalue` node and enter the name of the spell or complex form to which the effect should be restricted.
+- Added support for modifying the Availability Test formula using options.xml. options.xml is exposed to the custom/override/amend system, allowing it to be modified using customdata files. There are three relevant nodes, with one identifier node. Value represents the maximum nuyen value for that node. Interval is a string that is used to refer to the language file and is expected to be String_Hours, String_Day, etc. Duration is the total number of the Intervals that will pass. In total, this will parse to a label like this: {Negotiation dicepool} ({Availability Value}, {Duration} {Interval}), ie 12 (6R, 1 day).
+- Items with variable cost, e.g. the Custom Item gear, now properly prompt the user to select their cost.
+- Essence holes are no longer created when removing 'ware in Create mode.
+- Suggested specializations for knowledge skills now appear in dropdown menus again.
+- Editing a karma or nuyen expense now properly has that edit reflected in the list of karma or nuyen expenses respectively.
+- Fixed various issues where Essence cost modifiers would not get applied properly.
+- Additively stacking Essence cost modifiers no longer result in the total modifier being rounded to the nearest ten percent.
+- Gear can now be marked as ammo for multiple weapon types by separating each weapon type key with a comma.
+- Migrated Chummer to .NET Framework 4.8 to get better DPI scaling behavior in expense charts and slightly better general performance from 4.8's JIT compiler improvements.
+- Adding gear that requires something specified for it, e.g. a weapon targeting autosoft, to a vehicle now properly prompts the user to specify the entry for the gear.
+- Removing locations other than weapon locations now works properly.
+- Fixed a regression in use of ReplaceAttribute Improvements that caused improvements that did not exceed the value of the attribute. Closes #4689
+- Bonuses and improvements that replace physical attributes with new values, e.g. Infected qualities, no longer affect shapeshifters' animal form attributes.
+- If a character has a bonus or improvement that replaces their Edge attribute, burning Edge now properly descreases their Edge.
+- The setting to prefer Nightly updates no longer requires the setting for automatic updates to be on. Fixes #4690.
+- The total, calculated, and remaining capacities of armor are now exported as `totalarmorcapacity`, `calculatedcapacity`, and `capacityremaining` respectively.
+- Noticeably sped up loading times for characters with lots of cyberware and/or bioware.
+
+Data Changes:
+- Sourcerer and Machinist technomancers now have their Fading Value bonuses represented in Chummer.
+- Cyberadept and Machinist technomancers now have their Compiling and Decompiling bonuses represented in Chummer.
+- Fichetti Pain Inducer can now properly track the 10 charges it has the same way as Stun Batons.
+- Fixed all cases where exotic ranged weapons that used ammo of some kind could not be refilled with ammo.
+- Fixed incorrect powers for the Bugul and Croki.
+- Vehicles that come with sensor functions explicitly specified in their sensor arrays can no longer support more than the eight sensor functions they would be allowed to support.
+
+Changed/New Strings:
+- String_BurnedEdge
+- Checkbox_Options_PreferNightlyBuilds
+- Checkbox_Options_AutomaticUpdates
+
+Removed Strings:
+- Checkbox_Options_MayBuyQualities
+- Checkbox_Options_ContactPoints
+- Checkbox_Options_ContactMultiplier
+- Checkbox_Options_KnowledgeMultiplier
+
+Build 220
+Application Changes:
+- Deleting or selling gear that has plugins inside of it no longer causes a crash.
+- Characters are now properly compensated when selling an item that is either located inside another item or adds items with non-zero cost.
+- When attempting to delete a weapon mount mod, the program will now properly show a confirmation dialog before deleting the mod if the appropriate setting is set.
+- If the program is set to confirm deletions, attempts to sell items in Career mode now also confirm if the user wishes to go through with the sale.
+
+Build 219
+Application Changes:
+- Fixed a bug preventing any override, custom, or amend files from processing.
+- Fixed a source of unpredictable crashes that would happen seemingly for no reason at random points in time.
+- Fixed crashes that could happen where removing certain plugins, accessories, and other items with parentage in Career mode. Fixes #4681.
+
+Build 218
+Application Changes:
+- For improvements that require specifying text where possible options or suggestions for the text are loaded from a data file, these options now show up translated to the program's UI language if it is not English.
+- Fixed an issue where adding plugins to cyberlimbs would cause Chummer to freeze up.
+- Increased the speed of exporting characters by between 10% and 60% (depending on the language and custom dataset combinations used).
+
+Data Changes:
+- Fixed the stats for Boggles so that they appear and can be processed properly when creating a new critter. Fixes #4679.
+
+Build 217
 Application Changes:
 - Adding a new non-advanced lifestyle that is eligible for Trust Fund no longer causes a crash. Fixes #4601.
 - Adding a plugin to a custom cyberweapon no longer causes a crash.
@@ -9,6 +202,7 @@ Application Changes:
 - Adept Powers, AI Programs, Metamagic Arts, Complex Forms, Critter Powers, Mentor Spirits, Metamagics, Spells, and Weapon Mounts should now automatically fetch notes from linked PDFs.
 - Mugshot compression settings should now properly get saved with other global settings.
 - Added an option to have Chummer automatically set the lossy compression quality for mugshots in save files instead of using the same, manually defined setting for all images. Using this automatic setting, larger images will be saved with lower Jpeg quality settings because Jpeg artifacts will be less visible in them, while smaller images get saved with higher quality settings.
+- Default mugshot compression for new Chummer users is now Lossy with automatic quality instead of Lossless. Existing Chummer users migrating from older versions of Chummer that did not have mugshot compression as a setting will still have it set to Lossless so that there is no change in functionality for them. 
 - If the prompt asking the user if they wish to automatically apply a Chummer updater is dismissed, it no longer re-appears until the user has closed and later re-opened Chummer.
 - Non-PDF files can no longer be linked in as a sourcebook's PDF file.
 - Fixed a crash when taking the Apprentice quality.
@@ -50,6 +244,17 @@ Application Changes:
 - Improvements and other types of bonuses that disable cyberware and/or bioware no longer prevent characters from buying Essence Holes, Essence Antiholes, unequipped modular cyberlimbs, and plugins for unequipped modular cyberlimbs.
 - When adding bonuses or improvements that disable cyberware and/or bioware, characters no longer get their Essence Holes, Antiholes, and modular cyberlimbs deleted.
 - Armor costs now properly support "FixedValues()" entries.
+- Cybersuites that add cyberlimbs now properly incorporate those cyberlimbs' attributes into the character's overall attributes.
+- Added a browser view for vehicles to show content in a grid view, similar to the weapons browser. Currently a bit slow.
+- Fixed the tooltips on buttons to open characters linked to contacts.
+- Fixed various issues caused by interactions between bonuses/improvements that add special skills and custom rulesets that can alter special skills lists.
+- If the user is prompted to load an autosave for a character that might have been unsaved as the result of a crash and the user declines, that autosave is now deleted.
+- Reduced crashes and potential weird issues caused by interactions with the current Windows user's designated temporary folder.
+- Minimum and maximum initiative dice for the physical world and AR, astral, cold-sim VR, and hot-sim VR can all now be tweaked through character settings.
+- In order to work with smaller PDFs, the PDF test function now opens to page 3 instead of to page 5.
+- At higher screen resolutions, the splitter for the Karma & Nuyen tab now properly starts in the middle of the tab instead of far off to the left.
+- Improvements that forcefully allow a skill to be defaulted now work properly.
+- Conditional boosts to skills that only boost specific specializations are now always represented in the specialization's dice pool bonus, no matter where it is shown. Fixes #3855.
 
 Data Changes:
 - Fixed missing multiplier for Haunted lifestyle quality.
@@ -60,7 +265,7 @@ Data Changes:
 - Initiative-boosting powers and 'ware now properly disable the defense test bonus given by Lightning Reflexes.
 - Synaptic Acceleration now properly adds +1 to defense tests. Known issue: this defense test increase is not disabled if the character buys any initiative-boosting 'ware the way its initiative boost is.
 - Two of the Sea Ray Cottonmouth's built-in weapon mounts now properly have Flexible flexibility. Fixes #4656.
-- Enabling Delnar Skills Remake no longer causes Chummer to crash.
+- Enabling Delnar Skills Remake no longer causes Chummer to crash, and Delnar Skills Remake has been updated with new changes to Acrobatic Defender and Perceptive Defender.
 - Metamagics and echoes acquired outside of initiation and submersion now show up on character sheets that have no initiations or submersions.
 - Extended Clip in German Data Changes now properly scales its cost based on the accessory's rating.
 - Improved Potential can now properly be taken at multiple levels with German Data Changes.
@@ -69,6 +274,32 @@ Data Changes:
 - Ram Plate uses the stats from the print version of Rigger 5.0, which, unlike the PDF version, actually has stats listed for the Ram Plate.
 - Codeslinger quality now prompts for an action from the Matrix category of actions.xml.
 - Shadowrun Missions Rules has been updated to include the rules and additional authors added by the 1.4 supplemental FAQ.
+- The GMC Armadillo now comes with Off-Road Suspension included.
+- Fixed incorrect skill prompts for the Mystic Guardian and Doberman mentor spirits. Closes #4672
+- Credsticks now all properly have a device rating of 5.
+- Fixed incorrect gear (Olfactory Sensor > Scanner) for the Saab-Thyssen Bloodhound and Telestrian Shamus.
+- Fixed the damage codes for natural weapons added by some Infected qualities, Dracoform qualities, and crystal limb qualities. Fixes #4673.
+- Ammo: Silver, Ammo: Wood Pulp, Ammo: Flare Rounds, and Ammo: Krime Splash Self-Defense Ammunition no longer export their AP adjustments with two plus signs.
+- Fixed the category entry of the Horizon-Flynn Defense-Com Commlink Holdout weapon.
+- Custom Items can now be added to cyberlimbs.
+- Fixed Trollbow not using the Bow specialisation. Closes #4676
+- Fixed the following critter entries from Howling Shadows: Glow Rat, Neogargoyle, and Sea Leech.
+- Added Spinrad Global and a list of AA megacorporations to life modules' data files and to the suggested list for SINner (Corporate) and SINner (Corporate Limited). Fixes #4668.
+- Built-in German character settings now use 2d6 for astral initiative instead of 3d6. Fixes #4531.
+- Built-in character settings for Full House with Sum-to-Ten have been added, as well as German versions of all three types of Full House settings.
+- Sum-to-Ten Improved has been added to the Chummer customdata folder. When enabled, it changes the Sum-to-Ten value of A priorities from 4 to 7 and of B priorities from 3 to 4. When using the dataset, it is recommended one uses a Sum-to-Ten value of 14 instead of 10.
+- Added new built-in character settings that are alternate versions of Sum-to-Ten, Full House (Sum-to-Ten), and their German versions that use Sum-to-Ten Improved instead of RAW Sum-to-Ten.
+- Only Allow Basic Metatypes at Character Creation has been added to the Chummer customdata folder. When enabled, it forbids all character types (metasapients, shifters, changelings, drakes, infected, etc.) other than the basic metatypes added by the core rulebook.
+- The Newbie's Choice built-in character setting now has the Only Allow Basic Metatypes at Character Creation custom dataset enabled.
+- Added a German version for the built-in character setting Newbie's Choice.
+- Added Street Grimoire Errata as a separate book entry because the errata PDF adds three new items. The sourcebook entries for Authoritative Tone and the Street Grimoire versions of Keratin Control and Living Focus now direct to Street Grimoire Errata instead of Street Grimoire.
+- Jack of All Trades Applies Karma Modifiers in Create Mode has been added to the Chummer customdata folder. It makes the karma cost modifiers of Jack of All Trades Master of None also apply at character creation.
+- Delnar's One Karma Qualities has been added to the Chummer customdata folder. It adds a sourcebook that adds eight positive qualities that cost one karma each and three negative qualities that give one karma each.
+- Links in custom dataset descriptions are now properly recognized and formatted as such in the Character Settings form, and they are now clickable, too.
+- Fixed the maximum amount of times that most echoes can be taken.
+- The Mathemagics echo now properly increases Mental limit by 2 for math-intensive actions.
+- Added dummy mods (speakers, strobes) to Horizon Noizquito. Closes #4675
+- Modified Shaman Tuxedo to prompt for all spirits by name instead of the tradition's category. Closes #4599
 
 Changed/New Strings:
 - String_GameplayOption
@@ -76,6 +307,9 @@ Changed/New Strings:
 - String_Lossy_Manual_Compression_Option
 - Message_Options_FileIsNotPDF
 - MessageTitle_Options_FileIsNotPDF
+- Message_Prompt_Delete_Existing_File
+- Message_File_Cannot_Be_Accessed
+- Message_File_Cannot_Be_Read_Accessed
 
 Deleted Strings:
 - String_Lossy_Compression_Option
@@ -225,7 +459,7 @@ Application Changes:
 - Added weaponrangemodifier bonus type. This can be used to alter the range penalty for a given weapon. The bonus follows the form of <weaponrangemodifier><name>[contains]Partial Weapon Name</name><value>1</value></weaponrangemodifier>. Note that name is optional, and it does not need to use the [contains] tag. If name is not specified, all weapons will be modified. 
 
 Data Changes:
-- Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
+- Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes custom data folder.
 - Individualized Alchemy, Disenchanting, Power, and Spellcasting focuses now properly apply their bonuses. Existing characters with these focuses will need to re-add them or reapply improvements to see any changes. Fixes #4340.
 - Whisper of Bones now properly requires Necromancy.
 - Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.

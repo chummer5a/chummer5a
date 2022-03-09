@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -36,8 +37,11 @@ namespace Chummer.Backend.Skills
             {
                 if (GlobalSettings.LiveCustomData || _dicCategoriesSkillMap == null)
                 {
-                    Dictionary<string, string> dicReturn = new Dictionary<string, string>();
-                    foreach (XPathNavigator objXmlSkill in CharacterObject.LoadDataXPath("skills.xml").SelectAndCacheExpression("/chummer/knowledgeskills/skill"))
+                    XPathNodeIterator lstXmlSkills = CharacterObject.LoadDataXPath("skills.xml")
+                                                                    .SelectAndCacheExpression(
+                                                                        "/chummer/knowledgeskills/skill");
+                    Dictionary<string, string> dicReturn = new Dictionary<string, string>(lstXmlSkills.Count);
+                    foreach (XPathNavigator objXmlSkill in lstXmlSkills)
                     {
                         string strCategory = objXmlSkill.SelectSingleNodeAndCacheExpression("category")?.Value;
                         if (!string.IsNullOrWhiteSpace(strCategory))
@@ -72,11 +76,11 @@ namespace Chummer.Backend.Skills
             DefaultAttribute = "LOG";
         }
 
-        public KnowledgeSkill(Character objCharacter, string strForcedName, bool allowUpgrade) : this(objCharacter)
+        public KnowledgeSkill(Character objCharacter, string strForcedName, bool blnAllowUpgrade) : this(objCharacter)
         {
             WritableName = strForcedName;
             ForcedName = true;
-            _blnAllowUpgrade = allowUpgrade;
+            _blnAllowUpgrade = blnAllowUpgrade;
         }
 
         private bool _blnAllowUpgrade = true;
@@ -108,7 +112,7 @@ namespace Chummer.Backend.Skills
         private void LoadSkillFromData(string strInputSkillName)
         {
             string strSkillName = GetSkillNameFromData(strInputSkillName);
-            XPathNavigator xmlSkillNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath() + "]");
+            XPathNavigator xmlSkillNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath() + ']');
 
             if (xmlSkillNode == null)
             {
@@ -142,7 +146,7 @@ namespace Chummer.Backend.Skills
                 return strInputSkillName;
             }
 
-            XPathNavigator xmlSkillTranslationNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() + "]");
+            XPathNavigator xmlSkillTranslationNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() + ']');
 
             if (xmlSkillTranslationNode == null)
             {
@@ -205,6 +209,16 @@ namespace Chummer.Backend.Skills
 
                 return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
             }
+        }
+        
+        public override string DisplaySpecialization(string strLanguage)
+        {
+            return IsNativeLanguage ? string.Empty : base.DisplaySpecialization(strLanguage);
+        }
+
+        public override async ValueTask<string> DisplaySpecializationAsync(string strLanguage)
+        {
+            return IsNativeLanguage ? string.Empty : await base.DisplaySpecializationAsync(strLanguage);
         }
 
         public string Type
@@ -477,7 +491,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override void WriteToDerived(XmlTextWriter objWriter)
+        public override void WriteToDerived(XmlWriter objWriter)
         {
             objWriter.WriteElementString("type", Type);
             objWriter.WriteElementString("isnativelanguage", IsNativeLanguage.ToString(GlobalSettings.InvariantCultureInfo));
@@ -497,10 +511,14 @@ namespace Chummer.Backend.Skills
             else if (xmlNode.TryGetField("suid", Guid.TryParse, out Guid guiTemp2))
                 SkillId = guiTemp2;
 
+            bool blnTemp = false;
+            if (xmlNode.TryGetBoolFieldQuickly("disableupgrades", ref blnTemp))
+                _blnAllowUpgrade = !blnTemp;
+
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
-                XPathNavigator objDataNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + Name.CleanXPath() + "]");
+                XPathNavigator objDataNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + Name.CleanXPath() + ']');
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }
