@@ -373,7 +373,7 @@ namespace Chummer
             }
 
             foreach (LifestyleQuality objLifestyleQuality in _objLifestyle.LifestyleQualities.Where(x =>
-                         !setLifestyleQualityIds.Contains(x.SourceIDString)))
+                         !setLifestyleQualityIds.Contains(x.SourceIDString)).ToList())
                 objLifestyleQuality.Remove(false);
 
             DialogResult = DialogResult.OK;
