@@ -153,6 +153,7 @@ namespace Chummer
             "skills.xml",
             "spells.xml",
             "spiritpowers.xml",
+            "strings.xml",
             "streams.xml",
             "traditions.xml",
             "vehicles.xml",
