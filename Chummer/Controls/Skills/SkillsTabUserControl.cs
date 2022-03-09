@@ -215,9 +215,9 @@ namespace Chummer.UI.Skills
             parts.TaskEnd("_sort databind");
 
             if (_lstSkillGroups != null)
-                _lstSkillGroups.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
-            _lstActiveSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
-            _lstKnowledgeSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
+                _lstSkillGroups.ChildPropertyChanged += ChildPropertyChanged;
+            _lstActiveSkills.ChildPropertyChanged += ChildPropertyChanged;
+            _lstKnowledgeSkills.ChildPropertyChanged += ChildPropertyChanged;
 
             if (!_objCharacter.Created)
             {
@@ -252,6 +252,11 @@ namespace Chummer.UI.Skills
             ResumeLayout(true);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+        }
+
+        private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            MakeDirtyWithCharacterUpdate?.Invoke(sender, e);
         }
 
         private void SkillsSectionOnPropertyChanged(object sender, PropertyChangedEventArgs e)

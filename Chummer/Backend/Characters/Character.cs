@@ -7501,10 +7501,23 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write to.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public async Task PrintToXmlTextWriter(XmlWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
+        public Task PrintToXmlTextWriter(XmlWriter objWriter, CultureInfo objCulture = null,
+                                               string strLanguageToPrint = "")
         {
-            if (objWriter == null)
-                throw new ArgumentNullException(nameof(objWriter));
+            return objWriter != null
+                ? PrintToXmlTextWriterCore(objWriter, objCulture, strLanguageToPrint)
+                : Task.FromException(new ArgumentNullException(nameof(objWriter)));
+        }
+
+        /// <summary>
+        /// Print this character information to a XmlTextWriter. This creates only the character object itself, not any of the opening or closing XmlDocument items.
+        /// This can be used to write multiple characters to a single XmlDocument.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write to.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print.</param>
+        private async Task PrintToXmlTextWriterCore(XmlWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
+        {
             if (objCulture == null)
                 objCulture = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguageToPrint))
