@@ -1291,6 +1291,8 @@ namespace Chummer
                             await cmsMetamagic.DoThreadSafeAsync(async () => tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddMetamagic"));
                             await cmdAddMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_AddInitiateGrade"));
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade"));
+                            await gpbInitiationType.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_InitiationType"));
+                            await gpbInitiationGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_InitiationGroup"));
                             await chkInitiationOrdeal.DoThreadSafeAsync(async x => x.Text
                                                                             = (await LanguageManager.GetStringAsync(
                                                                                 "Checkbox_InitiationOrdeal"))
@@ -1301,8 +1303,6 @@ namespace Chummer
                                                                                     .ToString(
                                                                                         "P",
                                                                                         GlobalSettings.CultureInfo)));
-                            await gpbInitiationType.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_InitiationType"));
-                            await gpbInitiationGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_InitiationGroup"));
                             await chkInitiationGroup.DoThreadSafeAsync(async x => x.Text
                                                                            = (await LanguageManager.GetStringAsync(
                                                                                "Checkbox_InitiationGroup"))
@@ -1391,18 +1391,18 @@ namespace Chummer
                             await cmsMetamagic.DoThreadSafeAsync(async () => tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddEcho"));
                             await cmdAddMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade"));
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade"));
-                            await chkInitiationOrdeal.DoThreadSafeAsync(async x => x.Text
-                                                                           = (await LanguageManager.GetStringAsync(
-                                                                               "Checkbox_SubmersionTask"))
-                                                                           .Replace(
-                                                                               "{0}",
-                                                                               CharacterObjectSettings
-                                                                                   .KarmaRESInitiationOrdealPercent
-                                                                                   .ToString(
-                                                                                       "P",
-                                                                                       GlobalSettings.CultureInfo)));
                             await gpbInitiationType.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_SubmersionType"));
                             await gpbInitiationGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_SubmersionNetwork"));
+                            await chkInitiationOrdeal.DoThreadSafeAsync(async x => x.Text
+                                                                            = (await LanguageManager.GetStringAsync(
+                                                                                "Checkbox_SubmersionTask"))
+                                                                            .Replace(
+                                                                                "{0}",
+                                                                                CharacterObjectSettings
+                                                                                    .KarmaRESInitiationOrdealPercent
+                                                                                    .ToString(
+                                                                                        "P",
+                                                                                        GlobalSettings.CultureInfo)));
                             await chkInitiationGroup.DoThreadSafeAsync(async x => x.Text
                                                                           = (await LanguageManager.GetStringAsync(
                                                                               "Checkbox_NetworkSubmersion"))

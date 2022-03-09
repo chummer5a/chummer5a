@@ -1415,25 +1415,25 @@ namespace Chummer
                     break;
 
                 case nameof(Character.DisplayNuyen):
-                    tslNuyen.Text = CharacterObject.DisplayNuyen;
+                    await StatusStrip.DoThreadSafeAsync(() => tslNuyen.Text = CharacterObject.DisplayNuyen);
                     break;
 
                 case nameof(Character.DisplayKarma):
-                    tslKarma.Text = CharacterObject.DisplayKarma;
+                    await StatusStrip.DoThreadSafeAsync(() => tslKarma.Text = CharacterObject.DisplayKarma);
                     break;
 
                 case nameof(Character.DisplayEssence):
-                    tslEssence.Text = CharacterObject.DisplayEssence;
+                    await StatusStrip.DoThreadSafeAsync(() => tslEssence.Text = CharacterObject.DisplayEssence);
                     break;
 
                 case nameof(Character.DisplayTotalCarriedWeight):
-                    tslCarriedWeight.Text = CharacterObject.DisplayTotalCarriedWeight;
+                    await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.Text = CharacterObject.DisplayTotalCarriedWeight);
                     break;
 
                 case nameof(Character.Encumbrance):
-                    tslCarriedWeight.ForeColor = CharacterObject.Encumbrance > 0
-                        ? ColorManager.ErrorColor
-                        : ColorManager.ControlText;
+                    await StatusStrip.DoThreadSafeAsync(() => tslCarriedWeight.ForeColor = CharacterObject.Encumbrance > 0
+                                                            ? ColorManager.ErrorColor
+                                                            : ColorManager.ControlText);
                     break;
 
                 case nameof(Character.NuyenBP):
@@ -1495,22 +1495,50 @@ namespace Chummer
                         {
                             if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                                 tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-                            tabInitiation.Text = await LanguageManager.GetStringAsync("Tab_Initiation");
-                            tsMetamagicAddMetamagic.Text =
-                                await LanguageManager.GetStringAsync("Button_AddMetamagic");
-                            cmdAddMetamagic.Text =
-                                await LanguageManager.GetStringAsync("Button_AddInitiateGrade");
-                            cmdDeleteMetamagic.Text =
-                                await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade");
-                            gpbInitiationType.Text =
-                                await LanguageManager.GetStringAsync("String_InitiationType");
-                            gpbInitiationGroup.Text =
-                                await LanguageManager.GetStringAsync("String_InitiationGroup");
-                            chkInitiationSchooling.Enabled = true;
-                            tsMetamagicAddArt.Visible = true;
-                            tsMetamagicAddEnchantment.Visible = true;
-                            tsMetamagicAddEnhancement.Visible = true;
-                            tsMetamagicAddRitual.Visible = true;
+                            await tabInitiation.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Tab_Initiation"));
+                            await cmsMetamagic.DoThreadSafeAsync(async () => tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddMetamagic"));
+                            await cmdAddMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_AddInitiateGrade"));
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_RemoveInitiateGrade"));
+                            await gpbInitiationType.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_InitiationType"));
+                            await gpbInitiationGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_InitiationGroup"));
+                            await chkInitiationOrdeal.DoThreadSafeAsync(async x => x.Text
+                                                                            = (await LanguageManager.GetStringAsync(
+                                                                                "Checkbox_InitiationOrdeal"))
+                                                                            .Replace(
+                                                                                "{0}",
+                                                                                CharacterObjectSettings
+                                                                                    .KarmaMAGInitiationOrdealPercent
+                                                                                    .ToString(
+                                                                                        "P",
+                                                                                        GlobalSettings.CultureInfo)));
+                            await chkInitiationGroup.DoThreadSafeAsync(async x => x.Text
+                                                                           = (await LanguageManager.GetStringAsync(
+                                                                               "Checkbox_InitiationGroup"))
+                                                                           .Replace(
+                                                                               "{0}",
+                                                                               CharacterObjectSettings
+                                                                                   .KarmaMAGInitiationGroupPercent
+                                                                                   .ToString(
+                                                                                       "P",
+                                                                                       GlobalSettings.CultureInfo)));
+                            await chkInitiationSchooling.DoThreadSafeAsync(async x => x.Text
+                                                                               = (await LanguageManager.GetStringAsync(
+                                                                                   "Checkbox_InitiationSchooling"))
+                                                                               .Replace(
+                                                                                   "{0}",
+                                                                                   CharacterObjectSettings
+                                                                                       .KarmaMAGInitiationSchoolingPercent
+                                                                                       .ToString(
+                                                                                           "P",
+                                                                                           GlobalSettings.CultureInfo)));
+                            await chkInitiationSchooling.DoThreadSafeAsync(x => x.Enabled = true);
+                            await cmsMetamagic.DoThreadSafeAsync(() =>
+                            {
+                                tsMetamagicAddArt.Visible = true;
+                                tsMetamagicAddEnchantment.Visible = true;
+                                tsMetamagicAddEnhancement.Visible = true;
+                                tsMetamagicAddRitual.Visible = true;
+                            });
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
                                                               await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade"),
                                                               (CharacterObject.InitiateGrade + 1).ToString(
@@ -1520,14 +1548,7 @@ namespace Chummer
                                                                * CharacterObjectSettings.KarmaInitiation)
                                                               .ToString(GlobalSettings.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup");
-
-                            chkInitiationOrdeal.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationOrdeal"))
-                                .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationGroup.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationGroup"))
-                                .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationGroupPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationSchooling.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationSchooling"))
-                                .Replace("{0}", CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalSettings.CultureInfo));
+                            await chkJoinGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedGroup"));
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.MAG))
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
@@ -1554,8 +1575,8 @@ namespace Chummer
                             }
                         }
 
-                        gpbGearBondedFoci.Visible = CharacterObject.MAGEnabled;
-                        lblAstralINI.Visible = CharacterObject.MAGEnabled;
+                        await gpbGearBondedFoci.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled);
+                        await lblAstralINI.DoThreadSafeAsync(x => x.Visible = CharacterObject.MAGEnabled);
                     }
                     break;
 
@@ -1565,22 +1586,50 @@ namespace Chummer
                         {
                             if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                                 tabCharacterTabs.TabPages.Insert(3, tabInitiation);
-                            tabInitiation.Text = await LanguageManager.GetStringAsync("Tab_Submersion");
-                            tsMetamagicAddMetamagic.Text =
-                                await LanguageManager.GetStringAsync("Button_AddEcho");
-                            cmdAddMetamagic.Text =
-                                await LanguageManager.GetStringAsync("Button_AddSubmersionGrade");
-                            cmdDeleteMetamagic.Text =
-                                await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade");
-                            gpbInitiationType.Text =
-                                await LanguageManager.GetStringAsync("String_SubmersionType");
-                            gpbInitiationGroup.Text =
-                                await LanguageManager.GetStringAsync("String_SubmersionNetwork");
-                            chkInitiationSchooling.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling;
-                            tsMetamagicAddArt.Visible = false;
-                            tsMetamagicAddEnchantment.Visible = false;
-                            tsMetamagicAddEnhancement.Visible = false;
-                            tsMetamagicAddRitual.Visible = false;
+                            await tabInitiation.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Tab_Submersion"));
+                            await cmsMetamagic.DoThreadSafeAsync(async () => tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddEcho"));
+                            await cmdAddMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_AddSubmersionGrade"));
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Button_RemoveSubmersionGrade"));
+                            await gpbInitiationType.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_SubmersionType"));
+                            await gpbInitiationGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_SubmersionNetwork"));
+                            await chkInitiationOrdeal.DoThreadSafeAsync(async x => x.Text
+                                                                            = (await LanguageManager.GetStringAsync(
+                                                                                "Checkbox_SubmersionTask"))
+                                                                            .Replace(
+                                                                                "{0}",
+                                                                                CharacterObjectSettings
+                                                                                    .KarmaRESInitiationOrdealPercent
+                                                                                    .ToString(
+                                                                                        "P",
+                                                                                        GlobalSettings.CultureInfo)));
+                            await chkInitiationGroup.DoThreadSafeAsync(async x => x.Text
+                                                                          = (await LanguageManager.GetStringAsync(
+                                                                              "Checkbox_NetworkSubmersion"))
+                                                                          .Replace(
+                                                                              "{0}",
+                                                                              CharacterObjectSettings
+                                                                                  .KarmaRESInitiationGroupPercent
+                                                                                  .ToString(
+                                                                                      "P",
+                                                                                      GlobalSettings.CultureInfo)));
+                            await chkInitiationSchooling.DoThreadSafeAsync(async x => x.Text
+                                                                              = (await LanguageManager.GetStringAsync(
+                                                                                  "Checkbox_InitiationSchooling"))
+                                                                              .Replace(
+                                                                                  "{0}",
+                                                                                  CharacterObjectSettings
+                                                                                      .KarmaRESInitiationSchoolingPercent
+                                                                                      .ToString(
+                                                                                          "P",
+                                                                                          GlobalSettings.CultureInfo)));
+                            await chkInitiationSchooling.DoThreadSafeAsync(x => x.Enabled = CharacterObjectSettings.AllowTechnomancerSchooling);
+                            await cmsMetamagic.DoThreadSafeAsync(() =>
+                            {
+                                tsMetamagicAddArt.Visible = false;
+                                tsMetamagicAddEnchantment.Visible = false;
+                                tsMetamagicAddEnhancement.Visible = false;
+                                tsMetamagicAddRitual.Visible = false;
+                            });
                             string strInitTip = string.Format(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade"),
                                 (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo),
@@ -1588,13 +1637,7 @@ namespace Chummer
                                  (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation)
                                 .ToString(GlobalSettings.CultureInfo));
                             cmdAddMetamagic.SetToolTip(strInitTip);
-                            chkJoinGroup.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork");
-                            chkInitiationOrdeal.Text = (await LanguageManager.GetStringAsync("Checkbox_SubmersionTask"))
-                                .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationOrdealPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationGroup.Text = (await LanguageManager.GetStringAsync("Checkbox_NetworkSubmersion"))
-                                .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationGroupPercent.ToString("P", GlobalSettings.CultureInfo));
-                            chkInitiationSchooling.Text = (await LanguageManager.GetStringAsync("Checkbox_InitiationSchooling"))
-                                .Replace("{0}", CharacterObjectSettings.KarmaRESInitiationSchoolingPercent.ToString("P", GlobalSettings.CultureInfo));
+                            await chkJoinGroup.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_JoinedNetwork"));
                             if (!await CharacterObject.AttributeSection.Attributes.ContainsAsync(CharacterObject.RES))
                             {
                                 CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
@@ -1635,27 +1678,29 @@ namespace Chummer
                         {
                             if (CharacterObject.Ambidextrous)
                             {
-                                lstPrimaryArm.Add(new ListItem("Ambidextrous",
-                                                               await LanguageManager.GetStringAsync("String_Ambidextrous")));
-                                cboPrimaryArm.Enabled = false;
+                                lstPrimaryArm.Add(new ListItem("Ambidextrous", await LanguageManager.GetStringAsync("String_Ambidextrous")));
+                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = false);
                             }
                             else
                             {
                                 //Create the dropdown for the character's primary arm.
-                                lstPrimaryArm.Add(new ListItem("Left",
-                                                               await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
-                                lstPrimaryArm.Add(new ListItem("Right",
-                                                               await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
+                                lstPrimaryArm.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
+                                lstPrimaryArm.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
                                 lstPrimaryArm.Sort(CompareListItems.CompareNames);
-                                cboPrimaryArm.Enabled = true;
+                                await cboPrimaryArm.DoThreadSafeAsync(x => x.Enabled = true);
                             }
 
                             string strPrimaryArm = CharacterObject.PrimaryArm;
-                            cboPrimaryArm.PopulateWithListItems(lstPrimaryArm);
-                            cboPrimaryArm.SelectedValue = strPrimaryArm;
-                            if (cboPrimaryArm.SelectedIndex == -1)
-                                cboPrimaryArm.SelectedIndex = 0;
-                            cboPrimaryArm.EndUpdate();
+
+                            await cboPrimaryArm.DoThreadSafeAsync(x =>
+                            {
+                                ElasticComboBox cboThis = (ElasticComboBox)x;
+                                cboThis.PopulateWithListItems(lstPrimaryArm);
+                                cboThis.SelectedValue = strPrimaryArm;
+                                if (cboThis.SelectedIndex == -1)
+                                    cboThis.SelectedIndex = 0;
+                                cboThis.EndUpdate();
+                            });
                         }
                     }
                     break;
@@ -1667,7 +1712,7 @@ namespace Chummer
                         {
                             if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                                 tabCharacterTabs.TabPages.Insert(3, tabMagician);
-                            cmdAddSpell.Enabled = true;
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
                                 CharacterAttrib objMAGAdept =
@@ -1681,7 +1726,7 @@ namespace Chummer
                         else
                         {
                             tabCharacterTabs.TabPages.Remove(tabMagician);
-                            cmdAddSpell.Enabled = false;
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
                             {
                                 CharacterAttrib objMAGAdept =
@@ -1693,8 +1738,8 @@ namespace Chummer
                             }
                         }
 
-                        cmdAddSpirit.Visible = CharacterObject.MagicianEnabled;
-                        panSpirits.Visible = CharacterObject.MagicianEnabled;
+                        await cmdAddSpirit.DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled);
+                        await panSpirits.DoThreadSafeAsync(x => x.Visible = CharacterObject.MagicianEnabled);
                     }
                     break;
 
@@ -1705,7 +1750,7 @@ namespace Chummer
                         {
                             if (!tabCharacterTabs.TabPages.Contains(tabMagician))
                                 tabCharacterTabs.TabPages.Insert(3, tabMagician);
-                            cmdAddSpell.Enabled = true;
+                            await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true);
                             if (CharacterObjectSettings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
                             {
                                 CharacterAttrib objMAGAdept =
@@ -1724,7 +1769,7 @@ namespace Chummer
                             if (!CharacterObject.MagicianEnabled)
                             {
                                 tabCharacterTabs.TabPages.Remove(tabMagician);
-                                cmdAddSpell.Enabled = false;
+                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = false);
                                 if (CharacterObjectSettings.MysAdeptSecondMAGAttribute)
                                 {
                                     CharacterAttrib objMAGAdept =
@@ -1736,7 +1781,7 @@ namespace Chummer
                                 }
                             }
                             else
-                                cmdAddSpell.Enabled = true;
+                                await cmdAddSpell.DoThreadSafeAsync(x => x.Enabled = true);
 
                             tabCharacterTabs.TabPages.Remove(tabAdept);
                         }
@@ -1952,12 +1997,14 @@ namespace Chummer
                         {
                             tabCharacterTabs.TabPages.Remove(tabInitiation);
                         }
+                        await gpbInitiationType.DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled);
+                        await gpbInitiationGroup.DoThreadSafeAsync(x => x.Visible = CharacterObject.InitiationEnabled);
                     }
                     break;
 
                 case nameof(Character.QuickeningEnabled):
                     {
-                        cmdQuickenSpell.Visible = CharacterObject.QuickeningEnabled;
+                        await cmdQuickenSpell.DoThreadSafeAsync(x => x.Visible = CharacterObject.QuickeningEnabled);
                         break;
                     }
                 case nameof(Character.FirstMentorSpiritDisplayName):
@@ -1973,31 +2020,31 @@ namespace Chummer
                     }
                 case nameof(Character.HasMentorSpirit):
                     {
-                        gpbMagicianMentorSpirit.Visible = CharacterObject.HasMentorSpirit;
-                        gpbTechnomancerParagon.Visible = CharacterObject.HasMentorSpirit;
+                        await gpbMagicianMentorSpirit.DoThreadSafeAsync(x => x.Visible = CharacterObject.HasMentorSpirit);
+                        await gpbTechnomancerParagon.DoThreadSafeAsync(x => x.Visible = CharacterObject.HasMentorSpirit);
                         break;
                     }
                 case nameof(Character.UseMysticAdeptPPs):
                     {
-                        lblMysticAdeptAssignment.Visible = CharacterObject.UseMysticAdeptPPs;
-                        lblMysticAdeptMAGAdept.Visible = CharacterObject.UseMysticAdeptPPs;
+                        await lblMysticAdeptAssignment.DoThreadSafeAsync(x => x.Visible = CharacterObject.UseMysticAdeptPPs);
+                        await lblMysticAdeptMAGAdept.DoThreadSafeAsync(x => x.Visible = CharacterObject.UseMysticAdeptPPs);
                         break;
                     }
                 case nameof(Character.MysAdeptAllowPPCareer):
                     {
-                        cmdIncreasePowerPoints.Visible = CharacterObject.MysAdeptAllowPPCareer;
+                        await cmdIncreasePowerPoints.DoThreadSafeAsync(x => x.Visible = CharacterObject.MysAdeptAllowPPCareer);
                         break;
                     }
                 case nameof(Character.MetatypeCategory):
                     {
                         IsCharacterUpdateRequested = true;
-                        mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie";
+                        await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialCyberzombie.Visible = CharacterObject.MetatypeCategory != "Cyberzombie");
                         break;
                     }
                 case nameof(Character.IsSprite):
                     {
                         IsCharacterUpdateRequested = true;
-                        mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
+                        await mnuCreateMenu.DoThreadSafeAsync(() => mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite);
                         break;
                     }
                 case nameof(Character.Settings):
