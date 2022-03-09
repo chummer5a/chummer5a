@@ -509,8 +509,7 @@ namespace Chummer
         {
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
+                using (CursorWait.New(this))
                 {
                     cmdUpdate.Enabled = false;
                     cmdRestart.Enabled = false;
@@ -569,10 +568,6 @@ namespace Chummer
 
                     await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
-                }
             }
         }
 
@@ -583,8 +578,7 @@ namespace Chummer
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
+                using (CursorWait.New(this))
                 {
                     cmdUpdate.Enabled = false;
                     cmdRestart.Enabled = false;
@@ -616,10 +610,6 @@ namespace Chummer
                     }
 
                     await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
         }

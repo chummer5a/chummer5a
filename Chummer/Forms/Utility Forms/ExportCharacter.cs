@@ -101,8 +101,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (_strXslt == "Export JSON")
                 {
@@ -112,10 +111,6 @@ namespace Chummer
                 {
                     await ExportNormal();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -166,8 +161,7 @@ namespace Chummer
                     _strXslt = cboXSLT.Text;
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                        try
+                        using (CursorWait.New(this))
                         {
                             await txtText.DoThreadSafeAsync(
                                 async x => x.Text = await LanguageManager.GetStringAsync("String_Generating_Data"));
@@ -201,10 +195,6 @@ namespace Chummer
                                     ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
                                     : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);
                             }
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync();
                         }
                     }
                 }
@@ -254,8 +244,7 @@ namespace Chummer
 
         private async Task GenerateCharacterXml()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false),
                                    txtText.DoThreadSafeAsync(
@@ -268,10 +257,6 @@ namespace Chummer
                     return;
                 if (_objCharacterXml != null)
                     await DoXsltUpdate();
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -323,8 +308,7 @@ namespace Chummer
 
         private async Task GenerateXml()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
@@ -400,16 +384,11 @@ namespace Chummer
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async Task GenerateJson()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
@@ -423,10 +402,6 @@ namespace Chummer
                 {
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

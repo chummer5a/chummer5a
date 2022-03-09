@@ -216,8 +216,7 @@ namespace Chummer
 
         private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
                 string strPdfPrinter = string.Empty;
@@ -328,10 +327,6 @@ namespace Chummer
                 {
                     Program.ShowMessageBox(this, ex.ToString());
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -487,8 +482,7 @@ namespace Chummer
         /// </summary>
         private async Task RefreshCharacterXml()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true);
-            try
+            using (CursorWait.New(this, true))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                                    {
@@ -508,10 +502,6 @@ namespace Chummer
                     return;
                 await RefreshSheet();
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         /// <summary>
@@ -519,8 +509,7 @@ namespace Chummer
         /// </summary>
         private async Task AsyncGenerateOutput()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                                    {
@@ -630,10 +619,6 @@ namespace Chummer
                         }
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

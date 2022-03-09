@@ -112,16 +112,9 @@ namespace Chummer
 
         private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
-            {
-                using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabCustomDataDirectories"))
-                    await frmOptions.ShowDialogSafeAsync(this);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
+            using (CursorWait.New(this))
+            using (EditGlobalSettings frmOptions = new EditGlobalSettings("tabCustomDataDirectories"))
+                await frmOptions.ShowDialogSafeAsync(this);
         }
 
         private async void cmdRename_Click(object sender, EventArgs e)
@@ -138,8 +131,7 @@ namespace Chummer
                 _objCharacterSettings.Name = frmSelectName.SelectedValue;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -178,10 +170,6 @@ namespace Chummer
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
@@ -194,8 +182,7 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 (bool blnSuccess, CharacterSettings objDeletedSettings)
                     = await SettingsManager.LoadedCharacterSettingsAsModifiable.TryRemoveAsync(
@@ -243,10 +230,6 @@ namespace Chummer
                         ResumeLayout();
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -323,8 +306,7 @@ namespace Chummer
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 _objCharacterSettings.Name = strSelectedName;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -369,16 +351,11 @@ namespace Chummer
                     }
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cmdSave_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (_objReferenceCharacterSettings.BuildMethod != _objCharacterSettings.BuildMethod)
                 {
@@ -430,10 +407,6 @@ namespace Chummer
                     }
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -464,8 +437,7 @@ namespace Chummer
                 IsDirty = false;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 _blnLoading = true;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -508,10 +480,6 @@ namespace Chummer
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cmdRestoreDefaults_Click(object sender, EventArgs e)
@@ -523,8 +491,7 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 _blnLoading = true;
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
@@ -565,10 +532,6 @@ namespace Chummer
                 }
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1079,8 +1042,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask PopulateOptions()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnDoResumeLayout = !_blnIsLayoutSuspended;
                 if (blnDoResumeLayout)
@@ -1106,16 +1068,11 @@ namespace Chummer
                     }
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async ValueTask PopulatePriorityTableList()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstPriorityTables))
@@ -1156,16 +1113,11 @@ namespace Chummer
                     _objCharacterSettings.PriorityTable != strSelectedTable)
                     _objCharacterSettings.PriorityTable = strSelectedTable;
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async ValueTask PopulateLimbCountList()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstLimbCount))
@@ -1207,16 +1159,11 @@ namespace Chummer
 
                 _blnSkipLimbCountUpdate = false;
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async ValueTask PopulateAllowedGrades()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstGrades))
@@ -1294,10 +1241,6 @@ namespace Chummer
 
                     flpAllowedCyberwareGrades.ResumeLayout();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1541,8 +1484,7 @@ namespace Chummer
 
         private async void SettingsChanged(object sender, PropertyChangedEventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (!_blnLoading)
                 {
@@ -1575,10 +1517,6 @@ namespace Chummer
                             break;
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

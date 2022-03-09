@@ -108,8 +108,7 @@ namespace Chummer
 
         private async void SelectMetatypePriority_Load(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -353,10 +352,6 @@ namespace Chummer
                     ResumeLayout();
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         #endregion Form Events
@@ -367,8 +362,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -387,29 +381,19 @@ namespace Chummer
                     ResumeLayout();
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 await MetatypeSelected();
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
         private async void cboTalents_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -420,10 +404,6 @@ namespace Chummer
                 {
                     ResumeLayout();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -659,8 +639,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -676,10 +655,6 @@ namespace Chummer
                 {
                     ResumeLayout();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -715,8 +690,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -742,18 +716,13 @@ namespace Chummer
                     ResumeLayout();
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cboTalent_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -775,10 +744,6 @@ namespace Chummer
                 {
                     ResumeLayout();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

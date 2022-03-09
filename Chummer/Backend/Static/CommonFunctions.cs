@@ -1414,15 +1414,10 @@ namespace Chummer
 
                 objLoopControl = objLoopControl.Parent;
             }
-
-            CursorWait objCursorWait = await CursorWait.NewAsync(objControl.FindForm() ?? objControl);
-            try
+            
+            using (CursorWait.New(objControl.FindForm() ?? objControl))
             {
                 await OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1448,8 +1443,7 @@ namespace Chummer
                 if (!blnOpenOptions || Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
                     await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
-                try
+                using (CursorWait.New(Program.MainForm))
                 {
                     using (EditGlobalSettings frmOptions = new EditGlobalSettings())
                     {
@@ -1461,10 +1455,6 @@ namespace Chummer
                         strPdfParameters = GlobalSettings.PdfParameters;
                         strPdfAppPath = GlobalSettings.PdfAppPath;
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
 
@@ -1528,8 +1518,7 @@ namespace Chummer
                 if (Program.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
                         await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm);
-                try
+                using (CursorWait.New(Program.MainForm))
                 {
                     using (EditGlobalSettings frmOptions = new EditGlobalSettings())
                     {
@@ -1548,10 +1537,6 @@ namespace Chummer
                             objBookInfo.Path = string.Empty;
                         }
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
 

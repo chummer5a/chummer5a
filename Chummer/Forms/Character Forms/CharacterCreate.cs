@@ -182,8 +182,7 @@ namespace Chummer
 
         private async void CharacterCreate_Load(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (CustomActivity op_load_frm_create = await Timekeeper.StartSyncronAsync(
                            "load_frm_create", null, CustomActivity.OperationType.RequestOperation,
@@ -1043,16 +1042,11 @@ namespace Chummer
                     }
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void CharacterCreate_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnOldIsLoading = IsLoading;
                 IsLoading = true;
@@ -1192,10 +1186,6 @@ namespace Chummer
                     if (IsLoading)
                         IsLoading = blnOldIsLoading;
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1807,8 +1797,7 @@ namespace Chummer
                     {
                         if (IsLoading)
                             break;
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                        try
+                        using (CursorWait.New(this))
                         {
                             SuspendLayout();
                             cmdAddLifestyle.SplitMenuStrip =
@@ -2064,10 +2053,6 @@ namespace Chummer
                             RefreshSelectedVehicle();
                             ResumeLayout();
                         }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync();
-                        }
 
                         break;
                     }
@@ -2075,17 +2060,12 @@ namespace Chummer
                     {
                         if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
-                            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                            try
+                            using (CursorWait.New(this))
                             {
                                 SuspendLayout();
                                 RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
                                 treLifestyles.SortCustomOrder();
                                 ResumeLayout();
-                            }
-                            finally
-                            {
-                                await objCursorWait.DisposeAsync();
                             }
                         }
 
@@ -2093,8 +2073,7 @@ namespace Chummer
                     }
                 case nameof(CharacterSettings.EnableEnemyTracking):
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                    try
+                    using (CursorWait.New(this))
                     {
                         SuspendLayout();
                         if (!CharacterObjectSettings.EnableEnemyTracking)
@@ -2113,10 +2092,6 @@ namespace Chummer
                         }
 
                         ResumeLayout();
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync();
                     }
 
                     break;
@@ -2199,17 +2174,10 @@ namespace Chummer
 
         private async void mnuSpecialChangeOptions_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
+            using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
             {
-                using (SelectBuildMethod frmPickBP = new SelectBuildMethod(CharacterObject, true))
-                {
-                    await frmPickBP.ShowDialogSafeAsync(this);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
+                await frmPickBP.ShowDialogSafeAsync(this);
             }
         }
 
@@ -2250,8 +2218,7 @@ namespace Chummer
 
         private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 IAsyncDisposable objLocker
                     = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
@@ -2953,10 +2920,6 @@ namespace Chummer
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
 
             IsDirty = true;
         }
@@ -3317,8 +3280,7 @@ namespace Chummer
             // Open the Spells XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("spells.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -3356,10 +3318,6 @@ namespace Chummer
                         CharacterObject.Spells.Add(objSpell);
                     }
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -3425,8 +3383,7 @@ namespace Chummer
         {
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("complexforms.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -3471,18 +3428,13 @@ namespace Chummer
                     CharacterObject.ComplexForms.Add(objComplexForm);
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cmdAddAIProgram_Click(object sender, EventArgs e)
         {
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("programs.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -3535,10 +3487,6 @@ namespace Chummer
                     CharacterObject.AIPrograms.Add(objProgram);
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private void cmdDeleteArmor_Click(object sender, EventArgs e)
@@ -3575,8 +3523,7 @@ namespace Chummer
 
         private async ValueTask<bool> AddWeapon(Location objLocation = null)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject))
                 {
@@ -3614,10 +3561,6 @@ namespace Chummer
                     return frmPickWeapon.AddAgain;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private void cmdDeleteWeapon_Click(object sender, EventArgs e)
@@ -3629,8 +3572,7 @@ namespace Chummer
 
         private async void cmdAddLifestyle_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -3653,10 +3595,6 @@ namespace Chummer
 
                     CharacterObject.Lifestyles.Add(objLifestyle);
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -3692,48 +3630,41 @@ namespace Chummer
 
         private async ValueTask<bool> AddVehicle(Location objLocation = null)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
+            using (SelectVehicle frmPickVehicle = new SelectVehicle(CharacterObject))
             {
-                using (SelectVehicle frmPickVehicle = new SelectVehicle(CharacterObject))
-                {
-                    await frmPickVehicle.ShowDialogSafeAsync(this);
+                await frmPickVehicle.ShowDialogSafeAsync(this);
 
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickVehicle.DialogResult == DialogResult.Cancel)
-                        return false;
+                // Make sure the dialogue window was not canceled.
+                if (frmPickVehicle.DialogResult == DialogResult.Cancel)
+                    return false;
 
-                    // Open the Vehicles XML file and locate the selected piece.
-                    XmlNode objXmlVehicle = (await CharacterObject.LoadDataAsync("vehicles.xml")).SelectSingleNode(
-                        "/chummer/vehicles/vehicle[id = " + frmPickVehicle.SelectedVehicle.CleanXPath() + ']');
-                    if (objXmlVehicle == null)
-                        return frmPickVehicle.AddAgain;
-                    Vehicle objVehicle = new Vehicle(CharacterObject);
-                    objVehicle.Create(objXmlVehicle);
-                    // Update the Used Vehicle information if applicable.
-                    if (frmPickVehicle.UsedVehicle)
-                    {
-                        objVehicle.Avail = frmPickVehicle.UsedAvail;
-                        objVehicle.Cost = frmPickVehicle.UsedCost.ToString(GlobalSettings.InvariantCultureInfo);
-                    }
-
-                    objVehicle.DiscountCost = frmPickVehicle.BlackMarketDiscount;
-                    if (frmPickVehicle.FreeCost)
-                    {
-                        objVehicle.Cost = "0";
-                    }
-
-                    //objVehicle.Location = objLocation;
-                    objLocation?.Children.Add(objVehicle);
-
-                    CharacterObject.Vehicles.Add(objVehicle);
-
+                // Open the Vehicles XML file and locate the selected piece.
+                XmlNode objXmlVehicle = (await CharacterObject.LoadDataAsync("vehicles.xml")).SelectSingleNode(
+                    "/chummer/vehicles/vehicle[id = " + frmPickVehicle.SelectedVehicle.CleanXPath() + ']');
+                if (objXmlVehicle == null)
                     return frmPickVehicle.AddAgain;
+                Vehicle objVehicle = new Vehicle(CharacterObject);
+                objVehicle.Create(objXmlVehicle);
+                // Update the Used Vehicle information if applicable.
+                if (frmPickVehicle.UsedVehicle)
+                {
+                    objVehicle.Avail = frmPickVehicle.UsedAvail;
+                    objVehicle.Cost = frmPickVehicle.UsedCost.ToString(GlobalSettings.InvariantCultureInfo);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
+
+                objVehicle.DiscountCost = frmPickVehicle.BlackMarketDiscount;
+                if (frmPickVehicle.FreeCost)
+                {
+                    objVehicle.Cost = "0";
+                }
+
+                //objVehicle.Location = objLocation;
+                objLocation?.Children.Add(objVehicle);
+
+                CharacterObject.Vehicles.Add(objVehicle);
+
+                return frmPickVehicle.AddAgain;
             }
         }
 
@@ -3907,8 +3838,7 @@ namespace Chummer
 
         private async void cmdAddMetamagic_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (CharacterObject.MAGEnabled)
                 {
@@ -3956,10 +3886,6 @@ namespace Chummer
                     CharacterObject.InitiationGrades.AddWithSort(objGrade);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private void cmdDeleteMetamagic_Click(object sender, EventArgs e)
@@ -3974,8 +3900,7 @@ namespace Chummer
             // Make sure the Critter is allowed to have Optional Powers.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("critterpowers.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -4000,10 +3925,6 @@ namespace Chummer
                         CharacterObject.CritterPowers.Add(objPower);
                     }
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -4034,8 +3955,7 @@ namespace Chummer
         {
             XmlNode xmlStagesParentNode = (await CharacterObject.LoadDataAsync("lifemodules.xml")).SelectSingleNode("chummer/stages");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -4095,18 +4015,13 @@ namespace Chummer
                     //To do group skills (not that anything else is sane)
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cmdAddQuality_Click(object sender, EventArgs e)
         {
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("qualities.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -4243,10 +4158,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         /*
@@ -4303,8 +4214,7 @@ namespace Chummer
                     return false;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
                 {
@@ -4412,10 +4322,6 @@ namespace Chummer
 
                 // Perform removal
                 objSelectedQuality.DeleteQuality(blnCompleteDelete);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
 
             return true;
@@ -4582,18 +4488,13 @@ namespace Chummer
 
         private async void cmdAddArmor_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
                 {
                     blnAddAgain = await AddArmor(treArmor.SelectedNode?.Tag as Location);
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -4774,8 +4675,7 @@ namespace Chummer
 
             XmlDocument xmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -4864,10 +4764,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsAddArmorMod_Click(object sender, EventArgs e)
@@ -4901,8 +4797,7 @@ namespace Chummer
                 }
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -4955,10 +4850,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsGearAddAsPlugin_Click(object sender, EventArgs e)
@@ -4982,21 +4873,14 @@ namespace Chummer
         {
             if (!(treVehicles.SelectedNode?.Tag is Vehicle objVehicle))
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
+            using (CreateWeaponMount frmPickVehicleMod = new CreateWeaponMount(objVehicle, CharacterObject))
             {
-                using (CreateWeaponMount frmPickVehicleMod = new CreateWeaponMount(objVehicle, CharacterObject))
-                {
-                    await frmPickVehicleMod.ShowDialogSafeAsync(this);
+                await frmPickVehicleMod.ShowDialogSafeAsync(this);
 
-                    if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
-                        return;
-                    objVehicle.WeaponMounts.Add(frmPickVehicleMod.WeaponMount);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
+                if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
+                    return;
+                objVehicle.WeaponMounts.Add(frmPickVehicleMod.WeaponMount);
             }
         }
 
@@ -5016,8 +4900,7 @@ namespace Chummer
             // Open the Vehicles XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("vehicles.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -5132,10 +5015,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsVehicleAddWeaponWeapon_Click(object sender, EventArgs e)
@@ -5176,8 +5055,7 @@ namespace Chummer
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -5230,10 +5108,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
@@ -5260,8 +5134,7 @@ namespace Chummer
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -5308,10 +5181,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsVehicleAddUnderbarrelWeapon_Click(object sender, EventArgs e)
@@ -5326,57 +5195,50 @@ namespace Chummer
                 return;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
+            using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
+                   {
+                       LimitToCategories = "Underbarrel Weapons",
+                       ParentWeapon = objSelectedWeapon
+                   })
             {
-                using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
-                       {
-                           LimitToCategories = "Underbarrel Weapons",
-                           ParentWeapon = objSelectedWeapon
-                       })
+                frmPickWeapon.Mounts.UnionWith(
+                    objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
+                await frmPickWeapon.ShowDialogSafeAsync(this);
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+                    return;
+
+                // Open the Weapons XML file and locate the selected piece.
+                XmlNode objXmlWeapon
+                    = (await CharacterObject.LoadDataAsync("weapons.xml")).SelectSingleNode(
+                        "/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
+
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                Weapon objWeapon = new Weapon(CharacterObject)
                 {
-                    frmPickWeapon.Mounts.UnionWith(
-                        objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                    await frmPickWeapon.ShowDialogSafeAsync(this);
+                    ParentVehicle = objSelectedWeapon.ParentVehicle
+                };
+                objWeapon.Create(objXmlWeapon, lstWeapons);
+                objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
 
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickWeapon.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    // Open the Weapons XML file and locate the selected piece.
-                    XmlNode objXmlWeapon
-                        = (await CharacterObject.LoadDataAsync("weapons.xml")).SelectSingleNode(
-                            "/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
-
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    Weapon objWeapon = new Weapon(CharacterObject)
-                    {
-                        ParentVehicle = objSelectedWeapon.ParentVehicle
-                    };
-                    objWeapon.Create(objXmlWeapon, lstWeapons);
-                    objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
-
-                    if (frmPickWeapon.FreeCost)
-                    {
-                        objWeapon.Cost = "0";
-                    }
-
-                    objWeapon.Parent = objSelectedWeapon;
-                    objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
-                    if (!objSelectedWeapon.AllowAccessory)
-                        objWeapon.AllowAccessory = false;
-
-                    foreach (Weapon objLoopWeapon in lstWeapons)
-                    {
-                        objSelectedWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
-                        if (!objSelectedWeapon.AllowAccessory)
-                            objLoopWeapon.AllowAccessory = false;
-                    }
+                if (frmPickWeapon.FreeCost)
+                {
+                    objWeapon.Cost = "0";
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
+
+                objWeapon.Parent = objSelectedWeapon;
+                objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
+                if (!objSelectedWeapon.AllowAccessory)
+                    objWeapon.AllowAccessory = false;
+
+                foreach (Weapon objLoopWeapon in lstWeapons)
+                {
+                    objSelectedWeapon.UnderbarrelWeapons.Add(objLoopWeapon);
+                    if (!objSelectedWeapon.AllowAccessory)
+                        objLoopWeapon.AllowAccessory = false;
+                }
             }
         }
 
@@ -5400,8 +5262,7 @@ namespace Chummer
 
             XmlDocument xmlDocument = await CharacterObject.LoadDataAsync("martialarts.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -5431,10 +5292,6 @@ namespace Chummer
 
                     objMartialArt.Techniques.Add(objTechnique);
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -5493,8 +5350,7 @@ namespace Chummer
             }
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -5557,10 +5413,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsVehicleGearNotes_Click(object sender, EventArgs e)
@@ -5591,8 +5443,7 @@ namespace Chummer
 
         private async void tsAdvancedLifestyle_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -5621,10 +5472,6 @@ namespace Chummer
 
                     CharacterObject.Lifestyles.Add(objLifestyle);
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -5718,48 +5565,41 @@ namespace Chummer
                 return;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
+            using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
+                   {
+                       LimitToCategories = "Underbarrel Weapons",
+                       ParentWeapon = objSelectedWeapon
+                   })
             {
-                using (SelectWeapon frmPickWeapon = new SelectWeapon(CharacterObject)
-                       {
-                           LimitToCategories = "Underbarrel Weapons",
-                           ParentWeapon = objSelectedWeapon
-                       })
+                frmPickWeapon.Mounts.UnionWith(
+                    objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
+                await frmPickWeapon.ShowDialogSafeAsync(this);
+
+                // Make sure the dialogue window was not canceled.
+                if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+                    return;
+
+                // Open the Weapons XML file and locate the selected piece.
+                XmlNode objXmlWeapon
+                    = (await CharacterObject.LoadDataAsync("weapons.xml")).SelectSingleNode(
+                        "/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
+
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                Weapon objWeapon = new Weapon(CharacterObject);
+                objWeapon.Create(objXmlWeapon, lstWeapons);
+                objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
+                objWeapon.Parent = objSelectedWeapon;
+                objWeapon.AllowAccessory = objSelectedWeapon.AllowAccessory;
+                if (!objSelectedWeapon.AllowAccessory)
+                    objWeapon.AllowAccessory = false;
+
+                if (frmPickWeapon.FreeCost)
                 {
-                    frmPickWeapon.Mounts.UnionWith(
-                        objSelectedWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
-                    await frmPickWeapon.ShowDialogSafeAsync(this);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickWeapon.DialogResult == DialogResult.Cancel)
-                        return;
-
-                    // Open the Weapons XML file and locate the selected piece.
-                    XmlNode objXmlWeapon
-                        = (await CharacterObject.LoadDataAsync("weapons.xml")).SelectSingleNode(
-                            "/chummer/weapons/weapon[id = " + frmPickWeapon.SelectedWeapon.CleanXPath() + ']');
-
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    Weapon objWeapon = new Weapon(CharacterObject);
-                    objWeapon.Create(objXmlWeapon, lstWeapons);
-                    objWeapon.DiscountCost = frmPickWeapon.BlackMarketDiscount;
-                    objWeapon.Parent = objSelectedWeapon;
-                    objWeapon.AllowAccessory = objSelectedWeapon.AllowAccessory;
-                    if (!objSelectedWeapon.AllowAccessory)
-                        objWeapon.AllowAccessory = false;
-
-                    if (frmPickWeapon.FreeCost)
-                    {
-                        objWeapon.Cost = "0";
-                    }
-
-                    objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
+                    objWeapon.Cost = "0";
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
+
+                objSelectedWeapon.UnderbarrelWeapons.Add(objWeapon);
             }
         }
 
@@ -6030,8 +5870,7 @@ namespace Chummer
             // Open the Cyberware XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("cyberware.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -6199,10 +6038,6 @@ namespace Chummer
                             objCyberware.DeleteCyberware();
                     }
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6390,8 +6225,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -6478,10 +6312,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
@@ -6503,8 +6333,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -6567,10 +6396,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -6607,8 +6432,7 @@ namespace Chummer
                 }
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -6662,10 +6486,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsVehicleCyberwareGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -6701,8 +6521,7 @@ namespace Chummer
                 }
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -6754,10 +6573,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsWeaponAccessoryAddGear_Click(object sender, EventArgs e)
@@ -6783,8 +6598,7 @@ namespace Chummer
                 strCategories = sbdCategories.ToString();
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -6836,10 +6650,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsWeaponAccessoryGearMenuAddAsPlugin_Click(object sender, EventArgs e)
@@ -6870,8 +6680,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected piece.
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -6924,10 +6733,6 @@ namespace Chummer
                         }
                     }
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6992,8 +6797,7 @@ namespace Chummer
                 }
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -7052,10 +6856,6 @@ namespace Chummer
                     }
                 } while (blnAddAgain);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void tsVehicleWeaponAccessoryAddGear_Click(object sender, EventArgs e)
@@ -7080,8 +6880,7 @@ namespace Chummer
                 strCategories = sbdCategories.ToString();
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnAddAgain;
                 do
@@ -7132,10 +6931,6 @@ namespace Chummer
                         }
                     }
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -10146,44 +9941,37 @@ namespace Chummer
             _blnSkipUpdate = true;
 
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
+            using (LoadingBar frmLoadingForm
+                   = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
+                                                                 Character.NumLoadingSections))
             {
-                using (LoadingBar frmLoadingForm
-                       = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
-                                                                     Character.NumLoadingSections))
-                {
-                    await CharacterObject.LoadAsync(frmLoadingForm);
-                    frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                await CharacterObject.LoadAsync(frmLoadingForm);
+                frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
 
-                    // Select the Magician's Tradition.
-                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                        cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
-                    else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                        cboTradition.SelectedIndex = 0;
+                // Select the Magician's Tradition.
+                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                    cboTradition.SelectedIndex = 0;
 
-                    // Select the Technomancer's Stream.
-                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                        cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
-                    else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                        cboStream.SelectedIndex = 0;
+                // Select the Technomancer's Stream.
+                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                    cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                    cboStream.SelectedIndex = 0;
 
-                    IsCharacterUpdateRequested = true;
-                    _blnSkipUpdate = false;
-                    // Immediately call character update because we know it's necessary
-                    await DoUpdateCharacterInfo();
+                IsCharacterUpdateRequested = true;
+                _blnSkipUpdate = false;
+                // Immediately call character update because we know it's necessary
+                await DoUpdateCharacterInfo();
 
-                    IsDirty = false;
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
+                IsDirty = false;
             }
 
             if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest
                 && Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
-                    await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                                          await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
                 await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                 await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
@@ -10206,8 +9994,7 @@ namespace Chummer
             _blnSkipUpdate = true;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
+                using (CursorWait.New(this))
                 {
                     // TODO: DataBind these wherever possible
 
@@ -10253,10 +10040,6 @@ namespace Chummer
                     {
                         await AutoSaveCharacter();
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
             finally
@@ -11795,8 +11578,7 @@ namespace Chummer
         /// </summary>
         public override async Task<bool> SaveCharacterAsCreated()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 // If the character was built with Karma, record their staring Karma amount (if any).
                 if (CharacterObject.Karma > 0)
@@ -11880,10 +11662,6 @@ namespace Chummer
                 _blnIsReopenQueued = true;
                 FormClosed += ReopenCharacter;
                 Close();
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
             return true;
         }
@@ -12281,8 +12059,7 @@ namespace Chummer
             // Open the Gear XML file and locate the selected Gear.
             XPathNavigator xmlParent = blnNullParent ? null : await objSelectedGear.GetNodeXPathAsync();
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 string strCategories = string.Empty;
 
@@ -12401,10 +12178,6 @@ namespace Chummer
                     return frmPickGear.AddAgain;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         /// <summary>
@@ -12426,8 +12199,7 @@ namespace Chummer
 
             // Open the Gear XML file and locate the selected Gear.
             object objParent = objSelectedGear ?? objSelectedMod ?? (object)objSelectedArmor;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 string strCategories = string.Empty;
                 if (!string.IsNullOrEmpty(strSelectedId) && objParent is IHasXmlDataNode objParentWithDataNode)
@@ -12543,10 +12315,6 @@ namespace Chummer
 
                     return frmPickGear.AddAgain;
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -13693,8 +13461,7 @@ namespace Chummer
                                                           out StringBuilder sbdMessage))
             {
                 sbdMessage.Append(await LanguageManager.GetStringAsync("Message_InvalidBeginning"));
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
+                using (CursorWait.New(this))
                 {
                     // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
                     int intMartialArts = CharacterObject.MartialArts.Count(objArt => !objArt.IsQuality);
@@ -14442,10 +14209,6 @@ namespace Chummer
                         blnValid = false;
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
-                }
 
                 if (!blnValid && sbdMessage.Length > (await LanguageManager.GetStringAsync("Message_InvalidBeginning")).Length)
                     Program.ShowMessageBox(this, sbdMessage.ToString(),
@@ -14519,8 +14282,7 @@ namespace Chummer
 
                     strNewName = Path.Combine(Utils.GetStartupPath, "saves", "backup", strNewName);
 
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                    try
+                    using (CursorWait.New(this))
                     {
                         using (LoadingBar frmProgressBar = await Program.CreateAndShowProgressBarAsync())
                         {
@@ -14529,10 +14291,6 @@ namespace Chummer
                             if (!await CharacterObject.SaveAsync(strNewName))
                                 return false;
                         }
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync();
                     }
                 }
 
@@ -16050,8 +15808,7 @@ namespace Chummer
 
         private async void btnCreateBackstory_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (_objStoryBuilder == null)
                 {
@@ -16060,10 +15817,6 @@ namespace Chummer
                 }
 
                 CharacterObject.Background = await _objStoryBuilder.GetStory(GlobalSettings.Language);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

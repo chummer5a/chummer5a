@@ -120,17 +120,10 @@ namespace Chummer
                 if (_blnIsLightMode == value)
                     return;
                 _blnIsLightMode = value;
-                Program.MainForm?.DoThreadSafe(async x =>
+                Program.MainForm?.DoThreadSafe(x =>
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(x);
-                    try
-                    {
+                    using (CursorWait.New(x))
                         ((ChummerMainForm) x).UpdateLightDarkMode();
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync();
-                    }
                 });
             }
         }

@@ -69,8 +69,7 @@ namespace Chummer
 
         private async ValueTask RefreshResultLabel()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' +
@@ -80,10 +79,6 @@ namespace Chummer
                                  + strSpace + '=' + strSpace +
                                  StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥',
                                                         GlobalSettings.CultureInfo);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -98,8 +93,7 @@ namespace Chummer
                 return;
             if (cboSelectLifestyle.SelectedIndex < 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 _objLifestyle = ((ListItem) cboSelectLifestyle.SelectedItem).Value as Lifestyle;
                 lblDice.Text = string.Format(GlobalSettings.CultureInfo,
@@ -107,10 +101,6 @@ namespace Chummer
                                              SelectedLifestyle?.Dice ?? 0);
                 await RefreshCalculation();
                 cmdRoll.Enabled = SelectedLifestyle?.Dice > 0;
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -184,8 +174,7 @@ namespace Chummer
         {
             if (SelectedLifestyle == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 int intResult = 0;
                 for (int i = 0; i < SelectedLifestyle.Dice; ++i)
@@ -194,10 +183,6 @@ namespace Chummer
                 }
 
                 nudDiceResult.ValueAsInt = intResult;
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

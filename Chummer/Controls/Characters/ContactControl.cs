@@ -294,17 +294,12 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter)
                     ? _objContact.LinkedCharacter
                     : null;
-                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
-                try
+                using (CursorWait.New(ParentForm))
                 {
                     if (objOpenCharacter == null)
                         objOpenCharacter = await Program.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
                     if (!Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
             else

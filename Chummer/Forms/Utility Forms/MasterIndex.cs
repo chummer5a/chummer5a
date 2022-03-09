@@ -144,16 +144,11 @@ namespace Chummer
 
         private async void MasterIndex_Load(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 await PopulateCharacterSettings();
                 await LoadContent().AsTask().ContinueWith(x => IsFinishedLoading = true);
                 _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -167,15 +162,8 @@ namespace Chummer
             if (e.PropertyName == nameof(CharacterSettings.Books)
                 || e.PropertyName == nameof(CharacterSettings.EnabledCustomDataDirectoryPaths))
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
-                {
+                using (CursorWait.New(this))
                     await LoadContent();
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
-                }
             }
         }
 
@@ -183,8 +171,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 string strSelectedSetting = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey;
                 CharacterSettings objSettings = null;
@@ -217,10 +204,6 @@ namespace Chummer
 
                     await LoadContent();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -530,8 +513,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (lstItems.SelectedValue is MasterIndexEntry objEntry)
                 {
@@ -580,10 +562,6 @@ namespace Chummer
                     txtNotes.Visible = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private sealed class MasterIndexEntry : IDisposable
@@ -615,32 +593,22 @@ namespace Chummer
 
         private async void cmdEditCharacterSetting_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (EditCharacterSettings frmOptions
                        = new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
                     await frmOptions.ShowDialogSafeAsync(this);
                 // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         public async ValueTask ForceRepopulateCharacterSettings()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 await PopulateCharacterSettings();
                 ResumeLayout();
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

@@ -66,8 +66,7 @@ namespace Chummer
                 {
                     FileName = fileName
                 };
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
+                using (CursorWait.New(this))
                 {
                     if (!await objCharacter.LoadAsync())
                     {
@@ -89,10 +88,6 @@ namespace Chummer
                     }
 
                     _character = objCharacter;
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
         }

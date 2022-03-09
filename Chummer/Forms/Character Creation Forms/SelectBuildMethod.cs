@@ -83,118 +83,124 @@ namespace Chummer
 
         private async void cmdEditCharacterOption_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
-            try
+            using (CursorWait.New(this))
             {
                 using (EditCharacterSettings frmOptions =
                        new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
                     await frmOptions.ShowDialogSafeAsync(this);
 
                 SuspendLayout();
-                // Populate the Gameplay Settings list.
-                object objOldSelected = cboCharacterSetting.SelectedValue;
-                using (new FetchSafelyFromPool<List<ListItem>>(
-                           Utils.ListItemListPool, out List<ListItem> lstGameplayOptions))
+                try
                 {
-                    lstGameplayOptions.AddRange(SettingsManager.LoadedCharacterSettings.Values
-                                                               .Select(objLoopOptions =>
-                                                                           new ListItem(
-                                                                               objLoopOptions,
-                                                                               objLoopOptions.DisplayName)));
-                    lstGameplayOptions.Sort(CompareListItems.CompareNames);
-                    cboCharacterSetting.BeginUpdate();
-                    cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
-                    cboCharacterSetting.SelectedValue = objOldSelected;
-                    if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                    // Populate the Gameplay Settings list.
+                    object objOldSelected = cboCharacterSetting.SelectedValue;
+                    using (new FetchSafelyFromPool<List<ListItem>>(
+                               Utils.ListItemListPool, out List<ListItem> lstGameplayOptions))
                     {
-                        (bool blnSuccess, CharacterSettings objSetting)
-                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                GlobalSettings.DefaultCharacterSetting);
-                        if (blnSuccess)
-                            cboCharacterSetting.SelectedValue = objSetting;
-                    }
-
-                    if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
-                        cboCharacterSetting.SelectedIndex = 0;
-                    cboCharacterSetting.EndUpdate();
-                }
-            }
-            finally
-            {
-                ResumeLayout();
-                await objCursorWait.DisposeAsync();
-            }
-        }
-
-        private async void SelectBuildMethod_Load(object sender, EventArgs e)
-        {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            SuspendLayout();
-            try
-            {
-                // Populate the Character Settings list.
-                using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
-                {
-                    foreach (CharacterSettings objLoopSetting in SettingsManager.LoadedCharacterSettings.Values)
-                    {
-                        lstCharacterSettings.Add(new ListItem(objLoopSetting, objLoopSetting.DisplayName));
-                    }
-
-                    lstCharacterSettings.Sort(CompareListItems.CompareNames);
-                    cboCharacterSetting.BeginUpdate();
-                    cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
-                    if (_blnForExistingCharacter)
-                    {
-                        (bool blnSuccess, CharacterSettings objSetting)
-                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                _objCharacter.SettingsKey);
-                        if (blnSuccess)
-                            cboCharacterSetting.SelectedValue = objSetting;
-                        if (cboCharacterSetting.SelectedIndex == -1)
+                        lstGameplayOptions.AddRange(SettingsManager.LoadedCharacterSettings.Values
+                                                                   .Select(objLoopOptions =>
+                                                                               new ListItem(
+                                                                                   objLoopOptions,
+                                                                                   objLoopOptions.DisplayName)));
+                        lstGameplayOptions.Sort(CompareListItems.CompareNames);
+                        cboCharacterSetting.BeginUpdate();
+                        cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
+                        cboCharacterSetting.SelectedValue = objOldSelected;
+                        if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                         {
-                            (blnSuccess, objSetting)
+                            (bool blnSuccess, CharacterSettings objSetting)
                                 = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting);
                             if (blnSuccess)
                                 cboCharacterSetting.SelectedValue = objSetting;
                         }
-                        chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
+
+                        if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                            cboCharacterSetting.SelectedIndex = 0;
+                        cboCharacterSetting.EndUpdate();
                     }
-                    else
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
+            }
+        }
+
+        private async void SelectBuildMethod_Load(object sender, EventArgs e)
+        {
+            using (CursorWait.New(this))
+            {
+                SuspendLayout();
+                try
+                {
+                    // Populate the Character Settings list.
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                                                                   out List<ListItem> lstCharacterSettings))
                     {
-                        (bool blnSuccess, CharacterSettings objSetting)
-                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
-                                GlobalSettings.DefaultCharacterSetting);
-                        if (blnSuccess)
-                            cboCharacterSetting.SelectedValue = objSetting;
+                        foreach (CharacterSettings objLoopSetting in SettingsManager.LoadedCharacterSettings.Values)
+                        {
+                            lstCharacterSettings.Add(new ListItem(objLoopSetting, objLoopSetting.DisplayName));
+                        }
+
+                        lstCharacterSettings.Sort(CompareListItems.CompareNames);
+                        cboCharacterSetting.BeginUpdate();
+                        cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+                        if (_blnForExistingCharacter)
+                        {
+                            (bool blnSuccess, CharacterSettings objSetting)
+                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                    _objCharacter.SettingsKey);
+                            if (blnSuccess)
+                                cboCharacterSetting.SelectedValue = objSetting;
+                            if (cboCharacterSetting.SelectedIndex == -1)
+                            {
+                                (blnSuccess, objSetting)
+                                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                        GlobalSettings.DefaultCharacterSetting);
+                                if (blnSuccess)
+                                    cboCharacterSetting.SelectedValue = objSetting;
+                            }
+
+                            chkIgnoreRules.Checked = _objCharacter.IgnoreRules;
+                        }
+                        else
+                        {
+                            (bool blnSuccess, CharacterSettings objSetting)
+                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                    GlobalSettings.DefaultCharacterSetting);
+                            if (blnSuccess)
+                                cboCharacterSetting.SelectedValue = objSetting;
+                        }
+
+                        if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                            cboCharacterSetting.SelectedIndex = 0;
+                        cboCharacterSetting.EndUpdate();
                     }
 
-                    if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
-                        cboCharacterSetting.SelectedIndex = 0;
-                    cboCharacterSetting.EndUpdate();
+                    chkIgnoreRules.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
+                    await ProcessGameplayIndexChanged();
                 }
-                chkIgnoreRules.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
-                await ProcessGameplayIndexChanged();
-            }
-            finally
-            {
-                ResumeLayout();
-                await objCursorWait.DisposeAsync();
+                finally
+                {
+                    ResumeLayout();
+                }
             }
         }
 
         private async void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            SuspendLayout();
-            try
+            using (CursorWait.New(this))
             {
-                await ProcessGameplayIndexChanged();
-            }
-            finally
-            {
-                ResumeLayout();
-                await objCursorWait.DisposeAsync();
+                SuspendLayout();
+                try
+                {
+                    await ProcessGameplayIndexChanged();
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
         }
 

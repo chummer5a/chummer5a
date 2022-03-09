@@ -238,8 +238,7 @@ namespace Chummer
         /// </summary>
         protected async Task AutoSaveCharacter()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true);
-            try
+            using (CursorWait.New(this, true))
             {
                 try
                 {
@@ -283,10 +282,6 @@ namespace Chummer
                     AutosaveStopWatch.Restart();
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         /// <summary>
@@ -297,8 +292,7 @@ namespace Chummer
         {
             if (treLimit == null || treLimit.SelectedNode.Level == 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 TreeNode objSelectedNode = treLimit.SelectedNode;
                 string strGuid = (objSelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -335,10 +329,6 @@ namespace Chummer
                     IsDirty = true;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         /// <summary>
@@ -350,8 +340,7 @@ namespace Chummer
         {
             if (objNotes == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
                 {
@@ -367,10 +356,6 @@ namespace Chummer
                         treNode.ToolTipText = objNotes.Notes.WordWrap();
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6328,8 +6313,7 @@ namespace Chummer
 
         protected async ValueTask AddContactsFromFile()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 XPathDocument xmlDoc;
                 // Displays an OpenFileDialog so the user can select the XML to read.
@@ -6372,10 +6356,6 @@ namespace Chummer
                     objContact.Load(xmlContact);
                     CharacterObject.Contacts.Add(objContact);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6699,8 +6679,7 @@ namespace Chummer
         /// </summary>
         protected async ValueTask<bool> AddMugshot()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (OpenFileDialog dlgOpenFileDialog = new OpenFileDialog())
                 {
@@ -6761,10 +6740,6 @@ namespace Chummer
                 }
 
                 return true;
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -6969,8 +6944,7 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 // If the Character does not have a file name, trigger the Save As menu item instead.
                 if (string.IsNullOrEmpty(CharacterObject.FileName))
@@ -6999,10 +6973,6 @@ namespace Chummer
 
                 return true;
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         /// <summary>
@@ -7010,8 +6980,7 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 // If the Created is checked, make sure the user wants to actually save this character.
                 if (blnDoCreated && !await ConfirmSaveCreatedCharacter())
@@ -7044,10 +7013,6 @@ namespace Chummer
 
                 return await SaveCharacter(false, blnDoCreated);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         /// <summary>
@@ -7071,8 +7036,7 @@ namespace Chummer
 
         public async ValueTask DoPrint()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
                 // If a Viewer window already exists for this character, use it instead.
@@ -7086,10 +7050,6 @@ namespace Chummer
                 {
                     _frmPrintView.Activate();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -7117,8 +7077,7 @@ namespace Chummer
 
         public async ValueTask PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml");
                 bool blnAddAgain;
@@ -7241,10 +7200,6 @@ namespace Chummer
 
                     IsDirty = true;
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

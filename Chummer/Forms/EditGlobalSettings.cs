@@ -113,8 +113,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (_blnDirty)
                 {
@@ -133,10 +132,6 @@ namespace Chummer
 
                 if (_blnDirty)
                     await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms");
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -164,16 +159,11 @@ namespace Chummer
 
                 if (!_blnLoading)
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                    try
+                    using (CursorWait.New(this))
                     {
                         _blnLoading = true;
                         await TranslateForm();
                         _blnLoading = false;
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync();
                     }
                 }
 
@@ -187,34 +177,19 @@ namespace Chummer
 
         private async void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
-            {
+            using (CursorWait.New(this))
                 await PopulateXsltList();
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cmdVerify_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
-            {
+            using (CursorWait.New(this))
                 await LanguageManager.VerifyStrings(_strSelectedLanguage);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cmdVerifyData_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 string strSelectedLanguage = _strSelectedLanguage;
                 // Build a list of Sourcebooks that will be passed to the Verify method.
@@ -241,10 +216,6 @@ namespace Chummer
                     await LanguageManager.GetStringAsync("MessageTitle_Options_ValidationResults",
                                                          _strSelectedLanguage), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -303,17 +274,10 @@ namespace Chummer
 
         private async void cmdPDFTest_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
-            {
+            using (CursorWait.New(this))
                 await CommonFunctions.OpenPdf(lstGlobalSourcebookInfos.SelectedValue + " 3", null,
                                               cboPDFParameters.SelectedValue?.ToString() ?? string.Empty,
                                               txtPDFAppPath.Text);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async void cboUseLoggingApplicationInsights_SelectedIndexChanged(object sender, EventArgs e)
@@ -870,8 +834,7 @@ namespace Chummer
             if (!txtPDFLocation.Enabled)
                 return;
             // Prompt the user to select a save file to associate with this Contact.
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 string strNewFileName;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -913,17 +876,12 @@ namespace Chummer
                 UpdateSourcebookInfoPath(strNewFileName);
                 txtPDFLocation.Text = strNewFileName;
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private async ValueTask PromptPdfAppPath()
         {
             // Prompt the user to select a save file to associate with this Contact.
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
                        {
@@ -941,10 +899,6 @@ namespace Chummer
                         return;
                     txtPDFAppPath.Text = openFileDialog.FileName;
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1712,8 +1666,7 @@ namespace Chummer
         private async void bScanForPDFs_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 Task<XPathNavigator> tskLoadBooks
                     = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
@@ -1766,10 +1719,6 @@ namespace Chummer
                         Program.ShowMessageBox(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

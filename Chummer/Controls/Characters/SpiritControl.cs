@@ -166,17 +166,12 @@ namespace Chummer
                 Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objSpirit.LinkedCharacter)
                     ? _objSpirit.LinkedCharacter
                     : null;
-                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
-                try
+                using (CursorWait.New(ParentForm))
                 {
                     if (objOpenCharacter == null)
                         objOpenCharacter = await Program.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName);
                     if (!Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
             else
@@ -535,8 +530,7 @@ namespace Chummer
                 return;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm);
-            try
+            using (CursorWait.New(ParentForm))
             {
                 // The Critter should use the same settings file as the character.
                 Character objCharacter = new Character
@@ -592,10 +586,6 @@ namespace Chummer
                     await objCharacter
                         .DisposeAsync(); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

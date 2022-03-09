@@ -55,8 +55,7 @@ namespace Chummer
             {
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
+                using (CursorWait.New(this))
                 {
                     string strSelectedFile = openFileDialog.FileName;
                     TreeNode objNode = await CacheCharacters(strSelectedFile);
@@ -66,10 +65,6 @@ namespace Chummer
                         treCharacterList.Nodes.Add(objNode);
                         treCharacterList.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
         }
@@ -556,8 +551,7 @@ namespace Chummer
             string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 bool blnLoaded = false;
                 Character objCharacter = new Character();
@@ -636,10 +630,6 @@ namespace Chummer
                     if (!blnLoaded)
                         Program.OpenCharacters.Remove(objCharacter);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
 
             Close();

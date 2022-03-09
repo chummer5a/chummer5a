@@ -119,8 +119,7 @@ namespace Chummer
 
         private async void CharacterRoster_Load(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SetMyEventHandlers();
                 _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
@@ -142,18 +141,13 @@ namespace Chummer
                     () => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache)
                         .ContinueWith(x => IsFinishedLoading = true));
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private bool _blnIsClosing;
 
         private async void CharacterRoster_FormClosing(object sender, FormClosingEventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 if (_blnIsClosing)
                     return;
@@ -188,10 +182,6 @@ namespace Chummer
                                                                               .ConfigureAwait(false))
                                               .ConfigureAwait(false);
                 await _dicSavedCharacterCaches.DisposeAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -874,8 +864,7 @@ namespace Chummer
         {
             if (this.IsNullOrDisposed()) // Safety check for external calls
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 tlpRight.SuspendLayout();
                 if (objCache != null)
@@ -990,10 +979,6 @@ namespace Chummer
                 lblSettingsLabel.Visible = !string.IsNullOrEmpty(lblSettings.Text);
                 ProcessMugshotSizeMode();
                 tlpRight.ResumeLayout();
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -1193,18 +1178,13 @@ namespace Chummer
 
             if (t?.Tag is CharacterCache objCache)
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
+                using (CursorWait.New(this))
                 {
                     Character objOpenCharacter
                         = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
                           ?? await Program.LoadCharacterAsync(objCache.FilePath);
                     if (!Program.SwitchToOpenCharacter(objOpenCharacter))
                         await Program.OpenCharacter(objOpenCharacter);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
                 }
             }
         }
@@ -1218,18 +1198,11 @@ namespace Chummer
 
             if (t?.Tag is CharacterCache objCache)
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
-                {
-                    using (Character objOpenCharacter
-                           = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
-                             ?? await Program.LoadCharacterAsync(objCache.FilePath))
-                        await Program.OpenCharacterForPrinting(objOpenCharacter);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
-                }
+                using (CursorWait.New(this))
+                using (Character objOpenCharacter
+                       = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                         ?? await Program.LoadCharacterAsync(objCache.FilePath))
+                    await Program.OpenCharacterForPrinting(objOpenCharacter);
             }
         }
 
@@ -1242,18 +1215,11 @@ namespace Chummer
 
             if (t?.Tag is CharacterCache objCache)
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this);
-                try
-                {
-                    using (Character objOpenCharacter
-                           = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
-                             ?? await Program.LoadCharacterAsync(objCache.FilePath))
-                        await Program.OpenCharacterForExport(objOpenCharacter);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync();
-                }
+                using (CursorWait.New(this))
+                using (Character objOpenCharacter
+                       = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                         ?? await Program.LoadCharacterAsync(objCache.FilePath))
+                    await Program.OpenCharacterForExport(objOpenCharacter);
             }
         }
 

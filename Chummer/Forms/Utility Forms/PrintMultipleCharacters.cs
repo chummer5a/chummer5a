@@ -120,8 +120,7 @@ namespace Chummer
 
         private async Task DoPrint()
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true);
-            try
+            using (CursorWait.New(this, true))
             {
                 try
                 {
@@ -210,10 +209,6 @@ namespace Chummer
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
                                        prgProgress.DoThreadSafeAsync(x => ((ProgressBar) x).Value = 0));
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 

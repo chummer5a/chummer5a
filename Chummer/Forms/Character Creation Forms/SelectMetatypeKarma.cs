@@ -63,8 +63,7 @@ namespace Chummer
 
         private async void SelectMetatypeKarma_Load(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -162,10 +161,6 @@ namespace Chummer
                     ResumeLayout();
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         #endregion Form Events
@@ -176,8 +171,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -188,10 +182,6 @@ namespace Chummer
                 {
                     ResumeLayout();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -204,14 +194,9 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 await MetatypeSelected();
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -219,8 +204,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -231,10 +215,6 @@ namespace Chummer
                 {
                     ResumeLayout();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
@@ -255,8 +235,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -268,15 +247,11 @@ namespace Chummer
                     ResumeLayout();
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
-            }
         }
 
         private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
         {
-            using (CursorWait.New())
+            using (CursorWait.New(this))
                 cboPossessionMethod.Enabled = chkPossessionBased.Checked;
         }
 
@@ -969,8 +944,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 SuspendLayout();
                 try
@@ -981,10 +955,6 @@ namespace Chummer
                 {
                     ResumeLayout();
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
     }

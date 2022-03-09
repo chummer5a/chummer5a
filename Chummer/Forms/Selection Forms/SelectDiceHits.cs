@@ -54,8 +54,7 @@ namespace Chummer
 
         private async void cmdRoll_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this);
-            try
+            using (CursorWait.New(this))
             {
                 int intResult = 0;
                 for (int i = 0; i < Dice; ++i)
@@ -64,10 +63,6 @@ namespace Chummer
                 }
 
                 nudDiceResult.ValueAsInt = intResult;
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync();
             }
         }
 
