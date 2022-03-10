@@ -602,28 +602,35 @@ namespace Chummer
                 while (true)
                 {
                     await DoCacheGitVersion(token);
-                    if (token.IsCancellationRequested || Utils.GitUpdateAvailable <= 0)
+                    if (token.IsCancellationRequested)
                         return;
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                    string strNewText = Application.ProductName + strSpace + '-' + strSpace +
-                                        await LanguageManager.GetStringAsync("String_Version")
-                                        + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
-                                        + string.Format(GlobalSettings.CultureInfo,
-                                                        await LanguageManager.GetStringAsync("String_Update_Available"),
-                                                        Utils.CachedGitVersion);
-                    await this.DoThreadSafeFunc(async () =>
+                    if (Utils.GitUpdateAvailable > 0)
                     {
-                        if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                        string strNewText = Application.ProductName + strSpace + '-' + strSpace +
+                                            await LanguageManager.GetStringAsync("String_Version")
+                                            + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
+                                            + string.Format(GlobalSettings.CultureInfo,
+                                                            await LanguageManager.GetStringAsync(
+                                                                "String_Update_Available"),
+                                                            Utils.CachedGitVersion);
+                        await this.DoThreadSafeFunc(async () =>
                         {
-                            _frmUpdate = new ChummerUpdater();
-                            await _frmUpdate.DoThreadSafeAsync(x =>
+                            if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                             {
-                                x.FormClosed += ResetChummerUpdater;
-                                x.SilentMode = true;
-                            });
-                        }
-                        Text = strNewText;
-                    });
+                                _frmUpdate = new ChummerUpdater();
+                                await _frmUpdate.DoThreadSafeAsync(x =>
+                                {
+                                    x.FormClosed += ResetChummerUpdater;
+                                    x.SilentMode = true;
+                                });
+                            }
+
+                            Text = strNewText;
+                        });
+                    }
+                    if (token.IsCancellationRequested)
+                        return;
                     await Task.Delay(TimeSpan.FromHours(1), token);
                     if (token.IsCancellationRequested)
                         return;
