@@ -101,7 +101,7 @@ namespace Chummer
 
                                 string strCommandLineArgumentsJoined =
                                     string.Join("<>", Environment.GetCommandLineArgs());
-                                NativeMethods.CopyDataStruct objData = new NativeMethods.CopyDataStruct();
+                                NativeMethods.CopyDataStruct objData = default;
                                 IntPtr ptrCommandLineArguments = IntPtr.Zero;
                                 try
                                 {
