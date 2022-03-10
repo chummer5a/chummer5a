@@ -26,6 +26,9 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+#if !DEBUG
+using System.Threading;
+#endif
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -62,7 +65,7 @@ namespace Chummer
             }
         }
 
-        #region Control Events
+#region Control Events
 
         public ChummerMainForm(bool isUnitTest = false)
         {
@@ -130,17 +133,15 @@ namespace Chummer
 
                         //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
 
-                        // If Automatic Updates are enabled, check for updates immediately.
-
 #if !DEBUG
-                    Application.Idle += IdleUpdateCheck;
-                    CheckForUpdate();
+                        // If Automatic Updates are enabled, check for updates immediately.
+                        StartAutoUpdateChecker();
 #endif
 
                         GlobalSettings.MruChanged += PopulateMruToolstripMenu;
 
                         // Populate the MRU list.
-                        await this.DoThreadSafeFunc(() => DoPopulateMruToolstripMenu());
+                        await this.DoThreadSafeFunc(x => x.DoPopulateMruToolstripMenu());
 
                         Program.MainForm = this;
 
@@ -477,13 +478,11 @@ namespace Chummer
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
 
-        private readonly Stopwatch _idleUpdateCheckStopWatch = Stopwatch.StartNew();
-
         private Task _tskVersionUpdate;
 
-        private System.Threading.CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
+        private CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
 
-        private async ValueTask DoCacheGitVersion()
+        private async ValueTask DoCacheGitVersion(CancellationToken token = default)
         {
             System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
             System.Net.HttpWebRequest request;
@@ -504,7 +503,7 @@ namespace Chummer
                 return;
             }
 
-            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
+            if (token.IsCancellationRequested)
                 return;
 
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
@@ -521,7 +520,7 @@ namespace Chummer
                         return;
                     }
 
-                    if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
+                    if (token.IsCancellationRequested)
                         return;
 
                     // Get the stream containing content returned by the server.
@@ -533,13 +532,13 @@ namespace Chummer
                             return;
                         }
 
-                        if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
+                        if (token.IsCancellationRequested)
                             return;
 
                         // Open the stream using a StreamReader for easy access.
                         using (StreamReader reader = new StreamReader(dataStream, System.Text.Encoding.UTF8, true))
                         {
-                            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
+                            if (token.IsCancellationRequested)
                                 return;
 
                             // Read the content.
@@ -547,7 +546,7 @@ namespace Chummer
 
                             string line = responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.Contains("tag_name"));
 
-                            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
+                            if (token.IsCancellationRequested)
                                 return;
 
                             Version verLatestVersion = null;
@@ -560,18 +559,22 @@ namespace Chummer
                                 strVersion = strVersion.FastEscape('\"');
 
                                 // Adds zeroes if minor and/or build version are missing
-                                while (strVersion.Count(x => x == '.') < 2)
+                                if (strVersion.Count(x => x == '.') < 2)
                                 {
                                     strVersion += ".0";
+                                    if (strVersion.Count(x => x == '.') < 2)
+                                    {
+                                        strVersion += ".0";
+                                    }
                                 }
 
-                                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
+                                if (token.IsCancellationRequested)
                                     return;
 
                                 if (!Version.TryParse(strVersion.TrimStartOnce("Nightly-v"), out verLatestVersion))
                                     verLatestVersion = null;
 
-                                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
+                                if (token.IsCancellationRequested)
                                     return;
                             }
 
@@ -587,41 +590,45 @@ namespace Chummer
             }
         }
 
-        private void CheckForUpdate()
+        private void StartAutoUpdateChecker()
         {
-            _objVersionUpdaterCancellationTokenSource = new System.Threading.CancellationTokenSource();
+            _objVersionUpdaterCancellationTokenSource?.Cancel(false);
+            while (_tskVersionUpdate?.IsCompleted == false)
+                Utils.SafeSleep();
+            _objVersionUpdaterCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken token = _objVersionUpdaterCancellationTokenSource.Token;
             _tskVersionUpdate = Task.Run(async () =>
             {
-                await DoCacheGitVersion();
-                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested ||
-                    Utils.GitUpdateAvailable <= 0)
-                    return;
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                string strNewText = Application.ProductName + strSpace + '-' + strSpace +
-                                    await LanguageManager.GetStringAsync("String_Version")
-                                    + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
-                                    + string.Format(GlobalSettings.CultureInfo,
-                                        await LanguageManager.GetStringAsync("String_Update_Available"), Utils.CachedGitVersion);
-                await this.DoThreadSafeAsync(() =>
+                while (true)
                 {
-                    if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
+                    await DoCacheGitVersion(token);
+                    if (token.IsCancellationRequested || Utils.GitUpdateAvailable <= 0)
+                        return;
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                    string strNewText = Application.ProductName + strSpace + '-' + strSpace +
+                                        await LanguageManager.GetStringAsync("String_Version")
+                                        + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
+                                        + string.Format(GlobalSettings.CultureInfo,
+                                                        await LanguageManager.GetStringAsync("String_Update_Available"),
+                                                        Utils.CachedGitVersion);
+                    await this.DoThreadSafeFunc(async () =>
                     {
-                        _frmUpdate = new ChummerUpdater();
-                        _frmUpdate.FormClosed += ResetChummerUpdater;
-                        _frmUpdate.SilentMode = true;
-                    }
-                    Text = strNewText;
-                });
-            }, _objVersionUpdaterCancellationTokenSource.Token);
-        }
-
-        private void IdleUpdateCheck(object sender, EventArgs e)
-        {
-            // Automatically check for updates every hour
-            if (_idleUpdateCheckStopWatch.Elapsed < TimeSpan.FromHours(1) || _tskVersionUpdate?.IsCompleted == false)
-                return;
-            _idleUpdateCheckStopWatch.Restart();
-            CheckForUpdate();
+                        if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
+                        {
+                            _frmUpdate = new ChummerUpdater();
+                            await _frmUpdate.DoThreadSafeAsync(x =>
+                            {
+                                x.FormClosed += ResetChummerUpdater;
+                                x.SilentMode = true;
+                            });
+                        }
+                        Text = strNewText;
+                    });
+                    await Task.Delay(TimeSpan.FromHours(1), token);
+                    if (token.IsCancellationRequested)
+                        return;
+                }
+            }, token);
         }
 #endif
 
@@ -1125,9 +1132,9 @@ namespace Chummer
                 tabForms.ItemSize.Height * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1));
         }
 
-        #endregion Control Events
+#endregion Control Events
 
-        #region Methods
+#region Methods
         /// <summary>
         /// Create a new character and show the Create Form.
         /// </summary>
@@ -1861,9 +1868,9 @@ namespace Chummer
             }
         }
 
-        #endregion Methods
+#endregion Methods
 
-        #region Application Properties
+#region Application Properties
 
         /// <summary>
         /// The frmDiceRoller window being used by the application.
@@ -1881,6 +1888,6 @@ namespace Chummer
         /// </summary>
         public bool IsFinishedLoading { get; private set; }
 
-        #endregion Application Properties
+#endregion Application Properties
     }
 }
