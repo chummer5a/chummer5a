@@ -1266,7 +1266,7 @@ namespace Chummer
                                 intEssenceLoss = _objCharacter.EssencePenalty;
                             */
                             // If the character options permit initiation in create mode, show the Initiation page.
-                            UpdateInitiationCost();
+                            await UpdateInitiationCost();
                             
                             await tabInitiation.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Tab_Initiation"));
                             await cmsMetamagic.DoThreadSafeAsync(async () => tsMetamagicAddMetamagic.Text = await LanguageManager.GetStringAsync("Button_AddMetamagic"));
@@ -1363,7 +1363,7 @@ namespace Chummer
                                 intEssenceLoss = _objCharacter.EssencePenalty;
                             // If the character options permit submersion in create mode, show the Initiation page.
                             */
-                            UpdateInitiationCost();
+                            await UpdateInitiationCost();
 
                             if (!tabCharacterTabs.TabPages.Contains(tabInitiation))
                                 tabCharacterTabs.TabPages.Insert(3, tabInitiation);
@@ -9573,48 +9573,62 @@ namespace Chummer
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, spellPoints + ritualPoints - (limit + intLimitMod));
                             if (intPrepPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intPrepPointsUsed, strPoints);
-                            lblBuildPrepsBP.Text = strText;
+                            await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text = strText);
                         }
                         if (lblSpellsBP != null)
                         {
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + ritualPoints - (limit + intLimitMod));
                             if (intSpellPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intSpellPointsUsed, strPoints);
-                            lblSpellsBP.Text = strText;
+                            await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText);
                         }
                         if (lblBuildRitualsBP != null)
                         {
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + spellPoints - (limit + intLimitMod));
                             if (intRitualPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intRitualPointsUsed, strPoints);
-                            lblBuildRitualsBP.Text = strText;
+                            await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text = strText);
                         }
                     }
                     else if (intLimitMod == 0)
                     {
                         if (lblBuildPrepsBP != null)
-                            lblBuildPrepsBP.Text =
-                                intPrepPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                            await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text =
+                                                                        intPrepPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
                         if (lblSpellsBP != null)
-                            lblSpellsBP.Text =
-                                intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                            await lblSpellsBP.DoThreadSafeAsync(x => x.Text =
+                                                                    intSpellPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
                         if (lblBuildRitualsBP != null)
-                            lblBuildRitualsBP.Text =
-                                intRitualPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+                            await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text =
+                                                                          intRitualPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
                     }
                     else
                     {
                         //TODO: Make the costs render better, currently looks wrong as hell
                         strFormat = "{0}" + strOf + "{1}" + strColon + strSpace + "{2}" + strSpace + strPoints;
                         if (lblBuildPrepsBP != null)
-                            lblBuildPrepsBP.Text =
-                                string.Format(GlobalSettings.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, spellPoints + ritualPoints - intLimitMod, intPrepPointsUsed);
+                            await lblBuildPrepsBP.DoThreadSafeAsync(x => x.Text =
+                                                                        string.Format(
+                                                                            GlobalSettings.CultureInfo, strFormat,
+                                                                            prepPoints + spellPoints + ritualPoints
+                                                                            - 2 * intLimitMod,
+                                                                            spellPoints + ritualPoints - intLimitMod,
+                                                                            intPrepPointsUsed));
                         if (lblSpellsBP != null)
-                            lblSpellsBP.Text =
-                                string.Format(GlobalSettings.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, prepPoints + ritualPoints - intLimitMod, intSpellPointsUsed);
+                            await lblSpellsBP.DoThreadSafeAsync(x => x.Text =
+                                                                    string.Format(GlobalSettings.CultureInfo, strFormat,
+                                                                        prepPoints + spellPoints + ritualPoints
+                                                                        - 2 * intLimitMod,
+                                                                        prepPoints + ritualPoints - intLimitMod,
+                                                                        intSpellPointsUsed));
                         if (lblBuildRitualsBP != null)
-                            lblBuildRitualsBP.Text =
-                                string.Format(GlobalSettings.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, prepPoints + spellPoints - intLimitMod, intRitualPointsUsed);
+                            await lblBuildRitualsBP.DoThreadSafeAsync(x => x.Text =
+                                                                          string.Format(
+                                                                              GlobalSettings.CultureInfo, strFormat,
+                                                                              prepPoints + spellPoints + ritualPoints
+                                                                              - 2 * intLimitMod,
+                                                                              prepPoints + spellPoints - intLimitMod,
+                                                                              intRitualPointsUsed));
                     }
                 }
             }
@@ -9808,22 +9822,24 @@ namespace Chummer
 
                 string strContactPoints = sbdContactPoints.ToString();
 
-                lblContactsBP.Text = strContactPoints;
-                lblContactPoints.Text = strContactPoints;
+                await lblContactsBP.DoThreadSafeAsync(x => x.Text = strContactPoints);
+                await lblContactPoints.DoThreadSafeAsync(x => x.Text = strContactPoints);
             }
 
-            lblAttributesBP.Text = BuildAttributes(CharacterObject.AttributeSection.AttributeList);
-            lblPBuildSpecial.Text = BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
+            string strTemp = BuildAttributes(CharacterObject.AttributeSection.AttributeList);
+            await lblAttributesBP.DoThreadSafeAsync(x => x.Text = strTemp);
+            string strTemp2 = BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
+            await lblPBuildSpecial.DoThreadSafeAsync(x => x.Text = strTemp2);
 
-            lblMartialArtsBP.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+            await lblMartialArtsBP.DoThreadSafeAsync(x => x.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
 
-            lblNuyenBP.Text = intNuyenBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+            await lblNuyenBP.DoThreadSafeAsync(x => x.Text = intNuyenBP.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
 
-            lblFociBP.Text = intFociPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+            await lblFociBP.DoThreadSafeAsync(x => x.Text = intFociPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
 
-            lblSpiritsBP.Text = intSpiritPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+            await lblSpiritsBP.DoThreadSafeAsync(x => x.Text = intSpiritPointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
 
-            lblSpritesBP.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+            await lblSpritesBP.DoThreadSafeAsync(x => x.Text = intSpritePointsUsed.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
 
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdComplexFormsBP))
@@ -9848,36 +9864,48 @@ namespace Chummer
                                 .ToString(GlobalSettings.CultureInfo)).Append(strSpace).Append(strPoints);
                 }
 
-                lblComplexFormsBP.Text = sbdComplexFormsBP.ToString();
+                await lblComplexFormsBP.DoThreadSafeAsync(x => x.Text = sbdComplexFormsBP.ToString());
             }
 
-            lblAINormalProgramsBP.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit) * CharacterObject.AIProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
-            lblAIAdvancedProgramsBP.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit) * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+            await lblAINormalProgramsBP.DoThreadSafeAsync(
+                x => x.Text = ((intAINormalProgramPointsUsed - CharacterObject.AINormalProgramLimit)
+                               * CharacterObject.AIProgramKarmaCost).ToString(GlobalSettings.CultureInfo) + strSpace
+                    + strPoints);
+            await lblAIAdvancedProgramsBP.DoThreadSafeAsync(
+                x => x.Text = ((intAIAdvancedProgramPointsUsed - CharacterObject.AIAdvancedProgramLimit)
+                               * CharacterObject.AIAdvancedProgramKarmaCost).ToString(GlobalSettings.CultureInfo)
+                              + strSpace + strPoints);
 
-            lblInitiationBP.Text = intInitiationPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints;
+            await lblInitiationBP.DoThreadSafeAsync(x => x.Text = intInitiationPoints.ToString(GlobalSettings.CultureInfo)
+                                                                  + strSpace + strPoints);
             // ------------------------------------------------------------------------------
             // Update the number of BP remaining in the StatusBar.
-            tslKarmaRemaining.Text = intKarmaPointsRemain.ToString(GlobalSettings.CultureInfo);
-            if (_blnFreestyle)
+            await tsMain.DoThreadSafeAsync(() =>
             {
-                tslKarma.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalSettings.CultureInfo);
-                tslKarma.ForeColor = intFreestyleBP < intFreestyleBPMin ? ColorManager.ErrorColor : ColorManager.ControlText;
-            }
-            else
-            {
-                tslKarma.Text = CharacterObjectSettings.BuildKarma.ToString(GlobalSettings.CultureInfo);
-                tslKarma.ForeColor = ColorManager.ControlText;
-            }
+                tslKarmaRemaining.Text = intKarmaPointsRemain.ToString(GlobalSettings.CultureInfo);
+                if (_blnFreestyle)
+                {
+                    tslKarma.Text = Math.Max(intFreestyleBP, intFreestyleBPMin).ToString(GlobalSettings.CultureInfo);
+                    tslKarma.ForeColor = intFreestyleBP < intFreestyleBPMin
+                        ? ColorManager.ErrorColor
+                        : ColorManager.ControlText;
+                }
+                else
+                {
+                    tslKarma.Text = CharacterObjectSettings.BuildKarma.ToString(GlobalSettings.CultureInfo);
+                    tslKarma.ForeColor = ColorManager.ControlText;
+                }
+            });
 
             return intKarmaPointsRemain;
         }
 
-        private void UpdateSkillRelatedInfo()
+        private async ValueTask UpdateSkillRelatedInfo()
         {
-            string strKarma = LanguageManager.GetString("String_Karma");
-            string strOf = LanguageManager.GetString("String_Of");
-            string strColon = LanguageManager.GetString("String_Colon");
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strKarma = await LanguageManager.GetStringAsync("String_Karma");
+            string strOf = await LanguageManager.GetStringAsync("String_Of");
+            string strColon = await LanguageManager.GetStringAsync("String_Colon");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string strZeroKarma = 0.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
             //Update Skill Labels
             //Active skills
@@ -9899,47 +9927,47 @@ namespace Chummer
                     strTemp = intActiveSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
                 }
             }
-            lblActiveSkillsBP.Text = strTemp;
+            await lblActiveSkillsBP.DoThreadSafeAsync(x => x.Text = strTemp);
             //Knowledge skills
-            strTemp = strZeroKarma;
+            string strTemp2 = strZeroKarma;
             int intKnowledgeSkillPointsMaximum = CharacterObject.SkillsSection.KnowledgeSkillPoints;
             if (intKnowledgeSkillPointsMaximum > 0)
             {
-                strTemp = CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalSettings.CultureInfo) + strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
+                strTemp2 = CharacterObject.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalSettings.CultureInfo) + strOf + intKnowledgeSkillPointsMaximum.ToString(GlobalSettings.CultureInfo);
             }
             int intKnowledgeSkillsTotalCostKarma = CharacterObject.SkillsSection.KnowledgeSkills.TotalCostKarma();
             if (intKnowledgeSkillsTotalCostKarma > 0)
             {
-                if (strTemp != strZeroKarma)
+                if (strTemp2 != strZeroKarma)
                 {
-                    strTemp += strColon + strSpace + intKnowledgeSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
+                    strTemp2 += strColon + strSpace + intKnowledgeSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
                 }
                 else
                 {
-                    strTemp = intKnowledgeSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
+                    strTemp2 = intKnowledgeSkillsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
                 }
             }
-            lblKnowledgeSkillsBP.Text = strTemp;
+            await lblKnowledgeSkillsBP.DoThreadSafeAsync(x => x.Text = strTemp2);
             //Groups
-            strTemp = strZeroKarma;
+            string strTemp3 = strZeroKarma;
             int intSkillGroupPointsMaximum = CharacterObject.SkillsSection.SkillGroupPointsMaximum;
             if (intSkillGroupPointsMaximum > 0)
             {
-                strTemp = CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalSettings.CultureInfo) + strOf + intSkillGroupPointsMaximum.ToString(GlobalSettings.CultureInfo);
+                strTemp3 = CharacterObject.SkillsSection.SkillGroupPoints.ToString(GlobalSettings.CultureInfo) + strOf + intSkillGroupPointsMaximum.ToString(GlobalSettings.CultureInfo);
             }
             int intSkillGroupsTotalCostKarma = CharacterObject.SkillsSection.SkillGroups.TotalCostKarma();
             if (intSkillGroupsTotalCostKarma > 0)
             {
-                if (strTemp != strZeroKarma)
+                if (strTemp3 != strZeroKarma)
                 {
-                    strTemp += strColon + strSpace + intSkillGroupsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
+                    strTemp3 += strColon + strSpace + intSkillGroupsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
                 }
                 else
                 {
-                    strTemp = intSkillGroupsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
+                    strTemp3 = intSkillGroupsTotalCostKarma.ToString(GlobalSettings.CultureInfo) + strSpace + strKarma;
                 }
             }
-            lblSkillGroupsBP.Text = strTemp;
+            await lblSkillGroupsBP.DoThreadSafeAsync(x => x.Text = strTemp3);
         }
 
         private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
@@ -10002,7 +10030,7 @@ namespace Chummer
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private async ValueTask DoUpdateCharacterInfo()
+        private async Task DoUpdateCharacterInfo()
         {
             if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
@@ -10014,7 +10042,7 @@ namespace Chummer
                 {
                     // TODO: DataBind these wherever possible
 
-                    UpdateSkillRelatedInfo();
+                    await UpdateSkillRelatedInfo();
 
                     // Calculate the number of Build Points remaining.
                     await CalculateBP();
@@ -10023,23 +10051,29 @@ namespace Chummer
                     if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
                         CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
                     {
-                        lblCritterPowerPointsLabel.Visible = true;
-                        lblCritterPowerPoints.Visible = true;
-                        lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                        });
                     }
                     else if (CharacterObject.IsFreeSprite)
                     {
-                        lblCritterPowerPointsLabel.Visible = true;
-                        lblCritterPowerPoints.Visible = true;
-                        lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                        });
                     }
                     else
                     {
-                        lblCritterPowerPointsLabel.Visible = false;
-                        lblCritterPowerPoints.Visible = false;
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false);
                     }
 
-                    UpdateInitiationCost();
+                    await UpdateInitiationCost();
 
                     await Task.WhenAll(RefreshSelectedQuality(), RefreshSelectedCyberware(), RefreshSelectedArmor(),
                                        RefreshSelectedGear(), RefreshSelectedDrug(), RefreshSelectedLifestyle(),
@@ -15089,7 +15123,7 @@ namespace Chummer
         /// <summary>
         /// Update the karma cost tooltip for Initiation/Submersion.
         /// </summary>
-        private void UpdateInitiationCost()
+        private async ValueTask UpdateInitiationCost()
         {
             decimal decMultiplier = 1.0m;
             int intAmount;
@@ -15105,7 +15139,7 @@ namespace Chummer
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
 
-                strInitTip = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveInitiateGrade")
+                strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade")
                     , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
                     , intAmount.ToString(GlobalSettings.CultureInfo));
             }
@@ -15119,12 +15153,12 @@ namespace Chummer
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
 
-                strInitTip = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveSubmersionGrade")
+                strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade")
                     , (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo)
                     , intAmount.ToString(GlobalSettings.CultureInfo));
             }
 
-            cmdAddMetamagic.SetToolTip(strInitTip);
+            await cmdAddMetamagic.SetToolTipAsync(strInitTip);
         }
 
         /// <summary>

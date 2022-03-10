@@ -9655,7 +9655,7 @@ namespace Chummer
             this.chkInitiationOrdeal.Tag = "Checkbox_InitiationOrdeal";
             this.chkInitiationOrdeal.Text = "Initiatory Ordeal (-10%)";
             this.chkInitiationOrdeal.UseVisualStyleBackColor = true;
-            this.chkInitiationOrdeal.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
+            this.chkInitiationOrdeal.CheckedChanged += new System.EventHandler(this.UpdateInitiationCostEvent);
             // 
             // chkInitiationSchooling
             // 
@@ -9669,7 +9669,7 @@ namespace Chummer
             this.chkInitiationSchooling.Tag = "Checkbox_InitiationSchooling";
             this.chkInitiationSchooling.Text = "Schooling (-10%)";
             this.chkInitiationSchooling.UseVisualStyleBackColor = true;
-            this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
+            this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.UpdateInitiationCostEvent);
             this.chkInitiationSchooling.EnabledChanged += new System.EventHandler(this.chkInitiationSchooling_EnabledChanged);
             // 
             // gpbInitiationGroup
@@ -9745,7 +9745,7 @@ namespace Chummer
             this.chkInitiationGroup.Tag = "Checkbox_InitiationGroup";
             this.chkInitiationGroup.Text = "Group Initiation (-10%)";
             this.chkInitiationGroup.UseVisualStyleBackColor = true;
-            this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
+            this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.UpdateInitiationCostEvent);
             this.chkInitiationGroup.EnabledChanged += new System.EventHandler(this.chkInitiationGroup_EnabledChanged);
             // 
             // lblGroupNotes

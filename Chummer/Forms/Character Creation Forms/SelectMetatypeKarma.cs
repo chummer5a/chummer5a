@@ -111,9 +111,12 @@ namespace Chummer
                         
                         await cboCategory.PopulateWithListItemsAsync(lstCategories);
                         // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
-                        cboCategory.SelectedValue = _objCharacter.MetatypeCategory;
-                        if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
-                            cboCategory.SelectedIndex = 0;
+                        await cboCategory.DoThreadSafeAsync(x =>
+                        {
+                            x.SelectedValue = _objCharacter.MetatypeCategory;
+                            if (x.SelectedIndex == -1 && lstCategories.Count > 0)
+                                x.SelectedIndex = 0;
+                        });
                     }
 
                     // Add Possession and Inhabitation to the list of Critter Tradition variations.

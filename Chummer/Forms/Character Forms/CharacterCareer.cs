@@ -13360,7 +13360,7 @@ namespace Chummer
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private async ValueTask DoUpdateCharacterInfo()
+        private async Task DoUpdateCharacterInfo()
         {
             if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
                 return;
@@ -13376,23 +13376,29 @@ namespace Chummer
                     if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
                         CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
                     {
-                        lblCritterPowerPointsLabel.Visible = true;
-                        lblCritterPowerPoints.Visible = true;
-                        lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                        });
                     }
                     else if (CharacterObject.IsFreeSprite)
                     {
-                        lblCritterPowerPointsLabel.Visible = true;
-                        lblCritterPowerPoints.Visible = true;
-                        lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCritterPowerPoints.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                        });
                     }
                     else
                     {
-                        lblCritterPowerPointsLabel.Visible = false;
-                        lblCritterPowerPoints.Visible = false;
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false);
                     }
 
-                    UpdateInitiationCost(this, EventArgs.Empty);
+                    await UpdateInitiationCost();
 
                     await Task.WhenAll(RefreshSelectedQuality(), RefreshSelectedCyberware(), RefreshSelectedArmor(),
                                        RefreshSelectedGear(), RefreshSelectedDrug(), RefreshSelectedLifestyle(),
@@ -16790,10 +16796,15 @@ namespace Chummer
             }
         }
 
+        private async void UpdateInitiationCostEvent(object sender, EventArgs e)
+        {
+            await UpdateInitiationCost();
+        }
+
         /// <summary>
         /// Update the karma cost tooltip for Initiation/Submersion.
         /// </summary>
-        private void UpdateInitiationCost(object sender, EventArgs e)
+        private async ValueTask UpdateInitiationCost()
         {
             decimal decMultiplier = 1.0m;
             int intAmount;
@@ -16809,7 +16820,7 @@ namespace Chummer
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
 
-                strInitTip = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveInitiateGrade")
+                strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade")
                     , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
                     , intAmount.ToString(GlobalSettings.CultureInfo));
             }
@@ -16823,12 +16834,12 @@ namespace Chummer
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
 
-                strInitTip = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Tip_ImproveSubmersionGrade")
+                strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade")
                     , (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo)
                     , intAmount.ToString(GlobalSettings.CultureInfo));
             }
 
-            cmdAddMetamagic.SetToolTip(strInitTip);
+            await cmdAddMetamagic.SetToolTipAsync(strInitTip);
         }
 
         /// <summary>
