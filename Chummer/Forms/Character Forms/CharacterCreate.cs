@@ -9560,9 +9560,12 @@ namespace Chummer
                 {
                     string strFormat = "{0}" + strSpace + '×' + strSpace + "{1}" + strSpace + await LanguageManager.GetStringAsync("String_Karma")
                                        + strSpace + '=' + strSpace + "{2}" + strSpace + await LanguageManager.GetStringAsync("String_Karma");
-                    await lblSpellsBP?.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
-                    await lblBuildRitualsBP?.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
-                    await lblBuildPrepsBP?.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
+                    if (lblSpellsBP != null)
+                        await lblSpellsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost, intSpellPointsUsed));
+                    if (lblBuildRitualsBP != null)
+                        await lblBuildRitualsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, rituals, spellCost, intRitualPointsUsed));
+                    if (lblBuildPrepsBP != null)
+                        await lblBuildPrepsBP.SetToolTipAsync(string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost, intPrepPointsUsed));
                     if (limit + intLimitMod > 0)
                     {
                         if (lblBuildPrepsBP != null)
