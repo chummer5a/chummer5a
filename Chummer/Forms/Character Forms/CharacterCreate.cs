@@ -45,10 +45,7 @@ namespace Chummer
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
-
-        // Set the default culture to en-US so we work with decimals correctly.
-        private bool _blnSkipUpdate;
-
+        
         private bool _blnReapplyImprovements;
         private bool _blnFreestyle;
         private bool _blnIsReopenQueued;
@@ -974,11 +971,10 @@ namespace Chummer
                             CharacterObject.AttributeSection.Attributes.CollectionChanged += AttributeCollectionChanged;
 
                             IsCharacterUpdateRequested = true;
-                            // Directly calling here so that we can properly unset the dirty flag after the update
-                            await DoUpdateCharacterInfo();
+                            // Directly awaiting here so that we can properly unset the dirty flag after the update
+                            await UpdateCharacterInfoTask;
 
                             // Now we can start checking for character updates
-                            Application.Idle += UpdateCharacterInfo;
                             Application.Idle += LiveUpdateFromCharacterFile;
 
                             // Clear the Dirty flag which gets set when creating a new Character.
@@ -1063,7 +1059,6 @@ namespace Chummer
                     // Reset the ToolStrip so the Save button is removed for the currently closing window.
                     if (e.Cancel)
                         return;
-                    Application.Idle -= UpdateCharacterInfo;
                     Application.Idle -= LiveUpdateFromCharacterFile;
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
@@ -1155,6 +1150,8 @@ namespace Chummer
                         objSpiritControl.ContactDetailChanged -= MakeDirtyWithCharacterUpdate;
                         objSpiritControl.DeleteSpirit -= DeleteSpirit;
                     }
+
+                    await UpdateCharacterInfoTask;
 
                     // Trash the global variables and dispose of the Form.
                     if (!_blnIsReopenQueued
@@ -2902,8 +2899,8 @@ namespace Chummer
                                 new PropertyChangedEventArgs(nameof(Character.DEPEnabled)));
 
                         IsCharacterUpdateRequested = true;
-                        // Immediately call character update because it re-applies essence loss improvements
-                        await DoUpdateCharacterInfo();
+                        // Immediately await character update because it re-applies essence loss improvements
+                        await UpdateCharacterInfoTask;
 
                         if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                         {
@@ -9972,7 +9969,7 @@ namespace Chummer
 
         private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
-            if (IsDirty || !GlobalSettings.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
+            if (IsDirty || !GlobalSettings.LiveUpdateCleanCharacterFiles || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
                 return;
 
             string strCharacterFile = CharacterObject.FileName;
@@ -9982,33 +9979,37 @@ namespace Chummer
             if (File.GetLastWriteTimeUtc(strCharacterFile) <= CharacterObject.FileLastWriteTime)
                 return;
 
-            _blnSkipUpdate = true;
-
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             using (CursorWait.New(this))
             using (LoadingBar frmLoadingForm
                    = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
                                                                  Character.NumLoadingSections))
             {
-                await CharacterObject.LoadAsync(frmLoadingForm);
-                frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                SkipUpdate = true;
+                try
+                {
+                    await CharacterObject.LoadAsync(frmLoadingForm);
+                    frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
 
-                // Select the Magician's Tradition.
-                if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
-                else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                    cboTradition.SelectedIndex = 0;
+                    // Select the Magician's Tradition.
+                    if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                        cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                    else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                        cboTradition.SelectedIndex = 0;
 
-                // Select the Technomancer's Stream.
-                if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                    cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
-                else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                    cboStream.SelectedIndex = 0;
-
-                IsCharacterUpdateRequested = true;
-                _blnSkipUpdate = false;
+                    // Select the Technomancer's Stream.
+                    if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                        cboStream.SelectedValue = CharacterObject.MagicTradition.SourceID;
+                    else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                        cboStream.SelectedIndex = 0;
+                }
+                finally
+                {
+                    SkipUpdate = false;
+                }
                 // Immediately call character update because we know it's necessary
-                await DoUpdateCharacterInfo();
+                IsCharacterUpdateRequested = true;
+                await UpdateCharacterInfoTask;
 
                 IsDirty = false;
             }
@@ -10021,21 +10022,16 @@ namespace Chummer
                 await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
             }
         }
-        
-        private async void UpdateCharacterInfo(object sender, EventArgs e)
-        {
-            await DoUpdateCharacterInfo();
-        }
 
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private async Task DoUpdateCharacterInfo()
+        protected override async Task DoUpdateCharacterInfo()
         {
-            if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
+            if (IsLoading || SkipUpdate)
                 return;
 
-            _blnSkipUpdate = true;
+            SkipUpdate = true;
             try
             {
                 using (CursorWait.New(this))
@@ -10089,7 +10085,7 @@ namespace Chummer
             finally
             {
                 IsCharacterUpdateRequested = false;
-                _blnSkipUpdate = false;
+                SkipUpdate = false;
             }
         }
 
@@ -14336,41 +14332,51 @@ namespace Chummer
                     }
                 }
 
-                _blnSkipUpdate = true;
-
-                // If the character does not have any Lifestyles, give them the Street Lifestyle.
-                if (CharacterObject.Lifestyles.Count == 0)
+                SkipUpdate = true;
+                try
                 {
-                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("lifestyles.xml");
-                    XmlNode objXmlLifestyle = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
+                    // If the character does not have any Lifestyles, give them the Street Lifestyle.
+                    if (CharacterObject.Lifestyles.Count == 0)
+                    {
+                        Lifestyle objLifestyle = new Lifestyle(CharacterObject);
+                        XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("lifestyles.xml");
+                        XmlNode objXmlLifestyle
+                            = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
 
-                    objLifestyle.Create(objXmlLifestyle);
+                        objLifestyle.Create(objXmlLifestyle);
 
-                    CharacterObject.Lifestyles.Add(objLifestyle);
+                        CharacterObject.Lifestyles.Add(objLifestyle);
+                    }
+
+                    decimal decStartingNuyen;
+                    using (SelectLifestyleStartingNuyen frmStartingNuyen
+                           = new SelectLifestyleStartingNuyen(CharacterObject))
+                    {
+                        if (await frmStartingNuyen.ShowDialogSafeAsync(this) != DialogResult.OK)
+                            return false;
+                        decStartingNuyen = frmStartingNuyen.StartingNuyen;
+                    }
+
+                    // Assign starting values and overflows.
+                    if (decStartingNuyen < 0)
+                        decStartingNuyen = 0;
+                    if (CharacterObject.Nuyen > 5000)
+                        CharacterObject.Nuyen = 5000;
+                    CharacterObject.Nuyen += decStartingNuyen;
+                    // See if the character has any Karma remaining.
+                    if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
+                        CharacterObject.Karma = CharacterObject.EffectiveBuildMethodUsesPriorityTables
+                            ? CharacterObjectSettings.KarmaCarryover
+                            : 0;
+                    else
+                        CharacterObject.Karma = intBuildPoints;
+
+                    return true;
                 }
-
-                decimal decStartingNuyen;
-                using (SelectLifestyleStartingNuyen frmStartingNuyen = new SelectLifestyleStartingNuyen(CharacterObject))
+                finally
                 {
-                    if (await frmStartingNuyen.ShowDialogSafeAsync(this) != DialogResult.OK)
-                        return false;
-                    decStartingNuyen = frmStartingNuyen.StartingNuyen;
+                    SkipUpdate = false;
                 }
-
-                // Assign starting values and overflows.
-                if (decStartingNuyen < 0)
-                    decStartingNuyen = 0;
-                if (CharacterObject.Nuyen > 5000)
-                    CharacterObject.Nuyen = 5000;
-                CharacterObject.Nuyen += decStartingNuyen;
-                // See if the character has any Karma remaining.
-                if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
-                    CharacterObject.Karma = CharacterObject.EffectiveBuildMethodUsesPriorityTables ? CharacterObjectSettings.KarmaCarryover : 0;
-                else
-                    CharacterObject.Karma = intBuildPoints;
-
-                return true;
             }
 
             return false;

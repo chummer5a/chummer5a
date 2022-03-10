@@ -27,6 +27,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -6893,7 +6894,55 @@ namespace Chummer
             IsDirty = true;
         }
 
-        public bool IsCharacterUpdateRequested { get; set; }
+        public bool IsCharacterUpdateRequested
+        {
+            get => !_tskUpdateCharacterInfo.IsCompleted;
+            set
+            {
+                if (!value)
+                {
+                    if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                    {
+                        _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
+                        _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                        _objUpdateCharacterInfoCancellationTokenSource = null;
+                    }
+
+                    return;
+                }
+
+                if (IsLoading || _blnSkipUpdate)
+                    return;
+                if (_tskUpdateCharacterInfo?.IsCompleted == false)
+                    return;
+                if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                {
+                    _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
+                    _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                }
+                _objUpdateCharacterInfoCancellationTokenSource = new CancellationTokenSource();
+                _tskUpdateCharacterInfo = Task.Run(DoUpdateCharacterInfo, _objUpdateCharacterInfoCancellationTokenSource.Token);
+            }
+        }
+
+        protected Task UpdateCharacterInfoTask => _tskUpdateCharacterInfo;
+        
+        private Task _tskUpdateCharacterInfo = Task.CompletedTask;
+
+        private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
+
+        protected virtual Task DoUpdateCharacterInfo()
+        {
+            return Task.CompletedTask;
+        }
+
+        protected bool SkipUpdate
+        {
+            get => _blnSkipUpdate;
+            set => _blnSkipUpdate = value;
+        }
+
+        private bool _blnSkipUpdate;
 
         public Character CharacterObject => _objCharacter;
 
@@ -7069,6 +7118,11 @@ namespace Chummer
             {
                 _objCharacter.PropertyChanged -= RecacheSettingsOnSettingsChange;
                 _frmPrintView?.Dispose();
+                if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                {
+                    _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
+                    _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                }
             }
             base.Dispose(disposing);
         }

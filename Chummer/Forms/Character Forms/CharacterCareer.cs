@@ -44,9 +44,6 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
-        // Set the default culture to en-US so we work with decimals correctly.
-        private bool _blnSkipUpdate;
-
         private bool _blnReapplyImprovements;
         private int _intDragLevel;
         private MouseButtons _eDragButton = MouseButtons.None;
@@ -1006,11 +1003,10 @@ namespace Chummer
                                                                         true, CharacterObject.StunCMFilled);
 
                             IsCharacterUpdateRequested = true;
-                            // Directly calling here so that we can properly unset the dirty flag after the update
-                            await DoUpdateCharacterInfo();
+                            // Directly awaiting here so that we can properly unset the dirty flag after the update
+                            await UpdateCharacterInfoTask;
 
                             // Now we can start checking for character updates
-                            Application.Idle += UpdateCharacterInfo;
                             Application.Idle += LiveUpdateFromCharacterFile;
 
                             // Clear the Dirty flag which gets set when creating a new Character.
@@ -1245,7 +1241,6 @@ namespace Chummer
                     // Reset the ToolStrip so the Save button is removed for the currently closing window.
                     if (e.Cancel)
                         return;
-                    Application.Idle -= UpdateCharacterInfo;
                     Application.Idle -= LiveUpdateFromCharacterFile;
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
@@ -1353,6 +1348,8 @@ namespace Chummer
                         objSustainedSpellControl.SustainedObjectDetailChanged -= MakeDirtyWithCharacterUpdate;
                         objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
                     }
+
+                    await UpdateCharacterInfoTask;
 
                     // Trash the global variables and dispose of the Form.
                     if (Program.OpenCharacters.All(
@@ -3146,8 +3143,8 @@ namespace Chummer
                         }
 
                         IsCharacterUpdateRequested = true;
-                        // Immediately call character update because it re-applies essence loss improvements
-                        await DoUpdateCharacterInfo();
+                        // Immediately await character update because it re-applies essence loss improvements
+                        await UpdateCharacterInfoTask;
 
                         if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                         {
@@ -13313,7 +13310,7 @@ namespace Chummer
 
         private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
-            if (IsDirty || !GlobalSettings.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
+            if (IsDirty || !GlobalSettings.LiveUpdateCleanCharacterFiles || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
                 return;
 
             string strCharacterFile = CharacterObject.FileName;
@@ -13323,8 +13320,6 @@ namespace Chummer
             if (File.GetLastWriteTimeUtc(strCharacterFile) <= CharacterObject.FileLastWriteTime)
                 return;
 
-            _blnSkipUpdate = true;
-
             // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
             using (CursorWait.New(this))
             {
@@ -13332,13 +13327,19 @@ namespace Chummer
                        = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
                                                                      Character.NumLoadingSections))
                 {
-                    await CharacterObject.LoadAsync(frmLoadingForm);
-                    frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
-
+                    SkipUpdate = true;
+                    try
+                    {
+                        await CharacterObject.LoadAsync(frmLoadingForm);
+                        frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                    }
+                    finally
+                    {
+                        SkipUpdate = false;
+                    }
                     IsCharacterUpdateRequested = true;
-                    _blnSkipUpdate = false;
-                    // Immediately call character update because we know it's necessary
-                    await DoUpdateCharacterInfo();
+                    // Immediately await character update because we know it's necessary
+                    await UpdateCharacterInfoTask;
 
                     IsDirty = false;
                 }
@@ -13352,20 +13353,15 @@ namespace Chummer
             }
         }
 
-        private async void UpdateCharacterInfo(object sender, EventArgs e)
-        {
-            await DoUpdateCharacterInfo();
-        }
-
         /// <summary>
         /// Update the Character information.
         /// </summary>
-        private async Task DoUpdateCharacterInfo()
+        protected override async Task DoUpdateCharacterInfo()
         {
-            if (IsLoading || _blnSkipUpdate || !IsCharacterUpdateRequested)
+            if (IsLoading || SkipUpdate)
                 return;
 
-            _blnSkipUpdate = true;
+            SkipUpdate = true;
 
             try
             {
@@ -13414,7 +13410,7 @@ namespace Chummer
             finally
             {
                 IsCharacterUpdateRequested = false;
-                _blnSkipUpdate = false;
+                SkipUpdate = false;
             }
         }
 
