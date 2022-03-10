@@ -54,6 +54,7 @@ namespace Chummer
         private bool _blnIsRefreshing;
         private bool _blnLoading = true;
         private CharacterSheetViewer _frmPrintView;
+        private readonly FileSystemWatcher _objCharacterFileWatcher;
 
         protected CharacterShared(Character objCharacter)
         {
@@ -78,6 +79,17 @@ namespace Chummer
                 }
                 TelemetryClient.TrackPageView(pvt);
             };
+            if (GlobalSettings.LiveUpdateCleanCharacterFiles && objCharacter?.FileName != null)
+            {
+                string strCharacterFileName = Path.GetFileName(objCharacter.FileName);
+                _objCharacterFileWatcher = new FileSystemWatcher(
+                    Path.GetFullPath(objCharacter.FileName).TrimEndOnce(strCharacterFileName), strCharacterFileName);
+                _objCharacterFileWatcher.Changed += LiveUpdateFromCharacterFile;
+            }
+        }
+
+        protected virtual void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
+        {
         }
 
         private void RecacheSettingsOnSettingsChange(object sender, PropertyChangedEventArgs e)
@@ -6949,6 +6961,8 @@ namespace Chummer
         private CharacterSettings _objCachedSettings;
 
         protected CharacterSettings CharacterObjectSettings => _objCachedSettings ?? (_objCachedSettings = CharacterObject?.Settings);
+
+
 
         protected virtual string FormMode => string.Empty;
 

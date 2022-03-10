@@ -1006,9 +1006,6 @@ namespace Chummer
                             // Directly awaiting here so that we can properly unset the dirty flag after the update
                             await UpdateCharacterInfoTask;
 
-                            // Now we can start checking for character updates
-                            Application.Idle += LiveUpdateFromCharacterFile;
-
                             // Clear the Dirty flag which gets set when creating a new Character.
                             IsDirty = false;
                             RefreshPasteStatus();
@@ -1241,7 +1238,6 @@ namespace Chummer
                     // Reset the ToolStrip so the Save button is removed for the currently closing window.
                     if (e.Cancel)
                         return;
-                    Application.Idle -= LiveUpdateFromCharacterFile;
                     if (Program.MainForm.ActiveMdiChild == this)
                         ToolStripManager.RevertMerge("toolStrip");
                     Program.MainForm.OpenCharacterForms.Remove(this);
@@ -13308,48 +13304,62 @@ namespace Chummer
             flpDrugs.ResumeLayout();
         }
 
-        private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
+        private bool _blnFileUpdateQueued;
+
+        protected override async void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
         {
-            if (IsDirty || !GlobalSettings.LiveUpdateCleanCharacterFiles || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
+            if (_blnFileUpdateQueued)
                 return;
-
-            string strCharacterFile = CharacterObject.FileName;
-            if (string.IsNullOrEmpty(strCharacterFile) || !File.Exists(strCharacterFile))
-                return;
-
-            if (File.GetLastWriteTimeUtc(strCharacterFile) <= CharacterObject.FileLastWriteTime)
-                return;
-
-            // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
-            using (CursorWait.New(this))
+            _blnFileUpdateQueued = true;
+            try
             {
-                using (LoadingBar frmLoadingForm
-                       = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
-                                                                     Character.NumLoadingSections))
+                while (IsDirty || IsLoading || SkipUpdate || IsCharacterUpdateRequested)
+                    await Utils.SafeSleepAsync();
+
+                string strCharacterFile = CharacterObject.FileName;
+                if (string.IsNullOrEmpty(strCharacterFile) || !File.Exists(strCharacterFile))
+                    return;
+
+                // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
+                using (CursorWait.New(this, true))
                 {
-                    SkipUpdate = true;
-                    try
+                    using (CursorWait.New(this))
+                    using (LoadingBar frmLoadingForm
+                           = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(CharacterObject.FileName),
+                                                                         Character.NumLoadingSections))
                     {
-                        await CharacterObject.LoadAsync(frmLoadingForm);
-                        frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                        SkipUpdate = true;
+                        try
+                        {
+                            await CharacterObject.LoadAsync(frmLoadingForm);
+                            frmLoadingForm.PerformStep(await LanguageManager.GetStringAsync("String_UI"));
+                        }
+                        finally
+                        {
+                            SkipUpdate = false;
+                        }
                     }
-                    finally
-                    {
-                        SkipUpdate = false;
-                    }
+
                     IsCharacterUpdateRequested = true;
                     // Immediately await character update because we know it's necessary
                     await UpdateCharacterInfoTask;
 
                     IsDirty = false;
+
+                    if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest
+                        && Program.ShowMessageBox(
+                            this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
+                            await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"),
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    {
+                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                        await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
+                    }
                 }
             }
-
-            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest && Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError"),
-                await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            finally
             {
-                await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
-                await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
+                _blnFileUpdateQueued = false;
             }
         }
 
