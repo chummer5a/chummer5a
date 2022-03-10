@@ -26,7 +26,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -84,7 +83,7 @@ namespace Chummer.Backend.Attributes
             );
 
         private bool _blnAttributesInitialized;
-        private readonly ReaderWriterLockSlim _objAttributesInitializerLock = new ReaderWriterLockSlim();
+        private readonly AsyncFriendlyReaderWriterLock _objAttributesInitializerLock = new AsyncFriendlyReaderWriterLock();
         private readonly ThreadSafeObservableCollection<CharacterAttrib> _lstAttributes = new ThreadSafeObservableCollection<CharacterAttrib>();
 
         public ThreadSafeObservableCollection<CharacterAttrib> Attributes
@@ -93,17 +92,12 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    _objAttributesInitializerLock.EnterUpgradeableReadLock();
-                    try
+                    using (EnterReadLock.Enter(_objAttributesInitializerLock))
                     {
                         if (!_blnAttributesInitialized)
                         {
                             InitializeAttributesList();
                         }
-                    }
-                    finally
-                    {
-                        _objAttributesInitializerLock.ExitUpgradeableReadLock();
                     }
                     return _lstAttributes;
                 }
@@ -114,8 +108,7 @@ namespace Chummer.Backend.Attributes
         {
             using (EnterReadLock.Enter(_objCharacter.LockObject))
             {
-                _objAttributesInitializerLock.EnterWriteLock();
-                try
+                using (_objAttributesInitializerLock.EnterWriteLock())
                 {
                     _blnAttributesInitialized = true;
 
@@ -147,10 +140,6 @@ namespace Chummer.Backend.Attributes
                     {
                         _lstAttributes.Add(_objCharacter.DEP);
                     }
-                }
-                finally
-                {
-                    _objAttributesInitializerLock.ExitWriteLock();
                 }
             }
         }
