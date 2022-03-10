@@ -113,17 +113,14 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
+            
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             // Select the first Category in the list.
             if (!string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedValue = _strSelectCategory;
-
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
 
             _blnLoading = false;
 
@@ -535,14 +532,12 @@ namespace Chummer
 
                         _blnLoading = true;
                         string strOldSelected = lstArmor.SelectedValue?.ToString();
-                        lstArmor.BeginUpdate();
-                        lstArmor.PopulateWithListItems(lstArmors);
+                        await lstArmor.PopulateWithListItemsAsync(lstArmors);
                         _blnLoading = false;
                         if (!string.IsNullOrEmpty(strOldSelected))
                             lstArmor.SelectedValue = strOldSelected;
                         else
                             lstArmor.SelectedIndex = -1;
-                        lstArmor.EndUpdate();
                         break;
                     }
             }

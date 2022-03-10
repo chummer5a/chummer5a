@@ -104,7 +104,7 @@ namespace Chummer
             }
         }
 
-        private ValueTask RefreshSelectLifestyle()
+        private async ValueTask RefreshSelectLifestyle()
         {
             _blnIsSelectLifestyleRefreshing = true;
             using (CursorWait.New(this))
@@ -138,21 +138,19 @@ namespace Chummer
                         }
 
                         lstLifestyleItems.Sort(CompareListItems.CompareNames);
-
-                        cboSelectLifestyle.BeginUpdate();
-                        cboSelectLifestyle.PopulateWithListItems(lstLifestyleItems);
+                        
+                        await cboSelectLifestyle.PopulateWithListItemsAsync(lstLifestyleItems);
                         cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
                         if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
                             cboSelectLifestyle.SelectedIndex = 0;
                         cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
-                        cboSelectLifestyle.EndUpdate();
                     }
                 }
                 finally
                 {
                     _blnIsSelectLifestyleRefreshing = false;
                 }
-                return RefreshBaseLifestyle();
+                await RefreshBaseLifestyle();
             }
         }
 

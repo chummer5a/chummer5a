@@ -200,10 +200,8 @@ namespace Chummer.UI.Skills
                             Margin = new Padding(3, 0, 3, 0),
                             Name = "cboSelectAttribute"
                         };
-                        cboSelectAttribute.BeginUpdate();
                         cboSelectAttribute.PopulateWithListItems(lstAttributeItems);
                         cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
-                        cboSelectAttribute.EndUpdate();
                         cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
                         pnlAttributes.Controls.Add(cboSelectAttribute);
                     }
@@ -271,9 +269,7 @@ namespace Chummer.UI.Skills
                             Sorted = true,
                             TabStop = false
                         };
-                        cboSpec.BeginUpdate();
                         cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
-                        cboSpec.EndUpdate();
                         cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                         cboSpec.Text = objSkill.CurrentDisplaySpecialization;
                         cboSpec.TextChanged += cboSpec_TextChanged;
@@ -391,7 +387,6 @@ namespace Chummer.UI.Skills
                         cboSpec.QueueThreadSafe(() =>
                         {
                             _blnUpdatingSpec = true;
-                            cboSpec.BeginUpdate();
                             cboSpec.PopulateWithListItems(lstSpecializations);
                             if (string.IsNullOrEmpty(strOldSpec))
                                 cboSpec.SelectedIndex = -1;
@@ -401,7 +396,6 @@ namespace Chummer.UI.Skills
                                 if (cboSpec.SelectedIndex == -1)
                                     cboSpec.Text = strOldSpec;
                             }
-                            cboSpec.EndUpdate();
                             _blnUpdatingSpec = false;
                         });
                     }

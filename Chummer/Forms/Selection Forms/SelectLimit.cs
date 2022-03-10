@@ -60,10 +60,8 @@ namespace Chummer
                     lstLimitItems.Add(
                         new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short")));
                 }
-
-                cboLimit.BeginUpdate();
-                cboLimit.PopulateWithListItems(lstLimitItems);
-                cboLimit.EndUpdate();
+                
+                await cboLimit.PopulateWithListItemsAsync(lstLimitItems);
                 if (lstLimitItems.Count >= 1)
                     cboLimit.SelectedIndex = 0;
                 else if (lstLimitItems.Count == 1)

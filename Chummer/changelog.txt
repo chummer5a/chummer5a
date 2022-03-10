@@ -36,6 +36,7 @@ Changed/New Strings:
 - Message_ExtraNativeLanguages
 - Menu_Main_OpenForPrinting
 - Menu_Main_OpenForExport
+- String_Export_JSON
 
 Removed Strings:
 - Message_UnderLanguageLimit

@@ -55,14 +55,14 @@ namespace Chummer
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVBase))
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
             {
-                foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.SelectAndCacheExpression(
+                foreach (XPathNavigator objXmlSkill in await _objXmlSkillsDocument.SelectAndCacheExpressionAsync(
                              "skills/skill[category = \"Combat Active\"]"))
                 {
-                    string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                     if (!string.IsNullOrEmpty(strName))
                         lstSkills.Add(new ListItem(
                                           strName,
-                                          objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                          (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                           ?? strName));
                 }
 
@@ -78,20 +78,14 @@ namespace Chummer
                 lstDVType.Add(new ListItem("S", await LanguageManager.GetStringAsync("String_DamageStun")));
 
                 // Bind the Lists to the ComboBoxes.
-                cboSkill.BeginUpdate();
-                cboSkill.PopulateWithListItems(lstSkills);
+                await cboSkill.PopulateWithListItemsAsync(lstSkills);
                 cboSkill.SelectedIndex = 0;
-                cboSkill.EndUpdate();
 
-                cboDVBase.BeginUpdate();
-                cboDVBase.PopulateWithListItems(lstDVBase);
+                await cboDVBase.PopulateWithListItemsAsync(lstDVBase);
                 cboDVBase.SelectedIndex = 0;
-                cboDVBase.EndUpdate();
 
-                cboDVType.BeginUpdate();
-                cboDVType.PopulateWithListItems(lstDVType);
+                await cboDVType.PopulateWithListItemsAsync(lstDVType);
                 cboDVType.SelectedIndex = 0;
-                cboDVType.EndUpdate();
             }
         }
 
@@ -167,8 +161,8 @@ namespace Chummer
                     Avail = "0",
                     Cost = "0",
                     UseSkill = cboSkill.SelectedValue.ToString(),
-                    Source = objPower.SelectSingleNodeAndCacheExpression("source")?.Value,
-                    Page = objPower.SelectSingleNodeAndCacheExpression("page")?.Value
+                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value,
+                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value
                 };
 
                 DialogResult = DialogResult.OK;

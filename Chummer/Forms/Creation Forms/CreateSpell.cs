@@ -60,12 +60,8 @@ namespace Chummer
                                                  (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
                                                  ?? strInnerText));
                 }
-
-                cboCategory.BeginUpdate();
-                cboType.BeginUpdate();
-                cboRange.BeginUpdate();
-                cboDuration.BeginUpdate();
-                cboCategory.PopulateWithListItems(lstCategory);
+                
+                await cboCategory.PopulateWithListItemsAsync(lstCategory);
                 cboCategory.SelectedIndex = 0;
             }
 
@@ -74,7 +70,7 @@ namespace Chummer
             {
                 lstTypes.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_DescPhysical")));
                 lstTypes.Add(new ListItem("M", await LanguageManager.GetStringAsync("String_DescMana")));
-                cboType.PopulateWithListItems(lstTypes);
+                await cboType.PopulateWithListItemsAsync(lstTypes);
             }
 
             cboType.SelectedIndex = 0;
@@ -84,7 +80,7 @@ namespace Chummer
             {
                 lstRanges.Add(new ListItem("T", await LanguageManager.GetStringAsync("String_SpellRangeTouchLong")));
                 lstRanges.Add(new ListItem("LOS", await LanguageManager.GetStringAsync("String_SpellRangeLineOfSight")));
-                cboRange.PopulateWithListItems(lstRanges);
+                await cboRange.PopulateWithListItemsAsync(lstRanges);
             }
             cboRange.SelectedIndex = 0;
 
@@ -94,15 +90,11 @@ namespace Chummer
                 lstDurations.Add(new ListItem("I", await LanguageManager.GetStringAsync("String_SpellDurationInstantLong")));
                 lstDurations.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_SpellDurationPermanentLong")));
                 lstDurations.Add(new ListItem("S", await LanguageManager.GetStringAsync("String_SpellDurationSustainedLong")));
-                cboDuration.PopulateWithListItems(lstDurations);
+                await cboDuration.PopulateWithListItemsAsync(lstDurations);
             }
 
             cboDuration.SelectedIndex = 0;
             _blnLoading = false;
-            cboCategory.EndUpdate();
-            cboType.EndUpdate();
-            cboRange.EndUpdate();
-            cboDuration.EndUpdate();
 
             await CalculateDrain();
         }

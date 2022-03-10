@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Shared.Components
@@ -40,7 +41,7 @@ namespace Chummer.UI.Shared.Components
 
         private async void DicePoolControl_Load(object sender, EventArgs e)
         {
-            cmdRoll.ToolTipText = await LanguageManager.GetStringAsync("Tip_DiceRoller");
+            await cmdRoll.SetToolTipTextAsync(await LanguageManager.GetStringAsync("Tip_DiceRoller"));
         }
 
         private void cmdRoll_Click(object sender, EventArgs e)
@@ -56,6 +57,11 @@ namespace Chummer.UI.Shared.Components
         public void SetLabelToolTip(string caption)
         {
             lblDicePool.SetToolTip(caption);
+        }
+
+        public Task SetLabelToolTipAsync(string caption)
+        {
+            return lblDicePool.SetToolTipAsync(caption);
         }
 
         public bool CanBeRolled
@@ -87,13 +93,12 @@ namespace Chummer.UI.Shared.Components
             get => _intDicePool;
             set
             {
-                if (_intDicePool != value)
-                {
-                    _intDicePool = value;
-                    lblDicePool.Text = CanBeRolled
-                        ? _intDicePool.ToString(GlobalSettings.CultureInfo)
-                        : _intDicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                }
+                if (_intDicePool == value)
+                    return;
+                _intDicePool = value;
+                lblDicePool.DoThreadSafe(x => x.Text = CanBeRolled
+                                             ? _intDicePool.ToString(GlobalSettings.CultureInfo)
+                                             : _intDicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo));
             }
         }
 

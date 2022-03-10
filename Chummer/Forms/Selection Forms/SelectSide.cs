@@ -50,10 +50,8 @@ namespace Chummer
                 lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft")));
                 lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight")));
                 lstSides.Sort(CompareListItems.CompareNames);
-
-                cboSide.BeginUpdate();
-                cboSide.PopulateWithListItems(lstSides);
-                cboSide.EndUpdate();
+                
+                await cboSide.PopulateWithListItemsAsync(lstSides);
             }
 
             // Select the first item in the list.

@@ -163,7 +163,7 @@ namespace Chummer
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
-            lblSource.SetToolTip(objSource.LanguageBookTooltip);
+            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
             lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblFVLabel.Visible = !string.IsNullOrEmpty(lblFV.Text);
@@ -284,14 +284,12 @@ namespace Chummer
                 lstComplexFormItems.Sort(CompareListItems.CompareNames);
                 _blnLoading = true;
                 string strOldSelected = lstComplexForms.SelectedValue?.ToString();
-                lstComplexForms.BeginUpdate();
-                lstComplexForms.PopulateWithListItems(lstComplexFormItems);
+                await lstComplexForms.PopulateWithListItemsAsync(lstComplexFormItems);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstComplexForms.SelectedValue = strOldSelected;
                 else
                     lstComplexForms.SelectedIndex = -1;
-                lstComplexForms.EndUpdate();
             }
         }
 

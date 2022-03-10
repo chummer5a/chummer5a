@@ -114,9 +114,8 @@ namespace Chummer
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
+            
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             _blnLoading = false;
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(_strSelectCategory))
@@ -126,7 +125,6 @@ namespace Chummer
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
         }
 
         private async void RefreshCurrentList(object sender, EventArgs e)
@@ -323,7 +321,7 @@ namespace Chummer
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
-            lblSource.SetToolTip(objSource.LanguageBookTooltip);
+            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             tlpRight.Visible = true;
             ResumeLayout();
@@ -631,14 +629,12 @@ namespace Chummer
 
                     string strOldSelected = lstVehicle.SelectedValue?.ToString();
                     _blnLoading = true;
-                    lstVehicle.BeginUpdate();
-                    lstVehicle.PopulateWithListItems(lstVehicles);
+                    await lstVehicle.PopulateWithListItemsAsync(lstVehicles);
                     _blnLoading = false;
                     if (string.IsNullOrEmpty(strOldSelected))
                         lstVehicle.SelectedIndex = -1;
                     else
                         lstVehicle.SelectedValue = strOldSelected;
-                    lstVehicle.EndUpdate();
                 }
             }
         }

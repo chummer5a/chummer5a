@@ -175,7 +175,7 @@ namespace Chummer
                     foreach (XPathNavigator objXmlSkill in objXmlSkillList)
                     {
                         string strXmlSkillName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
-                        Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strXmlSkillName);
+                        Skill objExistingSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync(strXmlSkillName);
                         if (objExistingSkill == null)
                         {
                             if (_intMinimumRating > 0)
@@ -247,11 +247,9 @@ namespace Chummer
                 }
 
                 lstSkills.Sort(CompareListItems.CompareNames);
-                cboSkill.BeginUpdate();
-                cboSkill.PopulateWithListItems(lstSkills);
+                await cboSkill.PopulateWithListItemsAsync(lstSkills);
                 // Select the first Skill in the list.
                 cboSkill.SelectedIndex = 0;
-                cboSkill.EndUpdate();
             }
 
             if (cboSkill.Items.Count == 1)

@@ -52,11 +52,9 @@ namespace Chummer
                 lstMethod.Add(new ListItem("Standard", await LanguageManager.GetStringAsync("String_DiceRoller_Standard")));
                 lstMethod.Add(new ListItem("Large", await LanguageManager.GetStringAsync("String_DiceRoller_Large")));
                 lstMethod.Add(new ListItem("ReallyLarge", await LanguageManager.GetStringAsync("String_DiceRoller_ReallyLarge")));
-
-                cboMethod.BeginUpdate();
-                cboMethod.PopulateWithListItems(lstMethod);
+                
+                await cboMethod.PopulateWithListItemsAsync(lstMethod);
                 cboMethod.SelectedIndex = 0;
-                cboMethod.EndUpdate();
             }
         }
 

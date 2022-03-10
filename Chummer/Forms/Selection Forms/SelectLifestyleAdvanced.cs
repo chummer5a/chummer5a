@@ -364,9 +364,7 @@ namespace Chummer
                 chkBonusLPRandomize.DoNegatableDataBinding("Checked", _objLifestyle, nameof(Lifestyle.AllowBonusLP));
                 nudBonusLP.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BonusLP));
                 await ResetLifestyleQualitiesTree();
-                cboBaseLifestyle.BeginUpdate();
-                cboBaseLifestyle.PopulateWithListItems(lstLifestyles);
-                cboBaseLifestyle.EndUpdate();
+                await cboBaseLifestyle.PopulateWithListItemsAsync(lstLifestyles);
             }
 
             txtLifestyleName.DoDataBinding("Text", _objLifestyle, nameof(Lifestyle.Name));
@@ -411,11 +409,9 @@ namespace Chummer
                         }
                     }
                 }
-
-                cboCity.BeginUpdate();
-                cboCity.PopulateWithListItems(lstCity);
+                
+                await cboCity.PopulateWithListItemsAsync(lstCity);
                 cboCity.DoDataBinding("SelectedValue", _objLifestyle, nameof(Lifestyle.City));
-                cboCity.EndUpdate();
             }
 
             //Populate District and Borough ComboBox for the first time
@@ -671,18 +667,18 @@ namespace Chummer
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     lblSource.Text = objSource.ToString();
-                    lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                    await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                 }
                 else
                 {
                     lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
+                    await lblSource.SetToolTipAsync(string.Empty);
                 }
             }
             else
             {
                 lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                await lblSource.SetToolTipAsync(string.Empty);
             }
 
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -753,10 +749,8 @@ namespace Chummer
                         }
                     }
                 }
-
-                cboDistrict.BeginUpdate();
-                cboDistrict.PopulateWithListItems(lstDistrict);
-                cboDistrict.EndUpdate();
+                
+                await cboDistrict.PopulateWithListItemsAsync(lstDistrict);
             }
         }
 
@@ -783,10 +777,8 @@ namespace Chummer
                         }
                     }
                 }
-
-                cboBorough.BeginUpdate();
-                cboBorough.PopulateWithListItems(lstBorough);
-                cboBorough.EndUpdate();
+                
+                await cboBorough.PopulateWithListItemsAsync(lstBorough);
             }
         }
 

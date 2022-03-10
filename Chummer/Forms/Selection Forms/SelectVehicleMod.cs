@@ -107,14 +107,12 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             // Select the first Category in the list.
             if (!string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedValue = _strSelectCategory;
             if (cboCategory.SelectedIndex == -1 && _lstCategory.Count > 0)
                 cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
 
             _blnLoading = false;
             await UpdateGearInfo();
@@ -431,14 +429,12 @@ namespace Chummer
 
                 string strOldSelected = lstMod.SelectedValue?.ToString();
                 _blnLoading = true;
-                lstMod.BeginUpdate();
-                lstMod.PopulateWithListItems(lstMods);
+                await lstMod.PopulateWithListItemsAsync(lstMods);
                 _blnLoading = false;
                 if (string.IsNullOrEmpty(strOldSelected))
                     lstMod.SelectedIndex = -1;
                 else
                     lstMod.SelectedValue = strOldSelected;
-                lstMod.EndUpdate();
             }
         }
 
@@ -679,7 +675,7 @@ namespace Chummer
                         lblVehicleCapacity.Visible = true;
                         int.TryParse(lblSlots.Text, NumberStyles.Any, GlobalSettings.CultureInfo, out int intSlots);
                         lblVehicleCapacity.Text = GetRemainingModCapacity(strCategory, intSlots);
-                        lblVehicleCapacityLabel.SetToolTip(await LanguageManager.GetStringAsync("Tip_RemainingVehicleModCapacity"));
+                        await lblVehicleCapacityLabel.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_RemainingVehicleModCapacity"));
                     }
                     else
                     {
@@ -729,7 +725,7 @@ namespace Chummer
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 string strPage = (await xmlVehicleMod.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                 SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                objSourceString.SetControl(lblSource);
+                await objSourceString.SetControlAsync(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 tlpRight.Visible = true;
             }

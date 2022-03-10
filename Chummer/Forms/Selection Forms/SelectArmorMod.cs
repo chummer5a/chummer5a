@@ -386,7 +386,7 @@ namespace Chummer
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
-            lblSource.SetToolTip(objSource.LanguageBookTooltip);
+            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             tlpRight.Visible = true;
             ResumeLayout();
@@ -491,14 +491,12 @@ namespace Chummer
 
                 string strOldSelected = lstMod.SelectedValue?.ToString();
                 _blnLoading = true;
-                lstMod.BeginUpdate();
-                lstMod.PopulateWithListItems(lstMods);
+                await lstMod.PopulateWithListItemsAsync(lstMods);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstMod.SelectedValue = strOldSelected;
                 else
                     lstMod.SelectedIndex = -1;
-                lstMod.EndUpdate();
             }
         }
 

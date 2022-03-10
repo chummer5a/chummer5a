@@ -102,11 +102,9 @@ namespace Chummer
                                         ?? await LanguageManager.GetStringAsync("String_Unknown")));
                     }
                 }
-
-                cboSize.BeginUpdate();
-                cboSize.PopulateWithListItems(lstSize);
+                
+                await cboSize.PopulateWithListItemsAsync(lstSize);
                 cboSize.Enabled = _blnAllowEditOptions && lstSize.Count > 1;
-                cboSize.EndUpdate();
             }
 
             if (_objMount != null)
@@ -589,7 +587,7 @@ namespace Chummer
                         lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                     }
 
-                    objMod.SetSourceDetail(lblSource);
+                    await objMod.SetSourceDetailAsync(lblSource);
                     lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
                     lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
                     lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
@@ -729,7 +727,7 @@ namespace Chummer
             string strSource = xmlSelectedMount["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
             string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown");
             SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-            objSourceString.SetControl(lblSource);
+            await objSourceString.SetControlAsync(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
@@ -1031,32 +1029,26 @@ namespace Chummer
                 string strOldVisibility = cboVisibility.SelectedValue?.ToString();
                 string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
                 string strOldControl = cboControl.SelectedValue?.ToString();
-                cboVisibility.BeginUpdate();
-                cboVisibility.PopulateWithListItems(lstVisibility);
+                await cboVisibility.PopulateWithListItemsAsync(lstVisibility);
                 cboVisibility.Enabled = _blnAllowEditOptions && lstVisibility.Count > 1;
                 if (!string.IsNullOrEmpty(strOldVisibility))
                     cboVisibility.SelectedValue = strOldVisibility;
                 if (cboVisibility.SelectedIndex == -1 && lstVisibility.Count > 0)
                     cboVisibility.SelectedIndex = 0;
-                cboVisibility.EndUpdate();
 
-                cboFlexibility.BeginUpdate();
-                cboFlexibility.PopulateWithListItems(lstFlexibility);
+                await cboFlexibility.PopulateWithListItemsAsync(lstFlexibility);
                 cboFlexibility.Enabled = _blnAllowEditOptions && lstFlexibility.Count > 1;
                 if (!string.IsNullOrEmpty(strOldFlexibility))
                     cboFlexibility.SelectedValue = strOldFlexibility;
                 if (cboFlexibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
                     cboFlexibility.SelectedIndex = 0;
-                cboFlexibility.EndUpdate();
 
-                cboControl.BeginUpdate();
-                cboControl.PopulateWithListItems(lstControl);
+                await cboControl.PopulateWithListItemsAsync(lstControl);
                 cboControl.Enabled = _blnAllowEditOptions && lstControl.Count > 1;
                 if (!string.IsNullOrEmpty(strOldControl))
                     cboControl.SelectedValue = strOldControl;
                 if (cboControl.SelectedIndex == -1 && lstControl.Count > 0)
                     cboControl.SelectedIndex = 0;
-                cboControl.EndUpdate();
 
                 _blnLoading = blnOldLoading;
             }

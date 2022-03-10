@@ -115,7 +115,7 @@ namespace Chummer
                 {
                     if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        lblSumtoTen.Visible = true;
+                        await lblSumtoTen.DoThreadSafeAsync(x => x.Visible = true);
                     }
 
                     // Populate the Priority Category list.
@@ -167,33 +167,23 @@ namespace Chummer
                                     switch (objXmlPriorityCategory.Value)
                                     {
                                         case "Heritage":
-                                            cboHeritage.BeginUpdate();
-                                            cboHeritage.PopulateWithListItems(lstItems);
-                                            cboHeritage.EndUpdate();
+                                            await cboHeritage.PopulateWithListItemsAsync(lstItems);
                                             break;
 
                                         case "Talent":
-                                            cboTalent.BeginUpdate();
-                                            cboTalent.PopulateWithListItems(lstItems);
-                                            cboTalent.EndUpdate();
+                                            await cboTalent.PopulateWithListItemsAsync(lstItems);
                                             break;
 
                                         case "Attributes":
-                                            cboAttributes.BeginUpdate();
-                                            cboAttributes.PopulateWithListItems(lstItems);
-                                            cboAttributes.EndUpdate();
+                                            await cboAttributes.PopulateWithListItemsAsync(lstItems);
                                             break;
 
                                         case "Skills":
-                                            cboSkills.BeginUpdate();
-                                            cboSkills.PopulateWithListItems(lstItems);
-                                            cboSkills.EndUpdate();
+                                            await cboSkills.PopulateWithListItemsAsync(lstItems);
                                             break;
 
                                         case "Resources":
-                                            cboResources.BeginUpdate();
-                                            cboResources.PopulateWithListItems(lstItems);
-                                            cboResources.EndUpdate();
+                                            await cboResources.PopulateWithListItemsAsync(lstItems);
                                             break;
                                     }
                                 }
@@ -205,36 +195,45 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(_objCharacter.TalentPriority))
                     {
                         //Attributes
-                        cboAttributes.SelectedIndex
-                            = cboAttributes.FindString(_objCharacter.AttributesPriority[0]
-                                                                    .ToString(GlobalSettings.InvariantCultureInfo));
+                        await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex
+                                                                  = x.FindString(_objCharacter.AttributesPriority[0]
+                                                                      .ToString(GlobalSettings
+                                                                          .InvariantCultureInfo)));
                         //Heritage (Metatype)
-                        cboHeritage.SelectedIndex
-                            = cboHeritage.FindString(_objCharacter.MetatypePriority[0]
-                                                                  .ToString(GlobalSettings.InvariantCultureInfo));
+                        await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex
+                                                                = x.FindString(_objCharacter.MetatypePriority[0]
+                                                                                   .ToString(GlobalSettings
+                                                                                       .InvariantCultureInfo)));
                         //Resources
-                        cboResources.SelectedIndex
-                            = cboResources.FindString(_objCharacter.ResourcesPriority[0]
-                                                                   .ToString(GlobalSettings.InvariantCultureInfo));
+                        await cboResources.DoThreadSafeAsync(x => x.SelectedIndex
+                                                                 = x.FindString(_objCharacter.ResourcesPriority[0]
+                                                                     .ToString(GlobalSettings
+                                                                                   .InvariantCultureInfo)));
                         //Skills
-                        cboSkills.SelectedIndex
-                            = cboSkills.FindString(_objCharacter.SkillsPriority[0]
-                                                                .ToString(GlobalSettings.InvariantCultureInfo));
+                        await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex
+                                                              = x.FindString(_objCharacter.SkillsPriority[0]
+                                                                                 .ToString(GlobalSettings
+                                                                                     .InvariantCultureInfo)));
                         //Magical/Resonance Talent
-                        cboTalent.SelectedIndex
-                            = cboTalent.FindString(_objCharacter.SpecialPriority[0]
-                                                                .ToString(GlobalSettings.InvariantCultureInfo));
+                        await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex
+                                                              = x.FindString(_objCharacter.SpecialPriority[0]
+                                                                                 .ToString(
+                                                                                     GlobalSettings
+                                                                                         .InvariantCultureInfo)));
 
-                        LoadMetatypes();
-                        PopulateMetatypes();
+                        await LoadMetatypes();
+                        await PopulateMetatypes();
                         await PopulateMetavariants();
                         await PopulateTalents();
                         await RefreshSelectedMetatype();
 
                         //Magical/Resonance Type
-                        cboTalents.SelectedValue = _objCharacter.TalentPriority;
-                        if (cboTalents.SelectedIndex == -1 && cboTalents.Items.Count > 1)
-                            cboTalents.SelectedIndex = 0;
+                        await cboTalents.DoThreadSafeAsync(x =>
+                        {
+                            x.SelectedValue = _objCharacter.TalentPriority;
+                            if (x.SelectedIndex == -1 && x.Items.Count > 1)
+                                x.SelectedIndex = 0;
+                        });
                         //Selected Magical Bonus Skill
                         string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
                         if (!string.IsNullOrEmpty(strSkill))
@@ -246,7 +245,7 @@ namespace Chummer
                                     strSkill = strSkill.Substring(0, intParenthesesIndex);
                             }
 
-                            cboSkill1.SelectedValue = strSkill;
+                            await cboSkill1.DoThreadSafeAsync(x => x.SelectedValue = strSkill);
                         }
 
                         strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
@@ -259,7 +258,7 @@ namespace Chummer
                                     strSkill = strSkill.Substring(0, intParenthesesIndex);
                             }
 
-                            cboSkill2.SelectedValue = strSkill;
+                            await cboSkill2.DoThreadSafeAsync(x => x.SelectedValue = strSkill);
                         }
 
                         strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
@@ -272,7 +271,7 @@ namespace Chummer
                                     strSkill = strSkill.Substring(0, intParenthesesIndex);
                             }
 
-                            cboSkill3.SelectedValue = strSkill;
+                            await cboSkill3.DoThreadSafeAsync(x => x.SelectedValue = strSkill);
                         }
 
                         await ProcessTalentsIndexChanged();
@@ -280,42 +279,42 @@ namespace Chummer
                         switch (_objCharacter.EffectiveBuildMethod)
                         {
                             case CharacterBuildMethod.Priority:
-                                ManagePriorityItems(cboHeritage);
-                                ManagePriorityItems(cboAttributes);
-                                ManagePriorityItems(cboTalent);
-                                ManagePriorityItems(cboSkills);
-                                ManagePriorityItems(cboResources);
+                                await ManagePriorityItems(cboHeritage);
+                                await ManagePriorityItems(cboAttributes);
+                                await ManagePriorityItems(cboTalent);
+                                await ManagePriorityItems(cboSkills);
+                                await ManagePriorityItems(cboResources);
                                 break;
 
                             case CharacterBuildMethod.SumtoTen:
-                                SumToTen();
+                                await SumToTen();
                                 break;
                         }
                     }
                     else
                     {
-                        cboHeritage.SelectedIndex = 0;
-                        cboTalent.SelectedIndex = 0;
-                        cboAttributes.SelectedIndex = 0;
-                        cboSkills.SelectedIndex = 0;
-                        cboResources.SelectedIndex = 0;
-                        ManagePriorityItems(cboHeritage, true);
-                        ManagePriorityItems(cboAttributes, true);
-                        ManagePriorityItems(cboTalent, true);
-                        ManagePriorityItems(cboSkills, true);
-                        ManagePriorityItems(cboResources, true);
-                        LoadMetatypes();
-                        PopulateMetatypes();
+                        await cboHeritage.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                        await cboTalent.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                        await cboAttributes.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                        await cboSkills.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                        await cboResources.DoThreadSafeAsync(x => x.SelectedIndex = 0);
+                        await ManagePriorityItems(cboHeritage, true);
+                        await ManagePriorityItems(cboAttributes, true);
+                        await ManagePriorityItems(cboTalent, true);
+                        await ManagePriorityItems(cboSkills, true);
+                        await ManagePriorityItems(cboResources, true);
+                        await LoadMetatypes();
+                        await PopulateMetatypes();
                         await PopulateMetavariants();
                         await PopulateTalents();
                         await RefreshSelectedMetatype();
                         if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-                            SumToTen();
+                            await SumToTen();
                     }
 
                     // Set up possession boxes
                     // Add Possession and Inhabitation to the list of Critter Tradition variations.
-                    chkPossessionBased.SetToolTip(
+                    await chkPossessionBased.SetToolTipAsync(
                         await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition"));
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -339,10 +338,8 @@ namespace Chummer
                                                                            x => y.Equals(
                                                                                x.Value.ToString(),
                                                                                StringComparison.OrdinalIgnoreCase)));
-
-                        cboPossessionMethod.BeginUpdate();
-                        cboPossessionMethod.PopulateWithListItems(lstMethods);
-                        cboPossessionMethod.EndUpdate();
+                        
+                        await cboPossessionMethod.PopulateWithListItemsAsync(lstMethods);
                     }
 
                     _blnLoading = false;
@@ -369,7 +366,7 @@ namespace Chummer
                 {
                     if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        SumToTen();
+                        await SumToTen();
                     }
 
                     await PopulateMetavariants();
@@ -409,10 +406,6 @@ namespace Chummer
 
         private async ValueTask ProcessTalentsIndexChanged()
         {
-            cboSkill1.BeginUpdate();
-            cboSkill2.BeginUpdate();
-            cboSkill3.BeginUpdate();
-
             cboSkill1.Visible = false;
             cboSkill2.Visible = false;
             cboSkill3.Visible = false;
@@ -510,7 +503,7 @@ namespace Chummer
                                 bool blnOldLoading = _blnLoading;
                                 int intOldSelectedIndex = cboSkill1.SelectedIndex;
                                 int intOldDataSourceSize = cboSkill1.Items.Count;
-                                cboSkill1.PopulateWithListItems(lstSkills);
+                                await cboSkill1.PopulateWithListItemsAsync(lstSkills);
                                 cboSkill1.Visible = true;
                                 if (intOldDataSourceSize == cboSkill1.Items.Count)
                                 {
@@ -523,7 +516,7 @@ namespace Chummer
                                 {
                                     intOldSelectedIndex = cboSkill2.SelectedIndex;
                                     intOldDataSourceSize = cboSkill2.Items.Count;
-                                    cboSkill2.PopulateWithListItems(lstSkills);
+                                    await cboSkill2.PopulateWithListItemsAsync(lstSkills);
                                     cboSkill2.Visible = true;
                                     if (intOldDataSourceSize == cboSkill2.Items.Count)
                                     {
@@ -545,7 +538,7 @@ namespace Chummer
                                     {
                                         intOldSelectedIndex = cboSkill3.SelectedIndex;
                                         intOldDataSourceSize = cboSkill3.Items.Count;
-                                        cboSkill3.PopulateWithListItems(lstSkills);
+                                        await cboSkill3.PopulateWithListItemsAsync(lstSkills);
                                         cboSkill3.Visible = true;
                                         if (intOldDataSourceSize == cboSkill3.Items.Count)
                                         {
@@ -626,12 +619,9 @@ namespace Chummer
             {
                 cboTalents.SelectedIndex = 0;
             }
-            cboSkill1.EndUpdate();
-            cboSkill2.EndUpdate();
-            cboSkill3.EndUpdate();
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                SumToTen();
+                await SumToTen();
             }
         }
 
@@ -648,7 +638,7 @@ namespace Chummer
                     await PopulateTalents();
                     if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        SumToTen();
+                        await SumToTen();
                     }
                 }
                 finally
@@ -664,7 +654,7 @@ namespace Chummer
             Close();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -673,10 +663,10 @@ namespace Chummer
                 SuspendLayout();
                 try
                 {
-                    PopulateMetatypes();
+                    await PopulateMetatypes();
                     if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     {
-                        SumToTen();
+                        await SumToTen();
                     }
                 }
                 finally
@@ -698,16 +688,16 @@ namespace Chummer
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            ManagePriorityItems(cboHeritage);
+                            await ManagePriorityItems(cboHeritage);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            SumToTen();
+                            await SumToTen();
                             break;
                     }
 
-                    LoadMetatypes();
-                    PopulateMetatypes();
+                    await LoadMetatypes();
+                    await PopulateMetatypes();
                     await PopulateMetavariants();
                     await RefreshSelectedMetatype();
                 }
@@ -730,11 +720,11 @@ namespace Chummer
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            ManagePriorityItems(cboTalent);
+                            await ManagePriorityItems(cboTalent);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            SumToTen();
+                            await SumToTen();
                             break;
                     }
 
@@ -747,7 +737,7 @@ namespace Chummer
             }
         }
 
-        private void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboAttributes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -759,11 +749,11 @@ namespace Chummer
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            ManagePriorityItems(cboAttributes);
+                            await ManagePriorityItems(cboAttributes);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            SumToTen();
+                            await SumToTen();
                             break;
                     }
                 }
@@ -774,7 +764,7 @@ namespace Chummer
             }
         }
 
-        private void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSkills_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -786,11 +776,11 @@ namespace Chummer
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            ManagePriorityItems(cboSkills);
+                            await ManagePriorityItems(cboSkills);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            SumToTen();
+                            await SumToTen();
                             break;
                     }
                 }
@@ -801,7 +791,7 @@ namespace Chummer
             }
         }
 
-        private void cboResources_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboResources_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -813,11 +803,11 @@ namespace Chummer
                     switch (_objCharacter.EffectiveBuildMethod)
                     {
                         case CharacterBuildMethod.Priority:
-                            ManagePriorityItems(cboResources);
+                            await ManagePriorityItems(cboResources);
                             break;
 
                         case CharacterBuildMethod.SumtoTen:
-                            SumToTen();
+                            await SumToTen();
                             break;
                     }
                 }
@@ -845,7 +835,7 @@ namespace Chummer
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
-                int intSumToTen = SumToTen(false);
+                int intSumToTen = await SumToTen(false);
                 if (intSumToTen != _objCharacter.Settings.SumtoTen)
                 {
                     Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SumtoTen"),
@@ -1531,16 +1521,16 @@ namespace Chummer
         /// </summary>
         /// <param name="comboBox"></param>
         /// <param name="blnForce"></param>
-        private void ManagePriorityItems(ComboBox comboBox, bool blnForce = false)
+        private async ValueTask ManagePriorityItems(ComboBox comboBox, bool blnForce = false)
         {
             if (!blnForce && _objCharacter.EffectiveBuildMethod != CharacterBuildMethod.Priority)
                 return;
             List<string> lstCurrentPriorities = new List<string>(_lstPriorities);
-            string strHeritageSelected = cboHeritage.SelectedValue.ToString();
-            string strAttributesSelected = cboAttributes.SelectedValue.ToString();
-            string strTalentSelected = cboTalent.SelectedValue.ToString();
-            string strSkillsSelected = cboSkills.SelectedValue.ToString();
-            string strResourcesSelected = cboResources.SelectedValue.ToString();
+            string strHeritageSelected = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            string strAttributesSelected = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            string strTalentSelected = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            string strSkillsSelected = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+            string strResourcesSelected = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
 
             // Discover which priority rating is not currently assigned
             lstCurrentPriorities.Remove(strHeritageSelected);
@@ -1550,22 +1540,22 @@ namespace Chummer
             lstCurrentPriorities.Remove(strResourcesSelected);
             if (lstCurrentPriorities.Count == 0)
                 return;
-            string strComboBoxSelected = comboBox.SelectedValue.ToString();
+            string strComboBoxSelected = comboBox.DoThreadSafeFunc(x => x.SelectedValue).ToString();
 
             string strMissing = lstCurrentPriorities[0];
 
             // Find the combo with the same value as this one and change it to the missing value.
             //_blnInitializing = true;
-            if (strHeritageSelected == strComboBoxSelected && comboBox.Name != cboHeritage.Name)
-                cboHeritage.SelectedValue = strMissing;
-            else if (strAttributesSelected == strComboBoxSelected && comboBox.Name != cboAttributes.Name)
-                cboAttributes.SelectedValue = strMissing;
-            else if (strTalentSelected == strComboBoxSelected && comboBox.Name != cboTalent.Name)
-                cboTalent.SelectedValue = strMissing;
-            else if (strSkillsSelected == strComboBoxSelected && comboBox.Name != cboSkills.Name)
-                cboSkills.SelectedValue = strMissing;
-            else if (strResourcesSelected == strComboBoxSelected && comboBox.Name != cboResources.Name)
-                cboResources.SelectedValue = strMissing;
+            if (strHeritageSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboHeritage.DoThreadSafeFunc(x => x.Name))
+                await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
+            else if (strAttributesSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboAttributes.DoThreadSafeFunc(x => x.Name))
+                await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
+            else if (strTalentSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboTalent.DoThreadSafeFunc(x => x.Name))
+                await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
+            else if (strSkillsSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboSkills.DoThreadSafeFunc(x => x.Name))
+                await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
+            else if (strResourcesSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboResources.DoThreadSafeFunc(x => x.Name))
+                await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
 
             if (lstCurrentPriorities.Count <= 1)
                 return;
@@ -1573,11 +1563,11 @@ namespace Chummer
             {
                 lstCurrentPriorities.Clear();
                 lstCurrentPriorities.AddRange(_lstPriorities);
-                strHeritageSelected = cboHeritage.SelectedValue.ToString();
-                strAttributesSelected = cboAttributes.SelectedValue.ToString();
-                strTalentSelected = cboTalent.SelectedValue.ToString();
-                strSkillsSelected = cboSkills.SelectedValue.ToString();
-                strResourcesSelected = cboResources.SelectedValue.ToString();
+                strHeritageSelected = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                strAttributesSelected = await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                strTalentSelected = await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                strSkillsSelected = await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
+                strResourcesSelected = await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString());
 
                 // Discover which priority rating is not currently assigned
                 lstCurrentPriorities.Remove(strHeritageSelected);
@@ -1592,29 +1582,30 @@ namespace Chummer
 
                 // Find the combo with the same value as this one and change it to the missing value.
                 //_blnInitializing = true;
-                if (strHeritageSelected == strComboBoxSelected && comboBox.Name != cboHeritage.Name)
-                    cboHeritage.SelectedValue = strMissing;
-                else if (strAttributesSelected == strComboBoxSelected && comboBox.Name != cboAttributes.Name)
-                    cboAttributes.SelectedValue = strMissing;
-                else if (strTalentSelected == strComboBoxSelected && comboBox.Name != cboTalent.Name)
-                    cboTalent.SelectedValue = strMissing;
-                else if (strSkillsSelected == strComboBoxSelected && comboBox.Name != cboSkills.Name)
-                    cboSkills.SelectedValue = strMissing;
-                else if (strResourcesSelected == strComboBoxSelected && comboBox.Name != cboResources.Name)
-                    cboResources.SelectedValue = strMissing;
+                if (strHeritageSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboHeritage.DoThreadSafeFunc(x => x.Name))
+                    await cboHeritage.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
+                else if (strAttributesSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboAttributes.DoThreadSafeFunc(x => x.Name))
+                    await cboAttributes.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
+                else if (strTalentSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboTalent.DoThreadSafeFunc(x => x.Name))
+                    await cboTalent.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
+                else if (strSkillsSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboSkills.DoThreadSafeFunc(x => x.Name))
+                    await cboSkills.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
+                else if (strResourcesSelected == strComboBoxSelected && comboBox.DoThreadSafeFunc(x => x.Name) != cboResources.DoThreadSafeFunc(x => x.Name))
+                    await cboResources.DoThreadSafeAsync(x => x.SelectedValue = strMissing);
             } while (lstCurrentPriorities.Count > 1);
         }
 
-        private int SumToTen(bool blnDoUIUpdate = true)
+        private async ValueTask<int> SumToTen(bool blnDoUIUpdate = true)
         {
-            int value = _dicSumtoTenValues[cboHeritage.SelectedValue.ToString()];
-            value += _dicSumtoTenValues[cboAttributes.SelectedValue.ToString()];
-            value += _dicSumtoTenValues[cboTalent.SelectedValue.ToString()];
-            value += _dicSumtoTenValues[cboSkills.SelectedValue.ToString()];
-            value += _dicSumtoTenValues[cboResources.SelectedValue.ToString()];
+            int value = _dicSumtoTenValues[await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString())];
+            value += _dicSumtoTenValues[await cboAttributes.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString())];
+            value += _dicSumtoTenValues[await cboTalent.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString())];
+            value += _dicSumtoTenValues[await cboSkills.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString())];
+            value += _dicSumtoTenValues[await cboResources.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString())];
 
             if (blnDoUIUpdate)
-                lblSumtoTen.Text = value.ToString(GlobalSettings.CultureInfo) + '/' + _objCharacter.Settings.SumtoTen.ToString(GlobalSettings.CultureInfo);
+                await lblSumtoTen.DoThreadSafeAsync(x => x.Text = value.ToString(GlobalSettings.CultureInfo) + '/'
+                                                        + _objCharacter.Settings.SumtoTen.ToString(GlobalSettings.CultureInfo));
 
             return value;
         }
@@ -1747,20 +1738,20 @@ namespace Chummer
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
                             _objCharacter);
                         lblSource.Text = objSource.ToString();
-                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                     }
                     else
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
-                        lblSource.SetToolTip(strUnknown);
+                        await lblSource.SetToolTipAsync(strUnknown);
                     }
                 }
                 else
                 {
                     string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
-                    lblSource.SetToolTip(strUnknown);
+                    await lblSource.SetToolTipAsync(strUnknown);
                 }
 
                 // Set the special attributes label.
@@ -2025,20 +2016,20 @@ namespace Chummer
                             strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo,
                             _objCharacter);
                         lblSource.Text = objSource.ToString();
-                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                     }
                     else
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
-                        lblSource.SetToolTip(strUnknown);
+                        await lblSource.SetToolTipAsync(strUnknown);
                     }
                 }
                 else
                 {
                     string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
-                    lblSource.SetToolTip(strUnknown);
+                    await lblSource.SetToolTipAsync(strUnknown);
                 }
 
                 // Set the special attributes label.
@@ -2297,8 +2288,7 @@ namespace Chummer
                 lstTalent.Sort(CompareListItems.CompareNames);
                 int intOldSelectedIndex = cboTalents.SelectedIndex;
                 int intOldDataSourceSize = cboTalents.Items.Count;
-                cboTalents.BeginUpdate();
-                cboTalents.PopulateWithListItems(lstTalent);
+                await cboTalents.PopulateWithListItemsAsync(lstTalent);
                 if (intOldDataSourceSize == cboTalents.Items.Count)
                 {
                     bool blnOldLoading = _blnLoading;
@@ -2308,7 +2298,6 @@ namespace Chummer
                 }
 
                 cboTalents.Enabled = cboTalents.Items.Count > 1;
-                cboTalents.EndUpdate();
             }
         }
 
@@ -2361,15 +2350,13 @@ namespace Chummer
                             = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter.Metavariant;
                         bool blnOldLoading = _blnLoading;
                         _blnLoading = true;
-                        cboMetavariant.BeginUpdate();
-                        cboMetavariant.PopulateWithListItems(lstMetavariants);
+                        await cboMetavariant.PopulateWithListItemsAsync(lstMetavariants);
                         cboMetavariant.Enabled = lstMetavariants.Count > 1;
                         _blnLoading = blnOldLoading;
                         if (!string.IsNullOrEmpty(strOldSelectedValue))
                             cboMetavariant.SelectedValue = strOldSelectedValue;
                         if (cboMetavariant.SelectedIndex == -1)
                             cboMetavariant.SelectedIndex = 0;
-                        cboMetavariant.EndUpdate();
 
                         // If the Metatype has Force enabled, show the Force NUD.
                         string strEssMax = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("essmax"))?.Value
@@ -2416,10 +2403,8 @@ namespace Chummer
                 }
                 else
                 {
-                    cboMetavariant.BeginUpdate();
-                    cboMetavariant.PopulateWithListItems(new ListItem("None", await LanguageManager.GetStringAsync("String_None")).Yield());
+                    await cboMetavariant.PopulateWithListItemsAsync(new ListItem("None", await LanguageManager.GetStringAsync("String_None")).Yield());
                     cboMetavariant.Enabled = false;
-                    cboMetavariant.EndUpdate();
 
                     lblForceLabel.Visible = false;
                     nudForce.Visible = false;
@@ -2428,10 +2413,8 @@ namespace Chummer
             else
             {
                 // Clear the Metavariant list if nothing is currently selected.
-                cboMetavariant.BeginUpdate();
-                cboMetavariant.PopulateWithListItems(new ListItem("None", await LanguageManager.GetStringAsync("String_None")).Yield());
+                await cboMetavariant.PopulateWithListItemsAsync(new ListItem("None", await LanguageManager.GetStringAsync("String_None")).Yield());
                 cboMetavariant.Enabled = false;
-                cboMetavariant.EndUpdate();
 
                 lblForceLabel.Visible = false;
                 nudForce.Visible = false;
@@ -2441,7 +2424,7 @@ namespace Chummer
         /// <summary>
         /// Populate the list of Metatypes.
         /// </summary>
-        private void PopulateMetatypes()
+        private async ValueTask PopulateMetatypes()
         {
             string strSelectedCategory = cboCategory.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedCategory))
@@ -2456,21 +2439,21 @@ namespace Chummer
                     foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                     {
                         if (xmlBaseMetatypePriorityList.Count == 1
-                            || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
                         {
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
                                          "metatypes/metatype[(" + _objCharacter.Settings.BookXPath()
                                                                 + ") and category = " + strSelectedCategory.CleanXPath()
                                                                 + ']'))
                             {
-                                string strName = objXmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value;
+                                string strName = (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                                 if (!string.IsNullOrEmpty(strName)
                                     && xmlBaseMetatypePriority.SelectSingleNode(
                                         "metatypes/metatype[name = " + strName.CleanXPath() + ']') != null)
                                 {
                                     lstMetatype.Add(new ListItem(
                                                         strName,
-                                                        objXmlMetatype.SelectSingleNodeAndCacheExpression("translate")
+                                                        (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("translate"))
                                                                       ?.Value ?? strName));
                                 }
                             }
@@ -2483,14 +2466,12 @@ namespace Chummer
                     string strOldSelectedValue = lstMetatypes.SelectedValue?.ToString() ?? _objCharacter.Metatype;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    lstMetatypes.BeginUpdate();
-                    lstMetatypes.PopulateWithListItems(lstMetatype);
+                    await lstMetatypes.PopulateWithListItemsAsync(lstMetatype);
                     _blnLoading = blnOldLoading;
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
                         lstMetatypes.SelectedValue = strOldSelectedValue;
                     if (lstMetatypes.SelectedIndex == -1 && lstMetatype.Count > 0)
                         lstMetatypes.SelectedIndex = 0;
-                    lstMetatypes.EndUpdate();
                 }
 
                 if (strSelectedCategory.EndsWith("Spirits", StringComparison.Ordinal))
@@ -2512,9 +2493,7 @@ namespace Chummer
             }
             else
             {
-                lstMetatypes.BeginUpdate();
                 lstMetatypes.DataSource = null;
-                lstMetatypes.EndUpdate();
 
                 chkPossessionBased.Visible = false;
                 chkPossessionBased.Checked = false;
@@ -2522,13 +2501,13 @@ namespace Chummer
             }
         }
 
-        private void LoadMetatypes()
+        private async ValueTask LoadMetatypes()
         {
             // Create a list of any Categories that should not be in the list.
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setRemoveCategories))
             {
-                foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
+                foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode.SelectAndCacheExpressionAsync(
                              "categories/category"))
                 {
                     XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
@@ -2540,7 +2519,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlBaseMetatypePriority in xmlBaseMetatypePriorityList)
                     {
                         if (xmlBaseMetatypePriorityList.Count == 1
-                            || xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpression("prioritytable") != null)
+                            || await xmlBaseMetatypePriority.SelectSingleNodeAndCacheExpressionAsync("prioritytable") != null)
                         {
                             foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select(
                                          "metatypes/metatype[category = " + objXmlCategory.Value.CleanXPath() + " and ("
@@ -2548,7 +2527,7 @@ namespace Chummer
                             {
                                 if (xmlBaseMetatypePriority.SelectSingleNode(
                                         "metatypes/metatype[name = "
-                                        + (objXmlMetatype.SelectSingleNodeAndCacheExpression("name")?.Value
+                                        + ((await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
                                            ?? string.Empty).CleanXPath() + ']') != null)
                                 {
                                     blnRemoveCategory = false;
@@ -2568,7 +2547,7 @@ namespace Chummer
                 // Populate the Metatype Category list.
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
                 {
-                    foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.SelectAndCacheExpression(
+                    foreach (XPathNavigator objXmlCategory in await _xmlBaseMetatypeDataNode.SelectAndCacheExpressionAsync(
                                  "categories/category"))
                     {
                         string strInnerText = objXmlCategory.Value;
@@ -2579,7 +2558,7 @@ namespace Chummer
                             lstCategory.All(objItem => objItem.Value.ToString() != strInnerText))
                         {
                             lstCategory.Add(new ListItem(strInnerText,
-                                                         objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")
+                                                         (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))
                                                                        ?.Value ?? strInnerText));
                         }
                     }
@@ -2588,14 +2567,12 @@ namespace Chummer
                     string strOldSelected = cboCategory.SelectedValue?.ToString() ?? _objCharacter.MetatypeCategory;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    cboCategory.BeginUpdate();
-                    cboCategory.PopulateWithListItems(lstCategory);
+                    await cboCategory.PopulateWithListItemsAsync(lstCategory);
                     _blnLoading = blnOldLoading;
                     if (!string.IsNullOrEmpty(strOldSelected))
                         cboCategory.SelectedValue = strOldSelected;
                     if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
                         cboCategory.SelectedIndex = 0;
-                    cboCategory.EndUpdate();
                 }
             }
         }

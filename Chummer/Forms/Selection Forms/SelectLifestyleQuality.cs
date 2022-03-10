@@ -93,8 +93,7 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             cboCategory.Enabled = _lstCategory.Count > 1;
 
             if (!string.IsNullOrEmpty(_strSelectCategory))
@@ -102,7 +101,6 @@ namespace Chummer
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
 
             // Change the BP Label to Karma if the character is being built with Karma instead (or is in Career Mode).
             if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
@@ -147,12 +145,12 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
                 SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                objSourceString.SetControl(lblSource);
+                await objSourceString.SetControlAsync(lblSource);
             }
             else
             {
                 lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                await lblSource.SetToolTipAsync(string.Empty);
             }
 
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -405,15 +403,12 @@ namespace Chummer
 
                     string strOldSelectedQuality = lstLifestyleQualities.SelectedValue?.ToString();
                     _blnLoading = true;
-                    lstLifestyleQualities.BeginUpdate();
-                    lstLifestyleQualities.PopulateWithListItems(lstLifestyleQuality);
+                    await lstLifestyleQualities.PopulateWithListItemsAsync(lstLifestyleQuality);
                     _blnLoading = false;
                     if (string.IsNullOrEmpty(strOldSelectedQuality))
                         lstLifestyleQualities.SelectedIndex = -1;
                     else
                         lstLifestyleQualities.SelectedValue = strOldSelectedQuality;
-
-                    lstLifestyleQualities.EndUpdate();
                 }
 
                 return lstLifestyleQuality?.Count > 0;
@@ -785,7 +780,7 @@ namespace Chummer
                                         case "skill":
                                             // Check if the character has the required Skill.
                                             Skill objSkill
-                                                = _objCharacter.SkillsSection.GetActiveSkill(
+                                                = await _objCharacter.SkillsSection.GetActiveSkillAsync(
                                                     objXmlRequired["name"].InnerText);
                                             if ((objSkill?.Rating ?? 0)
                                                 >= Convert.ToInt32(objXmlRequired["val"].InnerText,
@@ -1120,7 +1115,7 @@ namespace Chummer
                                         case "skill":
                                             // Check if the character has the required Skill.
                                             Skill objSkill
-                                                = _objCharacter.SkillsSection.GetActiveSkill(
+                                                = await _objCharacter.SkillsSection.GetActiveSkillAsync(
                                                     objXmlRequired["name"].InnerText);
                                             if ((objSkill?.Rating ?? 0)
                                                 >= Convert.ToInt32(objXmlRequired["val"].InnerText,

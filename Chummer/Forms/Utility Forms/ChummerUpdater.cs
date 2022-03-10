@@ -159,7 +159,7 @@ namespace Chummer
                 if (File.Exists(_strTempLatestVersionChangelogPath))
                 {
                     string strUpdateLog = File.ReadAllText(_strTempLatestVersionChangelogPath).CleanForHtml();
-                    await webNotes.DoThreadSafeAsync(x => ((WebBrowser)x).DocumentText
+                    await webNotes.DoThreadSafeAsync(x => x.DocumentText
                                                          = "<font size=\"-1\" face=\"Courier New,Serif\">"
                                                            + strUpdateLog + "</font>");
                 }

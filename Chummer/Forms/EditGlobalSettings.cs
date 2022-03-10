@@ -82,7 +82,7 @@ namespace Chummer
             await PopulateMugshotCompressionOptions();
             await SetToolTips();
             await PopulateOptions();
-            PopulateLanguageList();
+            await PopulateLanguageList();
             SetDefaultValueForLanguageList();
             await PopulateSheetLanguageList();
             SetDefaultValueForSheetLanguageList();
@@ -948,15 +948,13 @@ namespace Chummer
                 lstSourcebookInfos.Sort(CompareListItems.CompareNames);
                 bool blnOldSkipRefresh = _blnSkipRefresh;
                 _blnSkipRefresh = true;
-                lstGlobalSourcebookInfos.BeginUpdate();
                 string strOldSelected = lstGlobalSourcebookInfos.SelectedValue?.ToString();
-                lstGlobalSourcebookInfos.PopulateWithListItems(lstSourcebookInfos);
+                await lstGlobalSourcebookInfos.PopulateWithListItemsAsync(lstSourcebookInfos);
                 _blnSkipRefresh = blnOldSkipRefresh;
                 if (string.IsNullOrEmpty(strOldSelected))
                     lstGlobalSourcebookInfos.SelectedIndex = -1;
                 else
                     lstGlobalSourcebookInfos.SelectedValue = strOldSelected;
-                lstGlobalSourcebookInfos.EndUpdate();
             }
         }
 
@@ -1179,9 +1177,8 @@ namespace Chummer
 
                 string strOldSelectedDefaultCharacterSetting = cboDefaultCharacterSetting.SelectedValue?.ToString()
                                                                ?? GlobalSettings.DefaultCharacterSetting;
-
-                cboDefaultCharacterSetting.BeginUpdate();
-                cboDefaultCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+                
+                await cboDefaultCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings);
                 if (!string.IsNullOrEmpty(strOldSelectedDefaultCharacterSetting))
                 {
                     cboDefaultCharacterSetting.SelectedValue = strOldSelectedDefaultCharacterSetting;
@@ -1189,21 +1186,16 @@ namespace Chummer
                         cboDefaultCharacterSetting.SelectedIndex = 0;
                 }
 
-                cboDefaultCharacterSetting.EndUpdate();
-
                 string strOldSelectedDefaultMasterIndexSetting = cboDefaultMasterIndexSetting.SelectedValue?.ToString()
                                                                  ?? GlobalSettings.DefaultMasterIndexSetting;
-
-                cboDefaultMasterIndexSetting.BeginUpdate();
-                cboDefaultMasterIndexSetting.PopulateWithListItems(lstCharacterSettings);
+                
+                await cboDefaultMasterIndexSetting.PopulateWithListItemsAsync(lstCharacterSettings);
                 if (!string.IsNullOrEmpty(strOldSelectedDefaultMasterIndexSetting))
                 {
                     cboDefaultMasterIndexSetting.SelectedValue = strOldSelectedDefaultMasterIndexSetting;
                     if (cboDefaultMasterIndexSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
                         cboDefaultMasterIndexSetting.SelectedIndex = 0;
                 }
-
-                cboDefaultMasterIndexSetting.EndUpdate();
             }
         }
 
@@ -1243,17 +1235,14 @@ namespace Chummer
 
                     nudMugshotCompressionQuality.ValueAsInt = intQuality;
                 }
-
-                cboMugshotCompression.BeginUpdate();
-                cboMugshotCompression.PopulateWithListItems(lstMugshotCompressionOptions);
+                
+                await cboMugshotCompression.PopulateWithListItemsAsync(lstMugshotCompressionOptions);
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
                     cboMugshotCompression.SelectedValue = strOldSelected;
                     if (cboMugshotCompression.SelectedIndex == -1 && lstMugshotCompressionOptions.Count > 0)
                         cboMugshotCompression.SelectedIndex = 0;
                 }
-
-                cboMugshotCompression.EndUpdate();
             }
 
             bool blnShowQualitySelector = Equals(cboMugshotCompression.SelectedValue, "jpeg_manual");
@@ -1286,9 +1275,8 @@ namespace Chummer
                 }
 
                 string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
-
-                cboPDFParameters.BeginUpdate();
-                cboPDFParameters.PopulateWithListItems(lstPdfParameters);
+                
+                await cboPDFParameters.PopulateWithListItemsAsync(lstPdfParameters);
                 cboPDFParameters.SelectedIndex = intIndex;
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
@@ -1296,8 +1284,6 @@ namespace Chummer
                     if (cboPDFParameters.SelectedIndex == -1 && lstPdfParameters.Count > 0)
                         cboPDFParameters.SelectedIndex = 0;
                 }
-
-                cboPDFParameters.EndUpdate();
             }
         }
 
@@ -1319,14 +1305,12 @@ namespace Chummer
                                             await LanguageManager.GetStringAsync("String_ApplicationInsights_" + eOption,
                                                 _strSelectedLanguage)));
                 }
-
-                cboUseLoggingApplicationInsights.BeginUpdate();
-                cboUseLoggingApplicationInsights.PopulateWithListItems(lstUseAIOptions);
+                
+                await cboUseLoggingApplicationInsights.PopulateWithListItemsAsync(lstUseAIOptions);
                 if (!string.IsNullOrEmpty(strOldSelected))
                     cboUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
                 if (cboUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
                     cboUseLoggingApplicationInsights.SelectedIndex = 0;
-                cboUseLoggingApplicationInsights.EndUpdate();
             }
         }
 
@@ -1343,14 +1327,12 @@ namespace Chummer
                                                    await LanguageManager.GetStringAsync(
                                                        "String_" + eLoopColorMode, _strSelectedLanguage)));
                 }
-
-                cboColorMode.BeginUpdate();
-                cboColorMode.PopulateWithListItems(lstColorModes);
+                
+                await cboColorMode.PopulateWithListItemsAsync(lstColorModes);
                 if (!string.IsNullOrEmpty(strOldSelected))
                     cboColorMode.SelectedValue = Enum.Parse(typeof(ColorMode), strOldSelected);
                 if (cboColorMode.SelectedIndex == -1 && lstColorModes.Count > 0)
                     cboColorMode.SelectedIndex = 0;
-                cboColorMode.EndUpdate();
             }
         }
 
@@ -1385,24 +1367,22 @@ namespace Chummer
                                                               "String_" + eLoopDpiScalingMethod,
                                                               _strSelectedLanguage)));
                 }
-
-                cboDpiScalingMethod.BeginUpdate();
-                cboDpiScalingMethod.PopulateWithListItems(lstDpiScalingMethods);
+                
+                await cboDpiScalingMethod.PopulateWithListItemsAsync(lstDpiScalingMethods);
                 if (!string.IsNullOrEmpty(strOldSelected))
                     cboDpiScalingMethod.SelectedValue = Enum.Parse(typeof(DpiScalingMethod), strOldSelected);
                 if (cboDpiScalingMethod.SelectedIndex == -1 && lstDpiScalingMethods.Count > 0)
                     cboDpiScalingMethod.SelectedIndex = 0;
-                cboDpiScalingMethod.EndUpdate();
             }
         }
 
         private async ValueTask SetToolTips()
         {
-            cboUseLoggingApplicationInsights.SetToolTip(string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Tip_Options_TelemetryId", _strSelectedLanguage),
-                Properties.Settings.Default.UploadClientId.ToString("D", GlobalSettings.InvariantCultureInfo)).WordWrap());
+            await cboUseLoggingApplicationInsights.SetToolTipAsync(string.Format(_objSelectedCultureInfo, await LanguageManager.GetStringAsync("Tip_Options_TelemetryId", _strSelectedLanguage),
+                                                                       Properties.Settings.Default.UploadClientId.ToString("D", GlobalSettings.InvariantCultureInfo)).WordWrap());
         }
 
-        private void PopulateLanguageList()
+        private async ValueTask PopulateLanguageList()
         {
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
             string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
@@ -1427,8 +1407,8 @@ namespace Chummer
                         continue;
                     }
 
-                    XPathNavigator node = xmlDocument.CreateNavigator()
-                                                     .SelectSingleNodeAndCacheExpression("/chummer/name");
+                    XPathNavigator node = await xmlDocument.CreateNavigator()
+                                                           .SelectSingleNodeAndCacheExpressionAsync("/chummer/name");
                     if (node == null)
                         continue;
 
@@ -1436,10 +1416,8 @@ namespace Chummer
                 }
 
                 lstLanguages.Sort(CompareListItems.CompareNames);
-
-                cboLanguage.BeginUpdate();
-                cboLanguage.PopulateWithListItems(lstLanguages);
-                cboLanguage.EndUpdate();
+                
+                await cboLanguage.PopulateWithListItemsAsync(lstLanguages);
             }
         }
 
@@ -1494,10 +1472,8 @@ namespace Chummer
                     }
 
                     lstSheetLanguages.Sort(CompareListItems.CompareNames);
-
-                    cboSheetLanguage.BeginUpdate();
-                    cboSheetLanguage.PopulateWithListItems(lstSheetLanguages);
-                    cboSheetLanguage.EndUpdate();
+                    
+                    await cboSheetLanguage.PopulateWithListItemsAsync(lstSheetLanguages);
                 }
             }
         }
@@ -1540,9 +1516,8 @@ namespace Chummer
                 int intPos = strOldSelected.LastIndexOf(Path.DirectorySeparatorChar);
                 if (intPos != -1)
                     strOldSelected = strOldSelected.Substring(intPos + 1);
-
-                cboXSLT.BeginUpdate();
-                cboXSLT.PopulateWithListItems(lstFiles);
+                
+                await cboXSLT.PopulateWithListItemsAsync(lstFiles);
                 if (!string.IsNullOrEmpty(strOldSelected))
                 {
                     cboXSLT.SelectedValue =
@@ -1567,8 +1542,6 @@ namespace Chummer
                         }
                     }
                 }
-
-                cboXSLT.EndUpdate();
             }
         }
 

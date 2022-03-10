@@ -99,10 +99,10 @@ namespace Chummer
             {
                 if (_tskPrinter?.IsCompleted == false)
                     await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(x => ((ProgressBar)x).Value = 0));
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0));
                 else
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(x => ((ProgressBar)x).Value = 0));
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0));
             }
             catch (TaskCanceledException)
             {
@@ -125,9 +125,8 @@ namespace Chummer
                 try
                 {
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
-                                       prgProgress.DoThreadSafeAsync(x =>
+                                       prgProgress.DoThreadSafeAsync(objBar =>
                                        {
-                                           ProgressBar objBar = (ProgressBar) x;
                                            objBar.Value = 0;
                                            objBar.Maximum = treCharacters.Nodes.Count;
                                        }));
@@ -196,9 +195,8 @@ namespace Chummer
                     }
                     else
                     {
-                        await _frmPrintView.DoThreadSafeFunc(async x =>
+                        await _frmPrintView.DoThreadSafeFunc(async objSheetViewer =>
                         {
-                            CharacterSheetViewer objSheetViewer = (CharacterSheetViewer) x;
                             await objSheetViewer.SetCharacters(_aobjCharacters);
                             objSheetViewer.Activate();
                         });
@@ -207,7 +205,7 @@ namespace Chummer
                 finally
                 {
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(x => ((ProgressBar) x).Value = 0));
+                                       prgProgress.DoThreadSafeAsync(x => x.Value = 0));
                 }
             }
         }

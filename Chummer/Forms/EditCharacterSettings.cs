@@ -82,7 +82,7 @@ namespace Chummer
         private async void EditCharacterSettings_Load(object sender, EventArgs e)
         {
             await SetToolTips();
-            PopulateSettingsList();
+            await PopulateSettingsList();
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBuildMethods))
             {
@@ -92,10 +92,8 @@ namespace Chummer
                 if (GlobalSettings.LifeModuleEnabled)
                     lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule,
                                                      await LanguageManager.GetStringAsync("String_LifeModule")));
-
-                cboBuildMethod.BeginUpdate();
-                cboBuildMethod.PopulateWithListItems(lstBuildMethods);
-                cboBuildMethod.EndUpdate();
+                
+                await cboBuildMethod.PopulateWithListItemsAsync(lstBuildMethods);
             }
 
             await PopulateOptions();
@@ -148,11 +146,9 @@ namespace Chummer
                         ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
                                                                _objCharacterSettings.DisplayName);
                         _blnLoading = true;
-                        cboSetting.BeginUpdate();
                         _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
-                        cboSetting.PopulateWithListItems(_lstSettings);
+                        await cboSetting.PopulateWithListItemsAsync(_lstSettings);
                         cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
-                        cboSetting.EndUpdate();
                         _blnLoading = false;
                     }
 
@@ -220,7 +216,7 @@ namespace Chummer
                     _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
                     RebuildCustomDataDirectoryInfos();
                     IsDirty = false;
-                    PopulateSettingsList();
+                    await PopulateSettingsList();
                 }
                 finally
                 {
@@ -340,7 +336,7 @@ namespace Chummer
                     _blnForceMasterIndexRepopulateOnClose = true;
                     _objReferenceCharacterSettings = objNewCharacterSettings;
                     IsDirty = false;
-                    PopulateSettingsList();
+                    await PopulateSettingsList();
                 }
                 finally
                 {
@@ -455,11 +451,9 @@ namespace Chummer
                         ListItem objNewListItem =
                             new ListItem(_lstSettings[_intOldSelectedSettingIndex].Value,
                                          _objReferenceCharacterSettings.DisplayName);
-                        cboSetting.BeginUpdate();
                         _lstSettings[_intOldSelectedSettingIndex] = objNewListItem;
-                        cboSetting.PopulateWithListItems(_lstSettings);
+                        await cboSetting.PopulateWithListItemsAsync(_lstSettings);
                         cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
-                        cboSetting.EndUpdate();
                     }
 
                     _objReferenceCharacterSettings = objNewOption;
@@ -509,11 +503,9 @@ namespace Chummer
                         ListItem objNewListItem =
                             new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
                                          _objReferenceCharacterSettings.DisplayName);
-                        cboSetting.BeginUpdate();
                         _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
-                        cboSetting.PopulateWithListItems(_lstSettings);
+                        await cboSetting.PopulateWithListItemsAsync(_lstSettings);
                         cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
-                        cboSetting.EndUpdate();
                     }
 
                     _objCharacterSettings.CopyValues(_objReferenceCharacterSettings);
@@ -1096,15 +1088,13 @@ namespace Chummer
 
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    cboPriorityTable.BeginUpdate();
-                    cboPriorityTable.PopulateWithListItems(lstPriorityTables);
+                    await cboPriorityTable.PopulateWithListItemsAsync(lstPriorityTables);
                     if (!string.IsNullOrEmpty(strOldSelected))
                         cboPriorityTable.SelectedValue = strOldSelected;
                     if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
                         cboPriorityTable.SelectedValue = _objReferenceCharacterSettings.PriorityTable;
                     if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
                         cboPriorityTable.SelectedIndex = 0;
-                    cboPriorityTable.EndUpdate();
                     _blnLoading = blnOldLoading;
                 }
 
@@ -1147,14 +1137,11 @@ namespace Chummer
                         strLimbSlot += '<' + _objCharacterSettings.ExcludeLimbSlot;
 
                     _blnSkipLimbCountUpdate = true;
-                    cboLimbCount.BeginUpdate();
-                    cboLimbCount.PopulateWithListItems(lstLimbCount);
+                    await cboLimbCount.PopulateWithListItemsAsync(lstLimbCount);
                     if (!string.IsNullOrEmpty(strLimbSlot))
                         cboLimbCount.SelectedValue = strLimbSlot;
                     if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
                         cboLimbCount.SelectedIndex = 0;
-
-                    cboLimbCount.EndUpdate();
                 }
 
                 _blnSkipLimbCountUpdate = false;
@@ -1263,15 +1250,15 @@ namespace Chummer
 
         private async ValueTask SetToolTips()
         {
-            chkUnarmedSkillImprovements.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements")).WordWrap());
-            chkIgnoreArt.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsIgnoreArt")).WordWrap());
-            chkIgnoreComplexFormLimit.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsIgnoreComplexFormLimit")).WordWrap());
-            chkCyberlegMovement.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsCyberlegMovement")).WordWrap());
-            chkDontDoubleQualityPurchases.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityPurchases")).WordWrap());
-            chkDontDoubleQualityRefunds.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityRefunds")).WordWrap());
-            chkStrictSkillGroups.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionStrictSkillGroups")).WordWrap());
-            chkAllowInitiation.SetToolTip((await LanguageManager.GetStringAsync("Tip_OptionsAllowInitiation")).WordWrap());
-            chkUseCalculatedPublicAwareness.SetToolTip((await LanguageManager.GetStringAsync("Tip_PublicAwareness")).WordWrap());
+            await chkUnarmedSkillImprovements.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsUnarmedSkillImprovements")).WordWrap());
+            await chkIgnoreArt.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsIgnoreArt")).WordWrap());
+            await chkIgnoreComplexFormLimit.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsIgnoreComplexFormLimit")).WordWrap());
+            await chkCyberlegMovement.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsCyberlegMovement")).WordWrap());
+            await chkDontDoubleQualityPurchases.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityPurchases")).WordWrap());
+            await chkDontDoubleQualityRefunds.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsDontDoubleQualityRefunds")).WordWrap());
+            await chkStrictSkillGroups.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionStrictSkillGroups")).WordWrap());
+            await chkAllowInitiation.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_OptionsAllowInitiation")).WordWrap());
+            await chkUseCalculatedPublicAwareness.SetToolTipAsync((await LanguageManager.GetStringAsync("Tip_PublicAwareness")).WordWrap());
         }
 
         private void SetupDataBindings()
@@ -1451,14 +1438,13 @@ namespace Chummer
             nudKarmaWeaponFocus.DoDataBinding("Value", _objCharacterSettings, nameof(CharacterSettings.KarmaWeaponFocus));
         }
 
-        private void PopulateSettingsList()
+        private async ValueTask PopulateSettingsList()
         {
             using (CursorWait.New(this))
             {
                 string strSelect = string.Empty;
                 if (!_blnLoading)
                     strSelect = cboSetting.SelectedValue?.ToString();
-                cboSetting.BeginUpdate();
                 _lstSettings.Clear();
                 foreach (KeyValuePair<string, CharacterSettings> kvpCharacterSettingsEntry in SettingsManager
                              .LoadedCharacterSettings)
@@ -1470,14 +1456,13 @@ namespace Chummer
                 }
 
                 _lstSettings.Sort(CompareListItems.CompareNames);
-                cboSetting.PopulateWithListItems(_lstSettings);
+                await cboSetting.PopulateWithListItemsAsync(_lstSettings);
                 if (!string.IsNullOrEmpty(strSelect))
                     cboSetting.SelectedValue = strSelect;
                 if (cboSetting.SelectedIndex == -1 && _lstSettings.Count > 0)
                     cboSetting.SelectedValue = cboSetting.FindStringExact(GlobalSettings.DefaultCharacterSetting);
                 if (cboSetting.SelectedIndex == -1 && _lstSettings.Count > 0)
                     cboSetting.SelectedIndex = 0;
-                cboSetting.EndUpdate();
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
             }
         }

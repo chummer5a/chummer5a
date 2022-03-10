@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -52,12 +53,12 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void SelectExoticSkill_Load(object sender, EventArgs e)
+        private async void SelectExoticSkill_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
                 // Build the list of Exotic Active Skills from the Skills file.
-                using (XmlNodeList objXmlSkillList = _objCharacter.LoadData("skills.xml")
+                using (XmlNodeList objXmlSkillList = (await _objCharacter.LoadDataAsync("skills.xml"))
                                                                   .SelectNodes(
                                                                       "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + ']'))
                 {
@@ -76,8 +77,7 @@ namespace Chummer
                 }
 
                 lstSkills.Sort(CompareListItems.CompareNames);
-                cboCategory.BeginUpdate();
-                cboCategory.PopulateWithListItems(lstSkills);
+                await cboCategory.PopulateWithListItemsAsync(lstSkills);
 
                 // Select the first Skill in the list.
                 if (lstSkills.Count > 0)
@@ -87,16 +87,14 @@ namespace Chummer
                 }
                 else
                     cmdOK.Enabled = false;
-
-                cboCategory.EndUpdate();
             }
 
-            BuildList();
+            await BuildList();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BuildList();
+            await BuildList();
         }
 
         public void ForceSkill(string strSkill)
@@ -121,12 +119,12 @@ namespace Chummer
 
         #endregion Properties
 
-        private void BuildList()
+        private async ValueTask BuildList()
         {
             string strSelectedCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
-            XPathNodeIterator xmlWeaponList = _objCharacter.LoadDataXPath("weapons.xml")
+            XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml"))
                                                            .Select("/chummer/weapons/weapon[(category = "
                                                                    + (strSelectedCategory + 's').CleanXPath()
                                                                    + " or useskill = "
@@ -144,12 +142,12 @@ namespace Chummer
                             lstSkillSpecializations.Add(
                                 new ListItem(
                                     strName,
-                                    xmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                    (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value ?? strName));
                         }
                     }
                 }
 
-                foreach (XPathNavigator xmlSpec in _objCharacter.LoadDataXPath("skills.xml")
+                foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml"))
                                                                 .Select("/chummer/skills/skill[name = "
                                                                         + strSelectedCategory.CleanXPath() + " and ("
                                                                         + _objCharacter.Settings.BookXPath()
@@ -160,7 +158,7 @@ namespace Chummer
                     {
                         lstSkillSpecializations.Add(new ListItem(
                                                         strName,
-                                                        xmlSpec.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                        (await xmlSpec.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
                                                         ?? strName));
                     }
                 }
@@ -181,8 +179,7 @@ namespace Chummer
                     Comparer<ListItem>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name)));
                 string strOldText = cboSkillSpecialisations.Text;
                 string strOldSelectedValue = cboSkillSpecialisations.SelectedValue?.ToString() ?? string.Empty;
-                cboSkillSpecialisations.BeginUpdate();
-                cboSkillSpecialisations.PopulateWithListItems(lstSkillSpecializations);
+                await cboSkillSpecialisations.PopulateWithListItemsAsync(lstSkillSpecializations);
                 if (!string.IsNullOrEmpty(strOldSelectedValue))
                     cboSkillSpecialisations.SelectedValue = strOldSelectedValue;
                 if (cboSkillSpecialisations.SelectedIndex == -1)
@@ -193,8 +190,6 @@ namespace Chummer
                     else if (lstSkillSpecializations.Count > 0)
                         cboSkillSpecialisations.SelectedIndex = 0;
                 }
-
-                cboSkillSpecialisations.EndUpdate();
             }
         }
     }

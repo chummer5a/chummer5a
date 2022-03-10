@@ -46,10 +46,10 @@ namespace Chummer
             this.cmdPDFTest = new System.Windows.Forms.Button();
             this.cmdRemovePDFLocation = new Chummer.DpiFriendlyImagedButton(this.components);
             this.tlpGlobalOptions = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cboDefaultMasterIndexSetting = new System.Windows.Forms.ComboBox();
+            this.cboDefaultMasterIndexSetting = new Chummer.ElasticComboBox();
             this.lblDefaultMasterIndexSetting = new System.Windows.Forms.Label();
             this.tlpDpiScalingMode = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cboDpiScalingMethod = new System.Windows.Forms.ComboBox();
+            this.cboDpiScalingMethod = new Chummer.ElasticComboBox();
             this.lblDpiScalingMode = new System.Windows.Forms.Label();
             this.chkUseLogging = new Chummer.ColorableCheckBox(this.components);
             this.chkAutomaticUpdate = new Chummer.ColorableCheckBox(this.components);
@@ -76,7 +76,7 @@ namespace Chummer
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
             this.imgLanguageFlag = new System.Windows.Forms.PictureBox();
             this.tlpLoggingOptions = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cboUseLoggingApplicationInsights = new System.Windows.Forms.ComboBox();
+            this.cboUseLoggingApplicationInsights = new Chummer.ElasticComboBox();
             this.cmdUseLoggingHelp = new Chummer.ButtonWithToolTip(this.components);
             this.tlpCharacterRosterPath = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdCharacterRoster = new System.Windows.Forms.Button();
@@ -92,7 +92,7 @@ namespace Chummer
             this.cboMugshotCompression = new Chummer.ElasticComboBox();
             this.tlpColorMode = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblColorMode = new System.Windows.Forms.Label();
-            this.cboColorMode = new System.Windows.Forms.ComboBox();
+            this.cboColorMode = new Chummer.ElasticComboBox();
             this.chkLiveUpdateCleanCharacterFiles = new Chummer.ColorableCheckBox(this.components);
             this.chkCreateBackupOnCareer = new Chummer.ColorableCheckBox(this.components);
             this.chkLiveCustomData = new Chummer.ColorableCheckBox(this.components);
@@ -122,7 +122,7 @@ namespace Chummer
             this.lblMugshotCompression = new System.Windows.Forms.Label();
             this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
             this.lblDefaultCharacterSetting = new System.Windows.Forms.Label();
-            this.cboDefaultCharacterSetting = new System.Windows.Forms.ComboBox();
+            this.cboDefaultCharacterSetting = new Chummer.ElasticComboBox();
             this.chkStartupFullscreen = new Chummer.ColorableCheckBox(this.components);
             this.chkAllowSkillDiceRolling = new Chummer.ColorableCheckBox(this.components);
             this.gpbEditSourcebookInfo = new System.Windows.Forms.GroupBox();
@@ -2394,7 +2394,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtTimeFormatView;
         private ColorableCheckBox chkSearchInCategoryOnly;
         private ColorableCheckBox chkAllowEasterEggs;
-        private System.Windows.Forms.ComboBox cboDefaultCharacterSetting;
+        private Chummer.ElasticComboBox cboDefaultCharacterSetting;
         private NumericUpDownEx nudBrowserVersion;
         private ColorableCheckBox chkPreferNightlyBuilds;
         private System.Windows.Forms.Label lblBrowserVersion;
@@ -2419,7 +2419,7 @@ namespace Chummer
         private ColorableCheckBox chkCustomDateTimeFormats;
         private ColorableCheckBox chkConfirmKarmaExpense;
         private ColorableCheckBox chkConfirmDelete;
-        private System.Windows.Forms.ComboBox cboUseLoggingApplicationInsights;
+        private Chummer.ElasticComboBox cboUseLoggingApplicationInsights;
         private ButtonWithToolTip cmdUseLoggingHelp;
         private ColorableCheckBox chkHideItemsOverAvail;
         private System.Windows.Forms.FlowLayoutPanel flpEnablePlugins;
@@ -2469,7 +2469,7 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpBrowserVersion;
         private Chummer.BufferedTableLayoutPanel tlpColorMode;
         private System.Windows.Forms.Label lblColorMode;
-        private System.Windows.Forms.ComboBox cboColorMode;
+        private Chummer.ElasticComboBox cboColorMode;
         private System.Windows.Forms.ListBox lsbCustomDataDirectories;
         private ColorableCheckBox chkPrintSkillsWithZeroRating;
         private ColorableCheckBox chkPrintExpenses;
@@ -2479,7 +2479,7 @@ namespace Chummer
         private DpiFriendlyImagedButton cmdRemoveCharacterRoster;
         private DpiFriendlyImagedButton cmdRemovePDFAppPath;
         private Chummer.BufferedTableLayoutPanel tlpDpiScalingMode;
-        private System.Windows.Forms.ComboBox cboDpiScalingMethod;
+        private Chummer.ElasticComboBox cboDpiScalingMethod;
         private System.Windows.Forms.Label lblDpiScalingMode;
         private BufferedTableLayoutPanel tlpButtons;
         private BufferedTableLayoutPanel tlpOptionalRulesButtons;
@@ -2503,7 +2503,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDirectoryPath;
         private System.Windows.Forms.Label lblDirectoryPathLabel;
         private System.Windows.Forms.Label lblDefaultMasterIndexSetting;
-        private System.Windows.Forms.ComboBox cboDefaultMasterIndexSetting;
+        private Chummer.ElasticComboBox cboDefaultMasterIndexSetting;
         private ButtonWithToolTip bScanForPDFs;
     }
 }

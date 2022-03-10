@@ -66,14 +66,12 @@ namespace Chummer
                           + await _objCharacter.TranslateExtraAsync(strPowerExtra) + ')';
                     lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
                 }
-
-                cboPower.BeginUpdate();
-                cboPower.PopulateWithListItems(lstPowerItems);
+                
+                await cboPower.PopulateWithListItemsAsync(lstPowerItems);
                 if (lstPowerItems.Count >= 1)
                     cboPower.SelectedIndex = 0;
                 else
                     cmdOK.Enabled = false;
-                cboPower.EndUpdate();
                 if (lstPowerItems.Count == 1)
                     cmdOK_Click(sender, e);
             }

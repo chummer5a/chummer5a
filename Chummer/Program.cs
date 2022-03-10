@@ -30,7 +30,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using Chummer.Backend;
 using Chummer.Plugins;
 using Chummer.Properties;
@@ -1005,7 +1004,7 @@ namespace Chummer
         {
             if (objCharacter == null || MainForm == null)
                 return false;
-            return MainForm.DoThreadSafeFunc(x => ((ChummerMainForm) x).SwitchToOpenCharacter(objCharacter));
+            return MainForm.DoThreadSafeFunc(x => x.SwitchToOpenCharacter(objCharacter));
         }
 
         /// <summary>
@@ -1027,10 +1026,10 @@ namespace Chummer
                 return Task.CompletedTask;
             if (MainForm != null)
                 return MainForm.DoThreadSafeFunc(
-                    x => ((ChummerMainForm) x).OpenCharacterList(lstCharacters, blnIncludeInMru));
+                    x => x.OpenCharacterList(lstCharacters, blnIncludeInMru));
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
                                 x => x.DoThreadSafeFunc(
-                                    y => ((ChummerMainForm) y).OpenCharacterList(lstCharacters, blnIncludeInMru))));
+                                    y => y.OpenCharacterList(lstCharacters, blnIncludeInMru))));
         }
 
         /// <summary>
@@ -1041,10 +1040,10 @@ namespace Chummer
             if (objCharacter == null || MainForm == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.DoThreadSafeFunc(x => ((ChummerMainForm) x).OpenCharacterForPrinting(objCharacter));
+                return MainForm.DoThreadSafeFunc(x => x.OpenCharacterForPrinting(objCharacter));
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
                                 x => x.DoThreadSafeFunc(
-                                    y => ((ChummerMainForm) y).OpenCharacterForPrinting(objCharacter))));
+                                    y => y.OpenCharacterForPrinting(objCharacter))));
         }
 
         /// <summary>
@@ -1055,10 +1054,10 @@ namespace Chummer
             if (objCharacter == null || MainForm == null)
                 return Task.CompletedTask;
             if (MainForm != null)
-                return MainForm.DoThreadSafeFunc(x => ((ChummerMainForm)x).OpenCharacterForExport(objCharacter));
+                return MainForm.DoThreadSafeFunc(x => x.OpenCharacterForExport(objCharacter));
             return Task.Run(() => MainFormOnAssignAsyncActions.Add(
                                 x => x.DoThreadSafeFunc(
-                                    y => ((ChummerMainForm)y).OpenCharacterForExport(objCharacter))));
+                                    y => y.OpenCharacterForExport(objCharacter))));
         }
 
         public static LoadingBar MainProgressBar { get; set; }

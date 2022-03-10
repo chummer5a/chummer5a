@@ -1335,7 +1335,7 @@ namespace Chummer
                         s_RtbRtfManipulator.CreateControl();
                     try
                     {
-                        s_RtbRtfManipulator.DoThreadSafe(x => ((RichTextBox)x).Rtf = strInput);
+                        s_RtbRtfManipulator.DoThreadSafe(x => x.Rtf = strInput);
                     }
                     catch (ArgumentException)
                     {
@@ -1374,7 +1374,7 @@ namespace Chummer
                             s_RtbRtfManipulator.CreateControl();
                         try
                         {
-                            s_RtbRtfManipulator.DoThreadSafe(x => ((RichTextBox)x).Rtf = strInput);
+                            s_RtbRtfManipulator.DoThreadSafe(x => x.Rtf = strInput);
                         }
                         catch (ArgumentException)
                         {

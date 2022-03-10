@@ -123,7 +123,7 @@ namespace Chummer
                 Program.MainForm?.DoThreadSafe(x =>
                 {
                     using (CursorWait.New(x))
-                        ((ChummerMainForm) x).UpdateLightDarkMode();
+                        x.UpdateLightDarkMode();
                 });
             }
         }

@@ -184,7 +184,6 @@ namespace Chummer
 
         private async void chkLimitList_Click(object sender, EventArgs e)
         {
-            cboStage.BeginUpdate();
             lblStage.Visible = chkLimitList.Checked;
             cboStage.Visible = !chkLimitList.Checked;
 
@@ -232,7 +231,7 @@ namespace Chummer
                             return 0;
                         });
 
-                        cboStage.PopulateWithListItems(lstStages);
+                        await cboStage.PopulateWithListItemsAsync(lstStages);
                     }
                 }
 
@@ -246,7 +245,6 @@ namespace Chummer
                 _strWorkStage = _strDefaultStageName;
                 BuildTree(GetSelectString());
             }
-            cboStage.EndUpdate();
         }
 
         private void cboStage_SelectionChangeCommitted(object sender, EventArgs e)

@@ -152,10 +152,8 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
-            cboCategory.EndUpdate();
+            
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -570,7 +568,7 @@ namespace Chummer
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
-            lblSource.SetToolTip(objSource.LanguageBookTooltip);
+            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlGear.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
@@ -1162,18 +1160,16 @@ namespace Chummer
                                                                     "String_RestrictedItemsHidden"),
                                                                 intOverLimit)));
                     }
-
-                    lstGear.BeginUpdate();
+                    
                     string strOldSelected = lstGear.SelectedValue?.ToString();
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    lstGear.PopulateWithListItems(lstGears);
+                    await lstGear.PopulateWithListItemsAsync(lstGears);
                     _blnLoading = blnOldLoading;
                     if (string.IsNullOrEmpty(strOldSelected))
                         lstGear.SelectedIndex = -1;
                     else
                         lstGear.SelectedValue = strOldSelected;
-                    lstGear.EndUpdate();
                 }
             }
             finally

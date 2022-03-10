@@ -98,10 +98,8 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
-            cboCategory.EndUpdate();
+            
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
 
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(_strSelectCategory))
@@ -226,7 +224,7 @@ namespace Chummer
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
                     lblCritterPowerSource.Text = objSource.ToString();
-                    lblCritterPowerSource.SetToolTip(objSource.LanguageBookTooltip);
+                    await lblCritterPowerSource.SetToolTipAsync(objSource.LanguageBookTooltip);
 
                     nudCritterPowerRating.Visible = await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("rating") != null;
 

@@ -121,7 +121,7 @@ namespace Chummer
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
-            lblSource.SetToolTip(objSource.LanguageBookTooltip);
+            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
             tlpRight.Visible = true;
         }
 
@@ -192,14 +192,12 @@ namespace Chummer
                 lstArts.Sort(CompareListItems.CompareNames);
                 string strOldSelected = lstArt.SelectedValue?.ToString();
                 _blnLoading = true;
-                lstArt.BeginUpdate();
-                lstArt.PopulateWithListItems(lstArts);
+                await lstArt.PopulateWithListItemsAsync(lstArts);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstArt.SelectedValue = strOldSelected;
                 else
                     lstArt.SelectedIndex = -1;
-                lstArt.EndUpdate();
             }
         }
 

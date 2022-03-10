@@ -72,8 +72,7 @@ namespace Chummer
                 }
 
                 lstTypes.Sort(CompareListItems.CompareNames);
-                cboImprovemetType.BeginUpdate();
-                cboImprovemetType.PopulateWithListItems(lstTypes);
+                await cboImprovemetType.PopulateWithListItemsAsync(lstTypes);
 
                 // Load the information from the passed Improvement if one has been given.
                 if (EditImprovementObject != null)
@@ -104,8 +103,6 @@ namespace Chummer
                             = await TranslateField(objFetchNode?.InnerText, EditImprovementObject.ImprovedName);
                     }
                 }
-
-                cboImprovemetType.EndUpdate();
             }
         }
 

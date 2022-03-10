@@ -44,7 +44,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void SelectSpec_Load(object sender, EventArgs e)
+        private async void SelectSpec_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
@@ -68,39 +68,38 @@ namespace Chummer
                         "/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and ("
                         + _objCharacter.Settings.BookXPath() + ")]");
                 // Populate the Skill's Specializations (if any).
-                XPathNodeIterator xmlSpecList = xmlParentSkill?.SelectAndCacheExpression("specs/spec");
+                XPathNodeIterator xmlSpecList = xmlParentSkill != null ? await xmlParentSkill.SelectAndCacheExpressionAsync("specs/spec") : null;
                 if (xmlSpecList?.Count > 0)
                 {
                     foreach (XPathNavigator objXmlSpecialization in xmlSpecList)
                     {
                         string strInnerText = objXmlSpecialization.Value;
                         lstItems.Add(new ListItem(strInnerText,
-                                                  objXmlSpecialization.SelectSingleNodeAndCacheExpression("@translate")
+                                                  (await objXmlSpecialization.SelectSingleNodeAndCacheExpressionAsync("@translate"))
                                                                       ?.Value ?? strInnerText));
 
                         if (_objSkill.SkillCategory != "Combat Active")
                             continue;
                         // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                        XPathNavigator objXmlWeaponDocument = _objCharacter.LoadDataXPath("weapons.xml");
+                        XPathNavigator objXmlWeaponDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml");
                         //Might need to include skill name or might miss some values?
                         foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select(
                                      "/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = "
                                      + strInnerText.CleanXPath() + ") and (" + _objCharacter.Settings.BookXPath()
                                      + ")]"))
                         {
-                            string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            string strName = (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstItems.Add(new ListItem(
                                                  strName,
-                                                 objXmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                 (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                                  ?? strName));
                         }
                     }
                 }
 
                 // Populate the lists.
-                cboSpec.BeginUpdate();
-                cboSpec.PopulateWithListItems(lstItems);
+                await cboSpec.PopulateWithListItemsAsync(lstItems);
 
                 // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
                 if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
@@ -113,13 +112,11 @@ namespace Chummer
                         AcceptForm();
                     else
                     {
-                        cboSpec.PopulateWithListItems((new ListItem(_strForceItem, _strForceItem)).Yield());
+                        await cboSpec.PopulateWithListItemsAsync((new ListItem(_strForceItem, _strForceItem)).Yield());
                         cboSpec.SelectedIndex = 0;
                         AcceptForm();
                     }
                 }
-
-                cboSpec.EndUpdate();
             }
         }
 

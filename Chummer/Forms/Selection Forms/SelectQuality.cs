@@ -69,9 +69,8 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
+            
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
@@ -83,19 +82,18 @@ namespace Chummer
                     cboCategory.SelectedIndex = 0;
             }
             cboCategory.Enabled = _lstCategory.Count > 1;
-            cboCategory.EndUpdate();
 
             if (_objCharacter.MetagenicLimit == 0)
                 chkNotMetagenic.Checked = true;
 
             lblBPLabel.Text = await LanguageManager.GetStringAsync("Label_Karma");
             _blnLoading = false;
-            BuildQualityList();
+            await BuildQualityList();
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            BuildQualityList();
+            await BuildQualityList();
         }
 
         private async void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
@@ -137,7 +135,7 @@ namespace Chummer
                 SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
-                lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                 lblSourceLabel.Visible = lblSource.Visible = !string.IsNullOrEmpty(lblSource.Text);
                 tlpRight.Visible = true;
             }
@@ -166,9 +164,9 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            BuildQualityList();
+            await BuildQualityList();
         }
 
         private async void CostControl_Changed(object sender, EventArgs e)
@@ -191,23 +189,23 @@ namespace Chummer
             _blnLoading = false;
         }
 
-        private void chkMetagenic_CheckedChanged(object sender, EventArgs e)
+        private async void chkMetagenic_CheckedChanged(object sender, EventArgs e)
         {
             if (chkMetagenic.Checked)
                 chkNotMetagenic.Checked = false;
-            BuildQualityList();
+            await BuildQualityList();
         }
 
-        private void chkNotMetagenic_CheckedChanged(object sender, EventArgs e)
+        private async void chkNotMetagenic_CheckedChanged(object sender, EventArgs e)
         {
             if (chkNotMetagenic.Checked)
                 chkMetagenic.Checked = false;
-            BuildQualityList();
+            await BuildQualityList();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildQualityList();
+            await BuildQualityList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -249,7 +247,7 @@ namespace Chummer
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
 
-        private void KarmaFilter(object sender, EventArgs e)
+        private async void KarmaFilter(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -278,7 +276,7 @@ namespace Chummer
 
             _blnLoading = false;
 
-            BuildQualityList();
+            await BuildQualityList();
         }
 
         #endregion Control Events
@@ -425,7 +423,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Qualities.
         /// </summary>
-        private void BuildQualityList()
+        private async ValueTask BuildQualityList()
         {
             if (_blnLoading)
                 return;
@@ -556,7 +554,7 @@ namespace Chummer
                 foreach (XPathNavigator objXmlQuality in
                          _xmlBaseQualityDataNode.Select("qualities/quality" + strFilter))
                 {
-                    string strLoopName = objXmlQuality.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    string strLoopName = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
                     if (string.IsNullOrEmpty(strLoopName))
                         continue;
                     if (_xmlMetatypeQualityRestrictionNode != null
@@ -567,9 +565,9 @@ namespace Chummer
                         || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
                     {
                         lstQuality.Add(new ListItem(
-                                           objXmlQuality.SelectSingleNodeAndCacheExpression("id")?.Value
+                                           (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("id"))?.Value
                                            ?? string.Empty,
-                                           objXmlQuality.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                           (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                            ?? strLoopName));
                     }
                 }
@@ -578,14 +576,12 @@ namespace Chummer
 
                 string strOldSelectedQuality = lstQualities.SelectedValue?.ToString();
                 _blnLoading = true;
-                lstQualities.BeginUpdate();
-                lstQualities.PopulateWithListItems(lstQuality);
+                await lstQualities.PopulateWithListItemsAsync(lstQuality);
                 _blnLoading = false;
                 if (string.IsNullOrEmpty(strOldSelectedQuality))
                     lstQualities.SelectedIndex = -1;
                 else
                     lstQualities.SelectedValue = strOldSelectedQuality;
-                lstQualities.EndUpdate();
             }
         }
 

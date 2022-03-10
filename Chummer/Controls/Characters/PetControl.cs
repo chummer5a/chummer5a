@@ -259,10 +259,7 @@ namespace Chummer
                 }
 
                 lstMetatypes.Sort(CompareListItems.CompareNames);
-
-                cboMetatype.BeginUpdate();
-                cboMetatype.PopulateWithListItems(lstMetatypes);
-                cboMetatype.EndUpdate();
+                await cboMetatype.PopulateWithListItemsAsync(lstMetatypes);
             }
         }
 

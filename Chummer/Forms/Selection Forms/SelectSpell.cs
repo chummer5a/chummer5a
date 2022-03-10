@@ -60,8 +60,8 @@ namespace Chummer
 
         private async void SelectSpell_Load(object sender, EventArgs e)
         {
-            chkLimited.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectSpell_LimitedSpell"));
-            chkExtended.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectSpell_ExtendedSpell"));
+            await chkLimited.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_SelectSpell_LimitedSpell"));
+            await chkExtended.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_SelectSpell_ExtendedSpell"));
             // If a value is forced, set the name of the spell and accept the form.
             if (!string.IsNullOrEmpty(_strForceSpell))
             {
@@ -92,9 +92,8 @@ namespace Chummer
                 _lstCategory.Insert(0,
                     new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
+            
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
@@ -102,7 +101,6 @@ namespace Chummer
                 cboCategory.SelectedValue = _strSelectCategory;
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
 
             // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is disabled.
             chkExtended.Visible = _objCharacter.Settings.ExtendAnyDetectionSpell;
@@ -268,9 +266,7 @@ namespace Chummer
             {
                 if (blnDoUIUpdate)
                 {
-                    lstSpells.BeginUpdate();
-                    lstSpells.PopulateWithListItems(ListItem.Blank.Yield());
-                    lstSpells.EndUpdate();
+                    await lstSpells.PopulateWithListItemsAsync(ListItem.Blank.Yield());
                 }
                 return false;
             }
@@ -394,14 +390,12 @@ namespace Chummer
                     lstSpellItems.Sort(CompareListItems.CompareNames);
                     string strOldSelected = lstSpells.SelectedValue?.ToString();
                     _blnLoading = true;
-                    lstSpells.BeginUpdate();
-                    lstSpells.PopulateWithListItems(lstSpellItems);
+                    await lstSpells.PopulateWithListItemsAsync(lstSpellItems);
                     _blnLoading = false;
                     if (!string.IsNullOrEmpty(strOldSelected))
                         lstSpells.SelectedValue = strOldSelected;
                     else
                         lstSpells.SelectedIndex = -1;
-                    lstSpells.EndUpdate();
                 }
 
                 async ValueTask AddSpell(XPathNavigator objXmlSpell, string strSpellCategory)
@@ -770,7 +764,7 @@ namespace Chummer
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
-            lblSource.SetToolTip(objSource.LanguageBookTooltip);
+            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             tlpRight.Visible = true;
             _blnRefresh = false;

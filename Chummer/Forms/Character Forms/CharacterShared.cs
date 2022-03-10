@@ -6361,7 +6361,7 @@ namespace Chummer
 
         #endregion Additional Relationships Tab Control Events
 
-        public void RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        public async ValueTask RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
             if (panSpirits == null && panSprites == null)
                 return;
@@ -6393,7 +6393,7 @@ namespace Chummer
                         objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                         objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                        objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
+                        await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
                         if (blnIsSpirit)
                         {
@@ -6437,7 +6437,7 @@ namespace Chummer
                                     objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                     objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                                    objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
+                                    await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
                                     if (blnIsSpirit)
                                     {
@@ -6584,7 +6584,7 @@ namespace Chummer
                                     objSpiritControl.ContactDetailChanged += MakeDirtyWithCharacterUpdate;
                                     objSpiritControl.DeleteSpirit += DeleteSpirit;
 
-                                    objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
+                                    await objSpiritControl.RebuildSpiritList(CharacterObject.MagicTradition);
 
                                     if (blnIsSpirit)
                                     {

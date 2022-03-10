@@ -1550,13 +1550,39 @@ namespace Chummer
             List<ListItem> lstSheetLanguageList = GetSheetLanguageList(lstCharacters, true);
             try
             {
-                cboLanguage.BeginUpdate();
                 cboLanguage.PopulateWithListItems(lstSheetLanguageList);
                 cboLanguage.SelectedValue = strDefaultSheetLanguage;
                 if (cboLanguage.SelectedIndex == -1)
                     cboLanguage.SelectedValue
                         = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
-                cboLanguage.EndUpdate();
+            }
+            finally
+            {
+                Utils.ListItemListPool.Return(lstSheetLanguageList);
+            }
+        }
+
+        public static async Task PopulateSheetLanguageListAsync(ElasticComboBox cboLanguage, string strSelectedSheet, IEnumerable<Character> lstCharacters = null, CultureInfo defaultCulture = null)
+        {
+            if (cboLanguage == null)
+                throw new ArgumentNullException(nameof(cboLanguage));
+            string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
+            int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
+            if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
+            {
+                string strSheetLanguage = strSelectedSheet.Substring(0, intLastIndexDirectorySeparator.Value);
+                if (strSheetLanguage.Length == 5)
+                    strDefaultSheetLanguage = strSheetLanguage;
+            }
+
+            List<ListItem> lstSheetLanguageList = await GetSheetLanguageListAsync(lstCharacters, true);
+            try
+            {
+                await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList);
+                cboLanguage.SelectedValue = strDefaultSheetLanguage;
+                if (cboLanguage.SelectedIndex == -1)
+                    cboLanguage.SelectedValue
+                        = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
             }
             finally
             {
@@ -1595,6 +1621,45 @@ namespace Chummer
 
                 string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
                 if (XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse))
+                {
+                    lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
+                }
+            }
+            lstLanguages.Sort(CompareListItems.CompareNames);
+            return lstLanguages;
+        }
+
+        public static async Task<List<ListItem>> GetSheetLanguageListAsync(IEnumerable<Character> lstCharacters = null, bool blnUsePool = false)
+        {
+            string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+            List<Character> lstCharacterToUse = lstCharacters?.ToList();
+            string[] astrFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
+            List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(astrFilePaths.Length);
+            foreach (string filePath in astrFilePaths)
+            {
+                XPathDocument xmlDocument;
+                try
+                {
+                    using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
+                        xmlDocument = new XPathDocument(objXmlReader);
+                }
+                catch (IOException)
+                {
+                    continue;
+                }
+                catch (XmlException)
+                {
+                    continue;
+                }
+
+                XPathNavigator node = await xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/chummer/name");
+
+                if (node == null)
+                    continue;
+
+                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
+                if (await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse))
                 {
                     lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
                 }

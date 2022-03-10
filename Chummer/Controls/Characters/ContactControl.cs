@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Properties;
@@ -63,7 +64,7 @@ namespace Chummer
         {
             if (this.IsNullOrDisposed())
                 return;
-            LoadContactList();
+            await LoadContactList();
 
             DoDataBindings();
 
@@ -457,7 +458,7 @@ namespace Chummer
 
         #region Methods
 
-        private void LoadContactList()
+        private async ValueTask LoadContactList()
         {
             if (_objContact.IsEnemy)
             {
@@ -476,13 +477,11 @@ namespace Chummer
             //            string strName = xmlNode.InnerText;
             //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
             //        }
-
-            cboContactRole.BeginUpdate();
-            cboContactRole.PopulateWithListItems(Contact.ContactArchetypes(_objContact.CharacterObject));
+            
+            await cboContactRole.PopulateWithListItemsAsync(Contact.ContactArchetypes(_objContact.CharacterObject));
             cboContactRole.SelectedValue = _objContact.Role;
             if (cboContactRole.SelectedIndex < 0)
                 cboContactRole.Text = _objContact.DisplayRole;
-            cboContactRole.EndUpdate();
         }
 
         private void DoDataBindings()
@@ -974,34 +973,14 @@ namespace Chummer
                 lstTypes.Sort(CompareListItems.CompareNames);
                 lstHobbiesVices.Sort(CompareListItems.CompareNames);
                 lstPreferredPayments.Sort(CompareListItems.CompareNames);
-
-                cboMetatype.BeginUpdate();
+                
                 cboMetatype.PopulateWithListItems(lstMetatypes);
-                cboMetatype.EndUpdate();
-
-                cboGender.BeginUpdate();
                 cboGender.PopulateWithListItems(lstGenders);
-                cboGender.EndUpdate();
-
-                cboAge.BeginUpdate();
                 cboAge.PopulateWithListItems(lstAges);
-                cboAge.EndUpdate();
-
-                cboPersonalLife.BeginUpdate();
                 cboPersonalLife.PopulateWithListItems(lstPersonalLives);
-                cboPersonalLife.EndUpdate();
-
-                cboType.BeginUpdate();
                 cboType.PopulateWithListItems(lstTypes);
-                cboType.EndUpdate();
-
-                cboPreferredPayment.BeginUpdate();
                 cboPreferredPayment.PopulateWithListItems(lstPreferredPayments);
-                cboPreferredPayment.EndUpdate();
-
-                cboHobbiesVice.BeginUpdate();
                 cboHobbiesVice.PopulateWithListItems(lstHobbiesVices);
-                cboHobbiesVice.EndUpdate();
             }
         }
 

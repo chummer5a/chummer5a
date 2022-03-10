@@ -1562,6 +1562,13 @@ namespace Chummer
             SourceDetail.SetControl(sourceControl);
         }
 
+        public Task SetSourceDetailAsync(Control sourceControl)
+        {
+            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                _objCachedSourceDetail = default;
+            return SourceDetail.SetControlAsync(sourceControl);
+        }
+
         /// <inheritdoc />
         public void Dispose()
         {

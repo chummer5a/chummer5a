@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -61,24 +62,30 @@ namespace Chummer
 
         private async void ExportCharacter_Load(object sender, EventArgs e)
         {
-            LanguageManager.PopulateSheetLanguageList(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture);
-            cboXSLT.BeginUpdate();
-            cboXSLT.Items.Add("Export JSON");
-            // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            string exportDirectoryPath = Path.Combine(Utils.GetStartupPath, "export");
-            foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
+            await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet, _objCharacter.Yield(), _objExportCulture);
+            using (new FetchSafelyFromPool<List<ListItem>>(
+                       Utils.ListItemListPool, out List<ListItem> lstExportMethods))
             {
-                // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
-                if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase) && strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
+                // Populate the XSLT list with all of the XSL files found in the sheets directory.
+                string exportDirectoryPath = Path.Combine(Utils.GetStartupPath, "export");
+                foreach (string strFile in Directory.GetFiles(exportDirectoryPath))
                 {
-                    string strFileName = Path.GetFileNameWithoutExtension(strFile);
-                    cboXSLT.Items.Add(strFileName);
+                    // Only show files that end in .xsl. Do not include files that end in .xslt since they are used as "hidden" reference sheets (hidden because they are partial templates that cannot be used on their own).
+                    if (!strFile.EndsWith(".xslt", StringComparison.OrdinalIgnoreCase)
+                        && strFile.EndsWith(".xsl", StringComparison.OrdinalIgnoreCase))
+                    {
+                        string strFileName = Path.GetFileNameWithoutExtension(strFile);
+                        lstExportMethods.Add(new ListItem(strFileName, strFileName));
+                    }
                 }
+                lstExportMethods.Sort();
+                lstExportMethods.Insert(0, new ListItem("JSON", await LanguageManager.GetStringAsync("String_Export_JSON")));
+
+                await cboXSLT.PopulateWithListItemsAsync(lstExportMethods);
+                if (cboXSLT.Items.Count > 0)
+                    cboXSLT.SelectedIndex = 0;
             }
 
-            if (cboXSLT.Items.Count > 0)
-                cboXSLT.SelectedIndex = 0;
-            cboXSLT.EndUpdate();
             _blnLoading = false;
             await Task.WhenAll(
                 this.DoThreadSafeAsync(async x => x.Text += await LanguageManager.GetStringAsync("String_Space") + _objCharacter?.Name),
@@ -103,7 +110,7 @@ namespace Chummer
 
             using (CursorWait.New(this))
             {
-                if (_strXslt == "Export JSON")
+                if (_strXslt == "JSON")
                 {
                     await ExportJson();
                 }
@@ -141,7 +148,7 @@ namespace Chummer
                 _objCharacterXml = null;
                 await Task.WhenAll(
                     imgSheetLanguageFlag.DoThreadSafeAsync(x =>
-                                                               ((PictureBox)x).Image
+                                                               x.Image
                                                                    = Math.Min(imgSheetLanguageFlag.Width,
                                                                               imgSheetLanguageFlag.Height) >= 32
                                                                        ? FlagImageGetter.GetFlagFromCountryCode192Dpi(
@@ -158,7 +165,7 @@ namespace Chummer
             {
                 if (_objCharacterXml != null)
                 {
-                    _strXslt = cboXSLT.Text;
+                    _strXslt = cboXSLT.SelectedValue?.ToString();
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
                         using (CursorWait.New(this))
@@ -191,7 +198,7 @@ namespace Chummer
                                     // Swallow this
                                 }
 
-                                _tskXmlGenerator = _strXslt == "Export JSON"
+                                _tskXmlGenerator = _strXslt == "JSON"
                                     ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
                                     : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);
                             }

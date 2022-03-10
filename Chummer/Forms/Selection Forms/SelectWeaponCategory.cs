@@ -52,18 +52,18 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(OnlyCategory)
                              ? objXmlDocument.Select("/chummer/categories/category[. = "
                                                       + OnlyCategory.CleanXPath() + ']')
-                             : objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+                             : await objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category"))
                 {
                     if (!string.IsNullOrEmpty(WeaponType) && objXmlCategory.Value != "Exotic Ranged Weapons")
                     {
-                        string strType = objXmlCategory.SelectSingleNodeAndCacheExpression("@type")?.Value;
+                        string strType = (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@type"))?.Value;
                         if (string.IsNullOrEmpty(strType) || strType != WeaponType)
                             continue;
                     }
 
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
                                                  ?? strInnerText));
                 }
 
@@ -83,13 +83,11 @@ namespace Chummer
                         ConfirmSelection(lstCategory[0].Value.ToString());
                         break;
                 }
-
-                cboCategory.BeginUpdate();
-                cboCategory.PopulateWithListItems(lstCategory);
+                
+                await cboCategory.PopulateWithListItemsAsync(lstCategory);
                 // Select the first Skill in the list.
                 if (cboCategory.Items.Count > 0)
                     cboCategory.SelectedIndex = 0;
-                cboCategory.EndUpdate();
             }
         }
 

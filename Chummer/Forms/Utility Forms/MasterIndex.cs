@@ -102,43 +102,40 @@ namespace Chummer
 
                 lstCharacterSettings.Sort(CompareListItems.CompareNames);
 
-                string strOldSettingKey = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey
+                string strOldSettingKey = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue) as CharacterSettings)?.DictionaryKey
                                           ?? _objSelectedSetting?.DictionaryKey;
 
                 bool blnOldSkipRefresh = _blnSkipRefresh;
                 _blnSkipRefresh = true;
                 CharacterSettings objSettings;
                 bool blnSuccess;
-
-                cboCharacterSetting.BeginUpdate();
-                cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+                
+                await cboCharacterSetting.DoThreadSafeFunc(x => x.PopulateWithListItemsAsync(lstCharacterSettings));
                 if (!string.IsNullOrEmpty(strOldSettingKey))
                 {
                     (blnSuccess, objSettings)
                         = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(strOldSettingKey);
                     if (blnSuccess)
-                        cboCharacterSetting.SelectedValue = objSettings;
+                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings);
                 }
-
-                cboCharacterSetting.EndUpdate();
 
                 _blnSkipRefresh = blnOldSkipRefresh;
 
-                if (cboCharacterSetting.SelectedIndex != -1)
+                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex) != -1)
                     return;
                 (blnSuccess, objSettings)
                     = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSetting);
                 if (blnSuccess)
-                    cboCharacterSetting.SelectedValue = objSettings;
+                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings);
                 else
                 {
                     (blnSuccess, objSettings)
                         = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue);
                     if (blnSuccess)
-                        cboCharacterSetting.SelectedValue = objSettings;
+                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSettings);
                 }
-                if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
-                    cboCharacterSetting.SelectedIndex = 0;
+                if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex) == -1 && lstCharacterSettings.Count > 0)
+                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedIndex = 0);
             }
         }
 
@@ -173,7 +170,7 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             {
-                string strSelectedSetting = (cboCharacterSetting.SelectedValue as CharacterSettings)?.DictionaryKey;
+                string strSelectedSetting = (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue) as CharacterSettings)?.DictionaryKey;
                 CharacterSettings objSettings = null;
                 bool blnSuccess = false;
                 if (!string.IsNullOrEmpty(strSelectedSetting))
@@ -209,8 +206,8 @@ namespace Chummer
 
         private async ValueTask LoadContent()
         {
-            using (CustomActivity opLoadMasterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
-                                                                              CustomActivity.OperationType.RequestOperation, null))
+            using (CustomActivity opLoadMasterindex = await Timekeeper.StartSyncronAsync("op_load_frm_masterindex", null,
+                       CustomActivity.OperationType.RequestOperation, null))
             {
                 bool blnOldIsFinishedLoading = IsFinishedLoading;
                 try
@@ -239,11 +236,11 @@ namespace Chummer
                             : "source";
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_andpopulate_entries",
-                                                       opLoadMasterindex))
+                    using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_load_andpopulate_entries",
+                                                                  opLoadMasterindex))
                     {
                         ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
-                        using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", opLoadMasterindex))
+                        using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_load_entries", opLoadMasterindex))
                         {
                             ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                             // Prevents locking the UI thread while still benefiting from static scheduling of Parallel.ForEach
@@ -310,7 +307,7 @@ namespace Chummer
                             _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                         }
 
-                        using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", opLoadMasterindex))
+                        using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_populate_entries", opLoadMasterindex))
                         {
                             string strSpace = await LanguageManager.GetStringAsync("String_Space");
                             string strFormat = "{0}" + strSpace + "[{1}]";
@@ -397,24 +394,22 @@ namespace Chummer
                         }
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", opLoadMasterindex))
+                    using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_sort_entries", opLoadMasterindex))
                     {
                         _lstItems.Sort(CompareListItems.CompareNames);
                         _lstFileNamesWithItems.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", opLoadMasterindex))
+                    using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_populate_controls", opLoadMasterindex))
                     {
                         _lstFileNamesWithItems.Insert(
                             0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
 
                         await Task.WhenAll(
-                            cboFile.DoThreadSafeAsync(x =>
+                            cboFile.DoThreadSafeFunc(async cboThis =>
                             {
-                                ElasticComboBox cboThis = (ElasticComboBox)x;
                                 int intOldSelectedIndex = cboThis.SelectedIndex;
-                                cboThis.BeginUpdate();
-                                cboThis.PopulateWithListItems(_lstFileNamesWithItems);
+                                await cboThis.PopulateWithListItemsAsync(_lstFileNamesWithItems);
                                 try
                                 {
                                     cboThis.SelectedIndex = Math.Max(intOldSelectedIndex, 0);
@@ -424,17 +419,12 @@ namespace Chummer
                                 {
                                     cboThis.SelectedIndex = -1;
                                 }
-
-                                cboThis.EndUpdate();
                             })
                             ,
-                            lstItems.DoThreadSafeAsync(x =>
+                            lstItems.DoThreadSafeFunc(async lstThis =>
                             {
-                                ListBox lstThis = (ListBox) x;
-                                lstThis.BeginUpdate();
-                                lstThis.PopulateWithListItems(_lstItems);
+                                await lstThis.PopulateWithListItemsAsync(_lstItems);
                                 lstThis.SelectedIndex = -1;
-                                lstThis.EndUpdate();
                             }));
                     }
                 }
@@ -451,7 +441,7 @@ namespace Chummer
             await CommonFunctions.OpenPdfFromControl(sender);
         }
 
-        private void RefreshList(object sender, EventArgs e)
+        private async void RefreshList(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -487,19 +477,14 @@ namespace Chummer
                     }
 
                     object objOldSelectedValue = lstItems.SelectedValue;
-                    lstItems.BeginUpdate();
                     _blnSkipRefresh = true;
-                    lstItems.PopulateWithListItems(lstFilteredItems);
+                    await lstItems.PopulateWithListItemsAsync(lstFilteredItems);
                     _blnSkipRefresh = false;
                     if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
-                    {
                         lstItems.SelectedIndex
                             = lstFilteredItems.FindIndex(x => objOldSelectedEntry.Equals(x.Value as MasterIndexEntry));
-                    }
                     else
                         lstItems.SelectedIndex = -1;
-
-                    lstItems.EndUpdate();
                 }
                 finally
                 {
@@ -515,13 +500,13 @@ namespace Chummer
                 return;
             using (CursorWait.New(this))
             {
-                if (lstItems.SelectedValue is MasterIndexEntry objEntry)
+                if (lstItems.DoThreadSafeFunc(x => x.SelectedValue) is MasterIndexEntry objEntry)
                 {
-                    lblSourceLabel.Visible = true;
-                    lblSource.Visible = true;
-                    lblSourceClickReminder.Visible = true;
-                    lblSource.Text = objEntry.DisplaySource.ToString();
-                    lblSource.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblSource.DoThreadSafeAsync(x => x.Text = objEntry.DisplaySource.ToString());
+                    await lblSource.DoThreadSafeAsync(x => x.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip);
                     (bool blnSuccess, Task<string> tskNotes) = await _dicCachedNotes.TryGetValueAsync(objEntry);
                     if (!blnSuccess)
                     {
@@ -551,15 +536,16 @@ namespace Chummer
                         await _dicCachedNotes.TryAddAsync(objEntry, tskNotes);
                     }
 
-                    txtNotes.Text = await tskNotes;
-                    txtNotes.Visible = true;
+                    string strNotes = await tskNotes;
+                    await txtNotes.DoThreadSafeAsync(x => x.Text = strNotes);
+                    await txtNotes.DoThreadSafeAsync(x => x.Visible = true);
                 }
                 else
                 {
-                    lblSourceLabel.Visible = false;
-                    lblSource.Visible = false;
-                    lblSourceClickReminder.Visible = false;
-                    txtNotes.Visible = false;
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblSource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = false);
+                    await txtNotes.DoThreadSafeAsync(x => x.Visible = false);
                 }
             }
         }
@@ -607,8 +593,14 @@ namespace Chummer
             using (CursorWait.New(this))
             {
                 SuspendLayout();
-                await PopulateCharacterSettings();
-                ResumeLayout();
+                try
+                {
+                    await PopulateCharacterSettings();
+                }
+                finally
+                {
+                    ResumeLayout();
+                }
             }
         }
 

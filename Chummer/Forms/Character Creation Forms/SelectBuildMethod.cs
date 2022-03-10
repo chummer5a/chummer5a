@@ -103,8 +103,7 @@ namespace Chummer
                                                                                    objLoopOptions,
                                                                                    objLoopOptions.DisplayName)));
                         lstGameplayOptions.Sort(CompareListItems.CompareNames);
-                        cboCharacterSetting.BeginUpdate();
-                        cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
+                        await cboCharacterSetting.PopulateWithListItemsAsync(lstGameplayOptions);
                         cboCharacterSetting.SelectedValue = objOldSelected;
                         if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                         {
@@ -117,7 +116,6 @@ namespace Chummer
 
                         if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                             cboCharacterSetting.SelectedIndex = 0;
-                        cboCharacterSetting.EndUpdate();
                     }
                 }
                 finally
@@ -144,8 +142,7 @@ namespace Chummer
                         }
 
                         lstCharacterSettings.Sort(CompareListItems.CompareNames);
-                        cboCharacterSetting.BeginUpdate();
-                        cboCharacterSetting.PopulateWithListItems(lstCharacterSettings);
+                        await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings);
                         if (_blnForExistingCharacter)
                         {
                             (bool blnSuccess, CharacterSettings objSetting)
@@ -175,10 +172,9 @@ namespace Chummer
 
                         if (cboCharacterSetting.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
                             cboCharacterSetting.SelectedIndex = 0;
-                        cboCharacterSetting.EndUpdate();
                     }
 
-                    chkIgnoreRules.SetToolTip(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
+                    await chkIgnoreRules.SetToolTipAsync(await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules"));
                     await ProcessGameplayIndexChanged();
                 }
                 finally

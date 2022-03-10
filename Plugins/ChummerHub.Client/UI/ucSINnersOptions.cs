@@ -89,7 +89,7 @@ namespace ChummerHub.Client.UI
                 cbSINnerUrl.DoThreadSafe(x =>
                 {
                     x.SetToolTip(tip);
-                    ((ComboBox)x).SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
+                    x.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
                 });
             }
             else
@@ -97,7 +97,7 @@ namespace ChummerHub.Client.UI
                 await cbSINnerUrl.DoThreadSafeAsync(x =>
                 {
                     x.SetToolTip(tip);
-                    ((ComboBox)x).SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
+                    x.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
                 });
             }
 
@@ -145,23 +145,23 @@ namespace ChummerHub.Client.UI
                 // ReSharper disable once MethodHasAsyncOverload
                 cbSINnerUrl.DoThreadSafe(x =>
                 {
-                    ((ComboBox)x).DataSource = Settings.Default.SINnerUrls;
-                    ((ComboBox)x).SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
+                    x.DataSource = Settings.Default.SINnerUrls;
+                    x.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
                     x.Enabled = true;
                 });
                 // ReSharper disable once MethodHasAsyncOverload
                 cbIgnoreWarnings.DoThreadSafe(
-                    x => ((CheckBox)x).Checked = Settings.Default.IgnoreWarningsOnOpening);
+                    x => x.Checked = Settings.Default.IgnoreWarningsOnOpening);
                 // ReSharper disable once MethodHasAsyncOverload
                 cbOpenChummerFromSharedLinks.DoThreadSafe(
-                    x => ((CheckBox)x).Checked = Settings.Default.OpenChummerFromSharedLinks);
+                    x => x.Checked = Settings.Default.OpenChummerFromSharedLinks);
                 // ReSharper disable once MethodHasAsyncOverload
                 rbListUserMode.DoThreadSafe(
-                    x => ((RadioButtonList)x).SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0);
+                    x => x.SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0);
                 // ReSharper disable once MethodHasAsyncOverload
                 cbVisibilityIsPublic.DoThreadSafe(x =>
                 {
-                    ((CheckBox)x).Checked = Settings.Default.VisibilityIsPublic;
+                    x.Checked = Settings.Default.VisibilityIsPublic;
                     x.BindingContext = new BindingContext();
                 });
             }
@@ -170,19 +170,19 @@ namespace ChummerHub.Client.UI
                 await Task.WhenAll(
                     cbSINnerUrl.DoThreadSafeAsync(x =>
                     {
-                        ((ComboBox)x).DataSource = Settings.Default.SINnerUrls;
-                        ((ComboBox)x).SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
+                        x.DataSource = Settings.Default.SINnerUrls;
+                        x.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
                         x.Enabled = true;
                     }),
                     cbIgnoreWarnings.DoThreadSafeAsync(x =>
-                        ((CheckBox)x).Checked = Settings.Default.IgnoreWarningsOnOpening),
+                        x.Checked = Settings.Default.IgnoreWarningsOnOpening),
                     cbOpenChummerFromSharedLinks.DoThreadSafeAsync(x =>
-                        ((CheckBox)x).Checked = Settings.Default.OpenChummerFromSharedLinks),
+                        x.Checked = Settings.Default.OpenChummerFromSharedLinks),
                     rbListUserMode.DoThreadSafeAsync(x =>
-                        ((RadioButtonList)x).SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0),
+                        x.SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0),
                     cbVisibilityIsPublic.DoThreadSafeAsync(x =>
                     {
-                        ((CheckBox)x).Checked = Settings.Default.VisibilityIsPublic;
+                        x.Checked = Settings.Default.VisibilityIsPublic;
                         x.BindingContext = new BindingContext();
                     }));
             }
@@ -212,38 +212,38 @@ namespace ChummerHub.Client.UI
                 // ReSharper disable once MethodHasAsyncOverload
                 cbUploadOnSave.DoThreadSafe(x =>
                 {
-                    ((CheckBox)x).Checked = UploadOnSave;
-                    ((CheckBox)x).CheckedChanged += cbUploadOnSave_CheckedChanged;
+                    x.Checked = UploadOnSave;
+                    x.CheckedChanged += cbUploadOnSave_CheckedChanged;
                 });
                 // ReSharper disable once MethodHasAsyncOverload
-                cbSINnerUrl.DoThreadSafe(x => ((ComboBox)x).SelectedValueChanged += CbSINnerUrl_SelectedValueChanged);
+                cbSINnerUrl.DoThreadSafe(x => x.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged);
                 // ReSharper disable once MethodHasAsyncOverload
-                cbVisibilityIsPublic.DoThreadSafe(x => ((CheckBox)x).CheckedChanged += cbVisibilityIsPublic_CheckedChanged);
+                cbVisibilityIsPublic.DoThreadSafe(x => x.CheckedChanged += cbVisibilityIsPublic_CheckedChanged);
                 // ReSharper disable once MethodHasAsyncOverload
-                rbListUserMode.DoThreadSafe(x => ((RadioButtonList)x).SelectedIndexChanged += RbListUserMode_SelectedIndexChanged);
+                rbListUserMode.DoThreadSafe(x => x.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged);
                 // ReSharper disable once MethodHasAsyncOverload
-                cbIgnoreWarnings.DoThreadSafe(x => ((CheckBox)x).CheckedChanged += CbIgnoreWarningsOnCheckedChanged);
+                cbIgnoreWarnings.DoThreadSafe(x => x.CheckedChanged += CbIgnoreWarningsOnCheckedChanged);
                 // ReSharper disable once MethodHasAsyncOverload
-                cbOpenChummerFromSharedLinks.DoThreadSafe(x => ((CheckBox)x).CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged);
+                cbOpenChummerFromSharedLinks.DoThreadSafe(x => x.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged);
             }
             else
             {
                 await Task.WhenAll(
                     cbUploadOnSave.DoThreadSafeAsync(x =>
                     {
-                        ((CheckBox)x).Checked = UploadOnSave;
-                        ((CheckBox)x).CheckedChanged += cbUploadOnSave_CheckedChanged;
+                        x.Checked = UploadOnSave;
+                        x.CheckedChanged += cbUploadOnSave_CheckedChanged;
                     }),
                     cbSINnerUrl.DoThreadSafeAsync(x =>
-                        ((ComboBox)x).SelectedValueChanged += CbSINnerUrl_SelectedValueChanged),
+                        x.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged),
                     cbVisibilityIsPublic.DoThreadSafeAsync(x =>
-                                                               ((CheckBox)x).CheckedChanged += cbVisibilityIsPublic_CheckedChanged),
+                                                               x.CheckedChanged += cbVisibilityIsPublic_CheckedChanged),
                     rbListUserMode.DoThreadSafeAsync(x =>
-                                                         ((RadioButtonList)x).SelectedIndexChanged += RbListUserMode_SelectedIndexChanged),
+                                                         x.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged),
                     cbIgnoreWarnings.DoThreadSafeAsync(x =>
-                                                           ((CheckBox)x).CheckedChanged += CbIgnoreWarningsOnCheckedChanged),
+                                                           x.CheckedChanged += CbIgnoreWarningsOnCheckedChanged),
                     cbOpenChummerFromSharedLinks.DoThreadSafeAsync(x =>
-                                                                       ((CheckBox)x).CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged));
+                                                                       x.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged));
             }
             //AddShieldToButton(bRegisterUriScheme);
         }

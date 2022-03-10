@@ -92,9 +92,7 @@ namespace Chummer
                 }
 
                 // Populate the lists.
-                cboAmmo.BeginUpdate();
-                cboAmmo.PopulateWithListItems(lstAmmo);
-                cboAmmo.EndUpdate();
+                await cboAmmo.PopulateWithListItemsAsync(lstAmmo);
             }
 
             cboType.BeginUpdate();

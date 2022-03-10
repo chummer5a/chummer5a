@@ -100,8 +100,8 @@ namespace Chummer
         {
             _blnLoading = true;
             // Populate the XSLT list with all of the XSL files found in the sheets directory.
-            LanguageManager.PopulateSheetLanguageList(cboLanguage, _strSelectedSheet, _lstCharacters);
-            PopulateXsltList();
+            await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters);
+            await PopulateXsltList();
 
             cboXSLT.SelectedValue = _strSelectedSheet;
             // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
@@ -353,7 +353,7 @@ namespace Chummer
                 if (strOldSelected.Contains(Path.DirectorySeparatorChar))
                     strOldSelected
                         = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
-                PopulateXsltList();
+                await PopulateXsltList();
                 string strNewLanguage = cboLanguage.SelectedValue?.ToString() ?? strOldSelected;
                 if (strNewLanguage == strOldSelected)
                 {
@@ -435,7 +435,7 @@ namespace Chummer
                   ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">"
                   +
                   strText.CleanForHtml() + "</body></html>";
-            await webViewer.DoThreadSafeAsync(x => ((WebBrowser)x).DocumentText = strDocumentText);
+            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strDocumentText);
         }
 
         /// <summary>
@@ -606,7 +606,7 @@ namespace Chummer
 
                         await this.DoThreadSafeAsync(() => UseWaitCursor = true);
                         await webViewer.DoThreadSafeAsync(
-                            x => ((WebBrowser) x).Url = new Uri("file:///" + _strTempSheetFilePath));
+                            x => x.Url = new Uri("file:///" + _strTempSheetFilePath));
                     }
                     else
                     {
@@ -615,7 +615,7 @@ namespace Chummer
                         {
                             string strOutput = await objReader.ReadToEndAsync();
                             await this.DoThreadSafeAsync(() => UseWaitCursor = true);
-                            await webViewer.DoThreadSafeAsync(x => ((WebBrowser) x).DocumentText = strOutput);
+                            await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput);
                         }
                     }
                 }
@@ -733,14 +733,12 @@ namespace Chummer
             return true;
         }
 
-        private void PopulateXsltList()
+        private async ValueTask PopulateXsltList()
         {
-            List<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage, _lstCharacters, true);
+            List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.DefaultLanguage, _lstCharacters, true);
             try
             {
-                cboXSLT.BeginUpdate();
-                cboXSLT.PopulateWithListItems(lstFiles);
-                cboXSLT.EndUpdate();
+                await cboXSLT.PopulateWithListItemsAsync(lstFiles);
             }
             finally
             {
@@ -788,8 +786,8 @@ namespace Chummer
             {
                 _blnLoading = true;
                 // Populate the XSLT list with all of the XSL files found in the sheets directory.
-                LanguageManager.PopulateSheetLanguageList(cboLanguage, _strSelectedSheet, _lstCharacters);
-                PopulateXsltList();
+                await LanguageManager.PopulateSheetLanguageListAsync(cboLanguage, _strSelectedSheet, _lstCharacters);
+                await PopulateXsltList();
                 await RefreshCharacters();
             }
             finally

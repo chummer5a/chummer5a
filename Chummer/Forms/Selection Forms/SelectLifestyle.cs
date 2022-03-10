@@ -81,15 +81,13 @@ namespace Chummer
                         }
                     }
                 }
-
-                cboLifestyle.BeginUpdate();
-                cboLifestyle.PopulateWithListItems(lstLifestyle);
+                
+                await cboLifestyle.PopulateWithListItemsAsync(lstLifestyle);
 
                 if (!string.IsNullOrEmpty(strSelectedId))
                     cboLifestyle.SelectedValue = strSelectedId;
                 if (cboLifestyle.SelectedIndex == -1)
                     cboLifestyle.SelectedIndex = 0;
-                cboLifestyle.EndUpdate();
             }
 
             // Populate the City ComboBox
@@ -108,10 +106,8 @@ namespace Chummer
                         }
                     }
                 }
-
-                cboCity.BeginUpdate();
-                cboCity.PopulateWithListItems(lstCity);
-                cboCity.EndUpdate();
+                
+                await cboCity.PopulateWithListItemsAsync(lstCity);
             }
 
             //Populate District and Borough ComboBox for the first time
@@ -271,12 +267,12 @@ namespace Chummer
                 SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
-                lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
             }
             else
             {
                 lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                await lblSource.SetToolTipAsync(string.Empty);
             }
 
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -410,12 +406,12 @@ namespace Chummer
                         SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                             GlobalSettings.CultureInfo, _objCharacter);
                         lblSource.Text = objSource.ToString();
-                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                     }
                     else
                     {
                         lblSource.Text = await LanguageManager.GetStringAsync("String_Unknown");
-                        lblSource.SetToolTip(await LanguageManager.GetStringAsync("String_Unknown"));
+                        await lblSource.SetToolTipAsync(await LanguageManager.GetStringAsync("String_Unknown"));
                     }
 
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -547,10 +543,8 @@ namespace Chummer
                         }
                     }
                 }
-
-                cboDistrict.BeginUpdate();
-                cboDistrict.PopulateWithListItems(lstDistrict);
-                cboDistrict.EndUpdate();
+                
+                await cboDistrict.PopulateWithListItemsAsync(lstDistrict);
             }
         }
 
@@ -578,10 +572,8 @@ namespace Chummer
                         }
                     }
                 }
-
-                cboBorough.BeginUpdate();
-                cboBorough.PopulateWithListItems(lstBorough);
-                cboBorough.EndUpdate();
+                
+                await cboBorough.PopulateWithListItemsAsync(lstBorough);
             }
         }
 

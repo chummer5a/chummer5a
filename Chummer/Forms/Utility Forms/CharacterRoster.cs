@@ -484,9 +484,8 @@ namespace Chummer
                 return;
 
             Log.Trace("Populating CharacterRosterTreeNode MRUs (MainThread).");
-            await treCharacterList.DoThreadSafeAsync(x =>
+            await treCharacterList.DoThreadSafeAsync(treList =>
             {
-                TreeView treList = (TreeView) x;
                 treList.SuspendLayout();
                 if (blnRefreshFavorites && objFavoriteNode != null)
                 {
@@ -663,7 +662,7 @@ namespace Chummer
             Log.Trace("Populating CharacterRosterTreeNode Watch Folder (MainThread).");
             await treCharacterList.DoThreadSafeAsync(x =>
             {
-                TreeView treList = (TreeView)x;
+                TreeView treList = x;
                 treList.SuspendLayout();
                 if (objWatchNode != null)
                 {
@@ -710,13 +709,13 @@ namespace Chummer
                             string strNodeText = node.Text;
                             object objNodeTag = node.Tag;
                             TreeNode objExistingNode = await treCharacterList.DoThreadSafeFuncAsync(x =>
-                                ((TreeView)x).Nodes.Cast<TreeNode>()
-                                                .FirstOrDefault(y => y.Text == strNodeText && y.Tag == objNodeTag));
+                                x.Nodes.Cast<TreeNode>()
+                                 .FirstOrDefault(y => y.Text == strNodeText && y.Tag == objNodeTag));
                             try
                             {
                                 await treCharacterList.DoThreadSafeAsync(x =>
                                 {
-                                    TreeView treList = (TreeView)x;
+                                    TreeView treList = x;
                                     if (objExistingNode != null)
                                     {
                                         treList.Nodes.Remove(objExistingNode);
@@ -862,123 +861,160 @@ namespace Chummer
         /// <param name="objCache"></param>
         public async Task UpdateCharacter(CharacterCache objCache)
         {
-            if (this.IsNullOrDisposed()) // Safety check for external calls
+            if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed())) // Safety check for external calls
                 return;
             using (CursorWait.New(this))
             {
-                tlpRight.SuspendLayout();
-                if (objCache != null)
+                await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout());
+                try
                 {
-                    string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
-                    txtCharacterBio.Text = objCache.Description.RtfToPlainText();
-                    txtCharacterBackground.Text = objCache.Background.RtfToPlainText();
-                    txtCharacterNotes.Text = objCache.CharacterNotes.RtfToPlainText();
-                    txtGameNotes.Text = objCache.GameNotes.RtfToPlainText();
-                    txtCharacterConcept.Text = objCache.Concept.RtfToPlainText();
-                    lblCareerKarma.Text = objCache.Karma;
-                    if (string.IsNullOrEmpty(lblCareerKarma.Text)
-                        || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
-                        lblCareerKarma.Text = await LanguageManager.GetStringAsync("String_None");
-                    lblPlayerName.Text = objCache.PlayerName;
-                    if (string.IsNullOrEmpty(lblPlayerName.Text))
-                        lblPlayerName.Text = strUnknown;
-                    lblCharacterName.Text = objCache.CharacterName;
-                    if (string.IsNullOrEmpty(lblCharacterName.Text))
-                        lblCharacterName.Text = strUnknown;
-                    lblCharacterAlias.Text = objCache.CharacterAlias;
-                    if (string.IsNullOrEmpty(lblCharacterAlias.Text))
-                        lblCharacterAlias.Text = strUnknown;
-                    lblEssence.Text = objCache.Essence;
-                    if (string.IsNullOrEmpty(lblEssence.Text))
-                        lblEssence.Text = strUnknown;
-                    lblFilePath.Text = objCache.FileName;
-                    if (string.IsNullOrEmpty(lblFilePath.Text))
-                        lblFilePath.Text = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
-                    lblSettings.Text = objCache.SettingsFile;
-                    if (string.IsNullOrEmpty(lblSettings.Text))
-                        lblSettings.Text = strUnknown;
-                    lblFilePath.SetToolTip(
-                        await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                  () => '<' + Application.ProductName + '>'));
-                    picMugshot.Image = objCache.Mugshot;
-
-                    // Populate character information fields.
-                    if (objCache.Metatype != null)
+                    if (objCache != null)
                     {
-                        XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
-                        XPathNavigator objMetatypeNode
-                            = objMetatypeDoc.SelectSingleNode(
-                                "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
-                        if (objMetatypeNode == null)
+                        string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
+                        await txtCharacterBio.DoThreadSafeAsync(x => x.Text = objCache.Description.RtfToPlainText());
+                        await txtCharacterBackground.DoThreadSafeAsync(
+                            x => x.Text = objCache.Background.RtfToPlainText());
+                        await txtCharacterNotes.DoThreadSafeAsync(
+                            x => x.Text = objCache.CharacterNotes.RtfToPlainText());
+                        await txtGameNotes.DoThreadSafeAsync(x => x.Text = objCache.GameNotes.RtfToPlainText());
+                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = objCache.Concept.RtfToPlainText());
+                        await lblCareerKarma.DoThreadSafeFunc(async x =>
                         {
-                            objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml");
-                            objMetatypeNode = objMetatypeDoc.SelectSingleNode(
-                                "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
-                        }
-
-                        string strMetatype = objMetatypeNode != null
-                            ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
-                              ?? objCache.Metatype
-                            : objCache.Metatype;
-
-                        if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
+                            x.Text = objCache.Karma;
+                            if (string.IsNullOrEmpty(x.Text)
+                                || x.Text == 0.ToString(GlobalSettings.CultureInfo))
+                                x.Text = await LanguageManager.GetStringAsync("String_None");
+                        });
+                        await lblPlayerName.DoThreadSafeAsync(x =>
                         {
-                            objMetatypeNode = objMetatypeNode?.SelectSingleNode(
-                                "metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
+                            x.Text = objCache.PlayerName;
+                            if (string.IsNullOrEmpty(x.Text))
+                                x.Text = strUnknown;
+                        });
+                        await lblCharacterName.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objCache.CharacterName;
+                            if (string.IsNullOrEmpty(x.Text))
+                                x.Text = strUnknown;
+                        });
+                        await lblCharacterAlias.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objCache.CharacterAlias;
+                            if (string.IsNullOrEmpty(x.Text))
+                                x.Text = strUnknown;
+                        });
+                        await lblEssence.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objCache.Essence;
+                            if (string.IsNullOrEmpty(x.Text))
+                                x.Text = strUnknown;
+                        });
+                        await lblFilePath.DoThreadSafeFunc(async x =>
+                        {
+                            x.Text = objCache.FileName;
+                            if (string.IsNullOrEmpty(x.Text))
+                                x.Text = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
+                        });
+                        await lblSettings.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objCache.SettingsFile;
+                            if (string.IsNullOrEmpty(x.Text))
+                                x.Text = strUnknown;
+                        });
+                        await lblFilePath.SetToolTipAsync(
+                            await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
+                                                                      () => '<' + Application.ProductName + '>'));
+                        await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot);
 
-                            strMetatype += await LanguageManager.GetStringAsync("String_Space") + '('
-                                + (objMetatypeNode != null
-                                    ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
-                                      ?.Value
-                                      ?? objCache.Metavariant
-                                    : objCache.Metavariant) + ')';
+                        // Populate character information fields.
+                        if (objCache.Metatype != null)
+                        {
+                            XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
+                            XPathNavigator objMetatypeNode
+                                = objMetatypeDoc.SelectSingleNode(
+                                    "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
+                            if (objMetatypeNode == null)
+                            {
+                                objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml");
+                                objMetatypeNode = objMetatypeDoc.SelectSingleNode(
+                                    "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
+                            }
+
+                            string strMetatype = objMetatypeNode != null
+                                ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
+                                  ?? objCache.Metatype
+                                : objCache.Metatype;
+
+                            if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
+                            {
+                                objMetatypeNode = objMetatypeNode?.SelectSingleNode(
+                                    "metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
+
+                                strMetatype += await LanguageManager.GetStringAsync("String_Space") + '('
+                                    + (objMetatypeNode != null
+                                        ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))
+                                          ?.Value
+                                          ?? objCache.Metavariant
+                                        : objCache.Metavariant) + ')';
+                            }
+
+                            await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatype);
                         }
+                        else
+                            await lblMetatype.DoThreadSafeFunc(
+                                async x => x.Text = await LanguageManager.GetStringAsync("String_MetatypeLoadError"));
 
-                        lblMetatype.Text = strMetatype;
+                        await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true);
+                        if (!string.IsNullOrEmpty(objCache.ErrorText))
+                        {
+                            await txtCharacterBio.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objCache.ErrorText;
+                                x.ForeColor = ColorManager.ErrorColor;
+                                x.BringToFront();
+                            });
+                        }
+                        else
+                            await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText);
                     }
                     else
-                        lblMetatype.Text = await LanguageManager.GetStringAsync("String_MetatypeLoadError");
-
-                    tabCharacterText.Visible = true;
-                    if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {
-                        txtCharacterBio.Text = objCache.ErrorText;
-                        txtCharacterBio.ForeColor = ColorManager.ErrorColor;
-                        txtCharacterBio.BringToFront();
+                        await tabCharacterText.DoThreadSafeAsync(x => x.Visible = false);
+                        await txtCharacterBio.DoThreadSafeAsync(x => x.Clear());
+                        await txtCharacterBackground.DoThreadSafeAsync(x => x.Clear());
+                        await txtCharacterNotes.DoThreadSafeAsync(x => x.Clear());
+                        await txtGameNotes.DoThreadSafeAsync(x => x.Clear());
+                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Clear());
+                        await lblCareerKarma.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblMetatype.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblPlayerName.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblCharacterName.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblCharacterAlias.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblEssence.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblFilePath.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblFilePath.SetToolTipAsync(string.Empty);
+                        await lblSettings.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await picMugshot.DoThreadSafeAsync(x => x.Image = null);
                     }
-                    else
-                        txtCharacterBio.ForeColor = ColorManager.WindowText;
-                }
-                else
-                {
-                    tabCharacterText.Visible = false;
-                    txtCharacterBio.Clear();
-                    txtCharacterBackground.Clear();
-                    txtCharacterNotes.Clear();
-                    txtGameNotes.Clear();
-                    txtCharacterConcept.Clear();
-                    lblCareerKarma.Text = string.Empty;
-                    lblMetatype.Text = string.Empty;
-                    lblPlayerName.Text = string.Empty;
-                    lblCharacterName.Text = string.Empty;
-                    lblCharacterAlias.Text = string.Empty;
-                    lblEssence.Text = string.Empty;
-                    lblFilePath.Text = string.Empty;
-                    lblFilePath.SetToolTip(string.Empty);
-                    lblSettings.Text = string.Empty;
-                    picMugshot.Image = null;
-                }
 
-                lblCareerKarmaLabel.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text);
-                lblMetatypeLabel.Visible = !string.IsNullOrEmpty(lblMetatype.Text);
-                lblPlayerNameLabel.Visible = !string.IsNullOrEmpty(lblPlayerName.Text);
-                lblCharacterNameLabel.Visible = !string.IsNullOrEmpty(lblCharacterName.Text);
-                lblCharacterAliasLabel.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text);
-                lblEssenceLabel.Visible = !string.IsNullOrEmpty(lblEssence.Text);
-                lblFilePathLabel.Visible = !string.IsNullOrEmpty(lblFilePath.Text);
-                lblSettingsLabel.Visible = !string.IsNullOrEmpty(lblSettings.Text);
-                ProcessMugshotSizeMode();
-                tlpRight.ResumeLayout();
+                    await lblCareerKarmaLabel.DoThreadSafeAsync(
+                        x => x.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text));
+                    await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetatype.Text));
+                    await lblPlayerNameLabel.DoThreadSafeAsync(
+                        x => x.Visible = !string.IsNullOrEmpty(lblPlayerName.Text));
+                    await lblCharacterNameLabel.DoThreadSafeAsync(
+                        x => x.Visible = !string.IsNullOrEmpty(lblCharacterName.Text));
+                    await lblCharacterAliasLabel.DoThreadSafeAsync(
+                        x => x.Visible = !string.IsNullOrEmpty(lblCharacterAlias.Text));
+                    await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblEssence.Text));
+                    await lblFilePathLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblFilePath.Text));
+                    await lblSettingsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSettings.Text));
+                    await ProcessMugshotSizeMode();
+                }
+                finally
+                {
+                    await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout());
+                }
             }
         }
 
@@ -1097,25 +1133,30 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void picMugshot_SizeChanged(object sender, EventArgs e)
+        private async void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            ProcessMugshotSizeMode();
+            await ProcessMugshotSizeMode();
         }
 
-        private void ProcessMugshotSizeMode()
+        private Task ProcessMugshotSizeMode()
         {
-            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
-                return;
-            try
+            if (this.IsNullOrDisposed())
+                return Task.CompletedTask;
+            return picMugshot.DoThreadSafeAsync(x =>
             {
-                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                    ? PictureBoxSizeMode.CenterImage
-                    : PictureBoxSizeMode.Zoom;
-            }
-            catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
-            {
-                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
-            }
+                if (x.IsNullOrDisposed())
+                    return;
+                try
+                {
+                    x.SizeMode = x.Image != null && x.Height >= x.Image.Height && x.Width >= x.Image.Width
+                        ? PictureBoxSizeMode.CenterImage
+                        : PictureBoxSizeMode.Zoom;
+                }
+                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                {
+                    x.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            });
         }
 
         #endregion Form Methods

@@ -113,9 +113,7 @@ namespace Chummer
             {
                 _lstGrade.Add(new ListItem(objGrade.Name, objGrade.CurrentDisplayName));
             }
-            cboGrade.BeginUpdate();
             cboGrade.PopulateWithListItems(_lstGrade);
-            cboGrade.EndUpdate();
         }
 
         private void UpdateCustomDrugStats()
@@ -230,24 +228,24 @@ namespace Chummer
 
             _lstSelectedDrugComponents.Add(objNodeData);
             UpdateCustomDrugStats();
-            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
+            lblDrugDescription.Text = await _objDrug.GenerateDescriptionAsync(0);
         }
 
         public Drug CustomDrug => _objDrug;
 
-        private void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treAvailableComponents.SelectedNode?.Tag is DrugNodeData objNodeData)
             {
-                lblBlockDescription.Text = objNodeData.DrugComponent.GenerateDescription(objNodeData.Level);
+                lblBlockDescription.Text = await objNodeData.DrugComponent.GenerateDescriptionAsync(objNodeData.Level);
             }
         }
 
-        private void treChoosenComponents_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treChoosenComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (treChosenComponents.SelectedNode?.Tag is DrugNodeData objNodeData)
             {
-                lblBlockDescription.Text = objNodeData.DrugComponent.GenerateDescription(objNodeData.Level);
+                lblBlockDescription.Text = await objNodeData.DrugComponent.GenerateDescriptionAsync(objNodeData.Level);
             }
         }
 
@@ -261,7 +259,7 @@ namespace Chummer
             await AddSelectedComponent();
         }
 
-        private void btnRemoveComponent_Click(object sender, EventArgs e)
+        private async void btnRemoveComponent_Click(object sender, EventArgs e)
         {
             if (!(treChosenComponents.SelectedNode?.Tag is DrugNodeData objNodeData)) return;
             treChosenComponents.Nodes.Remove(treChosenComponents.SelectedNode);
@@ -269,13 +267,13 @@ namespace Chummer
             _lstSelectedDrugComponents.Remove(objNodeData);
 
             UpdateCustomDrugStats();
-            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
+            lblDrugDescription.Text = await _objDrug.GenerateDescriptionAsync(0);
         }
 
-        private void txtDrugName_TextChanged(object sender, EventArgs e)
+        private async void txtDrugName_TextChanged(object sender, EventArgs e)
         {
             _objDrug.Name = txtDrugName.Text;
-            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
+            lblDrugDescription.Text = await _objDrug.GenerateDescriptionAsync(0);
         }
 
         private async void btnOk_Click(object sender, EventArgs e)
@@ -290,7 +288,7 @@ namespace Chummer
             Close();
         }
 
-        private void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboGrade.SelectedValue == null)
                 return;
@@ -303,7 +301,7 @@ namespace Chummer
             if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
                 _intAddictionThreshold = 0;
             UpdateCustomDrugStats();
-            lblDrugDescription.Text = _objDrug.GenerateDescription(0);
+            lblDrugDescription.Text = await _objDrug.GenerateDescriptionAsync(0);
         }
 
         private sealed class DrugNodeData

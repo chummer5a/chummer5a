@@ -65,9 +65,6 @@ namespace Chummer
 
                 if (objXmlMentor != null)
                 {
-                    cboChoice1.BeginUpdate();
-                    cboChoice2.BeginUpdate();
-
                     // If the Mentor offers a choice of bonuses, build the list and let the user select one.
                     XPathNavigator xmlChoices = await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("choices");
                     if (xmlChoices != null)
@@ -99,13 +96,13 @@ namespace Chummer
                             //If there is only a single option, show it as a label.
                             //If there are more, show the drop down menu
                             if (lstChoice1.Count > 0)
-                                cboChoice1.PopulateWithListItems(lstChoice1);
+                                await cboChoice1.PopulateWithListItemsAsync(lstChoice1);
                             cboChoice1.Visible = lstChoice1.Count > 1;
                             lblBonusText1.Visible = lstChoice1.Count == 1;
                             if (lstChoice1.Count == 1)
                                 lblBonusText1.Text = lstChoice1[0].Name;
                             if (lstChoice2.Count > 0)
-                                cboChoice2.PopulateWithListItems(lstChoice2);
+                                await cboChoice2.PopulateWithListItemsAsync(lstChoice2);
                             cboChoice2.Visible = lstChoice2.Count > 1;
                             lblBonusText2.Visible = lstChoice2.Count == 1;
                             if (lstChoice2.Count == 1)
@@ -119,9 +116,7 @@ namespace Chummer
                         lblBonusText1.Visible = false;
                         lblBonusText2.Visible = false;
                     }
-
-                    cboChoice1.EndUpdate();
-                    cboChoice2.EndUpdate();
+                    
                     lblChoice1.Visible = cboChoice1.Visible;
                     lblChoice2.Visible = cboChoice2.Visible;
                     lblBonus1.Visible = lblBonusText1.Visible;
@@ -144,7 +139,7 @@ namespace Chummer
                                      await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter);
-                    objSourceString.SetControl(lblSource);
+                    await objSourceString.SetControlAsync(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     cmdOK.Enabled = true;
                     tlpRight.Visible = true;
@@ -211,8 +206,7 @@ namespace Chummer
                 lstMentors.Sort(CompareListItems.CompareNames);
                 string strOldSelected = lstMentor.SelectedValue?.ToString();
                 _blnSkipRefresh = true;
-                lstMentor.BeginUpdate();
-                lstMentor.PopulateWithListItems(lstMentors);
+                await lstMentor.PopulateWithListItemsAsync(lstMentors);
                 _blnSkipRefresh = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstMentor.SelectedValue = strOldSelected;
@@ -223,8 +217,6 @@ namespace Chummer
                     lstMentor.SelectedValue = strForceId;
                     lstMentor.Enabled = false;
                 }
-
-                lstMentor.EndUpdate();
             }
         }
 

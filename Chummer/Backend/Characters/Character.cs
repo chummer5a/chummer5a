@@ -28355,6 +28355,11 @@ namespace Chummer
         {
             SourceDetail.SetControl(sourceControl);
         }
+
+        public Task SetSourceDetailAsync(Control sourceControl)
+        {
+            return SourceDetail.SetControlAsync(sourceControl);
+        }
         #endregion
 
         #region Special Methods

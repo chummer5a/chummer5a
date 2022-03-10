@@ -2586,6 +2586,13 @@ namespace Chummer.Backend.Equipment
             SourceDetail.SetControl(sourceControl);
         }
 
+        public Task SetSourceDetailAsync(Control sourceControl)
+        {
+            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                _objCachedSourceDetail = default;
+            return SourceDetail.SetControlAsync(sourceControl);
+        }
+
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>

@@ -42,7 +42,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("spells.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void SelectSpellCategory_Load(object sender, EventArgs e)
+        private async void SelectSpellCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Spell Categories from the Spells file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
@@ -50,21 +50,19 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
                                                       + _strForceCategory.CleanXPath() + ']')
-                             : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+                             : await _objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
                     if (_setExcludeCategories.Contains(strInnerText))
                         continue;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
                                                  ?? strInnerText));
                 }
-
-                cboCategory.BeginUpdate();
-                cboCategory.PopulateWithListItems(lstCategory);
+                
+                await cboCategory.PopulateWithListItemsAsync(lstCategory);
                 // Select the first Skill in the list.
                 cboCategory.SelectedIndex = 0;
-                cboCategory.EndUpdate();
             }
 
             if (cboCategory.Items.Count == 1)

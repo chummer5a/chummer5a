@@ -273,7 +273,7 @@ namespace Chummer
                 SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
-                lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -796,15 +796,12 @@ namespace Chummer
 
                     string strOldSelected = lstDrug.SelectedValue?.ToString();
                     _blnLoading = true;
-                    lstDrug.BeginUpdate();
-                    lstDrug.PopulateWithListItems(lstDrugs);
+                    await lstDrug.PopulateWithListItemsAsync(lstDrugs);
                     _blnLoading = false;
                     if (!string.IsNullOrEmpty(strOldSelected))
                         lstDrug.SelectedValue = strOldSelected;
                     else
                         lstDrug.SelectedIndex = -1;
-
-                    lstDrug.EndUpdate();
                 }
 
                 return lstDrugs?.Count > 0;
@@ -919,7 +916,6 @@ namespace Chummer
                         _blnSkipListRefresh = true;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    cboGrade.BeginUpdate();
                     cboGrade.PopulateWithListItems(lstGrade);
                     _blnLoading = blnOldLoading;
                     if (!string.IsNullOrEmpty(strForceGrade))
@@ -928,8 +924,6 @@ namespace Chummer
                         cboGrade.SelectedValue = strOldSelected;
                     if (cboGrade.SelectedIndex == -1 && lstGrade.Count > 0)
                         cboGrade.SelectedIndex = 0;
-
-                    cboGrade.EndUpdate();
 
                     _blnSkipListRefresh = blnOldSkipListRefresh;
                 }

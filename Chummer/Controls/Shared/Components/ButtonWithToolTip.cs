@@ -18,6 +18,7 @@
  */
 
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -41,8 +42,17 @@ namespace Chummer
                 if (_strToolTipText == value)
                     return;
                 _strToolTipText = value;
-                _objToolTip.SetToolTip(this, value.CleanForHtml());
+                this.DoThreadSafe(x => _objToolTip.SetToolTip(x, value.CleanForHtml()));
             }
+        }
+
+        public Task SetToolTipTextAsync(string value)
+        {
+            value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
+            if (_strToolTipText == value)
+                return Task.CompletedTask;
+            _strToolTipText = value;
+            return this.DoThreadSafeAsync(x => _objToolTip.SetToolTip(x, value.CleanForHtml()));
         }
 
         public ButtonWithToolTip() : this(ToolTipFactory.ToolTip)

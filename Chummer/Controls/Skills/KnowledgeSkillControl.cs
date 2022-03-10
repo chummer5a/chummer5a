@@ -66,23 +66,19 @@ namespace Chummer.UI.Skills
                 lblModifiedRating.DoOneWayDataBinding("ToolTipText", objSkill, nameof(KnowledgeSkill.PoolToolTip));
 
                 cmdDelete.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.AllowDelete));
-
-                cboType.BeginUpdate();
+                
                 cboType.PopulateWithListItems(objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes);
                 cboType.DoDataBinding("SelectedValue", objSkill, nameof(KnowledgeSkill.Type));
                 cboType.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.AllowTypeChange));
-                cboType.EndUpdate();
 
                 lblName.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(Skill.AllowNameChange));
                 lblName.DoOneWayDataBinding("Text", objSkill, nameof(KnowledgeSkill.WritableName));
                 lblName.DoOneWayDataBinding("ForeColor", objSkill, nameof(Skill.PreferredColor));
-
-                cboName.BeginUpdate();
+                
                 cboName.PopulateWithListItems(objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills);
                 cboName.SelectedIndex = -1;
                 cboName.Text = objSkill.WritableName;
                 cboName.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.AllowNameChange));
-                cboName.EndUpdate();
                 _blnUpdatingName = false;
                 _tmrNameChangeTimer = new Timer { Interval = 1000 };
                 _tmrNameChangeTimer.Tick += NameChangeTimer_Tick;
@@ -222,10 +218,8 @@ namespace Chummer.UI.Skills
                     chkNativeLanguage.Enabled = objSkill.IsNativeLanguage ||
                                                 objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
                     chkNativeLanguage.DoDataBinding("Checked", objSkill, nameof(Skill.IsNativeLanguage));
-
-                    cboSpec.BeginUpdate();
+                    
                     cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
-                    cboSpec.EndUpdate();
                     cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                     cboSpec.Text = objSkill.CurrentDisplaySpecialization;
                     cboSpec.TextChanged += cboSpec_TextChanged;
@@ -289,7 +283,6 @@ namespace Chummer.UI.Skills
                         cboSpec.QueueThreadSafe(() =>
                         {
                             _blnUpdatingSpec = true;
-                            cboSpec.BeginUpdate();
                             cboSpec.PopulateWithListItems(lstSpecializations);
                             if (string.IsNullOrEmpty(strOldSpec))
                                 cboSpec.SelectedIndex = -1;
@@ -299,7 +292,6 @@ namespace Chummer.UI.Skills
                                 if (cboSpec.SelectedIndex == -1)
                                     cboSpec.Text = strOldSpec;
                             }
-                            cboSpec.EndUpdate();
                             _blnUpdatingSpec = false;
                         });
                     }

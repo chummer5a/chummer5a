@@ -151,14 +151,12 @@ namespace Chummer
 
                 string strOldSelected = lstAccessory.SelectedValue?.ToString();
                 _blnLoading = true;
-                lstAccessory.BeginUpdate();
-                lstAccessory.PopulateWithListItems(lstAccessories);
+                await lstAccessory.PopulateWithListItemsAsync(lstAccessories);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstAccessory.SelectedValue = strOldSelected;
                 else
                     lstAccessory.SelectedIndex = -1;
-                lstAccessory.EndUpdate();
             }
         }
 
@@ -553,7 +551,7 @@ namespace Chummer
             string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
             string strPage = (await xmlAccessory.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
             SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-            objSourceString.SetControl(lblSource);
+            await objSourceString.SetControlAsync(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             tlpRight.Visible = true;
         }

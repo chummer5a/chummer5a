@@ -108,19 +108,16 @@ namespace Chummer
                         lstCategories.Sort(CompareListItems.CompareNames);
                         lstCategories.Insert(
                             0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
-
-                        cboCategory.BeginUpdate();
-                        cboCategory.PopulateWithListItems(lstCategories);
+                        
+                        await cboCategory.PopulateWithListItemsAsync(lstCategories);
                         // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
                         cboCategory.SelectedValue = _objCharacter.MetatypeCategory;
                         if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
                             cboCategory.SelectedIndex = 0;
-
-                        cboCategory.EndUpdate();
                     }
 
                     // Add Possession and Inhabitation to the list of Critter Tradition variations.
-                    chkPossessionBased.SetToolTip(
+                    await chkPossessionBased.SetToolTipAsync(
                         await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition"));
 
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -144,10 +141,8 @@ namespace Chummer
                                                                            x => y.Equals(
                                                                                x.Value.ToString(),
                                                                                StringComparison.OrdinalIgnoreCase)));
-
-                        cboPossessionMethod.BeginUpdate();
-                        cboPossessionMethod.PopulateWithListItems(lstMethods);
-                        cboPossessionMethod.EndUpdate();
+                        
+                        await cboPossessionMethod.PopulateWithListItemsAsync(lstMethods);
                     }
 
                     await PopulateMetatypes();
@@ -531,20 +526,20 @@ namespace Chummer
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                         lblSource.Text = objSource.ToString();
-                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                     }
                     else
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
-                        lblSource.SetToolTip(strUnknown);
+                        await lblSource.SetToolTipAsync(strUnknown);
                     }
                 }
                 else
                 {
                     string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
-                    lblSource.SetToolTip(strUnknown);
+                    await lblSource.SetToolTipAsync(strUnknown);
                 }
             }
             else if (objXmlMetatype != null)
@@ -665,20 +660,20 @@ namespace Chummer
                     {
                         SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                         lblSource.Text = objSource.ToString();
-                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                        await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                     }
                     else
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
-                        lblSource.SetToolTip(strUnknown);
+                        await lblSource.SetToolTipAsync(strUnknown);
                     }
                 }
                 else
                 {
                     string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                     lblSource.Text = strUnknown;
-                    lblSource.SetToolTip(strUnknown);
+                    await lblSource.SetToolTipAsync(strUnknown);
                 }
             }
             else
@@ -802,8 +797,7 @@ namespace Chummer
                                                  ?? _objCharacter?.MetavariantGuid.ToString(
                                                      "D", GlobalSettings.InvariantCultureInfo);
                     _blnLoading = true;
-                    cboMetavariant.BeginUpdate();
-                    cboMetavariant.PopulateWithListItems(lstMetavariants);
+                    await cboMetavariant.PopulateWithListItemsAsync(lstMetavariants);
                     cboMetavariant.Enabled = lstMetavariants.Count > 1;
                     _blnLoading = blnOldLoading;
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
@@ -816,7 +810,6 @@ namespace Chummer
 
                     if (cboMetavariant.SelectedIndex == -1 && lstMetavariants.Count > 0)
                         cboMetavariant.SelectedIndex = 0;
-                    cboMetavariant.EndUpdate();
                 }
 
                 lblMetavariantLabel.Visible = true;
@@ -829,12 +822,10 @@ namespace Chummer
                 // Clear the Metavariant list if nothing is currently selected.
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
-                cboMetavariant.BeginUpdate();
-                cboMetavariant.PopulateWithListItems(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None")).Yield());
+                await cboMetavariant.PopulateWithListItemsAsync(new ListItem(Guid.Empty, await LanguageManager.GetStringAsync("String_None")).Yield());
                 cboMetavariant.Enabled = false;
                 _blnLoading = blnOldLoading;
                 cboMetavariant.SelectedIndex = 0;
-                cboMetavariant.EndUpdate();
 
                 lblForceLabel.Visible = false;
                 nudForce.Visible = false;
@@ -903,8 +894,7 @@ namespace Chummer
                     }
 
                     _blnLoading = true;
-                    lstMetatypes.BeginUpdate();
-                    lstMetatypes.PopulateWithListItems(lstMetatypeItems);
+                    await lstMetatypes.PopulateWithListItemsAsync(lstMetatypeItems);
                     _blnLoading = blnOldLoading;
                     // Attempt to select the default Human item. If it could not be found, select the first item in the list instead.
                     if (!string.IsNullOrEmpty(strOldSelected))
@@ -914,11 +904,8 @@ namespace Chummer
                         else
                             lstMetatypes.SelectedValue = strOldSelected;
                     }
-
                     if (lstMetatypes.SelectedIndex == -1 && lstMetatypeItems.Count > 0)
                         lstMetatypes.SelectedIndex = 0;
-
-                    lstMetatypes.EndUpdate();
                 }
             }
             else

@@ -299,8 +299,7 @@ namespace Chummer
                 lstItems.Sort(CompareListItems.CompareNames);
 
                 // Populate the lists.
-                cboAmmo.BeginUpdate();
-                cboAmmo.PopulateWithListItems(lstItems);
+                await cboAmmo.PopulateWithListItemsAsync(lstItems);
 
                 // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
                 if (cboAmmo.Items.Count == 1 && _blnAllowAutoSelect)
@@ -325,8 +324,6 @@ namespace Chummer
                     else
                         cboAmmo.Text = _strSelectItemOnLoad;
                 }
-
-                cboAmmo.EndUpdate();
             }
 
             if (cboAmmo.Items.Count < 0)

@@ -139,7 +139,7 @@ namespace Chummer
                     string strSource = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     string strPage = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                    objSourceString.SetControl(lblSource);
+                    await objSourceString.SetControlAsync(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;
                 }
@@ -249,14 +249,12 @@ namespace Chummer
                 lstMartialArt.Sort(CompareListItems.CompareNames);
                 string strOldSelected = lstMartialArts.SelectedValue?.ToString();
                 _blnLoading = true;
-                lstMartialArts.BeginUpdate();
-                lstMartialArts.PopulateWithListItems(lstMartialArt);
+                await lstMartialArts.PopulateWithListItemsAsync(lstMartialArt);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstMartialArts.SelectedValue = strOldSelected;
                 else
                     lstMartialArts.SelectedIndex = -1;
-                lstMartialArts.EndUpdate();
             }
         }
 

@@ -96,7 +96,7 @@ namespace Chummer
         {
             using (CursorWait.New(this))
             {
-                using (CustomActivity opFrmChummerMain = Timekeeper.StartSyncron(
+                using (CustomActivity opFrmChummerMain = await Timekeeper.StartSyncronAsync(
                            "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
                            _strCurrentVersion))
                 {

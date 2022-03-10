@@ -115,7 +115,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DoThreadSafe(this Control objControl, Action funcToRun)
+        public static void DoThreadSafe<T>(this T objControl, Action funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(true, funcToRun);
         }
@@ -127,7 +127,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DoThreadSafe(this Control objControl, Action<Control> funcToRun)
+        public static void DoThreadSafe<T>(this T objControl, Action<T> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(true, funcToRun);
         }
@@ -139,7 +139,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DoThreadSafe(this Control objControl, Func<Task> funcToRun)
+        public static void DoThreadSafe<T>(this T objControl, Func<Task> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(true, funcToRun);
         }
@@ -151,7 +151,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DoThreadSafe(this Control objControl, Func<Control, Task> funcToRun)
+        public static void DoThreadSafe<T>(this T objControl, Func<T, Task> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(true, funcToRun);
         }
@@ -163,7 +163,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void QueueThreadSafe(this Control objControl, Action funcToRun)
+        public static void QueueThreadSafe<T>(this T objControl, Action funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(false, funcToRun);
         }
@@ -175,7 +175,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void QueueThreadSafe(this Control objControl, Action<Control> funcToRun)
+        public static void QueueThreadSafe<T>(this T objControl, Action<T> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(false, funcToRun);
         }
@@ -187,7 +187,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void QueueThreadSafe(this Control objControl, Func<Task> funcToRun)
+        public static void QueueThreadSafe<T>(this T objControl, Func<Task> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(false, funcToRun);
         }
@@ -199,7 +199,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void QueueThreadSafe(this Control objControl, Func<Control, Task> funcToRun)
+        public static void QueueThreadSafe<T>(this T objControl, Func<T, Task> funcToRun) where T : Control
         {
             objControl.DoThreadSafeCore(false, funcToRun);
         }
@@ -211,7 +211,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DoThreadSafeCore(this Control objControl, bool blnSync, Action funcToRun)
+        private static void DoThreadSafeCore<T>(this T objControl, bool blnSync, Action funcToRun) where T : Control
         {
             if (funcToRun == null)
                 return;
@@ -227,7 +227,7 @@ namespace Chummer
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         if (blnSync)
@@ -274,7 +274,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DoThreadSafeCore(this Control objControl, bool blnSync, Action<Control> funcToRun)
+        private static void DoThreadSafeCore<T>(this T objControl, bool blnSync, Action<T> funcToRun) where T : Control
         {
             if (funcToRun == null)
                 return;
@@ -290,7 +290,7 @@ namespace Chummer
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         if (blnSync)
@@ -337,7 +337,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DoThreadSafeCore(this Control objControl, bool blnSync, Func<Task> funcToRun)
+        private static void DoThreadSafeCore<T>(this T objControl, bool blnSync, Func<Task> funcToRun) where T : Control
         {
             if (funcToRun == null)
                 return;
@@ -367,7 +367,7 @@ namespace Chummer
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
@@ -439,7 +439,7 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DoThreadSafeCore(this Control objControl, bool blnSync, Func<Control, Task> funcToRun)
+        private static void DoThreadSafeCore<T>(this T objControl, bool blnSync, Func<T, Task> funcToRun) where T : Control
         {
             if (funcToRun == null)
                 return;
@@ -469,7 +469,7 @@ namespace Chummer
                 else
                 {
                     // ReSharper disable once InlineTemporaryVariable
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
@@ -541,7 +541,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task DoThreadSafeAsync(this Control objControl, Action funcToRun)
+        public static async Task DoThreadSafeAsync<T>(this T objControl, Action funcToRun) where T : Control
         {
             if (funcToRun == null)
                 return;
@@ -551,7 +551,7 @@ namespace Chummer
             {
                 try
                 {
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
@@ -591,7 +591,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task DoThreadSafeAsync(this Control objControl, Action<Control> funcToRun)
+        public static async Task DoThreadSafeAsync<T>(this T objControl, Action<T> funcToRun) where T : Control
         {
             if (funcToRun == null)
                 return;
@@ -601,7 +601,7 @@ namespace Chummer
             {
                 try
                 {
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
@@ -641,7 +641,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task DoThreadSafeAsync(this Control objControl, Func<Task> funcToRun)
+        public static async Task DoThreadSafeAsync<T>(this T objControl, Func<Task> funcToRun) where T : Control
         {
             if (funcToRun == null)
                 return;
@@ -651,7 +651,7 @@ namespace Chummer
                     await funcToRun.Invoke();
                 else
                 {
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
@@ -691,7 +691,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task DoThreadSafeAsync(this Control objControl, Func<Control, Task> funcToRun)
+        public static async Task DoThreadSafeAsync<T>(this T objControl, Func<T, Task> funcToRun) where T : Control
         {
             if (funcToRun == null)
                 return;
@@ -701,7 +701,7 @@ namespace Chummer
                     await funcToRun.Invoke(objControl);
                 else
                 {
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
@@ -740,9 +740,9 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T DoThreadSafeFunc<T>(this Control objControl, Func<T> funcToRun)
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T2> funcToRun) where T1 : Control
         {
-            Task<T> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
             if (objTask.Status == TaskStatus.Created)
                 objTask.RunSynchronously();
             if (objTask.Exception != null)
@@ -756,9 +756,9 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static T DoThreadSafeFunc<T>(this Control objControl, Func<Control, T> funcToRun)
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun) where T1 : Control
         {
-            Task<T> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
+            Task<T2> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
             if (objTask.Status == TaskStatus.Created)
                 objTask.RunSynchronously();
             if (objTask.Exception != null)
@@ -772,7 +772,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<T> DoThreadSafeFuncAsync<T>(this Control objControl, Func<T> funcToRun)
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T2> funcToRun) where T1 : Control
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun);
         }
@@ -783,7 +783,7 @@ namespace Chummer
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<T> DoThreadSafeFuncAsync<T>(this Control objControl, Func<Control, T> funcToRun)
+        public static Task<T2> DoThreadSafeFuncAsync<T1, T2>(this T1 objControl, Func<T1, T2> funcToRun) where T1 : Control
         {
             return objControl.DoThreadSafeFuncCoreAsync(false, funcToRun);
         }
@@ -795,18 +795,18 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static async Task<T> DoThreadSafeFuncCoreAsync<T>(this Control objControl, bool blnSync, Func<T> funcToRun)
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T2> funcToRun) where T1 : Control
         {
             if (funcToRun == null)
                 return default;
-            T objReturn = default;
+            T2 objReturn = default;
             try
             {
                 if (objControl.IsNullOrDisposed())
                     objReturn = blnSync ? funcToRun.Invoke() : await Task.Run(funcToRun);
                 else
                 {
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
@@ -815,7 +815,7 @@ namespace Chummer
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
                             objResult.AsyncWaitHandle.WaitOne();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is T objReturnRawCast)
+                            if (objReturnRaw is T2 objReturnRawCast)
                                 objReturn = objReturnRawCast;
                             objResult.AsyncWaitHandle.Close();
                         }
@@ -824,7 +824,7 @@ namespace Chummer
                             await Task.Factory.FromAsync(objResult, x =>
                             {
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is T objReturnRawCast)
+                                if (objReturnRaw is T2 objReturnRawCast)
                                     objReturn = objReturnRawCast;
                             });
                         }
@@ -865,18 +865,18 @@ namespace Chummer
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
         /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static async Task<T> DoThreadSafeFuncCoreAsync<T>(this Control objControl, bool blnSync, Func<Control, T> funcToRun)
+        private static async Task<T2> DoThreadSafeFuncCoreAsync<T1, T2>(this T1 objControl, bool blnSync, Func<T1, T2> funcToRun) where T1 : Control
         {
             if (funcToRun == null)
                 return default;
-            T objReturn = default;
+            T2 objReturn = default;
             try
             {
                 if (objControl.IsNullOrDisposed())
                     objReturn = blnSync ? funcToRun.Invoke(objControl) : await Task.Run(() => funcToRun(objControl));
                 else
                 {
-                    Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
+                    T1 myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
@@ -885,7 +885,7 @@ namespace Chummer
                             // Next two commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
                             objResult.AsyncWaitHandle.WaitOne();
                             object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                            if (objReturnRaw is T objReturnRawCast)
+                            if (objReturnRaw is T2 objReturnRawCast)
                                 objReturn = objReturnRawCast;
                             objResult.AsyncWaitHandle.Close();
                         }
@@ -894,7 +894,7 @@ namespace Chummer
                             await Task.Factory.FromAsync(objResult, x =>
                             {
                                 object objReturnRaw = myControlCopy.EndInvoke(objResult);
-                                if (objReturnRaw is T objReturnRawCast)
+                                if (objReturnRaw is T2 objReturnRawCast)
                                     objReturn = objReturnRawCast;
                             });
                         }
@@ -1011,7 +1011,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrDisposed([CanBeNull] this Control objControl)
         {
-            return objControl?.Disposing != false || objControl.IsDisposed;
+            return objControl == null || objControl.Disposing || objControl.IsDisposed;
         }
 
         #endregion Controls Extensions
@@ -1019,6 +1019,16 @@ namespace Chummer
         #region ComboBox Extensions
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
+        {
+            lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems));
+        }
+
+        public static Task PopulateWithListItemsAsync(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
+        {
+            return lsbThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems)) ?? Task.CompletedTask;
+        }
+
+        private static void PopulateWithListItemsCore(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
         {
             if (ReferenceEquals(lsbThis.DataSource, lstItems))
                 return;
@@ -1031,58 +1041,49 @@ namespace Chummer
                 lstItemsToSet = Utils.ListItemListPool.Get();
                 lstItemsToSet.AddRange(lstItems);
             }
-            if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+            lsbThis.BeginUpdate();
+            try
             {
-                lsbThis.ValueMember = nameof(ListItem.Value);
-                lsbThis.DisplayMember = nameof(ListItem.Name);
+                if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                {
+                    lsbThis.ValueMember = nameof(ListItem.Value);
+                    lsbThis.DisplayMember = nameof(ListItem.Name);
+                }
+                // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                    return;
+
+                List<ListItem> lstOldItems = null;
+                if (lsbThis.DataSource != null)
+                {
+                    lstOldItems
+                        = lsbThis
+                                .DataSource as
+                            List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                    lsbThis.BindingContext = new BindingContext();
+                }
+
+                lsbThis.DataSource = lstItemsToSet;
+                if (lstOldItems != null)
+                    Utils.ListItemListPool.Return(lstOldItems);
             }
-            // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-            else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
-                return;
-            List<ListItem> lstOldItems = null;
-            if (lsbThis.DataSource != null)
+            finally
             {
-                lstOldItems = lsbThis.DataSource as List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                lsbThis.BindingContext = new BindingContext();
+                lsbThis.EndUpdate();
             }
-            lsbThis.DataSource = lstItemsToSet;
-            if (lstOldItems != null)
-                Utils.ListItemListPool.Return(lstOldItems);
         }
 
         public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
         {
-            if (ReferenceEquals(cboThis.DataSource, lstItems))
-                return;
-            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
-            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
-            // This means the code we use has to set the DataSources to new lists instead of the same one.
-            List<ListItem> lstItemsToSet = null;
-            if (lstItems != null)
-            {
-                lstItemsToSet = Utils.ListItemListPool.Get();
-                lstItemsToSet.AddRange(lstItems);
-            }
-            if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
-            {
-                cboThis.ValueMember = nameof(ListItem.Value);
-                cboThis.DisplayMember = nameof(ListItem.Name);
-            }
-            // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-            else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
-                return;
-            List<ListItem> lstOldItems = null;
-            if (cboThis.DataSource != null)
-            {
-                lstOldItems = cboThis.DataSource as List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                cboThis.BindingContext = new BindingContext();
-            }
-            cboThis.DataSource = lstItemsToSet;
-            if (lstOldItems != null)
-                Utils.ListItemListPool.Return(lstOldItems);
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems));
         }
 
-        public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
+        public static Task PopulateWithListItemsAsync(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
+        {
+            return cboThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems)) ?? Task.CompletedTask;
+        }
+
+        private static void PopulateWithListItemsCore(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
         {
             if (ReferenceEquals(cboThis.DataSource, lstItems))
                 return;
@@ -1095,23 +1096,91 @@ namespace Chummer
                 lstItemsToSet = Utils.ListItemListPool.Get();
                 lstItemsToSet.AddRange(lstItems);
             }
-            if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+            cboThis.BeginUpdate();
+            try
             {
-                cboThis.ValueMember = nameof(ListItem.Value);
-                cboThis.DisplayMember = nameof(ListItem.Name);
+                if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                {
+                    cboThis.ValueMember = nameof(ListItem.Value);
+                    cboThis.DisplayMember = nameof(ListItem.Name);
+                }
+                // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                    return;
+
+                List<ListItem> lstOldItems = null;
+                if (cboThis.DataSource != null)
+                {
+                    lstOldItems
+                        = cboThis
+                                .DataSource as
+                            List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                    cboThis.BindingContext = new BindingContext();
+                }
+
+                cboThis.DataSource = lstItemsToSet;
+                if (lstOldItems != null)
+                    Utils.ListItemListPool.Return(lstOldItems);
             }
-            // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-            else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+            finally
+            {
+                cboThis.EndUpdate();
+            }
+        }
+
+        public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
+        {
+            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems));
+        }
+
+        public static Task PopulateWithListItemsAsync(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
+        {
+            return cboThis?.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems)) ?? Task.CompletedTask;
+        }
+
+        private static void PopulateWithListItemsCore(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
+        {
+            if (ReferenceEquals(cboThis.DataSource, lstItems))
                 return;
-            List<ListItem> lstOldItems = null;
-            if (cboThis.DataSource != null)
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = null;
+            if (lstItems != null)
             {
-                lstOldItems = cboThis.DataSource as List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
-                cboThis.BindingContext = new BindingContext();
+                lstItemsToSet = Utils.ListItemListPool.Get();
+                lstItemsToSet.AddRange(lstItems);
             }
-            cboThis.DataSource = lstItemsToSet;
-            if (lstOldItems != null)
-                Utils.ListItemListPool.Return(lstOldItems);
+            cboThis.BeginUpdate();
+            try
+            {
+                if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                {
+                    cboThis.ValueMember = nameof(ListItem.Value);
+                    cboThis.DisplayMember = nameof(ListItem.Name);
+                }
+                // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                    return;
+
+                List<ListItem> lstOldItems = null;
+                if (cboThis.DataSource != null)
+                {
+                    lstOldItems
+                        = cboThis
+                                .DataSource as
+                            List<ListItem>; // If the old DataSource is a List<ListItem>, make sure we can return it to the pool
+                    cboThis.BindingContext = new BindingContext();
+                }
+
+                cboThis.DataSource = lstItemsToSet;
+                if (lstOldItems != null)
+                    Utils.ListItemListPool.Return(lstOldItems);
+            }
+            finally
+            {
+                cboThis.EndUpdate();
+            }
         }
 
         #endregion ComboBox Extensions

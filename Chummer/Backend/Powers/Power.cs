@@ -1341,5 +1341,12 @@ namespace Chummer
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
+
+        public Task SetSourceDetailAsync(Control sourceControl)
+        {
+            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                _objCachedSourceDetail = default;
+            return SourceDetail.SetControlAsync(sourceControl);
+        }
     }
 }

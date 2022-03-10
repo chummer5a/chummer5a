@@ -119,7 +119,7 @@ namespace Chummer
                     string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     string strPage = (await xmlTechnique.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown");
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                    objSourceString.SetControl(lblSource);
+                    await objSourceString.SetControlAsync(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;
                 }
@@ -206,14 +206,12 @@ namespace Chummer
                 lstTechniqueItems.Sort(CompareListItems.CompareNames);
                 string strOldSelected = lstTechniques.SelectedValue?.ToString();
                 _blnLoading = true;
-                lstTechniques.BeginUpdate();
-                lstTechniques.PopulateWithListItems(lstTechniqueItems);
+                await lstTechniques.PopulateWithListItemsAsync(lstTechniqueItems);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstTechniques.SelectedValue = strOldSelected;
                 else
                     lstTechniques.SelectedIndex = -1;
-                lstTechniques.EndUpdate();
             }
         }
 

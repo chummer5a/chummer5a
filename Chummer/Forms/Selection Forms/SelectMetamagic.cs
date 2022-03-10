@@ -101,7 +101,7 @@ namespace Chummer
                     string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value;
                     string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                    objSourceString.SetControl(lblSource);
+                    await objSourceString.SetControlAsync(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;
                 }
@@ -208,14 +208,12 @@ namespace Chummer
                 lstMetamagics.Sort(CompareListItems.CompareNames);
                 string strOldSelected = lstMetamagic.SelectedValue?.ToString();
                 _blnLoading = true;
-                lstMetamagic.BeginUpdate();
-                lstMetamagic.PopulateWithListItems(lstMetamagics);
+                await lstMetamagic.PopulateWithListItemsAsync(lstMetamagics);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstMetamagic.SelectedValue = strOldSelected;
                 else
                     lstMetamagic.SelectedIndex = -1;
-                lstMetamagic.EndUpdate();
             }
         }
 

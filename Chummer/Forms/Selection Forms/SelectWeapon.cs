@@ -108,9 +108,8 @@ namespace Chummer
             _lstCategory.Sort(CompareListItems.CompareNames);
 
             _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
+            
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
@@ -120,7 +119,6 @@ namespace Chummer
                 if (cboCategory.SelectedIndex == -1)
                     cboCategory.SelectedIndex = 0;
             }
-            cboCategory.EndUpdate();
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
@@ -191,7 +189,7 @@ namespace Chummer
                 lblWeaponMode.Text = _objSelectedWeapon.DisplayMode;
                 lblWeaponModeLabel.Visible = !string.IsNullOrEmpty(lblWeaponMode.Text);
                 lblWeaponRC.Text = _objSelectedWeapon.DisplayTotalRC;
-                lblWeaponRC.SetToolTip(_objSelectedWeapon.RCToolTip);
+                await lblWeaponRC.SetToolTipAsync(_objSelectedWeapon.RCToolTip);
                 lblWeaponRCLabel.Visible = !string.IsNullOrEmpty(lblWeaponRC.Text);
                 lblWeaponAmmo.Text = _objSelectedWeapon.DisplayAmmo;
                 lblWeaponAmmoLabel.Visible = !string.IsNullOrEmpty(lblWeaponAmmo.Text);
@@ -216,7 +214,7 @@ namespace Chummer
                 lblWeaponAvailLabel.Visible = !string.IsNullOrEmpty(lblWeaponAvail.Text);
                 lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
                 lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
-                _objSelectedWeapon.SetSourceDetail(lblSource);
+                await _objSelectedWeapon.SetSourceDetailAsync(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 // Build a list of included Accessories and Modifications that come with the weapon.
@@ -482,14 +480,12 @@ namespace Chummer
 
                     string strOldSelected = lstWeapon.SelectedValue?.ToString();
                     _blnLoading = true;
-                    lstWeapon.BeginUpdate();
-                    lstWeapon.PopulateWithListItems(lstWeapons);
+                    await lstWeapon.PopulateWithListItemsAsync(lstWeapons);
                     _blnLoading = false;
                     if (!string.IsNullOrEmpty(strOldSelected))
                         lstWeapon.SelectedValue = strOldSelected;
                     else
                         lstWeapon.SelectedIndex = -1;
-                    lstWeapon.EndUpdate();
                 }
             }
             ResumeLayout();

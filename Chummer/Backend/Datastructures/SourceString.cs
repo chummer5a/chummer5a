@@ -170,8 +170,22 @@ namespace Chummer
         {
             if (source == null)
                 return;
-            source.Text = ToString();
+            string strText = ToString();
+            source.DoThreadSafe(x => x.Text = strText);
             source.SetToolTip(LanguageBookTooltip);
+        }
+
+        /// <summary>
+        /// Set the Text and ToolTips for the selected control.
+        /// </summary>
+        /// <param name="source"></param>
+        public Task SetControlAsync(Control source)
+        {
+            if (source == null)
+                return Task.CompletedTask;
+            string strText = ToString();
+            return Task.WhenAll(source.DoThreadSafeAsync(x => x.Text = strText),
+                                source.SetToolTipAsync(LanguageBookTooltip));
         }
 
         public bool Equals(SourceString other)

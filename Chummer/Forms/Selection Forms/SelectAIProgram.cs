@@ -80,14 +80,12 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll")));
             }
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
+            
+            await cboCategory.PopulateWithListItemsAsync(_lstCategory);
             if (!string.IsNullOrEmpty(_strSelectedCategory))
                 cboCategory.SelectedValue = _strSelectedCategory;
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
-            cboCategory.EndUpdate();
 
             _blnLoading = false;
 
@@ -229,20 +227,20 @@ namespace Chummer
                         {
                             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                             lblSource.Text = objSource.ToString();
-                            lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                            await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                         }
                         else
                         {
                             string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                             lblSource.Text = strUnknown;
-                            lblSource.SetToolTip(strUnknown);
+                            await lblSource.SetToolTipAsync(strUnknown);
                         }
                     }
                     else
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
                         lblSource.Text = strUnknown;
-                        lblSource.SetToolTip(strUnknown);
+                        await lblSource.SetToolTipAsync(strUnknown);
                     }
                     tlpRight.Visible = true;
                 }
@@ -356,9 +354,7 @@ namespace Chummer
                 }
 
                 lstPrograms.Sort(CompareListItems.CompareNames);
-                lstAIPrograms.BeginUpdate();
-                lstAIPrograms.PopulateWithListItems(lstPrograms);
-                lstAIPrograms.EndUpdate();
+                await lstAIPrograms.PopulateWithListItemsAsync(lstPrograms);
             }
         }
 

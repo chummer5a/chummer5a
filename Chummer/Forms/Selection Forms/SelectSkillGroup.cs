@@ -43,14 +43,14 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void SelectSkillGroup_Load(object sender, EventArgs e)
+        private async void SelectSkillGroup_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGroups))
             {
                 if (string.IsNullOrEmpty(_strForceValue))
                 {
                     // Build the list of Skill Groups found in the Skills file.
-                    foreach (XPathNavigator objXmlSkill in _objXmlDocument.SelectAndCacheExpression(
+                    foreach (XPathNavigator objXmlSkill in await _objXmlDocument.SelectAndCacheExpressionAsync(
                                  "/chummer/skillgroups/name"))
                     {
                         if (!string.IsNullOrEmpty(_strExcludeCategory))
@@ -77,7 +77,7 @@ namespace Chummer
 
                         string strInnerText = objXmlSkill.Value;
                         lstGroups.Add(new ListItem(strInnerText,
-                                                   objXmlSkill.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value
                                                    ?? strInnerText));
                     }
                 }
@@ -87,11 +87,9 @@ namespace Chummer
                 }
 
                 lstGroups.Sort(CompareListItems.CompareNames);
-                cboSkillGroup.BeginUpdate();
-                cboSkillGroup.PopulateWithListItems(lstGroups);
+                await cboSkillGroup.PopulateWithListItemsAsync(lstGroups);
                 // Select the first Skill in the list.
                 cboSkillGroup.SelectedIndex = 0;
-                cboSkillGroup.EndUpdate();
             }
 
             if (cboSkillGroup.Items.Count == 1)

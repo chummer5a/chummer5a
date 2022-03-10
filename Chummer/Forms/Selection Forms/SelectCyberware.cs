@@ -360,7 +360,7 @@ namespace Chummer
                 SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
-                lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -948,9 +948,7 @@ namespace Chummer
             {
                 if (blnDoUIUpdate)
                 {
-                    lstCyberware.BeginUpdate();
-                    lstCyberware.PopulateWithListItems(ListItem.Blank.Yield());
-                    lstCyberware.EndUpdate();
+                    await lstCyberware.PopulateWithListItemsAsync(ListItem.Blank.Yield());
                 }
                 return false;
             }
@@ -1253,15 +1251,12 @@ namespace Chummer
 
                     string strOldSelected = lstCyberware.SelectedValue?.ToString();
                     _blnLoading = true;
-                    lstCyberware.BeginUpdate();
-                    lstCyberware.PopulateWithListItems(lstCyberwares);
+                    await lstCyberware.PopulateWithListItemsAsync(lstCyberwares);
                     _blnLoading = false;
                     if (!string.IsNullOrEmpty(strOldSelected))
                         lstCyberware.SelectedValue = strOldSelected;
                     else
                         lstCyberware.SelectedIndex = -1;
-
-                    lstCyberware.EndUpdate();
                 }
 
                 return lstCyberwares?.Count > 0;
@@ -1460,7 +1455,6 @@ namespace Chummer
                         _blnSkipListRefresh = true;
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
-                    cboGrade.BeginUpdate();
                     cboGrade.PopulateWithListItems(lstGrade);
                     _blnLoading = blnOldLoading;
                     if (!string.IsNullOrEmpty(strForceGrade))
@@ -1469,8 +1463,6 @@ namespace Chummer
                         cboGrade.SelectedValue = strOldSelected;
                     if (cboGrade.SelectedIndex == -1 && lstGrade.Count > 0)
                         cboGrade.SelectedIndex = 0;
-
-                    cboGrade.EndUpdate();
 
                     _blnSkipListRefresh = blnOldSkipListRefresh;
                 }
@@ -1523,13 +1515,11 @@ namespace Chummer
                 string strOldSelected = _strSelectedCategory;
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
-                cboCategory.BeginUpdate();
-                cboCategory.PopulateWithListItems(lstCategory);
+                await cboCategory.PopulateWithListItemsAsync(lstCategory);
                 _blnLoading = blnOldLoading;
                 cboCategory.SelectedValue = strOldSelected;
                 if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)
                     cboCategory.SelectedIndex = 0;
-                cboCategory.EndUpdate();
             }
 
             if (!string.IsNullOrEmpty(strOldSelectedCyberware))

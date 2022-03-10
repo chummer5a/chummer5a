@@ -1896,6 +1896,90 @@ namespace Chummer
             }
         }
 
+        public static async Task<bool> AnyXslFilesAsync(string strLanguage, IEnumerable<Character> lstCharacters = null)
+        {
+            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, false, false)).Item1;
+        }
+
+        public static async Task<List<ListItem>> GetXslFilesFromLocalDirectoryAsync(string strLanguage,
+                                                                   IEnumerable<Character> lstCharacters = null, bool blnUsePool = false)
+        {
+            return (await GetXslFilesFromLocalDirectoryAsync(strLanguage, lstCharacters, true, blnUsePool)).Item2;
+        }
+
+        public static async Task<Tuple<bool, List<ListItem>>> GetXslFilesFromLocalDirectoryAsync(string strLanguage, IEnumerable<Character> lstCharacters, bool blnDoList, bool blnUsePool)
+        {
+            List<ListItem> lstSheets = null;
+            HashSet<string> setAddedSheetFileNames = blnDoList ? Utils.StringHashSetPool.Get() : null;
+            try
+            {
+                if (lstCharacters != null)
+                {
+                    if (blnDoList)
+                        lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(10);
+                    // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
+                    foreach (Character objCharacter in lstCharacters)
+                    {
+                        foreach (XPathNavigator xmlSheet in await (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage))
+                                     .SelectAndCacheExpressionAsync(
+                                         "/chummer/sheets[@lang="
+                                         + strLanguage.CleanXPath()
+                                         + "]/sheet[not(hide)]"))
+                        {
+                            string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename"))?.Value;
+                            if (string.IsNullOrEmpty(strSheetFileName))
+                                continue;
+                            if (!blnDoList)
+                                return new Tuple<bool, List<ListItem>>(true, null);
+
+                            if (!setAddedSheetFileNames.Add(strSheetFileName))
+                                continue;
+                            lstSheets.Add(new ListItem(
+                                              !strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                                  StringComparison.OrdinalIgnoreCase)
+                                                  ? Path.Combine(strLanguage, strSheetFileName)
+                                                  : strSheetFileName,
+                                              (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                              ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                        }
+                    }
+                }
+                else
+                {
+                    XPathNodeIterator xmlIterator = await (await LoadXPathAsync("sheets.xml", null, strLanguage))
+                        .SelectAndCacheExpressionAsync(
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]");
+                    if (blnDoList)
+                        lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
+
+                    foreach (XPathNavigator xmlSheet in xmlIterator)
+                    {
+                        string strSheetFileName = (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("filename"))?.Value;
+                        if (string.IsNullOrEmpty(strSheetFileName))
+                            continue;
+                        if (!blnDoList)
+                            return new Tuple<bool, List<ListItem>>(true, null);
+
+                        if (!setAddedSheetFileNames.Add(strSheetFileName))
+                            continue;
+                        lstSheets.Add(new ListItem(
+                                          !strLanguage.Equals(GlobalSettings.DefaultLanguage,
+                                                              StringComparison.OrdinalIgnoreCase)
+                                              ? Path.Combine(strLanguage, strSheetFileName)
+                                              : strSheetFileName,
+                                          (await xmlSheet.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value
+                                          ?? await LanguageManager.GetStringAsync("String_Unknown")));
+                    }
+                }
+            }
+            finally
+            {
+                if (setAddedSheetFileNames != null)
+                    Utils.StringHashSetPool.Return(setAddedSheetFileNames);
+            }
+            return new Tuple<bool, List<ListItem>>(lstSheets != null && lstSheets.Count > 0, lstSheets);
+        }
+
         /// <summary>
         /// Verify the contents of the language data translation file.
         /// </summary>
