@@ -1670,7 +1670,8 @@ namespace Chummer
                 ShowMe();
             else if (m.Msg == NativeMethods.WM_COPYDATA && _blnAbleToReceiveData)
             {
-                ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
+                Task<Character>[] atskLoadingTasks = null;
+                List<Character> lstCharactersToLoad = new List<Character>();
                 Task objCharacterLoadingTask = null;
 
                 using (Program.MainProgressBar = Program.CreateAndShowProgressBar())
@@ -1745,19 +1746,13 @@ namespace Chummer
 
                             if (setFilesToLoad.Count > 0)
                             {
-                                List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
-                                foreach (string strFile in setFilesToLoad)
+                                atskLoadingTasks = new Task<Character>[setFilesToLoad.Count];
+                                for (int i = 0; i < setFilesToLoad.Count; ++i)
                                 {
-                                    tskLoadingTasks.Add(Task.Run(async () =>
-                                    {
-                                        Character objCharacter
-                                            = await Program.LoadCharacterAsync(strFile);
-                                        // ReSharper disable once AccessToDisposedClosure
-                                        await lstCharactersToLoad
-                                            .AddAsync(objCharacter);
-                                    }));
+                                    string strFile = setFilesToLoad.ElementAt(i);
+                                    atskLoadingTasks[i] = Task.Run(() => Program.LoadCharacterAsync(strFile));
                                 }
-                                objCharacterLoadingTask = Task.WhenAll(tskLoadingTasks);
+                                objCharacterLoadingTask = Task.WhenAll(atskLoadingTasks);
                             }
                         }
                         finally
@@ -1778,10 +1773,15 @@ namespace Chummer
                 {
                     if (objCharacterLoadingTask?.IsCompleted == false)
                         await objCharacterLoadingTask;
-                    if (lstCharactersToLoad.Count > 0)
-                        // ReSharper disable once AccessToDisposedClosure
-                        await this.DoThreadSafeFunc(() => OpenCharacterList(lstCharactersToLoad));
-                    await lstCharactersToLoad.DisposeAsync();
+                    if (atskLoadingTasks != null)
+                    {
+                        foreach (Task<Character> tskLoadingTask in atskLoadingTasks)
+                            lstCharactersToLoad.Add(await tskLoadingTask);
+
+                        if (lstCharactersToLoad.Count > 0)
+                            // ReSharper disable once AccessToDisposedClosure
+                            await this.DoThreadSafeFunc(() => OpenCharacterList(lstCharactersToLoad));
+                    }
                 });
             }
             base.WndProc(ref m);
