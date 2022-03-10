@@ -180,8 +180,8 @@ namespace Chummer
                 await _dicSavedCharacterCaches.ForEachAsync(async kvpCache =>
                                                                 await kvpCache.Value.DisposeAsync()
                                                                               .ConfigureAwait(false))
-                                              .ConfigureAwait(false);
-                await _dicSavedCharacterCaches.DisposeAsync().ConfigureAwait(false);
+                                              ;
+                await _dicSavedCharacterCaches.DisposeAsync();
             }
         }
 

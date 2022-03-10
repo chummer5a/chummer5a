@@ -189,7 +189,7 @@ namespace Chummer
                     if (CharacterObject == null)
                     {
                         // Stupid hack to get the MDI icon to show up properly.
-                        Icon = Icon.Clone() as Icon;
+                        await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
                         return;
                     }
 
@@ -984,10 +984,10 @@ namespace Chummer
                             // Clear the Dirty flag which gets set when creating a new Character.
                             IsDirty = false;
                             await DoRefreshPasteStatus();
-                            picMugshot_SizeChanged(sender, e);
+                            await ProcessMugshot();
 
                             // Stupid hack to get the MDI icon to show up properly.
-                            Icon = Icon.Clone() as Icon;
+                            await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
 
                             Program.PluginLoader.CallPlugins(this, op_load_frm_create);
                         }
@@ -2225,7 +2225,7 @@ namespace Chummer
             using (CursorWait.New(this))
             {
                 IAsyncDisposable objLocker
-                    = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    = await CharacterObject.LockObject.EnterWriteLockAsync();
                 try
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -2921,7 +2921,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker.DisposeAsync();
                 }
             }
 
@@ -15363,8 +15363,11 @@ namespace Chummer
             await mnuCreateMenu.DoThreadSafeAsync(() =>
             {
                 mnuEditPaste.Enabled = blnPasteEnabled;
-                tsbPaste.Enabled = blnPasteEnabled;
                 mnuEditCopy.Enabled = blnCopyEnabled;
+            });
+            await tsMain.DoThreadSafeAsync(() =>
+            {
+                tsbPaste.Enabled = blnPasteEnabled;
                 tsbCopy.Enabled = blnCopyEnabled;
             });
         }
@@ -15983,20 +15986,31 @@ namespace Chummer
             RefreshVehicleLocations(treVehicles, cmsVehicleLocation, notifyCollectionChangedEventArgs);
         }
 
-        private void picMugshot_SizeChanged(object sender, EventArgs e)
+        private async void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
+            await ProcessMugshot();
+        }
+
+        private async ValueTask ProcessMugshot()
+        {
+            if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed()))
                 return;
-            try
+            await picMugshot.DoThreadSafeAsync(x =>
             {
-                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                    ? PictureBoxSizeMode.CenterImage
-                    : PictureBoxSizeMode.Zoom;
-            }
-            catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
-            {
-                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
-            }
+                if (x.IsNullOrDisposed())
+                    return;
+                try
+                {
+                    x.SizeMode = x.Image != null && x.Height >= x.Image.Height
+                                                 && x.Width >= x.Image.Width
+                        ? PictureBoxSizeMode.CenterImage
+                        : PictureBoxSizeMode.Zoom;
+                }
+                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                {
+                    x.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            });
         }
 
         private void mnuSpecialKarmaValue_Click(object sender, EventArgs e)

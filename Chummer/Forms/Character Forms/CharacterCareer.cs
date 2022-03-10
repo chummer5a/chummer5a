@@ -2482,7 +2482,7 @@ namespace Chummer
             using (CursorWait.New(this))
             {
                 IAsyncDisposable objLocker
-                    = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    = await CharacterObject.LockObject.EnterWriteLockAsync();
                 try
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -3165,7 +3165,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker.DisposeAsync();
                 }
             }
 
