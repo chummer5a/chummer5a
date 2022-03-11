@@ -357,7 +357,7 @@ namespace Chummer.Backend.Attributes
                 await _lstNormalAttributes.DisposeAsync();
                 await _lstSpecialAttributes.DisposeAsync();
                 await _lstAttributes.DisposeAsync();
-                _objAttributesInitializerLock.Dispose();
+                await _objAttributesInitializerLock.DisposeAsync();
             }
             finally
             {

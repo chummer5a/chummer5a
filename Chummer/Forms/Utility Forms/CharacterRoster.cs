@@ -1240,10 +1240,19 @@ namespace Chummer
             if (t?.Tag is CharacterCache objCache)
             {
                 using (CursorWait.New(this))
-                using (Character objOpenCharacter
-                       = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
-                         ?? await Program.LoadCharacterAsync(objCache.FilePath))
-                    await Program.OpenCharacterForPrinting(objOpenCharacter);
+                {
+                    Character objOpenCharacter
+                        = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                          ?? await Program.LoadCharacterAsync(objCache.FilePath);
+                    try
+                    {
+                        await Program.OpenCharacterForPrinting(objOpenCharacter);
+                    }
+                    finally
+                    {
+                        await objOpenCharacter.DisposeAsync();
+                    }
+                }
             }
         }
 
@@ -1257,10 +1266,19 @@ namespace Chummer
             if (t?.Tag is CharacterCache objCache)
             {
                 using (CursorWait.New(this))
-                using (Character objOpenCharacter
-                       = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
-                         ?? await Program.LoadCharacterAsync(objCache.FilePath))
-                    await Program.OpenCharacterForExport(objOpenCharacter);
+                {
+                    Character objOpenCharacter
+                        = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
+                          ?? await Program.LoadCharacterAsync(objCache.FilePath);
+                    try
+                    {
+                        await Program.OpenCharacterForExport(objOpenCharacter);
+                    }
+                    finally
+                    {
+                        await objOpenCharacter.DisposeAsync();
+                    }
+                }
             }
         }
 
