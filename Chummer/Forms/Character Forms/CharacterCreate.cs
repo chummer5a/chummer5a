@@ -6982,8 +6982,11 @@ namespace Chummer
                 || objSelectedQuality.OriginSource == QualitySource.Heritage
                 || objSelectedQuality.Levels == 0)
             {
-                await nudQualityLevel.DoThreadSafeAsync(x => x.Value = 1);
-                await nudQualityLevel.DoThreadSafeAsync(x => x.Enabled = false);
+                await nudQualityLevel.DoThreadSafeAsync(x =>
+                {
+                    x.Value = 1;
+                    x.Enabled = false;
+                });
                 return;
             }
             XPathNavigator objQualityNode = await objSelectedQuality.GetNodeXPathAsync();
@@ -6993,14 +6996,20 @@ namespace Chummer
                 : string.Empty;
             if (!string.IsNullOrWhiteSpace(strLimitString) && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
             {
-                await nudQualityLevel.DoThreadSafeAsync(x => x.Maximum = intMaxRating);
-                await nudQualityLevel.DoThreadSafeAsync(x => x.Value = objSelectedQuality.Levels);
-                await nudQualityLevel.DoThreadSafeAsync(x => x.Enabled = true);
+                await nudQualityLevel.DoThreadSafeAsync(x =>
+                {
+                    x.Maximum = intMaxRating;
+                    x.Value = objSelectedQuality.Levels;
+                    x.Enabled = true;
+                });
             }
             else
             {
-                await nudQualityLevel.DoThreadSafeAsync(x => x.Value = 1);
-                await nudQualityLevel.DoThreadSafeAsync(x => x.Enabled = false);
+                await nudQualityLevel.DoThreadSafeAsync(x =>
+                {
+                    x.Value = 1;
+                    x.Enabled = false;
+                });
             }
         }
 

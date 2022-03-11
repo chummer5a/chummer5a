@@ -5672,29 +5672,38 @@ namespace Chummer
             return true;
         }
 
-        private void UpdateQualityLevelValue(Quality objSelectedQuality = null)
+        private async ValueTask UpdateQualityLevelValue(Quality objSelectedQuality = null)
         {
             if (objSelectedQuality == null
                 || objSelectedQuality.OriginSource == QualitySource.Improvement
                 || objSelectedQuality.OriginSource == QualitySource.Metatype
                 || objSelectedQuality.Levels == 0)
             {
-                nudQualityLevel.Value = 1;
-                nudQualityLevel.Enabled = false;
+                await nudQualityLevel.DoThreadSafeAsync(x =>
+                {
+                    x.Value = 1;
+                    x.Enabled = false;
+                });
                 return;
             }
             XPathNavigator objQualityNode = objSelectedQuality.GetNodeXPath();
             string strLimitString = objQualityNode?.SelectSingleNodeAndCacheExpression("limit")?.Value;
             if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
             {
-                nudQualityLevel.Maximum = intMaxRating;
-                nudQualityLevel.Value = objSelectedQuality.Levels;
-                nudQualityLevel.Enabled = true;
+                await nudQualityLevel.DoThreadSafeAsync(x =>
+                {
+                    x.Maximum = intMaxRating;
+                    x.Value = objSelectedQuality.Levels;
+                    x.Enabled = true;
+                });
             }
             else
             {
-                nudQualityLevel.Value = 1;
-                nudQualityLevel.Enabled = false;
+                await nudQualityLevel.DoThreadSafeAsync(x =>
+                {
+                    x.Value = 1;
+                    x.Enabled = false;
+                });
             }
         }
 
@@ -5711,7 +5720,7 @@ namespace Chummer
                     XPathNavigator objXmlSelectedQuality = await objSelectedQuality.GetNodeXPathAsync();
                     if (!objXmlSelectedQuality.RequirementsMet(CharacterObject, await LanguageManager.GetStringAsync("String_Quality")))
                     {
-                        UpdateQualityLevelValue(objSelectedQuality);
+                        await UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
 
@@ -5756,7 +5765,7 @@ namespace Chummer
                                     this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"),
                                     await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
                                     MessageBoxIcon.Information);
-                                UpdateQualityLevelValue(objSelectedQuality);
+                                await UpdateQualityLevelValue(objSelectedQuality);
                                 break;
                             }
 
@@ -5768,14 +5777,14 @@ namespace Chummer
                                 , strDisplayName
                                 , intKarmaCost.ToString(GlobalSettings.CultureInfo))))
                             {
-                                UpdateQualityLevelValue(objSelectedQuality);
+                                await UpdateQualityLevelValue(objSelectedQuality);
                                 break;
                             }
                         }
                     }
                     else if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_AddNegativeQuality"), await LanguageManager.GetStringAsync("MessageTitle_AddNegativeQuality"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     {
-                        UpdateQualityLevelValue(objSelectedQuality);
+                        await UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
 
@@ -5787,7 +5796,7 @@ namespace Chummer
                     {
                         // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
                         await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                        UpdateQualityLevelValue(objSelectedQuality);
+                        await UpdateQualityLevelValue(objSelectedQuality);
                         break;
                     }
 
@@ -5836,7 +5845,7 @@ namespace Chummer
                     {
                         if (!await RemoveQuality(objSelectedQuality, false, false))
                         {
-                            UpdateQualityLevelValue(objSelectedQuality);
+                            await UpdateQualityLevelValue(objSelectedQuality);
                         }
                         break;
                     }
@@ -10334,25 +10343,29 @@ namespace Chummer
         private async Task RefreshSelectedQuality()
         {
             // Locate the selected Quality.
-            Quality objQuality = treQualities.SelectedNode?.Tag as Quality;
+            Quality objQuality = await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Quality);
 
-            UpdateQualityLevelValue(objQuality);
+            await UpdateQualityLevelValue(objQuality);
             if (objQuality == null)
             {
-                lblQualitySourceLabel.Visible = false;
-                lblQualityBPLabel.Visible = false;
-                lblQualitySource.Visible = false;
-                lblQualityBP.Visible = false;
+                await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = false);
+                await lblQualitySource.DoThreadSafeAsync(x => x.Visible = false);
+                await lblQualityBP.DoThreadSafeAsync(x => x.Visible = false);
             }
             else
             {
-                lblQualitySourceLabel.Visible = true;
-                lblQualityBPLabel.Visible = true;
-                lblQualitySource.Visible = true;
-                lblQualityBP.Visible = true;
+                await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true);
+                await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true);
                 await objQuality.SetSourceDetailAsync(lblQualitySource);
-                lblQualityBP.Text = (objQuality.BP * objQuality.Levels * CharacterObjectSettings.KarmaQuality).ToString(GlobalSettings.CultureInfo) +
-                                    await LanguageManager.GetStringAsync("String_Space") + await LanguageManager.GetStringAsync("String_Karma");
+                await lblQualityBP.DoThreadSafeFunc(async x => x.Text
+                                                        = (objQuality.BP * objQuality.Levels
+                                                                         * CharacterObjectSettings.KarmaQuality)
+                                                          .ToString(GlobalSettings.CultureInfo) +
+                                                          await LanguageManager.GetStringAsync("String_Space")
+                                                          + await LanguageManager.GetStringAsync("String_Karma"));
             }
         }
 
