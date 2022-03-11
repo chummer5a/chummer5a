@@ -200,7 +200,7 @@ namespace Chummer
                     if (CharacterObject == null)
                     {
                         // Stupid hack to get the MDI icon to show up properly.
-                        Icon = Icon.Clone() as Icon;
+                        await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
                         return;
                     }
 
@@ -1008,10 +1008,10 @@ namespace Chummer
 
                             // Clear the Dirty flag which gets set when creating a new Character.
                             IsDirty = false;
-                            RefreshPasteStatus();
-                            picMugshot_SizeChanged(sender, e);
+                            await RefreshPasteStatus();
+                            await ProcessMugshot();
                             // Stupid hack to get the MDI icon to show up properly.
-                            Icon = Icon.Clone() as Icon;
+                            await this.DoThreadSafeFuncAsync(x => x.Icon = x.Icon.Clone() as Icon);
 
                             Program.PluginLoader.CallPlugins(this, op_load_frm_career_finishingStuff);
                         }
@@ -5686,9 +5686,11 @@ namespace Chummer
                 });
                 return;
             }
-            XPathNavigator objQualityNode = objSelectedQuality.GetNodeXPath();
-            string strLimitString = objQualityNode?.SelectSingleNodeAndCacheExpression("limit")?.Value;
-            if (!string.IsNullOrWhiteSpace(strLimitString) && objQualityNode.SelectSingleNodeAndCacheExpression("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
+            XPathNavigator objQualityNode = await objSelectedQuality.GetNodeXPathAsync();
+            string strLimitString = objQualityNode != null
+                ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit"))?.Value ?? string.Empty
+                : string.Empty;
+            if (!string.IsNullOrWhiteSpace(strLimitString) && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 await nudQualityLevel.DoThreadSafeAsync(x =>
                 {
@@ -10376,7 +10378,7 @@ namespace Chummer
         private async void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
             await RefreshSelectedCyberware();
-            RefreshPasteStatus();
+            await RefreshPasteStatus();
         }
 
         #endregion Additional Cyberware Tab Control Events
@@ -10386,7 +10388,7 @@ namespace Chummer
         private async void treWeapons_AfterSelect(object sender, TreeViewEventArgs e)
         {
             await RefreshSelectedWeapon();
-            RefreshPasteStatus();
+            await RefreshPasteStatus();
         }
 
         private void treWeapons_ItemDrag(object sender, ItemDragEventArgs e)
@@ -10467,7 +10469,7 @@ namespace Chummer
         private async void treArmor_AfterSelect(object sender, TreeViewEventArgs e)
         {
             await RefreshSelectedArmor();
-            RefreshPasteStatus();
+            await RefreshPasteStatus();
         }
 
         private void treArmor_ItemDrag(object sender, ItemDragEventArgs e)
@@ -10543,7 +10545,7 @@ namespace Chummer
         private async void treLifestyles_AfterSelect(object sender, TreeViewEventArgs e)
         {
             await RefreshSelectedLifestyle();
-            RefreshPasteStatus();
+            await RefreshPasteStatus();
         }
 
         private async void treLifestyles_DoubleClick(object sender, EventArgs e)
@@ -10678,7 +10680,7 @@ namespace Chummer
         private async void treGear_AfterSelect(object sender, TreeViewEventArgs e)
         {
             await RefreshSelectedGear();
-            RefreshPasteStatus();
+            await RefreshPasteStatus();
         }
 
         private void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
@@ -11547,7 +11549,7 @@ namespace Chummer
         private async void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
         {
             await RefreshSelectedVehicle();
-            RefreshPasteStatus();
+            await RefreshPasteStatus();
         }
 
         private void treVehicles_ItemDrag(object sender, ItemDragEventArgs e)
@@ -12860,14 +12862,14 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void tabCharacterTabs_SelectedIndexChanged(object sender, EventArgs e)
+        private async void tabCharacterTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RefreshPasteStatus();
+            await RefreshPasteStatus();
         }
 
-        private void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
+        private async void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RefreshPasteStatus();
+            await RefreshPasteStatus();
         }
 
         private enum CmdOperation { None, Up, Down }
@@ -17051,52 +17053,52 @@ namespace Chummer
         /// <summary>
         /// Enable/Disable the Paste Menu and ToolStrip items as appropriate.
         /// </summary>
-        private void RefreshPasteStatus()
+        private async ValueTask RefreshPasteStatus()
         {
             bool blnCopyEnabled = false;
 
-            if (tabCharacterTabs.SelectedTab == tabStreetGear)
+            if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabStreetGear)
             {
                 // Lifestyle Tab.
-                if (tabStreetGearTabs.SelectedTab == tabLifestyle)
+                if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabLifestyle)
                 {
-                    blnCopyEnabled = treLifestyles.SelectedNode?.Tag is Lifestyle;
+                    blnCopyEnabled = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Lifestyle);
                 }
                 // Armor Tab.
-                else if (tabStreetGearTabs.SelectedTab == tabArmor)
+                else if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabArmor)
                 {
-                    blnCopyEnabled = treArmor.SelectedNode?.Tag is Armor ||
-                                     treArmor.SelectedNode?.Tag is Gear;
+                    blnCopyEnabled
+                        = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Armor || x.SelectedNode?.Tag is Gear);
                 }
 
                 // Weapons Tab.
-                if (tabStreetGearTabs.SelectedTab == tabWeapons)
+                if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabWeapons)
                 {
-                    blnCopyEnabled = treWeapons.SelectedNode?.Tag is Weapon ||
-                                     treWeapons.SelectedNode?.Tag is Gear;
+                    blnCopyEnabled = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Weapon ||
+                                                                           x.SelectedNode?.Tag is Gear);
                 }
                 // Gear Tab.
-                else if (tabStreetGearTabs.SelectedTab == tabGear)
+                else if (await tabStreetGearTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabGear)
                 {
-                    blnCopyEnabled = treWeapons.SelectedNode?.Tag is Gear;
+                    blnCopyEnabled = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Gear);
                 }
             }
             // Cyberware Tab.
-            else if (tabCharacterTabs.SelectedTab == tabCyberware)
+            else if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabCyberware)
             {
-                blnCopyEnabled = treCyberware.SelectedNode?.Tag is Cyberware ||
-                                 treCyberware.SelectedNode?.Tag is Gear;
+                blnCopyEnabled = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Cyberware ||
+                                                                         x.SelectedNode?.Tag is Gear);
             }
             // Vehicles Tab.
-            else if (tabCharacterTabs.SelectedTab == tabVehicles && treVehicles.SelectedNode != null)
+            else if (await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab) == tabVehicles)
             {
-                blnCopyEnabled = treVehicles.SelectedNode?.Tag is Vehicle ||
-                                 treVehicles.SelectedNode?.Tag is Gear ||
-                                 treVehicles.SelectedNode?.Tag is Weapon;
+                blnCopyEnabled = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag is Vehicle ||
+                                                                        x.SelectedNode?.Tag is Gear ||
+                                                                        x.SelectedNode?.Tag is Weapon);
             }
 
-            mnuEditCopy.Enabled = blnCopyEnabled;
-            tsbCopy.Enabled = blnCopyEnabled;
+            await mnuCreateMenu.DoThreadSafeAsync(() => mnuEditCopy.Enabled = blnCopyEnabled);
+            await tsMain.DoThreadSafeAsync(() => tsbCopy.Enabled = blnCopyEnabled);
         }
 
         /// <summary>
@@ -17875,20 +17877,31 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void picMugshot_SizeChanged(object sender, EventArgs e)
+        private async void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
+            await ProcessMugshot();
+        }
+
+        private async ValueTask ProcessMugshot()
+        {
+            if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed()))
                 return;
-            try
+            await picMugshot.DoThreadSafeAsync(x =>
             {
-                picMugshot.SizeMode = picMugshot.Image != null && picMugshot.Height >= picMugshot.Image.Height && picMugshot.Width >= picMugshot.Image.Width
-                    ? PictureBoxSizeMode.CenterImage
-                    : PictureBoxSizeMode.Zoom;
-            }
-            catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
-            {
-                picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
-            }
+                if (x.IsNullOrDisposed())
+                    return;
+                try
+                {
+                    x.SizeMode = x.Image != null && x.Height >= x.Image.Height
+                                                 && x.Width >= x.Image.Width
+                        ? PictureBoxSizeMode.CenterImage
+                        : PictureBoxSizeMode.Zoom;
+                }
+                catch (ArgumentException) // No other way to catch when the Image is not null, but is disposed
+                {
+                    x.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            });
         }
 
         private async void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
