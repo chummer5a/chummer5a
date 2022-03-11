@@ -1664,7 +1664,7 @@ namespace Chummer
 
                             string strPrimaryArm = CharacterObject.PrimaryArm;
 
-                            await cboPrimaryArm.DoThreadSafeFunc(async cboThis =>
+                            await cboPrimaryArm.DoThreadSafeAsync(async cboThis =>
                             {
                                 await cboThis.PopulateWithListItemsAsync(lstPrimaryArm);
                                 cboThis.SelectedValue = strPrimaryArm;
@@ -10362,7 +10362,7 @@ namespace Chummer
                 await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true);
                 await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true);
                 await objQuality.SetSourceDetailAsync(lblQualitySource);
-                await lblQualityBP.DoThreadSafeFunc(async x => x.Text
+                await lblQualityBP.DoThreadSafeAsync(async x => x.Text
                                                         = (objQuality.BP * objQuality.Levels
                                                                          * CharacterObjectSettings.KarmaQuality)
                                                           .ToString(GlobalSettings.CultureInfo) +
@@ -13485,7 +13485,7 @@ namespace Chummer
 
                 if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
                 {
-                    await lblCyberwareRatingLabel.DoThreadSafeFunc(async x => x.Text = string.Format(
+                    await lblCyberwareRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
                                                                        GlobalSettings.CultureInfo,
                                                                        await LanguageManager.GetStringAsync(
                                                                            "Label_RatingFormat"),
@@ -15723,118 +15723,147 @@ namespace Chummer
         private async Task RefreshSelectedLifestyle()
         {
             IsRefreshing = true;
-            flpLifestyleDetails.SuspendLayout();
-            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level == 0 || !(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
+            await flpLifestyleDetails.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                flpLifestyleDetails.Visible = false;
-                cmdDeleteLifestyle.Enabled = treLifestyles.SelectedNode?.Tag is ICanRemove;
-
-                IsRefreshing = false;
-                flpLifestyleDetails.ResumeLayout();
-                return;
-            }
-
-            flpLifestyleDetails.Visible = true;
-            cmdDeleteLifestyle.Enabled = true;
-
-            lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            lblLifestyleMonths.Text = objLifestyle.Increments.ToString(GlobalSettings.CultureInfo);
-            await objLifestyle.SetSourceDetailAsync(lblLifestyleSource);
-
-            string strIncrementString;
-            // Change the Cost/Month label.
-            switch (objLifestyle.IncrementType)
-            {
-                case LifestyleIncrement.Day:
-                    lblLifestyleCostLabel.Text = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerDay");
-                    strIncrementString = await LanguageManager.GetStringAsync("String_Days");
-                    break;
-
-                case LifestyleIncrement.Week:
-                    lblLifestyleCostLabel.Text = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerWeek");
-                    strIncrementString = await LanguageManager.GetStringAsync("String_Weeks");
-                    break;
-
-                default:
-                    lblLifestyleCostLabel.Text = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerMonth");
-                    strIncrementString = await LanguageManager.GetStringAsync("String_Months");
-                    break;
-            }
-
-            lblLifestyleMonthsLabel.Text = strIncrementString + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent"), objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalSettings.CultureInfo));
-            cmdIncreaseLifestyleMonths.ToolTipText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tab_IncreaseLifestyleMonths"), strIncrementString);
-            cmdDecreaseLifestyleMonths.ToolTipText = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tab_DecreaseLifestyleMonths"), strIncrementString);
-
-            if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdQualities))
+                if (await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0)
+                                                       || !(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Lifestyle objLifestyle))
                 {
-                    sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 CharacterObject, Improvement.ImprovementType.LifestyleCost))
-                    {
-                        if (sbdQualities.Length > 0)
-                            sbdQualities.AppendLine(',');
-
-                        sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
-                                    .Append(await LanguageManager.GetStringAsync("String_Space")).Append('[')
-                                    .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
-                                    .Append("%]");
-                    }
-
-                    lblLifestyleQualities.Text = sbdQualities.ToString();
+                    await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = false);
+                    await cmdDeleteLifestyle.DoThreadSafeAsync(async x => x.Enabled = await treLifestyles.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    return;
                 }
 
-                lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
-                lblLifestyleQualitiesLabel.Visible = true;
-                lblLifestyleQualities.Visible = true;
-            }
-            else
-            {
-                lblBaseLifestyle.Text = await LanguageManager.GetStringAsync("String_Error");
-                lblLifestyleQualitiesLabel.Visible = false;
-                lblLifestyleQualities.Visible = false;
-            }
+                await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = true);
+                await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = true);
 
-            //Controls Visibility and content of the City, District and Borough Labels
-            if (!string.IsNullOrEmpty(objLifestyle.City))
-            {
-                lblLifestyleCity.Text = objLifestyle.City;
-                lblLifestyleCity.Visible = true;
-                lblLifestyleCityLabel.Visible = true;
-            }
-            else
-            {
-                lblLifestyleCity.Visible = false;
-                lblLifestyleCityLabel.Visible = false;
-            }
+                await lblLifestyleCost.DoThreadSafeAsync(x => x.Text
+                                                             = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                 GlobalSettings.CultureInfo) + '¥');
+                await lblLifestyleMonths.DoThreadSafeAsync(x => x.Text = objLifestyle.Increments.ToString(GlobalSettings.CultureInfo));
+                await objLifestyle.SetSourceDetailAsync(lblLifestyleSource);
 
-            if (!string.IsNullOrEmpty(objLifestyle.District))
-            {
-                lblLifestyleDistrict.Text = objLifestyle.District;
-                lblLifestyleDistrict.Visible = true;
-                lblLifestyleDistrictLabel.Visible = true;
-            }
-            else
-            {
-                lblLifestyleDistrict.Visible = false;
-                lblLifestyleDistrictLabel.Visible = false;
-            }
+                string strIncrementString;
+                // Change the Cost/Month label.
+                switch (objLifestyle.IncrementType)
+                {
+                    case LifestyleIncrement.Day:
+                        await lblLifestyleCostLabel.DoThreadSafeAsync(async x => x.Text
+                                                                          = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerDay"));
+                        strIncrementString = await LanguageManager.GetStringAsync("String_Days");
+                        break;
 
-            if (!string.IsNullOrEmpty(objLifestyle.Borough))
-            {
-                lblLifestyleBorough.Text = objLifestyle.Borough;
-                lblLifestyleBorough.Visible = true;
-                lblLifestyleBoroughLabel.Visible = true;
-            }
-            else
-            {
-                lblLifestyleBorough.Visible = false;
-                lblLifestyleBoroughLabel.Visible = false;
-            }
+                    case LifestyleIncrement.Week:
+                        await lblLifestyleCostLabel.DoThreadSafeAsync(async x => x.Text
+                                                                          = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerWeek"));
+                        strIncrementString = await LanguageManager.GetStringAsync("String_Weeks");
+                        break;
 
-            IsRefreshing = false;
-            flpLifestyleDetails.ResumeLayout();
+                    default:
+                        await lblLifestyleCostLabel.DoThreadSafeAsync(async x => x.Text
+                                                               = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerMonth"));
+                        strIncrementString = await LanguageManager.GetStringAsync("String_Months");
+                        break;
+                }
+
+                await lblLifestyleMonthsLabel.DoThreadSafeAsync(async x => x.Text = strIncrementString + string.Format(
+                                                                    GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent"),
+                                                                    objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalSettings.CultureInfo)));
+                cmdIncreaseLifestyleMonths.ToolTipText = string.Format(GlobalSettings.CultureInfo,
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "Tab_IncreaseLifestyleMonths"),
+                                                                       strIncrementString);
+                cmdDecreaseLifestyleMonths.ToolTipText = string.Format(GlobalSettings.CultureInfo,
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "Tab_DecreaseLifestyleMonths"),
+                                                                       strIncrementString);
+
+                if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdQualities))
+                    {
+                        sbdQualities.AppendJoin(',' + Environment.NewLine,
+                                                objLifestyle.LifestyleQualities.Select(
+                                                    r => r.CurrentFormattedDisplayName));
+                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                     CharacterObject, Improvement.ImprovementType.LifestyleCost))
+                        {
+                            if (sbdQualities.Length > 0)
+                                sbdQualities.AppendLine(',');
+
+                            sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
+                                        .Append(await LanguageManager.GetStringAsync("String_Space")).Append('[')
+                                        .Append(
+                                            objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
+                                        .Append("%]");
+                        }
+
+                        await lblLifestyleQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString());
+                    }
+
+                    await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = objLifestyle.CurrentDisplayName);
+                    await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = true);
+                }
+                else
+                {
+                    await lblBaseLifestyle.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_Error"));
+                    await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                //Controls Visibility and content of the City, District and Borough Labels
+                if (!string.IsNullOrEmpty(objLifestyle.City))
+                {
+                    await lblLifestyleCity.DoThreadSafeAsync(x =>
+                    {
+                        x.Text = objLifestyle.City;
+                        x.Visible = true;
+                    });
+                    await lblLifestyleCityLabel.DoThreadSafeAsync(x => x.Visible = true);
+                }
+                else
+                {
+                    await lblLifestyleCity.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleCityLabel.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (!string.IsNullOrEmpty(objLifestyle.District))
+                {
+                    await lblLifestyleDistrict.DoThreadSafeAsync(x =>
+                    {
+                        x.Text = objLifestyle.District;
+                        x.Visible = true;
+                    });
+                    await lblLifestyleDistrictLabel.DoThreadSafeAsync(x => x.Visible = true);
+                }
+                else
+                {
+                    await lblLifestyleDistrict.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleDistrictLabel.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (!string.IsNullOrEmpty(objLifestyle.Borough))
+                {
+                    await lblLifestyleBorough.DoThreadSafeAsync(x =>
+                    {
+                        x.Text = objLifestyle.Borough;
+                        x.Visible = true;
+                    });
+                    await lblLifestyleBoroughLabel.DoThreadSafeAsync(x => x.Visible = true);
+                }
+                else
+                {
+                    await lblLifestyleBorough.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleBoroughLabel.DoThreadSafeAsync(x => x.Visible = false);
+                }
+            }
+            finally
+            {
+                await flpLifestyleDetails.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
+            }
         }
 
         /// <summary>
@@ -17033,7 +17062,7 @@ namespace Chummer
                 else
                 {
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdDeleteSpell.DoThreadSafeFunc(async x => x.Enabled
+                    await cmdDeleteSpell.DoThreadSafeAsync(async x => x.Enabled
                                                               = await treSpells.DoThreadSafeFuncAsync(
                                                                   y => y.SelectedNode?.Tag) is ICanRemove);
                 }
@@ -17203,9 +17232,9 @@ namespace Chummer
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true);
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0);
 
-                    await lblDuration.DoThreadSafeFunc(async x => x.Text = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language));
-                    await lblTarget.DoThreadSafeFunc(async x => x.Text = await objComplexForm.DisplayTargetAsync(GlobalSettings.Language));
-                    await lblFV.DoThreadSafeFunc(async x => x.Text = await objComplexForm.DisplayFvAsync(GlobalSettings.Language));
+                    await lblDuration.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language));
+                    await lblTarget.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayTargetAsync(GlobalSettings.Language));
+                    await lblFV.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayFvAsync(GlobalSettings.Language));
                     await lblFV.SetToolTipAsync(objComplexForm.FvTooltip);
 
                     // Determine the size of the Threading Dice Pool.
@@ -17217,7 +17246,7 @@ namespace Chummer
                 else
                 {
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdDeleteComplexForm.DoThreadSafeFunc(async x => x.Enabled = await treComplexForms.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteComplexForm.DoThreadSafeAsync(async x => x.Enabled = await treComplexForms.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
                 }
             }
             finally

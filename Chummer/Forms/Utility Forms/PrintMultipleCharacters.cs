@@ -185,7 +185,7 @@ namespace Chummer
 
                     if (_frmPrintView == null)
                     {
-                        await this.DoThreadSafeFunc(async () =>
+                        await this.DoThreadSafeAsync(async () =>
                         {
                             _frmPrintView = new CharacterSheetViewer();
                             await _frmPrintView.SetSelectedSheet("Game Master Summary");
@@ -195,7 +195,7 @@ namespace Chummer
                     }
                     else
                     {
-                        await _frmPrintView.DoThreadSafeFunc(async objSheetViewer =>
+                        await _frmPrintView.DoThreadSafeAsync(async objSheetViewer =>
                         {
                             await objSheetViewer.SetCharacters(_aobjCharacters);
                             objSheetViewer.Activate();

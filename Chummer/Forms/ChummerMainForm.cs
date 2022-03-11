@@ -614,7 +614,7 @@ namespace Chummer
                                                             await LanguageManager.GetStringAsync(
                                                                 "String_Update_Available"),
                                                             Utils.CachedGitVersion);
-                        await this.DoThreadSafeFunc(async () =>
+                        await this.DoThreadSafeAsync(async () =>
                         {
                             if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                             {

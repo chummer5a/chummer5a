@@ -385,7 +385,7 @@ namespace Chummer
             await lblUpdaterStatus.DoThreadSafeAsync(x => x.Left = x.Left + x.Width + 6);
             if (!_blnIsConnected || strLatestVersion == (await LanguageManager.GetStringAsync("String_Error")).Trim())
             {
-                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeFunc(async x => x.Text
+                await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(async x => x.Text
                                                                          = string.IsNullOrEmpty(_strExceptionString)
                                                                              ? await LanguageManager.GetStringAsync(
                                                                                  "Warning_Update_CouldNotConnect")
@@ -426,7 +426,7 @@ namespace Chummer
                                                                              : "String_Stable"), strLatestVersion);
                 if (intResult < 0)
                 {
-                    await cmdRestart.DoThreadSafeFunc(async x =>
+                    await cmdRestart.DoThreadSafeAsync(async x =>
                     {
                         x.Text = await LanguageManager.GetStringAsync("Button_Up_To_Date");
                         x.Enabled = false;

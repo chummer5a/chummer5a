@@ -878,7 +878,7 @@ namespace Chummer
                             x => x.Text = objCache.CharacterNotes.RtfToPlainText());
                         await txtGameNotes.DoThreadSafeAsync(x => x.Text = objCache.GameNotes.RtfToPlainText());
                         await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = objCache.Concept.RtfToPlainText());
-                        await lblCareerKarma.DoThreadSafeFunc(async x =>
+                        await lblCareerKarma.DoThreadSafeAsync(async x =>
                         {
                             x.Text = objCache.Karma;
                             if (string.IsNullOrEmpty(x.Text)
@@ -909,7 +909,7 @@ namespace Chummer
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = strUnknown;
                         });
-                        await lblFilePath.DoThreadSafeFunc(async x =>
+                        await lblFilePath.DoThreadSafeAsync(async x =>
                         {
                             x.Text = objCache.FileName;
                             if (string.IsNullOrEmpty(x.Text))

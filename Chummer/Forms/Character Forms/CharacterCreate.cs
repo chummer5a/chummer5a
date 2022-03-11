@@ -1469,7 +1469,7 @@ namespace Chummer
 
                             string strPrimaryArm = CharacterObject.PrimaryArm;
 
-                            await cboPrimaryArm.DoThreadSafeFunc(async cboThis =>
+                            await cboPrimaryArm.DoThreadSafeAsync(async cboThis =>
                             {
                                 await cboThis.PopulateWithListItemsAsync(lstPrimaryArm);
                                 cboThis.SelectedValue = strPrimaryArm;
@@ -6965,7 +6965,7 @@ namespace Chummer
                 await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true);
                 await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true);
                 await objQuality.SetSourceDetailAsync(lblQualitySource);
-                await lblQualityBP.DoThreadSafeFunc(async x => x.Text
+                await lblQualityBP.DoThreadSafeAsync(async x => x.Text
                                                         = (objQuality.BP * objQuality.Levels
                                                                          * CharacterObjectSettings.KarmaQuality)
                                                           .ToString(GlobalSettings.CultureInfo) +

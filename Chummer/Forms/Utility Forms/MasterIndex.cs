@@ -406,7 +406,7 @@ namespace Chummer
                             0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All")));
 
                         await Task.WhenAll(
-                            cboFile.DoThreadSafeFunc(async cboThis =>
+                            cboFile.DoThreadSafeAsync(async cboThis =>
                             {
                                 int intOldSelectedIndex = cboThis.SelectedIndex;
                                 await cboThis.PopulateWithListItemsAsync(_lstFileNamesWithItems);
@@ -421,7 +421,7 @@ namespace Chummer
                                 }
                             })
                             ,
-                            lstItems.DoThreadSafeFunc(async lstThis =>
+                            lstItems.DoThreadSafeAsync(async lstThis =>
                             {
                                 await lstThis.PopulateWithListItemsAsync(_lstItems);
                                 lstThis.SelectedIndex = -1;
