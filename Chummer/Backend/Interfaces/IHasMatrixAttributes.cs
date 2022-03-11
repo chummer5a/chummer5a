@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -200,51 +201,253 @@ namespace Chummer
             int intBonusDataProcessing = objThis.GetBonusMatrixAttribute("Data Processing");
             int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
 
-            cboAttack.SuspendLayout();
-            cboSleaze.SuspendLayout();
-            cboDataProcessing.SuspendLayout();
-            cboFirewall.SuspendLayout();
-            cboAttack.BeginUpdate();
-            cboSleaze.BeginUpdate();
-            cboDataProcessing.BeginUpdate();
-            cboFirewall.BeginUpdate();
+            cboAttack.DoThreadSafe(x =>
+            {
+                x.SuspendLayout();
+                x.BeginUpdate();
+            });
+            cboSleaze.DoThreadSafe(x =>
+            {
+                x.SuspendLayout();
+                x.BeginUpdate();
+            });
+            cboDataProcessing.DoThreadSafe(x =>
+            {
+                x.SuspendLayout();
+                x.BeginUpdate();
+            });
+            cboFirewall.DoThreadSafe(x =>
+            {
+                x.SuspendLayout();
+                x.BeginUpdate();
+            });
 
-            cboAttack.Enabled = false;
-            cboAttack.BindingContext = new BindingContext();
-            cboAttack.DataSource = new List<string>(4) { (intBaseAttack + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo), (intBaseSleaze + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo), (intBaseDataProcessing + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo), (intBaseFirewall + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo) };
-            cboAttack.SelectedIndex = 0;
-            cboAttack.Visible = true;
-            cboAttack.Enabled = objThis.CanSwapAttributes;
+            try
+            {
+                cboAttack.DoThreadSafe(x =>
+                {
+                    x.Enabled = false;
+                    x.BindingContext = new BindingContext();
+                    x.DataSource = new List<string>(4)
+                    {
+                        (intBaseAttack + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseSleaze + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseDataProcessing + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseFirewall + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo)
+                    };
+                    x.SelectedIndex = 0;
+                    x.Visible = true;
+                    x.Enabled = objThis.CanSwapAttributes;
+                });
 
-            cboSleaze.Enabled = false;
-            cboSleaze.BindingContext = new BindingContext();
-            cboSleaze.DataSource = new List<string>(4) { (intBaseAttack + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo), (intBaseSleaze + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo), (intBaseDataProcessing + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo), (intBaseFirewall + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo) };
-            cboSleaze.SelectedIndex = 1;
-            cboSleaze.Visible = true;
-            cboSleaze.Enabled = objThis.CanSwapAttributes;
+                cboSleaze.DoThreadSafe(x =>
+                {
+                    x.Enabled = false;
+                    x.BindingContext = new BindingContext();
+                    x.DataSource = new List<string>(4)
+                    {
+                        (intBaseAttack + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseSleaze + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseDataProcessing + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseFirewall + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo)
+                    };
+                    x.SelectedIndex = 1;
+                    x.Visible = true;
+                    x.Enabled = objThis.CanSwapAttributes;
+                });
 
-            cboDataProcessing.Enabled = false;
-            cboDataProcessing.BindingContext = new BindingContext();
-            cboDataProcessing.DataSource = new List<string>(4) { (intBaseAttack + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo), (intBaseSleaze + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo), (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo), (intBaseFirewall + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo) };
-            cboDataProcessing.SelectedIndex = 2;
-            cboDataProcessing.Visible = true;
-            cboDataProcessing.Enabled = objThis.CanSwapAttributes;
+                cboDataProcessing.DoThreadSafe(x =>
+                {
+                    x.Enabled = false;
+                    x.BindingContext = new BindingContext();
+                    x.DataSource = new List<string>(4)
+                    {
+                        (intBaseAttack + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseSleaze + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseFirewall + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo)
+                    };
+                    x.SelectedIndex = 2;
+                    x.Visible = true;
+                    x.Enabled = objThis.CanSwapAttributes;
+                });
 
-            cboFirewall.Enabled = false;
-            cboFirewall.BindingContext = new BindingContext();
-            cboFirewall.DataSource = new List<string>(4) { (intBaseAttack + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo), (intBaseSleaze + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo), (intBaseDataProcessing + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo), (intBaseFirewall + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo) };
-            cboFirewall.SelectedIndex = 3;
-            cboFirewall.Visible = true;
-            cboFirewall.Enabled = objThis.CanSwapAttributes;
+                cboFirewall.DoThreadSafe(x =>
+                {
+                    x.Enabled = false;
+                    x.BindingContext = new BindingContext();
+                    x.DataSource = new List<string>(4)
+                    {
+                        (intBaseAttack + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseSleaze + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseDataProcessing + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseFirewall + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo)
+                    };
+                    x.SelectedIndex = 3;
+                    x.Visible = true;
+                    x.Enabled = objThis.CanSwapAttributes;
+                });
+            }
+            finally
+            {
+                cboAttack.DoThreadSafe(x =>
+                {
+                    x.EndUpdate();
+                    x.ResumeLayout();
+                });
+                cboSleaze.DoThreadSafe(x =>
+                {
+                    x.EndUpdate();
+                    x.ResumeLayout();
+                });
+                cboDataProcessing.DoThreadSafe(x =>
+                {
+                    x.EndUpdate();
+                    x.ResumeLayout();
+                });
+                cboFirewall.DoThreadSafe(x =>
+                {
+                    x.EndUpdate();
+                    x.ResumeLayout();
+                });
+            }
+        }
 
-            cboAttack.EndUpdate();
-            cboSleaze.EndUpdate();
-            cboDataProcessing.EndUpdate();
-            cboFirewall.EndUpdate();
-            cboAttack.ResumeLayout();
-            cboSleaze.ResumeLayout();
-            cboDataProcessing.ResumeLayout();
-            cboFirewall.ResumeLayout();
+        /// <summary>
+        /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
+        /// </summary>
+        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
+        {
+            if (objThis == null)
+                return;
+            if (cboAttack == null)
+                throw new ArgumentNullException(nameof(cboAttack));
+            if (cboSleaze == null)
+                throw new ArgumentNullException(nameof(cboSleaze));
+            if (cboDataProcessing == null)
+                throw new ArgumentNullException(nameof(cboDataProcessing));
+            if (cboFirewall == null)
+                throw new ArgumentNullException(nameof(cboFirewall));
+
+            int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
+            int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
+            int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
+            int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
+            int intBonusAttack = objThis.GetBonusMatrixAttribute("Attack");
+            int intBonusSleaze = objThis.GetBonusMatrixAttribute("Sleaze");
+            int intBonusDataProcessing = objThis.GetBonusMatrixAttribute("Data Processing");
+            int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
+
+            await cboAttack.DoThreadSafeAsync(x =>
+            {
+                x.SuspendLayout();
+                x.BeginUpdate();
+            });
+            await cboSleaze.DoThreadSafeAsync(x =>
+            {
+                x.SuspendLayout();
+                x.BeginUpdate();
+            });
+            await cboDataProcessing.DoThreadSafeAsync(x =>
+            {
+                x.SuspendLayout();
+                x.BeginUpdate();
+            });
+            await cboFirewall.DoThreadSafeAsync(x =>
+            {
+                x.SuspendLayout();
+                x.BeginUpdate();
+            });
+
+            try
+            {
+                await cboAttack.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.BindingContext = new BindingContext();
+                    x.DataSource = new List<string>(4)
+                    {
+                        (intBaseAttack + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseSleaze + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseDataProcessing + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseFirewall + intBonusAttack).ToString(GlobalSettings.InvariantCultureInfo)
+                    };
+                    x.SelectedIndex = 0;
+                    x.Visible = true;
+                    x.Enabled = objThis.CanSwapAttributes;
+                });
+
+                await cboSleaze.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.BindingContext = new BindingContext();
+                    x.DataSource = new List<string>(4)
+                    {
+                        (intBaseAttack + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseSleaze + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseDataProcessing + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseFirewall + intBonusSleaze).ToString(GlobalSettings.InvariantCultureInfo)
+                    };
+                    x.SelectedIndex = 1;
+                    x.Visible = true;
+                    x.Enabled = objThis.CanSwapAttributes;
+                });
+
+                await cboDataProcessing.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.BindingContext = new BindingContext();
+                    x.DataSource = new List<string>(4)
+                    {
+                        (intBaseAttack + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseSleaze + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseFirewall + intBonusDataProcessing).ToString(GlobalSettings.InvariantCultureInfo)
+                    };
+                    x.SelectedIndex = 2;
+                    x.Visible = true;
+                    x.Enabled = objThis.CanSwapAttributes;
+                });
+
+                await cboFirewall.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.BindingContext = new BindingContext();
+                    x.DataSource = new List<string>(4)
+                    {
+                        (intBaseAttack + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseSleaze + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseDataProcessing + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo),
+                        (intBaseFirewall + intBonusFirewall).ToString(GlobalSettings.InvariantCultureInfo)
+                    };
+                    x.SelectedIndex = 3;
+                    x.Visible = true;
+                    x.Enabled = objThis.CanSwapAttributes;
+                });
+            }
+            finally
+            {
+                await cboAttack.DoThreadSafeAsync(x =>
+                {
+                    x.EndUpdate();
+                    x.ResumeLayout();
+                });
+                await cboSleaze.DoThreadSafeAsync(x =>
+                {
+                    x.EndUpdate();
+                    x.ResumeLayout();
+                });
+                await cboDataProcessing.DoThreadSafeAsync(x =>
+                {
+                    x.EndUpdate();
+                    x.ResumeLayout();
+                });
+                await cboFirewall.DoThreadSafeAsync(x =>
+                {
+                    x.EndUpdate();
+                    x.ResumeLayout();
+                });
+            }
         }
 
         public static bool ProcessMatrixAttributeComboBoxChange(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttribute, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
@@ -290,28 +493,28 @@ namespace Chummer
             else
                 return false;
 
-            int intCurrentIndex = cboChangedAttribute.SelectedIndex;
+            int intCurrentIndex = cboChangedAttribute.DoThreadSafeFunc(x => x.SelectedIndex);
             bool blnRefreshCharacter = false;
             // Find the combo with the same value as this one and change it to the missing value.
-            if (cboChangedAttribute != cboAttack && cboAttack.SelectedIndex == intCurrentIndex)
+            if (cboChangedAttribute != cboAttack && cboAttack.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Attack);
                 objThis.Attack = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboSleaze && cboSleaze.SelectedIndex == intCurrentIndex)
+            else if (cboChangedAttribute != cboSleaze && cboSleaze.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Sleaze);
                 objThis.Sleaze = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboDataProcessing && cboDataProcessing.SelectedIndex == intCurrentIndex)
+            else if (cboChangedAttribute != cboDataProcessing && cboDataProcessing.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.DataProcessing);
                 objThis.DataProcessing = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboFirewall && cboFirewall.SelectedIndex == intCurrentIndex)
+            else if (cboChangedAttribute != cboFirewall && cboFirewall.DoThreadSafeFunc(x => x.SelectedIndex) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Firewall);
                 objThis.Firewall = strTemp;
@@ -321,6 +524,85 @@ namespace Chummer
             if (blnRefreshCharacter)
             {
                 objThis.RefreshMatrixAttributeComboBoxes(cboAttack, cboSleaze, cboDataProcessing, cboFirewall);
+            }
+
+            return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));
+        }
+
+        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttribute, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
+        {
+            if (objThis == null)
+                return false;
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (cboChangedAttribute == null)
+                throw new ArgumentNullException(nameof(cboChangedAttribute));
+            if (cboAttack == null)
+                throw new ArgumentNullException(nameof(cboAttack));
+            if (cboSleaze == null)
+                throw new ArgumentNullException(nameof(cboSleaze));
+            if (cboDataProcessing == null)
+                throw new ArgumentNullException(nameof(cboDataProcessing));
+            if (cboFirewall == null)
+                throw new ArgumentNullException(nameof(cboFirewall));
+
+            string strTemp;
+            Action<string> funcAttributePropertySetter;
+
+            if (cboChangedAttribute == cboAttack)
+            {
+                strTemp = objThis.Attack;
+                funcAttributePropertySetter = (x => objThis.Attack = x);
+            }
+            else if (cboChangedAttribute == cboSleaze)
+            {
+                strTemp = objThis.Sleaze;
+                funcAttributePropertySetter = (x => objThis.Sleaze = x);
+            }
+            else if (cboChangedAttribute == cboDataProcessing)
+            {
+                strTemp = objThis.DataProcessing;
+                funcAttributePropertySetter = (x => objThis.DataProcessing = x);
+            }
+            else if (cboChangedAttribute == cboFirewall)
+            {
+                strTemp = objThis.Firewall;
+                funcAttributePropertySetter = (x => objThis.Firewall = x);
+            }
+            else
+                return false;
+
+            int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex);
+            bool blnRefreshCharacter = false;
+            // Find the combo with the same value as this one and change it to the missing value.
+            if (cboChangedAttribute != cboAttack && await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex) == intCurrentIndex)
+            {
+                funcAttributePropertySetter.Invoke(objThis.Attack);
+                objThis.Attack = strTemp;
+                blnRefreshCharacter = true;
+            }
+            else if (cboChangedAttribute != cboSleaze && await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex) == intCurrentIndex)
+            {
+                funcAttributePropertySetter.Invoke(objThis.Sleaze);
+                objThis.Sleaze = strTemp;
+                blnRefreshCharacter = true;
+            }
+            else if (cboChangedAttribute != cboDataProcessing && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex) == intCurrentIndex)
+            {
+                funcAttributePropertySetter.Invoke(objThis.DataProcessing);
+                objThis.DataProcessing = strTemp;
+                blnRefreshCharacter = true;
+            }
+            else if (cboChangedAttribute != cboFirewall && await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex) == intCurrentIndex)
+            {
+                funcAttributePropertySetter.Invoke(objThis.Firewall);
+                objThis.Firewall = strTemp;
+                blnRefreshCharacter = true;
+            }
+
+            if (blnRefreshCharacter)
+            {
+                await objThis.RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall);
             }
 
             return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));

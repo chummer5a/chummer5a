@@ -223,7 +223,7 @@ namespace Chummer.UI.Attributes
                 return;
 
             AttributeObject.Upgrade();
-            ValueChanged?.Invoke(this, e);
+            await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e));
         }
 
         private async void nudBase_ValueChanged(object sender, EventArgs e)
@@ -233,22 +233,25 @@ namespace Chummer.UI.Attributes
                 return;
             if (!await CanBeMetatypeMax(
                 Math.Max(
-                    nudKarma.ValueAsInt + AttributeObject.FreeBase + AttributeObject.RawMinimum +
+                    nudKarma.DoThreadSafeFunc(x => x.ValueAsInt) + AttributeObject.FreeBase + AttributeObject.RawMinimum +
                     AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
             {
-                decimal newValue = Math.Max(nudBase.Value - 1, 0);
-                if (newValue > nudBase.Maximum)
+                await nudBase.DoThreadSafeAsync(x =>
                 {
-                    newValue = nudBase.Maximum;
-                }
-                if (newValue < nudBase.Minimum)
-                {
-                    newValue = nudBase.Minimum;
-                }
-                nudBase.Value = newValue;
+                    decimal newValue = Math.Max(x.Value - 1, 0);
+                    if (newValue > x.Maximum)
+                    {
+                        newValue = x.Maximum;
+                    }
+                    if (newValue < x.Minimum)
+                    {
+                        newValue = x.Minimum;
+                    }
+                    x.Value = newValue;
+                });
                 return;
             }
-            ValueChanged?.Invoke(this, e);
+            await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e));
             _oldBase = intValue;
         }
 
@@ -259,7 +262,7 @@ namespace Chummer.UI.Attributes
                 return;
             if (!await CanBeMetatypeMax(
                 Math.Max(
-                    nudBase.ValueAsInt + AttributeObject.FreeBase + AttributeObject.RawMinimum +
+                    nudBase.DoThreadSafeFunc(x => x.ValueAsInt) + AttributeObject.FreeBase + AttributeObject.RawMinimum +
                     AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
             {
                 // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
@@ -269,22 +272,25 @@ namespace Chummer.UI.Attributes
                 }
                 if (_oldKarma < 0)
                 {
-                    decimal newValue = Math.Max(nudBase.Value - _oldKarma, 0);
-                    if (newValue > nudBase.Maximum)
+                    await nudBase.DoThreadSafeAsync(x =>
                     {
-                        newValue = nudBase.Maximum;
-                    }
-                    if (newValue < nudBase.Minimum)
-                    {
-                        newValue = nudBase.Minimum;
-                    }
-                    nudBase.Value = newValue;
+                        decimal newValue = Math.Max(x.Value - _oldKarma, 0);
+                        if (newValue > x.Maximum)
+                        {
+                            newValue = x.Maximum;
+                        }
+                        if (newValue < x.Minimum)
+                        {
+                            newValue = x.Minimum;
+                        }
+                        x.Value = newValue;
+                    });
                     _oldKarma = 0;
                 }
-                nudKarma.Value = _oldKarma;
+                await nudKarma.DoThreadSafeAsync(x => x.Value = _oldKarma);
                 return;
             }
-            ValueChanged?.Invoke(this, e);
+            await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e));
             _oldKarma = intValue;
         }
 

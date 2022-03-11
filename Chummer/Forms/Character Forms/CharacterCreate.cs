@@ -7953,15 +7953,15 @@ namespace Chummer
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkVehicleActiveCommlink.Checked);
         }
 
-        private void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboGearAttack.Enabled)
                 return;
 
             IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboGearAttack, cboGearAttack,
-                    cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack,
+                                                                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -7970,15 +7970,15 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboGearSleaze.Enabled)
                 return;
 
             IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboGearAttack, cboGearAttack,
-                    cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack,
+                                                                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -7987,15 +7987,15 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboGearDataProcessing.Enabled)
                 return;
 
             IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboGearAttack, cboGearAttack,
-                    cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack,
+                                                                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8004,15 +8004,15 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboGearFirewall.Enabled)
                 return;
 
             IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboGearAttack, cboGearAttack,
-                    cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack,
+                                                                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8021,15 +8021,15 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboVehicleAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboVehicleAttack.Enabled)
                 return;
 
             IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                    cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack,
+                                                                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8038,15 +8038,15 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboVehicleSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboVehicleSleaze.Enabled)
                 return;
 
             IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                    cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack,
+                                                                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8055,15 +8055,15 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboVehicleFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboVehicleFirewall.Enabled)
                 return;
 
             IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                    cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack,
+                                                                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8072,15 +8072,15 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboVehicleDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboVehicleDataProcessing.Enabled)
                 return;
 
             IsRefreshing = true;
             if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                    cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack,
+                                                                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8089,7 +8089,7 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboCyberwareAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboCyberwareAttack.Enabled)
                 return;
@@ -8099,8 +8099,8 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
-                cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
+                                                                          cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8109,7 +8109,7 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboCyberwareSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboCyberwareSleaze.Enabled)
                 return;
@@ -8119,8 +8119,8 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
-                cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
+                                                                          cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8129,7 +8129,7 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboCyberwareDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboCyberwareDataProcessing.Enabled)
                 return;
@@ -8139,8 +8139,8 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
-                cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
+                                                                          cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8149,7 +8149,7 @@ namespace Chummer
             IsRefreshing = false;
         }
 
-        private void cboCyberwareFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCyberwareFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboCyberwareFirewall.Enabled)
                 return;
@@ -8159,8 +8159,8 @@ namespace Chummer
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (objTarget.ProcessMatrixAttributeComboBoxChange(CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
-                cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
+                                                                          cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -10089,12 +10089,10 @@ namespace Chummer
                         await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false);
                     }
 
-                    await UpdateInitiationCost();
-
                     await Task.WhenAll(RefreshSelectedQuality(), RefreshSelectedCyberware(), RefreshSelectedArmor(),
                                        RefreshSelectedGear(), RefreshSelectedDrug(), RefreshSelectedLifestyle(),
                                        RefreshSelectedVehicle(), RefreshSelectedWeapon(), RefreshSelectedSpell(),
-                                       RefreshSelectedComplexForm());
+                                       RefreshSelectedComplexForm(), UpdateInitiationCost());
 
                     if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                     {
@@ -10456,7 +10454,7 @@ namespace Chummer
                         {
                             int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
                             lblCyberDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                            objCyberware.RefreshMatrixAttributeComboBoxes(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
+                            await objCyberware.RefreshMatrixAttributeComboBoxesAsync(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
 
                             chkCyberwareActiveCommlink.Visible = objCyberware.IsCommlink;
                             chkCyberwareActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
@@ -10543,7 +10541,7 @@ namespace Chummer
                         // gpbCyberwareMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                         lblCyberDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        objGear.RefreshMatrixAttributeComboBoxes(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
+                        await objGear.RefreshMatrixAttributeComboBoxesAsync(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
 
                         chkCyberwareActiveCommlink.Visible = objGear.IsCommlink;
                         chkCyberwareActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
@@ -11586,7 +11584,7 @@ namespace Chummer
                 // gpbGearMatrix
                 int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                 lblGearDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                objGear.RefreshMatrixAttributeComboBoxes(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
+                await objGear.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
                 chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
                 chkGearActiveCommlink.Visible = objGear.IsCommlink;
                 if (CharacterObject.IsAI)
@@ -12674,7 +12672,7 @@ namespace Chummer
                         // gpbVehiclesMatrix
                         int intDeviceRating = objVehicle.GetTotalMatrixAttribute("Device Rating");
                         lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        objVehicle.RefreshMatrixAttributeComboBoxes(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await objVehicle.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
                         chkVehicleActiveCommlink.Visible = objVehicle.IsCommlink;
                         chkVehicleActiveCommlink.Checked = objVehicle.IsActiveCommlink(CharacterObject);
                         if (CharacterObject.IsAI)
@@ -12946,7 +12944,7 @@ namespace Chummer
                         // gpbVehiclesMatrix
                         int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
                         lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        objWeapon.RefreshMatrixAttributeComboBoxes(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await objWeapon.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
                         chkVehicleActiveCommlink.Visible = objWeapon.IsCommlink;
                         chkVehicleActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
                         if (CharacterObject.IsAI)
@@ -13184,7 +13182,7 @@ namespace Chummer
                         // gpbVehiclesMatrix
                         int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
                         lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        objCyberware.RefreshMatrixAttributeComboBoxes(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await objCyberware.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
                         chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
                         chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
@@ -13289,7 +13287,7 @@ namespace Chummer
                         // gpbVehiclesMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                         lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        objGear.RefreshMatrixAttributeComboBoxes(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await objGear.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
                         chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
                         chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
@@ -15149,7 +15147,7 @@ namespace Chummer
         /// <summary>
         /// Update the karma cost tooltip for Initiation/Submersion.
         /// </summary>
-        private async ValueTask UpdateInitiationCost()
+        private async Task UpdateInitiationCost()
         {
             decimal decMultiplier = 1.0m;
             int intAmount;

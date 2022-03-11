@@ -72,7 +72,7 @@ namespace Chummer.UI.Shared.Components
                 if (_blnCanBeRolled == value)
                     return;
                 _blnCanBeRolled = value;
-                cmdRoll.Visible = value && CanEverBeRolled;
+                cmdRoll.DoThreadSafe(x => x.Visible = value && CanEverBeRolled);
             }
         }
 
@@ -84,7 +84,7 @@ namespace Chummer.UI.Shared.Components
                 if (_blnCanEverBeRolled == value)
                     return;
                 _blnCanEverBeRolled = value;
-                cmdRoll.Visible = CanBeRolled && value;
+                cmdRoll.DoThreadSafe(x => x.Visible = CanBeRolled && value);
             }
         }
 
