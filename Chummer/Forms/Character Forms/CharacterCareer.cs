@@ -990,17 +990,17 @@ namespace Chummer
                             CharacterObject.AttributeSection.Attributes.CollectionChanged += AttributeCollectionChanged;
 
                             // Condition Monitor.
-                            ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
-                                                                        CharacterObject.CMThreshold,
-                                                                        CharacterObject.PhysicalCMThresholdOffset,
-                                                                        CharacterObject.CMOverflow,
-                                                                        chkPhysicalCM_CheckedChanged, true,
-                                                                        CharacterObject.PhysicalCMFilled);
-                            ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
-                                                                        CharacterObject.CMThreshold,
-                                                                        CharacterObject.StunCMThresholdOffset, 0,
-                                                                        chkStunCM_CheckedChanged,
-                                                                        true, CharacterObject.StunCMFilled);
+                            await ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
+                                                                              CharacterObject.CMThreshold,
+                                                                              CharacterObject.PhysicalCMThresholdOffset,
+                                                                              CharacterObject.CMOverflow,
+                                                                              chkPhysicalCM_CheckedChanged, true,
+                                                                              CharacterObject.PhysicalCMFilled);
+                            await ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
+                                                                              CharacterObject.CMThreshold,
+                                                                              CharacterObject.StunCMThresholdOffset, 0,
+                                                                              chkStunCM_CheckedChanged,
+                                                                              true, CharacterObject.StunCMFilled);
 
                             IsCharacterUpdateRequested = true;
                             // Directly awaiting here so that we can properly unset the dirty flag after the update
@@ -1436,30 +1436,38 @@ namespace Chummer
                 case nameof(Character.CMOverflow):
                 case nameof(Character.CMThreshold):
                 case nameof(Character.CMThresholdOffsets):
-                    ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
-                        CharacterObject.CMThreshold, CharacterObject.PhysicalCMThresholdOffset,
-                        CharacterObject.CMOverflow, chkPhysicalCM_CheckedChanged, true,
-                        CharacterObject.PhysicalCMFilled);
-                    ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
-                        CharacterObject.CMThreshold, CharacterObject.StunCMThresholdOffset, 0, chkStunCM_CheckedChanged,
-                        true, CharacterObject.StunCMFilled);
+                    await ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
+                                                                      CharacterObject.CMThreshold,
+                                                                      CharacterObject.PhysicalCMThresholdOffset,
+                                                                      CharacterObject.CMOverflow,
+                                                                      chkPhysicalCM_CheckedChanged, true,
+                                                                      CharacterObject.PhysicalCMFilled);
+                    await ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
+                                                                      CharacterObject.CMThreshold,
+                                                                      CharacterObject.StunCMThresholdOffset, 0,
+                                                                      chkStunCM_CheckedChanged,
+                                                                      true, CharacterObject.StunCMFilled);
                     break;
 
                 case nameof(Character.StunCM):
                 case nameof(Character.StunCMFilled):
                 case nameof(Character.StunCMThresholdOffset):
-                    ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
-                        CharacterObject.CMThreshold, CharacterObject.StunCMThresholdOffset, 0, chkStunCM_CheckedChanged,
-                        true, CharacterObject.StunCMFilled);
+                    await ProcessCharacterConditionMonitorBoxDisplays(panStunCM, CharacterObject.StunCM,
+                                                                      CharacterObject.CMThreshold,
+                                                                      CharacterObject.StunCMThresholdOffset, 0,
+                                                                      chkStunCM_CheckedChanged,
+                                                                      true, CharacterObject.StunCMFilled);
                     break;
 
                 case nameof(Character.PhysicalCM):
                 case nameof(Character.PhysicalCMFilled):
                 case nameof(Character.PhysicalCMThresholdOffset):
-                    ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
-                        CharacterObject.CMThreshold, CharacterObject.PhysicalCMThresholdOffset,
-                        CharacterObject.CMOverflow, chkPhysicalCM_CheckedChanged, true,
-                        CharacterObject.PhysicalCMFilled);
+                    await ProcessCharacterConditionMonitorBoxDisplays(panPhysicalCM, CharacterObject.PhysicalCM,
+                                                                      CharacterObject.CMThreshold,
+                                                                      CharacterObject.PhysicalCMThresholdOffset,
+                                                                      CharacterObject.CMOverflow,
+                                                                      chkPhysicalCM_CheckedChanged, true,
+                                                                      CharacterObject.PhysicalCMFilled);
                     break;
 
                 case nameof(Character.MAGEnabled):
@@ -3677,35 +3685,49 @@ namespace Chummer
 
         private async void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedMartialArt();
+        }
+
+        private async Task RefreshSelectedMartialArt()
+        {
             IsRefreshing = true;
-            if (treMartialArts.SelectedNode?.Tag is IHasSource objSelected)
+            try
             {
-                lblMartialArtSourceLabel.Visible = true;
-                lblMartialArtSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblMartialArtSource);
-            }
-            else
-            {
-                lblMartialArtSourceLabel.Visible = false;
-                lblMartialArtSource.Visible = false;
-            }
-            switch (treMartialArts.SelectedNode?.Tag)
-            {
-                case MartialArt objMartialArt:
-                    cmdDeleteMartialArt.Enabled = !objMartialArt.IsQuality;
-                    break;
+                if (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                {
+                    await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblMartialArtSource);
+                }
+                else
+                {
+                    await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
 
-                case ICanRemove _:
-                    cmdDeleteMartialArt.Enabled = true;
-                    break;
+                switch (treMartialArts.SelectedNode?.Tag)
+                {
+                    case MartialArt objMartialArt:
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = !objMartialArt.IsQuality);
+                        break;
 
-                default:
-                    cmdDeleteMartialArt.Enabled = false;
-                    lblMartialArtSource.Text = string.Empty;
-                    await lblMartialArtSource.SetToolTipAsync(string.Empty);
-                    break;
+                    case ICanRemove _:
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = true);
+                        break;
+
+                    default:
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = false);
+                        await lblMartialArtSource.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblMartialArtSource.SetToolTipAsync(string.Empty);
+                        break;
+                }
             }
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         #endregion Martial Tab Control Events
@@ -8347,8 +8369,14 @@ namespace Chummer
                             if (objNode != null)
                             {
                                 IsRefreshing = true;
-                                objNode.Checked = false;
-                                IsRefreshing = false;
+                                try
+                                {
+                                    objNode.Checked = false;
+                                }
+                                finally
+                                {
+                                    IsRefreshing = false;
+                                }
                             }
                             await CharacterObject.Foci.RemoveAsync(objFocus);
                         }
@@ -8364,9 +8392,15 @@ namespace Chummer
                             if (objNode == null)
                                 continue;
                             IsRefreshing = true;
-                            objNode.Checked = false;
-                            objStack.Bonded = false;
-                            IsRefreshing = false;
+                            try
+                            {
+                                objNode.Checked = false;
+                                objStack.Bonded = false;
+                            }
+                            finally
+                            {
+                                IsRefreshing = false;
+                            }
                         }
                         break;
                     }
@@ -8374,16 +8408,28 @@ namespace Chummer
                     {
                         // Remove the character from their Group.
                         IsRefreshing = true;
-                        CharacterObject.GroupMember = false;
-                        IsRefreshing = false;
+                        try
+                        {
+                            CharacterObject.GroupMember = false;
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
                         break;
                     }
                 case KarmaExpenseType.LeaveGroup:
                     {
                         // Put the character back in their Group.
                         IsRefreshing = true;
-                        CharacterObject.GroupMember = true;
-                        IsRefreshing = false;
+                        try
+                        {
+                            CharacterObject.GroupMember = true;
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
                         break;
                     }
                 case KarmaExpenseType.RemoveQuality:
@@ -10339,6 +10385,8 @@ namespace Chummer
 
         private async void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedQuality();
         }
 
@@ -10377,6 +10425,8 @@ namespace Chummer
 
         private async void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedCyberware();
             await RefreshPasteStatus();
         }
@@ -10387,6 +10437,8 @@ namespace Chummer
 
         private async void treWeapons_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedWeapon();
             await RefreshPasteStatus();
         }
@@ -10468,6 +10520,8 @@ namespace Chummer
 
         private async void treArmor_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedArmor();
             await RefreshPasteStatus();
         }
@@ -10544,6 +10598,8 @@ namespace Chummer
 
         private async void treLifestyles_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedLifestyle();
             await RefreshPasteStatus();
         }
@@ -10679,6 +10735,8 @@ namespace Chummer
 
         private async void treGear_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedGear();
             await RefreshPasteStatus();
         }
@@ -11179,17 +11237,24 @@ namespace Chummer
             if (IsRefreshing || !cboGearAttack.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboGearAttack, cboGearAttack,
+                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
@@ -11197,17 +11262,24 @@ namespace Chummer
             if (IsRefreshing || !cboGearSleaze.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearSleaze, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboGearSleaze, cboGearAttack,
+                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
@@ -11215,17 +11287,24 @@ namespace Chummer
             if (IsRefreshing || !cboGearDataProcessing.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearDataProcessing, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboGearDataProcessing, cboGearAttack,
+                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
@@ -11233,165 +11312,124 @@ namespace Chummer
             if (IsRefreshing || !cboGearFirewall.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearFirewall, cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboGearFirewall, cboGearAttack,
+                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
-        private async void cboVehicleGearAttack_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboVehicleAttack.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboVehicleAttack, cboVehicleAttack,
+                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
-        private async void cboVehicleGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleSleaze_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboVehicleSleaze.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleSleaze, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboVehicleSleaze, cboVehicleAttack,
+                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
-        private async void cboVehicleGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleFirewall_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboVehicleFirewall.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleFirewall, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboVehicleFirewall, cboVehicleAttack,
+                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
-        private async void cboVehicleGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboVehicleDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboVehicleDataProcessing.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleDataProcessing, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
-
-            IsRefreshing = false;
-        }
-
-        private async void cboArmorAttack_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || !cboCyberwareAttack.Enabled)
-                return;
 
             IsRefreshing = true;
-
-            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
-                return;
-
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboArmorAttack, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall))
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboVehicleDataProcessing, cboVehicleAttack,
+                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
-        }
-
-        private async void cboArmorSleaze_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || !cboCyberwareAttack.Enabled)
-                return;
-
-            IsRefreshing = true;
-
-            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
-                return;
-
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboArmorSleaze, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall))
+            finally
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                IsRefreshing = false;
             }
-
-            IsRefreshing = false;
-        }
-
-        private async void cboArmorDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || !cboCyberwareAttack.Enabled)
-                return;
-
-            IsRefreshing = true;
-
-            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
-                return;
-
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboArmorDataProcessing, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
-
-            IsRefreshing = false;
-        }
-
-        private async void cboArmorFirewall_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing || !cboCyberwareAttack.Enabled)
-                return;
-
-            IsRefreshing = true;
-
-            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
-                return;
-
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboArmorFirewall, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
-
-            IsRefreshing = false;
         }
 
         private async void cboCyberwareAttack_SelectedIndexChanged(object sender, EventArgs e)
@@ -11399,18 +11437,24 @@ namespace Chummer
             if (IsRefreshing || !cboCyberwareAttack.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareAttack, cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            IsRefreshing = true;
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
+                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboCyberwareSleaze_SelectedIndexChanged(object sender, EventArgs e)
@@ -11418,18 +11462,24 @@ namespace Chummer
             if (IsRefreshing || !cboCyberwareSleaze.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareSleaze, cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            IsRefreshing = true;
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
+                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboCyberwareDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
@@ -11437,18 +11487,24 @@ namespace Chummer
             if (IsRefreshing || !cboCyberwareDataProcessing.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            IsRefreshing = true;
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
+                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboCyberwareFirewall_SelectedIndexChanged(object sender, EventArgs e)
@@ -11456,36 +11512,149 @@ namespace Chummer
             if (IsRefreshing || !cboCyberwareFirewall.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareFirewall, cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            IsRefreshing = true;
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
+                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
+        private async void cboArmorAttack_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || !cboArmorAttack.Enabled)
+                return;
+
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
+
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboArmorAttack, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
+                        cboArmorFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        private async void cboArmorSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || !cboArmorSleaze.Enabled)
+                return;
+
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
+
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboArmorSleaze, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
+                        cboArmorFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        private async void cboArmorDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || !cboArmorDataProcessing.Enabled)
+                return;
+
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
+
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboArmorDataProcessing, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
+                        cboArmorFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+
+        private async void cboArmorFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || !cboArmorFirewall.Enabled)
+                return;
+
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
+
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboArmorFirewall, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing,
+                        cboArmorFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
+        }
+        
         private async void cboWeaponGearAttack_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || !cboWeaponGearAttack.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboWeaponGearAttack, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboWeaponGearAttack, cboWeaponGearAttack, cboWeaponGearSleaze,
+                        cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboWeaponGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
@@ -11493,17 +11662,24 @@ namespace Chummer
             if (IsRefreshing || !cboWeaponGearSleaze.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboWeaponGearSleaze, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboWeaponGearSleaze, cboWeaponGearAttack, cboWeaponGearSleaze,
+                        cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboWeaponGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
@@ -11511,17 +11687,24 @@ namespace Chummer
             if (IsRefreshing || !cboWeaponGearDataProcessing.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboWeaponGearDataProcessing, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboWeaponGearDataProcessing, cboWeaponGearAttack, cboWeaponGearSleaze,
+                        cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboWeaponGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
@@ -11529,17 +11712,24 @@ namespace Chummer
             if (IsRefreshing || !cboWeaponGearFirewall.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboWeaponGearFirewall, cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboWeaponGearFirewall, cboWeaponGearAttack, cboWeaponGearSleaze,
+                        cboWeaponGearDataProcessing, cboWeaponGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         #endregion Additional Street Gear Tab Control Events
@@ -11548,6 +11738,8 @@ namespace Chummer
 
         private async void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedVehicle();
             await RefreshPasteStatus();
         }
@@ -11702,6 +11894,8 @@ namespace Chummer
 
         private async void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedSpell();
         }
 
@@ -12086,6 +12280,8 @@ namespace Chummer
 
         private async void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedComplexForm();
         }
 
@@ -12140,59 +12336,100 @@ namespace Chummer
 
         private async void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (treMetamagic.SelectedNode?.Tag is IHasSource objSelected)
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedMetamagic();
+        }
+
+        private async Task RefreshSelectedMetamagic()
+        {
+            IsRefreshing = true;
+            try
             {
-                lblMetamagicSourceLabel.Visible = true;
-                lblMetamagicSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblMetamagicSource);
+                switch (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                {
+                    case Metamagic objMetamagic:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync(
+                                    objMetamagic.SourceType
+                                    == Improvement.ImprovementSource.Metamagic
+                                        ? "Button_RemoveMetamagic"
+                                        : "Button_RemoveEcho");
+                                x.Enabled = objMetamagic.Grade >= 0;
+                            });
+                            await objMetamagic.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    case Art objArt:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync(
+                                    objArt.SourceType == Improvement.ImprovementSource.Metamagic
+                                        ? "Button_RemoveMetamagic"
+                                        : "Button_RemoveEcho");
+                                x.Enabled = objArt.Grade >= 0;
+                            });
+                            await objArt.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    case Spell objSpell:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync(
+                                    "Button_RemoveMetamagic");
+                                x.Enabled = objSpell.Grade >= 0;
+                            });
+                            await objSpell.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    case ComplexForm objComplexForm:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync("Button_RemoveEcho");
+                                x.Enabled = objComplexForm.Grade >= 0;
+                            });
+                            await objComplexForm.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    case Enhancement objEnhancement:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync(
+                                    objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic
+                                        ? "Button_RemoveMetamagic"
+                                        : "Button_RemoveEcho");
+                                x.Enabled = objEnhancement.Grade >= 0;
+                            });
+                            await objEnhancement.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    default:
+                        await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                        {
+                            x.Text = await LanguageManager.GetStringAsync(
+                                CharacterObject.MAGEnabled
+                                    ? "Button_RemoveInitiateGrade"
+                                    : "Button_RemoveSubmersionGrade");
+                            x.Enabled = true;
+                        });
+                        await lblMetamagicSource.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblMetamagicSource.SetToolTipAsync(string.Empty);
+                        break;
+                }
             }
-            else
+            finally
             {
-                lblMetamagicSourceLabel.Visible = false;
-                lblMetamagicSource.Visible = false;
-            }
-            switch (treMetamagic.SelectedNode?.Tag)
-            {
-                case Metamagic objMetamagic:
-                    {
-                        cmdDeleteMetamagic.Text = await LanguageManager.GetStringAsync(objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho");
-                        cmdDeleteMetamagic.Enabled = objMetamagic.Grade >= 0;
-                        break;
-                    }
-                case Art objArt:
-                    {
-                        cmdDeleteMetamagic.Text = await LanguageManager.GetStringAsync(objArt.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho");
-                        cmdDeleteMetamagic.Enabled = objArt.Grade >= 0;
-                        break;
-                    }
-                case Spell objSpell:
-                    {
-                        cmdDeleteMetamagic.Text = await LanguageManager.GetStringAsync("Button_RemoveMetamagic");
-                        cmdDeleteMetamagic.Enabled = objSpell.Grade >= 0;
-                        break;
-                    }
-                case ComplexForm objComplexForm:
-                    {
-                        cmdDeleteMetamagic.Text = await LanguageManager.GetStringAsync("Button_RemoveEcho");
-                        cmdDeleteMetamagic.Enabled = objComplexForm.Grade >= 0;
-                        break;
-                    }
-                case Enhancement objEnhancement:
-                    {
-                        cmdDeleteMetamagic.Text = await LanguageManager.GetStringAsync(objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho");
-                        cmdDeleteMetamagic.Enabled = objEnhancement.Grade >= 0;
-                        break;
-                    }
-                default:
-                    cmdDeleteMetamagic.Text = await LanguageManager.GetStringAsync(CharacterObject.MAGEnabled ? "Button_RemoveInitiateGrade" : "Button_RemoveSubmersionGrade");
-                    cmdDeleteMetamagic.Enabled = true;
-                    lblMetamagicSource.Text = string.Empty;
-                    await lblMetamagicSource.SetToolTipAsync(string.Empty);
-                    break;
+                IsRefreshing = false;
             }
         }
 
-        private void chkJoinGroup_CheckedChanged(object sender, EventArgs e)
+        private async void chkJoinGroup_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || IsLoading || chkJoinGroup.Checked == CharacterObject.GroupMember)
                 return;
@@ -12206,10 +12443,16 @@ namespace Chummer
 
                     if (intKarmaExpense > CharacterObject.Karma)
                     {
-                        Program.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         IsRefreshing = true;
-                        chkJoinGroup.Checked = false;
-                        IsRefreshing = false;
+                        try
+                        {
+                            chkJoinGroup.Checked = false;
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
                         return;
                     }
 
@@ -12217,20 +12460,26 @@ namespace Chummer
                     string strExpense;
                     if (CharacterObject.MAGEnabled)
                     {
-                        strMessage = LanguageManager.GetString("Message_ConfirmKarmaExpenseJoinGroup");
-                        strExpense = LanguageManager.GetString("String_ExpenseJoinGroup");
+                        strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinGroup");
+                        strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinGroup");
                     }
                     else
                     {
-                        strMessage = LanguageManager.GetString("Message_ConfirmKarmaExpenseJoinNetwork");
-                        strExpense = LanguageManager.GetString("String_ExpenseJoinNetwork");
+                        strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseJoinNetwork");
+                        strExpense = await LanguageManager.GetStringAsync("String_ExpenseJoinNetwork");
                     }
 
                     if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, strMessage, intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
                     {
                         IsRefreshing = true;
-                        chkJoinGroup.Checked = false;
-                        IsRefreshing = false;
+                        try
+                        {
+                            chkJoinGroup.Checked = false;
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
                         return;
                     }
 
@@ -12250,10 +12499,16 @@ namespace Chummer
 
                     if (intKarmaExpense > CharacterObject.Karma)
                     {
-                        Program.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma"), await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         IsRefreshing = true;
-                        chkJoinGroup.Checked = true;
-                        IsRefreshing = false;
+                        try
+                        {
+                            chkJoinGroup.Checked = true;
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
                         return;
                     }
 
@@ -12261,20 +12516,26 @@ namespace Chummer
                     string strExpense;
                     if (CharacterObject.MAGEnabled)
                     {
-                        strMessage = LanguageManager.GetString("Message_ConfirmKarmaExpenseLeaveGroup");
-                        strExpense = LanguageManager.GetString("String_ExpenseLeaveGroup");
+                        strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLeaveGroup");
+                        strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveGroup");
                     }
                     else
                     {
-                        strMessage = LanguageManager.GetString("Message_ConfirmKarmaExpenseLeaveNetwork");
-                        strExpense = LanguageManager.GetString("String_ExpenseLeaveNetwork");
+                        strMessage = await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseLeaveNetwork");
+                        strExpense = await LanguageManager.GetStringAsync("String_ExpenseLeaveNetwork");
                     }
 
                     if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, strMessage, intKarmaExpense.ToString(GlobalSettings.CultureInfo))))
                     {
                         IsRefreshing = true;
-                        chkJoinGroup.Checked = true;
-                        IsRefreshing = false;
+                        try
+                        {
+                            chkJoinGroup.Checked = true;
+                        }
+                        finally
+                        {
+                            IsRefreshing = false;
+                        }
                         return;
                     }
 
@@ -12314,44 +12575,69 @@ namespace Chummer
 
         private async void treCritterPowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            // Look for the selected Critter Power.
-            if (treCritterPowers.SelectedNode?.Tag is CritterPower objPower)
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedCritterPower();
+        }
+
+        private async Task RefreshSelectedCritterPower()
+        {
+            IsRefreshing = true;
+            try
             {
-                cmdDeleteCritterPower.Enabled = objPower.Grade == 0;
-                lblCritterPowerName.Text = objPower.CurrentDisplayName;
-                lblCritterPowerCategory.Text = await objPower.DisplayCategoryAsync(GlobalSettings.Language);
-                lblCritterPowerType.Text = await objPower.DisplayTypeAsync(GlobalSettings.Language);
-                lblCritterPowerAction.Text = await objPower.DisplayActionAsync(GlobalSettings.Language);
-                lblCritterPowerRange.Text = await objPower.DisplayRangeAsync(GlobalSettings.Language);
-                lblCritterPowerDuration.Text = await objPower.DisplayDurationAsync(GlobalSettings.Language);
-                chkCritterPowerCount.Checked = objPower.CountTowardsLimit;
-                await objPower.SetSourceDetailAsync(lblCritterPowerSource);
-                if (objPower.PowerPoints > 0)
+                // Look for the selected Critter Power.
+                if (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is CritterPower objPower)
                 {
-                    lblCritterPowerPointCost.Text = objPower.PowerPoints.ToString(GlobalSettings.CultureInfo);
-                    lblCritterPowerPointCost.Visible = true;
-                    lblCritterPowerPointCostLabel.Visible = true;
+                    await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = objPower.Grade == 0);
+                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName);
+                    await lblCritterPowerCategory.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayCategoryAsync(GlobalSettings.Language));
+                    await lblCritterPowerType.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayTypeAsync(GlobalSettings.Language));
+                    await lblCritterPowerAction.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayActionAsync(GlobalSettings.Language));
+                    await lblCritterPowerRange.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayRangeAsync(GlobalSettings.Language));
+                    await lblCritterPowerDuration.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayDurationAsync(GlobalSettings.Language));
+                    await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = objPower.CountTowardsLimit);
+                    await objPower.SetSourceDetailAsync(lblCritterPowerSource);
+
+                    if (objPower.PowerPoints > 0)
+                    {
+                        await lblCritterPowerPointCost.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objPower.PowerPoints.ToString(GlobalSettings
+                                                                       .CultureInfo);
+                            x.Visible = true;
+                        });
+                        await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    }
+                    else
+                    {
+                        await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    }
                 }
                 else
                 {
-                    lblCritterPowerPointCost.Visible = false;
-                    lblCritterPowerPointCostLabel.Visible = false;
+                    await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = false);
+                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = false);
+                    await lblCritterPowerSource.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerSource.SetToolTipAsync(null);
+                    await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false);
                 }
             }
-            else
+            finally
             {
-                cmdDeleteCritterPower.Enabled = false;
-                lblCritterPowerName.Text = string.Empty;
-                lblCritterPowerCategory.Text = string.Empty;
-                lblCritterPowerType.Text = string.Empty;
-                lblCritterPowerAction.Text = string.Empty;
-                lblCritterPowerRange.Text = string.Empty;
-                lblCritterPowerDuration.Text = string.Empty;
-                chkCritterPowerCount.Checked = false;
-                lblCritterPowerSource.Text = string.Empty;
-                await lblCritterPowerSource.SetToolTipAsync(null);
-                lblCritterPowerPointCost.Visible = false;
-                lblCritterPowerPointCostLabel.Visible = false;
+                IsRefreshing = false;
             }
         }
 
@@ -12520,60 +12806,89 @@ namespace Chummer
 
         #region Additional Improvements Tab Control Events
 
-        private void treImprovements_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treImprovements_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedImprovement();
+        }
+
+        private async Task RefreshSelectedImprovement()
         {
             IsRefreshing = true;
-            if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
+            try
             {
-                // Get the human-readable name of the Improvement from the Improvements file.
-
-                XmlNode objNode = CharacterObject.LoadData("improvements.xml").SelectSingleNode("/chummer/improvements/improvement[id = " + objImprovement.CustomId.CleanXPath() + ']');
-                if (objNode != null)
+                if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
                 {
-                    lblImprovementType.Text = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText;
+                    // Get the human-readable name of the Improvement from the Improvements file.
+
+                    XmlNode objNode = (await CharacterObject.LoadDataAsync("improvements.xml"))
+                                                     .SelectSingleNode(
+                                                         "/chummer/improvements/improvement[id = "
+                                                         + objImprovement.CustomId.CleanXPath() + ']');
+                    if (objNode != null)
+                    {
+                        await lblImprovementType.DoThreadSafeAsync(x => x.Text = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText);
+                    }
+
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                    // Build a string that contains the value(s) of the Improvement.
+                    string strValue = string.Empty;
+                    if (objImprovement.Value != 0)
+                        strValue += await LanguageManager.GetStringAsync("Label_CreateImprovementValue") + strSpace
+                            + objImprovement.Value.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
+                    if (objImprovement.Minimum != 0)
+                        strValue += await LanguageManager.GetStringAsync("Label_CreateImprovementMinimum") + strSpace
+                            + objImprovement.Minimum.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
+                    if (objImprovement.Maximum != 0)
+                        strValue += await LanguageManager.GetStringAsync("Label_CreateImprovementMaximum") + strSpace
+                            + objImprovement.Maximum.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
+                    if (objImprovement.Augmented != 0)
+                        strValue += await LanguageManager.GetStringAsync("Label_CreateImprovementAugmented") + strSpace
+                            + objImprovement.Augmented.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
+
+                    // Remove the trailing comma.
+                    if (!string.IsNullOrEmpty(strValue))
+                        strValue = strValue.Substring(0, strValue.Length - 1 - strSpace.Length);
+
+                    await cmdImprovementsEnableAll.DoThreadSafeAsync(x => x.Visible = false);
+                    await cmdImprovementsDisableAll.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblImprovementValue.DoThreadSafeAsync(x => x.Text = strValue);
+                    await chkImprovementActive.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = objImprovement.Enabled;
+                        x.Visible = true;
+                    });
                 }
-
-                string strSpace = LanguageManager.GetString("String_Space");
-                // Build a string that contains the value(s) of the Improvement.
-                string strValue = string.Empty;
-                if (objImprovement.Value != 0)
-                    strValue += LanguageManager.GetString("Label_CreateImprovementValue") + strSpace + objImprovement.Value.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
-                if (objImprovement.Minimum != 0)
-                    strValue += LanguageManager.GetString("Label_CreateImprovementMinimum") + strSpace + objImprovement.Minimum.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
-                if (objImprovement.Maximum != 0)
-                    strValue += LanguageManager.GetString("Label_CreateImprovementMaximum") + strSpace + objImprovement.Maximum.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
-                if (objImprovement.Augmented != 0)
-                    strValue += LanguageManager.GetString("Label_CreateImprovementAugmented") + strSpace + objImprovement.Augmented.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
-
-                // Remove the trailing comma.
-                if (!string.IsNullOrEmpty(strValue))
-                    strValue = strValue.Substring(0, strValue.Length - 1 - strSpace.Length);
-
-                cmdImprovementsEnableAll.Visible = false;
-                cmdImprovementsDisableAll.Visible = false;
-                lblImprovementValue.Text = strValue;
-                chkImprovementActive.Checked = objImprovement.Enabled;
-                chkImprovementActive.Visible = true;
+                else if (treImprovements.SelectedNode?.Level == 0)
+                {
+                    await cmdImprovementsEnableAll.DoThreadSafeAsync(x => x.Visible = true);
+                    await cmdImprovementsDisableAll.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblImprovementType.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblImprovementValue.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await chkImprovementActive.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = false;
+                        x.Visible = false;
+                    });
+                }
+                else
+                {
+                    await cmdImprovementsEnableAll.DoThreadSafeAsync(x => x.Visible = false);
+                    await cmdImprovementsDisableAll.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblImprovementType.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblImprovementValue.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await chkImprovementActive.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = false;
+                        x.Visible = false;
+                    });
+                }
             }
-            else if (treImprovements.SelectedNode?.Level == 0)
+            finally
             {
-                cmdImprovementsEnableAll.Visible = true;
-                cmdImprovementsDisableAll.Visible = true;
-                lblImprovementType.Text = string.Empty;
-                lblImprovementValue.Text = string.Empty;
-                chkImprovementActive.Checked = false;
-                chkImprovementActive.Visible = false;
+                IsRefreshing = false;
             }
-            else
-            {
-                cmdImprovementsEnableAll.Visible = false;
-                cmdImprovementsDisableAll.Visible = false;
-                lblImprovementType.Text = string.Empty;
-                lblImprovementValue.Text = string.Empty;
-                chkImprovementActive.Checked = false;
-                chkImprovementActive.Visible = false;
-            }
-            IsRefreshing = false;
         }
 
         private async void treImprovements_DoubleClick(object sender, EventArgs e)
@@ -12805,6 +13120,8 @@ namespace Chummer
 
         private async void treCustomDrugs_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedDrug();
         }
 
@@ -12832,12 +13149,12 @@ namespace Chummer
 
         #region Other Control Events
 
-        private void cmdEdgeSpent_Click(object sender, EventArgs e)
+        private async void cmdEdgeSpent_Click(object sender, EventArgs e)
         {
             if (CharacterObject.EdgeUsed >= CharacterObject.EDG.TotalValue)
             {
-                Program.ShowMessageBox(this, LanguageManager.GetString("Message_CannotSpendEdge"),
-                    LanguageManager.GetString("MessageTitle_CannotSpendEdge"), MessageBoxButtons.OK,
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotSpendEdge"),
+                    await LanguageManager.GetStringAsync("MessageTitle_CannotSpendEdge"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
@@ -12847,12 +13164,12 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdEdgeGained_Click(object sender, EventArgs e)
+        private async void cmdEdgeGained_Click(object sender, EventArgs e)
         {
             if (CharacterObject.EdgeUsed <= 0)
             {
-                Program.ShowMessageBox(this, LanguageManager.GetString("Message_CannotRegainEdge"),
-                    LanguageManager.GetString("MessageTitle_CannotRegainEdge"), MessageBoxButtons.OK,
+                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotRegainEdge"),
+                    await LanguageManager.GetStringAsync("MessageTitle_CannotRegainEdge"), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
                 return;
             }
@@ -12864,11 +13181,15 @@ namespace Chummer
 
         private async void tabCharacterTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshPasteStatus();
         }
 
         private async void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshPasteStatus();
         }
 
@@ -12974,16 +13295,16 @@ namespace Chummer
 
         #region Condition Monitors
 
-        private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
         {
             if (sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.PhysicalCMFilled = i);
+                await ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.PhysicalCMFilled = i);
         }
 
-        private void chkStunCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkStunCM_CheckedChanged(object sender, EventArgs e)
         {
             if (sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.StunCMFilled = i);
+                await ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.StunCMFilled = i);
         }
 
         /// <summary>
@@ -12997,116 +13318,158 @@ namespace Chummer
         /// <param name="button_Click">Event handler for when a CM box is clicked</param>
         /// <param name="check">Whether or not to check the checkbox when finished processing. Expected to only be called on load.</param>
         /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
-        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
+        private async ValueTask ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
         {
-            pnlConditionMonitorPanel.SuspendLayout();
-            if (intConditionMax > 0)
+            await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                pnlConditionMonitorPanel.Visible = true;
-                List<DpiFriendlyCheckBoxDisguisedAsButton> lstCheckBoxes = pnlConditionMonitorPanel.Controls.OfType<DpiFriendlyCheckBoxDisguisedAsButton>().ToList();
-                if (lstCheckBoxes.Count < intConditionMax + intOverflow)
+                if (intConditionMax > 0)
                 {
-                    int intMax = 0;
-                    DpiFriendlyCheckBoxDisguisedAsButton objMaxCheckBox = null;
-                    foreach (DpiFriendlyCheckBoxDisguisedAsButton objLoopCheckBox in lstCheckBoxes)
+                    await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.Visible = true);
+                    List<DpiFriendlyCheckBoxDisguisedAsButton> lstCheckBoxes = await pnlConditionMonitorPanel.DoThreadSafeFuncAsync(x => x.Controls
+                        .OfType<DpiFriendlyCheckBoxDisguisedAsButton>().ToList());
+                    if (lstCheckBoxes.Count < intConditionMax + intOverflow)
                     {
-                        int intLoop = Convert.ToInt32(objLoopCheckBox.Tag, GlobalSettings.InvariantCultureInfo);
-                        if (objMaxCheckBox == null || intMax < intLoop)
+                        int intMax = 0;
+                        DpiFriendlyCheckBoxDisguisedAsButton objMaxCheckBox = null;
+                        foreach (DpiFriendlyCheckBoxDisguisedAsButton objLoopCheckBox in lstCheckBoxes)
                         {
-                            intMax = intLoop;
-                            objMaxCheckBox = objLoopCheckBox;
-                        }
-                    }
-
-                    if (objMaxCheckBox != null)
-                    {
-                        for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
-                        {
-                            DpiFriendlyCheckBoxDisguisedAsButton cb = new DpiFriendlyCheckBoxDisguisedAsButton(components)
+                            int intLoop = Convert.ToInt32(await objLoopCheckBox.DoThreadSafeFuncAsync(x => x.Tag), GlobalSettings.InvariantCultureInfo);
+                            if (objMaxCheckBox == null || intMax < intLoop)
                             {
-                                Tag = i,
-                                Appearance = objMaxCheckBox.Appearance,
-                                AutoSize = objMaxCheckBox.AutoSize,
-                                MinimumSize = objMaxCheckBox.MinimumSize,
-                                Size = objMaxCheckBox.Size,
-                                Padding = objMaxCheckBox.Padding,
-                                Margin = objMaxCheckBox.Margin,
-                                TextAlign = objMaxCheckBox.TextAlign,
-                                Font = objMaxCheckBox.Font,
-                                FlatStyle = objMaxCheckBox.FlatStyle,
-                                UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
-                            };
-                            cb.Click += button_Click;
-                            pnlConditionMonitorPanel.Controls.Add(cb);
-                            lstCheckBoxes.Add(cb);
+                                intMax = intLoop;
+                                objMaxCheckBox = objLoopCheckBox;
+                            }
+                        }
+
+                        if (objMaxCheckBox != null)
+                        {
+                            await pnlConditionMonitorPanel.DoThreadSafeAsync(x =>
+                            {
+                                for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
+                                {
+
+                                    DpiFriendlyCheckBoxDisguisedAsButton cb
+                                        = new DpiFriendlyCheckBoxDisguisedAsButton(components)
+                                        {
+                                            Tag = i,
+                                            Appearance = objMaxCheckBox.Appearance,
+                                            AutoSize = objMaxCheckBox.AutoSize,
+                                            MinimumSize = objMaxCheckBox.MinimumSize,
+                                            Size = objMaxCheckBox.Size,
+                                            Padding = objMaxCheckBox.Padding,
+                                            Margin = objMaxCheckBox.Margin,
+                                            TextAlign = objMaxCheckBox.TextAlign,
+                                            Font = objMaxCheckBox.Font,
+                                            FlatStyle = objMaxCheckBox.FlatStyle,
+                                            UseVisualStyleBackColor = objMaxCheckBox.UseVisualStyleBackColor
+                                        };
+                                    cb.Click += button_Click;
+                                    x.Controls.Add(cb);
+                                    lstCheckBoxes.Add(cb);
+                                }
+                            });
                         }
                     }
-                }
 
-                int intMaxDimension = 0;
-                int intMaxMargin = 0;
-                foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in lstCheckBoxes)
-                {
-                    int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalSettings.InvariantCultureInfo);
-                    chkCmBox.BackColor = SystemColors.Control; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
-                    if (check && intCurrentBoxTag <= value)
+                    int intMaxDimension = 0;
+                    int intMaxMargin = 0;
+                    foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in lstCheckBoxes)
                     {
-                        chkCmBox.Checked = true;
-                    }
-                    if (intCurrentBoxTag <= intConditionMax)
-                    {
-                        chkCmBox.Visible = true;
-                        chkCmBox.ImageDpi96 = null;
-                        chkCmBox.ImageDpi192 = null;
-                        if (intCurrentBoxTag > intThresholdOffset && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
+                        int intCurrentBoxTag = Convert.ToInt32(await chkCmBox.DoThreadSafeFuncAsync(x => x.Tag), GlobalSettings.InvariantCultureInfo);
+                        await chkCmBox.DoThreadSafeAsync(x => x.BackColor
+                                                             = SystemColors
+                                                                 .Control); // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                        if (check && intCurrentBoxTag <= value)
                         {
-                            int intModifiers = (intThresholdOffset - intCurrentBoxTag) / intThreshold;
-                            chkCmBox.Text = intModifiers.ToString(GlobalSettings.CultureInfo);
+                            await chkCmBox.DoThreadSafeAsync(x => x.Checked = true);
+                        }
+
+                        if (intCurrentBoxTag <= intConditionMax)
+                        {
+                            await chkCmBox.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.ImageDpi96 = null;
+                                x.ImageDpi192 = null;
+                                if (intCurrentBoxTag > intThresholdOffset
+                                    && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
+                                {
+                                    int intModifiers = (intThresholdOffset - intCurrentBoxTag) / intThreshold;
+                                    x.Text = intModifiers.ToString(GlobalSettings.CultureInfo);
+                                }
+                                else
+                                    x.Text = " "; // Non-breaking space to help with DPI stuff
+                            });
+                        }
+                        else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
+                        {
+                            await chkCmBox.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.BackColor
+                                    = SystemColors
+                                        .ControlDark; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
+                                if (intCurrentBoxTag == intConditionMax + intOverflow)
+                                {
+                                    x.ImageDpi96 = Properties.Resources.rip;
+                                    x.ImageDpi192 = Properties.Resources.rip1;
+                                }
+                                else
+                                {
+                                    x.ImageDpi96 = null;
+                                    x.ImageDpi192 = null;
+                                }
+                            });
                         }
                         else
-                            chkCmBox.Text = " "; // Non-breaking space to help with DPI stuff
-                    }
-                    else if (intOverflow != 0 && intCurrentBoxTag <= intConditionMax + intOverflow)
-                    {
-                        chkCmBox.Visible = true;
-                        chkCmBox.BackColor = SystemColors.ControlDark; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
-                        if (intCurrentBoxTag == intConditionMax + intOverflow)
                         {
-                            chkCmBox.ImageDpi96 = Properties.Resources.rip;
-                            chkCmBox.ImageDpi192 = Properties.Resources.rip1;
+                            await chkCmBox.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = false;
+                                x.ImageDpi96 = null;
+                                x.ImageDpi192 = null;
+                                x.Text = " "; // Non-breaking space to help with DPI stuff
+                            });
                         }
-                        else
-                        {
-                            chkCmBox.ImageDpi96 = null;
-                            chkCmBox.ImageDpi192 = null;
-                        }
-                    }
-                    else
-                    {
-                        chkCmBox.Visible = false;
-                        chkCmBox.ImageDpi96 = null;
-                        chkCmBox.ImageDpi192 = null;
-                        chkCmBox.Text = " "; // Non-breaking space to help with DPI stuff
+
+                        intMaxDimension = Math.Max(intMaxDimension,
+                                                   Math.Max(await chkCmBox.DoThreadSafeFuncAsync(x => x.Width),
+                                                            await chkCmBox.DoThreadSafeFuncAsync(x => x.Height)));
+                        intMaxMargin = Math.Max(intMaxMargin,
+                                                Math.Max(
+                                                    Math.Max(await chkCmBox.DoThreadSafeFuncAsync(x => x.Margin.Left),
+                                                             await chkCmBox.DoThreadSafeFuncAsync(x => x.Margin.Right)),
+                                                    Math.Max(await chkCmBox.DoThreadSafeFuncAsync(x => x.Margin.Top),
+                                                             await chkCmBox.DoThreadSafeFuncAsync(
+                                                                 x => x.Margin.Bottom))));
                     }
 
-                    intMaxDimension = Math.Max(intMaxDimension, Math.Max(chkCmBox.Width, chkCmBox.Height));
-                    intMaxMargin = Math.Max(intMaxMargin, Math.Max(Math.Max(chkCmBox.Margin.Left, chkCmBox.Margin.Right), Math.Max(chkCmBox.Margin.Top, chkCmBox.Margin.Bottom)));
+                    Size objSquareSize = new Size(intMaxDimension, intMaxDimension);
+                    Padding objSquarePadding = new Padding(intMaxMargin);
+                    foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in lstCheckBoxes)
+                    {
+                        await chkCmBox.DoThreadSafeAsync(x =>
+                        {
+                            x.MinimumSize = objSquareSize;
+                            x.Margin = objSquarePadding;
+                        });
+                    }
+
+                    await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.MaximumSize = new Size(
+                                                                         (2 * intThreshold + 1) * (intMaxDimension + intMaxMargin) / 2,
+                                                                         x.MaximumSize
+                                                                          .Height)); // Width slightly longer to give enough wiggle room to take care of any funny business
                 }
-
-                Size objSquareSize = new Size(intMaxDimension, intMaxDimension);
-                Padding objSquarePadding = new Padding(intMaxMargin);
-                foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in lstCheckBoxes)
+                else
                 {
-                    chkCmBox.MinimumSize = objSquareSize;
-                    chkCmBox.Margin = objSquarePadding;
+                    await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.Visible = false);
                 }
-                pnlConditionMonitorPanel.MaximumSize = new Size((2 * intThreshold + 1) * (intMaxDimension + intMaxMargin) / 2, pnlConditionMonitorPanel.MaximumSize.Height); // Width slightly longer to give enough wiggle room to take care of any funny business
             }
-            else
+            finally
             {
-                pnlConditionMonitorPanel.Visible = false;
+                await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout());
             }
-            pnlConditionMonitorPanel.ResumeLayout();
         }
 
         /// <summary>
@@ -13115,39 +13478,49 @@ namespace Chummer
         /// <param name="pnlConditionMonitorPanel">Container panel for the condition monitor checkboxes.</param>
         /// <param name="intConditionMax">Highest value of the condition monitor type.</param>
         /// <param name="intCurrentConditionFilled">Current amount of boxes that should be filled in the condition monitor.</param>
-        private void ProcessEquipmentConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intCurrentConditionFilled)
+        private async ValueTask ProcessEquipmentConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intCurrentConditionFilled)
         {
-            bool blnOldSkipRefresh = IsRefreshing;
             IsRefreshing = true;
-
-            pnlConditionMonitorPanel.SuspendLayout();
-            if (intConditionMax > 0)
+            await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                pnlConditionMonitorPanel.Visible = true;
-                foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in pnlConditionMonitorPanel.Controls.OfType<DpiFriendlyCheckBoxDisguisedAsButton>())
+                if (intConditionMax > 0)
                 {
-                    int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalSettings.InvariantCultureInfo);
+                    await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.Visible = true);
+                    foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in await pnlConditionMonitorPanel.DoThreadSafeFuncAsync(x => x.Controls
+                                 .OfType<DpiFriendlyCheckBoxDisguisedAsButton>()))
+                    {
+                        int intCurrentBoxTag = Convert.ToInt32(await chkCmBox.DoThreadSafeFuncAsync(x => x.Tag), GlobalSettings.InvariantCultureInfo);
 
-                    chkCmBox.Text = string.Empty;
-                    if (intCurrentBoxTag <= intConditionMax)
-                    {
-                        chkCmBox.Visible = true;
-                        chkCmBox.Checked = intCurrentBoxTag <= intCurrentConditionFilled;
-                    }
-                    else
-                    {
-                        chkCmBox.Visible = false;
-                        chkCmBox.Checked = false;
+                        await chkCmBox.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        if (intCurrentBoxTag <= intConditionMax)
+                        {
+                            await chkCmBox.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = intCurrentBoxTag <= intCurrentConditionFilled;
+                            });
+                        }
+                        else
+                        {
+                            await chkCmBox.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = false;
+                                x.Checked = false;
+                            });
+                        }
                     }
                 }
+                else
+                {
+                    await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.Visible = false);
+                }
             }
-            else
+            finally
             {
-                pnlConditionMonitorPanel.Visible = false;
+                await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-            pnlConditionMonitorPanel.ResumeLayout();
-
-            IsRefreshing = blnOldSkipRefresh;
         }
 
         /// <summary>
@@ -13156,53 +13529,56 @@ namespace Chummer
         /// <param name="chkSender">Checkbox we're currently changing.</param>
         /// <param name="blnDoUIUpdate">Whether to update all the other boxes in the UI or not. If something like ProcessEquipmentConditionMonitorBoxDisplays would be called later, this can be false.</param>
         /// <param name="funcPropertyToUpdate">Function to run once the condition monitor has been processed, probably a property setter. Uses the amount of filled boxes as its argument.</param>
-        private void ProcessConditionMonitorCheckedChanged(DpiFriendlyCheckBoxDisguisedAsButton chkSender, Action<int> funcPropertyToUpdate = null, bool blnDoUIUpdate = true)
+        private async ValueTask ProcessConditionMonitorCheckedChanged(DpiFriendlyCheckBoxDisguisedAsButton chkSender, Action<int> funcPropertyToUpdate = null, bool blnDoUIUpdate = true)
         {
             if (IsRefreshing)
                 return;
 
             if (blnDoUIUpdate)
             {
-                Control pnlConditionMonitorPanel = chkSender.Parent;
+                Control pnlConditionMonitorPanel = await chkSender.DoThreadSafeFuncAsync(x => x.Parent);
 
                 if (pnlConditionMonitorPanel == null)
                     return;
 
-                int intBoxTag = Convert.ToInt32(chkSender.Tag, GlobalSettings.InvariantCultureInfo);
+                int intBoxTag = Convert.ToInt32(await chkSender.DoThreadSafeFuncAsync(x => x.Tag), GlobalSettings.InvariantCultureInfo);
 
-                int intFillCount = chkSender.Checked ? 1 : 0;
+                int intFillCount = await chkSender.DoThreadSafeFuncAsync(x => x.Checked) ? 1 : 0;
 
                 // If this is being checked, make sure everything before it is checked off.
                 IsRefreshing = true;
-
-                pnlConditionMonitorPanel.SuspendLayout();
-                foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in pnlConditionMonitorPanel.Controls.OfType<DpiFriendlyCheckBoxDisguisedAsButton>())
+                await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.SuspendLayout());
+                try
                 {
-                    if (chkCmBox != chkSender)
+                    foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in await pnlConditionMonitorPanel.DoThreadSafeFuncAsync(x => x.Controls
+                                 .OfType<DpiFriendlyCheckBoxDisguisedAsButton>()))
                     {
-                        int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalSettings.InvariantCultureInfo);
-                        if (intCurrentBoxTag < intBoxTag)
+                        if (chkCmBox != chkSender)
                         {
-                            chkCmBox.Checked = true;
-                            ++intFillCount;
-                        }
-                        else if (intCurrentBoxTag > intBoxTag)
-                        {
-                            chkCmBox.Checked = false;
+                            int intCurrentBoxTag = Convert.ToInt32(await chkCmBox.DoThreadSafeFuncAsync(x => x.Tag), GlobalSettings.InvariantCultureInfo);
+                            if (intCurrentBoxTag < intBoxTag)
+                            {
+                                await chkCmBox.DoThreadSafeAsync(x => x.Checked = true);
+                                ++intFillCount;
+                            }
+                            else if (intCurrentBoxTag > intBoxTag)
+                            {
+                                await chkCmBox.DoThreadSafeAsync(x => x.Checked = false);
+                            }
                         }
                     }
                 }
-
-                pnlConditionMonitorPanel.ResumeLayout();
-
-                funcPropertyToUpdate?.Invoke(intFillCount);
-
-                IsRefreshing = false;
+                finally
+                {
+                    await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout());
+                    IsRefreshing = false;
+                    funcPropertyToUpdate?.Invoke(intFillCount);
+                }
             }
             else
             {
-                int intFillCount = Convert.ToInt32(chkSender.Tag, GlobalSettings.InvariantCultureInfo);
-                if (!chkSender.Checked)
+                int intFillCount = Convert.ToInt32(await chkSender.DoThreadSafeFuncAsync(x => x.Tag), GlobalSettings.InvariantCultureInfo);
+                if (!await chkSender.DoThreadSafeFuncAsync(x => x.Checked))
                     --intFillCount;
                 funcPropertyToUpdate?.Invoke(intFillCount);
             }
@@ -13210,16 +13586,16 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkCyberwareCM_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
             if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
+                await ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
-        private void chkGearCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkGearCM_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
@@ -13230,28 +13606,28 @@ namespace Chummer
                 objGearNode = objGearNode.Parent;
 
             if (objGearNode?.Tag is Gear objGear && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                ProcessConditionMonitorCheckedChanged(objBox, i => objGear.MatrixCMFilled = i, false);
+                await ProcessConditionMonitorCheckedChanged(objBox, i => objGear.MatrixCMFilled = i, false);
         }
 
-        private void chkArmorMatrixCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkArmorMatrixCM_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
             if (treArmor.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
+                await ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
-        private void chkWeaponCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkWeaponCM_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
 
             if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
+                await ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
-        private void chkVehicleCM_CheckedChanged(object sender, EventArgs e)
+        private async void chkVehicleCM_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
@@ -13264,10 +13640,10 @@ namespace Chummer
                     objVehicleNode = objVehicleNode.Parent;
 
                 if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i);
+                    await ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i);
             }
             else if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
-                ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
+                await ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
         #endregion Condition Monitors
@@ -13280,43 +13656,49 @@ namespace Chummer
         private async Task RefreshSelectedDrug()
         {
             IsRefreshing = true;
-            flpDrugs.SuspendLayout();
-
-            if (treCustomDrugs.SelectedNode?.Level != 0 && treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
+            await flpDrugs.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                flpDrugs.Visible = true;
-                btnDeleteCustomDrug.Enabled = true;
-
-                lblDrugName.Text = objDrug.Name;
-                lblDrugAvail.Text = objDrug.DisplayTotalAvail;
-                lblDrugGrade.Text = objDrug.Grade.CurrentDisplayName;
-                lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                lblDrugQty.Text = objDrug.Quantity.ToString(GlobalSettings.CultureInfo);
-                lblDrugCategory.Text = objDrug.Category;
-                lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo);
-                lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo);
-                lblDrugEffect.Text = await objDrug.GetEffectDescriptionAsync();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdComponents))
+                if (await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0) && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Drug objDrug)
                 {
-                    foreach (DrugComponent objComponent in objDrug.Components)
+                    await flpDrugs.DoThreadSafeAsync(x => x.Visible = true);
+                    await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true);
+                    await lblDrugName.DoThreadSafeAsync(x => x.Text = objDrug.Name);
+                    await lblDrugAvail.DoThreadSafeAsync(x => x.Text = objDrug.DisplayTotalAvail);
+                    await lblDrugGrade.DoThreadSafeAsync(x => x.Text = objDrug.Grade.CurrentDisplayName);
+                    await lblDrugCost.DoThreadSafeAsync(x => x.Text
+                                                            = objDrug.Cost.ToString(
+                                                                  CharacterObject.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                                              + '¥');
+                    await lblDrugQty.DoThreadSafeAsync(x => x.Text = objDrug.Quantity.ToString(GlobalSettings.CultureInfo));
+                    await btnIncreaseDrugQty.DoThreadSafeAsync(x => x.Enabled = objDrug.Cost <= CharacterObject.Nuyen);
+                    await btnDecreaseDrugQty.DoThreadSafeAsync(x => x.Enabled = objDrug.Quantity != 0);
+                    await lblDrugCategory.DoThreadSafeAsync(x => x.Text = objDrug.Category);
+                    await lblDrugAddictionRating.DoThreadSafeAsync(x => x.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo));
+                    await lblDrugAddictionThreshold.DoThreadSafeAsync(x => x.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo));
+                    await lblDrugEffect.DoThreadSafeAsync(async x => x.Text = await objDrug.GetEffectDescriptionAsync());
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdComponents))
                     {
-                        sbdComponents.AppendLine(objComponent.CurrentDisplayName);
+                        foreach (DrugComponent objComponent in objDrug.Components)
+                        {
+                            sbdComponents.AppendLine(objComponent.CurrentDisplayName);
+                        }
+
+                        await lblDrugComponents.DoThreadSafeAsync(x => x.Text = sbdComponents.ToString());
                     }
-
-                    lblDrugComponents.Text = sbdComponents.ToString();
                 }
-                btnIncreaseDrugQty.Enabled = objDrug.Cost <= CharacterObject.Nuyen;
-                btnDecreaseDrugQty.Enabled = objDrug.Quantity != 0;
+                else
+                {
+                    await flpDrugs.DoThreadSafeAsync(x => x.Visible = false);
+                    await btnDeleteCustomDrug.DoThreadSafeAsync(async x => x.Enabled = await treArmor.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                }
             }
-            else
+            finally
             {
-                flpDrugs.Visible = false;
-                btnDeleteCustomDrug.Enabled = treCustomDrugs.SelectedNode?.Tag is ICanRemove;
+                await flpDrugs.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-
-            IsRefreshing = false;
-            flpDrugs.ResumeLayout();
         }
 
         private bool _blnFileUpdateQueued;
@@ -13390,7 +13772,7 @@ namespace Chummer
 
             try
             {
-                using (CursorWait.New(this))
+                using (CursorWait.New(this, true))
                 {
                     // TODO: DataBind these wherever possible
 
@@ -13422,7 +13804,10 @@ namespace Chummer
                     await Task.WhenAll(RefreshSelectedQuality(), RefreshSelectedCyberware(), RefreshSelectedArmor(),
                                        RefreshSelectedGear(), RefreshSelectedDrug(), RefreshSelectedLifestyle(),
                                        RefreshSelectedVehicle(), RefreshSelectedWeapon(), RefreshSelectedSpell(),
-                                       RefreshSelectedComplexForm(), UpdateInitiationCost());
+                                       RefreshSelectedComplexForm(), RefreshSelectedCritterPower(),
+                                       RefreshSelectedAIProgram(), RefreshSelectedMetamagic(),
+                                       RefreshSelectedMartialArt(), UpdateInitiationCost(),
+                                       RefreshSelectedImprovement());
 
                     if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                     {
@@ -13440,7 +13825,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed piece of Cyberware.
         /// </summary>
-        public async Task RefreshSelectedCyberware()
+        private async Task RefreshSelectedCyberware()
         {
             IsRefreshing = true;
             await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout());
@@ -13701,7 +14086,7 @@ namespace Chummer
                     if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes
                         objMatrixCM)
                     {
-                        ProcessEquipmentConditionMonitorBoxDisplays(panCyberwareMatrixCM, objMatrixCM.MatrixCM,
+                        await ProcessEquipmentConditionMonitorBoxDisplays(panCyberwareMatrixCM, objMatrixCM.MatrixCM,
                                                                     objMatrixCM.MatrixCMFilled);
                     }
                     else
@@ -13720,7 +14105,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Weapon.
         /// </summary>
-        public async Task RefreshSelectedWeapon()
+        private async Task RefreshSelectedWeapon()
         {
             IsRefreshing = true;
             flpWeapons.SuspendLayout();
@@ -14323,7 +14708,7 @@ namespace Chummer
             if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objMatrixCM)
             {
                 tabWeaponCM.Visible = true;
-                ProcessEquipmentConditionMonitorBoxDisplays(panWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                await ProcessEquipmentConditionMonitorBoxDisplays(panWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
             }
             else
                 tabWeaponCM.Visible = false;
@@ -14338,7 +14723,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Armor.
         /// </summary>
-        public async Task RefreshSelectedArmor()
+        private async Task RefreshSelectedArmor()
         {
             IsRefreshing = true;
             flpArmor.SuspendLayout();
@@ -14640,7 +15025,7 @@ namespace Chummer
                 }
 
                 tabArmorCM.Visible = true;
-                ProcessEquipmentConditionMonitorBoxDisplays(panArmorMatrixCM, objHasMatrixAttributes.MatrixCM, objHasMatrixAttributes.MatrixCMFilled);
+                await ProcessEquipmentConditionMonitorBoxDisplays(panArmorMatrixCM, objHasMatrixAttributes.MatrixCM, objHasMatrixAttributes.MatrixCMFilled);
                 lblArmorDeviceRatingLabel.Visible = true;
                 lblArmorDeviceRating.Visible = true;
                 lblArmorAttackLabel.Visible = true;
@@ -14686,7 +15071,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Gear.
         /// </summary>
-        public async Task RefreshSelectedGear()
+        private async Task RefreshSelectedGear()
         {
             IsRefreshing = true;
             flpGear.SuspendLayout();
@@ -14832,7 +15217,7 @@ namespace Chummer
 
                 treGear.SelectedNode.Text = objGear.CurrentDisplayName;
 
-                ProcessEquipmentConditionMonitorBoxDisplays(panGearMatrixCM, objGear.MatrixCM, objGear.MatrixCMFilled);
+                await ProcessEquipmentConditionMonitorBoxDisplays(panGearMatrixCM, objGear.MatrixCM, objGear.MatrixCMFilled);
             }
             else
             {
@@ -15769,14 +16154,14 @@ namespace Chummer
                 await lblLifestyleMonthsLabel.DoThreadSafeAsync(async x => x.Text = strIncrementString + string.Format(
                                                                     GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent"),
                                                                     objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalSettings.CultureInfo)));
-                cmdIncreaseLifestyleMonths.ToolTipText = string.Format(GlobalSettings.CultureInfo,
-                                                                       await LanguageManager.GetStringAsync(
-                                                                           "Tab_IncreaseLifestyleMonths"),
-                                                                       strIncrementString);
-                cmdDecreaseLifestyleMonths.ToolTipText = string.Format(GlobalSettings.CultureInfo,
-                                                                       await LanguageManager.GetStringAsync(
-                                                                           "Tab_DecreaseLifestyleMonths"),
-                                                                       strIncrementString);
+                await cmdIncreaseLifestyleMonths.SetToolTipTextAsync(string.Format(GlobalSettings.CultureInfo,
+                                                                         await LanguageManager.GetStringAsync(
+                                                                             "Tab_IncreaseLifestyleMonths"),
+                                                                         strIncrementString));
+                await cmdDecreaseLifestyleMonths.SetToolTipTextAsync(string.Format(GlobalSettings.CultureInfo,
+                                                                         await LanguageManager.GetStringAsync(
+                                                                             "Tab_DecreaseLifestyleMonths"),
+                                                                         strIncrementString));
 
                 if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                 {
@@ -16642,12 +17027,12 @@ namespace Chummer
             {
                 if (treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor objCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
+                    await ProcessEquipmentConditionMonitorBoxDisplays(panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
                 }
 
                 if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objMatrixCM)
                 {
-                    ProcessEquipmentConditionMonitorBoxDisplays(panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                    await ProcessEquipmentConditionMonitorBoxDisplays(panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }
             }
 
@@ -17023,10 +17408,8 @@ namespace Chummer
         /// </summary>
         private async Task RefreshSelectedSpell()
         {
-            if (IsRefreshing)
-                return;
-
             IsRefreshing = true;
+            await gpbMagicianSpell.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
                 if (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0)
@@ -17069,6 +17452,7 @@ namespace Chummer
             }
             finally
             {
+                await gpbMagicianSpell.DoThreadSafeAsync(x => x.ResumeLayout());
                 IsRefreshing = false;
             }
         }
@@ -17220,10 +17604,8 @@ namespace Chummer
         /// </summary>
         private async Task RefreshSelectedComplexForm()
         {
-            if (IsRefreshing)
-                return;
-
             IsRefreshing = true;
+            await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
                 // Locate the Program that is selected in the tree.
@@ -17251,6 +17633,7 @@ namespace Chummer
             }
             finally
             {
+                await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.ResumeLayout());
                 IsRefreshing = false;
             }
         }
@@ -17956,19 +18339,35 @@ namespace Chummer
             selectedObject.Remove();
         }
 
-        private void treAIPrograms_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treAIPrograms_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            // Locate the Program that is selected in the tree.
-            if (treAIPrograms.SelectedNode?.Tag is AIProgram objProgram)
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedAIProgram();
+        }
+
+        private async Task RefreshSelectedAIProgram()
+        {
+            IsRefreshing = true;
+            try
             {
-                lblAIProgramsRequires.Text = objProgram.DisplayRequiresProgram(GlobalSettings.Language);
-                objProgram.SetSourceDetail(lblAIProgramsSource);
+                // Locate the Program that is selected in the tree.
+                if (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is AIProgram objProgram)
+                {
+                    await lblAIProgramsRequires.DoThreadSafeAsync(
+                        async x => x.Text = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language));
+                    await objProgram.SetSourceDetailAsync(lblAIProgramsSource);
+                }
+                else
+                {
+                    await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblAIProgramsSource.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblAIProgramsSource.SetToolTipAsync(string.Empty);
+                }
             }
-            else
+            finally
             {
-                lblAIProgramsRequires.Text = string.Empty;
-                lblAIProgramsSource.Text = string.Empty;
-                lblAIProgramsSource.SetToolTip(string.Empty);
+                IsRefreshing = false;
             }
         }
 

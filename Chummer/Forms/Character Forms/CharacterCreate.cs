@@ -10305,7 +10305,7 @@ namespace Chummer
             SkipUpdate = true;
             try
             {
-                using (CursorWait.New(this))
+                using (CursorWait.New(this, true))
                 {
                     // TODO: DataBind these wherever possible
                     
@@ -10556,7 +10556,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed piece of Cyberware.
         /// </summary>
-        public async Task RefreshSelectedCyberware()
+        private async Task RefreshSelectedCyberware()
         {
             IsRefreshing = true;
             await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout());
@@ -10908,7 +10908,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Weapon.
         /// </summary>
-        public async Task RefreshSelectedWeapon()
+        private async Task RefreshSelectedWeapon()
         {
             IsRefreshing = true;
             await flpWeapons.DoThreadSafeAsync(x => x.SuspendLayout());
@@ -11571,7 +11571,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Armor.
         /// </summary>
-        public async Task RefreshSelectedArmor()
+        private async Task RefreshSelectedArmor()
         {
             IsRefreshing = true;
             await flpArmor.DoThreadSafeAsync(x => x.SuspendLayout());
@@ -12028,7 +12028,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Gear.
         /// </summary>
-        public async Task RefreshSelectedGear()
+        private async Task RefreshSelectedGear()
         {
             IsRefreshing = true;
             await flpGear.DoThreadSafeAsync(x => x.SuspendLayout());
@@ -14360,7 +14360,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently selected Spell
         /// </summary>
-        public async Task RefreshSelectedSpell()
+        private async Task RefreshSelectedSpell()
         {
             if (IsRefreshing)
                 return;
@@ -14411,7 +14411,7 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently selected Complex Form.
         /// </summary>
-        public async Task RefreshSelectedComplexForm()
+        private async Task RefreshSelectedComplexForm()
         {
             if (IsRefreshing)
                 return;
