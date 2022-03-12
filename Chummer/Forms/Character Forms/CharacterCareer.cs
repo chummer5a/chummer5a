@@ -16531,211 +16531,265 @@ namespace Chummer
         private async Task RefreshSelectedVehicle()
         {
             IsRefreshing = true;
-            flpVehicles.SuspendLayout();
-
-            object objSelectedNodeTag = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
-            if (objSelectedNodeTag == null || treVehicles.SelectedNode.Level <= 0 || objSelectedNodeTag.ToString() == "String_WeaponMounts")
+            await flpVehicles.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                panVehicleCM.Visible = false;
-                gpbVehiclesCommon.Visible = false;
-                gpbVehiclesVehicle.Visible = false;
-                gpbVehiclesWeapon.Visible = false;
-                gpbVehiclesMatrix.Visible = false;
+                object objSelectedNodeTag = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode.Level <= 0)
+                                               || objSelectedNodeTag.ToString() == "String_WeaponMounts")
+                {
+                    await panVehicleCM.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                // Buttons
-                cmdDeleteVehicle.Enabled = objSelectedNodeTag is ICanRemove;
+                    // Buttons
+                    await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
+                    return;
+                }
 
-                IsRefreshing = false;
-                flpVehicles.ResumeLayout();
-                return;
-            }
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                if (objSelectedNodeTag is IHasRating objHasRating)
+                {
+                    await lblVehicleRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
+                                                                      GlobalSettings.CultureInfo,
+                                                                      await LanguageManager.GetStringAsync(
+                                                                          "Label_RatingFormat"),
+                                                                      await LanguageManager.GetStringAsync(
+                                                                          objHasRating.RatingLabel)));
+                }
 
-            if (objSelectedNodeTag is IHasRating objHasRating)
-            {
-                lblVehicleRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
+                if (objSelectedNodeTag is IHasSource objSelected)
+                {
+                    await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblVehicleSource);
+                }
+                else
+                {
+                    await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
 
-            if (objSelectedNodeTag is IHasSource objSelected)
-            {
-                lblVehicleSourceLabel.Visible = true;
-                lblVehicleSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblVehicleSource);
-            }
-            else
-            {
-                lblVehicleSourceLabel.Visible = false;
-                lblVehicleSource.Visible = false;
-            }
-
-            switch (objSelectedNodeTag)
-            {
-                // Locate the selected Vehicle.
-                case Vehicle objVehicle:
+                switch (objSelectedNodeTag)
+                {
+                    // Locate the selected Vehicle.
+                    case Vehicle objVehicle:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = true;
-                        gpbVehiclesWeapon.Visible = false;
-                        gpbVehiclesMatrix.Visible = true;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objVehicle.ParentID);
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objVehicle.ParentID));
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objVehicle.CurrentDisplayName;
-                        lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalSettings.Language);
-                        lblVehicleRatingLabel.Visible = false;
-                        lblVehicleRating.Visible = false;
-                        lblVehicleGearQtyLabel.Visible = false;
-                        lblVehicleGearQty.Visible = false;
-                        cmdVehicleGearReduceQty.Visible = false;
-                        lblVehicleAvail.Text = objVehicle.DisplayTotalAvail;
-                        lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblVehicleSlotsLabel.Visible = !CharacterObjectSettings.BookEnabled("R5");
-                        lblVehicleSlots.Visible = !CharacterObjectSettings.BookEnabled("R5");
-                        if (!CharacterObjectSettings.BookEnabled("R5"))
-                            lblVehicleSlots.Text = objVehicle.Slots.ToString(GlobalSettings.CultureInfo) + strSpace + '('
-                                                   + (objVehicle.Slots - objVehicle.SlotsUsed).ToString(GlobalSettings.CultureInfo)
-                                                   + strSpace + await LanguageManager.GetStringAsync("String_Remaining") + ')';
-                        cmdVehicleMoveToInventory.Visible = false;
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = false;
-                        chkVehicleIncludedInWeapon.Visible = false;
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objVehicle.CurrentDisplayName);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayCategory(GlobalSettings.Language));
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objVehicle.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = !CharacterObjectSettings.BookEnabled("R5"));
+                        await lblVehicleSlots.DoThreadSafeAsync(async x =>
+                        {
+                            x.Visible = !CharacterObjectSettings.BookEnabled("R5");
+                            if (!CharacterObjectSettings.BookEnabled("R5"))
+                                x.Text
+                                    = objVehicle.Slots.ToString(GlobalSettings.CultureInfo) + strSpace
+                                    + '('
+                                    + (objVehicle.Slots - objVehicle.SlotsUsed).ToString(
+                                        GlobalSettings.CultureInfo)
+                                    + strSpace + await LanguageManager.GetStringAsync("String_Remaining")
+                                    + ')';
+                        });
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
 
                         // gpbVehiclesVehicle
-                        lblVehicleHandling.Text = objVehicle.TotalHandling;
-                        lblVehicleAccel.Text = objVehicle.TotalAccel;
-                        lblVehicleSpeed.Text = objVehicle.TotalSpeed;
-                        lblVehiclePilot.Text = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleBody.Text = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleArmor.Text = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleSeats.Text = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo);
+                        await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = objVehicle.TotalHandling);
+                        await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = objVehicle.TotalAccel);
+                        await lblVehicleSpeed.DoThreadSafeAsync(x => x.Text = objVehicle.TotalSpeed);
+                        await lblVehiclePilot.DoThreadSafeAsync(x => x.Text = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo));
+                        await lblVehicleBody.DoThreadSafeAsync(x => x.Text = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo));
+                        await lblVehicleArmor.DoThreadSafeAsync(x => x.Text = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo));
+                        await lblVehicleSeats.DoThreadSafeAsync(x => x.Text = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo));
+                        await lblVehicleSensor.DoThreadSafeAsync(x => x.Text = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo));
                         if (CharacterObjectSettings.BookEnabled("R5"))
                         {
                             if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
                             {
-                                lblVehiclePowertrainLabel.Visible = false;
-                                lblVehiclePowertrain.Visible = false;
-                                lblVehicleCosmeticLabel.Visible = false;
-                                lblVehicleCosmetic.Visible = false;
-                                lblVehicleElectromagneticLabel.Visible = false;
-                                lblVehicleElectromagnetic.Visible = false;
-                                lblVehicleBodymodLabel.Visible = false;
-                                lblVehicleBodymod.Visible = false;
-                                lblVehicleWeaponsmodLabel.Visible = false;
-                                lblVehicleWeaponsmod.Visible = false;
-                                lblVehicleProtectionLabel.Visible = false;
-                                lblVehicleProtection.Visible = false;
-                                lblVehicleDroneModSlotsLabel.Visible = true;
-                                lblVehicleDroneModSlots.Visible = true;
-                                lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString(GlobalSettings.CultureInfo) + '/' + objVehicle.DroneModSlots.ToString(GlobalSettings.CultureInfo);
+                                await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehiclePowertrain.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleCosmetic.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleElectromagnetic.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleBodymod.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleWeaponsmod.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleProtection.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleDroneModSlots.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text
+                                        = objVehicle.DroneModSlotsUsed.ToString(GlobalSettings.CultureInfo) + '/'
+                                        + objVehicle.DroneModSlots.ToString(GlobalSettings.CultureInfo);
+                                });
                             }
                             else
                             {
-                                lblVehiclePowertrainLabel.Visible = true;
-                                lblVehiclePowertrain.Visible = true;
-                                lblVehiclePowertrain.Text = objVehicle.PowertrainModSlotsUsed();
-                                lblVehicleCosmeticLabel.Visible = true;
-                                lblVehicleCosmetic.Visible = true;
-                                lblVehicleCosmetic.Text = objVehicle.CosmeticModSlotsUsed();
-                                lblVehicleElectromagneticLabel.Visible = true;
-                                lblVehicleElectromagnetic.Visible = true;
-                                lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlotsUsed();
-                                lblVehicleBodymodLabel.Visible = true;
-                                lblVehicleBodymod.Visible = true;
-                                lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
-                                lblVehicleWeaponsmodLabel.Visible = true;
-                                lblVehicleWeaponsmod.Visible = true;
-                                lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
-                                lblVehicleProtectionLabel.Visible = true;
-                                lblVehicleProtection.Visible = true;
-                                lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
-                                lblVehicleDroneModSlotsLabel.Visible = false;
-                                lblVehicleDroneModSlots.Visible = false;
+                                await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehiclePowertrain.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.PowertrainModSlotsUsed();
+                                });
+                                await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleCosmetic.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.CosmeticModSlotsUsed();
+                                });
+                                await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleElectromagnetic.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.ElectromagneticModSlotsUsed();
+                                });
+                                await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleBodymod.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.BodyModSlotsUsed();
+                                });
+                                await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleWeaponsmod.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.WeaponModSlotsUsed();
+                                });
+                                await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleProtection.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.ProtectionModSlotsUsed();
+                                });
+                                await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false);
                             }
                         }
                         else
                         {
-                            lblVehiclePowertrainLabel.Visible = false;
-                            lblVehiclePowertrain.Visible = false;
-                            lblVehicleCosmeticLabel.Visible = false;
-                            lblVehicleCosmetic.Visible = false;
-                            lblVehicleElectromagneticLabel.Visible = false;
-                            lblVehicleElectromagnetic.Visible = false;
-                            lblVehicleBodymodLabel.Visible = false;
-                            lblVehicleBodymod.Visible = false;
-                            lblVehicleWeaponsmodLabel.Visible = false;
-                            lblVehicleWeaponsmod.Visible = false;
-                            lblVehicleProtectionLabel.Visible = false;
-                            lblVehicleProtection.Visible = false;
-                            lblVehicleDroneModSlotsLabel.Visible = false;
-                            lblVehicleDroneModSlots.Visible = false;
+                            await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehiclePowertrain.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleCosmetic.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleElectromagnetic.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleBodymod.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponsmod.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleProtection.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objVehicle.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objVehicle.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
-                        chkVehicleActiveCommlink.Visible = objVehicle.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objVehicle.IsActiveCommlink(CharacterObject);
+                        await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objVehicle.RefreshMatrixAttributeComboBoxesAsync(
+                            cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objVehicle.IsCommlink;
+                            x.Checked = objVehicle.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objVehicle.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objVehicle.IsHomeNode(CharacterObject);
+                                x.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating
+                                                ? 2
+                                                : 1);
+                            });
                         }
                         else
-                            chkVehicleHomeNode.Visible = false;
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
-                        UpdateSensor(objVehicle);
+                        await UpdateSensor(objVehicle);
                         break;
                     }
-                case WeaponMount objWeaponMount:
-                    gpbVehiclesCommon.Visible = true;
-                    gpbVehiclesVehicle.Visible = false;
-                    gpbVehiclesWeapon.Visible = false;
-                    gpbVehiclesMatrix.Visible = false;
-
-                    // Buttons
-                    cmdDeleteVehicle.Enabled = !objWeaponMount.IncludedInVehicle;
-
-                    // gpbVehiclesCommon
-                    lblVehicleCategory.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language);
-                    lblVehicleName.Text = objWeaponMount.CurrentDisplayName;
-                    lblVehicleRatingLabel.Visible = false;
-                    lblVehicleRating.Visible = false;
-                    lblVehicleGearQtyLabel.Visible = false;
-                    lblVehicleGearQty.Visible = false;
-                    cmdVehicleGearReduceQty.Visible = false;
-                    lblVehicleAvail.Text = objWeaponMount.DisplayTotalAvail;
-                    lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo);
-                    lblVehicleSlotsLabel.Visible = true;
-                    lblVehicleSlots.Visible = true;
-                    lblVehicleSlots.Text = objWeaponMount.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
-                    cmdVehicleMoveToInventory.Visible = false;
-                    cmdVehicleCyberwareChangeMount.Visible = false;
-                    chkVehicleWeaponAccessoryInstalled.Visible = true;
-                    chkVehicleWeaponAccessoryInstalled.Checked = objWeaponMount.Equipped;
-                    chkVehicleWeaponAccessoryInstalled.Enabled = !objWeaponMount.IncludedInVehicle;
-                    chkVehicleIncludedInWeapon.Visible = false;
-                    break;
-
-                case VehicleMod objMod:
-                    {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = false;
-                        gpbVehiclesMatrix.Visible = false;
+                    case WeaponMount objWeaponMount:
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = !objMod.IncludedInVehicle;
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeaponMount.IncludedInVehicle);
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objMod.CurrentDisplayName;
-                        lblVehicleCategory.Text = await LanguageManager.GetStringAsync("String_VehicleModification");
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language));
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeaponMount.CurrentDisplayName);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objWeaponMount.TotalCost.ToString(
+                                                                       CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo));
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlots.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeaponMount.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                        });
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objWeaponMount.Equipped;
+                            x.Enabled = !objWeaponMount.IncludedInVehicle;
+                        });
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        break;
+
+                    case VehicleMod objMod:
+                    {
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
+
+                        // Buttons
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objMod.IncludedInVehicle);
+
+                        // gpbVehiclesCommon
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objMod.CurrentDisplayName);
+                        await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_VehicleModification"));
                         if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                         {
                             if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
@@ -16746,204 +16800,282 @@ namespace Chummer
                             {
                                 objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalSettings.CultureInfo);
                             }
+
                             if (Convert.ToInt32(objMod.MaxRating, GlobalSettings.InvariantCultureInfo) > 0)
                             {
-                                lblVehicleRatingLabel.Visible = true;
-                                lblVehicleRating.Text = objMod.Rating.ToString(GlobalSettings.CultureInfo);
-                                lblVehicleRating.Visible = true;
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Text = objMod.Rating.ToString(GlobalSettings
+                                                                        .CultureInfo);
+                                    x.Visible = true;
+                                });
                             }
                             else
                             {
-                                lblVehicleRatingLabel.Visible = false;
-                                lblVehicleRating.Visible = false;
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
                             }
                         }
                         else
                         {
-                            lblVehicleRatingLabel.Visible = true;
-                            lblVehicleRating.Text = objMod.Rating.ToString(GlobalSettings.CultureInfo);
-                            lblVehicleRating.Visible = true;
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = objMod.Rating.ToString(
+                                    GlobalSettings.CultureInfo);
+                                x.Visible = true;
+                            });
                         }
-                        lblVehicleGearQtyLabel.Visible = false;
-                        lblVehicleGearQty.Visible = false;
-                        cmdVehicleGearReduceQty.Visible = false;
-                        lblVehicleAvail.Text = objMod.DisplayTotalAvail;
-                        lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblVehicleSlotsLabel.Visible = true;
-                        lblVehicleSlots.Visible = true;
-                        lblVehicleSlots.Text = objMod.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
-                        cmdVehicleMoveToInventory.Visible = false;
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = true;
-                        chkVehicleWeaponAccessoryInstalled.Checked = objMod.Equipped;
-                        chkVehicleWeaponAccessoryInstalled.Enabled = !objMod.IncludedInVehicle;
-                        chkVehicleIncludedInWeapon.Visible = false;
+
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objMod.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
+                                                                     + '¥');
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlots.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objMod.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                        });
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objMod.Equipped;
+                            x.Enabled = !objMod.IncludedInVehicle;
+                        });
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         break;
                     }
-                case Weapon objWeapon:
+                    case Weapon objWeapon:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = true;
-                        gpbVehiclesMatrix.Visible = true;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = !objWeapon.Cyberware && objWeapon.Category != "Gear" && !objWeapon.IncludedInWeapon && string.IsNullOrEmpty(objWeapon.ParentID) && !objWeapon.Category.StartsWith("Quality", StringComparison.Ordinal);
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeapon.Cyberware
+                                                                     && objWeapon.Category != "Gear"
+                                                                     && !objWeapon.IncludedInWeapon
+                                                                     && string.IsNullOrEmpty(objWeapon.ParentID)
+                                                                     && !objWeapon.Category.StartsWith(
+                                                                         "Quality", StringComparison.Ordinal));
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objWeapon.CurrentDisplayName;
-                        lblVehicleCategory.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
-                        lblVehicleRatingLabel.Visible = false;
-                        lblVehicleRating.Visible = false;
-                        lblVehicleGearQtyLabel.Visible = false;
-                        lblVehicleGearQty.Visible = false;
-                        cmdVehicleGearReduceQty.Visible = false;
-                        lblVehicleAvail.Text = objWeapon.DisplayTotalAvail;
-                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblVehicleSlotsLabel.Visible = true;
-                        lblVehicleSlots.Visible = true;
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
+                        await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language));
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlots.DoThreadSafeAsync(x => x.Visible = true);
                         if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                         {
-                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                StringComparison.OrdinalIgnoreCase))
                             {
                                 using (new FetchSafelyFromPool<StringBuilder>(
                                            Utils.StringBuilderPool, out StringBuilder sbdSlotsText))
                                 {
                                     foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc(
                                                  '/', StringSplitOptions.RemoveEmptyEntries))
-                                        sbdSlotsText.Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
-                                                    .Append('/');
+                                        sbdSlotsText
+                                            .Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
+                                            .Append('/');
                                     --sbdSlotsText.Length;
-                                    lblWeaponSlots.Text = sbdSlotsText.ToString();
+                                    await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString());
                                 }
                             }
                             else
-                                lblWeaponSlots.Text = objWeapon.AccessoryMounts;
+                                await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = objWeapon.AccessoryMounts);
                         }
                         else
-                            lblWeaponSlots.Text = await LanguageManager.GetStringAsync("String_None");
-                        cmdVehicleMoveToInventory.Visible = !objWeapon.IncludedInWeapon;
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = true;
-                        chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
-                        chkVehicleWeaponAccessoryInstalled.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId && objWeapon.ParentID != objWeapon.ParentVehicle.InternalId;
-                        chkVehicleIncludedInWeapon.Visible = true;
-                        chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
+                            await lblWeaponSlots.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
+
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = !objWeapon.IncludedInWeapon);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objWeapon.Equipped;
+                            x.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId
+                                        && objWeapon.ParentID
+                                        != objWeapon.ParentVehicle.InternalId;
+                        });
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objWeapon.IncludedInWeapon;
+                        });
 
                         // gpbVehiclesWeapon
-                        lblVehicleWeaponDamageLabel.Visible = true;
-                        lblVehicleWeaponDamage.Text = objWeapon.DisplayDamage;
-                        lblVehicleWeaponDamage.Visible = true;
-                        lblVehicleWeaponAPLabel.Visible = true;
-                        lblVehicleWeaponAP.Text = objWeapon.DisplayTotalAP;
-                        lblVehicleWeaponAP.Visible = true;
-                        lblVehicleWeaponAccuracyLabel.Visible = true;
-                        lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
-                        lblVehicleWeaponAccuracy.Visible = true;
-                        lblVehicleWeaponDicePoolLabel.Visible = true;
-                        dpcVehicleWeaponDicePool.Visible = true;
-                        dpcVehicleWeaponDicePool.DicePool = objWeapon.DicePool;
-                        dpcVehicleWeaponDicePool.CanBeRolled = true;
+                        await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objWeapon.DisplayDamage;
+                            x.Visible = true;
+                        });
+                        await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objWeapon.DisplayTotalAP;
+                            x.Visible = true;
+                        });
+                        await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objWeapon.DisplayAccuracy;
+                            x.Visible = true;
+                        });
+                        await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await dpcVehicleWeaponDicePool.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.DicePool = objWeapon.DicePool;
+                            x.CanBeRolled = true;
+                        });
                         await dpcVehicleWeaponDicePool.SetLabelToolTipAsync(objWeapon.DicePoolTooltip);
                         if (objWeapon.RangeType == "Ranged")
                         {
-                            lblVehicleWeaponAmmoLabel.Visible = true;
-                            lblVehicleWeaponAmmo.Visible = true;
-                            lblVehicleWeaponAmmo.Text = objWeapon.DisplayAmmo;
-                            lblVehicleWeaponModeLabel.Visible = true;
-                            lblVehicleWeaponMode.Visible = true;
-                            lblVehicleWeaponMode.Text = objWeapon.DisplayMode;
-
-                            tlpVehiclesWeaponRanges.Visible = true;
-                            lblVehicleWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
-                            lblVehicleWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
-                            Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
-                            lblVehicleWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
-                            lblVehicleWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
-                            lblVehicleWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
-                            lblVehicleWeaponRangeExtremeLabel.Text = objWeapon.RangeModifier("Extreme");
-                            lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
-                            lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                            lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
-                            lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                            lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                            lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                            lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                            lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayAmmo;
+                            });
+                            await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponMode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayMode;
+                            });
+                            await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponRangeMain.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange);
+                            await lblVehicleWeaponRangeAlternate.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange);
+                            Dictionary<string, string> dictionaryRanges
+                                = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponRangeShortLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"));
+                            await lblVehicleWeaponRangeMediumLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Medium"));
+                            await lblVehicleWeaponRangeLongLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Long"));
+                            await lblVehicleWeaponRangeExtremeLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"));
+                            await lblVehicleWeaponRangeShort.DoThreadSafeAsync(x => x.Text = dictionaryRanges["short"]);
+                            await lblVehicleWeaponRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["medium"]);
+                            await lblVehicleWeaponRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["long"]);
+                            await lblVehicleWeaponRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["extreme"]);
+                            await lblVehicleWeaponAlternateRangeShort.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateshort"]);
+                            await lblVehicleWeaponAlternateRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"]);
+                            await lblVehicleWeaponAlternateRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"]);
+                            await lblVehicleWeaponAlternateRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"]);
                         }
                         else
                         {
                             if (objWeapon.Ammo != "0")
                             {
-                                lblVehicleWeaponAmmoLabel.Visible = true;
-                                lblVehicleWeaponAmmo.Visible = true;
-                                lblVehicleWeaponAmmo.Text = objWeapon.DisplayAmmo;
+                                await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objWeapon.DisplayAmmo;
+                                });
                             }
                             else
                             {
-                                lblVehicleWeaponAmmoLabel.Visible = false;
-                                lblVehicleWeaponAmmo.Visible = false;
+                                await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                             }
-                            lblVehicleWeaponModeLabel.Visible = false;
-                            lblVehicleWeaponMode.Visible = false;
 
-                            tlpVehiclesWeaponRanges.Visible = false;
+                            await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+
+                            await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         if (objWeapon.RangeType == "Ranged" || objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                         {
-                            tlpVehiclesWeaponCareer.Visible = true;
-                            lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo);
-                            cmdFireVehicleWeapon.Enabled = objWeapon.AmmoRemaining != 0;
+                            await tlpVehiclesWeaponCareer.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text
+                                = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo));
+                            await cmdFireVehicleWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.AmmoRemaining != 0);
 
-                            cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
-                            cmsVehicleAmmoSingleShot.Enabled =
-                                objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeSingleShot")) ||
-                                objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeSemiAutomatic"));
-                            cmsVehicleAmmoShortBurst.Enabled =
-                                objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeBurstFire")) ||
-                                objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoLongBurst.Enabled =
-                                objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoFullBurst.Enabled =
-                                objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
-                            cmsVehicleAmmoSuppressiveFire.Enabled =
-                                objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
+                            await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode);
+                            await cmdVehicleAmmoExpense.DoThreadSafeAsync(async () =>
+                            {
+                                cmsVehicleAmmoSingleShot.Enabled =
+                                    objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeSingleShot"))
+                                    ||
+                                    objWeapon.AllowMode(
+                                        await LanguageManager.GetStringAsync("String_ModeSemiAutomatic"));
+                                cmsVehicleAmmoShortBurst.Enabled =
+                                    objWeapon.AllowMode(await LanguageManager.GetStringAsync("String_ModeBurstFire")) ||
+                                    objWeapon.AllowMode(
+                                        await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
+                                cmsVehicleAmmoLongBurst.Enabled =
+                                    objWeapon.AllowMode(
+                                        await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
+                                cmsVehicleAmmoFullBurst.Enabled =
+                                    objWeapon.AllowMode(
+                                        await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
+                                cmsVehicleAmmoSuppressiveFire.Enabled =
+                                    objWeapon.AllowMode(
+                                        await LanguageManager.GetStringAsync("String_ModeFullAutomatic"));
 
-                            // Melee Weapons with Ammo are considered to be Single Shot.
-                            if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
-                                cmsVehicleAmmoSingleShot.Enabled = true;
+                                // Melee Weapons with Ammo are considered to be Single Shot.
+                                if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
+                                    cmsVehicleAmmoSingleShot.Enabled = true;
 
-                            if (cmsVehicleAmmoSingleShot.Enabled)
-                                cmsVehicleAmmoSingleShot.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_SingleShot")
-                                    , objWeapon.SingleShot,
-                                    await LanguageManager.GetStringAsync(objWeapon.SingleShot == 1
-                                                                             ? "String_Bullet"
-                                                                             : "String_Bullets"));
-                            if (cmsVehicleAmmoShortBurst.Enabled)
-                                cmsVehicleAmmoShortBurst.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ShortBurst")
-                                    , objWeapon.ShortBurst,
-                                    await LanguageManager.GetStringAsync(objWeapon.ShortBurst == 1
-                                                                             ? "String_Bullet"
-                                                                             : "String_Bullets"));
-                            if (cmsVehicleAmmoLongBurst.Enabled)
-                                cmsVehicleAmmoLongBurst.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_LongBurst")
-                                    , objWeapon.LongBurst,
-                                    await LanguageManager.GetStringAsync(objWeapon.LongBurst == 1
-                                                                             ? "String_Bullet"
-                                                                             : "String_Bullets"));
-                            if (cmsVehicleAmmoFullBurst.Enabled)
-                                cmsVehicleAmmoFullBurst.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_FullBurst")
-                                    , objWeapon.FullBurst,
-                                    await LanguageManager.GetStringAsync(objWeapon.FullBurst == 1
-                                                                             ? "String_Bullet"
-                                                                             : "String_Bullets"));
-                            if (cmsVehicleAmmoSuppressiveFire.Enabled)
-                                cmsVehicleAmmoSuppressiveFire.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_SuppressiveFire")
-                                    , objWeapon.Suppressive,
-                                    await LanguageManager.GetStringAsync(objWeapon.Suppressive == 1
-                                                                             ? "String_Bullet"
-                                                                             : "String_Bullets"));
+                                if (cmsVehicleAmmoSingleShot.Enabled)
+                                    cmsVehicleAmmoSingleShot.Text = string.Format(
+                                        GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("String_SingleShot")
+                                        , objWeapon.SingleShot,
+                                        await LanguageManager.GetStringAsync(objWeapon.SingleShot == 1
+                                                                                 ? "String_Bullet"
+                                                                                 : "String_Bullets"));
+                                if (cmsVehicleAmmoShortBurst.Enabled)
+                                    cmsVehicleAmmoShortBurst.Text = string.Format(
+                                        GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("String_ShortBurst")
+                                        , objWeapon.ShortBurst,
+                                        await LanguageManager.GetStringAsync(objWeapon.ShortBurst == 1
+                                                                                 ? "String_Bullet"
+                                                                                 : "String_Bullets"));
+                                if (cmsVehicleAmmoLongBurst.Enabled)
+                                    cmsVehicleAmmoLongBurst.Text = string.Format(
+                                        GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("String_LongBurst")
+                                        , objWeapon.LongBurst,
+                                        await LanguageManager.GetStringAsync(objWeapon.LongBurst == 1
+                                                                                 ? "String_Bullet"
+                                                                                 : "String_Bullets"));
+                                if (cmsVehicleAmmoFullBurst.Enabled)
+                                    cmsVehicleAmmoFullBurst.Text = string.Format(
+                                        GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("String_FullBurst")
+                                        , objWeapon.FullBurst,
+                                        await LanguageManager.GetStringAsync(objWeapon.FullBurst == 1
+                                                                                 ? "String_Bullet"
+                                                                                 : "String_Bullets"));
+                                if (cmsVehicleAmmoSuppressiveFire.Enabled)
+                                    cmsVehicleAmmoSuppressiveFire.Text = string.Format(
+                                        GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync("String_SuppressiveFire")
+                                        , objWeapon.Suppressive,
+                                        await LanguageManager.GetStringAsync(objWeapon.Suppressive == 1
+                                                                                 ? "String_Bullet"
+                                                                                 : "String_Bullets"));
+                            });
 
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstAmmo))
@@ -16964,7 +17096,8 @@ namespace Chummer
                                         strAmmoName += strSpace + '('
                                                                 + string.Format(
                                                                     GlobalSettings.CultureInfo,
-                                                                    await LanguageManager.GetStringAsync("String_SlotNumber"),
+                                                                    await LanguageManager.GetStringAsync(
+                                                                        "String_SlotNumber"),
                                                                     i.ToString(GlobalSettings.CultureInfo)) + ')';
 
                                     using (new FetchSafelyFromPool<StringBuilder>(
@@ -16995,66 +17128,84 @@ namespace Chummer
 
                                 objWeapon.ActiveAmmoSlot = intCurrentSlot;
                                 await cboVehicleWeaponAmmo.PopulateWithListItemsAsync(lstAmmo);
-                                cboVehicleWeaponAmmo.SelectedValue
-                                    = objWeapon.ActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo);
-                                if (cboVehicleWeaponAmmo.SelectedIndex == -1)
-                                    cboVehicleWeaponAmmo.SelectedIndex = 0;
-                                cboVehicleWeaponAmmo.Enabled = lstAmmo.Count > 1;
+                                await cboVehicleWeaponAmmo.DoThreadSafeAsync(x =>
+                                {
+                                    x.SelectedValue
+                                        = objWeapon.ActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo);
+                                    if (x.SelectedIndex == -1)
+                                        x.SelectedIndex = 0;
+                                    x.Enabled = lstAmmo.Count > 1;
+                                });
                             }
                         }
                         else
                         {
-                            tlpVehiclesWeaponCareer.Visible = false;
+                            await tlpVehiclesWeaponCareer.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objWeapon.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
-                        chkVehicleActiveCommlink.Visible = objWeapon.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objWeapon.RefreshMatrixAttributeComboBoxesAsync(
+                            cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objWeapon.IsCommlink;
+                            x.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = objWeapon.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objWeapon.IsHomeNode(CharacterObject);
+                                x.Enabled = objWeapon.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkVehicleHomeNode.Visible = false;
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
                         break;
                     }
-                case WeaponAccessory objAccessory:
+                    case WeaponAccessory objAccessory:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = true;
-                        gpbVehiclesMatrix.Visible = false;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = !objAccessory.IncludedInWeapon;
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objAccessory.IncludedInWeapon);
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objAccessory.CurrentDisplayNameShort;
-                        lblVehicleCategory.Text = await LanguageManager.GetStringAsync("String_VehicleWeaponAccessory");
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objAccessory.CurrentDisplayNameShort);
+                        await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_VehicleWeaponAccessory"));
                         if (objAccessory.MaxRating > 0)
                         {
-                            lblVehicleRatingLabel.Visible = true;
-                            lblVehicleRating.Visible = true;
-                            lblVehicleRating.Text = objAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                            });
                         }
                         else
                         {
-                            lblVehicleRatingLabel.Visible = false;
-                            lblVehicleRating.Visible = false;
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
-                        lblVehicleGearQtyLabel.Visible = false;
-                        lblVehicleGearQty.Visible = false;
-                        cmdVehicleGearReduceQty.Visible = false;
-                        lblVehicleAvail.Text = objAccessory.DisplayTotalAvail;
-                        lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMount))
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objAccessory.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objAccessory.TotalCost.ToString(
+                                                                       CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdMount))
                         {
                             foreach (string strCurrentMount in objAccessory.Mount.SplitNoAlloc(
                                          '/', StringSplitOptions.RemoveEmptyEntries))
@@ -17075,7 +17226,8 @@ namespace Chummer
                                         boolHaveAddedItem = true;
                                     }
 
-                                    sbdMount.Append(await LanguageManager.GetStringAsync("String_Mount" + strCurrentExtraMount))
+                                    sbdMount.Append(await LanguageManager.GetStringAsync(
+                                                        "String_Mount" + strCurrentExtraMount))
                                             .Append('/');
                                 }
 
@@ -17084,73 +17236,105 @@ namespace Chummer
                                     --sbdMount.Length;
                             }
 
-                            lblVehicleSlotsLabel.Visible = true;
-                            lblVehicleSlots.Visible = true;
-                            lblVehicleSlots.Text = sbdMount.ToString();
+                            await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleSlots.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = sbdMount.ToString();
+                            });
                         }
 
-                        cmdVehicleMoveToInventory.Visible = false;
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = true;
-                        chkVehicleWeaponAccessoryInstalled.Enabled = true;
-                        chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Equipped;
-                        chkVehicleIncludedInWeapon.Visible = true;
-                        chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Enabled = true;
+                            x.Checked = objAccessory.Equipped;
+                        });
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objAccessory.IncludedInWeapon;
+                        });
 
                         // gpbWeaponsWeapon
-                        gpbWeaponsWeapon.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory");
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
                         if (string.IsNullOrEmpty(objAccessory.Damage))
                         {
-                            lblVehicleWeaponDamageLabel.Visible = false;
-                            lblVehicleWeaponDamage.Visible = false;
+                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleWeaponDamageLabel.Visible = !string.IsNullOrEmpty(objAccessory.Damage);
-                            lblVehicleWeaponDamage.Visible = !string.IsNullOrEmpty(objAccessory.Damage);
-                            lblVehicleWeaponDamage.Text = Convert.ToInt32(objAccessory.Damage, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.Damage));
+                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = !string.IsNullOrEmpty(objAccessory
+                                                                      .Damage);
+                                x.Text = Convert
+                                         .ToInt32(objAccessory.Damage,
+                                                  GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (string.IsNullOrEmpty(objAccessory.AP))
                         {
-                            lblVehicleWeaponAPLabel.Visible = false;
-                            lblVehicleWeaponAP.Visible = false;
+                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAP.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleWeaponAPLabel.Visible = true;
-                            lblVehicleWeaponAP.Visible = true;
-                            lblVehicleWeaponAP.Text = Convert.ToInt32(objAccessory.AP, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = Convert
+                                         .ToInt32(objAccessory.AP, GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objAccessory.Accuracy == 0)
                         {
-                            lblVehicleWeaponAccuracyLabel.Visible = false;
-                            lblVehicleWeaponAccuracy.Visible = false;
+                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleWeaponAccuracyLabel.Visible = true;
-                            lblVehicleWeaponAccuracy.Visible = true;
-                            lblVehicleWeaponAccuracy.Text = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text
+                                    = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objAccessory.DicePool == 0)
                         {
-                            lblVehicleWeaponDicePoolLabel.Visible = false;
-                            dpcVehicleWeaponDicePool.Visible = false;
+                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await dpcVehicleWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleWeaponDicePoolLabel.Visible = true;
-                            dpcVehicleWeaponDicePool.Visible = true;
-                            dpcVehicleWeaponDicePool.DicePool = objAccessory.DicePool;
-                            dpcVehicleWeaponDicePool.CanBeRolled = false;
+                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await dpcVehicleWeaponDicePool.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.DicePool = objAccessory.DicePool;
+                                x.CanBeRolled = false;
+                            });
                             await dpcVehicleWeaponDicePool.SetLabelToolTipAsync(string.Empty);
                         }
+
                         if (objAccessory.TotalAmmoBonus != 0
                             || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                 && objAccessory.ModifyAmmoCapacity != "0"))
                         {
-                            lblVehicleWeaponAmmoLabel.Visible = true;
-                            lblVehicleWeaponAmmo.Visible = true;
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true);
                             using (new FetchSafelyFromPool<StringBuilder>(
                                        Utils.StringBuilderPool, out StringBuilder sbdAmmoBonus))
                             {
@@ -17161,156 +17345,202 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                     && objAccessory.ModifyAmmoCapacity != "0")
                                     sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
-                                lblVehicleWeaponAmmo.Text = sbdAmmoBonus.ToString();
+                                await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Text = sbdAmmoBonus.ToString());
                             }
                         }
                         else
                         {
-                            lblVehicleWeaponAmmoLabel.Visible = false;
-                            lblVehicleWeaponAmmo.Visible = false;
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        lblVehicleWeaponModeLabel.Visible = false;
-                        lblVehicleWeaponMode.Visible = false;
 
-                        tlpVehiclesWeaponRanges.Visible = false;
-                        tlpVehiclesWeaponCareer.Visible = false;
+                        await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+
+                        await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = false);
+                        await tlpVehiclesWeaponCareer.DoThreadSafeAsync(x => x.Visible = false);
                         break;
                     }
-                case Cyberware objCyberware:
+                    case Cyberware objCyberware:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = false;
-                        gpbVehiclesMatrix.Visible = true;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID));
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objCyberware.CurrentDisplayNameShort;
-                        lblVehicleCategory.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayNameShort);
+                        await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language));
                         if (objCyberware.MaxRating == 0)
                         {
-                            lblVehicleRating.Visible = false;
-                            lblVehicleRatingLabel.Visible = false;
+                            await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleRating.Visible = true;
-                            lblVehicleRating.Text = objCyberware.Rating.ToString(GlobalSettings.CultureInfo);
-                            lblVehicleRatingLabel.Visible = true;
+                            await lblVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objCyberware.Rating.ToString(GlobalSettings.CultureInfo);
+                            });
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
-                        lblVehicleGearQtyLabel.Visible = false;
-                        lblVehicleGearQty.Visible = false;
-                        cmdVehicleGearReduceQty.Visible = false;
-                        lblVehicleAvail.Text = objCyberware.DisplayTotalAvail;
-                        lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        cmdVehicleMoveToInventory.Visible = false;
-                        cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
-                        chkVehicleWeaponAccessoryInstalled.Visible = false;
-                        chkVehicleIncludedInWeapon.Visible = false;
+
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objCyberware.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objCyberware.TotalCost.ToString(
+                                                                       CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible
+                                                                                   = !string.IsNullOrEmpty(
+                                                                                       objCyberware.PlugsIntoModularMount));
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objCyberware.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objCyberware.RefreshMatrixAttributeComboBoxesAsync(
+                            cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
-                        chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+                        await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objCyberware.IsCommlink;
+                            x.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objCyberware.IsHomeNode(CharacterObject);
+                                x.Enabled = objCyberware.IsCommlink
+                                            && objCyberware.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkVehicleHomeNode.Visible = false;
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
                         break;
                     }
-                case Gear objGear:
+                    case Gear objGear:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = false;
-                        gpbVehiclesMatrix.Visible = true;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = !objGear.IncludedInParent;
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objGear.CurrentDisplayNameShort;
-                        lblVehicleCategory.Text = objGear.DisplayCategory(GlobalSettings.Language);
-                        lblVehicleRatingLabel.Visible = true;
-                        lblVehicleRating.Visible = true;
-                        lblVehicleRating.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleGearQtyLabel.Visible = true;
-                        lblVehicleGearQty.Visible = true;
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleRating.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                        });
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = true);
                         string strQuantity = objGear.DisplayQuantity(GlobalSettings.CultureInfo);
                         if (string.IsNullOrEmpty(strQuantity))
                             strQuantity = 1.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleGearQty.Text = strQuantity;
-                        cmdVehicleGearReduceQty.Enabled = !objGear.IncludedInParent;
-                        lblVehicleAvail.Text = objGear.DisplayTotalAvail;
-                        lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblVehicleSlotsLabel.Visible = true;
-                        lblVehicleSlots.Visible = true;
-                        lblVehicleSlots.Text = objGear.CalculatedCapacity + await LanguageManager.GetStringAsync("String_Space") + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space") + await LanguageManager.GetStringAsync("String_Remaining") + ')';
-                        cmdVehicleMoveToInventory.Enabled = !objGear.IncludedInParent;
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = false;
-                        chkVehicleIncludedInWeapon.Visible = false;
+                        await lblVehicleGearQty.DoThreadSafeAsync(x => x.Text = strQuantity);
+                        await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlots.DoThreadSafeAsync(async x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objGear.CalculatedCapacity
+                                     + await LanguageManager.GetStringAsync("String_Space") + '('
+                                     + objGear.CapacityRemaining.ToString(
+                                         "#,0.##", GlobalSettings.CultureInfo)
+                                     + await LanguageManager.GetStringAsync("String_Space")
+                                     + await LanguageManager.GetStringAsync("String_Remaining") + ')';
+                        });
+                        await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objGear.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objGear.RefreshMatrixAttributeComboBoxesAsync(
+                            cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
-                        chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objGear.IsCommlink;
+                            x.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objGear.IsHomeNode(CharacterObject);
+                                x.Enabled = objGear.IsCommlink
+                                            && objGear.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkVehicleHomeNode.Visible = false;
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
                         break;
                     }
-                default:
-                    gpbVehiclesCommon.Visible = false;
-                    gpbVehiclesVehicle.Visible = false;
-                    gpbVehiclesWeapon.Visible = false;
-                    gpbVehiclesMatrix.Visible = false;
+                    default:
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                    // Buttons
-                    cmdDeleteVehicle.Enabled = false;
-                    break;
+                        // Buttons
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = false);
+                        break;
+                }
+
+                await panVehicleCM.DoThreadSafeAsync(x => x.Visible = objSelectedNodeTag is IHasPhysicalConditionMonitor ||
+                                                                      objSelectedNodeTag is IHasMatrixAttributes);
+
+                await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = objSelectedNodeTag is IHasMatrixAttributes ||
+                                                                           objSelectedNodeTag is IHasWirelessBonus);
+
+                if (await panVehicleCM.DoThreadSafeFuncAsync(x => x.Visible))
+                {
+                    if (objSelectedNodeTag is IHasPhysicalConditionMonitor objCM)
+                    {
+                        await ProcessEquipmentConditionMonitorBoxDisplays(
+                            panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
+                    }
+
+                    if (objSelectedNodeTag is IHasMatrixAttributes objMatrixCM)
+                    {
+                        await ProcessEquipmentConditionMonitorBoxDisplays(
+                            panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                    }
+                }
             }
-
-            panVehicleCM.Visible = objSelectedNodeTag is IHasPhysicalConditionMonitor ||
-                                   objSelectedNodeTag is IHasMatrixAttributes;
-
-            gpbVehiclesMatrix.Visible = treVehicles.SelectedNode.Tag is IHasMatrixAttributes ||
-                                        treVehicles.SelectedNode.Tag is IHasWirelessBonus;
-
-            if (panVehicleCM.Visible)
+            finally
             {
-                if (objSelectedNodeTag is IHasPhysicalConditionMonitor objCM)
-                {
-                    await ProcessEquipmentConditionMonitorBoxDisplays(panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
-                }
-
-                if (objSelectedNodeTag is IHasMatrixAttributes objMatrixCM)
-                {
-                    await ProcessEquipmentConditionMonitorBoxDisplays(panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
-                }
+                await flpVehicles.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-
-            IsRefreshing = false;
-            flpVehicles.ResumeLayout();
         }
 
         private void ExpenseEntriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -17732,7 +17962,7 @@ namespace Chummer
         /// Recheck all mods to see if Sensor has changed.
         /// </summary>
         /// <param name="objVehicle">Vehicle to modify.</param>
-        private void UpdateSensor(Vehicle objVehicle)
+        private async ValueTask UpdateSensor(Vehicle objVehicle)
         {
             foreach (Gear objGear in objVehicle.GearChildren)
             {
@@ -17740,7 +17970,7 @@ namespace Chummer
                 {
                     // Update the name of the item in the TreeView.
                     TreeNode objNode = treVehicles.FindNode(objGear.InternalId);
-                    objNode.Text = objGear.CurrentDisplayName;
+                    await treVehicles.DoThreadSafeAsync(() => objNode.Text = objGear.CurrentDisplayName);
                 }
             }
         }
