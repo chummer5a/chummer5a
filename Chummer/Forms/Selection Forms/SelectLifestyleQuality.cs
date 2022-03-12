@@ -950,9 +950,9 @@ namespace Chummer
                                         case "damageresistance":
                                             // Damage Resistance must be a particular value.
                                             if (_objCharacter.BOD.TotalValue
-                                                + ImprovementManager.ValueOf(_objCharacter,
-                                                                             Improvement.ImprovementType
-                                                                                 .DamageResistance)
+                                                + await ImprovementManager.ValueOfAsync(_objCharacter,
+                                                    Improvement.ImprovementType
+                                                               .DamageResistance)
                                                 >= Convert.ToInt32(objXmlRequired.InnerText,
                                                                    GlobalSettings.InvariantCultureInfo))
                                                 blnOneOfMet = true;
@@ -1294,9 +1294,9 @@ namespace Chummer
                                         case "damageresistance":
                                             // Damage Resistance must be a particular value.
                                             if (_objCharacter.BOD.TotalValue
-                                                + ImprovementManager.ValueOf(_objCharacter,
-                                                                             Improvement.ImprovementType
-                                                                                 .DamageResistance)
+                                                + await ImprovementManager.ValueOfAsync(_objCharacter,
+                                                    Improvement.ImprovementType
+                                                               .DamageResistance)
                                                 >= Convert.ToInt32(objXmlRequired.InnerText,
                                                                    GlobalSettings.InvariantCultureInfo))
                                                 blnFound = true;

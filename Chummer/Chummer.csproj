@@ -332,6 +332,7 @@
     <Compile Include="Backend\Helpers\AsyncLock.cs" />
     <Compile Include="Backend\Helpers\XmlElementWriteHelper.cs" />
     <Compile Include="Backend\Interfaces\IAsyncEnumerable.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncReadOnlyCollection.cs" />
     <Compile Include="Backend\Interfaces\IAsyncReadOnlyDictionary.cs" />
     <Compile Include="Backend\Interfaces\IHasCost.cs" />
     <Compile Include="Backend\Interfaces\IHasLockObject.cs" />

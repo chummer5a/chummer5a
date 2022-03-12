@@ -792,7 +792,7 @@ namespace Chummer.UI.Skills
                     DialogResult eDialogResult = Program.ShowMessageBox(this,
                         string.Format(GlobalSettings.CultureInfo,
                                       await LanguageManager.GetStringAsync("Message_NewNativeLanguageSkill"),
-                                      1 + ImprovementManager.ValueOf(
+                                      1 + await ImprovementManager.ValueOfAsync(
                                           _objCharacter, Improvement.ImprovementType.NativeLanguageLimit),
                                       skill.WritableName),
                         await LanguageManager.GetStringAsync("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);

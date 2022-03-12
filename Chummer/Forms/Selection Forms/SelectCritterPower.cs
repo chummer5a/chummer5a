@@ -66,14 +66,14 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in await _xmlBaseCritterPowerDataNode.SelectAndCacheExpressionAsync("categories/category"))
             {
                 string strInnerText = objXmlCategory.Value;
-                if (ImprovementManager
-                    .GetCachedImprovementListForValueOf(_objCharacter,
-                                                        Improvement.ImprovementType.AllowCritterPowerCategory)
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                                 Improvement.ImprovementType.AllowCritterPowerCategory))
                     .Any(imp => strInnerText.Contains(imp.ImprovedName))
                     && (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@whitelist"))?.Value == bool.TrueString
-                    || ImprovementManager
-                       .GetCachedImprovementListForValueOf(_objCharacter,
-                                                           Improvement.ImprovementType.LimitCritterPowerCategory)
+                    || (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                                 Improvement.ImprovementType.LimitCritterPowerCategory))
                        .Any(imp => strInnerText.Contains(imp.ImprovedName)))
                 {
                     _lstCategory.Add(new ListItem(strInnerText,
@@ -81,9 +81,9 @@ namespace Chummer
                     continue;
                 }
 
-                if (ImprovementManager
-                    .GetCachedImprovementListForValueOf(_objCharacter,
-                                                        Improvement.ImprovementType.LimitCritterPowerCategory)
+                if ((await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                                 Improvement.ImprovementType.LimitCritterPowerCategory))
                     .Any(imp => !strInnerText.Contains(imp.ImprovedName)))
                 {
                     continue;

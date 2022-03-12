@@ -381,7 +381,9 @@ namespace Chummer
         
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, int> funcSelector)
         {
-            List<Task<int>> lstTasks = new List<Task<int>>();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                : new List<Task<int>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -399,7 +401,9 @@ namespace Chummer
 
         public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector)
         {
-            List<Task<int>> lstTasks = new List<Task<int>>();
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                : new List<Task<int>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -427,7 +431,9 @@ namespace Chummer
         
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, long> funcSelector)
         {
-            List<Task<long>> lstTasks = new List<Task<long>>();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                : new List<Task<long>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -445,7 +451,9 @@ namespace Chummer
 
         public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector)
         {
-            List<Task<long>> lstTasks = new List<Task<long>>();
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                : new List<Task<long>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -474,7 +482,9 @@ namespace Chummer
         
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, float> funcSelector)
         {
-            List<Task<float>> lstTasks = new List<Task<float>>();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                : new List<Task<float>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -492,7 +502,9 @@ namespace Chummer
 
         public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector)
         {
-            List<Task<float>> lstTasks = new List<Task<float>>();
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                : new List<Task<float>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -520,7 +532,9 @@ namespace Chummer
 
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, double> funcSelector)
         {
-            List<Task<double>> lstTasks = new List<Task<double>>();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                : new List<Task<double>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -538,7 +552,9 @@ namespace Chummer
 
         public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector)
         {
-            List<Task<double>> lstTasks = new List<Task<double>>();
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                : new List<Task<double>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -566,7 +582,9 @@ namespace Chummer
 
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector)
         {
-            List<Task<decimal>> lstTasks = new List<Task<decimal>>();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                : new List<Task<decimal>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -584,7 +602,9 @@ namespace Chummer
 
         public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector)
         {
-            List<Task<decimal>> lstTasks = new List<Task<decimal>>();
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                : new List<Task<decimal>>();
             using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
             {
                 while (objEnumerator.MoveNext())
@@ -608,6 +628,888 @@ namespace Chummer
         public static async Task<decimal> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector)
         {
             return await SumParallelAsync(await tskEnumerable, funcSelector);
+        }
+
+        public static async Task<int> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        intReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        intReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<int> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<long> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            long lngReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        lngReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            long lngReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        lngReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<long> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<float> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            float fltReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        fltReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            float fltReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        fltReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<float> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<double> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            double dblReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        dblReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            double dblReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        dblReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<double> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<decimal> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            decimal decReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        decReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            decimal decReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (funcPredicate(objEnumerator.Current))
+                        decReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<decimal> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                : new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            int intReturn = 0;
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop;
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                : new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            int intReturn = 0;
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop;
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                : new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            long lngReturn = 0;
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop;
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                : new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            long lngReturn = 0;
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop;
+            return lngReturn;
+        }
+
+
+        public static async Task<long> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<long> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                : new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            float fltReturn = 0;
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop;
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                : new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            float fltReturn = 0;
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop;
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                : new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            double dblReturn = 0;
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop;
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                : new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            double dblReturn = 0;
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop;
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                : new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(() => funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            decimal decReturn = 0;
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop;
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                : new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            decimal decReturn = 0;
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop;
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<int> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        intReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            int intReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        intReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<int> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<long> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            long lngReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        lngReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            long lngReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        lngReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<long> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<float> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            float fltReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        fltReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            float fltReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        fltReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<float> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<double> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            double dblReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        dblReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            double dblReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        dblReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<double> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<decimal> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            decimal decReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        decReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            decimal decReturn = 0;
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    if (await funcPredicate(objEnumerator.Current))
+                        decReturn += await funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<decimal> SumAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            return await SumAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                : new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            int intReturn = 0;
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop;
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<int>>(await objTemp.GetCountAsync())
+                : new List<Task<int>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            int intReturn = 0;
+            foreach (Task<int> tskLoop in lstTasks)
+                intReturn += await tskLoop;
+            return intReturn;
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<int> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                : new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            long lngReturn = 0;
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop;
+            return lngReturn;
+        }
+
+        public static async Task<long> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<long>>(await objTemp.GetCountAsync())
+                : new List<Task<long>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            long lngReturn = 0;
+            foreach (Task<long> tskLoop in lstTasks)
+                lngReturn += await tskLoop;
+            return lngReturn;
+        }
+
+
+        public static async Task<long> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<long> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                : new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            float fltReturn = 0;
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop;
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<float>>(await objTemp.GetCountAsync())
+                : new List<Task<float>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            float fltReturn = 0;
+            foreach (Task<float> tskLoop in lstTasks)
+                fltReturn += await tskLoop;
+            return fltReturn;
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<float> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                : new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            double dblReturn = 0;
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop;
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<double>>(await objTemp.GetCountAsync())
+                : new List<Task<double>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            double dblReturn = 0;
+            foreach (Task<double> tskLoop in lstTasks)
+                dblReturn += await tskLoop;
+            return dblReturn;
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<double> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                : new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            decimal decReturn = 0;
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop;
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
+                ? new List<Task<decimal>>(await objTemp.GetCountAsync())
+                : new List<Task<decimal>>();
+            using (IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    T objCurrent = objEnumerator.Current;
+                    lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent) : 0));
+                }
+            }
+            await Task.WhenAll(lstTasks);
+            decimal decReturn = 0;
+            foreach (Task<decimal> tskLoop in lstTasks)
+                decReturn += await tskLoop;
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
+        }
+
+        public static async Task<decimal> SumParallelAsync<T>(this Task<IAsyncEnumerable<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector)
+        {
+            return await SumParallelAsync(await tskEnumerable, funcPredicate, funcSelector);
         }
 
         public static async Task<T> AggregateAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, T, T> funcAggregator)

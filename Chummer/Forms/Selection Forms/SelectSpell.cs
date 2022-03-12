@@ -314,13 +314,13 @@ namespace Chummer
                         // Populate the Spell list.
                         if (!_blnIgnoreRequirements)
                         {
-                            foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
+                            foreach (Improvement improvement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                          _objCharacter, Improvement.ImprovementType.LimitSpellDescriptor))
                             {
                                 limitDescriptors.Add(improvement.ImprovedName);
                             }
 
-                            foreach (Improvement improvement in ImprovementManager.GetCachedImprovementListForValueOf(
+                            foreach (Improvement improvement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                          _objCharacter, Improvement.ImprovementType.BlockSpellDescriptor))
                             {
                                 blockDescriptors.Add(improvement.ImprovedName);
@@ -339,9 +339,9 @@ namespace Chummer
                             if (!objXmlSpell.RequirementsMet(_objCharacter))
                                 continue;
                             
-                            if (ImprovementManager.GetCachedImprovementListForValueOf(
+                            if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     _objCharacter, Improvement.ImprovementType.AllowSpellCategory,
-                                    strSpellCategory).Count != 0)
+                                    strSpellCategory)).Count != 0)
                             {
                                 if (!blnDoUIUpdate)
                                     return true;
@@ -350,9 +350,9 @@ namespace Chummer
                             }
 
                             string strRange = objXmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
-                            if (ImprovementManager.GetCachedImprovementListForValueOf(
+                            if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     _objCharacter, Improvement.ImprovementType.AllowSpellRange,
-                                    strRange).Count != 0)
+                                    strRange)).Count != 0)
                             {
                                 if (!blnDoUIUpdate)
                                     return true;
@@ -370,9 +370,9 @@ namespace Chummer
                             if (blockDescriptors.Count != 0 && blockDescriptors.Any(l => strDescriptor.Contains(l)))
                                 continue;
 
-                            if (ImprovementManager
-                                .GetCachedImprovementListForValueOf(_objCharacter,
-                                                                    Improvement.ImprovementType.LimitSpellCategory)
+                            if ((await ImprovementManager
+                                    .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                                             Improvement.ImprovementType.LimitSpellCategory))
                                 .Any(x => x.ImprovedName != strSpellCategory))
                             {
                                 continue;

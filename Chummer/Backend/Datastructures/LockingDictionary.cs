@@ -367,6 +367,12 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<int> GetCountAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _dicData.Count;
+        }
+
         /// <inheritdoc />
         public object SyncRoot => LockObject;
 

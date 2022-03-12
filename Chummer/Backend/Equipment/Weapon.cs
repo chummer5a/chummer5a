@@ -2601,30 +2601,78 @@ namespace Chummer.Backend.Equipment
                     strCategory = "Unarmed Combat";
                 }
 
-                decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
-                                                         strImprovedName: strCategory);
                 string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
-                if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
-                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
-                                                             strImprovedName: strUseSkill);
-                if (strCategory.StartsWith("Cyberware "))
-                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDV,
-                                                             strImprovedName: strCategory.TrimStartOnce("Cyberware ", true));
-
-                // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
-                // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
-                if (Name == "Unarmed Attack")
+                if (blnSync)
                 {
-                    if (strDamageType == "S" && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDVPhysical).Count > 0)
-                        strDamageType = "P";
-                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                    // ReSharper disable MethodHasAsyncOverload
+                    decImprove += ImprovementManager.ValueOf(_objCharacter,
+                                                             Improvement.ImprovementType.WeaponCategoryDV,
+                                                             strImprovedName: strCategory);
+                    if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
+                        decImprove += ImprovementManager.ValueOf(_objCharacter,
+                                                                 Improvement.ImprovementType.WeaponCategoryDV,
+                                                                 strImprovedName: strUseSkill);
+                    if (strCategory.StartsWith("Cyberware "))
+                        decImprove += ImprovementManager.ValueOf(_objCharacter,
+                                                                 Improvement.ImprovementType.WeaponCategoryDV,
+                                                                 strImprovedName: strCategory.TrimStartOnce(
+                                                                     "Cyberware ", true));
+
+                    // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
+                    // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
+                    if (Name == "Unarmed Attack")
+                    {
+                        if (strDamageType == "S" && ImprovementManager
+                                                    .GetCachedImprovementListForValueOf(
+                                                        _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical)
+                                                    .Count > 0)
+                            strDamageType = "P";
+                        decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                    }
+
+                    // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
+                    else if (strUseSkill == "Unarmed Combat"
+                             && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                    {
+                        decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                    }
+                    // ReSharper restore MethodHasAsyncOverload
+                }
+                else
+                {
+                    decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
+                                                                        Improvement.ImprovementType.WeaponCategoryDV,
+                                                                        strImprovedName: strCategory);
+                    if (!string.IsNullOrEmpty(strUseSkill) && strCategory != strUseSkill)
+                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
+                                                                            Improvement.ImprovementType.WeaponCategoryDV,
+                                                                            strImprovedName: strUseSkill);
+                    if (strCategory.StartsWith("Cyberware "))
+                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter,
+                                                                            Improvement.ImprovementType.WeaponCategoryDV,
+                                                                            strImprovedName: strCategory.TrimStartOnce(
+                                                                                "Cyberware ", true));
+
+                    // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
+                    // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
+                    if (Name == "Unarmed Attack")
+                    {
+                        if (strDamageType == "S" && (await ImprovementManager
+                                .GetCachedImprovementListForValueOfAsync(
+                                    _objCharacter, Improvement.ImprovementType.UnarmedDVPhysical))
+                                                    .Count > 0)
+                            strDamageType = "P";
+                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                    }
+
+                    // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
+                    else if (strUseSkill == "Unarmed Combat"
+                             && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                    {
+                        decImprove += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                    }
                 }
 
-                // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-                else if (strUseSkill == "Unarmed Combat" && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
-                {
-                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
-                }
                 if (_objCharacter.Settings.MoreLethalGameplay)
                     decImprove += 2;
             }
@@ -3925,8 +3973,12 @@ namespace Chummer.Backend.Equipment
                             _objCharacter.Settings.UnarmedImprovementsApplyToWeapons))
                     {
                         // Add any UnarmedAP bonus for the Unarmed Attack item.
-                        intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP)
-                                                        .StandardRound();
+                        intImprove += (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP)
+                                : await ImprovementManager.ValueOfAsync(
+                                    _objCharacter, Improvement.ImprovementType.UnarmedAP))
+                            .StandardRound();
                     }
                 }
 
@@ -4306,8 +4358,12 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
-                    intUseSTR += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)
-                                                   .StandardRound();
+                    intUseSTR += (blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR)
+                            : await ImprovementManager.ValueOfAsync(_objCharacter,
+                                                                    Improvement.ImprovementType.ThrowSTR))
+                        .StandardRound();
 
                 int intStrRC = (intUseSTR + 2) / 3;
 

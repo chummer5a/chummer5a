@@ -477,8 +477,8 @@ namespace Chummer
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> limit))
                             {
-                                foreach (Improvement improvement in ImprovementManager
-                                             .GetCachedImprovementListForValueOf(
+                                foreach (Improvement improvement in await ImprovementManager
+                                             .GetCachedImprovementListForValueOfAsync(
                                                  CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                                 {
                                     limit.Add(improvement.ImprovedName);
@@ -2193,8 +2193,8 @@ namespace Chummer
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> limit))
                             {
-                                foreach (Improvement improvement in ImprovementManager
-                                             .GetCachedImprovementListForValueOf(
+                                foreach (Improvement improvement in await ImprovementManager
+                                             .GetCachedImprovementListForValueOfAsync(
                                                  CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                                 {
                                     limit.Add(improvement.ImprovedName);
@@ -3941,7 +3941,7 @@ namespace Chummer
             do
             {
                 // The number of Complex Forms cannot exceed twice the character's RES.
-                if (CharacterObject.ComplexForms.Count >= CharacterObject.RES.Value * 2 + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit) && !CharacterObjectSettings.IgnoreComplexFormLimit)
+                if (CharacterObject.ComplexForms.Count >= CharacterObject.RES.Value * 2 + await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.ComplexFormLimit) && !CharacterObjectSettings.IgnoreComplexFormLimit)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ComplexFormLimit"), await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
@@ -15526,7 +15526,7 @@ namespace Chummer
                     case Improvement.ImprovementSource.Cyberware:
                     {
                         lstUsedImprovements
-                            = ImprovementManager.GetCachedImprovementListForValueOf(
+                            = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                 CharacterObject, Improvement.ImprovementType.CyberwareEssCost);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15539,7 +15539,7 @@ namespace Chummer
                             }
 
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplier);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15553,7 +15553,7 @@ namespace Chummer
                             }
 
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15567,7 +15567,7 @@ namespace Chummer
                             }
 
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15586,7 +15586,7 @@ namespace Chummer
                     case Improvement.ImprovementSource.Bioware:
                         {
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BiowareEssCost);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15599,7 +15599,7 @@ namespace Chummer
                             }
 
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplier);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15613,7 +15613,7 @@ namespace Chummer
                             }
 
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BiowareEssCostNonRetroactive);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15627,7 +15627,7 @@ namespace Chummer
                             }
 
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15642,7 +15642,7 @@ namespace Chummer
 
                             // Apply the character's Basic Bioware Essence cost multiplier if applicable.
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BasicBiowareEssCost);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15657,7 +15657,7 @@ namespace Chummer
 
                             // Genetech Cost multiplier.
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.GenetechCostMultiplier);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -15672,7 +15672,7 @@ namespace Chummer
 
                             // Apply the character's Genetech Essence cost multiplier if applicable.
                             lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.GenetechEssMultiplier);
                             if (lstUsedImprovements.Count != 0)
                             {
@@ -16445,7 +16445,7 @@ namespace Chummer
                         sbdQualities.AppendJoin(',' + Environment.NewLine,
                                                 objLifestyle.LifestyleQualities.Select(
                                                     r => r.CurrentFormattedDisplayName));
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                      CharacterObject, Improvement.ImprovementType.LifestyleCost))
                         {
                             if (sbdQualities.Length > 0)

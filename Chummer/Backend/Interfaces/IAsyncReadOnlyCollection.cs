@@ -17,16 +17,13 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public interface IAsyncReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>, IAsyncReadOnlyCollection<KeyValuePair<TKey, TValue>>
+    public interface IAsyncReadOnlyCollection<T> : IAsyncEnumerable<T>, IReadOnlyCollection<T>
     {
-        ValueTask<bool> ContainsKeyAsync(TKey key);
-
-        ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key);
+        ValueTask<int> GetCountAsync();
     }
 }

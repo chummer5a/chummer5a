@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject, IAsyncEnumerable<T>
+    public class LockingOrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, IProducerConsumerCollection<T>, ISerializable, IDeserializationCallback, IHasLockObject, IAsyncReadOnlyCollection<T>
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;
@@ -461,6 +461,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstOrderedData.Count;
             }
+        }
+
+        public async ValueTask<int> GetCountAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _lstOrderedData.Count;
         }
 
         /// <inheritdoc />

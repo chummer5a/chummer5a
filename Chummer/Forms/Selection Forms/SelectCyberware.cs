@@ -1037,16 +1037,16 @@ namespace Chummer
                         {
                             if (WindowMode == Mode.Bioware)
                             {
-                                if (ImprovementManager
-                                    .GetCachedImprovementListForValueOf(_objCharacter,
-                                                                        Improvement.ImprovementType.DisableBiowareGrade)
+                                if ((await ImprovementManager
+                                        .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                            Improvement.ImprovementType.DisableBiowareGrade))
                                     .Any(x => objCurrentGrade.Name.Contains(x.ImprovedName)))
                                     continue;
                             }
-                            else if (ImprovementManager
-                                     .GetCachedImprovementListForValueOf(_objCharacter,
-                                                                         Improvement.ImprovementType
-                                                                             .DisableCyberwareGrade)
+                            else if ((await ImprovementManager
+                                         .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                             Improvement.ImprovementType
+                                                        .DisableCyberwareGrade))
                                      .Any(x => objCurrentGrade.Name.Contains(x.ImprovedName)))
                                 continue;
                         }

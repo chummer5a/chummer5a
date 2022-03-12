@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeQueue<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>, IAsyncEnumerable<T>
+    public class ThreadSafeQueue<T> : IHasLockObject, IProducerConsumerCollection<T>, IAsyncReadOnlyCollection<T>
     {
         private readonly Queue<T> _queData;
 
@@ -273,6 +273,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _queData.Count;
             }
+        }
+
+        public async ValueTask<int> GetCountAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _queData.Count;
         }
 
         /// <inheritdoc cref="ICollection.SyncRoot" />

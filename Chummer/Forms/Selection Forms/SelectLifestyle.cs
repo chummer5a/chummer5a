@@ -449,7 +449,7 @@ namespace Chummer
                         }
 
                         // Check for modifiers in the improvements
-                        decMod += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.LifestyleCost) / 100.0m;
+                        decMod += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.LifestyleCost) / 100.0m;
                     }
 
                     decBaseCost += decBaseCost * decBaseMultiplier;

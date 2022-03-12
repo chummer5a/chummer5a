@@ -514,8 +514,8 @@ namespace Chummer
                             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                             out HashSet<string> limit))
                             {
-                                foreach (Improvement improvement in ImprovementManager
-                                             .GetCachedImprovementListForValueOf(
+                                foreach (Improvement improvement in await ImprovementManager
+                                             .GetCachedImprovementListForValueOfAsync(
                                                  CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                                 {
                                     limit.Add(improvement.ImprovedName);
@@ -1203,7 +1203,7 @@ namespace Chummer
                     break;
 
                 case nameof(Character.StolenNuyen):
-                    bool show = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Nuyen, strImprovedName: "Stolen") != 0;
+                    bool show = await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.Nuyen, strImprovedName: "Stolen") != 0;
 
                     await lblStolenNuyen.DoThreadSafeAsync(x => x.Visible = show);
                     await lblStolenNuyenLabel.DoThreadSafeAsync(x => x.Visible = show);
@@ -1965,8 +1965,8 @@ namespace Chummer
                                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                            out HashSet<string> limit))
                                 {
-                                    foreach (Improvement improvement in ImprovementManager
-                                                 .GetCachedImprovementListForValueOf(
+                                    foreach (Improvement improvement in await ImprovementManager
+                                                 .GetCachedImprovementListForValueOfAsync(
                                                      CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                                     {
                                         limit.Add(improvement.ImprovedName);
@@ -3406,7 +3406,7 @@ namespace Chummer
                 {
                     // The number of Complex Forms cannot exceed twice the character's RES.
                     if (CharacterObject.ComplexForms.Count >= CharacterObject.RES.Value * 2
-                        + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.ComplexFormLimit)
+                        + await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.ComplexFormLimit)
                         && !CharacterObject.IgnoreRules)
                     {
                         Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_ComplexFormLimit"),
@@ -6190,7 +6190,7 @@ namespace Chummer
             int intSkillValue = Math.Max((await CharacterObject.SkillsSection.GetActiveSkillAsync("Spellcasting"))?.Rating ?? 0, (await CharacterObject.SkillsSection.GetActiveSkillAsync("Ritual Spellcasting"))?.Rating ?? 0);
 
             // The maximum number of Spells a character can start with is 2 x (highest of Spellcasting or Ritual Spellcasting Skill).
-            if (CharacterObject.Spells.Count >= 2 * intSkillValue + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit) && !CharacterObject.IgnoreRules)
+            if (CharacterObject.Spells.Count >= 2 * intSkillValue + await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.SpellLimit) && !CharacterObject.IgnoreRules)
             {
                 Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SpellLimit"), await LanguageManager.GetStringAsync("MessageTitle_SpellLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
@@ -9691,9 +9691,9 @@ namespace Chummer
             int intPrepPointsUsed = 0;
             if (CharacterObject.MagicianEnabled
                 || CharacterObject.AdeptEnabled
-                || ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells).Count > 0
-                || ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsATT).Count > 0
-                || ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill).Count > 0)
+                || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpells)).Count > 0
+                || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsATT)).Count > 0
+                || (await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill)).Count > 0)
             {
                 // Count the number of Spells the character currently has and make sure they do not try to select more Spells than they are allowed.
                 int spells = CharacterObject.Spells.Count(spell => spell.Grade == 0 && !spell.Alchemical && spell.Category != "Rituals" && !spell.FreeBonus);
@@ -9731,10 +9731,10 @@ namespace Chummer
                     }
                 }
 
-                int intLimitMod = (ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SpellLimit)
-                                   + ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.FreeSpells)).StandardRound();
+                int intLimitMod = (await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.SpellLimit)
+                                   + await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpells)).StandardRound();
                 int intLimitModTouchOnly = 0;
-                foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsATT))
+                foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsATT))
                 {
                     int intAttValue = CharacterObject.GetAttribute(imp.ImprovedName).TotalValue;
                     if (imp.UniqueName.Contains("half"))
@@ -9745,7 +9745,7 @@ namespace Chummer
                         intLimitMod += intAttValue;
                 }
 
-                foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill))
+                foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject, Improvement.ImprovementType.FreeSpellsSkill))
                 {
                     Skill skill = await CharacterObject.SkillsSection.GetActiveSkillAsync(imp.ImprovedName);
                     if (skill == null) continue;
@@ -10368,8 +10368,8 @@ namespace Chummer
             decimal decDeductions = 0;
             decimal decStolenDeductions = 0;
             decimal decStolenNuyenAllowance
-                = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Nuyen,
-                                             strImprovedName: "Stolen");
+                = await ImprovementManager.ValueOfAsync(CharacterObject, Improvement.ImprovementType.Nuyen,
+                                                        strImprovedName: "Stolen");
             //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
             if (decStolenNuyenAllowance != 0)
             {
@@ -10597,10 +10597,10 @@ namespace Chummer
                     await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (objSelectedNodeTag is IHasStolenProperty loot && ImprovementManager
-                                                                     .GetCachedImprovementListForValueOf(
-                                                                         CharacterObject,
-                                                                         Improvement.ImprovementType.Nuyen, "Stolen")
+                if (objSelectedNodeTag is IHasStolenProperty loot && (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            CharacterObject,
+                            Improvement.ImprovementType.Nuyen, "Stolen"))
                                                                      .Count > 0)
                 {
                     await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = true);
@@ -10953,11 +10953,11 @@ namespace Chummer
                 }
 
                 if (objSelectedNodeTag is IHasStolenProperty loot
-                    && ImprovementManager
-                       .GetCachedImprovementListForValueOf(
-                           CharacterObject,
-                           Improvement.ImprovementType.Nuyen,
-                           "Stolen").Count > 0)
+                    && (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            CharacterObject,
+                            Improvement.ImprovementType.Nuyen,
+                            "Stolen")).Count > 0)
                 {
                     await chkWeaponStolen.DoThreadSafeAsync(x => x.Visible = true);
                     await chkWeaponStolen.DoThreadSafeAsync(x => x.Checked = loot.Stolen);
@@ -11605,10 +11605,10 @@ namespace Chummer
                     await lblArmorSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (objSelectedNodeTag is IHasStolenProperty loot && ImprovementManager
-                                                                     .GetCachedImprovementListForValueOf(
-                                                                         CharacterObject,
-                                                                         Improvement.ImprovementType.Nuyen, "Stolen")
+                if (objSelectedNodeTag is IHasStolenProperty loot && (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            CharacterObject,
+                            Improvement.ImprovementType.Nuyen, "Stolen"))
                                                                      .Count > 0)
                 {
                     await chkArmorStolen.DoThreadSafeAsync(x =>
@@ -12049,10 +12049,10 @@ namespace Chummer
                     return;
                 }
 
-                if (objSelectedNodeTag is IHasStolenProperty loot && ImprovementManager
-                                                                     .GetCachedImprovementListForValueOf(
-                                                                         CharacterObject,
-                                                                         Improvement.ImprovementType.Nuyen, "Stolen")
+                if (objSelectedNodeTag is IHasStolenProperty loot && (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            CharacterObject,
+                            Improvement.ImprovementType.Nuyen, "Stolen"))
                                                                      .Count > 0)
                 {
                     await chkGearStolen.DoThreadSafeAsync(x =>
@@ -12393,7 +12393,7 @@ namespace Chummer
                     case Improvement.ImprovementSource.Cyberware:
                         {
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.CyberwareEssCost);
                             if (lstImprovements.Count != 0)
                             {
@@ -12406,7 +12406,7 @@ namespace Chummer
                             }
 
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplier);
                             if (lstImprovements.Count != 0)
                             {
@@ -12420,7 +12420,7 @@ namespace Chummer
                             }
 
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
                             if (lstImprovements.Count != 0)
                             {
@@ -12434,7 +12434,7 @@ namespace Chummer
                             }
 
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
                             if (lstImprovements.Count != 0)
                             {
@@ -12453,7 +12453,7 @@ namespace Chummer
                     case Improvement.ImprovementSource.Bioware:
                         {
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BiowareEssCost);
                             if (lstImprovements.Count != 0)
                             {
@@ -12466,7 +12466,7 @@ namespace Chummer
                             }
 
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplier);
                             if (lstImprovements.Count != 0)
                             {
@@ -12480,7 +12480,7 @@ namespace Chummer
                             }
 
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BiowareEssCostNonRetroactive);
                             if (lstImprovements.Count != 0)
                             {
@@ -12494,7 +12494,7 @@ namespace Chummer
                             }
 
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
                             if (lstImprovements.Count != 0)
                             {
@@ -12509,7 +12509,7 @@ namespace Chummer
 
                             // Apply the character's Basic Bioware Essence cost multiplier if applicable.
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.BasicBiowareEssCost);
                             if (lstImprovements.Count != 0)
                             {
@@ -12524,7 +12524,7 @@ namespace Chummer
 
                             // Apply the character's Genetech Essence cost multiplier if applicable.
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.GenetechEssMultiplier);
                             if (lstImprovements.Count != 0)
                             {
@@ -12539,7 +12539,7 @@ namespace Chummer
 
                             // Genetech Cost multiplier.
                             lstImprovements
-                                = ImprovementManager.GetCachedImprovementListForValueOf(
+                                = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     CharacterObject, Improvement.ImprovementType.GenetechCostMultiplier);
                             if (lstImprovements.Count != 0)
                             {
@@ -13109,7 +13109,7 @@ namespace Chummer
                         sbdQualities.AppendJoin(',' + Environment.NewLine,
                                                 objLifestyle.LifestyleQualities.Select(
                                                     r => r.CurrentFormattedDisplayName));
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                      CharacterObject, Improvement.ImprovementType.LifestyleCost))
                         {
                             if (sbdQualities.Length > 0)
@@ -13212,11 +13212,11 @@ namespace Chummer
                 }
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                if (objSelectedNodeTag is IHasStolenProperty selectedLoot && ImprovementManager
-                                                                             .GetCachedImprovementListForValueOf(
-                                                                                 CharacterObject,
-                                                                                 Improvement.ImprovementType.Nuyen,
-                                                                                 "Stolen").Count > 0)
+                if (objSelectedNodeTag is IHasStolenProperty selectedLoot && (await ImprovementManager
+                        .GetCachedImprovementListForValueOfAsync(
+                            CharacterObject,
+                            Improvement.ImprovementType.Nuyen,
+                            "Stolen")).Count > 0)
                 {
                     await chkVehicleStolen.DoThreadSafeAsync(x =>
                     {
@@ -14852,9 +14852,9 @@ namespace Chummer
                     int intLanguages
                         = CharacterObject.SkillsSection.KnowledgeSkills.Count(objSkill => objSkill.IsNativeLanguage);
 
-                    int intLanguageLimit = 1 + ImprovementManager
-                                               .ValueOf(CharacterObject,
-                                                        Improvement.ImprovementType.NativeLanguageLimit)
+                    int intLanguageLimit = 1 + (await ImprovementManager
+                            .ValueOfAsync(CharacterObject,
+                                          Improvement.ImprovementType.NativeLanguageLimit))
                                                .StandardRound();
 
                     if (intLanguages != intLanguageLimit)
@@ -14887,7 +14887,7 @@ namespace Chummer
                     // Number of items over the specified Availability the character is allowed to have (typically from the Restricted Gear Quality).
                     Dictionary<int, int> dicRestrictedGearLimits = new Dictionary<int, int>(1);
                     List<Improvement> lstUsedImprovements
-                        = ImprovementManager.GetCachedImprovementListForValueOf(
+                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                             CharacterObject, Improvement.ImprovementType.RestrictedGear);
                     bool blnHasRestrictedGearAvailable = lstUsedImprovements.Count != 0;
                     if (blnHasRestrictedGearAvailable)

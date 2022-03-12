@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeStack<T> : IReadOnlyCollection<T>, IHasLockObject, IProducerConsumerCollection<T>, IAsyncEnumerable<T>
+    public class ThreadSafeStack<T> : IHasLockObject, IProducerConsumerCollection<T>, IAsyncReadOnlyCollection<T>
     {
         private readonly Stack<T> _stkData;
 
@@ -305,6 +305,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _stkData.Count;
             }
+        }
+
+        public async ValueTask<int> GetCountAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _stkData.Count;
         }
 
         /// <inheritdoc />

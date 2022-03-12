@@ -20,13 +20,14 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IProducerConsumerCollection<T>, IHasLockObject, IAsyncEnumerable<T>
+    public class ThreadSafeObservableCollection<T> : EnhancedObservableCollection<T>, IProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
     {
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
@@ -42,7 +43,7 @@ namespace Chummer
         {
         }
 
-        /// <inheritdoc />
+        /// <inheritdoc cref="ObservableCollection{T}.Count" />
         public new int Count
         {
             get
@@ -50,6 +51,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return base.Count;
             }
+        }
+
+        public async ValueTask<int> GetCountAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.Count;
         }
 
         /// <inheritdoc cref="List{T}" />

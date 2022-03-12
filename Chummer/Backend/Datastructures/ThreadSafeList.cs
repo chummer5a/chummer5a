@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject, IAsyncEnumerable<T>
+    public class ThreadSafeList<T> : IList<T>, IReadOnlyList<T>, IList, IProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
     {
         private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -98,6 +98,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _lstData.Count;
             }
+        }
+
+        public async ValueTask<int> GetCountAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _lstData.Count;
         }
 
         /// <inheritdoc />

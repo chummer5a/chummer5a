@@ -7852,8 +7852,8 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("fallingarmor",
                                                             TotalFallingArmorRating.ToString(objCulture));
 
-                    int intDamageResistanceDice = ImprovementManager
-                                                  .ValueOf(this, Improvement.ImprovementType.DamageResistance)
+                    int intDamageResistanceDice = (await ImprovementManager
+                            .ValueOfAsync(this, Improvement.ImprovementType.DamageResistance))
                                                   .StandardRound();
                     // <armordicestun />
                     await objWriter.WriteElementStringAsync("armordicestun",
@@ -7959,7 +7959,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("initvalue", InitiativeValue.ToString(objCulture));
                     await objWriter.WriteElementStringAsync("initbonus",
                                                             Math.Max(
-                                                                    ImprovementManager.ValueOf(
+                                                                    await ImprovementManager.ValueOfAsync(
                                                                         this, Improvement.ImprovementType.Initiative),
                                                                     0)
                                                                 .ToString(objCulture));
@@ -8184,7 +8184,7 @@ namespace Chummer
                         }
 
                         // Populate Limit Modifiers from Improvements
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this,
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Physical"))
                         {
                             string strName = GetObjectName(objImprovement, strLanguageToPrint);
@@ -8231,7 +8231,7 @@ namespace Chummer
                         }
 
                         // Populate Limit Modifiers from Improvements
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this,
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Mental"))
                         {
                             string strName = GetObjectName(objImprovement, strLanguageToPrint);
@@ -8278,7 +8278,7 @@ namespace Chummer
                         }
 
                         // Populate Limit Modifiers from Improvements
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(this,
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.LimitModifier, "Social"))
                         {
                             string strName = GetObjectName(objImprovement, strLanguageToPrint);
@@ -28457,8 +28457,8 @@ namespace Chummer
                     blnEssence = false;
                 }
 
-                bool blnEnabled = ImprovementManager
-                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.EnableCyberzombie).Count > 0;
+                bool blnEnabled = (await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.EnableCyberzombie)).Count > 0;
 
                 if (!blnEnabled)
                     strMessage += Environment.NewLine + '\t' +

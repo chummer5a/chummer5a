@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingHashSet<T> : ISet<T>, IReadOnlyCollection<T>, IProducerConsumerCollection<T>, IHasLockObject, IAsyncEnumerable<T>
+    public class LockingHashSet<T> : ISet<T>, IProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>
     {
         private readonly HashSet<T> _setData;
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -445,6 +445,12 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _setData.Count;
             }
+        }
+
+        public async ValueTask<int> GetCountAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return _setData.Count;
         }
 
         /// <inheritdoc />

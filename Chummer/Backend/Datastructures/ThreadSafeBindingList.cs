@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeBindingList<T> : CachedBindingList<T>, IHasLockObject, IProducerConsumerCollection<T>, IAsyncEnumerable<T>
+    public class ThreadSafeBindingList<T> : CachedBindingList<T>, IHasLockObject, IProducerConsumerCollection<T>, IAsyncReadOnlyCollection<T>
     {
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
@@ -98,7 +98,13 @@ namespace Chummer
                     return base.Count;
             }
         }
-        
+
+        public async ValueTask<int> GetCountAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+                return base.Count;
+        }
+
         public new T this[int index]
         {
             get

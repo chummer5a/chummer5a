@@ -330,7 +330,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLimitCategories))
             {
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                              _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
                 {
                     setLimitCategories.Add(objImprovement.ImprovedName);
@@ -473,7 +473,7 @@ namespace Chummer
 
                     if (_objSpirit.CharacterObject.MAGEnabled)
                     {
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                      _objSpirit.CharacterObject, Improvement.ImprovementType.AddSpirit))
                         {
                             string strImprovedName = objImprovement.ImprovedName;
@@ -492,7 +492,7 @@ namespace Chummer
 
                     if (_objSpirit.CharacterObject.RESEnabled)
                     {
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                      _objSpirit.CharacterObject, Improvement.ImprovementType.AddSprite))
                         {
                             string strImprovedName = objImprovement.ImprovedName;
