@@ -76,12 +76,22 @@ namespace Chummer
             return DoLoop();
             async ValueTask<int> DoLoop()
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
-                    do
+                    if (objRandom is ThreadSafeRandom objThreadSafeRandom)
                     {
-                        intLoopResult = objRandom.Next();
-                    } while (intLoopResult >= intModuloCheck);
+                        do
+                        {
+                            intLoopResult = await objThreadSafeRandom.NextAsync();
+                        } while (intLoopResult >= intModuloCheck);
+                    }
+                    else
+                    {
+                        do
+                        {
+                            intLoopResult = objRandom.Next();
+                        } while (intLoopResult >= intModuloCheck);
+                    }
                 });
 
                 return 1 + intLoopResult % 6;
@@ -102,12 +112,22 @@ namespace Chummer
             return DoLoop();
             async ValueTask<int> DoLoop()
             {
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
-                    do
+                    if (objRandom is ThreadSafeRandom objThreadSafeRandom)
                     {
-                        intLoopResult = objRandom.Next();
-                    } while (intLoopResult >= intModuloCheck);
+                        do
+                        {
+                            intLoopResult = await objThreadSafeRandom.NextAsync();
+                        } while (intLoopResult >= intModuloCheck);
+                    }
+                    else
+                    {
+                        do
+                        {
+                            intLoopResult = objRandom.Next();
+                        } while (intLoopResult >= intModuloCheck);
+                    }
                 });
 
                 return intLoopResult % maxValue;

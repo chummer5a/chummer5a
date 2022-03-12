@@ -1813,312 +1813,316 @@ namespace Chummer
 
         private async ValueTask DoOnCharacterSettingsPropertyChanged(PropertyChangedEventArgs e)
         {
-            IsCharacterUpdateRequested = true;
-            switch (e.PropertyName)
+            try
             {
-                case nameof(CharacterSettings.Books):
+                switch (e.PropertyName)
+                {
+                    case nameof(CharacterSettings.Books):
                     {
                         if (IsLoading)
                             break;
                         using (CursorWait.New(this))
                         {
                             SuspendLayout();
-                            cmdAddLifestyle.SplitMenuStrip =
-                                CharacterObjectSettings.BookEnabled("RF") ? cmsAdvancedLifestyle : null;
-
-                            if (!CharacterObjectSettings.BookEnabled("FA"))
+                            try
                             {
-                                lblWildReputation.Visible = false;
-                                lblWildReputationTotal.Visible = false;
-                                if (!CharacterObjectSettings.BookEnabled("SG"))
+                                cmdAddLifestyle.SplitMenuStrip =
+                                    CharacterObjectSettings.BookEnabled("RF") ? cmsAdvancedLifestyle : null;
+
+                                if (!CharacterObjectSettings.BookEnabled("FA"))
                                 {
-                                    lblAstralReputation.Visible = false;
-                                    lblAstralReputationTotal.Visible = false;
+                                    lblWildReputation.Visible = false;
+                                    lblWildReputationTotal.Visible = false;
+                                    if (!CharacterObjectSettings.BookEnabled("SG"))
+                                    {
+                                        lblAstralReputation.Visible = false;
+                                        lblAstralReputationTotal.Visible = false;
+                                    }
+                                    else
+                                    {
+                                        lblAstralReputation.Visible = true;
+                                        lblAstralReputationTotal.Visible = true;
+                                    }
                                 }
                                 else
                                 {
+                                    lblWildReputation.Visible = true;
+                                    lblWildReputationTotal.Visible = true;
                                     lblAstralReputation.Visible = true;
                                     lblAstralReputationTotal.Visible = true;
                                 }
-                            }
-                            else
-                            {
-                                lblWildReputation.Visible = true;
-                                lblWildReputationTotal.Visible = true;
-                                lblAstralReputation.Visible = true;
-                                lblAstralReputationTotal.Visible = true;
-                            }
 
-                            // Refresh all trees because enabled sources can change the nodes that are visible
-                            RefreshQualities(treQualities, cmsQuality);
-                            await RefreshSpirits(panSpirits, panSprites);
-                            RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                            RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
-                            RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                            RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
-                            RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
-                            RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
-                            RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-                            RefreshContacts(panContacts, panEnemies, panPets);
+                                // Refresh all trees because enabled sources can change the nodes that are visible
+                                RefreshQualities(treQualities, cmsQuality);
+                                await RefreshSpirits(panSpirits, panSprites);
+                                RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
+                                RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
+                                RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
+                                RefreshAIPrograms(treAIPrograms, cmsAdvancedProgram);
+                                RefreshCritterPowers(treCritterPowers, cmsCritterPowers);
+                                RefreshMartialArts(treMartialArts, cmsMartialArts, cmsTechnique);
+                                RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                                RefreshContacts(panContacts, panEnemies, panPets);
 
-                            RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
-                            RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
-                            RefreshFociFromGear(treFoci, null);
-                            RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
-                            RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
-                                           cmsWeaponAccessoryGear);
-                            RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
-                                            cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsVehicleGear,
-                                            cmsWeaponMount,
-                                            cmsVehicleCyberware, cmsVehicleCyberwareGear);
-                            RefreshDrugs(treCustomDrugs);
-                            treWeapons.SortCustomOrder();
-                            treArmor.SortCustomOrder();
-                            treGear.SortCustomOrder();
-                            treLifestyles.SortCustomOrder();
-                            treCustomDrugs.SortCustomOrder();
-                            treCyberware.SortCustomOrder();
-                            treVehicles.SortCustomOrder();
-                            treCritterPowers.SortCustomOrder();
+                                RefreshArmor(treArmor, cmsArmorLocation, cmsArmor, cmsArmorMod, cmsArmorGear);
+                                RefreshGears(treGear, cmsGearLocation, cmsGear, chkCommlinks.Checked);
+                                RefreshFociFromGear(treFoci, null);
+                                RefreshCyberware(treCyberware, cmsCyberware, cmsCyberwareGear);
+                                RefreshWeapons(treWeapons, cmsWeaponLocation, cmsWeapon, cmsWeaponAccessory,
+                                               cmsWeaponAccessoryGear);
+                                RefreshVehicles(treVehicles, cmsVehicleLocation, cmsVehicle, cmsVehicleWeapon,
+                                                cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear,
+                                                cmsVehicleGear,
+                                                cmsWeaponMount,
+                                                cmsVehicleCyberware, cmsVehicleCyberwareGear);
+                                RefreshDrugs(treCustomDrugs);
+                                treWeapons.SortCustomOrder();
+                                treArmor.SortCustomOrder();
+                                treGear.SortCustomOrder();
+                                treLifestyles.SortCustomOrder();
+                                treCustomDrugs.SortCustomOrder();
+                                treCyberware.SortCustomOrder();
+                                treVehicles.SortCustomOrder();
+                                treCritterPowers.SortCustomOrder();
 
-                            XPathNavigator xmlTraditionsBaseChummerNode =
-                                await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                            using (new FetchSafelyFromPool<List<ListItem>>(
-                                       Utils.ListItemListPool, out List<ListItem> lstTraditions))
-                            {
-                                if (xmlTraditionsBaseChummerNode != null)
-                                {
-                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath() + ']'))
-                                    {
-                                        string strName
-                                            = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
-                                            ?.Value;
-                                        if (!string.IsNullOrEmpty(strName))
-                                            lstTraditions.Add(new ListItem(
-                                                                  (await xmlTradition
-                                                                      .SelectSingleNodeAndCacheExpressionAsync("id"))
-                                                                  ?.Value ?? strName,
-                                                                  (await xmlTradition
-                                                                      .SelectSingleNodeAndCacheExpressionAsync(
-                                                                          "translate"))
-                                                                  ?.Value ?? strName));
-                                    }
-                                }
-
-                                if (lstTraditions.Count > 1)
-                                {
-                                    lstTraditions.Sort(CompareListItems.CompareNames);
-                                    lstTraditions.Insert(
-                                        0, new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                                    if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
-                                    {
-                                        await cboTradition.PopulateWithListItemsAsync(lstTraditions);
-                                        if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
-                                            cboTradition.SelectedValue
-                                                = CharacterObject.MagicTradition.SourceID.ToString();
-                                        else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
-                                            cboTradition.SelectedIndex = 0;
-                                    }
-                                }
-                                else
-                                {
-                                    cboTradition.Visible = false;
-                                    lblTraditionLabel.Visible = false;
-                                }
-                            }
-
-                            using (new FetchSafelyFromPool<List<ListItem>>(
-                                       Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
-                            {
-                                lstDrainAttributes.Add(ListItem.Blank);
-                                if (xmlTraditionsBaseChummerNode != null)
-                                {
-                                    foreach (XPathNavigator xmlDrain in await xmlTraditionsBaseChummerNode
-                                                 .SelectAndCacheExpressionAsync(
-                                                     "drainattributes/drainattribute"))
-                                    {
-                                        string strName
-                                            = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))?.Value;
-                                        if (!string.IsNullOrEmpty(strName))
-                                            lstDrainAttributes.Add(new ListItem(strName,
-                                                                       (await xmlDrain
-                                                                           .SelectSingleNodeAndCacheExpressionAsync(
-                                                                               "translate"))?.Value ?? strName));
-                                    }
-                                }
-
-                                lstDrainAttributes.Sort(CompareListItems.CompareNames);
-                                await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
-                            }
-
-                            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                            out HashSet<string> limit))
-                            {
-                                foreach (Improvement improvement in ImprovementManager
-                                             .GetCachedImprovementListForValueOf(
-                                                 CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
-                                {
-                                    limit.Add(improvement.ImprovedName);
-                                }
-
+                                XPathNavigator xmlTraditionsBaseChummerNode =
+                                    await (await CharacterObject.LoadDataXPathAsync("traditions.xml"))
+                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer");
                                 using (new FetchSafelyFromPool<List<ListItem>>(
-                                           Utils.ListItemListPool, out List<ListItem> lstSpirit))
+                                           Utils.ListItemListPool, out List<ListItem> lstTraditions))
                                 {
-                                    lstSpirit.Add(ListItem.Blank);
                                     if (xmlTraditionsBaseChummerNode != null)
                                     {
-                                        foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
-                                                     .SelectAndCacheExpressionAsync("spirits/spirit"))
+                                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath()
+                                                                             + ']'))
                                         {
-                                            string strSpiritName
-                                                = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                            string strName
+                                                = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                 ?.Value;
-                                            if (!string.IsNullOrEmpty(strSpiritName)
-                                                && (limit.Count == 0 || limit.Contains(strSpiritName)))
-                                            {
-                                                lstSpirit.Add(new ListItem(strSpiritName,
-                                                                           (await xmlSpirit
-                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                   "translate"))?.Value
-                                                                           ?? strSpiritName));
-                                            }
+                                            if (!string.IsNullOrEmpty(strName))
+                                                lstTraditions.Add(new ListItem(
+                                                                      (await xmlTradition
+                                                                          .SelectSingleNodeAndCacheExpressionAsync(
+                                                                              "id"))
+                                                                      ?.Value ?? strName,
+                                                                      (await xmlTradition
+                                                                          .SelectSingleNodeAndCacheExpressionAsync(
+                                                                              "translate"))
+                                                                      ?.Value ?? strName));
                                         }
                                     }
 
-                                    lstSpirit.Sort(CompareListItems.CompareNames);
-                                    await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
-                                    await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
-                                    await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
-                                    await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
-                                    await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
-                                }
-                            }
-
-                            // Populate the Technomancer Streams list.
-                            xmlTraditionsBaseChummerNode =
-                                await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
-                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer");
-                            using (new FetchSafelyFromPool<List<ListItem>>(
-                                       Utils.ListItemListPool, out List<ListItem> lstStreams))
-                            {
-                                if (xmlTraditionsBaseChummerNode != null)
-                                {
-                                    foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                                 "traditions/tradition[" + CharacterObjectSettings.BookXPath()
-                                                                         + ']'))
+                                    if (lstTraditions.Count > 1)
                                     {
-                                        string strName
-                                            = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
-                                            ?.Value;
-                                        if (!string.IsNullOrEmpty(strName))
-                                            lstStreams.Add(new ListItem(
-                                                               (await xmlTradition
-                                                                   .SelectSingleNodeAndCacheExpressionAsync("id"))
-                                                               ?.Value ?? strName,
-                                                               (await xmlTradition
-                                                                   .SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "translate"))
-                                                               ?.Value ?? strName));
+                                        lstTraditions.Sort(CompareListItems.CompareNames);
+                                        lstTraditions.Insert(
+                                            0,
+                                            new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
+                                        if (!lstTraditions.SequenceEqual(cboTradition.Items.Cast<ListItem>()))
+                                        {
+                                            await cboTradition.PopulateWithListItemsAsync(lstTraditions);
+                                            if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
+                                                cboTradition.SelectedValue
+                                                    = CharacterObject.MagicTradition.SourceID.ToString();
+                                            else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
+                                                cboTradition.SelectedIndex = 0;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        cboTradition.Visible = false;
+                                        lblTraditionLabel.Visible = false;
                                     }
                                 }
 
-                                if (lstStreams.Count > 1)
+                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                           Utils.ListItemListPool, out List<ListItem> lstDrainAttributes))
                                 {
-                                    lstStreams.Sort(CompareListItems.CompareNames);
-                                    lstStreams.Insert(
-                                        0, new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                                    if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
+                                    lstDrainAttributes.Add(ListItem.Blank);
+                                    if (xmlTraditionsBaseChummerNode != null)
                                     {
-                                        await cboStream.PopulateWithListItemsAsync(lstStreams);
-                                        if (CharacterObject.MagicTradition.Type == TraditionType.RES)
-                                            cboStream.SelectedValue
-                                                = CharacterObject.MagicTradition.SourceID.ToString();
-                                        else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
-                                            cboStream.SelectedIndex = 0;
+                                        foreach (XPathNavigator xmlDrain in await xmlTraditionsBaseChummerNode
+                                                     .SelectAndCacheExpressionAsync(
+                                                         "drainattributes/drainattribute"))
+                                        {
+                                            string strName
+                                                = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                ?.Value;
+                                            if (!string.IsNullOrEmpty(strName))
+                                                lstDrainAttributes.Add(new ListItem(strName,
+                                                                           (await xmlDrain
+                                                                               .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                   "translate"))?.Value ?? strName));
+                                        }
+                                    }
+
+                                    lstDrainAttributes.Sort(CompareListItems.CompareNames);
+                                    await cboDrain.PopulateWithListItemsAsync(lstDrainAttributes);
+                                }
+
+                                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                           out HashSet<string> limit))
+                                {
+                                    foreach (Improvement improvement in ImprovementManager
+                                                 .GetCachedImprovementListForValueOf(
+                                                     CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
+                                    {
+                                        limit.Add(improvement.ImprovedName);
+                                    }
+
+                                    using (new FetchSafelyFromPool<List<ListItem>>(
+                                               Utils.ListItemListPool, out List<ListItem> lstSpirit))
+                                    {
+                                        lstSpirit.Add(ListItem.Blank);
+                                        if (xmlTraditionsBaseChummerNode != null)
+                                        {
+                                            foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
+                                                         .SelectAndCacheExpressionAsync("spirits/spirit"))
+                                            {
+                                                string strSpiritName
+                                                    = (await xmlSpirit.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                    ?.Value;
+                                                if (!string.IsNullOrEmpty(strSpiritName)
+                                                    && (limit.Count == 0 || limit.Contains(strSpiritName)))
+                                                {
+                                                    lstSpirit.Add(new ListItem(strSpiritName,
+                                                                               (await xmlSpirit
+                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                       "translate"))?.Value
+                                                                               ?? strSpiritName));
+                                                }
+                                            }
+                                        }
+
+                                        lstSpirit.Sort(CompareListItems.CompareNames);
+                                        await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
+                                        await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
                                     }
                                 }
-                                else
+
+                                // Populate the Technomancer Streams list.
+                                xmlTraditionsBaseChummerNode =
+                                    await (await CharacterObject.LoadDataXPathAsync("streams.xml"))
+                                        .SelectSingleNodeAndCacheExpressionAsync("/chummer");
+                                using (new FetchSafelyFromPool<List<ListItem>>(
+                                           Utils.ListItemListPool, out List<ListItem> lstStreams))
                                 {
-                                    cboStream.Visible = false;
-                                    lblStreamLabel.Visible = false;
+                                    if (xmlTraditionsBaseChummerNode != null)
+                                    {
+                                        foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
+                                                     "traditions/tradition[" + CharacterObjectSettings.BookXPath()
+                                                                             + ']'))
+                                        {
+                                            string strName
+                                                = (await xmlTradition.SelectSingleNodeAndCacheExpressionAsync("name"))
+                                                ?.Value;
+                                            if (!string.IsNullOrEmpty(strName))
+                                                lstStreams.Add(new ListItem(
+                                                                   (await xmlTradition
+                                                                       .SelectSingleNodeAndCacheExpressionAsync("id"))
+                                                                   ?.Value ?? strName,
+                                                                   (await xmlTradition
+                                                                       .SelectSingleNodeAndCacheExpressionAsync(
+                                                                           "translate"))
+                                                                   ?.Value ?? strName));
+                                        }
+                                    }
+
+                                    if (lstStreams.Count > 1)
+                                    {
+                                        lstStreams.Sort(CompareListItems.CompareNames);
+                                        lstStreams.Insert(
+                                            0,
+                                            new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
+                                        if (!lstStreams.SequenceEqual(cboStream.Items.Cast<ListItem>()))
+                                        {
+                                            await cboStream.PopulateWithListItemsAsync(lstStreams);
+                                            if (CharacterObject.MagicTradition.Type == TraditionType.RES)
+                                                cboStream.SelectedValue
+                                                    = CharacterObject.MagicTradition.SourceID.ToString();
+                                            else if (cboStream.SelectedIndex == -1 && cboStream.Items.Count > 0)
+                                                cboStream.SelectedIndex = 0;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        cboStream.Visible = false;
+                                        lblStreamLabel.Visible = false;
+                                    }
                                 }
                             }
-
-                            await RefreshSelectedVehicle();
-                            ResumeLayout();
-                        }
-
-                        break;
-                    }
-                case nameof(CharacterSettings.AllowFreeGrids):
-                    {
-                        if (!CharacterObjectSettings.BookEnabled("HT"))
-                        {
-                            using (CursorWait.New(this))
+                            finally
                             {
-                                SuspendLayout();
-                                RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
-                                treLifestyles.SortCustomOrder();
                                 ResumeLayout();
                             }
                         }
 
                         break;
                     }
-                case nameof(CharacterSettings.EnableEnemyTracking):
-                {
-                    using (CursorWait.New(this))
+                    case nameof(CharacterSettings.AllowFreeGrids):
                     {
-                        SuspendLayout();
-                        if (!CharacterObjectSettings.EnableEnemyTracking)
+                        if (!CharacterObjectSettings.BookEnabled("HT"))
                         {
-                            tabPeople.TabPages.Remove(tabEnemies);
-                            lblEnemiesBP.Visible = false;
-                            lblBuildEnemies.Visible = false;
-                        }
-                        else
-                        {
-                            lblEnemiesBP.Visible = true;
-                            lblBuildEnemies.Visible = true;
-                            if (!tabPeople.TabPages.Contains(tabEnemies))
-                                tabPeople.TabPages.Insert(tabPeople.TabPages.IndexOf(tabContacts) + 1, tabEnemies);
-                            RefreshContacts(panContacts, panEnemies, panPets);
+                            using (CursorWait.New(this))
+                            {
+                                SuspendLayout();
+                                try
+                                {
+                                    RefreshLifestyles(treLifestyles, cmsLifestyleNotes, cmsAdvancedLifestyle);
+                                    treLifestyles.SortCustomOrder();
+                                }
+                                finally
+                                {
+                                    ResumeLayout();
+                                }
+                            }
                         }
 
-                        ResumeLayout();
+                        break;
                     }
+                    case nameof(CharacterSettings.EnableEnemyTracking):
+                    {
+                        using (CursorWait.New(this))
+                        {
+                            SuspendLayout();
+                            try
+                            {
+                                if (!CharacterObjectSettings.EnableEnemyTracking)
+                                {
+                                    tabPeople.TabPages.Remove(tabEnemies);
+                                    lblEnemiesBP.Visible = false;
+                                    lblBuildEnemies.Visible = false;
+                                }
+                                else
+                                {
+                                    lblEnemiesBP.Visible = true;
+                                    lblBuildEnemies.Visible = true;
+                                    if (!tabPeople.TabPages.Contains(tabEnemies))
+                                        tabPeople.TabPages.Insert(tabPeople.TabPages.IndexOf(tabContacts) + 1,
+                                                                  tabEnemies);
+                                    RefreshContacts(panContacts, panEnemies, panPets);
+                                }
+                            }
+                            finally
+                            {
+                                ResumeLayout();
+                            }
+                        }
 
-                    break;
+                        break;
+                    }
                 }
             }
+            finally
+            {
+                IsCharacterUpdateRequested = true;
+            }
         }
-
-        /*
-        //TODO: UpdatePowerRelatedInfo method? Powers hook into so much stuff that it may need to wait for outbound improvement events?
-        private void PowerPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (PowerPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
-            PowerPropertyChanged_StopWatch.Restart();
-            tabPowerUc.CalculatePowerPoints();
-            IsCharacterUpdateRequested = true;
-            IsDirty = true;
-        }
-
-        private void SkillPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //HACK PERFORMANCE
-            //So, skills tell if anything maybe interesting have happened, but this don't have any way to see if it is relevant. Instead of redrawing EVYER FYCKING THING we do it only every 5 ms
-            if (SkillPropertyChanged_StopWatch.ElapsedMilliseconds < 4) return;
-            SkillPropertyChanged_StopWatch.Restart();
-
-            IsCharacterUpdateRequested = true;
-
-            IsDirty = true;
-        }
-        */
 
         #endregion Character Events
 
@@ -3235,37 +3239,51 @@ namespace Chummer
 
         #region Martial Tab Control Events
 
-        private void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treMartialArts_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedMartialArt();
+        }
+
+        private async Task RefreshSelectedMartialArt()
         {
             IsRefreshing = true;
-            if (treMartialArts.SelectedNode?.Tag is IHasSource objSelected)
+            try
             {
-                lblMartialArtSourceLabel.Visible = true;
-                lblMartialArtSource.Visible = true;
-                objSelected.SetSourceDetail(lblMartialArtSource);
-            }
-            else
-            {
-                lblMartialArtSourceLabel.Visible = false;
-                lblMartialArtSource.Visible = false;
-            }
-            switch (treMartialArts.SelectedNode?.Tag)
-            {
-                case MartialArt objMartialArt:
-                    cmdDeleteMartialArt.Enabled = !objMartialArt.IsQuality;
-                    break;
+                if (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                {
+                    await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblMartialArtSource);
+                }
+                else
+                {
+                    await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
 
-                case ICanRemove _:
-                    cmdDeleteMartialArt.Enabled = true;
-                    break;
+                switch (treMartialArts.SelectedNode?.Tag)
+                {
+                    case MartialArt objMartialArt:
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = !objMartialArt.IsQuality);
+                        break;
 
-                default:
-                    cmdDeleteMartialArt.Enabled = false;
-                    lblMartialArtSource.Text = string.Empty;
-                    lblMartialArtSource.SetToolTip(string.Empty);
-                    break;
+                    case ICanRemove _:
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = true);
+                        break;
+
+                    default:
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = false);
+                        await lblMartialArtSource.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblMartialArtSource.SetToolTipAsync(string.Empty);
+                        break;
+                }
             }
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         #endregion Martial Tab Control Events
@@ -5395,9 +5413,15 @@ namespace Chummer
                     }
 
                     IsRefreshing = true;
-                    nudVehicleGearQty.Increment = objGear.CostFor;
-                    //nudVehicleGearQty.Minimum = objGear.CostFor;
-                    IsRefreshing = false;
+                    try
+                    {
+                        nudVehicleGearQty.Increment = objGear.CostFor;
+                        //nudVehicleGearQty.Minimum = objGear.CostFor;
+                    }
+                    finally
+                    {
+                        IsRefreshing = false;
+                    }
 
                     objSensor.Children.Add(objGear);
 
@@ -6942,6 +6966,8 @@ namespace Chummer
 
         private async void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedQuality();
         }
 
@@ -7133,6 +7159,8 @@ namespace Chummer
 
         private async void treCyberware_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedCyberware();
             await DoRefreshPasteStatus();
         }
@@ -7235,8 +7263,15 @@ namespace Chummer
                             if (!objGear.RefreshSingleFocusRating(treFoci, nudCyberwareRating.ValueAsInt))
                             {
                                 IsRefreshing = true;
-                                nudCyberwareRating.Value = objGear.Rating;
-                                IsRefreshing = false;
+                                try
+                                {
+                                    nudCyberwareRating.Value = objGear.Rating;
+                                }
+                                finally
+                                {
+                                    IsRefreshing = false;
+                                }
+
                                 return;
                             }
                         }
@@ -7275,6 +7310,8 @@ namespace Chummer
 
         private async void treWeapons_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedWeapon();
             await DoRefreshPasteStatus();
         }
@@ -7358,6 +7395,8 @@ namespace Chummer
 
         private async void treArmor_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedArmor();
             await DoRefreshPasteStatus();
         }
@@ -7437,6 +7476,8 @@ namespace Chummer
 
         private async void treLifestyles_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedLifestyle();
             await DoRefreshPasteStatus();
         }
@@ -7562,15 +7603,20 @@ namespace Chummer
         {
             if (!(treLifestyles.SelectedNode?.Level > 0))
                 return;
-            IsRefreshing = true;
 
             // Locate the selected Lifestyle.
             if (!(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 return;
 
-            objLifestyle.Increments = nudLifestyleMonths.ValueAsInt;
-
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                objLifestyle.Increments = nudLifestyleMonths.ValueAsInt;
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
 
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -7578,6 +7624,8 @@ namespace Chummer
 
         private async void treGear_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedGear();
             await DoRefreshPasteStatus();
         }
@@ -7600,8 +7648,15 @@ namespace Chummer
                 if (!objGear.RefreshSingleFocusRating(treFoci, nudGearRating.ValueAsInt))
                 {
                     IsRefreshing = true;
-                    nudGearRating.Value = objGear.Rating;
-                    IsRefreshing = false;
+                    try
+                    {
+                        nudGearRating.Value = objGear.Rating;
+                    }
+                    finally
+                    {
+                        IsRefreshing = false;
+                    }
+
                     return;
                 }
             }
@@ -7958,16 +8013,24 @@ namespace Chummer
             if (IsRefreshing || !cboGearAttack.Enabled)
                 return;
 
-            IsRefreshing = true;
-            if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack,
-                                                                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboGearAttack, cboGearAttack,
+                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboGearSleaze_SelectedIndexChanged(object sender, EventArgs e)
@@ -7975,16 +8038,24 @@ namespace Chummer
             if (IsRefreshing || !cboGearSleaze.Enabled)
                 return;
 
-            IsRefreshing = true;
-            if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack,
-                                                                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboGearSleaze, cboGearAttack,
+                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboGearDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
@@ -7992,16 +8063,24 @@ namespace Chummer
             if (IsRefreshing || !cboGearDataProcessing.Enabled)
                 return;
 
-            IsRefreshing = true;
-            if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack,
-                                                                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboGearDataProcessing, cboGearAttack,
+                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboGearFirewall_SelectedIndexChanged(object sender, EventArgs e)
@@ -8009,16 +8088,24 @@ namespace Chummer
             if (IsRefreshing || !cboGearFirewall.Enabled)
                 return;
 
-            IsRefreshing = true;
-            if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboGearAttack, cboGearAttack,
-                                                                             cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboGearFirewall, cboGearAttack,
+                        cboGearSleaze, cboGearDataProcessing, cboGearFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboVehicleAttack_SelectedIndexChanged(object sender, EventArgs e)
@@ -8026,16 +8113,24 @@ namespace Chummer
             if (IsRefreshing || !cboVehicleAttack.Enabled)
                 return;
 
-            IsRefreshing = true;
-            if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                                                                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboVehicleAttack, cboVehicleAttack,
+                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboVehicleSleaze_SelectedIndexChanged(object sender, EventArgs e)
@@ -8043,16 +8138,24 @@ namespace Chummer
             if (IsRefreshing || !cboVehicleSleaze.Enabled)
                 return;
 
-            IsRefreshing = true;
-            if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                                                                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboVehicleSleaze, cboVehicleAttack,
+                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboVehicleFirewall_SelectedIndexChanged(object sender, EventArgs e)
@@ -8060,16 +8163,24 @@ namespace Chummer
             if (IsRefreshing || !cboVehicleFirewall.Enabled)
                 return;
 
-            IsRefreshing = true;
-            if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                                                                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboVehicleFirewall, cboVehicleAttack,
+                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboVehicleDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
@@ -8077,16 +8188,24 @@ namespace Chummer
             if (IsRefreshing || !cboVehicleDataProcessing.Enabled)
                 return;
 
-            IsRefreshing = true;
-            if (treGear.SelectedNode?.Tag is IHasMatrixAttributes objTarget
-                && await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboVehicleAttack, cboVehicleAttack,
-                                                                             cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
-            {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
+            if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
 
-            IsRefreshing = false;
+            IsRefreshing = true;
+            try
+            {
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboVehicleDataProcessing, cboVehicleAttack,
+                        cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboCyberwareAttack_SelectedIndexChanged(object sender, EventArgs e)
@@ -8094,19 +8213,24 @@ namespace Chummer
             if (IsRefreshing || !cboCyberwareAttack.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
-                                                                          cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            IsRefreshing = true;
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboCyberwareAttack, cboCyberwareAttack,
+                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboCyberwareSleaze_SelectedIndexChanged(object sender, EventArgs e)
@@ -8114,19 +8238,24 @@ namespace Chummer
             if (IsRefreshing || !cboCyberwareSleaze.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
-                                                                          cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            IsRefreshing = true;
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboCyberwareSleaze, cboCyberwareAttack,
+                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboCyberwareDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
@@ -8134,19 +8263,24 @@ namespace Chummer
             if (IsRefreshing || !cboCyberwareDataProcessing.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
-                                                                          cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            IsRefreshing = true;
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboCyberwareDataProcessing, cboCyberwareAttack,
+                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         private async void cboCyberwareFirewall_SelectedIndexChanged(object sender, EventArgs e)
@@ -8154,19 +8288,24 @@ namespace Chummer
             if (IsRefreshing || !cboCyberwareFirewall.Enabled)
                 return;
 
-            IsRefreshing = true;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
 
-            if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
-                                                                          cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+            IsRefreshing = true;
+            try
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                if (await objTarget.ProcessMatrixAttributeComboBoxChangeAsync(
+                        CharacterObject, cboCyberwareFirewall, cboCyberwareAttack,
+                        cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
-
-            IsRefreshing = false;
+            finally
+            {
+                IsRefreshing = false;
+            }
         }
 
         #endregion Additional Street Gear Tab Control Events
@@ -8175,6 +8314,8 @@ namespace Chummer
 
         private async void treCustomDrugs_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedDrug();
             await DoRefreshPasteStatus();
         }
@@ -8185,6 +8326,8 @@ namespace Chummer
 
         private async void treVehicles_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedVehicle();
             await DoRefreshPasteStatus();
         }
@@ -8303,8 +8446,14 @@ namespace Chummer
                             if (!objGear.RefreshSingleFocusRating(treFoci, nudVehicleRating.ValueAsInt))
                             {
                                 IsRefreshing = true;
-                                nudVehicleRating.Value = objGear.Rating;
-                                IsRefreshing = false;
+                                try
+                                {
+                                    nudVehicleRating.Value = objGear.Rating;
+                                }
+                                finally
+                                {
+                                    IsRefreshing = false;
+                                }
                                 return;
                             }
                         }
@@ -8390,6 +8539,8 @@ namespace Chummer
 
         private async void treSpells_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedSpell();
         }
 
@@ -8599,8 +8750,14 @@ namespace Chummer
                             if (!objGear.RefreshSingleFocusRating(treFoci, nudArmorRating.ValueAsInt))
                             {
                                 IsRefreshing = true;
-                                nudArmorRating.Value = objGear.Rating;
-                                IsRefreshing = false;
+                                try
+                                {
+                                    nudArmorRating.Value = objGear.Rating;
+                                }
+                                finally
+                                {
+                                    IsRefreshing = false;
+                                }
                                 return;
                             }
                         }
@@ -8746,6 +8903,8 @@ namespace Chummer
 
         private async void treComplexForms_AfterSelect(object sender, TreeViewEventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await RefreshSelectedComplexForm();
         }
 
@@ -8782,20 +8941,35 @@ namespace Chummer
 
         #region Additional AI Advanced Programs Tab Control Events
 
-        private void treAIPrograms_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treAIPrograms_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            // Locate the Program that is selected in the tree.
-            if (treAIPrograms.SelectedNode?.Tag is AIProgram objProgram)
-            {
-                lblAIProgramsRequires.Text = objProgram.DisplayRequiresProgram(GlobalSettings.Language);
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedAIProgram();
+        }
 
-                objProgram.SetSourceDetail(lblAIProgramsSource);
-            }
-            else
+        private async Task RefreshSelectedAIProgram()
+        {
+            IsRefreshing = true;
+            try
             {
-                lblAIProgramsRequires.Text = string.Empty;
-                lblAIProgramsSource.Text = string.Empty;
-                lblAIProgramsSource.SetToolTip(string.Empty);
+                // Locate the Program that is selected in the tree.
+                if (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is AIProgram objProgram)
+                {
+                    await lblAIProgramsRequires.DoThreadSafeAsync(
+                        async x => x.Text = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language));
+                    await objProgram.SetSourceDetailAsync(lblAIProgramsSource);
+                }
+                else
+                {
+                    await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblAIProgramsSource.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblAIProgramsSource.SetToolTipAsync(string.Empty);
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
             }
         }
 
@@ -8837,51 +9011,98 @@ namespace Chummer
             }
         }
 
-        private void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treMetamagic_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            switch (treMetamagic.SelectedNode?.Tag)
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedMetamagic();
+        }
+
+        private async Task RefreshSelectedMetamagic()
+        {
+            IsRefreshing = true;
+            try
             {
-                case Metamagic objMetamagic:
-                    {
-                        cmdDeleteMetamagic.Text = LanguageManager.GetString(objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho");
-                        cmdDeleteMetamagic.Enabled = objMetamagic.Grade >= 0;
-                        objMetamagic.SetSourceDetail(lblMetamagicSource);
+                switch (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                {
+                    case Metamagic objMetamagic:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync(
+                                    objMetamagic.SourceType
+                                    == Improvement.ImprovementSource.Metamagic
+                                        ? "Button_RemoveMetamagic"
+                                        : "Button_RemoveEcho");
+                                x.Enabled = objMetamagic.Grade >= 0;
+                            });
+                            await objMetamagic.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    case Art objArt:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync(
+                                    objArt.SourceType == Improvement.ImprovementSource.Metamagic
+                                        ? "Button_RemoveMetamagic"
+                                        : "Button_RemoveEcho");
+                                x.Enabled = objArt.Grade >= 0;
+                            });
+                            await objArt.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    case Spell objSpell:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync(
+                                    "Button_RemoveMetamagic");
+                                x.Enabled = objSpell.Grade >= 0;
+                            });
+                            await objSpell.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    case ComplexForm objComplexForm:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync("Button_RemoveEcho");
+                                x.Enabled = objComplexForm.Grade >= 0;
+                            });
+                            await objComplexForm.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    case Enhancement objEnhancement:
+                        {
+                            await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                            {
+                                x.Text = await LanguageManager.GetStringAsync(
+                                    objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic
+                                        ? "Button_RemoveMetamagic"
+                                        : "Button_RemoveEcho");
+                                x.Enabled = objEnhancement.Grade >= 0;
+                            });
+                            await objEnhancement.SetSourceDetailAsync(lblMetamagicSource);
+                            break;
+                        }
+                    default:
+                        await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
+                        {
+                            x.Text = await LanguageManager.GetStringAsync(
+                                CharacterObject.MAGEnabled
+                                    ? "Button_RemoveInitiateGrade"
+                                    : "Button_RemoveSubmersionGrade");
+                            x.Enabled = true;
+                        });
+                        await lblMetamagicSource.DoThreadSafeAsync(x => x.Text = string.Empty);
+                        await lblMetamagicSource.SetToolTipAsync(string.Empty);
                         break;
-                    }
-                case Art objArt:
-                    {
-                        cmdDeleteMetamagic.Text = LanguageManager.GetString(objArt.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho");
-                        cmdDeleteMetamagic.Enabled = objArt.Grade >= 0;
-                        objArt.SetSourceDetail(lblMetamagicSource);
-                        break;
-                    }
-                case Spell objSpell:
-                    {
-                        cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveMetamagic");
-                        cmdDeleteMetamagic.Enabled = objSpell.Grade >= 0;
-                        objSpell.SetSourceDetail(lblMetamagicSource);
-                        break;
-                    }
-                case ComplexForm objComplexForm:
-                    {
-                        cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveEcho");
-                        cmdDeleteMetamagic.Enabled = objComplexForm.Grade >= 0;
-                        objComplexForm.SetSourceDetail(lblMetamagicSource);
-                        break;
-                    }
-                case Enhancement objEnhancement:
-                    {
-                        cmdDeleteMetamagic.Text = LanguageManager.GetString(objEnhancement.SourceType == Improvement.ImprovementSource.Metamagic ? "Button_RemoveMetamagic" : "Button_RemoveEcho");
-                        cmdDeleteMetamagic.Enabled = objEnhancement.Grade >= 0;
-                        objEnhancement.SetSourceDetail(lblMetamagicSource);
-                        break;
-                    }
-                default:
-                    cmdDeleteMetamagic.Text = LanguageManager.GetString(CharacterObject.MAGEnabled ? "Button_RemoveInitiateGrade" : "Button_RemoveSubmersionGrade");
-                    cmdDeleteMetamagic.Enabled = true;
-                    lblMetamagicSource.Text = string.Empty;
-                    lblMetamagicSource.SetToolTip(string.Empty);
-                    break;
+                }
+            }
+            finally
+            {
+                IsRefreshing = false;
             }
         }
 
@@ -8897,52 +9118,78 @@ namespace Chummer
 
         #region Additional Critter Powers Tab Control Events
 
-        private void treCritterPowers_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treCritterPowers_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            // Look for the selected Critter Power.
-            if (treCritterPowers.SelectedNode?.Tag is CritterPower objPower)
-            {
-                cmdDeleteCritterPower.Enabled = objPower.Grade == 0;
-                lblCritterPowerName.Text = objPower.CurrentDisplayName;
-                lblCritterPowerCategory.Text = objPower.DisplayCategory(GlobalSettings.Language);
-                lblCritterPowerType.Text = objPower.DisplayType(GlobalSettings.Language);
-                lblCritterPowerAction.Text = objPower.DisplayAction(GlobalSettings.Language);
-                lblCritterPowerRange.Text = objPower.DisplayRange(GlobalSettings.Language);
-                lblCritterPowerDuration.Text = objPower.DisplayDuration(GlobalSettings.Language);
-                chkCritterPowerCount.Checked = objPower.CountTowardsLimit;
-                objPower.SetSourceDetail(lblCritterPowerSource);
+            if (IsRefreshing)
+                return;
+            await RefreshSelectedCritterPower();
+        }
 
-                if (objPower.PowerPoints > 0)
+        private async Task RefreshSelectedCritterPower()
+        {
+            IsRefreshing = true;
+            try
+            {
+                // Look for the selected Critter Power.
+                if (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is CritterPower objPower)
                 {
-                    lblCritterPowerPointCost.Text = objPower.PowerPoints.ToString(GlobalSettings.CultureInfo);
-                    lblCritterPowerPointCost.Visible = true;
-                    lblCritterPowerPointCostLabel.Visible = true;
+                    await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = objPower.Grade == 0);
+                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName);
+                    await lblCritterPowerCategory.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayCategoryAsync(GlobalSettings.Language));
+                    await lblCritterPowerType.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayTypeAsync(GlobalSettings.Language));
+                    await lblCritterPowerAction.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayActionAsync(GlobalSettings.Language));
+                    await lblCritterPowerRange.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayRangeAsync(GlobalSettings.Language));
+                    await lblCritterPowerDuration.DoThreadSafeAsync(
+                        async x => x.Text = await objPower.DisplayDurationAsync(GlobalSettings.Language));
+                    await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = objPower.CountTowardsLimit);
+                    await objPower.SetSourceDetailAsync(lblCritterPowerSource);
+
+                    if (objPower.PowerPoints > 0)
+                    {
+                        await lblCritterPowerPointCost.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objPower.PowerPoints.ToString(GlobalSettings
+                                                                       .CultureInfo);
+                            x.Visible = true;
+                        });
+                        await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    }
+                    else
+                    {
+                        await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    }
                 }
                 else
                 {
-                    lblCritterPowerPointCost.Visible = false;
-                    lblCritterPowerPointCostLabel.Visible = false;
+                    await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = false);
+                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerAction.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerDuration.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = false);
+                    await lblCritterPowerSource.DoThreadSafeAsync(x => x.Text = string.Empty);
+                    await lblCritterPowerSource.SetToolTipAsync(null);
+                    await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false);
                 }
             }
-            else
+            finally
             {
-                cmdDeleteCritterPower.Enabled = false;
-                lblCritterPowerName.Text = string.Empty;
-                lblCritterPowerCategory.Text = string.Empty;
-                lblCritterPowerType.Text = string.Empty;
-                lblCritterPowerAction.Text = string.Empty;
-                lblCritterPowerRange.Text = string.Empty;
-                lblCritterPowerDuration.Text = string.Empty;
-                chkCritterPowerCount.Checked = false;
-                lblCritterPowerSource.Text = string.Empty;
-                lblCritterPowerSource.SetToolTip(null);
-                lblCritterPowerPointCost.Visible = false;
-                lblCritterPowerPointCostLabel.Visible = false;
+                IsRefreshing = false;
             }
         }
 
         private void chkCritterPowerCount_CheckedChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             // Locate the selected Critter Power.
             if (!(treCritterPowers.SelectedNode?.Tag is CritterPower objPower))
                 return;
@@ -9050,11 +9297,15 @@ namespace Chummer
 
         private async void tabCharacterTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await DoRefreshPasteStatus();
         }
 
         private async void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             await DoRefreshPasteStatus();
         }
 
@@ -9182,22 +9433,22 @@ namespace Chummer
             return intAtt;
         }
 
-        private string BuildAttributes(ICollection<CharacterAttrib> attribs, ICollection<CharacterAttrib> extraAttribs = null, bool special = false)
+        private async ValueTask<string> BuildAttributes(IReadOnlyCollection<CharacterAttrib> attribs, IReadOnlyCollection<CharacterAttrib> extraAttribs = null, bool special = false)
         {
             int bp = CalculateAttributeBP(attribs, extraAttribs);
-            string s = bp.ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Karma");
+            string s = bp.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Space") + await LanguageManager.GetStringAsync("String_Karma");
             if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
             {
                 int att = CalculateAttributePriorityPoints(attribs, extraAttribs);
                 int total = special ? CharacterObject.TotalSpecial : CharacterObject.TotalAttributes;
                 if (bp > 0)
                 {
-                    s = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_OverPriorityPoints"),
+                    s = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_OverPriorityPoints"),
                         total - att, total, bp);
                 }
                 else
                 {
-                    s = (total - att).ToString(GlobalSettings.CultureInfo) + LanguageManager.GetString("String_Of") + total.ToString(GlobalSettings.CultureInfo);
+                    s = (total - att).ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_Of") + total.ToString(GlobalSettings.CultureInfo);
                 }
             }
             return s;
@@ -9828,9 +10079,9 @@ namespace Chummer
                 await lblContactPoints.DoThreadSafeAsync(x => x.Text = strContactPoints);
             }
 
-            string strTemp = BuildAttributes(CharacterObject.AttributeSection.AttributeList);
+            string strTemp = await BuildAttributes(CharacterObject.AttributeSection.AttributeList);
             await lblAttributesBP.DoThreadSafeAsync(x => x.Text = strTemp);
-            string strTemp2 = BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
+            string strTemp2 = await BuildAttributes(CharacterObject.AttributeSection.SpecialAttributeList, null, true);
             await lblPBuildSpecial.DoThreadSafeAsync(x => x.Text = strTemp2);
 
             await lblMartialArtsBP.DoThreadSafeAsync(x => x.Text = intMartialArtsPoints.ToString(GlobalSettings.CultureInfo) + strSpace + strPoints);
@@ -9902,7 +10153,7 @@ namespace Chummer
             return intKarmaPointsRemain;
         }
 
-        private async ValueTask UpdateSkillRelatedInfo()
+        private async Task UpdateSkillRelatedInfo()
         {
             string strKarma = await LanguageManager.GetStringAsync("String_Karma");
             string strOf = await LanguageManager.GetStringAsync("String_Of");
@@ -10054,12 +10305,10 @@ namespace Chummer
             SkipUpdate = true;
             try
             {
-                using (CursorWait.New(this))
+                using (CursorWait.New(this, true))
                 {
                     // TODO: DataBind these wherever possible
-
-                    await UpdateSkillRelatedInfo();
-
+                    
                     // Calculate the number of Build Points remaining.
                     await CalculateBP();
                     await CalculateNuyen();
@@ -10092,7 +10341,9 @@ namespace Chummer
                     await Task.WhenAll(RefreshSelectedQuality(), RefreshSelectedCyberware(), RefreshSelectedArmor(),
                                        RefreshSelectedGear(), RefreshSelectedDrug(), RefreshSelectedLifestyle(),
                                        RefreshSelectedVehicle(), RefreshSelectedWeapon(), RefreshSelectedSpell(),
-                                       RefreshSelectedComplexForm(), UpdateInitiationCost());
+                                       RefreshSelectedComplexForm(), RefreshSelectedCritterPower(),
+                                       RefreshSelectedAIProgram(), RefreshSelectedMetamagic(),
+                                       RefreshSelectedMartialArt(), UpdateInitiationCost(), UpdateSkillRelatedInfo());
 
                     if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                     {
@@ -10305,515 +10556,681 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed piece of Cyberware.
         /// </summary>
-        public async Task RefreshSelectedCyberware()
+        private async Task RefreshSelectedCyberware()
         {
             IsRefreshing = true;
-            flpCyberware.SuspendLayout();
-
-            if (treCyberware.SelectedNode == null || treCyberware.SelectedNode.Level == 0)
+            await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbCyberwareCommon.Visible = false;
-                gpbCyberwareMatrix.Visible = false;
+                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0))
+                {
+                    await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                // Buttons
-                cmdDeleteCyberware.Enabled = treCyberware.SelectedNode?.Tag is ICanRemove;
+                    // Buttons
+                    await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = treCyberware.SelectedNode?.Tag is ICanRemove);
+                    return;
+                }
 
-                IsRefreshing = false;
-                flpCyberware.ResumeLayout();
-                return;
-            }
+                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                {
+                    await lblCyberwareRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
+                                                                        GlobalSettings.CultureInfo,
+                                                                        await LanguageManager.GetStringAsync(
+                                                                            "Label_RatingFormat"),
+                                                                        await LanguageManager.GetStringAsync(
+                                                                            objHasRating.RatingLabel)));
+                }
 
-            if (treCyberware.SelectedNode?.Tag is IHasRating objHasRating)
-            {
-                lblCyberwareRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
+                string strESSFormat = CharacterObjectSettings.EssenceFormat;
+                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                {
+                    await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblCyberwareSource);
+                }
+                else
+                {
+                    await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
 
-            string strESSFormat = CharacterObjectSettings.EssenceFormat;
-            if (treCyberware.SelectedNode?.Tag is IHasSource objSelected)
-            {
-                lblCyberwareSourceLabel.Visible = true;
-                lblCyberwareSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblCyberwareSource);
-            }
-            else
-            {
-                lblCyberwareSourceLabel.Visible = false;
-                lblCyberwareSource.Visible = false;
-            }
+                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot
+                    && ImprovementManager
+                       .GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.Nuyen, "Stolen")
+                       .Count > 0)
+                {
+                    await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = true);
+                    await chkCyberwareStolen.DoThreadSafeAsync(x => x.Checked = loot.Stolen);
+                }
+                else
+                {
+                    await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = false);
+                }
 
-            if (treCyberware.SelectedNode?.Tag is IHasStolenProperty loot && ImprovementManager
-                                                                             .GetCachedImprovementListForValueOf(
-                                                                                 CharacterObject,
-                                                                                 Improvement.ImprovementType.Nuyen,
-                                                                                 "Stolen").Count > 0)
-            {
-                chkCyberwareStolen.Visible = true;
-                chkCyberwareStolen.Checked = loot.Stolen;
-            }
-            else
-            {
-                chkCyberwareStolen.Visible = false;
-            }
-
-            switch (treCyberware.SelectedNode?.Tag)
-            {
-                // Locate the selected piece of Cyberware.
-                case Cyberware objCyberware:
+                switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                {
+                    // Locate the selected piece of Cyberware.
+                    case Cyberware objCyberware:
                     {
-                        gpbCyberwareCommon.Visible = true;
-                        gpbCyberwareMatrix.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware;
+                        await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware);
 
                         // Buttons
-                        cmdDeleteCyberware.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
+                        await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID));
 
                         // gpbCyberwareCommon
-                        lblCyberwareName.Text = objCyberware.CurrentDisplayName;
-                        lblCyberwareCategory.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language);
+                        await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayName);
+                        await lblCyberwareCategory.DoThreadSafeAsync(async x => x.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language));
                         // Cyberware Grade is not available for Genetech items.
                         // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
-                        cboCyberwareGrade.Enabled = objCyberware.Parent == null && !objCyberware.Suite && string.IsNullOrWhiteSpace(objCyberware.ForceGrade);
-                        bool blnIgnoreSecondHand = (await objCyberware.GetNodeXPathAsync())?.SelectSingleNode("nosecondhand") != null;
-                        PopulateCyberwareGradeList(objCyberware.SourceType == Improvement.ImprovementSource.Bioware, blnIgnoreSecondHand, cboCyberwareGrade.Enabled ? string.Empty : objCyberware.Grade.Name);
-                        lblCyberwareGradeLabel.Visible = true;
-                        cboCyberwareGrade.Visible = true;
-                        cboCyberwareGrade.SelectedValue = objCyberware.Grade.Name;
-                        if (cboCyberwareGrade.SelectedIndex == -1 && cboCyberwareGrade.Items.Count > 0)
-                            cboCyberwareGrade.SelectedIndex = 0;
-                        lblCyberwareEssenceLabel.Visible = true;
-                        lblCyberwareEssence.Visible = true;
-                        if (objCyberware.Parent == null)
-                            lblCyberwareEssence.Text = objCyberware.CalculatedESS.ToString(strESSFormat, GlobalSettings.CultureInfo);
-                        else if (objCyberware.AddToParentESS)
-                            lblCyberwareEssence.Text = '+' + objCyberware.CalculatedESS.ToString(strESSFormat, GlobalSettings.CultureInfo);
+                        await cboCyberwareGrade.DoThreadSafeAsync(x => x.Enabled = objCyberware.Parent == null
+                                                                      && !objCyberware.Suite
+                                                                      && string.IsNullOrWhiteSpace(
+                                                                          objCyberware.ForceGrade));
+                        bool blnIgnoreSecondHand
+                            = (await objCyberware.GetNodeXPathAsync())?.SelectSingleNode("nosecondhand") != null;
+                        await PopulateCyberwareGradeList(
+                            objCyberware.SourceType == Improvement.ImprovementSource.Bioware,
+                            blnIgnoreSecondHand,
+                            await cboCyberwareGrade.DoThreadSafeFuncAsync(x => x.Enabled) ? string.Empty : objCyberware.Grade.Name);
+                        await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await cboCyberwareGrade.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.SelectedValue = objCyberware.Grade.Name;
+                            if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                                x.SelectedIndex = 0;
+                        });
+                        await lblCyberwareEssenceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = true);
+                        if (objCyberware.Parent == null || objCyberware.AddToParentESS)
+                        {
+                            decimal decCalculatedEss = objCyberware.CalculatedESS;
+                            if (objCyberware.Parent == null)
+                                await lblCyberwareEssence.DoThreadSafeAsync(x => x.Text = decCalculatedEss.ToString(strESSFormat, GlobalSettings.CultureInfo));
+                            else
+                                await lblCyberwareEssence.DoThreadSafeAsync(x => x.Text = '+' + decCalculatedEss.ToString(strESSFormat, GlobalSettings.CultureInfo));
+                        }
                         else
-                            lblCyberwareEssence.Text = 0.0m.ToString(strESSFormat, GlobalSettings.CultureInfo);
-                        lblCyberwareAvail.Text = objCyberware.DisplayTotalAvail;
-                        cmdCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
+                            await lblCyberwareEssence.DoThreadSafeAsync(x => x.Text = 0.0m.ToString(strESSFormat, GlobalSettings.CultureInfo));
+                        await lblCyberwareAvail.DoThreadSafeAsync(x => x.Text = objCyberware.DisplayTotalAvail);
+                        await cmdCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount));
                         // Enable and set the Rating values as needed.
                         if (objCyberware.MaxRating == 0)
                         {
-                            nudCyberwareRating.Maximum = 0;
-                            nudCyberwareRating.Minimum = 0;
-                            nudCyberwareRating.Value = 0;
-                            nudCyberwareRating.Visible = false;
-                            lblCyberwareRatingLabel.Visible = false;
+                            await nudCyberwareRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Maximum = 0;
+                                x.Minimum = 0;
+                                x.Value = 0;
+                                x.Visible = false;
+                            });
+                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            nudCyberwareRating.Maximum = objCyberware.MaxRating;
-                            nudCyberwareRating.Minimum = objCyberware.MinRating;
-                            nudCyberwareRating.Value = objCyberware.Rating;
-                            nudCyberwareRating.Visible = true;
-                            nudCyberwareRating.Enabled = nudCyberwareRating.Maximum != nudCyberwareRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID);
-                            lblCyberwareRatingLabel.Visible = true;
+                            await nudCyberwareRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Maximum = objCyberware.MaxRating;
+                                x.Minimum = objCyberware.MinRating;
+                                x.Value = objCyberware.Rating;
+                                x.Visible = true;
+                                x.Enabled = x.Maximum != x.Minimum
+                                            && string.IsNullOrEmpty(objCyberware.ParentID);
+                            });
+                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
 
-                        lblCyberwareCapacity.Text = objCyberware.DisplayCapacity;
-                        lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal) || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
+                        await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objCyberware.DisplayCapacity);
+                        await lblCyberwareCost.DoThreadSafeAsync(x => x.Text
+                                                                     = objCyberware.TotalCost.ToString(
+                                                                         CharacterObjectSettings.NuyenFormat,
+                                                                         GlobalSettings.CultureInfo) + '¥');
+                        if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal)
+                            || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                         {
-                            lblCyberlimbAGILabel.Visible = true;
-                            lblCyberlimbAGI.Visible = true;
-                            lblCyberlimbAGI.Text = objCyberware.GetAttributeTotalValue("AGI").ToString(GlobalSettings.CultureInfo);
-                            lblCyberlimbSTRLabel.Visible = true;
-                            lblCyberlimbSTR.Visible = true;
-                            lblCyberlimbSTR.Text = objCyberware.GetAttributeTotalValue("STR").ToString(GlobalSettings.CultureInfo);
+                            await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblCyberlimbAGI.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objCyberware.GetAttributeTotalValue("AGI").ToString(GlobalSettings.CultureInfo);
+                            });
+                            await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblCyberlimbSTR.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objCyberware.GetAttributeTotalValue("STR")
+                                                     .ToString(GlobalSettings.CultureInfo);
+                            });
                         }
                         else
                         {
-                            lblCyberlimbAGILabel.Visible = false;
-                            lblCyberlimbAGI.Visible = false;
-                            lblCyberlimbSTRLabel.Visible = false;
-                            lblCyberlimbSTR.Visible = false;
+                            await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkCyberwareBlackMarketDiscount.Enabled = CharacterObject.GenerateBlackMarketMappings(await (await CharacterObject
-                                    .LoadDataXPathAsync(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
-                                                            ? "cyberware.xml"
-                                                            : "bioware.xml")).SelectSingleNodeAndCacheExpressionAsync("/chummer"))
-                                .Contains(objCyberware.Category);
-                            chkCyberwareBlackMarketDiscount.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
-                                ? objCyberware.Parent?.DiscountCost == true
-                                : objCyberware.DiscountCost;
+                            await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = CharacterObject.GenerateBlackMarketMappings(
+                                                               await (await CharacterObject
+                                                                       .LoadDataXPathAsync(
+                                                                           objCyberware.SourceType
+                                                                           == Improvement.ImprovementSource.Cyberware
+                                                                               ? "cyberware.xml"
+                                                                               : "bioware.xml"))
+                                                                   .SelectSingleNodeAndCacheExpressionAsync("/chummer"))
+                                                           .Contains(objCyberware.Category);
+                                x.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
+                                    ? objCyberware.Parent?.DiscountCost == true
+                                    : objCyberware.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkCyberwareBlackMarketDiscount.Enabled = false;
-                            chkCyberwareBlackMarketDiscount.Checked = false;
+                            await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
-                        chkPrototypeTranshuman.Visible = CharacterObject.IsPrototypeTranshuman;
-                        chkPrototypeTranshuman.Enabled = objCyberware.Parent == null && objCyberware.SourceType == Improvement.ImprovementSource.Bioware;
-                        chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman && CharacterObject.IsPrototypeTranshuman;
+                        await chkPrototypeTranshuman.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = CharacterObject.IsPrototypeTranshuman;
+                            x.Enabled = objCyberware.Parent == null
+                                        && objCyberware.SourceType == Improvement.ImprovementSource.Bioware;
+                            x.Checked = objCyberware.PrototypeTranshuman && CharacterObject.IsPrototypeTranshuman;
+                        });
 
                         // gpbCyberwareMatrix
-                        if (gpbCyberwareMatrix.Visible)
+                        if (await gpbCyberwareMatrix.DoThreadSafeFuncAsync(x => x.Visible))
                         {
                             int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
-                            lblCyberDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                            await objCyberware.RefreshMatrixAttributeComboBoxesAsync(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
+                            await lblCyberDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                            await objCyberware.RefreshMatrixAttributeComboBoxesAsync(
+                                cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing,
+                                cboCyberwareFirewall);
 
-                            chkCyberwareActiveCommlink.Visible = objCyberware.IsCommlink;
-                            chkCyberwareActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+                            await chkCyberwareActiveCommlink.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = objCyberware.IsCommlink;
+                                x.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+                            });
                             if (CharacterObject.IsAI)
                             {
-                                chkCyberwareHomeNode.Visible = true;
-                                chkCyberwareHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
-                                chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible &&
-                                                               objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                                await chkCyberwareHomeNode.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Checked = objCyberware.IsHomeNode(CharacterObject);
+                                    x.Enabled = chkCyberwareActiveCommlink.Visible &&
+                                                objCyberware.GetTotalMatrixAttribute("Program Limit")
+                                                >= (CharacterObject.DEP.TotalValue > intDeviceRating
+                                                    ? 2
+                                                    : 1);
+                                });
                             }
                             else
-                                chkCyberwareHomeNode.Visible = false;
+                                await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
-                        treCyberware.SelectedNode.Text = objCyberware.CurrentDisplayName;
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName);
                         break;
                     }
-                case Gear objGear:
+                    case Gear objGear:
                     {
-                        gpbCyberwareCommon.Visible = true;
-                        gpbCyberwareMatrix.Visible = true;
+                        await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteCyberware.Enabled = !objGear.IncludedInParent;
+                        await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
 
                         // gpbCyberwareCommon
-                        lblCyberwareName.Text = objGear.CurrentDisplayNameShort;
-                        lblCyberwareCategory.Text = objGear.DisplayCategory(GlobalSettings.Language);
-                        lblCyberwareGradeLabel.Visible = false;
-                        cboCyberwareGrade.Visible = false;
-                        lblCyberwareEssenceLabel.Visible = false;
-                        lblCyberwareEssence.Visible = false;
-                        lblCyberwareAvail.Text = objGear.DisplayTotalAvail;
-                        cmdCyberwareChangeMount.Visible = false;
+                        await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
+                        await lblCyberwareCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
+                        await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await cboCyberwareGrade.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCyberwareEssenceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCyberwareAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
+                        await cmdCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
                         int intGearMaxRatingValue = objGear.MaxRatingValue;
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                         {
                             int intGearMinRatingValue = objGear.MinRatingValue;
-                            if (objGear.MinRatingValue > 0)
-                                nudCyberwareRating.Minimum = intGearMinRatingValue;
-                            else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                                nudCyberwareRating.Minimum = 0;
-                            else
-                                nudCyberwareRating.Minimum = 1;
-                            nudCyberwareRating.Maximum = intGearMaxRatingValue;
-                            nudCyberwareRating.Value = objGear.Rating;
-                            nudCyberwareRating.Enabled = nudCyberwareRating.Minimum != nudCyberwareRating.Maximum && string.IsNullOrEmpty(objGear.ParentID);
-                            nudCyberwareRating.Visible = true;
-                            lblCyberwareRatingLabel.Visible = true;
+                            await nudCyberwareRating.DoThreadSafeAsync(x =>
+                            {
+                                if (objGear.MinRatingValue > 0)
+                                    x.Minimum = intGearMinRatingValue;
+                                else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
+                                    x.Minimum = 0;
+                                else
+                                    x.Minimum = 1;
+                                x.Maximum = intGearMaxRatingValue;
+                                x.Value = objGear.Rating;
+                                x.Enabled = nudCyberwareRating.Minimum != nudCyberwareRating.Maximum
+                                            && string.IsNullOrEmpty(objGear.ParentID);
+                                x.Visible = true;
+                            });
+                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
                         else
                         {
-                            nudCyberwareRating.Minimum = 0;
-                            nudCyberwareRating.Maximum = 0;
-                            nudCyberwareRating.Visible = false;
-                            lblCyberwareRatingLabel.Visible = false;
+                            await nudCyberwareRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Minimum = 0;
+                                x.Maximum = 0;
+                                x.Visible = false;
+                            });
+                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
-                        lblCyberwareCapacity.Text = objGear.DisplayCapacity;
-                        lblCyberwareCost.Text =
-                            objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblCyberlimbAGILabel.Visible = false;
-                        lblCyberlimbAGI.Visible = false;
-                        lblCyberlimbSTRLabel.Visible = false;
-                        lblCyberlimbSTR.Visible = false;
+                        await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity);
+                        await lblCyberwareCost.DoThreadSafeAsync(x => x.Text =
+                                                                     objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
+                                                                     + '¥');
+                        await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false);
 
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkCyberwareBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("gear.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objGear.Category);
-                            chkCyberwareBlackMarketDiscount.Checked = objGear.IncludedInParent
-                                ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
-                                : objGear.DiscountCost;
+                            await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objGear.IncludedInParent && CharacterObject
+                                                                         .GenerateBlackMarketMappings(
+                                                                             await (await CharacterObject
+                                                                                     .LoadDataXPathAsync("gear.xml"))
+                                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                     "/chummer"))
+                                                                         .Contains(objGear.Category);
+                                x.Checked = objGear.IncludedInParent
+                                    ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                    : objGear.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkCyberwareBlackMarketDiscount.Enabled = false;
-                            chkCyberwareBlackMarketDiscount.Checked = false;
+                            await chkCyberwareBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
-                        chkPrototypeTranshuman.Visible = false;
+                        await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = false);
 
                         // gpbCyberwareMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                        lblCyberDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objGear.RefreshMatrixAttributeComboBoxesAsync(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
+                        await lblCyberDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objGear.RefreshMatrixAttributeComboBoxesAsync(cboCyberwareAttack, cboCyberwareSleaze,
+                                                                            cboCyberwareDataProcessing,
+                                                                            cboCyberwareFirewall);
 
-                        chkCyberwareActiveCommlink.Visible = objGear.IsCommlink;
-                        chkCyberwareActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        await chkCyberwareActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objGear.IsCommlink;
+                            x.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkCyberwareHomeNode.Visible = true;
-                            chkCyberwareHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                            chkCyberwareHomeNode.Enabled = chkCyberwareActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkCyberwareHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objGear.IsHomeNode(CharacterObject);
+                                x.Enabled = chkCyberwareActiveCommlink.Visible
+                                            && objGear.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating
+                                                ? 2
+                                                : 1);
+                            });
                         }
                         else
-                            chkCyberwareHomeNode.Visible = false;
+                            await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
-                        treCyberware.SelectedNode.Text = objGear.CurrentDisplayName;
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
                         break;
                     }
+                }
             }
-            IsRefreshing = false;
-            flpCyberware.ResumeLayout();
+            finally
+            {
+                await flpCyberware.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
+            }
         }
 
         /// <summary>
         /// Refresh the information for the currently displayed Weapon.
         /// </summary>
-        public async Task RefreshSelectedWeapon()
+        private async Task RefreshSelectedWeapon()
         {
             IsRefreshing = true;
-            flpWeapons.SuspendLayout();
-
-            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
+            await flpWeapons.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbWeaponsCommon.Visible = false;
-                gpbWeaponsWeapon.Visible = false;
-                gpbWeaponsMatrix.Visible = false;
+                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0))
+                {
+                    await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                // Buttons
-                cmdDeleteWeapon.Enabled = treWeapons.SelectedNode?.Tag is ICanRemove;
+                    // Buttons
+                    await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = treWeapons.SelectedNode?.Tag is ICanRemove);
+                    return;
+                }
 
-                IsRefreshing = false;
-                flpWeapons.ResumeLayout();
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                {
+                    await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblWeaponSource);
+                }
+                else
+                {
+                    await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
 
-                return;
-            }
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            if (treWeapons.SelectedNode?.Tag is IHasSource objSelected)
-            {
-                lblWeaponSourceLabel.Visible = true;
-                lblWeaponSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblWeaponSource);
-            }
-            else
-            {
-                lblWeaponSourceLabel.Visible = false;
-                lblWeaponSource.Visible = false;
-            }
+                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                {
+                    await lblWeaponRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
+                                                                     GlobalSettings.CultureInfo,
+                                                                     await LanguageManager.GetStringAsync(
+                                                                         "Label_RatingFormat"),
+                                                                     await LanguageManager.GetStringAsync(
+                                                                         objHasRating.RatingLabel)));
+                }
 
-            if (treWeapons.SelectedNode?.Tag is IHasRating objHasRating)
-            {
-                lblWeaponRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
+                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot
+                    && ImprovementManager
+                       .GetCachedImprovementListForValueOf(
+                           CharacterObject,
+                           Improvement.ImprovementType.Nuyen,
+                           "Stolen").Count > 0)
+                {
+                    await chkWeaponStolen.DoThreadSafeAsync(x => x.Visible = true);
+                    await chkWeaponStolen.DoThreadSafeAsync(x => x.Checked = loot.Stolen);
+                }
+                else
+                {
+                    await chkWeaponStolen.DoThreadSafeAsync(x => x.Visible = false);
+                }
 
-            if (treWeapons.SelectedNode?.Tag is IHasStolenProperty loot && ImprovementManager
-                                                                           .GetCachedImprovementListForValueOf(
-                                                                               CharacterObject,
-                                                                               Improvement.ImprovementType.Nuyen,
-                                                                               "Stolen").Count > 0)
-            {
-                chkWeaponStolen.Visible = true;
-                chkWeaponStolen.Checked = loot.Stolen;
-            }
-            else
-            {
-                chkWeaponStolen.Visible = false;
-            }
-
-            switch (treWeapons.SelectedNode?.Tag)
-            {
-                case Weapon objWeapon:
+                switch (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                {
+                    case Weapon objWeapon:
                     {
-                        gpbWeaponsCommon.Visible = true;
-                        gpbWeaponsWeapon.Visible = true;
-                        gpbWeaponsMatrix.Visible = true;
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteWeapon.Enabled = !objWeapon.IncludedInWeapon &&
-                                                  !objWeapon.Cyberware &&
-                                                  objWeapon.Category != "Gear" &&
-                                                  !objWeapon.Category.StartsWith("Quality", StringComparison.Ordinal) &&
-                                                  string.IsNullOrEmpty(objWeapon.ParentID);
+                        await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objWeapon.IncludedInWeapon &&
+                                                                    !objWeapon.Cyberware &&
+                                                                    objWeapon.Category != "Gear" &&
+                                                                    !objWeapon.Category.StartsWith(
+                                                                        "Quality", StringComparison.Ordinal) &&
+                                                                    string.IsNullOrEmpty(objWeapon.ParentID));
 
                         // gpbWeaponsCommon
-                        lblWeaponName.Text = objWeapon.CurrentDisplayName;
-                        lblWeaponCategory.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
-                        lblWeaponRatingLabel.Visible = false;
-                        lblWeaponRating.Visible = false;
-                        lblWeaponCapacityLabel.Visible = false;
-                        lblWeaponCapacity.Visible = false;
-                        lblWeaponAvail.Text = objWeapon.DisplayTotalAvail;
-                        lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblWeaponSlotsLabel.Visible = true;
-                        lblWeaponSlots.Visible = true;
+                        await lblWeaponName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
+                        await lblWeaponCategory.DoThreadSafeAsync(async x => x.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language));
+                        await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail);
+                        await lblWeaponCost.DoThreadSafeAsync(x => x.Text
+                                                                  = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                      GlobalSettings.CultureInfo) + '¥');
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true);
                         if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                         {
-                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                StringComparison.OrdinalIgnoreCase))
                             {
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdSlotsText))
                                 {
                                     foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc(
                                                  '/', StringSplitOptions.RemoveEmptyEntries))
-                                        sbdSlotsText.Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
-                                                    .Append('/');
+                                        sbdSlotsText
+                                            .Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
+                                            .Append('/');
                                     if (sbdSlotsText.Length > 0)
                                         --sbdSlotsText.Length;
-                                    lblWeaponSlots.Text = sbdSlotsText.ToString();
+                                    await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString());
                                 }
                             }
                             else
-                                lblWeaponSlots.Text = objWeapon.AccessoryMounts;
+                                await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = objWeapon.AccessoryMounts);
                         }
                         else
-                            lblWeaponSlots.Text = await LanguageManager.GetStringAsync("String_None");
-                        lblWeaponConcealLabel.Visible = true;
-                        lblWeaponConceal.Visible = true;
-                        lblWeaponConceal.Text = objWeapon.DisplayConcealability;
-                        chkWeaponEquipped.Text
-                            = await LanguageManager.GetStringAsync(objWeapon.Parent == null
-                                                                       ? "Checkbox_Equipped"
-                                                                       : "Checkbox_Installed");
-                        chkWeaponEquipped.Enabled = !objWeapon.IncludedInWeapon;
-                        chkWeaponEquipped.Checked = objWeapon.Equipped;
-                        chkIncludedInWeapon.Visible = objWeapon.Parent != null;
-                        chkIncludedInWeapon.Enabled = false;
-                        chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
+                            await lblWeaponSlots.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
+
+                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponConceal.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeapon.DisplayConcealability;
+                        });
+                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
+                        {
+                            x.Text = await LanguageManager.GetStringAsync(objWeapon.Parent == null
+                                                                              ? "Checkbox_Equipped"
+                                                                              : "Checkbox_Installed");
+                            x.Enabled = !objWeapon.IncludedInWeapon;
+                            x.Checked = objWeapon.Equipped;
+                        });
+                        await chkIncludedInWeapon.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objWeapon.Parent != null;
+                            x.Enabled = false;
+                            x.Checked = objWeapon.IncludedInWeapon;
+                        });
 
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("weapons.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objWeapon.Category);
-                            chkWeaponBlackMarketDiscount.Checked = objWeapon.IncludedInWeapon
-                                ? objWeapon.Parent?.DiscountCost == true
-                                : objWeapon.DiscountCost;
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
+                                                                           .GenerateBlackMarketMappings(
+                                                                               await (await CharacterObject
+                                                                                       .LoadDataXPathAsync(
+                                                                                           "weapons.xml"))
+                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                       "/chummer"))
+                                                                           .Contains(objWeapon.Category);
+                                x.Checked = objWeapon.IncludedInWeapon
+                                    ? objWeapon.Parent?.DiscountCost == true
+                                    : objWeapon.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = false;
-                            chkWeaponBlackMarketDiscount.Checked = false;
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
                         // gpbWeaponsWeapon
-                        gpbWeaponsWeapon.Text = await LanguageManager.GetStringAsync("String_Weapon");
-                        lblWeaponDamageLabel.Visible = true;
-                        lblWeaponDamage.Visible = true;
-                        lblWeaponDamage.Text = objWeapon.DisplayDamage;
-                        lblWeaponAPLabel.Visible = true;
-                        lblWeaponAP.Visible = true;
-                        lblWeaponAP.Text = objWeapon.DisplayTotalAP;
-                        lblWeaponAccuracyLabel.Visible = true;
-                        lblWeaponAccuracy.Visible = true;
-                        lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
-                        lblWeaponDicePoolLabel.Visible = true;
-                        lblWeaponDicePool.Visible = true;
-                        lblWeaponDicePool.Text = objWeapon.DicePool.ToString(GlobalSettings.CultureInfo);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_Weapon"));
+                        await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponDamage.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeapon.DisplayDamage;
+                        });
+                        await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponAP.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeapon.DisplayTotalAP;
+                        });
+                        await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponAccuracy.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeapon.DisplayAccuracy;
+                        });
+                        await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponDicePool.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeapon.DicePool.ToString(GlobalSettings.CultureInfo);
+                        });
                         await lblWeaponDicePool.SetToolTipAsync(objWeapon.DicePoolTooltip);
                         if (objWeapon.RangeType == "Ranged")
                         {
-                            lblWeaponReachLabel.Visible = false;
-                            lblWeaponReach.Visible = false;
-                            lblWeaponRCLabel.Visible = true;
-                            lblWeaponRC.Visible = true;
-                            lblWeaponRC.Text = objWeapon.DisplayTotalRC;
+                            await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRC.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayTotalRC;
+                            });
                             await lblWeaponRC.SetToolTipAsync(objWeapon.RCToolTip);
-                            lblWeaponAmmoLabel.Visible = true;
-                            lblWeaponAmmo.Visible = true;
-                            lblWeaponAmmo.Text = objWeapon.DisplayAmmo;
-                            lblWeaponModeLabel.Visible = true;
-                            lblWeaponMode.Visible = true;
-                            lblWeaponMode.Text = objWeapon.DisplayMode;
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAmmo.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayAmmo;
+                            });
+                            await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponMode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayMode;
+                            });
 
-                            tlpWeaponsRanges.Visible = true;
-                            lblWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
-                            lblWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
-                            Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
-                            lblWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
-                            lblWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
-                            lblWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
-                            lblWeaponRangeExtremeLabel.Text = objWeapon.RangeModifier("Extreme");
-                            lblWeaponRangeShort.Text = dictionaryRanges["short"];
-                            lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                            lblWeaponRangeLong.Text = dictionaryRanges["long"];
-                            lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                            lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                            lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                            lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                            lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                            await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRangeMain.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange);
+                            await lblWeaponRangeAlternate.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange);
+                            Dictionary<string, string> dictionaryRanges
+                                = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
+                            await lblWeaponRangeShortLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"));
+                            await lblWeaponRangeMediumLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Medium"));
+                            await lblWeaponRangeLongLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Long"));
+                            await lblWeaponRangeExtremeLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"));
+                            await lblWeaponRangeShort.DoThreadSafeAsync(x => x.Text = dictionaryRanges["short"]);
+                            await lblWeaponRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["medium"]);
+                            await lblWeaponRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["long"]);
+                            await lblWeaponRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["extreme"]);
+                            await lblWeaponAlternateRangeShort.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateshort"]);
+                            await lblWeaponAlternateRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"]);
+                            await lblWeaponAlternateRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"]);
+                            await lblWeaponAlternateRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"]);
                         }
                         else
                         {
-                            lblWeaponReachLabel.Visible = true;
-                            lblWeaponReach.Visible = true;
-                            lblWeaponReach.Text = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
-                            lblWeaponRCLabel.Visible = false;
-                            lblWeaponRC.Visible = false;
+                            await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponReach.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                            });
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRC.DoThreadSafeAsync(x => x.Visible = false);
                             if (objWeapon.Ammo != "0")
                             {
-                                lblWeaponAmmoLabel.Visible = true;
-                                lblWeaponAmmo.Visible = true;
-                                lblWeaponAmmo.Text = objWeapon.DisplayAmmo;
+                                await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblWeaponAmmo.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objWeapon.DisplayAmmo;
+                                });
                             }
                             else
                             {
-                                lblWeaponAmmoLabel.Visible = false;
-                                lblWeaponAmmo.Visible = false;
+                                await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                             }
-                            lblWeaponModeLabel.Visible = false;
-                            lblWeaponMode.Visible = false;
 
-                            tlpWeaponsRanges.Visible = false;
+                            await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+
+                            await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         // gpbWeaponsMatrix
                         int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
-                        lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        lblWeaponAttack.Text = objWeapon.GetTotalMatrixAttribute("Attack").ToString(GlobalSettings.CultureInfo);
-                        lblWeaponSleaze.Text = objWeapon.GetTotalMatrixAttribute("Sleaze").ToString(GlobalSettings.CultureInfo);
-                        lblWeaponDataProcessing.Text = objWeapon.GetTotalMatrixAttribute("Data Processing").ToString(GlobalSettings.CultureInfo);
-                        lblWeaponFirewall.Text = objWeapon.GetTotalMatrixAttribute("Firewall").ToString(GlobalSettings.CultureInfo);
-                        chkWeaponActiveCommlink.Visible = objWeapon.IsCommlink;
-                        chkWeaponActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        await lblWeaponDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await lblWeaponAttack.DoThreadSafeAsync(x => x.Text = objWeapon.GetTotalMatrixAttribute("Attack")
+                                                                    .ToString(GlobalSettings.CultureInfo));
+                        await lblWeaponSleaze.DoThreadSafeAsync(x => x.Text = objWeapon.GetTotalMatrixAttribute("Sleaze")
+                                                                    .ToString(GlobalSettings.CultureInfo));
+                        await lblWeaponDataProcessing.DoThreadSafeAsync(x => x.Text = objWeapon.GetTotalMatrixAttribute("Data Processing")
+                                                                            .ToString(GlobalSettings.CultureInfo));
+                        await lblWeaponFirewall.DoThreadSafeAsync(x => x.Text = objWeapon.GetTotalMatrixAttribute("Firewall")
+                                                                      .ToString(GlobalSettings.CultureInfo));
+                        await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objWeapon.IsCommlink;
+                            x.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkWeaponHomeNode.Visible = true;
-                            chkWeaponHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
-                            chkWeaponHomeNode.Enabled = chkWeaponActiveCommlink.Enabled &&
-                                                        objWeapon.GetTotalMatrixAttribute("Program Limit") >=
-                                                        (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkWeaponHomeNode.DoThreadSafeAsync(async x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objWeapon.IsHomeNode(CharacterObject);
+                                x.Enabled = await chkWeaponActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                            objWeapon.GetTotalMatrixAttribute("Program Limit") >=
+                                            (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkWeaponHomeNode.Visible = false;
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+
                         break;
                     }
-                case WeaponAccessory objSelectedAccessory:
+                    case WeaponAccessory objSelectedAccessory:
                     {
-                        gpbWeaponsCommon.Visible = true;
-                        gpbWeaponsWeapon.Visible = true;
-                        gpbWeaponsMatrix.Visible = false;
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                         // Buttons
-                        cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon &&
-                                                  string.IsNullOrEmpty(objSelectedAccessory.ParentID);
+                        await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objSelectedAccessory.IncludedInWeapon &&
+                                                                    string.IsNullOrEmpty(objSelectedAccessory.ParentID));
 
                         // gpbWeaponsCommon
-                        lblWeaponName.Text = objSelectedAccessory.CurrentDisplayName;
-                        lblWeaponCategory.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory");
+                        await lblWeaponName.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.CurrentDisplayName);
+                        await lblWeaponCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
                         if (objSelectedAccessory.MaxRating > 0)
                         {
-                            lblWeaponRatingLabel.Visible = true;
-                            lblWeaponRating.Visible = true;
-                            lblWeaponRating.Text = objSelectedAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                lblWeaponRating.Text = objSelectedAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                            });
                         }
                         else
                         {
-                            lblWeaponRatingLabel.Visible = false;
-                            lblWeaponRating.Visible = false;
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        lblWeaponCapacityLabel.Visible = false;
-                        lblWeaponCapacity.Visible = false;
-                        lblWeaponAvail.Text = objSelectedAccessory.DisplayTotalAvail;
-                        lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblWeaponSlotsLabel.Visible = true;
-                        lblWeaponSlots.Visible = true;
+
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.DisplayTotalAvail);
+                        await lblWeaponCost.DoThreadSafeAsync(x => x.Text
+                                                                  = objSelectedAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                      GlobalSettings.CultureInfo) + '¥');
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true);
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdSlotsText))
                         {
@@ -10844,7 +11261,8 @@ namespace Chummer
                                     }
 
                                     sbdSlotsText
-                                        .Append(await LanguageManager.GetStringAsync("String_Mount" + strCurrentExtraMount))
+                                        .Append(await LanguageManager.GetStringAsync(
+                                                    "String_Mount" + strCurrentExtraMount))
                                         .Append('/');
                                 }
 
@@ -10853,102 +11271,153 @@ namespace Chummer
                                     --sbdSlotsText.Length;
                             }
 
-                            lblWeaponSlots.Text = sbdSlotsText.ToString();
+                            await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString());
                         }
 
-                        lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
-                        lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
-                        lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                        chkWeaponEquipped.Text
-                            = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
-                                                                       ? "Checkbox_Equipped"
-                                                                       : "Checkbox_Installed");
-                        chkWeaponEquipped.Enabled = !objSelectedAccessory.IncludedInWeapon;
-                        chkWeaponEquipped.Checked = objSelectedAccessory.Equipped;
-                        chkIncludedInWeapon.Visible = objSelectedAccessory.Parent != null;
-                        chkIncludedInWeapon.Enabled = CharacterObjectSettings.AllowEditPartOfBaseWeapon;
-                        chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
-
+                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = objSelectedAccessory.TotalConcealability != 0);
+                        await lblWeaponConceal.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objSelectedAccessory.TotalConcealability != 0;
+                            x.Text
+                                = objSelectedAccessory.TotalConcealability.ToString(
+                                    "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                        });
+                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
+                        {
+                            x.Text
+                                = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
+                                                                           ? "Checkbox_Equipped"
+                                                                           : "Checkbox_Installed");
+                            x.Enabled = !objSelectedAccessory.IncludedInWeapon;
+                            x.Checked = objSelectedAccessory.Equipped;
+                        });
+                        await chkIncludedInWeapon.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objSelectedAccessory.Parent != null;
+                            x.Enabled = CharacterObjectSettings.AllowEditPartOfBaseWeapon;
+                            x.Checked = objSelectedAccessory.IncludedInWeapon;
+                        });
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = !objSelectedAccessory.IncludedInWeapon && CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("weapons.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objSelectedAccessory.Parent.Category);
-                            chkWeaponBlackMarketDiscount.Checked = objSelectedAccessory.IncludedInWeapon
-                                ? objSelectedAccessory.Parent?.DiscountCost == true
-                                : objSelectedAccessory.DiscountCost;
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objSelectedAccessory.IncludedInWeapon
+                                            && CharacterObject
+                                               .GenerateBlackMarketMappings(
+                                                   await (await CharacterObject
+                                                           .LoadDataXPathAsync("weapons.xml"))
+                                                       .SelectSingleNodeAndCacheExpressionAsync(
+                                                           "/chummer"))
+                                               .Contains(objSelectedAccessory.Parent.Category);
+                                x.Checked = objSelectedAccessory.IncludedInWeapon
+                                    ? objSelectedAccessory.Parent?.DiscountCost == true
+                                    : objSelectedAccessory.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = false;
-                            chkWeaponBlackMarketDiscount.Checked = false;
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
                         // gpbWeaponsWeapon
-                        gpbWeaponsWeapon.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory");
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
                         if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
                         {
-                            lblWeaponDamageLabel.Visible = false;
-                            lblWeaponDamage.Visible = false;
+                            await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponDamage.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage);
-                            lblWeaponDamage.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage);
-                            lblWeaponDamage.Text = Convert.ToInt32(objSelectedAccessory.Damage, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage));
+                            await lblWeaponDamage.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = !string.IsNullOrEmpty(objSelectedAccessory
+                                                                      .Damage);
+                                x.Text = Convert
+                                         .ToInt32(objSelectedAccessory.Damage,
+                                                  GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (string.IsNullOrEmpty(objSelectedAccessory.AP))
                         {
-                            lblWeaponAPLabel.Visible = false;
-                            lblWeaponAP.Visible = false;
+                            await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAP.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponAPLabel.Visible = true;
-                            lblWeaponAP.Visible = true;
-                            lblWeaponAP.Text = Convert.ToInt32(objSelectedAccessory.AP, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAP.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = Convert
+                                         .ToInt32(objSelectedAccessory.AP, GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objSelectedAccessory.Accuracy == 0)
                         {
-                            lblWeaponAccuracyLabel.Visible = false;
-                            lblWeaponAccuracy.Visible = false;
+                            await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponAccuracyLabel.Visible = true;
-                            lblWeaponAccuracy.Visible = true;
-                            lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAccuracy.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text
+                                    = objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objSelectedAccessory.DicePool == 0)
                         {
-                            lblWeaponDicePoolLabel.Visible = false;
-                            lblWeaponDicePool.Visible = false;
+                            await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponDicePoolLabel.Visible = true;
-                            lblWeaponDicePool.Visible = true;
-                            lblWeaponDicePool.Text = objSelectedAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponDicePool.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text
+                                    = objSelectedAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
-                        lblWeaponReachLabel.Visible = false;
-                        lblWeaponReach.Visible = false;
+
+                        await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false);
                         if (string.IsNullOrEmpty(objSelectedAccessory.RC))
                         {
-                            lblWeaponRCLabel.Visible = false;
-                            lblWeaponRC.Visible = false;
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRC.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponRCLabel.Visible = true;
-                            lblWeaponRC.Visible = true;
-                            lblWeaponRC.Text = Convert.ToInt32(objSelectedAccessory.RC, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRC.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = Convert
+                                         .ToInt32(objSelectedAccessory.RC, GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objSelectedAccessory.TotalAmmoBonus != 0
                             || (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                 && objSelectedAccessory.ModifyAmmoCapacity != "0"))
                         {
-                            lblWeaponAmmoLabel.Visible = true;
-                            lblWeaponAmmo.Visible = true;
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true);
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdAmmoBonus))
                             {
@@ -10959,657 +11428,837 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                     && objSelectedAccessory.ModifyAmmoCapacity != "0")
                                     sbdAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
-                                lblWeaponAmmo.Text = sbdAmmoBonus.ToString();
+                                await lblWeaponAmmo.DoThreadSafeAsync(x => x.Text = sbdAmmoBonus.ToString());
                             }
                         }
                         else
                         {
-                            lblWeaponAmmoLabel.Visible = false;
-                            lblWeaponAmmo.Visible = false;
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        lblWeaponModeLabel.Visible = false;
-                        lblWeaponMode.Visible = false;
 
-                        tlpWeaponsRanges.Visible = false;
+                        await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+
+                        await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false);
                         break;
                     }
-                case Gear objGear:
+                    case Gear objGear:
                     {
-                        gpbWeaponsCommon.Visible = true;
-                        gpbWeaponsWeapon.Visible = false;
-                        gpbWeaponsMatrix.Visible = true;
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteWeapon.Enabled = !objGear.IncludedInParent;
+                        await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
 
                         // gpbWeaponsCommon
-                        lblWeaponName.Text = objGear.CurrentDisplayNameShort;
-                        lblWeaponCategory.Text = objGear.DisplayCategory(GlobalSettings.Language);
+                        await lblWeaponName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
+                        await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
                         int intGearMaxRatingValue = objGear.MaxRatingValue;
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                         {
-                            lblWeaponRatingLabel.Visible = true;
-                            lblWeaponRating.Visible = true;
-                            lblWeaponRating.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                            });
                         }
                         else
                         {
-                            lblWeaponRatingLabel.Visible = false;
-                            lblWeaponRating.Visible = false;
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        lblWeaponCapacityLabel.Visible = true;
-                        lblWeaponCapacity.Visible = true;
-                        lblWeaponCapacity.Text = objGear.DisplayCapacity;
-                        lblWeaponAvail.Text = objGear.DisplayTotalAvail;
-                        lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblWeaponSlotsLabel.Visible = false;
-                        lblWeaponSlots.Visible = false;
-                        lblWeaponConcealLabel.Visible = false;
-                        lblWeaponConceal.Visible = false;
-                        chkWeaponEquipped.Text = await LanguageManager.GetStringAsync("Checkbox_Equipped");
-                        chkWeaponEquipped.Enabled = !objGear.IncludedInParent;
-                        chkWeaponEquipped.Checked = objGear.Equipped;
-                        chkIncludedInWeapon.Visible = false;
+
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponCapacity.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objGear.DisplayCapacity;
+                        });
+                        await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
+                        await lblWeaponCost.DoThreadSafeAsync(x => x.Text
+                                                                  = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                      GlobalSettings.CultureInfo) + '¥');
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponConceal.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
+                        {
+                            x.Text = await LanguageManager.GetStringAsync(
+                                "Checkbox_Equipped");
+                            x.Enabled = !objGear.IncludedInParent;
+                            x.Checked = objGear.Equipped;
+                        });
+                        await chkIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
 
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("gear.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objGear.Category);
-                            chkWeaponBlackMarketDiscount.Checked = objGear.IncludedInParent
-                                ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
-                                : objGear.DiscountCost;
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objGear.IncludedInParent && CharacterObject
+                                                                         .GenerateBlackMarketMappings(
+                                                                             await (await CharacterObject
+                                                                                     .LoadDataXPathAsync("gear.xml"))
+                                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                     "/chummer"))
+                                                                         .Contains(objGear.Category);
+                                x.Checked = objGear.IncludedInParent
+                                    ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                    : objGear.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = false;
-                            chkWeaponBlackMarketDiscount.Checked = false;
+                            await chkWeaponBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
                         // gpbWeaponsMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                        lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        lblWeaponAttack.Text = objGear.GetTotalMatrixAttribute("Attack").ToString(GlobalSettings.CultureInfo);
-                        lblWeaponSleaze.Text = objGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalSettings.CultureInfo);
-                        lblWeaponDataProcessing.Text = objGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalSettings.CultureInfo);
-                        lblWeaponFirewall.Text = objGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalSettings.CultureInfo);
-                        chkWeaponActiveCommlink.Visible = objGear.IsCommlink;
-                        chkWeaponActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        await lblWeaponDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await lblWeaponAttack.DoThreadSafeAsync(x => x.Text = objGear.GetTotalMatrixAttribute("Attack")
+                                                                    .ToString(GlobalSettings.CultureInfo));
+                        await lblWeaponSleaze.DoThreadSafeAsync(x => x.Text = objGear.GetTotalMatrixAttribute("Sleaze")
+                                                                    .ToString(GlobalSettings.CultureInfo));
+                        await lblWeaponDataProcessing.DoThreadSafeAsync(x => x.Text = objGear.GetTotalMatrixAttribute("Data Processing")
+                                                                            .ToString(GlobalSettings.CultureInfo));
+                        await lblWeaponFirewall.DoThreadSafeAsync(x => x.Text = objGear.GetTotalMatrixAttribute("Firewall")
+                                                                      .ToString(GlobalSettings.CultureInfo));
+                        await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objGear.IsCommlink;
+                            x.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkWeaponHomeNode.Visible = true;
-                            chkWeaponHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                            chkWeaponHomeNode.Enabled = chkWeaponActiveCommlink.Enabled &&
-                                                        objGear.GetTotalMatrixAttribute("Program Limit") >=
-                                                        (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkWeaponHomeNode.DoThreadSafeAsync(async x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objGear.IsHomeNode(CharacterObject);
+                                x.Enabled = await chkWeaponActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                            objGear.GetTotalMatrixAttribute("Program Limit") >=
+                                            (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkWeaponHomeNode.Visible = false;
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+
                         break;
                     }
-                default:
-                    gpbWeaponsCommon.Visible = false;
-                    gpbWeaponsWeapon.Visible = false;
-                    gpbWeaponsMatrix.Visible = false;
+                    default:
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                    // Buttons
-                    cmdDeleteWeapon.Enabled = false;
-                    break;
+                        // Buttons
+                        await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = false);
+                        break;
+                }
             }
-
-            IsRefreshing = false;
-            flpWeapons.ResumeLayout();
+            finally
+            {
+                await flpWeapons.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
+            }
         }
 
         /// <summary>
         /// Refresh the information for the currently displayed Armor.
         /// </summary>
-        public async Task RefreshSelectedArmor()
+        private async Task RefreshSelectedArmor()
         {
             IsRefreshing = true;
-            flpArmor.SuspendLayout();
-
-            if (treArmor.SelectedNode == null)
+            await flpArmor.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbArmorCommon.Visible = false;
-                gpbArmorMatrix.Visible = false;
-                gpbArmorLocation.Visible = false;
-
-                // Buttons
-                cmdDeleteArmor.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
-
-                IsRefreshing = false;
-                flpArmor.ResumeLayout();
-                return;
-            }
-
-            if (treArmor.SelectedNode?.Tag is IHasSource objSelected)
-            {
-                lblArmorSourceLabel.Visible = true;
-                lblArmorSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblArmorSource);
-            }
-            else
-            {
-                lblArmorSourceLabel.Visible = false;
-                lblArmorSource.Visible = false;
-            }
-
-            if (treArmor.SelectedNode?.Tag is IHasStolenProperty loot && ImprovementManager
-                                                                         .GetCachedImprovementListForValueOf(
-                                                                             CharacterObject,
-                                                                             Improvement.ImprovementType.Nuyen,
-                                                                             "Stolen").Count > 0)
-            {
-                chkArmorStolen.Visible = true;
-                chkArmorStolen.Checked = loot.Stolen;
-            }
-            else
-            {
-                chkArmorStolen.Visible = false;
-            }
-
-            if (treArmor.SelectedNode?.Tag is IHasRating objHasRating)
-            {
-                lblArmorRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
-
-            if (treArmor.SelectedNode?.Tag is Armor objArmor)
-            {
-                gpbArmorCommon.Visible = true;
-                gpbArmorMatrix.Visible = true;
-                gpbArmorLocation.Visible = false;
-
-                // Buttons
-                cmdDeleteArmor.Enabled = true;
-
-                // gpbArmorCommon
-                lblArmorValueLabel.Visible = true;
-                lblArmorValue.Visible = true;
-                lblArmorValue.Text = objArmor.DisplayArmorValue;
-                lblArmorAvail.Text = objArmor.DisplayTotalAvail;
-                lblArmorCapacity.Text = objArmor.DisplayCapacity;
-                lblArmorRatingLabel.Visible = false;
-                nudArmorRating.Visible = false;
-                lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                chkArmorEquipped.Visible = true;
-                chkArmorEquipped.Checked = objArmor.Equipped;
-                chkArmorEquipped.Enabled = true;
-                chkIncludedInArmor.Visible = false;
-
-                if (CharacterObject.BlackMarketDiscount)
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode) == null)
                 {
-                    chkArmorBlackMarketDiscount.Enabled = CharacterObject
-                        .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("armor.xml"))
-                                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objArmor.Category);
-                    chkArmorBlackMarketDiscount.Checked = objArmor.DiscountCost;
-                }
-                else
-                {
-                    chkArmorBlackMarketDiscount.Enabled = false;
-                    chkArmorBlackMarketDiscount.Checked = false;
-                }
-
-                // gpbArmorMatrix
-                int intDeviceRating = objArmor.GetTotalMatrixAttribute("Device Rating");
-                lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                lblArmorAttack.Text = objArmor.GetTotalMatrixAttribute("Attack").ToString(GlobalSettings.CultureInfo);
-                lblArmorSleaze.Text = objArmor.GetTotalMatrixAttribute("Sleaze").ToString(GlobalSettings.CultureInfo);
-                lblArmorDataProcessing.Text = objArmor.GetTotalMatrixAttribute("Data Processing").ToString(GlobalSettings.CultureInfo);
-                lblArmorFirewall.Text = objArmor.GetTotalMatrixAttribute("Firewall").ToString(GlobalSettings.CultureInfo);
-                chkArmorActiveCommlink.Visible = objArmor.IsCommlink;
-                chkArmorActiveCommlink.Checked = objArmor.IsActiveCommlink(CharacterObject);
-                if (CharacterObject.IsAI)
-                {
-                    chkArmorHomeNode.Visible = true;
-                    chkArmorHomeNode.Checked = objArmor.IsHomeNode(CharacterObject);
-                    chkArmorHomeNode.Enabled = chkArmorActiveCommlink.Enabled &&
-                                               objArmor.GetTotalMatrixAttribute("Program Limit") >=
-                                               (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                }
-                else
-                    chkArmorHomeNode.Visible = false;
-            }
-            else
-            {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
-                {
-                    gpbArmorCommon.Visible = true;
-                    gpbArmorMatrix.Visible = false;
-                    gpbArmorLocation.Visible = false;
+                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
+                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = treArmor.SelectedNode?.Tag is ICanRemove);
+                    return;
+                }
+
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                {
+                    await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblArmorSource);
+                }
+                else
+                {
+                    await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblArmorSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot
+                    && ImprovementManager
+                       .GetCachedImprovementListForValueOf(
+                           CharacterObject,
+                           Improvement.ImprovementType.Nuyen,
+                           "Stolen").Count > 0)
+                {
+                    await chkArmorStolen.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Checked = loot.Stolen;
+                    });
+                }
+                else
+                {
+                    await chkArmorStolen.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                {
+                    await lblArmorRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
+                                                                    GlobalSettings.CultureInfo,
+                                                                    await LanguageManager.GetStringAsync(
+                                                                        "Label_RatingFormat"),
+                                                                    await LanguageManager.GetStringAsync(
+                                                                        objHasRating.RatingLabel)));
+                }
+
+                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Armor objArmor)
+                {
+                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
+                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+
+                    // Buttons
+                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = true);
 
                     // gpbArmorCommon
-                    if (objArmorMod.Armor != 0)
+                    await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorValue.DoThreadSafeAsync(x =>
                     {
-                        lblArmorValueLabel.Visible = true;
-                        lblArmorValue.Visible = true;
-                        lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
-                    }
-                    else
+                        x.Visible = true;
+                        x.Text = objArmor.DisplayArmorValue;
+                    });
+                    await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmor.DisplayTotalAvail);
+                    await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objArmor.DisplayCapacity);
+                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblArmorCost.DoThreadSafeAsync(x => x.Text
+                                                             = objArmor.TotalCost.ToString(
+                                                                   CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
+                                                               + '¥');
+                    await chkArmorEquipped.DoThreadSafeAsync(x =>
                     {
-                        lblArmorValueLabel.Visible = false;
-                        lblArmorValue.Visible = false;
-                    }
-
-                    lblArmorAvail.Text = objArmorMod.DisplayTotalAvail;
-                    lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
-                        ? "[0]"
-                        : objArmorMod.CalculatedCapacity;
-                    if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
-                        lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '('
-                                                +
-                                                objArmorMod.GearCapacityRemaining.ToString(
-                                                    "#,0.##", GlobalSettings.CultureInfo) +
-                                                strSpace + await LanguageManager.GetStringAsync("String_Remaining") + ')';
-                    if (objArmorMod.MaximumRating > 1)
-                    {
-                        lblArmorRatingLabel.Visible = true;
-                        nudArmorRating.Visible = true;
-                        nudArmorRating.Maximum = objArmorMod.MaximumRating;
-                        nudArmorRating.Value = objArmorMod.Rating;
-                        nudArmorRating.Enabled = !objArmorMod.IncludedInArmor;
-                    }
-                    else
-                    {
-                        lblArmorRatingLabel.Visible = false;
-                        nudArmorRating.Visible = false;
-                    }
-
-                    lblArmorCost.Text
-                        = objArmorMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                         GlobalSettings.CultureInfo) + '¥';
-                    chkArmorEquipped.Visible = true;
-                    chkArmorEquipped.Checked = objArmorMod.Equipped;
-                    chkArmorEquipped.Enabled = true;
-                    chkIncludedInArmor.Visible = true;
-                    chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
+                        x.Visible = true;
+                        x.Checked = objArmor.Equipped;
+                        x.Enabled = true;
+                    });
+                    await chkIncludedInArmor.DoThreadSafeAsync(x => x.Visible = false);
 
                     if (CharacterObject.BlackMarketDiscount)
                     {
-                        chkArmorBlackMarketDiscount.Enabled = !objArmorMod.IncludedInArmor && CharacterObject
-                            .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("armor.xml"))
-                                                             .SelectSingleNodeAndCacheExpressionAsync(
-                                                                 "/chummer/modcategories"))
-                            .Contains(objArmorMod.Category);
-                        chkArmorBlackMarketDiscount.Checked = objArmorMod.IncludedInArmor
-                            ? objArmorMod.Parent?.DiscountCost == true
-                            : objArmorMod.DiscountCost;
+                        await chkArmorBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                        {
+                            x.Enabled = CharacterObject
+                                        .GenerateBlackMarketMappings(
+                                            await (await CharacterObject.LoadDataXPathAsync(
+                                                    "armor.xml"))
+                                                .SelectSingleNodeAndCacheExpressionAsync(
+                                                    "/chummer")).Contains(objArmor.Category);
+                            x.Checked = objArmor.DiscountCost;
+                        });
                     }
                     else
                     {
-                        chkArmorBlackMarketDiscount.Enabled = false;
-                        chkArmorBlackMarketDiscount.Checked = false;
+                        await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = false;
+                            x.Checked = false;
+                        });
                     }
+
+                    // gpbArmorMatrix
+                    int intDeviceRating = objArmor.GetTotalMatrixAttribute("Device Rating");
+                    await lblArmorDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                    await lblArmorAttack.DoThreadSafeAsync(x => x.Text
+                                                               = objArmor.GetTotalMatrixAttribute("Attack").ToString(GlobalSettings.CultureInfo));
+                    await lblArmorSleaze.DoThreadSafeAsync(x => x.Text
+                                                               = objArmor.GetTotalMatrixAttribute("Sleaze").ToString(GlobalSettings.CultureInfo));
+                    await lblArmorDataProcessing.DoThreadSafeAsync(x => x.Text = objArmor.GetTotalMatrixAttribute("Data Processing")
+                                                                       .ToString(GlobalSettings.CultureInfo));
+                    await lblArmorFirewall.DoThreadSafeAsync(x => x.Text = objArmor.GetTotalMatrixAttribute("Firewall")
+                                                                 .ToString(GlobalSettings.CultureInfo));
+                    await chkArmorActiveCommlink.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = objArmor.IsCommlink;
+                        x.Checked = objArmor.IsActiveCommlink(CharacterObject);
+                    });
+                    if (CharacterObject.IsAI)
+                    {
+                        await chkArmorHomeNode.DoThreadSafeAsync(async x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objArmor.IsHomeNode(CharacterObject);
+                            x.Enabled = await chkArmorActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                        objArmor.GetTotalMatrixAttribute("Program Limit") >=
+                                        (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        });
+                    }
+                    else
+                        await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false);
                 }
                 else
                 {
-                    switch (treArmor.SelectedNode?.Tag)
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                    if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ArmorMod objArmorMod)
                     {
-                        case Gear objSelectedGear:
+                        await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+
+                        // Buttons
+                        await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = !objArmorMod.IncludedInArmor);
+
+                        // gpbArmorCommon
+                        if (objArmorMod.Armor != 0)
                         {
-                            gpbArmorCommon.Visible = true;
-                            gpbArmorMatrix.Visible = true;
-                            gpbArmorLocation.Visible = false;
-
-                            // Buttons
-                            cmdDeleteArmor.Enabled = !objSelectedGear.IncludedInParent;
-
-                            // gpbArmorCommon
-                            lblArmorValueLabel.Visible = false;
-                            lblArmorValue.Visible = false;
-                            lblArmorAvail.Text = objSelectedGear.DisplayTotalAvail;
-                            CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
-                                                                out objArmorMod);
-                            if (objArmorMod != null)
-                                lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
-                            else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
-                                lblArmorCapacity.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']';
-                            else
-                                lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-                            int intMaxRatingValue = objSelectedGear.MaxRatingValue;
-                            if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
+                            await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblArmorValue.DoThreadSafeAsync(x =>
                             {
-                                lblArmorRatingLabel.Visible = true;
-                                nudArmorRating.Visible = true;
-                                nudArmorRating.Maximum = intMaxRatingValue;
-                                int intMinRatingValue = objSelectedGear.MinRatingValue;
-                                nudArmorRating.Minimum = intMinRatingValue;
-                                nudArmorRating.Value = objSelectedGear.Rating;
-                                nudArmorRating.Enabled = intMinRatingValue != intMaxRatingValue
-                                                         && string.IsNullOrEmpty(objSelectedGear.ParentID);
-                            }
-                            else
-                            {
-                                lblArmorRatingLabel.Visible = false;
-                                nudArmorRating.Visible = false;
-                            }
-
-                            lblArmorCost.Text
-                                = objSelectedGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo) + '¥';
-                            chkArmorEquipped.Visible = true;
-                            chkArmorEquipped.Checked = objSelectedGear.Equipped;
-                            chkArmorEquipped.Enabled = true;
-                            chkIncludedInArmor.Visible = true;
-                            chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
-
-                            if (CharacterObject.BlackMarketDiscount)
-                            {
-                                chkArmorBlackMarketDiscount.Enabled = !objSelectedGear.IncludedInParent
-                                                                      && CharacterObject
-                                                                         .GenerateBlackMarketMappings(
-                                                                             await (await CharacterObject.LoadDataXPathAsync("gear.xml"))
-                                                                                 .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                     "/chummer"))
-                                                                         .Contains(objSelectedGear.Category);
-                                chkArmorBlackMarketDiscount.Checked = objSelectedGear.IncludedInParent
-                                    ? (objSelectedGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
-                                    : objSelectedGear.DiscountCost;
-                            }
-                            else
-                            {
-                                chkArmorBlackMarketDiscount.Enabled = false;
-                                chkArmorBlackMarketDiscount.Checked = false;
-                            }
-
-                            // gpbArmorMatrix
-                            int intDeviceRating = objSelectedGear.GetTotalMatrixAttribute("Device Rating");
-                            lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                            lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack")
-                                                                 .ToString(GlobalSettings.CultureInfo);
-                            lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze")
-                                                                 .ToString(GlobalSettings.CultureInfo);
-                            lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing")
-                                                                         .ToString(GlobalSettings.CultureInfo);
-                            lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall")
-                                                                   .ToString(GlobalSettings.CultureInfo);
-                            chkArmorActiveCommlink.Visible = objSelectedGear.IsCommlink;
-                            chkArmorActiveCommlink.Checked = objSelectedGear.IsActiveCommlink(CharacterObject);
-                            if (CharacterObject.IsAI)
-                            {
-                                chkArmorHomeNode.Visible = true;
-                                chkArmorHomeNode.Checked = objSelectedGear.IsHomeNode(CharacterObject);
-                                chkArmorHomeNode.Enabled = chkArmorActiveCommlink.Enabled &&
-                                                           objSelectedGear.GetTotalMatrixAttribute("Program Limit") >=
-                                                           (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                            }
-                            else
-                                chkArmorHomeNode.Visible = false;
-
-                            break;
+                                x.Visible = true;
+                                x.Text = objArmorMod.Armor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
+                            });
                         }
-                        case Location objLocation:
+                        else
                         {
-                            gpbArmorCommon.Visible = false;
-                            gpbArmorMatrix.Visible = false;
-                            gpbArmorLocation.Visible = true;
-
-                            // Buttons
-                            cmdDeleteArmor.Enabled = true;
-
-                            // gpbArmorLocation
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdArmorEquipped))
-                            {
-                                foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
-                                             objLoopArmor =>
-                                                 objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
-                                {
-                                    sbdArmorEquipped
-                                        .Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
-                                        .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
-                                }
-
-                                if (sbdArmorEquipped.Length > 0)
-                                {
-                                    --sbdArmorEquipped.Length;
-                                    lblArmorEquipped.Text = sbdArmorEquipped.ToString();
-                                }
-                                else
-                                    lblArmorEquipped.Text = await LanguageManager.GetStringAsync("String_None");
-                            }
-
-                            break;
+                            await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblArmorValue.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        default:
+
+                        await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmorMod.DisplayTotalAvail);
+                        await lblArmorCapacity.DoThreadSafeAsync(
+                            x => x.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
+                                ? "[0]"
+                                : objArmorMod.CalculatedCapacity);
+                        if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
+                            await lblArmorCapacity.DoThreadSafeAsync(async x => x.Text
+                                                                         = objArmorMod.GearCapacity + '/'
+                                                                         + lblArmorCapacity.Text
+                                                                         + strSpace + '('
+                                                                         +
+                                                                         objArmorMod.GearCapacityRemaining.ToString(
+                                                                             "#,0.##", GlobalSettings.CultureInfo) +
+                                                                         strSpace
+                                                                         + await LanguageManager.GetStringAsync(
+                                                                             "String_Remaining") + ')');
+                        if (objArmorMod.MaximumRating > 1)
                         {
-                            if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+                            await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await nudArmorRating.DoThreadSafeAsync(x =>
                             {
-                                gpbArmorCommon.Visible = false;
-                                gpbArmorMatrix.Visible = false;
-                                gpbArmorLocation.Visible = true;
+                                x.Visible = true;
+                                x.Maximum = objArmorMod.MaximumRating;
+                                x.Value = objArmorMod.Rating;
+                                x.Enabled = !objArmorMod.IncludedInArmor;
+                            });
+                        }
+                        else
+                        {
+                            await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                        }
+
+                        await lblArmorCost.DoThreadSafeAsync(x => x.Text
+                                                                 = objArmorMod.TotalCost.ToString(
+                                                                     CharacterObjectSettings.NuyenFormat,
+                                                                     GlobalSettings.CultureInfo) + '¥');
+                        await chkArmorEquipped.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objArmorMod.Equipped;
+                            x.Enabled = true;
+                        });
+                        await chkIncludedInArmor.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objArmorMod.IncludedInArmor;
+                        });
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            await chkArmorBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objArmorMod.IncludedInArmor && CharacterObject
+                                                                            .GenerateBlackMarketMappings(
+                                                                                await (await CharacterObject
+                                                                                        .LoadDataXPathAsync(
+                                                                                            "armor.xml"))
+                                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                        "/chummer/modcategories"))
+                                                                            .Contains(objArmorMod.Category);
+                                x.Checked = objArmorMod.IncludedInArmor
+                                    ? objArmorMod.Parent?.DiscountCost == true
+                                    : objArmorMod.DiscountCost;
+                            });
+                        }
+                        else
+                        {
+                            await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
+                        }
+                    }
+                    else
+                    {
+                        switch (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                        {
+                            case Gear objSelectedGear:
+                            {
+                                await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
+                                await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                                await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
 
                                 // Buttons
-                                cmdDeleteArmor.Enabled = false;
+                                await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = !objSelectedGear.IncludedInParent);
 
+                                // gpbArmorCommon
+                                await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblArmorValue.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objSelectedGear.DisplayTotalAvail);
+                                CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
+                                                                    out objArmorMod);
+                                if (objArmorMod != null)
+                                    await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objSelectedGear.CalculatedCapacity);
+                                else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
+                                    await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']');
+                                else
+                                    await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objSelectedGear.CalculatedArmorCapacity);
+                                int intMaxRatingValue = objSelectedGear.MaxRatingValue;
+                                if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
+                                {
+                                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                    await nudArmorRating.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Visible = true;
+                                        x.Maximum = intMaxRatingValue;
+                                        int intMinRatingValue = objSelectedGear.MinRatingValue;
+                                        x.Minimum = intMinRatingValue;
+                                        x.Value = objSelectedGear.Rating;
+                                        x.Enabled = intMinRatingValue != intMaxRatingValue
+                                                    && string.IsNullOrEmpty(objSelectedGear.ParentID);
+                                    });
+                                }
+                                else
+                                {
+                                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                    await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                                }
+
+                                await lblArmorCost.DoThreadSafeAsync(x => x.Text
+                                                                         = objSelectedGear.TotalCost.ToString(
+                                                                             CharacterObjectSettings.NuyenFormat,
+                                                                             GlobalSettings.CultureInfo) + '¥');
+                                await chkArmorEquipped.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Checked = objSelectedGear.Equipped;
+                                    x.Enabled = true;
+                                });
+                                await chkIncludedInArmor.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Checked = objSelectedGear.IncludedInParent;
+                                });
+                                if (CharacterObject.BlackMarketDiscount)
+                                {
+                                    await chkArmorBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                                    {
+                                        x.Enabled = !objSelectedGear.IncludedInParent
+                                                    && CharacterObject
+                                                       .GenerateBlackMarketMappings(
+                                                           await (await CharacterObject
+                                                                   .LoadDataXPathAsync(
+                                                                       "gear.xml"))
+                                                               .SelectSingleNodeAndCacheExpressionAsync(
+                                                                   "/chummer"))
+                                                       .Contains(objSelectedGear.Category);
+                                        x.Checked = objSelectedGear.IncludedInParent
+                                            ? (objSelectedGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                            : objSelectedGear.DiscountCost;
+                                    });
+                                }
+                                else
+                                {
+                                    await chkArmorBlackMarketDiscount.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Enabled = false;
+                                        x.Checked = false;
+                                    });
+                                }
+
+                                // gpbArmorMatrix
+                                int intDeviceRating = objSelectedGear.GetTotalMatrixAttribute("Device Rating");
+                                await lblArmorDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                                await lblArmorAttack.DoThreadSafeAsync(x => x.Text = objSelectedGear.GetTotalMatrixAttribute("Attack")
+                                                                           .ToString(GlobalSettings.CultureInfo));
+                                await lblArmorSleaze.DoThreadSafeAsync(x => x.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze")
+                                                                           .ToString(GlobalSettings.CultureInfo));
+                                await lblArmorDataProcessing.DoThreadSafeAsync(x => x.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing")
+                                                                                   .ToString(GlobalSettings.CultureInfo));
+                                await lblArmorFirewall.DoThreadSafeAsync(x => x.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall")
+                                                                             .ToString(GlobalSettings.CultureInfo));
+                                await chkArmorActiveCommlink.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = objSelectedGear.IsCommlink;
+                                    x.Checked = objSelectedGear.IsActiveCommlink(CharacterObject);
+                                });
+                                if (CharacterObject.IsAI)
+                                {
+                                    await chkArmorHomeNode.DoThreadSafeAsync(async x =>
+                                    {
+                                        x.Visible = true;
+                                        x.Checked = objSelectedGear.IsHomeNode(CharacterObject);
+                                        x.Enabled = await chkArmorActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                                    objSelectedGear.GetTotalMatrixAttribute("Program Limit")
+                                                    >=
+                                                    (CharacterObject.DEP.TotalValue > intDeviceRating
+                                                        ? 2
+                                                        : 1);
+                                    });
+                                }
+                                else
+                                    await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+
+                                break;
+                            }
+                            case Location objLocation:
+                            {
+                                await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
+                                await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                                await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true);
+
+                                // Buttons
+                                await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = true);
+
+                                // gpbArmorLocation
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdArmorEquipped))
                                 {
                                     foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
                                                  objLoopArmor =>
-                                                     objLoopArmor.Equipped && objLoopArmor.Location == null))
+                                                     objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                                     {
-                                        sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
-                                                        .Append('(')
-                                                        .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
+                                        sbdArmorEquipped
+                                            .Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
+                                            .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                                     }
 
                                     if (sbdArmorEquipped.Length > 0)
                                     {
                                         --sbdArmorEquipped.Length;
-                                        lblArmorEquipped.Text = sbdArmorEquipped.ToString();
+                                        await lblArmorEquipped.DoThreadSafeAsync(x => x.Text = sbdArmorEquipped.ToString());
                                     }
                                     else
-                                        lblArmorEquipped.Text = await LanguageManager.GetStringAsync("String_None");
+                                        await lblArmorEquipped.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
                                 }
+
+                                break;
                             }
-                            else
+                            default:
                             {
-                                gpbArmorCommon.Visible = false;
-                                gpbArmorMatrix.Visible = false;
-                                gpbArmorLocation.Visible = false;
+                                if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+                                {
+                                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true);
 
-                                // Buttons
-                                cmdDeleteArmor.Enabled = false;
+                                    // Buttons
+                                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
+
+                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdArmorEquipped))
+                                    {
+                                        foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
+                                                     objLoopArmor =>
+                                                         objLoopArmor.Equipped && objLoopArmor.Location == null))
+                                        {
+                                            sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
+                                                            .Append('(')
+                                                            .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
+                                        }
+
+                                        if (sbdArmorEquipped.Length > 0)
+                                        {
+                                            --sbdArmorEquipped.Length;
+                                            await lblArmorEquipped.DoThreadSafeAsync(x => x.Text = sbdArmorEquipped.ToString());
+                                        }
+                                        else
+                                            await lblArmorEquipped.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
+                                    }
+                                }
+                                else
+                                {
+                                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+
+                                    // Buttons
+                                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
+                                }
+
+                                break;
                             }
-
-                            break;
                         }
                     }
                 }
             }
-
-            IsRefreshing = false;
-            flpArmor.ResumeLayout();
+            finally
+            {
+                await flpArmor.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
+            }
         }
 
         /// <summary>
         /// Refresh the information for the currently displayed Gear.
         /// </summary>
-        public async Task RefreshSelectedGear()
+        private async Task RefreshSelectedGear()
         {
             IsRefreshing = true;
-            flpGear.SuspendLayout();
-
-            if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
+            await flpGear.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbGearCommon.Visible = false;
-                gpbGearMatrix.Visible = false;
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0))
+                {
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                // Buttons
-                cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
+                    // Buttons
+                    await cmdDeleteGear.DoThreadSafeAsync(async x => x.Enabled = await treGear.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    return;
+                }
 
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot && ImprovementManager
+                                             .GetCachedImprovementListForValueOf(
+                                                 CharacterObject,
+                                                 Improvement.ImprovementType.Nuyen,
+                                                 "Stolen").Count > 0)
+                {
+                    await chkGearStolen.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Checked = loot.Stolen;
+                    });
+                }
+                else
+                {
+                    await chkGearStolen.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                {
+                    await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblGearSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblGearSource);
+                }
+                else
+                {
+                    await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblGearSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                {
+                    await lblGearRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
+                                                                   GlobalSettings.CultureInfo,
+                                                                   await LanguageManager.GetStringAsync(
+                                                                       "Label_RatingFormat"),
+                                                                   await LanguageManager.GetStringAsync(
+                                                                       objHasRating.RatingLabel)));
+                }
+
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear)
+                {
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = true);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = true);
+
+                    // Buttons
+                    await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
+
+                    // gpbGearCommon
+                    await lblGearName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
+                    await lblGearCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
+                    int intGearMaxRatingValue = objGear.MaxRatingValue;
+                    if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
+                    {
+                        int intGearMinRatingValue = objGear.MinRatingValue;
+                        await nudGearRating.DoThreadSafeAsync(x =>
+                        {
+                            if (intGearMinRatingValue > 0)
+                                x.Minimum = intGearMinRatingValue;
+                            else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
+                                x.Minimum = 0;
+                            else
+                                x.Minimum = 1;
+                            x.Maximum = objGear.MaxRatingValue;
+                            x.Value = objGear.Rating;
+                            x.Enabled = x.Minimum != x.Maximum && string.IsNullOrEmpty(objGear.ParentID);
+                        });
+                    }
+                    else
+                    {
+                        await nudGearRating.DoThreadSafeAsync(x =>
+                        {
+                            x.Minimum = 0;
+                            x.Maximum = 0;
+                            x.Enabled = false;
+                        });
+                    }
+
+                    await nudGearQty.DoThreadSafeAsync(x => x.Increment = objGear.CostFor);
+                    if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
+                    {
+                        int intDecimalPlaces = CharacterObjectSettings.MaxNuyenDecimals;
+                        if (intDecimalPlaces <= 0)
+                        {
+                            await nudGearQty.DoThreadSafeAsync(x =>
+                            {
+                                x.DecimalPlaces = 0;
+                                x.Minimum = 1.0m;
+                            });
+                        }
+                        else
+                        {
+                            await nudGearQty.DoThreadSafeAsync(x => x.DecimalPlaces = intDecimalPlaces);
+                            decimal decMinimum = 1.0m;
+                            // Need a for loop instead of a power system to maintain exact precision
+                            for (int i = 0; i < intDecimalPlaces; ++i)
+                                decMinimum /= 10.0m;
+                            await nudGearQty.DoThreadSafeAsync(x => x.Minimum = decMinimum);
+                        }
+                    }
+                    else if (objGear.Category == "Currency")
+                    {
+                        await nudGearQty.DoThreadSafeAsync(x =>
+                        {
+                            x.DecimalPlaces = 2;
+                            x.Minimum = 0.01m;
+                        });
+                    }
+                    else
+                    {
+                        await nudGearQty.DoThreadSafeAsync(x =>
+                        {
+                            x.DecimalPlaces = 0;
+                            x.Minimum = 1.0m;
+                        });
+                    }
+
+                    await nudGearQty.DoThreadSafeAsync(x =>
+                    {
+                        x.Value = objGear.Quantity;
+                        x.Enabled = !objGear.IncludedInParent;
+                    });
+                    try
+                    {
+                        await lblGearCost.DoThreadSafeAsync(x => x.Text
+                                                                = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat + '¥',
+                                                                    GlobalSettings.CultureInfo));
+                    }
+                    catch (FormatException)
+                    {
+                        await lblGearCost.DoThreadSafeAsync(x => x.Text = objGear.Cost + '¥');
+                    }
+
+                    await lblGearAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
+                    await lblGearCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity);
+                    await chkGearEquipped.DoThreadSafeAsync(async x =>
+                    {
+                        x.Visible = true;
+                        x.Checked = objGear.Equipped;
+                        // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
+                        if (objGear.IsProgram && objGear.Parent is IHasMatrixAttributes objCommlink
+                                              && objCommlink.IsCommlink)
+                        {
+                            x.Text = await LanguageManager.GetStringAsync("Checkbox_SoftwareRunning");
+                        }
+                        else
+                        {
+                            x.Text = await LanguageManager.GetStringAsync("Checkbox_Equipped");
+                        }
+                    });
+
+                    if (CharacterObject.BlackMarketDiscount)
+                    {
+                        await chkGearBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                        {
+                            x.Enabled = !objGear.IncludedInParent && CharacterObject
+                                                                     .GenerateBlackMarketMappings(
+                                                                         await (await CharacterObject
+                                                                                 .LoadDataXPathAsync("gear.xml"))
+                                                                             .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                 "/chummer"))
+                                                                     .Contains(objGear.Category);
+                            x.Checked = objGear.IncludedInParent
+                                ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                : objGear.DiscountCost;
+                        });
+                    }
+                    else
+                    {
+                        await chkGearBlackMarketDiscount.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = false;
+                            x.Checked = false;
+                        });
+                    }
+
+                    // gpbGearMatrix
+                    int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                    await lblGearDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                    await objGear.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze,
+                                                                        cboGearDataProcessing, cboGearFirewall);
+                    await chkGearActiveCommlink.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        x.Visible = objGear.IsCommlink;
+                    });
+                    if (CharacterObject.IsAI)
+                    {
+                        await chkGearHomeNode.DoThreadSafeAsync(async x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objGear.IsHomeNode(CharacterObject);
+                            x.Enabled = await chkGearActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                        objGear.GetTotalMatrixAttribute("Program Limit") >=
+                                        (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        });
+                    }
+                    else
+                        await chkGearHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+
+                    await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
+                }
+                else
+                {
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
+
+                    // Buttons
+                    await cmdDeleteGear.DoThreadSafeAsync(async x => x.Enabled = await treGear.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                }
+            }
+            finally
+            {
+                await flpGear.DoThreadSafeAsync(x => x.ResumeLayout());
                 IsRefreshing = false;
-                flpGear.ResumeLayout();
-                return;
             }
-
-            if (treGear.SelectedNode?.Tag is IHasStolenProperty loot && ImprovementManager
-                                                                        .GetCachedImprovementListForValueOf(
-                                                                            CharacterObject,
-                                                                            Improvement.ImprovementType.Nuyen,
-                                                                            "Stolen").Count > 0)
-            {
-                chkGearStolen.Visible = true;
-                chkGearStolen.Checked = loot.Stolen;
-            }
-            else
-            {
-                chkGearStolen.Visible = false;
-            }
-
-            if (treGear.SelectedNode?.Tag is IHasSource objSelected)
-            {
-                lblGearSourceLabel.Visible = true;
-                lblGearSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblGearSource);
-            }
-            else
-            {
-                lblGearSourceLabel.Visible = false;
-                lblGearSource.Visible = false;
-            }
-
-            if (treGear.SelectedNode?.Tag is IHasRating objHasRating)
-            {
-                lblGearRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
-
-            if (treGear.SelectedNode?.Tag is Gear objGear)
-            {
-                gpbGearCommon.Visible = true;
-                gpbGearMatrix.Visible = true;
-
-                // Buttons
-                cmdDeleteGear.Enabled = !objGear.IncludedInParent;
-
-                // gpbGearCommon
-                lblGearName.Text = objGear.CurrentDisplayNameShort;
-                lblGearCategory.Text = objGear.DisplayCategory(GlobalSettings.Language);
-                int intGearMaxRatingValue = objGear.MaxRatingValue;
-                if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
-                {
-                    int intGearMinRatingValue = objGear.MinRatingValue;
-                    if (intGearMinRatingValue > 0)
-                        nudGearRating.Minimum = intGearMinRatingValue;
-                    else if (intGearMinRatingValue == 0 && objGear.Name.Contains("Credstick,"))
-                        nudGearRating.Minimum = 0;
-                    else
-                        nudGearRating.Minimum = 1;
-                    nudGearRating.Maximum = objGear.MaxRatingValue;
-                    nudGearRating.Value = objGear.Rating;
-                    nudGearRating.Enabled = nudGearRating.Minimum != nudGearRating.Maximum && string.IsNullOrEmpty(objGear.ParentID);
-                }
-                else
-                {
-                    nudGearRating.Minimum = 0;
-                    nudGearRating.Maximum = 0;
-                    nudGearRating.Enabled = false;
-                }
-
-                nudGearQty.Increment = objGear.CostFor;
-                if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
-                {
-                    int intDecimalPlaces = CharacterObjectSettings.MaxNuyenDecimals;
-                    if (intDecimalPlaces <= 0)
-                    {
-                        nudGearQty.DecimalPlaces = 0;
-                        nudGearQty.Minimum = 1.0m;
-                    }
-                    else
-                    {
-                        nudGearQty.DecimalPlaces = intDecimalPlaces;
-                        decimal decMinimum = 1.0m;
-                        // Need a for loop instead of a power system to maintain exact precision
-                        for (int i = 0; i < intDecimalPlaces; ++i)
-                            decMinimum /= 10.0m;
-                        nudGearQty.Minimum = decMinimum;
-                    }
-                }
-                else if (objGear.Category == "Currency")
-                {
-                    nudGearQty.DecimalPlaces = 2;
-                    nudGearQty.Minimum = 0.01m;
-                }
-                else
-                {
-                    nudGearQty.DecimalPlaces = 0;
-                    nudGearQty.Minimum = 1.0m;
-                }
-                nudGearQty.Value = objGear.Quantity;
-                nudGearQty.Enabled = !objGear.IncludedInParent;
-                try
-                {
-                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat + '¥', GlobalSettings.CultureInfo);
-                }
-                catch (FormatException)
-                {
-                    lblGearCost.Text = objGear.Cost + '¥';
-                }
-                lblGearAvail.Text = objGear.DisplayTotalAvail;
-                lblGearCapacity.Text = objGear.DisplayCapacity;
-                chkGearEquipped.Visible = true;
-                chkGearEquipped.Checked = objGear.Equipped;
-                // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
-                if (objGear.IsProgram && objGear.Parent is IHasMatrixAttributes objCommlink && objCommlink.IsCommlink)
-                {
-                    chkGearEquipped.Text = await LanguageManager.GetStringAsync("Checkbox_SoftwareRunning");
-                }
-                else
-                {
-                    chkGearEquipped.Text = await LanguageManager.GetStringAsync("Checkbox_Equipped");
-                }
-
-                if (CharacterObject.BlackMarketDiscount)
-                {
-                    chkGearBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
-                        .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("gear.xml"))
-                                                         .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objGear.Category);
-                    chkGearBlackMarketDiscount.Checked = objGear.IncludedInParent
-                        ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
-                        : objGear.DiscountCost;
-                }
-                else
-                {
-                    chkGearBlackMarketDiscount.Enabled = false;
-                    chkGearBlackMarketDiscount.Checked = false;
-                }
-
-                // gpbGearMatrix
-                int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                lblGearDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                await objGear.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-                chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-                chkGearActiveCommlink.Visible = objGear.IsCommlink;
-                if (CharacterObject.IsAI)
-                {
-                    chkGearHomeNode.Visible = true;
-                    chkGearHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                    chkGearHomeNode.Enabled = chkGearActiveCommlink.Enabled &&
-                                              objGear.GetTotalMatrixAttribute("Program Limit") >=
-                                              (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                }
-                else
-                    chkGearHomeNode.Visible = false;
-                treGear.SelectedNode.Text = objGear.CurrentDisplayName;
-            }
-            else
-            {
-                gpbGearCommon.Visible = false;
-                gpbGearMatrix.Visible = false;
-
-                // Buttons
-                cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
-            }
-
-            IsRefreshing = false;
-            flpGear.ResumeLayout();
         }
 
         protected override string FormMode => LanguageManager.GetString("Title_CreateNewCharacter");
@@ -12382,119 +13031,156 @@ namespace Chummer
         private async Task RefreshSelectedLifestyle()
         {
             IsRefreshing = true;
-            flpLifestyleDetails.SuspendLayout();
-            if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0 || !(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
+            await flpLifestyleDetails.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                flpLifestyleDetails.Visible = false;
-                cmdDeleteLifestyle.Enabled = treLifestyles.SelectedNode?.Tag is ICanRemove;
-                IsRefreshing = false;
-                flpLifestyleDetails.ResumeLayout();
-                return;
-            }
-
-            flpLifestyleDetails.Visible = true;
-            cmdDeleteLifestyle.Enabled = true;
-
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            lblLifestyleCost.Text = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            nudLifestyleMonths.Value = objLifestyle.Increments;
-            lblLifestyleStartingNuyen.Text = objLifestyle.Dice.ToString(GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_D6") + strSpace
-                                             + '×' + strSpace + objLifestyle.Multiplier.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            await objLifestyle.SetSourceDetailAsync(lblLifestyleSource);
-            lblLifestyleTotalCost.Text = objLifestyle.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-
-            string strIncrementString;
-            // Change the Cost/Month label.
-            switch (objLifestyle.IncrementType)
-            {
-                case LifestyleIncrement.Day:
-                    lblLifestyleCostLabel.Text = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerDay");
-                    strIncrementString = await LanguageManager.GetStringAsync("String_Days");
-                    break;
-
-                case LifestyleIncrement.Week:
-                    lblLifestyleCostLabel.Text = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerWeek");
-                    strIncrementString = await LanguageManager.GetStringAsync("String_Weeks");
-                    break;
-
-                default:
-                    lblLifestyleCostLabel.Text = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerMonth");
-                    strIncrementString = await LanguageManager.GetStringAsync("String_Months");
-                    break;
-            }
-            lblLifestyleMonthsLabel.Text = strIncrementString + string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent"), objLifestyle.IncrementsRequiredForPermanent);
-
-            if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdQualities))
+                if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0
+                                                       || !(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
                 {
-                    sbdQualities.AppendJoin(',' + Environment.NewLine,
-                                            objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
-                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 CharacterObject, Improvement.ImprovementType.LifestyleCost))
-                    {
-                        if (sbdQualities.Length > 0)
-                            sbdQualities.AppendLine(',');
-
-                        sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
-                                    .Append(await LanguageManager.GetStringAsync("String_Space")).Append('[')
-                                    .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
-                                    .Append("%]");
-                    }
-
-                    lblLifestyleQualities.Text = sbdQualities.ToString();
+                    await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = false);
+                    await cmdDeleteLifestyle.DoThreadSafeAsync(async x => x.Enabled = await treLifestyles.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    return;
                 }
 
-                lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
-                lblLifestyleQualitiesLabel.Visible = true;
-                lblLifestyleQualities.Visible = true;
-            }
-            else
-            {
-                lblBaseLifestyle.Text = await LanguageManager.GetStringAsync("String_Error");
-                lblLifestyleQualitiesLabel.Visible = false;
-                lblLifestyleQualities.Visible = false;
-            }
+                await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = true);
+                await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = true);
 
-            //Controls Visibility and content of the City, District and Borough Labels
-            if (!string.IsNullOrEmpty(objLifestyle.City))
-            {
-                lblLifestyleCity.Text = objLifestyle.City;
-                lblLifestyleCity.Visible = true;
-                lblLifestyleCityLabel.Visible = true;
-            }
-            else
-            {
-                lblLifestyleCity.Visible = false;
-                lblLifestyleCityLabel.Visible = false;
-            }
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                await lblLifestyleCost.DoThreadSafeAsync(x => x.Text
+                                                             = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                 GlobalSettings.CultureInfo) + '¥');
+                await nudLifestyleMonths.DoThreadSafeAsync(x => x.Value = objLifestyle.Increments);
+                await lblLifestyleStartingNuyen.DoThreadSafeAsync(async x => x.Text
+                                                                = objLifestyle.Dice.ToString(GlobalSettings.CultureInfo)
+                                                                  + await LanguageManager.GetStringAsync("String_D6")
+                                                                  + strSpace
+                                                                  + '×' + strSpace
+                                                                  + objLifestyle.Multiplier.ToString(
+                                                                      CharacterObjectSettings.NuyenFormat,
+                                                                      GlobalSettings.CultureInfo) + '¥');
+                await objLifestyle.SetSourceDetailAsync(lblLifestyleSource);
+                await lblLifestyleTotalCost.DoThreadSafeAsync(x => x.Text
+                                                                  = objLifestyle.TotalCost.ToString(
+                                                                        CharacterObjectSettings.NuyenFormat,
+                                                                        GlobalSettings.CultureInfo)
+                                                                    + '¥');
 
-            if (!string.IsNullOrEmpty(objLifestyle.District))
-            {
-                lblLifestyleDistrict.Text = objLifestyle.District;
-                lblLifestyleDistrict.Visible = true;
-                lblLifestyleDistrictLabel.Visible = true;
-            }
-            else
-            {
-                lblLifestyleDistrict.Visible = false;
-                lblLifestyleDistrictLabel.Visible = false;
-            }
+                string strIncrementString;
+                // Change the Cost/Month label.
+                switch (objLifestyle.IncrementType)
+                {
+                    case LifestyleIncrement.Day:
+                        await lblLifestyleCostLabel.DoThreadSafeAsync(async x => x.Text
+                                                                          = await LanguageManager.GetStringAsync(
+                                                                              "Label_SelectLifestyle_CostPerDay"));
+                        strIncrementString = await LanguageManager.GetStringAsync("String_Days");
+                        break;
 
-            if (!string.IsNullOrEmpty(objLifestyle.Borough))
-            {
-                lblLifestyleBorough.Text = objLifestyle.Borough;
-                lblLifestyleBorough.Visible = true;
-                lblLifestyleBoroughLabel.Visible = true;
-            }
-            else
-            {
-                lblLifestyleBorough.Visible = false;
-                lblLifestyleBoroughLabel.Visible = false;
-            }
+                    case LifestyleIncrement.Week:
+                        await lblLifestyleCostLabel.DoThreadSafeAsync(async x => x.Text
+                                                                          = await LanguageManager.GetStringAsync(
+                                                                              "Label_SelectLifestyle_CostPerWeek"));
+                        strIncrementString = await LanguageManager.GetStringAsync("String_Weeks");
+                        break;
 
-            IsRefreshing = false;
-            flpLifestyleDetails.ResumeLayout();
+                    default:
+                        await lblLifestyleCostLabel.DoThreadSafeAsync(
+                            async x => x.Text
+                                = await LanguageManager.GetStringAsync("Label_SelectLifestyle_CostPerMonth"));
+                        strIncrementString = await LanguageManager.GetStringAsync("String_Months");
+                        break;
+                }
+
+                await lblLifestyleMonthsLabel.DoThreadSafeAsync(async x => x.Text = strIncrementString + string.Format(
+                                                         GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent"),
+                                                         objLifestyle.IncrementsRequiredForPermanent));
+
+                if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdQualities))
+                    {
+                        sbdQualities.AppendJoin(',' + Environment.NewLine,
+                                                objLifestyle.LifestyleQualities.Select(
+                                                    r => r.CurrentFormattedDisplayName));
+                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                     CharacterObject, Improvement.ImprovementType.LifestyleCost))
+                        {
+                            if (sbdQualities.Length > 0)
+                                sbdQualities.AppendLine(',');
+
+                            sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
+                                        .Append(await LanguageManager.GetStringAsync("String_Space")).Append('[')
+                                        .Append(
+                                            objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
+                                        .Append("%]");
+                        }
+
+                        await lblLifestyleQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString());
+                    }
+
+                    await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = objLifestyle.CurrentDisplayName);
+                    await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = true);
+                }
+                else
+                {
+                    await lblBaseLifestyle.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_Error"));
+                    await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                //Controls Visibility and content of the City, District and Borough Labels
+                if (!string.IsNullOrEmpty(objLifestyle.City))
+                {
+                    await lblLifestyleCity.DoThreadSafeAsync(x =>
+                    {
+                        x.Text = objLifestyle.City;
+                        x.Visible = true;
+                    });
+                    await lblLifestyleCityLabel.DoThreadSafeAsync(x => x.Visible = true);
+                }
+                else
+                {
+                    await lblLifestyleCity.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleCityLabel.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (!string.IsNullOrEmpty(objLifestyle.District))
+                {
+                    await lblLifestyleDistrict.DoThreadSafeAsync(x =>
+                    {
+                        x.Text = objLifestyle.District;
+                        x.Visible = true;
+                    });
+                    await lblLifestyleDistrictLabel.DoThreadSafeAsync(x => x.Visible = true);
+                }
+                else
+                {
+                    await lblLifestyleDistrict.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleDistrictLabel.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (!string.IsNullOrEmpty(objLifestyle.Borough))
+                {
+                    await lblLifestyleBorough.DoThreadSafeAsync(x =>
+                    {
+                        x.Text = objLifestyle.Borough;
+                        x.Visible = true;
+                    });
+                    await lblLifestyleBoroughLabel.DoThreadSafeAsync(x => x.Visible = true);
+                }
+                else
+                {
+                    await lblLifestyleBorough.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleBoroughLabel.DoThreadSafeAsync(x => x.Visible = false);
+                }
+            }
+            finally
+            {
+                await flpLifestyleDetails.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
+            }
         }
 
         /// <summary>
@@ -12503,247 +13189,321 @@ namespace Chummer
         private async Task RefreshSelectedVehicle()
         {
             IsRefreshing = true;
-            flpVehicles.SuspendLayout();
-            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
+            await flpVehicles.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
+            {
+                string strSelectedId = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString());
 
-            if (string.IsNullOrEmpty(strSelectedId) || treVehicles.SelectedNode?.Level <= 0 || treVehicles.SelectedNode?.Tag is Location)
-            {
-                gpbVehiclesCommon.Visible = false;
-                gpbVehiclesVehicle.Visible = false;
-                gpbVehiclesWeapon.Visible = false;
-                gpbVehiclesMatrix.Visible = false;
+                if (string.IsNullOrEmpty(strSelectedId) || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level) <= 0
+                                                        || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location)
+                {
+                    await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                // Buttons
-                cmdDeleteVehicle.Enabled = treVehicles.SelectedNode?.Tag is ICanRemove;
+                    // Buttons
+                    await cmdDeleteVehicle.DoThreadSafeAsync(async x => x.Enabled = await treVehicles.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    return;
+                }
 
-                IsRefreshing = false;
-                flpVehicles.ResumeLayout();
-                return;
-            }
-
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            if (treVehicles.SelectedNode?.Tag is IHasStolenProperty selectedLoot && ImprovementManager
-                    .GetCachedImprovementListForValueOf(
-                        CharacterObject,
-                        Improvement.ImprovementType.Nuyen,
-                        "Stolen").Count > 0)
-            {
-                chkVehicleStolen.Visible = true;
-                chkVehicleStolen.Checked = selectedLoot.Stolen;
-            }
-            else
-            {
-                chkVehicleStolen.Visible = false;
-            }
-            if (treVehicles.SelectedNode?.Tag is IHasSource objSelected)
-            {
-                lblVehicleSourceLabel.Visible = true;
-                lblVehicleSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblVehicleSource);
-            }
-            else
-            {
-                lblVehicleSourceLabel.Visible = false;
-                lblVehicleSource.Visible = false;
-            }
-
-            if (treVehicles.SelectedNode?.Tag is IHasRating objHasRating)
-            {
-                lblVehicleRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
-
-            switch (treVehicles.SelectedNode?.Tag)
-            {
-                // Locate the selected Vehicle.
-                case Vehicle objVehicle:
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty selectedLoot && ImprovementManager
+                                                 .GetCachedImprovementListForValueOf(
+                                                     CharacterObject,
+                                                     Improvement.ImprovementType.Nuyen,
+                                                     "Stolen").Count > 0)
+                {
+                    await chkVehicleStolen.DoThreadSafeAsync(x =>
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = true;
-                        gpbVehiclesWeapon.Visible = false;
-                        gpbVehiclesMatrix.Visible = true;
+                        x.Visible = true;
+                        x.Checked = selectedLoot.Stolen;
+                    });
+                }
+                else
+                {
+                    await chkVehicleStolen.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                {
+                    await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblVehicleSource);
+                }
+                else
+                {
+                    await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                {
+                    await lblVehicleRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
+                                                                      GlobalSettings.CultureInfo,
+                                                                      await LanguageManager.GetStringAsync(
+                                                                          "Label_RatingFormat"),
+                                                                      await LanguageManager.GetStringAsync(
+                                                                          objHasRating.RatingLabel)));
+                }
+
+                switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                {
+                    // Locate the selected Vehicle.
+                    case Vehicle objVehicle:
+                    {
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objVehicle.ParentID);
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objVehicle.ParentID));
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objVehicle.CurrentDisplayNameShort;
-                        lblVehicleCategory.Text = objVehicle.DisplayCategory(GlobalSettings.Language);
-                        lblVehicleRatingLabel.Visible = false;
-                        nudVehicleRating.Visible = false;
-                        lblVehicleGearQtyLabel.Visible = false;
-                        nudVehicleGearQty.Visible = false;
-                        lblVehicleAvail.Text = objVehicle.DisplayTotalAvail;
-                        lblVehicleCost.Text = objVehicle.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblVehicleSlotsLabel.Visible = !CharacterObjectSettings.BookEnabled("R5");
-                        lblVehicleSlots.Visible = !CharacterObjectSettings.BookEnabled("R5");
-                        if (!CharacterObjectSettings.BookEnabled("R5"))
-                            lblVehicleSlots.Text = objVehicle.Slots.ToString(GlobalSettings.CultureInfo)
-                                                   + strSpace + '(' + (objVehicle.Slots - objVehicle.SlotsUsed).ToString(GlobalSettings.CultureInfo)
-                                                   + strSpace + await LanguageManager.GetStringAsync("String_Remaining") + ')';
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = false;
-                        chkVehicleIncludedInWeapon.Visible = false;
-
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objVehicle.CurrentDisplayNameShort);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayCategory(GlobalSettings.Language));
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objVehicle.TotalCost.ToString(
+                                                                       CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = !CharacterObjectSettings.BookEnabled("R5"));
+                        await lblVehicleSlots.DoThreadSafeAsync(async x =>
+                        {
+                            x.Visible = !CharacterObjectSettings.BookEnabled("R5");
+                            if (!CharacterObjectSettings.BookEnabled("R5"))
+                                x.Text = objVehicle.Slots.ToString(GlobalSettings.CultureInfo)
+                                         + strSpace + '('
+                                         + (objVehicle.Slots - objVehicle.SlotsUsed).ToString(
+                                             GlobalSettings.CultureInfo)
+                                         + strSpace + await LanguageManager.GetStringAsync("String_Remaining")
+                                         + ')';
+                        });
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("vehicles.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objVehicle.Category);
-                            chkWeaponBlackMarketDiscount.Checked = objVehicle.DiscountCost;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = CharacterObject
+                                            .GenerateBlackMarketMappings(
+                                                await (await CharacterObject.LoadDataXPathAsync(
+                                                        "vehicles.xml"))
+                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                        "/chummer"))
+                                            .Contains(objVehicle.Category);
+                                x.Checked = objVehicle.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = false;
-                            chkWeaponBlackMarketDiscount.Checked = false;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
                         // gpbVehiclesVehicle
-                        lblVehicleHandling.Text = objVehicle.TotalHandling;
-                        lblVehicleAccel.Text = objVehicle.TotalAccel;
-                        lblVehicleSpeed.Text = objVehicle.TotalSpeed;
-                        lblVehiclePilot.Text = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleBody.Text = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleArmor.Text = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleSeats.Text = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo);
-                        lblVehicleSensor.Text = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo);
+                        await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = objVehicle.TotalHandling);
+                        await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = objVehicle.TotalAccel);
+                        await lblVehicleSpeed.DoThreadSafeAsync(x => x.Text = objVehicle.TotalSpeed);
+                        await lblVehiclePilot.DoThreadSafeAsync(x => x.Text = objVehicle.Pilot.ToString(GlobalSettings.CultureInfo));
+                        await lblVehicleBody.DoThreadSafeAsync(x => x.Text = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo));
+                        await lblVehicleArmor.DoThreadSafeAsync(x => x.Text = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo));
+                        await lblVehicleSeats.DoThreadSafeAsync(x => x.Text = objVehicle.TotalSeats.ToString(GlobalSettings.CultureInfo));
+                        await lblVehicleSensor.DoThreadSafeAsync(x => x.Text = objVehicle.CalculatedSensor.ToString(GlobalSettings.CultureInfo));
                         if (CharacterObjectSettings.BookEnabled("R5"))
                         {
                             if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
                             {
-                                lblVehiclePowertrainLabel.Visible = false;
-                                lblVehiclePowertrain.Visible = false;
-                                lblVehicleCosmeticLabel.Visible = false;
-                                lblVehicleCosmetic.Visible = false;
-                                lblVehicleElectromagneticLabel.Visible = false;
-                                lblVehicleElectromagnetic.Visible = false;
-                                lblVehicleBodymodLabel.Visible = false;
-                                lblVehicleBodymod.Visible = false;
-                                lblVehicleWeaponsmodLabel.Visible = false;
-                                lblVehicleWeaponsmod.Visible = false;
-                                lblVehicleProtectionLabel.Visible = false;
-                                lblVehicleProtection.Visible = false;
-                                lblVehicleDroneModSlotsLabel.Visible = true;
-                                lblVehicleDroneModSlots.Visible = true;
-                                lblVehicleDroneModSlots.Text = objVehicle.DroneModSlotsUsed.ToString(GlobalSettings.CultureInfo) + '/' + objVehicle.DroneModSlots.ToString(GlobalSettings.CultureInfo);
+                                await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehiclePowertrain.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleCosmetic.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleElectromagnetic.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleBodymod.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleWeaponsmod.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleProtection.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleDroneModSlots.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text
+                                        = objVehicle.DroneModSlotsUsed.ToString(GlobalSettings.CultureInfo) + '/'
+                                        + objVehicle.DroneModSlots.ToString(GlobalSettings.CultureInfo);
+                                });
                             }
                             else
                             {
-                                lblVehiclePowertrainLabel.Visible = true;
-                                lblVehiclePowertrain.Visible = true;
-                                lblVehiclePowertrain.Text = objVehicle.PowertrainModSlotsUsed();
-                                lblVehicleCosmeticLabel.Visible = true;
-                                lblVehicleCosmetic.Visible = true;
-                                lblVehicleCosmetic.Text = objVehicle.CosmeticModSlotsUsed();
-                                lblVehicleElectromagneticLabel.Visible = true;
-                                lblVehicleElectromagnetic.Visible = true;
-                                lblVehicleElectromagnetic.Text = objVehicle.ElectromagneticModSlotsUsed();
-                                lblVehicleBodymodLabel.Visible = true;
-                                lblVehicleBodymod.Visible = true;
-                                lblVehicleBodymod.Text = objVehicle.BodyModSlotsUsed();
-                                lblVehicleWeaponsmodLabel.Visible = true;
-                                lblVehicleWeaponsmod.Visible = true;
-                                lblVehicleWeaponsmod.Text = objVehicle.WeaponModSlotsUsed();
-                                lblVehicleProtectionLabel.Visible = true;
-                                lblVehicleProtection.Visible = true;
-                                lblVehicleProtection.Text = objVehicle.ProtectionModSlotsUsed();
-                                lblVehicleDroneModSlotsLabel.Visible = false;
-                                lblVehicleDroneModSlots.Visible = false;
+                                await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehiclePowertrain.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.PowertrainModSlotsUsed();
+                                });
+                                await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleCosmetic.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.CosmeticModSlotsUsed();
+                                });
+                                await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleElectromagnetic.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.ElectromagneticModSlotsUsed();
+                                });
+                                await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleBodymod.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.BodyModSlotsUsed();
+                                });
+                                await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleWeaponsmod.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.WeaponModSlotsUsed();
+                                });
+                                await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleProtection.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objVehicle.ProtectionModSlotsUsed();
+                                });
+                                await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false);
                             }
                         }
                         else
                         {
-                            lblVehiclePowertrainLabel.Visible = false;
-                            lblVehiclePowertrain.Visible = false;
-                            lblVehicleCosmeticLabel.Visible = false;
-                            lblVehicleCosmetic.Visible = false;
-                            lblVehicleElectromagneticLabel.Visible = false;
-                            lblVehicleElectromagnetic.Visible = false;
-                            lblVehicleBodymodLabel.Visible = false;
-                            lblVehicleBodymod.Visible = false;
-                            lblVehicleWeaponsmodLabel.Visible = false;
-                            lblVehicleWeaponsmod.Visible = false;
-                            lblVehicleProtectionLabel.Visible = false;
-                            lblVehicleProtection.Visible = false;
-                            lblVehicleDroneModSlotsLabel.Visible = false;
-                            lblVehicleDroneModSlots.Visible = false;
+                            await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehiclePowertrain.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleCosmetic.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleElectromagnetic.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleBodymod.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponsmod.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleProtection.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objVehicle.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objVehicle.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
-                        chkVehicleActiveCommlink.Visible = objVehicle.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objVehicle.IsActiveCommlink(CharacterObject);
+                        await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objVehicle.RefreshMatrixAttributeComboBoxesAsync(
+                            cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objVehicle.IsCommlink;
+                            x.Checked = objVehicle.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objVehicle.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objVehicle.IsHomeNode(CharacterObject);
+                                x.Enabled = objVehicle.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkVehicleHomeNode.Visible = false;
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
-                        UpdateSensor(objVehicle);
+                        await UpdateSensor(objVehicle);
                         break;
                     }
-                // Locate the selected VehicleMod.
-                case WeaponMount objWeaponMount:
-                    gpbVehiclesCommon.Visible = true;
-                    gpbVehiclesVehicle.Visible = false;
-                    gpbVehiclesWeapon.Visible = false;
-                    gpbVehiclesMatrix.Visible = false;
-
-                    // Buttons
-                    cmdDeleteVehicle.Enabled = !objWeaponMount.IncludedInVehicle;
-
-                    // gpbVehiclesCommon
-                    lblVehicleCategory.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language);
-                    lblVehicleName.Text = objWeaponMount.CurrentDisplayName;
-                    lblVehicleRatingLabel.Visible = false;
-                    nudVehicleRating.Visible = false;
-                    lblVehicleGearQtyLabel.Visible = false;
-                    nudVehicleGearQty.Visible = false;
-                    lblVehicleAvail.Text = objWeaponMount.DisplayTotalAvail;
-                    lblVehicleCost.Text = objWeaponMount.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo);
-                    lblVehicleSlotsLabel.Visible = true;
-                    lblVehicleSlots.Visible = true;
-                    lblVehicleSlots.Text = objWeaponMount.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
-                    cmdVehicleCyberwareChangeMount.Visible = false;
-                    chkVehicleWeaponAccessoryInstalled.Visible = true;
-                    chkVehicleWeaponAccessoryInstalled.Checked = objWeaponMount.Equipped;
-                    chkVehicleWeaponAccessoryInstalled.Enabled = !objWeaponMount.IncludedInVehicle;
-                    chkVehicleIncludedInWeapon.Visible = false;
-                    if (CharacterObject.BlackMarketDiscount)
-                    {
-                        chkWeaponBlackMarketDiscount.Enabled = !objWeaponMount.IncludedInVehicle && CharacterObject
-                            .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("vehicles.xml"))
-                                                             .SelectSingleNodeAndCacheExpressionAsync("/chummer/weaponmountcategories")).Contains(objWeaponMount.Category);
-                        chkWeaponBlackMarketDiscount.Checked = objWeaponMount.IncludedInVehicle
-                            ? objWeaponMount.Parent?.DiscountCost == true
-                            : objWeaponMount.DiscountCost;
-                    }
-                    else
-                    {
-                        chkWeaponBlackMarketDiscount.Enabled = false;
-                        chkWeaponBlackMarketDiscount.Checked = false;
-                    }
-                    break;
-
-                case VehicleMod objMod:
-                    {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = false;
-                        gpbVehiclesMatrix.Visible = false;
+                    // Locate the selected VehicleMod.
+                    case WeaponMount objWeaponMount:
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = !objMod.IncludedInVehicle;
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeaponMount.IncludedInVehicle);
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objMod.CurrentDisplayName;
-                        lblVehicleCategory.Text = await LanguageManager.GetStringAsync("String_VehicleModification");
-                        lblVehicleRatingLabel.Text = await LanguageManager.GetStringAsync(objMod.RatingLabel);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language));
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeaponMount.CurrentDisplayName);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objWeaponMount.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo));
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlots.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeaponMount.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                        });
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objWeaponMount.Equipped;
+                            x.Enabled = !objWeaponMount.IncludedInVehicle;
+                        });
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objWeaponMount.IncludedInVehicle && CharacterObject
+                                    .GenerateBlackMarketMappings(
+                                        await (await CharacterObject.LoadDataXPathAsync("vehicles.xml"))
+                                            .SelectSingleNodeAndCacheExpressionAsync("/chummer/weaponmountcategories"))
+                                    .Contains(objWeaponMount.Category);
+                                x.Checked = objWeaponMount.IncludedInVehicle
+                                    ? objWeaponMount.Parent?.DiscountCost == true
+                                    : objWeaponMount.DiscountCost;
+                            });
+                        }
+                        else
+                        {
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
+                        }
+
+                        break;
+
+                    case VehicleMod objMod:
+                    {
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
+
+                        // Buttons
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objMod.IncludedInVehicle);
+
+                        // gpbVehiclesCommon
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objMod.CurrentDisplayName);
+                        await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_VehicleModification"));
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync(objMod.RatingLabel));
                         if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                         {
                             if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
@@ -12754,243 +13514,343 @@ namespace Chummer
                             {
                                 objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalSettings.CultureInfo);
                             }
-                            if (int.TryParse(objMod.MaxRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intMaxRating) && intMaxRating > 0)
+
+                            if (int.TryParse(objMod.MaxRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                             out int intMaxRating) && intMaxRating > 0)
                             {
-                                lblVehicleRatingLabel.Visible = true;
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                                 // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
-                                nudVehicleRating.Maximum = objMod.Name.StartsWith("Armor,", StringComparison.Ordinal) ? Math.Min(intMaxRating, objMod.Parent.MaxArmor) : intMaxRating;
-                                nudVehicleRating.Minimum = 1;
-                                nudVehicleRating.Visible = true;
-                                nudVehicleRating.Value = objMod.Rating;
-                                nudVehicleRating.Increment = 1;
-                                nudVehicleRating.Enabled = !objMod.IncludedInVehicle;
+                                await nudVehicleRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Maximum = objMod.Name.StartsWith("Armor,", StringComparison.Ordinal)
+                                        ? Math.Min(intMaxRating, objMod.Parent.MaxArmor)
+                                        : intMaxRating;
+                                    x.Minimum = 1;
+                                    x.Visible = true;
+                                    x.Value = objMod.Rating;
+                                    x.Increment = 1;
+                                    x.Enabled = !objMod.IncludedInVehicle;
+                                });
                             }
                             else
                             {
-                                lblVehicleRatingLabel.Visible = false;
-                                nudVehicleRating.Minimum = 0;
-                                nudVehicleRating.Increment = 1;
-                                nudVehicleRating.Maximum = 0;
-                                nudVehicleRating.Enabled = false;
-                                nudVehicleRating.Visible = false;
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await nudVehicleRating.DoThreadSafeAsync(x =>
+                                {
+                                    x.Minimum = 0;
+                                    x.Increment = 1;
+                                    x.Maximum = 0;
+                                    x.Enabled = false;
+                                    x.Visible = false;
+                                });
                             }
                         }
                         else
                         {
-                            lblVehicleRatingLabel.Visible = true;
-                            nudVehicleRating.Visible = true;
-                            nudVehicleRating.Minimum = 1;
-                            nudVehicleRating.Maximum = Vehicle.MaxWheels;
-                            nudVehicleRating.Value = objMod.Rating;
-                            nudVehicleRating.Increment = 1;
-                            nudVehicleRating.Enabled = !objMod.IncludedInVehicle;
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await nudVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Minimum = 1;
+                                x.Maximum = Vehicle.MaxWheels;
+                                x.Value = objMod.Rating;
+                                x.Increment = 1;
+                                x.Enabled = !objMod.IncludedInVehicle;
+                            });
                         }
-                        nudVehicleGearQty.Visible = false;
-                        lblVehicleGearQtyLabel.Visible = false;
-                        lblVehicleAvail.Text = objMod.DisplayTotalAvail;
-                        lblVehicleCost.Text = objMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblVehicleSlotsLabel.Visible = true;
-                        lblVehicleSlots.Visible = true;
-                        lblVehicleSlots.Text = objMod.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = true;
-                        chkVehicleWeaponAccessoryInstalled.Checked = objMod.Equipped;
-                        chkVehicleWeaponAccessoryInstalled.Enabled = !objMod.IncludedInVehicle;
-                        chkVehicleIncludedInWeapon.Visible = false;
+
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objMod.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
+                                                                     + '¥');
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlots.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objMod.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
+                        });
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objMod.Equipped;
+                            x.Enabled = !objMod.IncludedInVehicle;
+                        });
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
 
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = !objMod.IncludedInVehicle && CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("weapons.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer/modcategories")).Contains(objMod.Category);
-                            chkWeaponBlackMarketDiscount.Checked = objMod.IncludedInVehicle
-                                ? (objMod.WeaponMountParent?.DiscountCost ?? objMod.Parent?.DiscountCost) == true
-                                : objMod.DiscountCost;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objMod.IncludedInVehicle && CharacterObject
+                                                                         .GenerateBlackMarketMappings(
+                                                                             await (await CharacterObject
+                                                                                     .LoadDataXPathAsync("weapons.xml"))
+                                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                     "/chummer/modcategories"))
+                                                                         .Contains(objMod.Category);
+                                x.Checked = objMod.IncludedInVehicle
+                                    ? (objMod.WeaponMountParent?.DiscountCost ?? objMod.Parent?.DiscountCost) == true
+                                    : objMod.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = false;
-                            chkWeaponBlackMarketDiscount.Checked = false;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
+
                         break;
                     }
-                case Weapon objWeapon:
+                    case Weapon objWeapon:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = true;
-                        gpbVehiclesMatrix.Visible = true;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = !objWeapon.Cyberware && objWeapon.Category != "Gear" && !objWeapon.IncludedInWeapon && string.IsNullOrEmpty(objWeapon.ParentID) && !objWeapon.Category.StartsWith("Quality", StringComparison.Ordinal);
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeapon.Cyberware
+                                                                     && objWeapon.Category != "Gear"
+                                                                     && !objWeapon.IncludedInWeapon
+                                                                     && string.IsNullOrEmpty(objWeapon.ParentID)
+                                                                     && !objWeapon.Category.StartsWith(
+                                                                         "Quality", StringComparison.Ordinal));
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objWeapon.CurrentDisplayName;
-                        lblVehicleCategory.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
-                        lblVehicleRatingLabel.Visible = false;
-                        nudVehicleRating.Visible = false;
-                        lblVehicleGearQtyLabel.Visible = false;
-                        nudVehicleGearQty.Visible = false;
-                        lblVehicleAvail.Text = objWeapon.DisplayTotalAvail;
-                        lblVehicleCost.Text = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblVehicleSlotsLabel.Visible = true;
-                        lblVehicleSlots.Visible = true;
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
+                        await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language));
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlots.DoThreadSafeAsync(x => x.Visible = true);
                         if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                         {
-                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                StringComparison.OrdinalIgnoreCase))
                             {
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdSlotsText))
                                 {
                                     foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc(
                                                  '/', StringSplitOptions.RemoveEmptyEntries))
-                                        sbdSlotsText.Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
-                                                    .Append('/');
+                                        sbdSlotsText
+                                            .Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
+                                            .Append('/');
                                     --sbdSlotsText.Length;
                                     lblWeaponSlots.Text = sbdSlotsText.ToString();
                                 }
                             }
                             else
-                                lblWeaponSlots.Text = objWeapon.AccessoryMounts;
+                                await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = objWeapon.AccessoryMounts);
                         }
                         else
-                            lblWeaponSlots.Text = await LanguageManager.GetStringAsync("String_None");
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = true;
-                        chkVehicleWeaponAccessoryInstalled.Checked = objWeapon.Equipped;
-                        chkVehicleWeaponAccessoryInstalled.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId && objWeapon.ParentID != objWeapon.ParentVehicle.InternalId;
-                        chkVehicleIncludedInWeapon.Visible = true;
-                        chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
+                            await lblWeaponSlots.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
 
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objWeapon.Equipped;
+                            x.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId
+                                        && objWeapon.ParentID
+                                        != objWeapon.ParentVehicle.InternalId;
+                        });
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objWeapon.IncludedInWeapon;
+                        });
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("weapons.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objWeapon.Category);
-                            chkWeaponBlackMarketDiscount.Checked = objWeapon.IncludedInWeapon
-                                ? objWeapon.Parent?.DiscountCost == true
-                                : objWeapon.DiscountCost;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
+                                                                           .GenerateBlackMarketMappings(
+                                                                               await (await CharacterObject
+                                                                                       .LoadDataXPathAsync(
+                                                                                           "weapons.xml"))
+                                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                       "/chummer"))
+                                                                           .Contains(objWeapon.Category);
+                                x.Checked = objWeapon.IncludedInWeapon
+                                    ? objWeapon.Parent?.DiscountCost == true
+                                    : objWeapon.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = false;
-                            chkWeaponBlackMarketDiscount.Checked = false;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
                         // gpbVehiclesWeapon
-                        lblVehicleWeaponDamageLabel.Visible = true;
-                        lblVehicleWeaponDamage.Text = objWeapon.DisplayDamage;
-                        lblVehicleWeaponDamage.Visible = true;
-                        lblVehicleWeaponAPLabel.Visible = true;
-                        lblVehicleWeaponAP.Text = objWeapon.DisplayTotalAP;
-                        lblVehicleWeaponAP.Visible = true;
-                        lblVehicleWeaponAccuracyLabel.Visible = true;
-                        lblVehicleWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
-                        lblVehicleWeaponAccuracy.Visible = true;
-                        lblVehicleWeaponDicePoolLabel.Visible = true;
-                        lblVehicleWeaponDicePool.Text = objWeapon.DicePool.ToString(GlobalSettings.CultureInfo);
+                        await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objWeapon.DisplayDamage;
+                            x.Visible = true;
+                        });
+                        await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objWeapon.DisplayTotalAP;
+                            x.Visible = true;
+                        });
+                        await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objWeapon.DisplayAccuracy;
+                            x.Visible = true;
+                        });
+                        await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
+                        {
+                            x.Text = objWeapon.DicePool.ToString(GlobalSettings
+                                                                     .CultureInfo);
+                            x.Visible = true;
+                        });
                         await lblVehicleWeaponDicePool.SetToolTipAsync(objWeapon.DicePoolTooltip);
-                        lblVehicleWeaponDicePool.Visible = true;
                         if (objWeapon.RangeType == "Ranged")
                         {
-                            lblVehicleWeaponAmmoLabel.Visible = true;
-                            lblVehicleWeaponAmmo.Visible = true;
-                            lblVehicleWeaponAmmo.Text = objWeapon.DisplayAmmo;
-                            lblVehicleWeaponModeLabel.Visible = true;
-                            lblVehicleWeaponMode.Visible = true;
-                            lblVehicleWeaponMode.Text = objWeapon.DisplayMode;
-                            cboVehicleWeaponFiringMode.Visible = true;
-                            cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
-
-                            tlpVehiclesWeaponRanges.Visible = true;
-                            lblVehicleWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
-                            lblVehicleWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
-                            Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
-                            lblVehicleWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
-                            lblVehicleWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
-                            lblVehicleWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
-                            lblVehicleWeaponRangeExtremeLabel.Text = objWeapon.RangeModifier("Extreme");
-                            lblVehicleWeaponRangeShort.Text = dictionaryRanges["short"];
-                            lblVehicleWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                            lblVehicleWeaponRangeLong.Text = dictionaryRanges["long"];
-                            lblVehicleWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                            lblVehicleWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                            lblVehicleWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                            lblVehicleWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                            lblVehicleWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayAmmo;
+                            });
+                            await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponMode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayMode;
+                            });
+                            await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode);
+                            await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponRangeMain.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange);
+                            await lblVehicleWeaponRangeAlternate.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange);
+                            Dictionary<string, string> dictionaryRanges
+                                = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponRangeShortLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"));
+                            await lblVehicleWeaponRangeMediumLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Medium"));
+                            await lblVehicleWeaponRangeLongLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Long"));
+                            await lblVehicleWeaponRangeExtremeLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"));
+                            await lblVehicleWeaponRangeShort.DoThreadSafeAsync(x => x.Text = dictionaryRanges["short"]);
+                            await lblVehicleWeaponRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["medium"]);
+                            await lblVehicleWeaponRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["long"]);
+                            await lblVehicleWeaponRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["extreme"]);
+                            await lblVehicleWeaponAlternateRangeShort.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateshort"]);
+                            await lblVehicleWeaponAlternateRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"]);
+                            await lblVehicleWeaponAlternateRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"]);
+                            await lblVehicleWeaponAlternateRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"]);
                         }
                         else
                         {
                             if (objWeapon.Ammo != "0")
                             {
-                                lblVehicleWeaponAmmoLabel.Visible = true;
-                                lblVehicleWeaponAmmo.Visible = true;
-                                lblVehicleWeaponAmmo.Text = objWeapon.DisplayAmmo;
-                                cboVehicleWeaponFiringMode.Visible = true;
-                                cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
+                                await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objWeapon.DisplayAmmo;
+                                });
+                                await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.SelectedValue = objWeapon.FireMode;
+                                });
                             }
                             else
                             {
-                                lblVehicleWeaponAmmoLabel.Visible = false;
-                                lblVehicleWeaponAmmo.Visible = false;
-                                cboVehicleWeaponFiringMode.Visible = false;
+                                await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
+                                await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.Visible = false);
                             }
-                            lblVehicleWeaponModeLabel.Visible = false;
-                            lblVehicleWeaponMode.Visible = false;
 
-                            tlpVehiclesWeaponRanges.Visible = false;
+                            await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+                            await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objWeapon.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
-                        chkVehicleActiveCommlink.Visible = objWeapon.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objWeapon.RefreshMatrixAttributeComboBoxesAsync(
+                            cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objWeapon.IsCommlink;
+                            x.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = objWeapon.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objWeapon.IsHomeNode(CharacterObject);
+                                x.Enabled = objWeapon.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkVehicleHomeNode.Visible = false;
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
                         break;
                     }
-                case WeaponAccessory objAccessory:
+                    case WeaponAccessory objAccessory:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = true;
-                        gpbVehiclesMatrix.Visible = false;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = !objAccessory.IncludedInWeapon;
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objAccessory.IncludedInWeapon);
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objAccessory.CurrentDisplayName;
-                        lblVehicleCategory.Text = await LanguageManager.GetStringAsync("String_VehicleWeaponAccessory");
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objAccessory.CurrentDisplayName);
+                        await lblVehicleCategory.DoThreadSafeAsync(
+                            async x => x.Text = await LanguageManager.GetStringAsync("String_VehicleWeaponAccessory"));
                         if (objAccessory.MaxRating > 0)
                         {
-                            lblVehicleRatingLabel.Visible = true;
-                            nudVehicleRating.Visible = true;
-                            nudVehicleRating.Minimum = 1;
-                            nudVehicleRating.Maximum = objAccessory.MaxRating;
-                            nudVehicleRating.Value = objAccessory.Rating;
-                            nudVehicleRating.Increment = 1;
-                            nudVehicleRating.Enabled = !objAccessory.IncludedInWeapon;
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await nudVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Minimum = 1;
+                                x.Maximum = objAccessory.MaxRating;
+                                x.Value = objAccessory.Rating;
+                                x.Increment = 1;
+                                x.Enabled = !objAccessory.IncludedInWeapon;
+                            });
                         }
                         else
                         {
-                            lblVehicleRatingLabel.Visible = false;
-                            nudVehicleRating.Visible = false;
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
-                        lblVehicleGearQtyLabel.Visible = false;
-                        nudVehicleGearQty.Visible = false;
-                        lblVehicleAvail.Text = objAccessory.DisplayTotalAvail;
-                        lblVehicleCost.Text = objAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objAccessory.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objAccessory.TotalCost.ToString(
+                                                                       CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdMount))
                         {
@@ -13013,7 +13873,8 @@ namespace Chummer
                                         boolHaveAddedItem = true;
                                     }
 
-                                    sbdMount.Append(await LanguageManager.GetStringAsync("String_Mount" + strCurrentExtraMount))
+                                    sbdMount.Append(await LanguageManager.GetStringAsync(
+                                                        "String_Mount" + strCurrentExtraMount))
                                             .Append('/');
                                 }
 
@@ -13022,88 +13883,131 @@ namespace Chummer
                                     --sbdMount.Length;
                             }
 
-                            lblVehicleSlotsLabel.Visible = true;
-                            lblVehicleSlots.Visible = true;
-                            lblVehicleSlots.Text = sbdMount.ToString();
+                            await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleSlots.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = sbdMount.ToString();
+                            });
                         }
 
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = true;
-                        chkVehicleWeaponAccessoryInstalled.Enabled = true;
-                        chkVehicleWeaponAccessoryInstalled.Checked = objAccessory.Equipped;
-                        chkVehicleIncludedInWeapon.Visible = true;
-                        chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
-
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Enabled = true;
+                            x.Checked = objAccessory.Equipped;
+                        });
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objAccessory.IncludedInWeapon;
+                        });
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = !objAccessory.IncludedInWeapon && CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("weapons.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objAccessory.Parent.Category);
-                            chkWeaponBlackMarketDiscount.Checked = objAccessory.IncludedInWeapon
-                                ? objAccessory.Parent?.DiscountCost == true
-                                : objAccessory.DiscountCost;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objAccessory.IncludedInWeapon && CharacterObject
+                                                                              .GenerateBlackMarketMappings(
+                                                                                  await (await CharacterObject
+                                                                                          .LoadDataXPathAsync(
+                                                                                              "weapons.xml"))
+                                                                                      .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                          "/chummer"))
+                                                                              .Contains(objAccessory.Parent.Category);
+                                x.Checked = objAccessory.IncludedInWeapon
+                                    ? objAccessory.Parent?.DiscountCost == true
+                                    : objAccessory.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkWeaponBlackMarketDiscount.Enabled = false;
-                            chkWeaponBlackMarketDiscount.Checked = false;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
                         // gpbVehiclesWeapon
-                        lblVehicleWeaponModeLabel.Visible = false;
-                        lblVehicleWeaponMode.Visible = false;
-                        cboVehicleWeaponFiringMode.Visible = false;
+                        await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+                        await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.Visible = false);
                         if (string.IsNullOrEmpty(objAccessory.Damage))
                         {
-                            lblVehicleWeaponDamageLabel.Visible = false;
-                            lblVehicleWeaponDamage.Visible = false;
+                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleWeaponDamageLabel.Visible = !string.IsNullOrEmpty(objAccessory.Damage);
-                            lblVehicleWeaponDamage.Visible = !string.IsNullOrEmpty(objAccessory.Damage);
-                            lblVehicleWeaponDamage.Text = Convert.ToInt32(objAccessory.Damage, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objAccessory.Damage));
+                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = !string.IsNullOrEmpty(objAccessory
+                                                                      .Damage);
+                                x.Text = Convert
+                                         .ToInt32(objAccessory.Damage,
+                                                  GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (string.IsNullOrEmpty(objAccessory.AP))
                         {
-                            lblVehicleWeaponAPLabel.Visible = false;
-                            lblVehicleWeaponAP.Visible = false;
+                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAP.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleWeaponAPLabel.Visible = true;
-                            lblVehicleWeaponAP.Visible = true;
-                            lblVehicleWeaponAP.Text = Convert.ToInt32(objAccessory.AP, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = Convert
+                                         .ToInt32(objAccessory.AP, GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objAccessory.Accuracy == 0)
                         {
-                            lblVehicleWeaponAccuracyLabel.Visible = false;
-                            lblVehicleWeaponAccuracy.Visible = false;
+                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleWeaponAccuracyLabel.Visible = true;
-                            lblVehicleWeaponAccuracy.Visible = true;
-                            lblVehicleWeaponAccuracy.Text = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text
+                                    = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objAccessory.DicePool == 0)
                         {
-                            lblVehicleWeaponDicePoolLabel.Visible = false;
-                            lblVehicleWeaponDicePool.Visible = false;
+                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblVehicleWeaponDicePoolLabel.Visible = true;
-                            lblVehicleWeaponDicePool.Visible = true;
-                            lblVehicleWeaponDicePool.Text = objAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text
+                                    = objAccessory.DicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                             await lblVehicleWeaponDicePool.SetToolTipAsync(string.Empty);
                         }
+
                         if (objAccessory.TotalAmmoBonus != 0
                             || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                 && objAccessory.ModifyAmmoCapacity != "0"))
                         {
-                            lblVehicleWeaponAmmoLabel.Visible = true;
-                            lblVehicleWeaponAmmo.Visible = true;
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true);
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdAmmoBonus))
                             {
@@ -13114,207 +14018,289 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                     && objAccessory.ModifyAmmoCapacity != "0")
                                     sbdAmmoBonus.Append(objAccessory.ModifyAmmoCapacity);
-                                lblVehicleWeaponAmmo.Text = sbdAmmoBonus.ToString();
+                                await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Text = sbdAmmoBonus.ToString());
                             }
                         }
                         else
                         {
-                            lblVehicleWeaponAmmoLabel.Visible = false;
-                            lblVehicleWeaponAmmo.Visible = false;
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         break;
-                    }
-                case Cyberware objCyberware:
+                }
+                    case Cyberware objCyberware:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = false;
-                        gpbVehiclesMatrix.Visible = true;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = string.IsNullOrEmpty(objCyberware.ParentID);
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID));
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objCyberware.CurrentDisplayName;
-                        lblVehicleCategory.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language);
-                        lblVehicleRatingLabel.Text = await LanguageManager.GetStringAsync(objCyberware.RatingLabel);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayName);
+                        await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language));
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync(objCyberware.RatingLabel));
                         if (objCyberware.MaxRating == 0)
                         {
-                            nudVehicleRating.Maximum = 0;
-                            nudVehicleRating.Minimum = 0;
-                            nudVehicleRating.Value = 0;
-                            nudVehicleRating.Visible = false;
-                            lblVehicleRatingLabel.Visible = false;
+                            await nudVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Maximum = 0;
+                                x.Minimum = 0;
+                                x.Value = 0;
+                                x.Visible = false;
+                            });
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            nudVehicleRating.Maximum = objCyberware.MaxRating;
-                            nudVehicleRating.Minimum = objCyberware.MinRating;
-                            nudVehicleRating.Value = objCyberware.Rating;
-                            nudVehicleRating.Enabled = nudVehicleRating.Maximum == nudVehicleRating.Minimum && string.IsNullOrEmpty(objCyberware.ParentID);
-                            nudVehicleRating.Visible = true;
-                            lblVehicleRatingLabel.Visible = true;
+                            await nudVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Maximum = objCyberware.MaxRating;
+                                x.Minimum = objCyberware.MinRating;
+                                x.Value = objCyberware.Rating;
+                                x.Enabled = nudVehicleRating.Maximum == nudVehicleRating.Minimum
+                                            && string.IsNullOrEmpty(objCyberware.ParentID);
+                                x.Visible = true;
+                            });
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
-                        lblVehicleGearQtyLabel.Visible = false;
-                        nudVehicleGearQty.Visible = false;
-                        lblVehicleAvail.Text = objCyberware.DisplayTotalAvail;
-                        lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
-                        chkVehicleWeaponAccessoryInstalled.Visible = false;
-                        chkVehicleIncludedInWeapon.Visible = false;
+
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objCyberware.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objCyberware.TotalCost.ToString(
+                                                                       CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible
+                                                                                   = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount));
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
 
                         if (CharacterObject.BlackMarketDiscount && string.IsNullOrEmpty(objCyberware.ParentID))
                         {
-                            chkCyberwareBlackMarketDiscount.Enabled = CharacterObject.GenerateBlackMarketMappings(await (await CharacterObject
-                                    .LoadDataXPathAsync(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
-                                                            ? "cyberware.xml"
-                                                            : "bioware.xml")).SelectSingleNodeAndCacheExpressionAsync("/chummer"))
-                                .Contains(objCyberware.Category);
-                            chkCyberwareBlackMarketDiscount.Checked = objCyberware.DiscountCost;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = CharacterObject.GenerateBlackMarketMappings(
+                                                               await (await CharacterObject
+                                                                       .LoadDataXPathAsync(
+                                                                           objCyberware.SourceType
+                                                                           == Improvement.ImprovementSource.Cyberware
+                                                                               ? "cyberware.xml"
+                                                                               : "bioware.xml"))
+                                                                   .SelectSingleNodeAndCacheExpressionAsync("/chummer"))
+                                                           .Contains(objCyberware.Category);
+                                x.Checked = objCyberware.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkCyberwareBlackMarketDiscount.Enabled = false;
-                            chkCyberwareBlackMarketDiscount.Checked = false;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objCyberware.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objCyberware.RefreshMatrixAttributeComboBoxesAsync(
+                            cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
-                        chkVehicleActiveCommlink.Visible = objCyberware.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+                        await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objCyberware.IsCommlink;
+                            x.Checked = objCyberware.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objCyberware.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objCyberware.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objCyberware.IsHomeNode(CharacterObject);
+                                x.Enabled = chkVehicleActiveCommlink.Visible
+                                            && objCyberware.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkVehicleHomeNode.Visible = false;
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
                         break;
                     }
-                case Gear objGear:
+                    case Gear objGear:
                     {
-                        gpbVehiclesCommon.Visible = true;
-                        gpbVehiclesVehicle.Visible = false;
-                        gpbVehiclesWeapon.Visible = false;
-                        gpbVehiclesMatrix.Visible = true;
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteVehicle.Enabled = !objGear.IncludedInParent;
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
 
                         // gpbVehiclesCommon
-                        lblVehicleName.Text = objGear.CurrentDisplayNameShort;
-                        lblVehicleCategory.Text = objGear.DisplayCategory(GlobalSettings.Language);
-                        lblVehicleRatingLabel.Text = await LanguageManager.GetStringAsync(objGear.RatingLabel);
+                        await lblVehicleName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync(objGear.RatingLabel));
                         int intGearMaxRatingValue = objGear.MaxRatingValue;
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                         {
-                            lblVehicleRatingLabel.Visible = true;
-                            nudVehicleRating.Visible = true;
-                            nudVehicleRating.Enabled = string.IsNullOrEmpty(objGear.ParentID);
-                            nudVehicleRating.Maximum = intGearMaxRatingValue;
-                            nudVehicleRating.Value = objGear.Rating;
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await nudVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Enabled = string.IsNullOrEmpty(objGear.ParentID);
+                                x.Maximum = intGearMaxRatingValue;
+                                x.Value = objGear.Rating;
+                            });
                         }
                         else
                         {
-                            nudVehicleRating.Minimum = 0;
-                            nudVehicleRating.Maximum = 0;
-                            nudVehicleRating.Visible = false;
+                            await nudVehicleRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Minimum = 0;
+                                x.Maximum = 0;
+                                x.Visible = false;
+                            });
                         }
-                        nudVehicleGearQty.Enabled = !objGear.IncludedInParent;
+
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
                         if (objGear.Name.StartsWith("Nuyen", StringComparison.Ordinal))
                         {
                             int intDecimalPlaces = CharacterObjectSettings.MaxNuyenDecimals;
                             if (intDecimalPlaces <= 0)
                             {
-                                nudVehicleGearQty.DecimalPlaces = 0;
-                                nudVehicleGearQty.Minimum = 1.0m;
+                                await nudVehicleGearQty.DoThreadSafeAsync(x =>
+                                {
+                                    x.DecimalPlaces = 0;
+                                    x.Minimum = 1.0m;
+                                });
                             }
                             else
                             {
-                                nudVehicleGearQty.DecimalPlaces = intDecimalPlaces;
+                                await nudVehicleGearQty.DoThreadSafeAsync(x => x.DecimalPlaces = intDecimalPlaces);
                                 decimal decMinimum = 1.0m;
                                 // Need a for loop instead of a power system to maintain exact precision
                                 for (int i = 0; i < intDecimalPlaces; ++i)
                                     decMinimum /= 10.0m;
-                                nudVehicleGearQty.Minimum = decMinimum;
+                                await nudVehicleGearQty.DoThreadSafeAsync(x => x.Minimum = decMinimum);
                             }
                         }
                         else if (objGear.Category == "Currency")
                         {
-                            nudVehicleGearQty.DecimalPlaces = 2;
-                            nudVehicleGearQty.Minimum = 0.01m;
+                            await nudVehicleGearQty.DoThreadSafeAsync(x =>
+                            {
+                                x.DecimalPlaces = 2;
+                                x.Minimum = 0.01m;
+                            });
                         }
                         else
                         {
-                            nudVehicleGearQty.DecimalPlaces = 0;
-                            nudVehicleGearQty.Minimum = 1.0m;
+                            await nudVehicleGearQty.DoThreadSafeAsync(x =>
+                            {
+                                x.DecimalPlaces = 0;
+                                x.Minimum = 1.0m;
+                            });
                         }
-                        nudVehicleGearQty.Value = objGear.Quantity;
-                        nudVehicleGearQty.Increment = objGear.CostFor;
-                        nudVehicleGearQty.Visible = true;
-                        lblVehicleGearQtyLabel.Visible = true;
-                        lblVehicleAvail.Text = objGear.DisplayTotalAvail;
-                        lblVehicleCost.Text = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblVehicleSlotsLabel.Visible = true;
-                        lblVehicleSlots.Visible = true;
-                        lblVehicleSlots.Text = objGear.CalculatedCapacity + strSpace + '(' + objGear.CapacityRemaining.ToString("#,0.##", GlobalSettings.CultureInfo) +
-                                               strSpace + await LanguageManager.GetStringAsync("String_Remaining") + ')';
-                        cmdVehicleCyberwareChangeMount.Visible = false;
-                        chkVehicleWeaponAccessoryInstalled.Visible = false;
-                        chkVehicleIncludedInWeapon.Visible = false;
+
+                        await nudVehicleGearQty.DoThreadSafeAsync(x =>
+                        {
+                            x.Value = objGear.Quantity;
+                            x.Increment = objGear.CostFor;
+                            x.Visible = true;
+                        });
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
+                        await lblVehicleCost.DoThreadSafeAsync(x => x.Text
+                                                                   = objGear.TotalCost.ToString(
+                                                                       CharacterObjectSettings.NuyenFormat,
+                                                                       GlobalSettings.CultureInfo) + '¥');
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlots.DoThreadSafeAsync(async x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objGear.CalculatedCapacity + strSpace + '('
+                                     + objGear.CapacityRemaining.ToString(
+                                         "#,0.##", GlobalSettings.CultureInfo) +
+                                     strSpace + await LanguageManager.GetStringAsync("String_Remaining")
+                                     + ')';
+                        });
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
 
                         if (CharacterObject.BlackMarketDiscount)
                         {
-                            chkCyberwareBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
-                                .GenerateBlackMarketMappings(await (await CharacterObject.LoadDataXPathAsync("gear.xml"))
-                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer")).Contains(objGear.Category);
-                            chkCyberwareBlackMarketDiscount.Checked = objGear.IncludedInParent
-                                ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
-                                : objGear.DiscountCost;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(async x =>
+                            {
+                                x.Enabled = !objGear.IncludedInParent && CharacterObject
+                                                                         .GenerateBlackMarketMappings(
+                                                                             await (await CharacterObject
+                                                                                     .LoadDataXPathAsync("gear.xml"))
+                                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                     "/chummer"))
+                                                                         .Contains(objGear.Category);
+                                x.Checked = objGear.IncludedInParent
+                                    ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                    : objGear.DiscountCost;
+                            });
                         }
                         else
                         {
-                            chkCyberwareBlackMarketDiscount.Enabled = false;
-                            chkCyberwareBlackMarketDiscount.Checked = false;
+                            await chkVehicleBlackMarketDiscount.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = false;
+                                x.Checked = false;
+                            });
                         }
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                        lblVehicleDevice.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objGear.RefreshMatrixAttributeComboBoxesAsync(cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
+                        await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objGear.RefreshMatrixAttributeComboBoxesAsync(
+                            cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
 
-                        chkVehicleActiveCommlink.Visible = objGear.IsCommlink;
-                        chkVehicleActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objGear.IsCommlink;
+                            x.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkVehicleHomeNode.Visible = true;
-                            chkVehicleHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                            chkVehicleHomeNode.Enabled = chkVehicleActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(async x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objGear.IsHomeNode(CharacterObject);
+                                x.Enabled = await chkVehicleActiveCommlink.DoThreadSafeFuncAsync(y => y.Visible)
+                                            && objGear.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkVehicleHomeNode.Visible = false;
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
                         break;
                     }
-                default:
-                    gpbVehiclesCommon.Visible = false;
-                    gpbVehiclesVehicle.Visible = false;
-                    gpbVehiclesWeapon.Visible = false;
-                    gpbVehiclesMatrix.Visible = false;
+                    default:
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                    // Buttons
-                    cmdDeleteVehicle.Enabled = false;
-                    break;
+                        // Buttons
+                        await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = false);
+                        break;
+                }
             }
-
-            IsRefreshing = false;
-            flpVehicles.ResumeLayout();
+            finally
+            {
+                await flpVehicles.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
+            }
         }
 
         /// <summary>
@@ -13323,123 +14309,150 @@ namespace Chummer
         private async Task RefreshSelectedDrug()
         {
             IsRefreshing = true;
-            flpDrugs.SuspendLayout();
-
-            if (treCustomDrugs.SelectedNode?.Level != 0 && treCustomDrugs.SelectedNode?.Tag is Drug objDrug)
+            await flpDrugs.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                flpDrugs.Visible = true;
-                btnDeleteCustomDrug.Enabled = true;
-                lblDrugName.Text = objDrug.Name;
-                lblDrugAvail.Text = objDrug.DisplayTotalAvail;
-                lblDrugGrade.Text = objDrug.Grade.CurrentDisplayName;
-                lblDrugCost.Text = objDrug.Cost.ToString(CharacterObject.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                nudDrugQty.Value = objDrug.Quantity;
-                nudDrugQty.Visible = true;
-                nudDrugQty.Enabled = true;
-                lblDrugCategory.Text = objDrug.Category;
-                lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo);
-                lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo);
-                lblDrugEffect.Text = await objDrug.GetEffectDescriptionAsync();
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdComponents))
+                if (await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0) && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Drug objDrug)
                 {
-                    foreach (DrugComponent objComponent in objDrug.Components)
+                    await flpDrugs.DoThreadSafeAsync(x => x.Visible = true);
+                    await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true);
+                    await lblDrugName.DoThreadSafeAsync(x => x.Text = objDrug.Name);
+                    await lblDrugAvail.DoThreadSafeAsync(x => x.Text = objDrug.DisplayTotalAvail);
+                    await lblDrugGrade.DoThreadSafeAsync(x => x.Text = objDrug.Grade.CurrentDisplayName);
+                    await lblDrugCost.DoThreadSafeAsync(x => x.Text
+                                                            = objDrug.Cost.ToString(
+                                                                  CharacterObject.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                                              + '¥');
+                    await nudDrugQty.DoThreadSafeAsync(x =>
                     {
-                        sbdComponents.AppendLine(objComponent.CurrentDisplayName);
-                    }
+                        x.Value = objDrug.Quantity;
+                        x.Visible = true;
+                        x.Enabled = true;
+                    });
+                    await lblDrugCategory.DoThreadSafeAsync(x => x.Text = objDrug.Category);
+                    await lblDrugAddictionRating.DoThreadSafeAsync(x => x.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo));
+                    await lblDrugAddictionThreshold.DoThreadSafeAsync(x => x.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo));
+                    await lblDrugEffect.DoThreadSafeAsync(async x => x.Text = await objDrug.GetEffectDescriptionAsync());
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdComponents))
+                    {
+                        foreach (DrugComponent objComponent in objDrug.Components)
+                        {
+                            sbdComponents.AppendLine(objComponent.CurrentDisplayName);
+                        }
 
-                    lblDrugComponents.Text = sbdComponents.ToString();
+                        await lblDrugComponents.DoThreadSafeAsync(x => x.Text = sbdComponents.ToString());
+                    }
+                }
+                else
+                {
+                    await flpDrugs.DoThreadSafeAsync(x => x.Visible = false);
+                    await btnDeleteCustomDrug.DoThreadSafeAsync(async x => x.Enabled = await treArmor.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
                 }
             }
-            else
+            finally
             {
-                flpDrugs.Visible = false;
-                btnDeleteCustomDrug.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
+                await flpDrugs.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-
-            IsRefreshing = false;
-            flpDrugs.ResumeLayout();
         }
 
         /// <summary>
         /// Refresh the information for the currently selected Spell
         /// </summary>
-        public async Task RefreshSelectedSpell()
+        private async Task RefreshSelectedSpell()
         {
             if (IsRefreshing)
                 return;
 
             IsRefreshing = true;
-
-            if (treSpells.SelectedNode?.Level > 0 && treSpells.SelectedNode.Tag is Spell objSpell)
+            await gpbMagicianSpell.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbMagicianSpell.Visible = true;
-                cmdDeleteSpell.Enabled = objSpell.Grade == 0;
+                if (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0) && await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Spell objSpell)
+                {
+                    await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = true);
+                    await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSpell.Grade == 0);
 
-                lblSpellDescriptors.Text = await objSpell.DisplayDescriptorsAsync(GlobalSettings.Language);
-                if (string.IsNullOrEmpty(lblSpellDescriptors.Text))
-                    lblSpellDescriptors.Text = await LanguageManager.GetStringAsync("String_None");
-                lblSpellCategory.Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language);
-                lblSpellType.Text = await objSpell.DisplayTypeAsync(GlobalSettings.Language);
-                lblSpellRange.Text = await objSpell.DisplayRangeAsync(GlobalSettings.Language);
-                lblSpellDamage.Text = await objSpell.DisplayDamageAsync(GlobalSettings.Language);
-                lblSpellDuration.Text = await objSpell.DisplayDurationAsync(GlobalSettings.Language);
-                lblSpellDV.Text = await objSpell.DisplayDvAsync(GlobalSettings.Language);
-                await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip);
+                    await lblSpellDescriptors.DoThreadSafeAsync(async x =>
+                    {
+                        x.Text = await objSpell.DisplayDescriptorsAsync(
+                            GlobalSettings.Language);
+                        if (string.IsNullOrEmpty(lblSpellDescriptors.Text))
+                            x.Text = await LanguageManager.GetStringAsync("String_None");
+                    });
+                    await lblSpellCategory.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language));
+                    await lblSpellType.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayTypeAsync(GlobalSettings.Language));
+                    await lblSpellRange.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayRangeAsync(GlobalSettings.Language));
+                    await lblSpellDamage.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayDamageAsync(GlobalSettings.Language));
+                    await lblSpellDuration.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayDurationAsync(GlobalSettings.Language));
+                    await lblSpellDV.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayDvAsync(GlobalSettings.Language));
+                    await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip);
 
-                await objSpell.SetSourceDetailAsync(lblSpellSource);
+                    await objSpell.SetSourceDetailAsync(lblSpellSource);
 
-                // Determine the size of the Spellcasting Dice Pool.
-                lblSpellDicePool.Text = objSpell.DicePool.ToString(GlobalSettings.CultureInfo);
-                await lblSpellDicePool.SetToolTipAsync(objSpell.DicePoolTooltip);
+                    // Determine the size of the Spellcasting Dice Pool.
+                    await lblSpellDicePool.DoThreadSafeAsync(x => x.Text = objSpell.DicePool.ToString(GlobalSettings.CultureInfo));
+                    await lblSpellDicePool.SetToolTipAsync(objSpell.DicePoolTooltip);
+                }
+                else
+                {
+                    await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = false);
+                    await cmdDeleteSpell.DoThreadSafeAsync(async x => x.Enabled = await treSpells.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                }
             }
-            else
+            finally
             {
-                gpbMagicianSpell.Visible = false;
-                cmdDeleteSpell.Enabled = treSpells.SelectedNode?.Tag is ICanRemove;
+                await gpbMagicianSpell.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-
-            IsRefreshing = false;
         }
 
         /// <summary>
         /// Refresh the information for the currently selected Complex Form.
         /// </summary>
-        public async Task RefreshSelectedComplexForm()
+        private async Task RefreshSelectedComplexForm()
         {
             if (IsRefreshing)
                 return;
 
             IsRefreshing = true;
-            // Locate the Program that is selected in the tree.
-            if (treComplexForms.SelectedNode?.Tag is ComplexForm objComplexForm)
+            await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbTechnomancerComplexForm.Visible = true;
-                cmdDeleteComplexForm.Enabled = objComplexForm.Grade == 0;
-                lblDuration.Text = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language);
-                lblTarget.Text = await objComplexForm.DisplayTargetAsync(GlobalSettings.Language);
-                lblFV.Text = await objComplexForm.DisplayFvAsync(GlobalSettings.Language);
-                await lblFV.SetToolTipAsync(objComplexForm.FvTooltip);
+                if (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0) && await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ComplexForm objComplexForm)
+                {
+                    await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true);
+                    await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0);
+                    
+                    await lblTarget.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayTargetAsync(GlobalSettings.Language));
+                    await lblDuration.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language));
+                    await lblFV.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayFvAsync(GlobalSettings.Language));
+                    await lblFV.SetToolTipAsync(objComplexForm.FvTooltip);
 
-                // Determine the size of the Threading Dice Pool.
-                lblComplexFormDicePool.Text = objComplexForm.DicePool.ToString(GlobalSettings.CultureInfo);
-                await lblComplexFormDicePool.SetToolTipAsync(objComplexForm.DicePoolTooltip);
+                    await objComplexForm.SetSourceDetailAsync(lblSpellSource);
 
-                await objComplexForm.SetSourceDetailAsync(lblComplexFormSource);
+                    // Determine the size of the Threading Dice Pool.
+                    await lblComplexFormDicePool.DoThreadSafeAsync(x => x.Text = objComplexForm.DicePool.ToString(GlobalSettings.CultureInfo));
+                    await lblComplexFormDicePool.SetToolTipAsync(objComplexForm.DicePoolTooltip);
+                }
+                else
+                {
+                    await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = false);
+                    await cmdDeleteComplexForm.DoThreadSafeAsync(async x => x.Enabled = await treComplexForms.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                }
             }
-            else
+            finally
             {
-                gpbTechnomancerComplexForm.Visible = false;
-                cmdDeleteComplexForm.Enabled = treComplexForms.SelectedNode?.Tag is ICanRemove;
+                await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-
-            IsRefreshing = false;
         }
 
         /// <summary>
         /// Add or remove the Adapsin Cyberware Grade categories.
         /// </summary>
-        public void PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
+        public Task PopulateCyberwareGradeList(bool blnBioware = false, bool blnIgnoreSecondHand = false, string strForceGrade = "")
         {
             List<Grade> objGradeList = CharacterObject.GetGradeList(blnBioware ? Improvement.ImprovementSource.Bioware : Improvement.ImprovementSource.Cyberware).ToList();
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
@@ -13499,7 +14512,7 @@ namespace Chummer
                     lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
                 }
                 
-                cboCyberwareGrade.PopulateWithListItems(lstCyberwareGrades);
+                return cboCyberwareGrade.PopulateWithListItemsAsync(lstCyberwareGrades);
             }
         }
 
@@ -15318,7 +16331,7 @@ namespace Chummer
         /// Recheck all mods to see if Sensor has changed.
         /// </summary>
         /// <param name="objVehicle">Vehicle to modify.</param>
-        private void UpdateSensor(Vehicle objVehicle)
+        private async ValueTask UpdateSensor(Vehicle objVehicle)
         {
             foreach (Gear objGear in objVehicle.GearChildren)
             {
@@ -15327,7 +16340,7 @@ namespace Chummer
                 // Update the name of the item in the TreeView.
                 TreeNode objNode = treVehicles.FindNode(objGear.InternalId);
                 if (objNode != null)
-                    objNode.Text = objGear.CurrentDisplayName;
+                    await treVehicles.DoThreadSafeAsync(() => objNode.Text = objGear.CurrentDisplayName);
             }
         }
 
@@ -16282,14 +17295,19 @@ namespace Chummer
             if (panContacts.Controls.Count <= 0)
                 return;
             panContacts.SuspendLayout();
-            bool toggle = ((ContactControl)panContacts.Controls[0]).Expanded;
-
-            foreach (ContactControl c in panContacts.Controls)
+            try
             {
-                c.Expanded = !toggle;
-            }
+                bool toggle = ((ContactControl) panContacts.Controls[0]).Expanded;
 
-            panContacts.ResumeLayout();
+                foreach (ContactControl c in panContacts.Controls)
+                {
+                    c.Expanded = !toggle;
+                }
+            }
+            finally
+            {
+                panContacts.ResumeLayout();
+            }
         }
 
         private void cmdSwapContactOrder_Click(object sender, EventArgs e)
@@ -16360,16 +17378,25 @@ namespace Chummer
         private void pnlAttributes_Layout(object sender, LayoutEventArgs e)
         {
             pnlAttributes.SuspendLayout();
-            foreach (Control objAttributeControl in pnlAttributes.Controls)
+            try
             {
-                if (pnlAttributes.ClientSize.Width < objAttributeControl.MinimumSize.Height)
-                    objAttributeControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MinimumSize.Height);
-                if (pnlAttributes.ClientSize.Width != objAttributeControl.MaximumSize.Height)
-                    objAttributeControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MaximumSize.Height);
-                if (pnlAttributes.ClientSize.Width > objAttributeControl.MinimumSize.Height)
-                    objAttributeControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MinimumSize.Height);
+                foreach (Control objAttributeControl in pnlAttributes.Controls)
+                {
+                    if (pnlAttributes.ClientSize.Width < objAttributeControl.MinimumSize.Height)
+                        objAttributeControl.MinimumSize
+                            = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MinimumSize.Height);
+                    if (pnlAttributes.ClientSize.Width != objAttributeControl.MaximumSize.Height)
+                        objAttributeControl.MaximumSize
+                            = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MaximumSize.Height);
+                    if (pnlAttributes.ClientSize.Width > objAttributeControl.MinimumSize.Height)
+                        objAttributeControl.MinimumSize
+                            = new Size(pnlAttributes.ClientSize.Width, objAttributeControl.MinimumSize.Height);
+                }
             }
-            pnlAttributes.ResumeLayout();
+            finally
+            {
+                pnlAttributes.ResumeLayout();
+            }
         }
 
         #region Stolen Property Changes

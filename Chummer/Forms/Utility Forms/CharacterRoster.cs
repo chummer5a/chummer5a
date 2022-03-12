@@ -871,13 +871,11 @@ namespace Chummer
                     if (objCache != null)
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
-                        await txtCharacterBio.DoThreadSafeAsync(x => x.Text = objCache.Description.RtfToPlainText());
-                        await txtCharacterBackground.DoThreadSafeAsync(
-                            x => x.Text = objCache.Background.RtfToPlainText());
-                        await txtCharacterNotes.DoThreadSafeAsync(
-                            x => x.Text = objCache.CharacterNotes.RtfToPlainText());
-                        await txtGameNotes.DoThreadSafeAsync(x => x.Text = objCache.GameNotes.RtfToPlainText());
-                        await txtCharacterConcept.DoThreadSafeAsync(x => x.Text = objCache.Concept.RtfToPlainText());
+                        await txtCharacterBio.DoThreadSafeAsync(async x => x.Text = await objCache.Description.RtfToPlainTextAsync());
+                        await txtCharacterBackground.DoThreadSafeAsync(async x => x.Text = await objCache.Background.RtfToPlainTextAsync());
+                        await txtCharacterNotes.DoThreadSafeAsync(async x => x.Text = await objCache.CharacterNotes.RtfToPlainTextAsync());
+                        await txtGameNotes.DoThreadSafeAsync(async x => x.Text = await objCache.GameNotes.RtfToPlainTextAsync());
+                        await txtCharacterConcept.DoThreadSafeAsync(async x => x.Text = await objCache.Concept.RtfToPlainTextAsync());
                         await lblCareerKarma.DoThreadSafeAsync(async x =>
                         {
                             x.Text = objCache.Karma;

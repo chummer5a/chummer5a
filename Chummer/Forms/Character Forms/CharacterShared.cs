@@ -51,7 +51,7 @@ namespace Chummer
         private static TelemetryClient TelemetryClient { get; } = new TelemetryClient();
         private readonly Character _objCharacter;
         private bool _blnIsDirty;
-        private bool _blnIsRefreshing;
+        private int _intRefreshingCount;
         private bool _blnLoading = true;
         private CharacterSheetViewer _frmPrintView;
         private readonly FileSystemWatcher _objCharacterFileWatcher;
@@ -6829,20 +6829,18 @@ namespace Chummer
         /// </summary>
         public bool IsRefreshing
         {
-            get => _blnIsRefreshing;
-            set => _blnIsRefreshing = value;
-            /*
+            get => _intRefreshingCount > 0;
+            set
             {
-                if (_blnIsRefreshing != value)
+                if (value)
+                    Interlocked.Increment(ref _intRefreshingCount);
+                else
                 {
-                    _blnIsRefreshing = value;
-                    if (value)
-                        SuspendLayout();
-                    else if (!IsLoading)
-                        ResumeLayout();
+                    int intCurrentRefreshingCount = Interlocked.Decrement(ref _intRefreshingCount);
+                    if (intCurrentRefreshingCount < 0)
+                        Interlocked.CompareExchange(ref _intRefreshingCount, 0, intCurrentRefreshingCount);
                 }
             }
-            */
         }
 
         public bool IsLoading
@@ -7132,6 +7130,7 @@ namespace Chummer
             {
                 _objCharacter.PropertyChanged -= RecacheSettingsOnSettingsChange;
                 _frmPrintView?.Dispose();
+                _objCharacterFileWatcher?.Dispose();
                 if (_objUpdateCharacterInfoCancellationTokenSource != null)
                 {
                     _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);

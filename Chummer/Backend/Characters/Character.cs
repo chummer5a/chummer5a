@@ -4777,9 +4777,16 @@ namespace Chummer
 
                                         return intReturn;
                                     }
+                                    
+                                    if (blnSync)
+                                        blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            _strSettingsKey, out objProspectiveSettings);
+                                    else
+                                        (blnSuccess, objProspectiveSettings)
+                                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                _strSettingsKey);
 
-                                    if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                            _strSettingsKey, out objProspectiveSettings))
+                                    if (!blnSuccess)
                                     {
                                         // Prompt if we want to switch options or leave
                                         if (!Utils.IsUnitTest && showWarnings)
@@ -4823,14 +4830,28 @@ namespace Chummer
                                             }
                                         }
 
-                                        if (string.IsNullOrEmpty(strReplacementSettingsKey)
-                                            || !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                strReplacementSettingsKey, out objProspectiveSettings))
+                                        if (string.IsNullOrEmpty(strReplacementSettingsKey))
+                                            blnSuccess = false;
+                                        else if (blnSync)
+                                            blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                strReplacementSettingsKey, out objProspectiveSettings);
+                                        else
+                                            (blnSuccess, objProspectiveSettings)
+                                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                    strReplacementSettingsKey);
+
+                                        if (!blnSuccess)
                                         {
                                             strReplacementSettingsKey
                                                 = GlobalSettings.DefaultCharacterSettingDefaultValue;
-                                            if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                    strReplacementSettingsKey, out objProspectiveSettings))
+                                            if (blnSync)
+                                                blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                    strReplacementSettingsKey, out objProspectiveSettings);
+                                            else
+                                                (blnSuccess, objProspectiveSettings)
+                                                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                        strReplacementSettingsKey);
+                                            if (!blnSuccess)
                                             {
                                                 objProspectiveSettings
                                                     = SettingsManager.LoadedCharacterSettings.Values.First();
@@ -4899,14 +4920,28 @@ namespace Chummer
                                             }
                                         }
 
-                                        if (string.IsNullOrEmpty(strReplacementSettingsKey)
-                                            || !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                strReplacementSettingsKey, out objProspectiveSettings))
+                                        if (string.IsNullOrEmpty(strReplacementSettingsKey))
+                                            blnSuccess = false;
+                                        else if (blnSync)
+                                            blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                strReplacementSettingsKey, out objProspectiveSettings);
+                                        else
+                                            (blnSuccess, objProspectiveSettings)
+                                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                    strReplacementSettingsKey);
+
+                                        if (!blnSuccess)
                                         {
                                             strReplacementSettingsKey
                                                 = GlobalSettings.DefaultCharacterSettingDefaultValue;
-                                            if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                    strReplacementSettingsKey, out objProspectiveSettings))
+                                            if (blnSync)
+                                                blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                    strReplacementSettingsKey, out objProspectiveSettings);
+                                            else
+                                                (blnSuccess, objProspectiveSettings)
+                                                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                        strReplacementSettingsKey);
+                                            if (!blnSuccess)
                                             {
                                                 objProspectiveSettings
                                                     = SettingsManager.LoadedCharacterSettings.Values.First();
@@ -7665,19 +7700,19 @@ namespace Chummer
                                                                 await ReverseTranslateExtraAsync(Hair),
                                                                 strLanguageToPrint));
                     // <description />
-                    await objWriter.WriteElementStringAsync("description", Description.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("description", await Description.RtfToHtmlAsync());
                     // <background />
-                    await objWriter.WriteElementStringAsync("background", Background.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("background", await Background.RtfToHtmlAsync());
                     // <concept />
-                    await objWriter.WriteElementStringAsync("concept", Concept.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync());
                     // <notes />
-                    await objWriter.WriteElementStringAsync("notes", Notes.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync());
                     // <alias />
                     await objWriter.WriteElementStringAsync("alias", Alias);
                     // <playername />
                     await objWriter.WriteElementStringAsync("playername", PlayerName);
                     // <gamenotes />
-                    await objWriter.WriteElementStringAsync("gamenotes", GameNotes.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("gamenotes", await GameNotes.RtfToHtmlAsync());
 
                     // <limitphysical />
                     await objWriter.WriteElementStringAsync("limitphysical", LimitPhysical.ToString(objCulture));

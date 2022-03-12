@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Threading;
 
 namespace Chummer
 {
@@ -209,7 +210,20 @@ namespace Chummer
         public int Count => _dicUnorderedData.Count;
 
         /// <inheritdoc />
-        public object SyncRoot { get; } = new object();
+        public object SyncRoot
+        {
+            get
+            {
+                if (_objSyncRoot == null)
+                {
+                    Interlocked.CompareExchange<object>(ref _objSyncRoot, new object(), null);
+                }
+
+                return _objSyncRoot;
+            }
+        }
+
+        private object _objSyncRoot;
 
         /// <inheritdoc />
         public bool IsSynchronized => false;

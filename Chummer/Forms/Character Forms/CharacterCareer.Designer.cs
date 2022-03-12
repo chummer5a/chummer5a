@@ -18328,7 +18328,7 @@ namespace Chummer
             this.cboVehicleDataProcessing.TabIndex = 206;
             this.cboVehicleDataProcessing.TooltipText = "";
             this.cboVehicleDataProcessing.Visible = false;
-            this.cboVehicleDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearDataProcessing_SelectedIndexChanged);
+            this.cboVehicleDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleDataProcessing_SelectedIndexChanged);
             // 
             // cboVehicleFirewall
             // 
@@ -18341,7 +18341,7 @@ namespace Chummer
             this.cboVehicleFirewall.TabIndex = 205;
             this.cboVehicleFirewall.TooltipText = "";
             this.cboVehicleFirewall.Visible = false;
-            this.cboVehicleFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearFirewall_SelectedIndexChanged);
+            this.cboVehicleFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleFirewall_SelectedIndexChanged);
             // 
             // lblVehicleFirewallLabel
             // 
@@ -18378,7 +18378,7 @@ namespace Chummer
             this.cboVehicleSleaze.TabIndex = 204;
             this.cboVehicleSleaze.TooltipText = "";
             this.cboVehicleSleaze.Visible = false;
-            this.cboVehicleSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearSleaze_SelectedIndexChanged);
+            this.cboVehicleSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleSleaze_SelectedIndexChanged);
             // 
             // lblVehicleDeviceLabel
             // 
@@ -18414,7 +18414,7 @@ namespace Chummer
             this.cboVehicleAttack.TabIndex = 203;
             this.cboVehicleAttack.TooltipText = "";
             this.cboVehicleAttack.Visible = false;
-            this.cboVehicleAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearAttack_SelectedIndexChanged);
+            this.cboVehicleAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleAttack_SelectedIndexChanged);
             // 
             // lblVehicleAttackLabel
             // 

@@ -23,6 +23,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chummer
@@ -466,6 +467,22 @@ namespace Chummer
                    Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
         }
 
+        public async Task<string> GetDisplayDescriptionAsync(string strLanguage)
+        {
+            if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
+                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestMissing", strLanguage);
+
+            if (DescriptionDictionary.TryGetValue(strLanguage, out string description))
+                return description.NormalizeLineEndings(true);
+
+            if (!DescriptionDictionary.TryGetValue(GlobalSettings.DefaultLanguage, out description))
+                return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage);
+
+            return await LanguageManager.GetStringAsync("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
+                                                        strLanguage) +
+                   Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
+        }
+
         /// <summary>
         /// A Dictionary, that uses the author name as key and provides a bool if he is the main author
         /// </summary>
@@ -507,6 +524,24 @@ namespace Chummer
                     sbdDisplayAuthors.AppendLine(kvp.Value
                                                      ? string.Format(objCultureInfo, kvp.Key,
                                                                      LanguageManager.GetString(
+                                                                         "String_IsMainAuthor", strLanguage))
+                                                     : kvp.Key);
+                }
+
+                return sbdDisplayAuthors.ToString().Trim();
+            }
+        }
+
+        public async Task<string> GetDisplayAuthorsAsync(string strLanguage, CultureInfo objCultureInfo)
+        {
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                          out StringBuilder sbdDisplayAuthors))
+            {
+                foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
+                {
+                    sbdDisplayAuthors.AppendLine(kvp.Value
+                                                     ? string.Format(objCultureInfo, kvp.Key,
+                                                                     await LanguageManager.GetStringAsync(
                                                                          "String_IsMainAuthor", strLanguage))
                                                      : kvp.Key);
                 }
