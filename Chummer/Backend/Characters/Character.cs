@@ -7700,19 +7700,19 @@ namespace Chummer
                                                                 await ReverseTranslateExtraAsync(Hair),
                                                                 strLanguageToPrint));
                     // <description />
-                    await objWriter.WriteElementStringAsync("description", Description.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("description", await Description.RtfToHtmlAsync());
                     // <background />
-                    await objWriter.WriteElementStringAsync("background", Background.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("background", await Background.RtfToHtmlAsync());
                     // <concept />
-                    await objWriter.WriteElementStringAsync("concept", Concept.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("concept", await Concept.RtfToHtmlAsync());
                     // <notes />
-                    await objWriter.WriteElementStringAsync("notes", Notes.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("notes", await Notes.RtfToHtmlAsync());
                     // <alias />
                     await objWriter.WriteElementStringAsync("alias", Alias);
                     // <playername />
                     await objWriter.WriteElementStringAsync("playername", PlayerName);
                     // <gamenotes />
-                    await objWriter.WriteElementStringAsync("gamenotes", GameNotes.RtfToHtml());
+                    await objWriter.WriteElementStringAsync("gamenotes", await GameNotes.RtfToHtmlAsync());
 
                     // <limitphysical />
                     await objWriter.WriteElementStringAsync("limitphysical", LimitPhysical.ToString(objCulture));

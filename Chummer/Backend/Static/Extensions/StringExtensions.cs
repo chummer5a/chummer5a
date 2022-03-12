@@ -24,6 +24,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using RtfPipe;
@@ -1307,12 +1308,49 @@ namespace Chummer
             if (strInput.IsRtf())
                 return strInput;
             strInput = strInput.NormalizeWhiteSpace();
-            lock (s_RtbRtfManipulatorLock)
+            s_RtbRtfManipulatorLock.Wait();
+            try
             {
                 if (!s_RtbRtfManipulator.IsHandleCreated)
                     s_RtbRtfManipulator.CreateControl();
-                s_RtbRtfManipulator.DoThreadSafe(x => x.Text = strInput);
-                return s_RtbRtfManipulator.Rtf;
+                return s_RtbRtfManipulator.DoThreadSafeFunc(x =>
+                {
+                    x.Text = strInput;
+                    return x.Rtf;
+                });
+            }
+            finally
+            {
+                s_RtbRtfManipulatorLock.Release();
+            }
+        }
+
+        /// <summary>
+        /// Surrounds a plaintext string with basic RTF formatting so that it can be processed as an RTF string
+        /// </summary>
+        /// <param name="strInput">String to process</param>
+        /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
+        public static async ValueTask<string> PlainTextToRtfAsync(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (await strInput.IsRtfAsync())
+                return strInput;
+            strInput = strInput.NormalizeWhiteSpace();
+            await s_RtbRtfManipulatorLock.WaitAsync();
+            try
+            {
+                if (!s_RtbRtfManipulator.IsHandleCreated)
+                    s_RtbRtfManipulator.CreateControl();
+                return await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
+                {
+                    x.Text = strInput;
+                    return x.Rtf;
+                });
+            }
+            finally
+            {
+                s_RtbRtfManipulatorLock.Release();
             }
         }
 
@@ -1329,7 +1367,8 @@ namespace Chummer
             if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                lock (s_RtbRtfManipulatorLock)
+                s_RtbRtfManipulatorLock.Wait();
+                try
                 {
                     if (!s_RtbRtfManipulator.IsHandleCreated)
                         s_RtbRtfManipulator.CreateControl();
@@ -1342,7 +1381,48 @@ namespace Chummer
                         return strInput.NormalizeWhiteSpace();
                     }
 
-                    return s_RtbRtfManipulator.Text.NormalizeWhiteSpace();
+                    return s_RtbRtfManipulator.DoThreadSafeFunc(x => x.Text).NormalizeWhiteSpace();
+                }
+                finally
+                {
+                    s_RtbRtfManipulatorLock.Release();
+                }
+            }
+            return strInput.NormalizeWhiteSpace();
+        }
+
+        /// <summary>
+        /// Strips RTF formatting from a string
+        /// </summary>
+        /// <param name="strInput">String to process</param>
+        /// <returns>Version of <paramref name="strInput"/> without RTF formatting codes</returns>
+        public static async ValueTask<string> RtfToPlainTextAsync(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strInputTrimmed = strInput.TrimStart();
+            if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+            {
+                await s_RtbRtfManipulatorLock.WaitAsync();
+                try
+                {
+                    if (!s_RtbRtfManipulator.IsHandleCreated)
+                        s_RtbRtfManipulator.CreateControl();
+                    try
+                    {
+                        await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput);
+                    }
+                    catch (ArgumentException)
+                    {
+                        return strInput.NormalizeWhiteSpace();
+                    }
+
+                    return (await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x => x.Text)).NormalizeWhiteSpace();
+                }
+                finally
+                {
+                    s_RtbRtfManipulatorLock.Release();
                 }
             }
             return strInput.NormalizeWhiteSpace();
@@ -1353,6 +1433,13 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+        }
+
+        public static async ValueTask<string> RtfToHtmlAsync(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            return await strInput.IsRtfAsync() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
         }
 
         /// <summary>
@@ -1368,7 +1455,8 @@ namespace Chummer
                 if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    lock (s_RtbRtfManipulatorLock)
+                    s_RtbRtfManipulatorLock.Wait();
+                    try
                     {
                         if (!s_RtbRtfManipulator.IsHandleCreated)
                             s_RtbRtfManipulator.CreateControl();
@@ -1380,6 +1468,48 @@ namespace Chummer
                         {
                             return false;
                         }
+                    }
+                    finally
+                    {
+                        s_RtbRtfManipulatorLock.Release();
+                    }
+
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Whether or not a string is an RTF document
+        /// </summary>
+        /// <param name="strInput">The string to check.</param>
+        /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
+        public static async ValueTask<bool> IsRtfAsync(this string strInput)
+        {
+            if (!string.IsNullOrEmpty(strInput))
+            {
+                string strInputTrimmed = strInput.TrimStart();
+                if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                    || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+                {
+                    await s_RtbRtfManipulatorLock.WaitAsync();
+                    try
+                    {
+                        if (!s_RtbRtfManipulator.IsHandleCreated)
+                            s_RtbRtfManipulator.CreateControl();
+                        try
+                        {
+                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput);
+                        }
+                        catch (ArgumentException)
+                        {
+                            return false;
+                        }
+                    }
+                    finally
+                    {
+                        s_RtbRtfManipulatorLock.Release();
                     }
 
                     return true;
@@ -1407,7 +1537,7 @@ namespace Chummer
         private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private static readonly object s_RtbRtfManipulatorLock = new object();
+        private static readonly SemaphoreSlim s_RtbRtfManipulatorLock = new SemaphoreSlim(1, 1);
         private static readonly RichTextBox s_RtbRtfManipulator = new RichTextBox();
     }
 }

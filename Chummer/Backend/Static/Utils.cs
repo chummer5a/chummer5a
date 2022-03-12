@@ -565,11 +565,13 @@ namespace Chummer
                 bool blnReturn = true;
                 Parallel.ForEach(astrFilesToDelete, () => true, (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout), blnLoop =>
                 {
-                    lock (objSuccessLock)
+                    if (!blnLoop)
                     {
-                        if (!blnLoop)
+                        lock (objSuccessLock)
+                        {
                             // ReSharper disable once AccessToModifiedClosure
                             blnReturn = false;
+                        }
                     }
                 });
                 return blnReturn;
