@@ -18,6 +18,8 @@
  */
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -27,7 +29,7 @@ namespace Chummer
     public class ThreadSafeRandom : Random
     {
         private readonly Random _objRandom;
-        private readonly object _objLock = new object();
+        private readonly SemaphoreSlim _objLock = Utils.SemaphorePool.Get();
 
         public ThreadSafeRandom()
         {
@@ -48,8 +50,15 @@ namespace Chummer
         public override int Next()
         {
             int intReturn;
-            lock (_objLock)
+            _objLock.Wait();
+            try
+            {
                 intReturn = _objRandom.Next();
+            }
+            finally
+            {
+                _objLock.Release();
+            }
             return intReturn;
         }
 
@@ -57,8 +66,15 @@ namespace Chummer
         public override int Next(int minValue, int maxValue)
         {
             int intReturn;
-            lock (_objLock)
+            _objLock.Wait();
+            try
+            {
                 intReturn = _objRandom.Next(minValue, maxValue);
+            }
+            finally
+            {
+                _objLock.Release();
+            }
             return intReturn;
         }
 
@@ -66,24 +82,118 @@ namespace Chummer
         public override int Next(int maxValue)
         {
             int intReturn;
-            lock (_objLock)
+            _objLock.Wait();
+            try
+            {
                 intReturn = _objRandom.Next(maxValue);
+            }
+            finally
+            {
+                _objLock.Release();
+            }
             return intReturn;
         }
 
         /// <inheritdoc />
         public override void NextBytes(byte[] buffer)
         {
-            lock (_objLock)
+            _objLock.Wait();
+            try
+            {
                 _objRandom.NextBytes(buffer);
+            }
+            finally
+            {
+                _objLock.Release();
+            }
         }
 
         /// <inheritdoc />
         public override double NextDouble()
         {
             double dblReturn;
-            lock (_objLock)
+            _objLock.Wait();
+            try
+            {
                 dblReturn = _objRandom.NextDouble();
+            }
+            finally
+            {
+                _objLock.Release();
+            }
+            return dblReturn;
+        }
+        
+        public async Task<int> NextAsync()
+        {
+            int intReturn;
+            await _objLock.WaitAsync();
+            try
+            {
+                intReturn = _objRandom.Next();
+            }
+            finally
+            {
+                _objLock.Release();
+            }
+            return intReturn;
+        }
+        
+        public async Task<int> NextAsync(int minValue, int maxValue)
+        {
+            int intReturn;
+            await _objLock.WaitAsync();
+            try
+            {
+                intReturn = _objRandom.Next(minValue, maxValue);
+            }
+            finally
+            {
+                _objLock.Release();
+            }
+            return intReturn;
+        }
+        
+        public async Task<int> NextAsync(int maxValue)
+        {
+            int intReturn;
+            await _objLock.WaitAsync();
+            try
+            {
+                intReturn = _objRandom.Next(maxValue);
+            }
+            finally
+            {
+                _objLock.Release();
+            }
+            return intReturn;
+        }
+        
+        public async Task NextBytesAsync(byte[] buffer)
+        {
+            await _objLock.WaitAsync();
+            try
+            {
+                _objRandom.NextBytes(buffer);
+            }
+            finally
+            {
+                _objLock.Release();
+            }
+        }
+        
+        public async Task<double> NextDoubleAsync()
+        {
+            double dblReturn;
+            await _objLock.WaitAsync();
+            try
+            {
+                dblReturn = _objRandom.NextDouble();
+            }
+            finally
+            {
+                _objLock.Release();
+            }
             return dblReturn;
         }
 
