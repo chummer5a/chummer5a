@@ -461,7 +461,7 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Formatted Value of the attribute, including the sum of any modifiers in brackets.
         /// </summary>
-        public string DisplayValue => HasModifiers
+        public string DisplayValue => HasModifiers()
             ? string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})", Value, LanguageManager.GetString("String_Space"), TotalValue)
             : Value.ToString(GlobalSettings.CultureInfo);
 
@@ -493,47 +493,87 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// Whether or not the CharacterAttribute has any modifiers from Improvements.
         /// </summary>
-        public bool HasModifiers
+        public bool HasModifiers()
         {
-            get
-            {
-                foreach (Improvement objImprovement in ImprovementManager
+            foreach (Improvement objImprovement in ImprovementManager
                                                        .GetCachedImprovementListForAugmentedValueOf(
                                                            _objCharacter, Improvement.ImprovementType.Attribute, Abbrev))
-                {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
-                        return true;
-                    if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
-                         objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
-                         objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
-                        (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
-                         _objCharacter.RESEnabled && Abbrev == "RES" ||
-                         _objCharacter.DEPEnabled && Abbrev == "DEP"))
-                        return true;
-                }
-                foreach (Improvement objImprovement in ImprovementManager
-                                                       .GetCachedImprovementListForAugmentedValueOf(
-                                                           _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base"))
-                {
-                    if (objImprovement.Augmented * objImprovement.Rating != 0)
-                        return true;
-                    if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
-                         objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
-                         objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
-                        (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
-                         _objCharacter.RESEnabled && Abbrev == "RES" ||
-                         _objCharacter.DEPEnabled && Abbrev == "DEP"))
-                        return true;
-                }
-
-                // If this is AGI or STR, factor in any Cyberlimbs.
-                if (!_objCharacter.Settings.DontUseCyberlimbCalculation && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
-                {
-                    return _objCharacter.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot));
-                }
-
-                return false;
+            {
+                if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    return true;
+                if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
+                     objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
+                     objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
+                    (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                     _objCharacter.RESEnabled && Abbrev == "RES" ||
+                     _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                    return true;
             }
+            foreach (Improvement objImprovement in ImprovementManager
+                                                   .GetCachedImprovementListForAugmentedValueOf(
+                                                       _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base"))
+            {
+                if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    return true;
+                if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
+                     objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
+                     objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
+                    (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                     _objCharacter.RESEnabled && Abbrev == "RES" ||
+                     _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                    return true;
+            }
+
+            // If this is AGI or STR, factor in any Cyberlimbs.
+            if (!_objCharacter.Settings.DontUseCyberlimbCalculation && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
+            {
+                return _objCharacter.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot));
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Whether or not the CharacterAttribute has any modifiers from Improvements.
+        /// </summary>
+        public async Task<bool> HasModifiersAsync()
+        {
+            foreach (Improvement objImprovement in await ImprovementManager
+                         .GetCachedImprovementListForAugmentedValueOfAsync(
+                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev))
+            {
+                if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    return true;
+                if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
+                     objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
+                     objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
+                    (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                     _objCharacter.RESEnabled && Abbrev == "RES" ||
+                     _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                    return true;
+            }
+            foreach (Improvement objImprovement in await ImprovementManager
+                         .GetCachedImprovementListForAugmentedValueOfAsync(
+                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev + "Base"))
+            {
+                if (objImprovement.Augmented * objImprovement.Rating != 0)
+                    return true;
+                if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
+                     objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
+                     objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
+                    (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
+                     _objCharacter.RESEnabled && Abbrev == "RES" ||
+                     _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                    return true;
+            }
+
+            // If this is AGI or STR, factor in any Cyberlimbs.
+            if (!_objCharacter.Settings.DontUseCyberlimbCalculation && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
+            {
+                return await _objCharacter.Cyberware.AnyAsync(objCyberware => objCyberware.Category == "Cyberlimb" && !string.IsNullOrEmpty(objCyberware.LimbSlot));
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -1439,7 +1479,7 @@ namespace Chummer.Backend.Attributes
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(MaximumModifiers))
                             )
                         ),
-                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue), x => x.HasModifiers,
+                        new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue), x => x.HasModifiers(),
                             new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers))
                         ),
                         new DependencyGraphNode<string, CharacterAttrib>(nameof(HasModifiers))

@@ -24539,53 +24539,100 @@ namespace Chummer
         /// <summary>
         /// Whether the character is allowed to gain free spells that are limited to the Touch range.
         /// </summary>
-        public Tuple<bool, bool> AllowFreeSpells
+        public Tuple<bool, bool> AllowFreeSpells()
         {
-            get
+            using (EnterReadLock.Enter(LockObject))
             {
-                using (EnterReadLock.Enter(LockObject))
+                //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
+                //in Career Mode. Create mode manages itself.
+                int intFreeGenericSpells = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpells)
+                    .StandardRound();
+                int intFreeTouchOnlySpells = 0;
+                foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(this,
+                             Improvement.ImprovementType.FreeSpellsATT))
                 {
-                    //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
-                    //in Career Mode. Create mode manages itself.
-                    int intFreeGenericSpells = ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpells)
-                        .StandardRound();
-                    int intFreeTouchOnlySpells = 0;
-                    foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(this,
-                                 Improvement.ImprovementType.FreeSpellsATT))
-                    {
-                        int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
-                        if (imp.UniqueName.Contains("half"))
-                            intAttValue = (intAttValue + 1) / 2;
-                        if (imp.UniqueName.Contains("touchonly"))
-                            intFreeTouchOnlySpells += intAttValue;
-                        else
-                            intFreeGenericSpells += intAttValue;
-                    }
-
-                    foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(this,
-                                 Improvement.ImprovementType.FreeSpellsSkill))
-                    {
-                        Skill skill = SkillsSection.GetActiveSkill(imp.ImprovedName);
-                        int intSkillValue = SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
-                        if (imp.UniqueName.Contains("half"))
-                            intSkillValue = (intSkillValue + 1) / 2;
-                        if (imp.UniqueName.Contains("touchonly"))
-                            intFreeTouchOnlySpells += intSkillValue;
-                        else
-                            intFreeGenericSpells += intSkillValue;
-                        //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
-                        intFreeGenericSpells += skill.Specializations.Count(spec =>
-                            Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus));
-                    }
-
-                    int intTotalFreeNonTouchSpellsCount = Spells.Count(spell =>
-                        spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"));
-                    int intTotalFreeTouchOnlySpellsCount = Spells.Count(spell =>
-                        spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"));
-                    return new Tuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
-                        intFreeGenericSpells > intTotalFreeNonTouchSpellsCount +
-                        Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));
+                    int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
+                    if (imp.UniqueName.Contains("half"))
+                        intAttValue = (intAttValue + 1) / 2;
+                    if (imp.UniqueName.Contains("touchonly"))
+                        intFreeTouchOnlySpells += intAttValue;
+                    else
+                        intFreeGenericSpells += intAttValue;
                 }
+
+                foreach (Improvement imp in ImprovementManager.GetCachedImprovementListForValueOf(this,
+                             Improvement.ImprovementType.FreeSpellsSkill))
+                {
+                    Skill skill = SkillsSection.GetActiveSkill(imp.ImprovedName);
+                    int intSkillValue = SkillsSection.GetActiveSkill(imp.ImprovedName).TotalBaseRating;
+                    if (imp.UniqueName.Contains("half"))
+                        intSkillValue = (intSkillValue + 1) / 2;
+                    if (imp.UniqueName.Contains("touchonly"))
+                        intFreeTouchOnlySpells += intSkillValue;
+                    else
+                        intFreeGenericSpells += intSkillValue;
+                    //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
+                    intFreeGenericSpells += skill.Specializations.Count(spec =>
+                        Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus));
+                }
+
+                int intTotalFreeNonTouchSpellsCount = Spells.Count(spell =>
+                    spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"));
+                int intTotalFreeTouchOnlySpellsCount = Spells.Count(spell =>
+                    spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"));
+                return new Tuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
+                    intFreeGenericSpells > intTotalFreeNonTouchSpellsCount +
+                    Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));
+            }
+        }
+
+        /// <summary>
+        /// Whether the character is allowed to gain free spells that are limited to the Touch range.
+        /// </summary>
+        public async ValueTask<Tuple<bool, bool>> AllowFreeSpellsAsync()
+        {
+            using (await EnterReadLock.EnterAsync(LockObject))
+            {
+                //Free Spells (typically from Dedicated Spellslinger or custom Improvements) are only handled manually
+                //in Career Mode. Create mode manages itself.
+                int intFreeGenericSpells = (await ImprovementManager.ValueOfAsync(this, Improvement.ImprovementType.FreeSpells))
+                    .StandardRound();
+                int intFreeTouchOnlySpells = 0;
+                foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
+                             Improvement.ImprovementType.FreeSpellsATT))
+                {
+                    int intAttValue = GetAttribute(imp.ImprovedName).TotalValue;
+                    if (imp.UniqueName.Contains("half"))
+                        intAttValue = (intAttValue + 1) / 2;
+                    if (imp.UniqueName.Contains("touchonly"))
+                        intFreeTouchOnlySpells += intAttValue;
+                    else
+                        intFreeGenericSpells += intAttValue;
+                }
+
+                foreach (Improvement imp in await ImprovementManager.GetCachedImprovementListForValueOfAsync(this,
+                             Improvement.ImprovementType.FreeSpellsSkill))
+                {
+                    Skill skill = await SkillsSection.GetActiveSkillAsync(imp.ImprovedName);
+                    int intSkillValue = (await SkillsSection.GetActiveSkillAsync(imp.ImprovedName)).TotalBaseRating;
+                    if (imp.UniqueName.Contains("half"))
+                        intSkillValue = (intSkillValue + 1) / 2;
+                    if (imp.UniqueName.Contains("touchonly"))
+                        intFreeTouchOnlySpells += intSkillValue;
+                    else
+                        intFreeGenericSpells += intSkillValue;
+                    //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this
+                    intFreeGenericSpells += skill.Specializations.Count(spec =>
+                        Spells.Any(spell => spell.Category == spec.Name && !spell.FreeBonus));
+                }
+
+                int intTotalFreeNonTouchSpellsCount = Spells.Count(spell =>
+                    spell.FreeBonus && (spell.Range != "T" && spell.Range != "T (A)"));
+                int intTotalFreeTouchOnlySpellsCount = Spells.Count(spell =>
+                    spell.FreeBonus && (spell.Range == "T" || spell.Range == "T (A)"));
+                return new Tuple<bool, bool>(intFreeTouchOnlySpells > intTotalFreeTouchOnlySpellsCount,
+                    intFreeGenericSpells > intTotalFreeNonTouchSpellsCount +
+                    Math.Max(intTotalFreeTouchOnlySpellsCount - intFreeTouchOnlySpells, 0));
             }
         }
 

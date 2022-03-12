@@ -423,14 +423,14 @@ namespace Chummer.UI.Powers
                 Dock = DockStyle.Fill
             })
             {
-                ClickHandler = p =>
+                ClickHandler = async p =>
                 {
                     //Cache the parentform prior to deletion, otherwise the relationship is broken.
                     Form frmParent = ParentForm;
                     if (p.FreeLevels > 0)
                     {
                         string strExtra = p.Extra;
-                        string strImprovementSourceName = ImprovementManager.GetCachedImprovementListForValueOf(p.CharacterObject, Improvement.ImprovementType.AdeptPowerFreePoints, p.Name)
+                        string strImprovementSourceName = (await ImprovementManager.GetCachedImprovementListForValueOfAsync(p.CharacterObject, Improvement.ImprovementType.AdeptPowerFreePoints, p.Name))
                                                            .Find(x => x.UniqueName == strExtra)?.SourceName;
                         if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
                         {
@@ -447,7 +447,6 @@ namespace Chummer.UI.Powers
 
                     if (frmParent is CharacterShared objParent)
                         objParent.IsCharacterUpdateRequested = true;
-                    return Task.CompletedTask;
                 },
                 EnabledExtractor = (p => p.FreeLevels == 0)
             });

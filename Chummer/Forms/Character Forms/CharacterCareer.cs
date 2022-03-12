@@ -1816,10 +1816,10 @@ namespace Chummer
                         if (!CharacterObject.AddBiowareEnabled)
                         {
                             string strBiowareDisabledSource = string.Empty;
-                            Improvement objDisablingImprovement = ImprovementManager
-                                                                  .GetCachedImprovementListForValueOf(
-                                                                      CharacterObject,
-                                                                      Improvement.ImprovementType.DisableBioware)
+                            Improvement objDisablingImprovement = (await ImprovementManager
+                                    .GetCachedImprovementListForValueOfAsync(
+                                        CharacterObject,
+                                        Improvement.ImprovementType.DisableBioware))
                                                                   .FirstOrDefault();
                             if (objDisablingImprovement != null)
                             {
@@ -1865,10 +1865,10 @@ namespace Chummer
                         if (!CharacterObject.AddCyberwareEnabled)
                         {
                             string strCyberwareDisabledSource = string.Empty;
-                            Improvement objDisablingImprovement = ImprovementManager
-                                                                  .GetCachedImprovementListForValueOf(
-                                                                      CharacterObject,
-                                                                      Improvement.ImprovementType.DisableCyberware)
+                            Improvement objDisablingImprovement = (await ImprovementManager
+                                    .GetCachedImprovementListForValueOfAsync(
+                                        CharacterObject,
+                                        Improvement.ImprovementType.DisableCyberware))
                                                                   .FirstOrDefault();
                             if (objDisablingImprovement != null)
                             {
@@ -1914,10 +1914,10 @@ namespace Chummer
                         if (CharacterObject.ExCon)
                         {
                             string strExConString = string.Empty;
-                            Improvement objExConImprovement = ImprovementManager
-                                                              .GetCachedImprovementListForValueOf(
-                                                                  CharacterObject,
-                                                                  Improvement.ImprovementType.ExCon)
+                            Improvement objExConImprovement = (await ImprovementManager
+                                    .GetCachedImprovementListForValueOfAsync(
+                                        CharacterObject,
+                                        Improvement.ImprovementType.ExCon))
                                                               .FirstOrDefault();
                             if (objExConImprovement != null)
                             {
@@ -3789,7 +3789,7 @@ namespace Chummer
 
             do
             {
-                (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = CharacterObject.AllowFreeSpells;
+                (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = await CharacterObject.AllowFreeSpellsAsync();
                 int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Spells");
                 // Make sure the character has enough Karma before letting them select a Spell.
                 if (CharacterObject.Karma < intSpellKarmaCost && !(blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree))
