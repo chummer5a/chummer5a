@@ -976,7 +976,7 @@ namespace Chummer.Backend.Skills
                         EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));
                     UpdateUndoSpecific(dicGroups, KarmaExpenseType.ImproveSkillGroup.Yield());
 
-                    void UpdateUndoSpecific(IDictionary<string, Guid> map,
+                    void UpdateUndoSpecific(IReadOnlyDictionary<string, Guid> map,
                                             IEnumerable<KarmaExpenseType> typesRequiringConverting)
                     {
                         //Build a crazy xpath to get everything we want to convert

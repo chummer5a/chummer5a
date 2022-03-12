@@ -4777,9 +4777,16 @@ namespace Chummer
 
                                         return intReturn;
                                     }
+                                    
+                                    if (blnSync)
+                                        blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                            _strSettingsKey, out objProspectiveSettings);
+                                    else
+                                        (blnSuccess, objProspectiveSettings)
+                                            = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                _strSettingsKey);
 
-                                    if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                            _strSettingsKey, out objProspectiveSettings))
+                                    if (!blnSuccess)
                                     {
                                         // Prompt if we want to switch options or leave
                                         if (!Utils.IsUnitTest && showWarnings)
@@ -4823,14 +4830,28 @@ namespace Chummer
                                             }
                                         }
 
-                                        if (string.IsNullOrEmpty(strReplacementSettingsKey)
-                                            || !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                strReplacementSettingsKey, out objProspectiveSettings))
+                                        if (string.IsNullOrEmpty(strReplacementSettingsKey))
+                                            blnSuccess = false;
+                                        else if (blnSync)
+                                            blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                strReplacementSettingsKey, out objProspectiveSettings);
+                                        else
+                                            (blnSuccess, objProspectiveSettings)
+                                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                    strReplacementSettingsKey);
+
+                                        if (!blnSuccess)
                                         {
                                             strReplacementSettingsKey
                                                 = GlobalSettings.DefaultCharacterSettingDefaultValue;
-                                            if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                    strReplacementSettingsKey, out objProspectiveSettings))
+                                            if (blnSync)
+                                                blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                    strReplacementSettingsKey, out objProspectiveSettings);
+                                            else
+                                                (blnSuccess, objProspectiveSettings)
+                                                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                        strReplacementSettingsKey);
+                                            if (!blnSuccess)
                                             {
                                                 objProspectiveSettings
                                                     = SettingsManager.LoadedCharacterSettings.Values.First();
@@ -4899,14 +4920,28 @@ namespace Chummer
                                             }
                                         }
 
-                                        if (string.IsNullOrEmpty(strReplacementSettingsKey)
-                                            || !SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                strReplacementSettingsKey, out objProspectiveSettings))
+                                        if (string.IsNullOrEmpty(strReplacementSettingsKey))
+                                            blnSuccess = false;
+                                        else if (blnSync)
+                                            blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                strReplacementSettingsKey, out objProspectiveSettings);
+                                        else
+                                            (blnSuccess, objProspectiveSettings)
+                                                = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                    strReplacementSettingsKey);
+
+                                        if (!blnSuccess)
                                         {
                                             strReplacementSettingsKey
                                                 = GlobalSettings.DefaultCharacterSettingDefaultValue;
-                                            if (!SettingsManager.LoadedCharacterSettings.TryGetValue(
-                                                    strReplacementSettingsKey, out objProspectiveSettings))
+                                            if (blnSync)
+                                                blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
+                                                    strReplacementSettingsKey, out objProspectiveSettings);
+                                            else
+                                                (blnSuccess, objProspectiveSettings)
+                                                    = await SettingsManager.LoadedCharacterSettings.TryGetValueAsync(
+                                                        strReplacementSettingsKey);
+                                            if (!blnSuccess)
                                             {
                                                 objProspectiveSettings
                                                     = SettingsManager.LoadedCharacterSettings.Values.First();

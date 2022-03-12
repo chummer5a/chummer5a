@@ -760,45 +760,55 @@ namespace Chummer
             }
 
             gpbDirectoryInfo.SuspendLayout();
-            txtDirectoryDescription.Text = objSelected.GetDisplayDescription(_strSelectedLanguage);
-            lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
-            lblDirectoryAuthors.Text = objSelected.GetDisplayAuthors(_strSelectedLanguage, _objSelectedCultureInfo);
-            lblDirectoryName.Text = objSelected.Name;
-            lblDirectoryPath.Text = objSelected.DirectoryPath.Replace(Utils.GetStartupPath, await LanguageManager.GetStringAsync("String_Chummer5a", _strSelectedLanguage));
+            try
+            {
+                txtDirectoryDescription.Text = await objSelected.GetDisplayDescriptionAsync(_strSelectedLanguage);
+                lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
+                lblDirectoryAuthors.Text
+                    = await objSelected.GetDisplayAuthorsAsync(_strSelectedLanguage, _objSelectedCultureInfo);
+                lblDirectoryName.Text = objSelected.Name;
+                lblDirectoryPath.Text = objSelected.DirectoryPath.Replace(
+                    Utils.GetStartupPath,
+                    await LanguageManager.GetStringAsync("String_Chummer5a", _strSelectedLanguage));
 
-            if (objSelected.DependenciesList.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdDependencies))
+                if (objSelected.DependenciesList.Count > 0)
                 {
-                    foreach (DirectoryDependency dependency in objSelected.DependenciesList)
-                        sbdDependencies.AppendLine(dependency.DisplayName);
-                    lblDependencies.Text = sbdDependencies.ToString();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdDependencies))
+                    {
+                        foreach (DirectoryDependency dependency in objSelected.DependenciesList)
+                            sbdDependencies.AppendLine(dependency.DisplayName);
+                        lblDependencies.Text = sbdDependencies.ToString();
+                    }
                 }
-            }
-            else
-            {
-                //Make sure all old information is discarded
-                lblDependencies.Text = string.Empty;
-            }
+                else
+                {
+                    //Make sure all old information is discarded
+                    lblDependencies.Text = string.Empty;
+                }
 
-            if (objSelected.IncompatibilitiesList.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdIncompatibilities))
+                if (objSelected.IncompatibilitiesList.Count > 0)
                 {
-                    foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
-                        sbdIncompatibilities.AppendLine(exclusivity.DisplayName);
-                    lblIncompatibilities.Text = sbdIncompatibilities.ToString();
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdIncompatibilities))
+                    {
+                        foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
+                            sbdIncompatibilities.AppendLine(exclusivity.DisplayName);
+                        lblIncompatibilities.Text = sbdIncompatibilities.ToString();
+                    }
                 }
+                else
+                {
+                    //Make sure all old information is discarded
+                    lblIncompatibilities.Text = string.Empty;
+                }
+
+                gpbDirectoryInfo.Visible = true;
             }
-            else
+            finally
             {
-                //Make sure all old information is discarded
-                lblIncompatibilities.Text = string.Empty;
+                gpbDirectoryInfo.ResumeLayout();
             }
-            gpbDirectoryInfo.Visible = true;
-            gpbDirectoryInfo.ResumeLayout();
         }
 
         #endregion Control Events
