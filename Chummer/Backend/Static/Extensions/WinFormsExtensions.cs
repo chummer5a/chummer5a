@@ -555,7 +555,7 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                        await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                        await Task.Factory.FromAsync(objResult, x => myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x));
                     }
                     else
                         funcToRun.Invoke();
@@ -605,7 +605,7 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                        await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                        await Task.Factory.FromAsync(objResult, x => myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x));
                     }
                     else
                         funcToRun.Invoke(myControlCopy);
@@ -655,7 +655,7 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                        await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                        await Task.Factory.FromAsync(objResult, x => myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x));
                     }
                     else
                         await funcToRun.Invoke();
@@ -705,7 +705,7 @@ namespace Chummer
                     if (myControlCopy.InvokeRequired)
                     {
                         IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun, myControlCopy);
-                        await Task.Factory.FromAsync(objResult, x => myControlCopy.EndInvoke(x));
+                        await Task.Factory.FromAsync(objResult, x => myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x));
                     }
                     else
                         await funcToRun.Invoke(myControlCopy);
@@ -823,7 +823,7 @@ namespace Chummer
                         {
                             await Task.Factory.FromAsync(objResult, x =>
                             {
-                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
                                 if (objReturnRaw is T2 objReturnRawCast)
                                     objReturn = objReturnRawCast;
                             });
@@ -893,7 +893,7 @@ namespace Chummer
                         {
                             await Task.Factory.FromAsync(objResult, x =>
                             {
-                                object objReturnRaw = myControlCopy.EndInvoke(objResult);
+                                object objReturnRaw = myControlCopy.IsNullOrDisposed() ? default : myControlCopy.EndInvoke(x);
                                 if (objReturnRaw is T2 objReturnRawCast)
                                     objReturn = objReturnRawCast;
                             });
