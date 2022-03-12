@@ -11185,11 +11185,11 @@ namespace Chummer
                         });
                         if (CharacterObject.IsAI)
                         {
-                            await chkWeaponHomeNode.DoThreadSafeAsync(async x =>
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Checked = objWeapon.IsHomeNode(CharacterObject);
-                                x.Enabled = await chkWeaponActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                x.Enabled = objWeapon.IsCommlink &&
                                             objWeapon.GetTotalMatrixAttribute("Program Limit") >=
                                             (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                             });
@@ -11541,11 +11541,11 @@ namespace Chummer
                         });
                         if (CharacterObject.IsAI)
                         {
-                            await chkWeaponHomeNode.DoThreadSafeAsync(async x =>
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Checked = objGear.IsHomeNode(CharacterObject);
-                                x.Enabled = await chkWeaponActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                x.Enabled = objGear.IsCommlink &&
                                             objGear.GetTotalMatrixAttribute("Program Limit") >=
                                             (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                             });
@@ -11704,11 +11704,11 @@ namespace Chummer
                     });
                     if (CharacterObject.IsAI)
                     {
-                        await chkArmorHomeNode.DoThreadSafeAsync(async x =>
+                        await chkArmorHomeNode.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Checked = objArmor.IsHomeNode(CharacterObject);
-                            x.Enabled = await chkArmorActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                            x.Enabled = objArmor.IsCommlink &&
                                         objArmor.GetTotalMatrixAttribute("Program Limit") >=
                                         (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                         });
@@ -11924,11 +11924,11 @@ namespace Chummer
                                 });
                                 if (CharacterObject.IsAI)
                                 {
-                                    await chkArmorHomeNode.DoThreadSafeAsync(async x =>
+                                    await chkArmorHomeNode.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
                                         x.Checked = objSelectedGear.IsHomeNode(CharacterObject);
-                                        x.Enabled = await chkArmorActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                        x.Enabled = objSelectedGear.IsCommlink &&
                                                     objSelectedGear.GetTotalMatrixAttribute("Program Limit")
                                                     >=
                                                     (CharacterObject.DEP.TotalValue > intDeviceRating
@@ -12236,11 +12236,11 @@ namespace Chummer
                     });
                     if (CharacterObject.IsAI)
                     {
-                        await chkGearHomeNode.DoThreadSafeAsync(async x =>
+                        await chkGearHomeNode.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Checked = objGear.IsHomeNode(CharacterObject);
-                            x.Enabled = await chkGearActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                            x.Enabled = objGear.IsCommlink &&
                                         objGear.GetTotalMatrixAttribute("Program Limit") >=
                                         (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                         });
@@ -14275,11 +14275,11 @@ namespace Chummer
                         });
                         if (CharacterObject.IsAI)
                         {
-                            await chkVehicleHomeNode.DoThreadSafeAsync(async x =>
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Checked = objGear.IsHomeNode(CharacterObject);
-                                x.Enabled = await chkVehicleActiveCommlink.DoThreadSafeFuncAsync(y => y.Visible)
+                                x.Enabled = objGear.IsCommlink
                                             && objGear.GetTotalMatrixAttribute("Program Limit")
                                             >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                             });

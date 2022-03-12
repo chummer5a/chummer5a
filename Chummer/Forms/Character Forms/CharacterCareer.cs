@@ -3695,7 +3695,8 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                if (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                object objSelectedNodeTag = await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -3707,7 +3708,7 @@ namespace Chummer
                     await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                switch (treMartialArts.SelectedNode?.Tag)
+                switch (objSelectedNodeTag)
                 {
                     case MartialArt objMartialArt:
                         await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = !objMartialArt.IsQuality);
@@ -4280,7 +4281,7 @@ namespace Chummer
                 return;
             }
 
-            switch (treVehicles.SelectedNode?.Tag)
+            switch (objSelectedNode.Tag)
             {
                 // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
                 case VehicleMod objMod when objMod.Name == "Obsolete" || objMod.Name == "Obsolescent" && CharacterObjectSettings.AllowObsolescentUpgrade:
@@ -13659,7 +13660,8 @@ namespace Chummer
             await flpDrugs.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0) && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Drug objDrug)
+                object objSelectedNodeTag = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is Drug objDrug && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0))
                 {
                     await flpDrugs.DoThreadSafeAsync(x => x.Visible = true);
                     await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true);
@@ -13691,7 +13693,7 @@ namespace Chummer
                 else
                 {
                     await flpDrugs.DoThreadSafeAsync(x => x.Visible = false);
-                    await btnDeleteCustomDrug.DoThreadSafeAsync(async x => x.Enabled = await treArmor.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
             }
             finally
@@ -13831,21 +13833,19 @@ namespace Chummer
             await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-
-                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0))
+                object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0))
                 {
                     await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false);
                     await tabCyberwareCM.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteCyberware.DoThreadSafeAsync(
-                        x => x.Enabled = treCyberware.DoThreadSafeFunc(y => y.SelectedNode?.Tag is ICanRemove));
+                    await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
 
-                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasWirelessBonus
-                    objHasWirelessBonus)
+                if (objSelectedNodeTag is IHasWirelessBonus objHasWirelessBonus)
                 {
                     await chkCyberwareWireless.DoThreadSafeAsync(x =>
                     {
@@ -13856,7 +13856,7 @@ namespace Chummer
                 else
                     await chkCyberwareWireless.DoThreadSafeAsync(x => x.Visible = false);
 
-                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -13868,7 +13868,7 @@ namespace Chummer
                     await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblCyberwareRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
                                                                        GlobalSettings.CultureInfo,
@@ -13879,7 +13879,7 @@ namespace Chummer
                 }
 
                 string strESSFormat = CharacterObjectSettings.EssenceFormat;
-                switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                switch (objSelectedNodeTag)
                 {
                     case Cyberware objCyberware:
                     {
@@ -14083,8 +14083,7 @@ namespace Chummer
 
                 if (await tabCyberwareCM.DoThreadSafeFuncAsync(x => x.Visible))
                 {
-                    if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasMatrixAttributes
-                        objMatrixCM)
+                    if (objSelectedNodeTag is IHasMatrixAttributes objMatrixCM)
                     {
                         await ProcessEquipmentConditionMonitorBoxDisplays(panCyberwareMatrixCM, objMatrixCM.MatrixCM,
                                                                           objMatrixCM.MatrixCMFilled);
@@ -14108,246 +14107,311 @@ namespace Chummer
         private async Task RefreshSelectedWeapon()
         {
             IsRefreshing = true;
-            flpWeapons.SuspendLayout();
-
-            if (treWeapons.SelectedNode == null || treWeapons.SelectedNode.Level <= 0)
+            await flpWeapons.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbWeaponsCommon.Visible = false;
-                gpbWeaponsWeapon.Visible = false;
-                gpbWeaponsMatrix.Visible = false;
+                object objSelectedNodeTag = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode.Level) <= 0)
+                {
+                    await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                // Buttons
-                cmdDeleteWeapon.Enabled = treWeapons.SelectedNode?.Tag is ICanRemove;
+                    // Buttons
+                    await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
+                    return;
+                }
 
-                IsRefreshing = false;
-                flpWeapons.ResumeLayout();
-
-                return;
-            }
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
-            if (treWeapons.SelectedNode?.Tag is IHasWirelessBonus objHasWirelessBonus)
-            {
-                chkWeaponWireless.Visible = true;
-                chkWeaponWireless.Checked = objHasWirelessBonus.WirelessOn;
-            }
-            else
-                chkWeaponWireless.Visible = false;
-
-            if (treWeapons.SelectedNode?.Tag is IHasSource objSelected)
-            {
-                lblWeaponSourceLabel.Visible = true;
-                lblWeaponSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblWeaponSource);
-            }
-            else
-            {
-                lblWeaponSourceLabel.Visible = false;
-                lblWeaponSource.Visible = false;
-            }
-
-            if (treWeapons.SelectedNode?.Tag is IHasRating objHasRating)
-            {
-                lblWeaponRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
-
-            switch (treWeapons.SelectedNode?.Tag)
-            {
-                case Weapon objWeapon:
+                string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                if (objSelectedNodeTag is IHasWirelessBonus objHasWirelessBonus)
+                {
+                    await chkWeaponWireless.DoThreadSafeAsync(x =>
                     {
-                        gpbWeaponsCommon.Visible = true;
-                        gpbWeaponsWeapon.Visible = true;
-                        gpbWeaponsMatrix.Visible = true;
+                        x.Visible = true;
+                        x.Checked = objHasWirelessBonus.WirelessOn;
+                    });
+                }
+                else
+                    await chkWeaponWireless.DoThreadSafeAsync(x => x.Visible = false);
+
+                if (objSelectedNodeTag is IHasSource objSelected)
+                {
+                    await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblWeaponSource);
+                }
+                else
+                {
+                    await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (objSelectedNodeTag is IHasRating objHasRating)
+                {
+                    await lblWeaponRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
+                                                                     GlobalSettings.CultureInfo,
+                                                                     await LanguageManager.GetStringAsync(
+                                                                         "Label_RatingFormat"),
+                                                                     await LanguageManager.GetStringAsync(
+                                                                         objHasRating.RatingLabel)));
+                }
+
+                switch (objSelectedNodeTag)
+                {
+                    case Weapon objWeapon:
+                    {
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteWeapon.Enabled = !objWeapon.IncludedInWeapon &&
-                                                  !objWeapon.Cyberware &&
-                                                  objWeapon.Category != "Gear" &&
-                                                  !objWeapon.Category.StartsWith("Quality", StringComparison.Ordinal) &&
-                                                  string.IsNullOrEmpty(objWeapon.ParentID);
+                        await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objWeapon.IncludedInWeapon &&
+                                                                    !objWeapon.Cyberware &&
+                                                                    objWeapon.Category != "Gear" &&
+                                                                    !objWeapon.Category.StartsWith(
+                                                                        "Quality", StringComparison.Ordinal) &&
+                                                                    string.IsNullOrEmpty(objWeapon.ParentID));
 
                         // gpbWeaponsCommon
-                        lblWeaponName.Text = objWeapon.CurrentDisplayName;
-                        lblWeaponCategory.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
-                        lblWeaponRatingLabel.Visible = false;
-                        lblWeaponRating.Visible = false;
-                        lblWeaponCapacityLabel.Visible = false;
-                        lblWeaponCapacity.Visible = false;
-                        lblWeaponAvail.Text = objWeapon.DisplayTotalAvail;
-                        lblWeaponCost.Text = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblWeaponSlotsLabel.Visible = true;
-                        lblWeaponSlots.Visible = true;
+                        await lblWeaponName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
+                        await lblWeaponCategory.DoThreadSafeAsync(async x => x.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language));
+                        await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail);
+                        await lblWeaponCost.DoThreadSafeAsync(x => x.Text
+                                                                  = objWeapon.TotalCost.ToString(
+                                                                      CharacterObjectSettings.NuyenFormat,
+                                                                      GlobalSettings.CultureInfo) + '¥');
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true);
                         if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                         {
-                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                                StringComparison.OrdinalIgnoreCase))
                             {
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdSlotsText))
                                 {
                                     foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc(
                                                  '/', StringSplitOptions.RemoveEmptyEntries))
-                                        sbdSlotsText.Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
-                                                    .Append('/');
+                                        sbdSlotsText
+                                            .Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
+                                            .Append('/');
                                     --sbdSlotsText.Length;
-                                    lblWeaponSlots.Text = sbdSlotsText.ToString();
+                                    await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString());
                                 }
                             }
                             else
-                                lblWeaponSlots.Text = objWeapon.AccessoryMounts;
+                                await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = objWeapon.AccessoryMounts);
                         }
                         else
-                            lblWeaponSlots.Text = await LanguageManager.GetStringAsync("String_None");
-                        lblWeaponConcealLabel.Visible = true;
-                        lblWeaponConceal.Visible = true;
-                        lblWeaponConceal.Text = objWeapon.DisplayConcealability;
-                        cmdWeaponMoveToVehicle.Visible = cmdDeleteWeapon.Enabled && CharacterObject.Vehicles.Count > 0;
-                        chkWeaponEquipped.Text
-                            = await LanguageManager.GetStringAsync(objWeapon.Parent == null
-                                                                       ? "Checkbox_Equipped"
-                                                                       : "Checkbox_Installed");
-                        chkWeaponEquipped.Enabled = !objWeapon.IncludedInWeapon;
-                        chkWeaponEquipped.Checked = objWeapon.Equipped;
-                        chkIncludedInWeapon.Visible = objWeapon.Parent != null;
-                        chkIncludedInWeapon.Enabled = false;
-                        chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
+                            await lblWeaponSlots.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
+
+                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponConceal.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeapon.DisplayConcealability;
+                        });
+                        await cmdWeaponMoveToVehicle.DoThreadSafeAsync(x => x.Visible = cmdDeleteWeapon.Enabled && CharacterObject.Vehicles.Count > 0);
+                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
+                        {
+                            x.Text = await LanguageManager.GetStringAsync(
+                                objWeapon.Parent == null ? "Checkbox_Equipped" : "Checkbox_Installed");
+                            x.Enabled = !objWeapon.IncludedInWeapon;
+                            x.Checked = objWeapon.Equipped;
+                        });
+                        await chkIncludedInWeapon.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objWeapon.Parent != null;
+                            x.Enabled = false;
+                            x.Checked = objWeapon.IncludedInWeapon;
+                        });
 
                         // gpbWeaponsWeapon
-                        gpbWeaponsWeapon.Text = await LanguageManager.GetStringAsync("String_Weapon");
-                        lblWeaponDamageLabel.Visible = true;
-                        lblWeaponDamage.Visible = true;
-                        lblWeaponDamage.Text = objWeapon.DisplayDamage;
-                        lblWeaponAPLabel.Visible = true;
-                        lblWeaponAP.Visible = true;
-                        lblWeaponAP.Text = objWeapon.DisplayTotalAP;
-                        lblWeaponAccuracyLabel.Visible = true;
-                        lblWeaponAccuracy.Visible = true;
-                        lblWeaponAccuracy.Text = objWeapon.DisplayAccuracy;
-                        lblWeaponDicePoolLabel.Visible = true;
-                        dpcWeaponDicePool.Visible = true;
-                        dpcWeaponDicePool.DicePool = objWeapon.DicePool;
-                        dpcWeaponDicePool.CanBeRolled = true;
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_Weapon"));
+                        await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponDamage.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayDamage);
+                        await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponAP.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeapon.DisplayTotalAP;
+                        });
+                        await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponAccuracy.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objWeapon.DisplayAccuracy;
+                        });
+                        await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await dpcWeaponDicePool.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.DicePool = objWeapon.DicePool;
+                            x.CanBeRolled = true;
+                        });
                         await dpcWeaponDicePool.SetLabelToolTipAsync(objWeapon.DicePoolTooltip);
                         if (objWeapon.RangeType == "Ranged")
                         {
-                            lblWeaponReachLabel.Visible = false;
-                            lblWeaponReach.Visible = false;
-                            lblWeaponRCLabel.Visible = true;
-                            lblWeaponRC.Visible = true;
-                            lblWeaponRC.Text = objWeapon.DisplayTotalRC;
+                            await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRC.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayTotalRC;
+                            });
                             await lblWeaponRC.SetToolTipAsync(objWeapon.RCToolTip);
-                            lblWeaponAmmoLabel.Visible = true;
-                            lblWeaponAmmo.Visible = true;
-                            lblWeaponAmmo.Text = objWeapon.DisplayAmmo;
-                            lblWeaponModeLabel.Visible = true;
-                            lblWeaponMode.Visible = true;
-                            lblWeaponMode.Text = objWeapon.DisplayMode;
-
-                            tlpWeaponsRanges.Visible = true;
-                            lblWeaponRangeMain.Text = objWeapon.CurrentDisplayRange;
-                            lblWeaponRangeAlternate.Text = objWeapon.CurrentDisplayAlternateRange;
-                            Dictionary<string, string> dictionaryRanges = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
-                            lblWeaponRangeShortLabel.Text = objWeapon.RangeModifier("Short");
-                            lblWeaponRangeMediumLabel.Text = objWeapon.RangeModifier("Medium");
-                            lblWeaponRangeLongLabel.Text = objWeapon.RangeModifier("Long");
-                            lblWeaponRangeExtremeLabel.Text = objWeapon.RangeModifier("Extreme");
-                            lblWeaponRangeShort.Text = dictionaryRanges["short"];
-                            lblWeaponRangeMedium.Text = dictionaryRanges["medium"];
-                            lblWeaponRangeLong.Text = dictionaryRanges["long"];
-                            lblWeaponRangeExtreme.Text = dictionaryRanges["extreme"];
-                            lblWeaponAlternateRangeShort.Text = dictionaryRanges["alternateshort"];
-                            lblWeaponAlternateRangeMedium.Text = dictionaryRanges["alternatemedium"];
-                            lblWeaponAlternateRangeLong.Text = dictionaryRanges["alternatelong"];
-                            lblWeaponAlternateRangeExtreme.Text = dictionaryRanges["alternateextreme"];
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAmmo.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayAmmo;
+                            });
+                            await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponMode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.DisplayMode;
+                            });
+                            await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRangeMain.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange);
+                            await lblWeaponRangeAlternate.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange);
+                            Dictionary<string, string> dictionaryRanges
+                                = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
+                            await lblWeaponRangeShortLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"));
+                            await lblWeaponRangeMediumLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Medium"));
+                            await lblWeaponRangeLongLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Long"));
+                            await lblWeaponRangeExtremeLabel.DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"));
+                            await lblWeaponRangeShort.DoThreadSafeAsync(x => x.Text = dictionaryRanges["short"]);
+                            await lblWeaponRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["medium"]);
+                            await lblWeaponRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["long"]);
+                            await lblWeaponRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["extreme"]);
+                            await lblWeaponAlternateRangeShort.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateshort"]);
+                            await lblWeaponAlternateRangeMedium.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"]);
+                            await lblWeaponAlternateRangeLong.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"]);
+                            await lblWeaponAlternateRangeExtreme.DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"]);
                         }
                         else
                         {
-                            lblWeaponReachLabel.Visible = true;
-                            lblWeaponReach.Visible = true;
-                            lblWeaponReach.Text = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
-                            lblWeaponRCLabel.Visible = false;
-                            lblWeaponRC.Visible = false;
+                            await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponReach.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                            });
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRC.DoThreadSafeAsync(x => x.Visible = false);
                             if (objWeapon.Ammo != "0")
                             {
-                                lblWeaponAmmoLabel.Visible = true;
-                                lblWeaponAmmo.Visible = true;
-                                lblWeaponAmmo.Text = objWeapon.DisplayAmmo;
+                                await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblWeaponAmmo.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Text = objWeapon.DisplayAmmo;
+                                });
                             }
                             else
                             {
-                                lblWeaponAmmoLabel.Visible = false;
-                                lblWeaponAmmo.Visible = false;
+                                await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                             }
-                            lblWeaponModeLabel.Visible = false;
-                            lblWeaponMode.Visible = false;
 
-                            tlpWeaponsRanges.Visible = false;
+                            await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+                            await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false);
                         }
+
                         // Enable the fire button if the Weapon is Ranged.
                         if (objWeapon.RangeType == "Ranged" || objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                         {
-                            tlpWeaponsCareer.Visible = true;
-                            lblWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo);
-                            cmdFireWeapon.Enabled = objWeapon.AmmoRemaining != 0;
+                            await tlpWeaponsCareer.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo));
+                            await cmdFireWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.AmmoRemaining != 0);
 
-                            cmsAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
-                            cmsAmmoShortBurst.Enabled = objWeapon.AllowShortBurst;
-                            cmsAmmoLongBurst.Enabled = objWeapon.AllowLongBurst;
-                            cmsAmmoFullBurst.Enabled = objWeapon.AllowFullBurst;
-                            cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
+                            await cmsAmmoExpense.DoThreadSafeAsync(async () =>
+                            {
+                                cmsAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
+                                cmsAmmoShortBurst.Enabled = objWeapon.AllowShortBurst;
+                                cmsAmmoLongBurst.Enabled = objWeapon.AllowLongBurst;
+                                cmsAmmoFullBurst.Enabled = objWeapon.AllowFullBurst;
+                                cmsAmmoSuppressiveFire.Enabled = objWeapon.AllowSuppressive;
 
-                            // Melee Weapons with Ammo are considered to be Single Shot.
-                            if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
-                                cmsAmmoSingleShot.Enabled = true;
+                                // Melee Weapons with Ammo are considered to be Single Shot.
+                                if (objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
+                                    cmsAmmoSingleShot.Enabled = true;
 
-                            if (cmsAmmoSingleShot.Enabled)
-                                cmsAmmoSingleShot.Text = string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync("String_SingleShot")
-                                    , objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
-                                    objWeapon.SingleShot == 1
-                                        ? await LanguageManager.GetStringAsync("String_Bullet")
-                                        : await LanguageManager.GetStringAsync("String_Bullets"));
-                            else
-                                cmsAmmoSingleShot.Text = await LanguageManager.GetStringAsync("String_SingleShotNA");
+                                if (cmsAmmoSingleShot.Enabled)
+                                    cmsAmmoSingleShot.Text = string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "String_SingleShot")
+                                                                           , objWeapon.SingleShot.ToString(GlobalSettings.CultureInfo),
+                                                                           objWeapon.SingleShot == 1
+                                                                               ? await LanguageManager.GetStringAsync(
+                                                                                   "String_Bullet")
+                                                                               : await LanguageManager.GetStringAsync(
+                                                                                   "String_Bullets"));
+                                else
+                                    cmsAmmoSingleShot.Text
+                                        = await LanguageManager.GetStringAsync("String_SingleShotNA");
 
-                            if (cmsAmmoShortBurst.Enabled)
-                                cmsAmmoShortBurst.Text = string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync("String_ShortBurst")
-                                    , objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
-                                    objWeapon.ShortBurst == 1
-                                        ? await LanguageManager.GetStringAsync("String_Bullet")
-                                        : await LanguageManager.GetStringAsync("String_Bullets"));
-                            else
-                                cmsAmmoShortBurst.Text = await LanguageManager.GetStringAsync("String_ShortBurstNA");
+                                if (cmsAmmoShortBurst.Enabled)
+                                    cmsAmmoShortBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                                                           await LanguageManager.GetStringAsync(
+                                                                               "String_ShortBurst")
+                                                                           , objWeapon.ShortBurst.ToString(GlobalSettings.CultureInfo),
+                                                                           objWeapon.ShortBurst == 1
+                                                                               ? await LanguageManager.GetStringAsync(
+                                                                                   "String_Bullet")
+                                                                               : await LanguageManager.GetStringAsync(
+                                                                                   "String_Bullets"));
+                                else
+                                    cmsAmmoShortBurst.Text
+                                        = await LanguageManager.GetStringAsync("String_ShortBurstNA");
 
-                            if (cmsAmmoLongBurst.Enabled)
-                                cmsAmmoLongBurst.Text = string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync("String_LongBurst")
-                                    , objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
-                                    objWeapon.LongBurst == 1
-                                        ? await LanguageManager.GetStringAsync("String_Bullet")
-                                        : await LanguageManager.GetStringAsync("String_Bullets"));
-                            else
-                                cmsAmmoLongBurst.Text = await LanguageManager.GetStringAsync("String_LongBurstNA");
+                                if (cmsAmmoLongBurst.Enabled)
+                                    cmsAmmoLongBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                                                          await LanguageManager.GetStringAsync(
+                                                                              "String_LongBurst")
+                                                                          , objWeapon.LongBurst.ToString(GlobalSettings.CultureInfo),
+                                                                          objWeapon.LongBurst == 1
+                                                                              ? await LanguageManager.GetStringAsync(
+                                                                                  "String_Bullet")
+                                                                              : await LanguageManager.GetStringAsync(
+                                                                                  "String_Bullets"));
+                                else
+                                    cmsAmmoLongBurst.Text = await LanguageManager.GetStringAsync("String_LongBurstNA");
 
-                            if (cmsAmmoFullBurst.Enabled)
-                                cmsAmmoFullBurst.Text = string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync("String_FullBurst")
-                                    , objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
-                                    objWeapon.FullBurst == 1
-                                        ? await LanguageManager.GetStringAsync("String_Bullet")
-                                        : await LanguageManager.GetStringAsync("String_Bullets"));
-                            else
-                                cmsAmmoFullBurst.Text = await LanguageManager.GetStringAsync("String_FullBurstNA");
+                                if (cmsAmmoFullBurst.Enabled)
+                                    cmsAmmoFullBurst.Text = string.Format(GlobalSettings.CultureInfo,
+                                                                          await LanguageManager.GetStringAsync(
+                                                                              "String_FullBurst")
+                                                                          , objWeapon.FullBurst.ToString(GlobalSettings.CultureInfo),
+                                                                          objWeapon.FullBurst == 1
+                                                                              ? await LanguageManager.GetStringAsync(
+                                                                                  "String_Bullet")
+                                                                              : await LanguageManager.GetStringAsync(
+                                                                                  "String_Bullets"));
+                                else
+                                    cmsAmmoFullBurst.Text = await LanguageManager.GetStringAsync("String_FullBurstNA");
 
-                            if (cmsAmmoSuppressiveFire.Enabled)
-                                cmsAmmoSuppressiveFire.Text = string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync("String_SuppressiveFire")
-                                    , objWeapon.Suppressive,
-                                    await LanguageManager.GetStringAsync(objWeapon.Suppressive == 1
-                                                                             ? "String_Bullet"
-                                                                             : "String_Bullets"));
-                            else
-                                cmsAmmoSuppressiveFire.Text = await LanguageManager.GetStringAsync("String_SuppressiveFireNA");
+                                if (cmsAmmoSuppressiveFire.Enabled)
+                                    cmsAmmoSuppressiveFire.Text = string.Format(GlobalSettings.CultureInfo,
+                                        await LanguageManager.GetStringAsync(
+                                            "String_SuppressiveFire")
+                                        , objWeapon.Suppressive,
+                                        await LanguageManager.GetStringAsync(
+                                            objWeapon.Suppressive == 1
+                                                ? "String_Bullet"
+                                                : "String_Bullets"));
+                                else
+                                    cmsAmmoSuppressiveFire.Text
+                                        = await LanguageManager.GetStringAsync("String_SuppressiveFireNA");
+                            });
 
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstAmmo))
@@ -14404,67 +14468,89 @@ namespace Chummer
 
                                 objWeapon.ActiveAmmoSlot = intCurrentSlot;
                                 await cboWeaponAmmo.PopulateWithListItemsAsync(lstAmmo);
-                                cboWeaponAmmo.SelectedValue
-                                    = objWeapon.ActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo);
-                                if (cboWeaponAmmo.SelectedIndex == -1)
-                                    cboWeaponAmmo.SelectedIndex = 0;
-                                cboWeaponAmmo.Enabled = lstAmmo.Count > 1;
+                                await cboWeaponAmmo.DoThreadSafeAsync(x =>
+                                {
+                                    x.SelectedValue
+                                        = objWeapon.ActiveAmmoSlot.ToString(GlobalSettings.InvariantCultureInfo);
+                                    if (x.SelectedIndex == -1)
+                                        x.SelectedIndex = 0;
+                                    x.Enabled = lstAmmo.Count > 1;
+                                });
                             }
                         }
                         else
                         {
-                            tlpWeaponsCareer.Visible = false;
+                            await tlpWeaponsCareer.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
                         // gpbWeaponsMatrix
                         int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
-                        lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objWeapon.RefreshMatrixAttributeComboBoxesAsync(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+                        await lblWeaponDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objWeapon.RefreshMatrixAttributeComboBoxesAsync(
+                            cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing,
+                            cboWeaponGearFirewall);
 
-                        chkWeaponActiveCommlink.Visible = objWeapon.IsCommlink;
-                        chkWeaponActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objWeapon.IsCommlink;
+                            x.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkWeaponHomeNode.Visible = true;
-                            chkWeaponHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
-                            chkWeaponHomeNode.Enabled = chkWeaponActiveCommlink.Visible && objWeapon.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objWeapon.IsHomeNode(CharacterObject);
+                                x.Enabled = objWeapon.IsCommlink
+                                            && objWeapon.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkWeaponHomeNode.Visible = false;
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
-                        cboWeaponOverclocker.Visible = false;
-                        lblWeaponOverclockerLabel.Visible = false;
+                        await cboWeaponOverclocker.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
                         break;
                     }
-                case WeaponAccessory objSelectedAccessory:
+                    case WeaponAccessory objSelectedAccessory:
                     {
-                        gpbWeaponsCommon.Visible = true;
-                        gpbWeaponsWeapon.Visible = true;
-                        gpbWeaponsMatrix.Visible = false;
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                         // Buttons
-                        cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon && string.IsNullOrEmpty(objSelectedAccessory.ParentID);
+                        await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objSelectedAccessory.IncludedInWeapon
+                                                                    && string.IsNullOrEmpty(
+                                                                        objSelectedAccessory.ParentID));
 
                         // gpbWeaponsCommon
-                        lblWeaponName.Text = objSelectedAccessory.CurrentDisplayNameShort;
-                        lblWeaponCategory.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory");
+                        await lblWeaponName.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.CurrentDisplayNameShort);
+                        await lblWeaponCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
                         if (objSelectedAccessory.MaxRating > 0)
                         {
-                            lblWeaponRatingLabel.Visible = true;
-                            lblWeaponRating.Visible = true;
-                            lblWeaponRating.Text = objSelectedAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objSelectedAccessory.Rating.ToString(GlobalSettings.CultureInfo);
+                            });
                         }
                         else
                         {
-                            lblWeaponRatingLabel.Visible = false;
-                            lblWeaponRating.Visible = false;
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        lblWeaponCapacityLabel.Visible = false;
-                        lblWeaponCapacity.Visible = false;
-                        lblWeaponAvail.Text = objSelectedAccessory.DisplayTotalAvail;
-                        lblWeaponCost.Text = objSelectedAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblWeaponSlotsLabel.Visible = true;
-                        lblWeaponSlots.Visible = true;
+
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.DisplayTotalAvail);
+                        await lblWeaponCost.DoThreadSafeAsync(x => x.Text
+                                                                  = objSelectedAccessory.TotalCost.ToString(
+                                                                      CharacterObjectSettings.NuyenFormat,
+                                                                      GlobalSettings.CultureInfo) + '¥');
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true);
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdSlotsText))
                         {
@@ -14495,7 +14581,8 @@ namespace Chummer
                                     }
 
                                     sbdSlotsText
-                                        .Append(await LanguageManager.GetStringAsync("String_Mount" + strCurrentExtraMount))
+                                        .Append(await LanguageManager.GetStringAsync(
+                                                    "String_Mount" + strCurrentExtraMount))
                                         .Append('/');
                                 }
 
@@ -14504,89 +14591,129 @@ namespace Chummer
                                     --sbdSlotsText.Length;
                             }
 
-                            lblWeaponSlots.Text = sbdSlotsText.ToString();
+                            await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString());
                         }
 
-                        lblWeaponConcealLabel.Visible = objSelectedAccessory.TotalConcealability != 0;
-                        lblWeaponConceal.Visible = objSelectedAccessory.TotalConcealability != 0;
-                        lblWeaponConceal.Text = objSelectedAccessory.TotalConcealability.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
-                        chkWeaponEquipped.Text
-                            = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
-                                                                       ? "Checkbox_Equipped"
-                                                                       : "Checkbox_Installed");
-                        chkWeaponEquipped.Enabled = !objSelectedAccessory.IncludedInWeapon;
-                        chkWeaponEquipped.Checked = objSelectedAccessory.Equipped;
-                        chkIncludedInWeapon.Visible = objSelectedAccessory.Parent != null;
-                        chkIncludedInWeapon.Enabled = CharacterObjectSettings.AllowEditPartOfBaseWeapon;
-                        chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
+                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = objSelectedAccessory.TotalConcealability != 0);
+                        await lblWeaponConceal.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objSelectedAccessory.TotalConcealability != 0;
+                            x.Text
+                                = objSelectedAccessory.TotalConcealability.ToString(
+                                    "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                        });
+                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
+                        {
+                            x.Text
+                                = await LanguageManager.GetStringAsync(objSelectedAccessory.Parent == null
+                                                                           ? "Checkbox_Equipped"
+                                                                           : "Checkbox_Installed");
+                            x.Enabled = !objSelectedAccessory.IncludedInWeapon;
+                            x.Checked = objSelectedAccessory.Equipped;
+                        });
+                        await chkIncludedInWeapon.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objSelectedAccessory.Parent != null;
+                            x.Enabled = CharacterObjectSettings.AllowEditPartOfBaseWeapon;
+                            x.Checked = objSelectedAccessory.IncludedInWeapon;
+                        });
 
                         // gpbWeaponsWeapon
-                        gpbWeaponsWeapon.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory");
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
                         if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
                         {
-                            lblWeaponDamageLabel.Visible = false;
-                            lblWeaponDamage.Visible = false;
+                            await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponDamage.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponDamageLabel.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage);
-                            lblWeaponDamage.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage);
-                            lblWeaponDamage.Text = Convert.ToInt32(objSelectedAccessory.Damage, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSelectedAccessory.Damage));
+                            await lblWeaponDamage.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = !string.IsNullOrEmpty(objSelectedAccessory
+                                                                      .Damage);
+                                x.Text = Convert
+                                         .ToInt32(objSelectedAccessory.Damage,
+                                                  GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (string.IsNullOrEmpty(objSelectedAccessory.AP))
                         {
-                            lblWeaponAPLabel.Visible = false;
-                            lblWeaponAP.Visible = false;
+                            await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAP.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponAPLabel.Visible = true;
-                            lblWeaponAP.Visible = true;
-                            lblWeaponAP.Text = Convert.ToInt32(objSelectedAccessory.AP, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAP.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = Convert
+                                         .ToInt32(objSelectedAccessory.AP, GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objSelectedAccessory.Accuracy == 0)
                         {
-                            lblWeaponAccuracyLabel.Visible = false;
-                            lblWeaponAccuracy.Visible = false;
+                            await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponAccuracyLabel.Visible = true;
-                            lblWeaponAccuracy.Visible = true;
-                            lblWeaponAccuracy.Text = objSelectedAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAccuracy.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objSelectedAccessory.Accuracy.ToString(
+                                    "+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objSelectedAccessory.DicePool == 0)
                         {
-                            lblWeaponDicePoolLabel.Visible = false;
-                            dpcWeaponDicePool.Visible = false;
+                            await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await dpcWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponDicePoolLabel.Visible = true;
-                            dpcWeaponDicePool.Visible = true;
-                            dpcWeaponDicePool.DicePool = objSelectedAccessory.DicePool;
-                            dpcWeaponDicePool.CanBeRolled = false;
+                            await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await dpcWeaponDicePool.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.DicePool = objSelectedAccessory.DicePool;
+                                x.CanBeRolled = false;
+                            });
                             await dpcWeaponDicePool.SetLabelToolTipAsync(string.Empty);
                         }
-                        lblWeaponReachLabel.Visible = false;
-                        lblWeaponReach.Visible = false;
+
+                        await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false);
                         if (string.IsNullOrEmpty(objSelectedAccessory.RC))
                         {
-                            lblWeaponRCLabel.Visible = false;
-                            lblWeaponRC.Visible = false;
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRC.DoThreadSafeAsync(x => x.Visible = false);
                         }
                         else
                         {
-                            lblWeaponRCLabel.Visible = true;
-                            lblWeaponRC.Visible = true;
-                            lblWeaponRC.Text = Convert.ToInt32(objSelectedAccessory.RC, GlobalSettings.InvariantCultureInfo).ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRC.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = Convert
+                                         .ToInt32(objSelectedAccessory.RC, GlobalSettings.InvariantCultureInfo)
+                                         .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                            });
                         }
+
                         if (objSelectedAccessory.TotalAmmoBonus != 0
                             || (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                 && objSelectedAccessory.ModifyAmmoCapacity != "0"))
                         {
-                            lblWeaponAmmoLabel.Visible = true;
-                            lblWeaponAmmo.Visible = true;
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true);
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdAmmoBonus))
                             {
@@ -14597,127 +14724,163 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                     && objSelectedAccessory.ModifyAmmoCapacity != "0")
                                     sbdAmmoBonus.Append(objSelectedAccessory.ModifyAmmoCapacity);
-                                lblWeaponAmmo.Text = sbdAmmoBonus.ToString();
+                                await lblWeaponAmmo.DoThreadSafeAsync(x => x.Text = sbdAmmoBonus.ToString());
                             }
                         }
                         else
                         {
-                            lblWeaponAmmoLabel.Visible = false;
-                            lblWeaponAmmo.Visible = false;
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        lblWeaponModeLabel.Visible = false;
-                        lblWeaponMode.Visible = false;
 
-                        tlpWeaponsRanges.Visible = false;
-                        tlpWeaponsCareer.Visible = false;
+                        await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+
+                        await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false);
+                        await tlpWeaponsCareer.DoThreadSafeAsync(x => x.Visible = false);
                         break;
                     }
-                case Gear objGear:
+                    case Gear objGear:
                     {
-                        gpbWeaponsCommon.Visible = true;
-                        gpbWeaponsWeapon.Visible = false;
-                        gpbWeaponsMatrix.Visible = true;
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true);
 
                         // Buttons
-                        cmdDeleteWeapon.Enabled = !objGear.IncludedInParent;
+                        await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
 
                         // gpbWeaponsCommon
-                        lblWeaponName.Text = objGear.CurrentDisplayNameShort;
-                        lblWeaponCategory.Text = objGear.DisplayCategory(GlobalSettings.Language);
+                        await lblWeaponName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
+                        await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
                         int intGearMaxRatingValue = objGear.MaxRatingValue;
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                         {
-                            lblWeaponRatingLabel.Visible = true;
-                            lblWeaponRating.Visible = true;
-                            lblWeaponRating.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                            });
                         }
                         else
                         {
-                            lblWeaponRatingLabel.Visible = false;
-                            lblWeaponRating.Visible = false;
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        lblWeaponCapacityLabel.Visible = true;
-                        lblWeaponCapacity.Visible = true;
-                        lblWeaponCapacity.Text = objGear.DisplayCapacity;
-                        lblWeaponAvail.Text = objGear.DisplayTotalAvail;
-                        lblWeaponCost.Text = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        lblWeaponSlotsLabel.Visible = false;
-                        lblWeaponSlots.Visible = false;
-                        lblWeaponConcealLabel.Visible = false;
-                        lblWeaponConceal.Visible = false;
-                        chkWeaponEquipped.Text = await LanguageManager.GetStringAsync("Checkbox_Equipped");
-                        chkWeaponEquipped.Enabled = !objGear.IncludedInParent;
-                        chkWeaponEquipped.Checked = objGear.Equipped;
-                        chkIncludedInWeapon.Visible = false;
+
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponCapacity.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objGear.DisplayCapacity;
+                        });
+                        await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
+                        await lblWeaponCost.DoThreadSafeAsync(x => x.Text
+                                                                  = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                      GlobalSettings.CultureInfo) + '¥');
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponConceal.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkWeaponEquipped.DoThreadSafeAsync(async x =>
+                        {
+                            x.Text = await LanguageManager.GetStringAsync(
+                                "Checkbox_Equipped");
+                            x.Enabled = !objGear.IncludedInParent;
+                            x.Checked = objGear.Equipped;
+                        });
+                        await chkIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
 
                         // gpbWeaponsMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                        lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                        await objGear.RefreshMatrixAttributeComboBoxesAsync(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+                        await lblWeaponDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                        await objGear.RefreshMatrixAttributeComboBoxesAsync(
+                            cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing,
+                            cboWeaponGearFirewall);
 
-                        chkWeaponActiveCommlink.Visible = objGear.IsCommlink;
-                        chkWeaponActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = objGear.IsCommlink;
+                            x.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        });
                         if (CharacterObject.IsAI)
                         {
-                            chkWeaponHomeNode.Visible = true;
-                            chkWeaponHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                            chkWeaponHomeNode.Enabled = chkWeaponActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = true;
+                                x.Checked = objGear.IsHomeNode(CharacterObject);
+                                x.Enabled = objGear.IsCommlink
+                                            && objGear.GetTotalMatrixAttribute("Program Limit")
+                                            >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                            });
                         }
                         else
-                            chkWeaponHomeNode.Visible = false;
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false);
 
                         if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
                         {
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstOverclocker))
                             {
-                                lstOverclocker.Add(new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                                lstOverclocker.Add(new ListItem("Attack", await LanguageManager.GetStringAsync("String_Attack")));
-                                lstOverclocker.Add(new ListItem("Sleaze", await LanguageManager.GetStringAsync("String_Sleaze")));
+                                lstOverclocker.Add(
+                                    new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
+                                lstOverclocker.Add(
+                                    new ListItem("Attack", await LanguageManager.GetStringAsync("String_Attack")));
+                                lstOverclocker.Add(
+                                    new ListItem("Sleaze", await LanguageManager.GetStringAsync("String_Sleaze")));
                                 lstOverclocker.Add(new ListItem("Data Processing",
-                                                                await LanguageManager.GetStringAsync("String_DataProcessing")));
+                                                                await LanguageManager.GetStringAsync(
+                                                                    "String_DataProcessing")));
                                 lstOverclocker.Add(
                                     new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
-                                
+
                                 await cboWeaponOverclocker.PopulateWithListItemsAsync(lstOverclocker);
-                                cboWeaponOverclocker.SelectedValue = objGear.Overclocked;
-                                if (cboWeaponOverclocker.SelectedIndex == -1)
-                                    cboWeaponOverclocker.SelectedIndex = 0;
+                                await cboWeaponOverclocker.DoThreadSafeAsync(x =>
+                                {
+                                    x.SelectedValue = objGear.Overclocked;
+                                    if (x.SelectedIndex == -1)
+                                        x.SelectedIndex = 0;
+                                });
                             }
 
-                            cboWeaponOverclocker.Visible = true;
-                            lblWeaponOverclockerLabel.Visible = true;
+                            await cboWeaponOverclocker.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponOverclockerLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
                         else
                         {
-                            cboWeaponOverclocker.Visible = false;
-                            lblWeaponOverclockerLabel.Visible = false;
+                            await cboWeaponOverclocker.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
                         }
+
                         break;
                     }
-                default:
-                    gpbWeaponsCommon.Visible = false;
-                    gpbWeaponsWeapon.Visible = false;
-                    gpbWeaponsMatrix.Visible = false;
+                    default:
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
-                    // Buttons
-                    cmdDeleteWeapon.Enabled = false;
-                    break;
+                        // Buttons
+                        await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = false);
+                        break;
+                }
+
+                if (objSelectedNodeTag is IHasMatrixAttributes objMatrixCM)
+                {
+                    await tabWeaponCM.DoThreadSafeAsync(x => x.Visible = true);
+                    await ProcessEquipmentConditionMonitorBoxDisplays(panWeaponMatrixCM, objMatrixCM.MatrixCM,
+                                                                      objMatrixCM.MatrixCMFilled);
+                }
+                else
+                    await tabWeaponCM.DoThreadSafeAsync(x => x.Visible = false);
+
+                await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = objSelectedNodeTag is IHasMatrixAttributes ||
+                                                                          objSelectedNodeTag is IHasWirelessBonus);
             }
-
-            if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objMatrixCM)
+            finally
             {
-                tabWeaponCM.Visible = true;
-                await ProcessEquipmentConditionMonitorBoxDisplays(panWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
+                await flpWeapons.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-            else
-                tabWeaponCM.Visible = false;
-
-            gpbWeaponsMatrix.Visible = treWeapons.SelectedNode.Tag is IHasMatrixAttributes ||
-                                       treWeapons.SelectedNode.Tag is IHasWirelessBonus;
-
-            IsRefreshing = false;
-            flpWeapons.ResumeLayout();
         }
 
         /// <summary>
@@ -14726,346 +14889,406 @@ namespace Chummer
         private async Task RefreshSelectedArmor()
         {
             IsRefreshing = true;
-            flpArmor.SuspendLayout();
-
-            if (treArmor.SelectedNode == null)
+            await flpArmor.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbArmorCommon.Visible = false;
-                gpbArmorMatrix.Visible = false;
-                gpbArmorLocation.Visible = false;
-
-                // Buttons
-                cmdDeleteArmor.Enabled = treArmor.SelectedNode?.Tag is ICanRemove;
-
-                IsRefreshing = false;
-                flpArmor.ResumeLayout();
-                return;
-            }
-
-            if (treArmor.SelectedNode?.Tag is IHasWirelessBonus objHasWirelessBonus)
-            {
-                chkArmorWireless.Visible = true;
-                chkArmorWireless.Checked = objHasWirelessBonus.WirelessOn;
-            }
-            else
-                chkArmorWireless.Visible = false;
-
-            if (treArmor.SelectedNode?.Tag is IHasSource objSelected)
-            {
-                lblArmorSourceLabel.Visible = true;
-                lblArmorSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblArmorSource);
-            }
-            else
-            {
-                lblArmorSourceLabel.Visible = false;
-                lblArmorSource.Visible = false;
-            }
-
-            if (treArmor.SelectedNode?.Tag is IHasRating objHasRating)
-            {
-                lblArmorRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
-
-            if (treArmor.SelectedNode?.Tag is Armor objArmor)
-            {
-                gpbArmorCommon.Visible = true;
-                gpbArmorLocation.Visible = false;
-
-                // Buttons
-                cmdDeleteArmor.Enabled = true;
-
-                // gpbArmorCommon
-                lblArmorValueLabel.Visible = true;
-                flpArmorValue.Visible = true;
-                lblArmorValue.Text = objArmor.DisplayArmorValue;
-                cmdArmorIncrease.Visible = true;
-                cmdArmorIncrease.Enabled = objArmor.ArmorDamage < objArmor.TotalArmor &&
-                                           objArmor.ArmorDamage < (string.IsNullOrEmpty(objArmor.ArmorOverrideValue) ? int.MaxValue : objArmor.TotalOverrideArmor);
-                cmdArmorDecrease.Visible = true;
-                cmdArmorDecrease.Enabled = objArmor.ArmorDamage > 0;
-                lblArmorAvail.Text = objArmor.DisplayTotalAvail;
-                lblArmorCapacity.Text = objArmor.DisplayCapacity;
-                lblArmorRatingLabel.Visible = false;
-                lblArmorRating.Visible = false;
-                lblArmorCost.Text = objArmor.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                chkArmorEquipped.Visible = true;
-                chkArmorEquipped.Checked = objArmor.Equipped;
-                chkArmorEquipped.Enabled = true;
-                chkIncludedInArmor.Visible = false;
-            }
-            else
-            {
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
+                object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null)
                 {
-                    gpbArmorCommon.Visible = true;
-                    gpbArmorLocation.Visible = false;
+                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    cmdDeleteArmor.Enabled = !objArmorMod.IncludedInArmor;
+                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
+                    return;
+                }
 
-                    // gpbArmorCommon
-                    if (objArmorMod.Armor != 0)
+                if (objSelectedNodeTag is IHasWirelessBonus objHasWirelessBonus)
+                {
+                    await chkArmorWireless.DoThreadSafeAsync(x =>
                     {
-                        lblArmorValueLabel.Visible = true;
-                        flpArmorValue.Visible = true;
-                        lblArmorValue.Text = objArmorMod.Armor.ToString("+0;-0;0", GlobalSettings.CultureInfo);
-                    }
-                    else
-                    {
-                        lblArmorValueLabel.Visible = false;
-                        flpArmorValue.Visible = false;
-                    }
+                        x.Visible = true;
+                        x.Checked = objHasWirelessBonus.WirelessOn;
+                    });
+                }
+                else
+                    await chkArmorWireless.DoThreadSafeAsync(x => x.Visible = false);
 
-                    cmdArmorIncrease.Visible = false;
-                    cmdArmorDecrease.Visible = false;
-                    lblArmorAvail.Text = objArmorMod.DisplayTotalAvail;
-                    lblArmorCapacity.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
-                        ? "[0]"
-                        : objArmorMod.CalculatedCapacity;
-                    if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
-                        lblArmorCapacity.Text = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '('
-                                                +
-                                                objArmorMod.GearCapacityRemaining.ToString(
-                                                    "#,0.##", GlobalSettings.CultureInfo) +
-                                                strSpace + await LanguageManager.GetStringAsync("String_Remaining") + ')';
-                    if (objArmorMod.MaximumRating > 1)
-                    {
-                        lblArmorRatingLabel.Visible = true;
-                        lblArmorRating.Visible = true;
-                        lblArmorRating.Text = objArmorMod.Rating.ToString(GlobalSettings.CultureInfo);
-                    }
-                    else
-                    {
-                        lblArmorRatingLabel.Visible = false;
-                        lblArmorRating.Visible = false;
-                    }
-
-                    lblArmorCost.Text
-                        = objArmorMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                         GlobalSettings.CultureInfo) + '¥';
-                    chkArmorEquipped.Visible = true;
-                    chkArmorEquipped.Checked = objArmorMod.Equipped;
-                    chkArmorEquipped.Enabled = true;
-                    chkIncludedInArmor.Visible = true;
-                    chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
+                if (objSelectedNodeTag is IHasSource objSelected)
+                {
+                    await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblArmorSource);
                 }
                 else
                 {
-                    switch (treArmor.SelectedNode?.Tag)
+                    await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblArmorSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (objSelectedNodeTag is IHasRating objHasRating)
+                {
+                    await lblArmorRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(GlobalSettings.CultureInfo,
+                                                         await LanguageManager.GetStringAsync("Label_RatingFormat"),
+                                                         await LanguageManager.GetStringAsync(
+                                                             objHasRating.RatingLabel)));
+                }
+
+                if (objSelectedNodeTag is Armor objArmor)
+                {
+                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
+                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+
+                    // Buttons
+                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = true);
+
+                    // gpbArmorCommon
+                    await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await flpArmorValue.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorValue.DoThreadSafeAsync(x => x.Text = objArmor.DisplayArmorValue);
+                    await cmdArmorIncrease.DoThreadSafeAsync(x =>
                     {
-                        case Gear objSelectedGear:
+                        x.Visible = true;
+                        x.Enabled = objArmor.ArmorDamage < objArmor.TotalArmor &&
+                                    objArmor.ArmorDamage < (string.IsNullOrEmpty(objArmor.ArmorOverrideValue)
+                                        ? int.MaxValue
+                                        : objArmor.TotalOverrideArmor);
+                    });
+                    await cmdArmorDecrease.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Enabled = objArmor.ArmorDamage > 0;
+                    });
+                    await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmor.DisplayTotalAvail);
+                    await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objArmor.DisplayCapacity);
+                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblArmorCost.DoThreadSafeAsync(x => x.Text
+                                                             = objArmor.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
+                                                               + '¥');
+                    await chkArmorEquipped.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Checked = objArmor.Equipped;
+                        x.Enabled = true;
+                    });
+                    await chkIncludedInArmor.DoThreadSafeAsync(x => x.Visible = false);
+                }
+                else
+                {
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
+                    if (objSelectedNodeTag is ArmorMod objArmorMod)
+                    {
+                        await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+
+                        // Buttons
+                        await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = !objArmorMod.IncludedInArmor);
+
+                        // gpbArmorCommon
+                        if (objArmorMod.Armor != 0)
                         {
-                            gpbArmorCommon.Visible = true;
-                            gpbArmorLocation.Visible = false;
-
-                            // Buttons
-                            cmdDeleteArmor.Enabled = !objSelectedGear.IncludedInParent;
-
-                            // gpbArmorCommon
-                            lblArmorValueLabel.Visible = false;
-                            flpArmorValue.Visible = false;
-                            lblArmorAvail.Text = objSelectedGear.DisplayTotalAvail;
-                            CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
-                                                                out objArmorMod);
-                            if (objArmorMod != null)
-                                lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
-                            else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
-                                lblArmorCapacity.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']';
-                            else
-                                lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-                            int intMaxRatingValue = objSelectedGear.MaxRatingValue;
-                            if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
-                            {
-                                lblArmorRatingLabel.Visible = true;
-                                lblArmorRating.Visible = true;
-                                lblArmorRating.Text = objSelectedGear.Rating.ToString(GlobalSettings.CultureInfo);
-                            }
-                            else
-                            {
-                                lblArmorRatingLabel.Visible = false;
-                                lblArmorRating.Visible = false;
-                            }
-
-                            lblArmorCost.Text
-                                = objSelectedGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo) + '¥';
-                            chkArmorEquipped.Visible = true;
-                            chkArmorEquipped.Checked = objSelectedGear.Equipped;
-                            chkArmorEquipped.Enabled = true;
-                            chkIncludedInArmor.Visible = true;
-                            chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
-
-                            break;
+                            await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await flpArmorValue.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblArmorValue.DoThreadSafeAsync(x => x.Text = objArmorMod.Armor.ToString("+0;-0;0", GlobalSettings.CultureInfo));
                         }
-                        case Location objLocation:
+                        else
                         {
-                            gpbArmorCommon.Visible = false;
-                            gpbArmorLocation.Visible = true;
-
-                            // Buttons
-                            cmdDeleteArmor.Enabled = true;
-
-                            // gpbArmorLocation
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdArmorEquipped))
-                            {
-                                foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
-                                             objLoopArmor =>
-                                                 objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
-                                {
-                                    sbdArmorEquipped
-                                        .Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
-                                        .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
-                                }
-
-                                if (sbdArmorEquipped.Length > 0)
-                                {
-                                    --sbdArmorEquipped.Length;
-                                    lblArmorEquipped.Text = sbdArmorEquipped.ToString();
-                                }
-                                else
-                                    lblArmorEquipped.Text = await LanguageManager.GetStringAsync("String_None");
-                            }
-
-                            break;
+                            await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await flpArmorValue.DoThreadSafeAsync(x => x.Visible = false);
                         }
-                        default:
+
+                        await cmdArmorIncrease.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdArmorDecrease.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmorMod.DisplayTotalAvail);
+                        await lblArmorCapacity.DoThreadSafeAsync(async x =>
                         {
-                            if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+                            x.Text = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
+                                ? "[0]"
+                                : objArmorMod.CalculatedCapacity;
+                            if (!string.IsNullOrEmpty(objArmorMod.GearCapacity))
+                                x.Text
+                                    = objArmorMod.GearCapacity + '/' + lblArmorCapacity.Text + strSpace + '('
+                                      +
+                                      objArmorMod.GearCapacityRemaining.ToString(
+                                          "#,0.##", GlobalSettings.CultureInfo) +
+                                      strSpace + await LanguageManager.GetStringAsync("String_Remaining") + ')';
+                        });
+                        if (objArmorMod.MaximumRating > 1)
+                        {
+                            await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblArmorRating.DoThreadSafeAsync(x =>
                             {
-                                gpbArmorCommon.Visible = false;
-                                gpbArmorMatrix.Visible = false;
-                                gpbArmorLocation.Visible = true;
+                                x.Visible = true;
+                                x.Text = objArmorMod.Rating.ToString(GlobalSettings.CultureInfo);
+                            });
+                        }
+                        else
+                        {
+                            await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                        }
+
+                        await lblArmorCost.DoThreadSafeAsync(x => x.Text
+                                                                 = objArmorMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                     GlobalSettings.CultureInfo) + '¥');
+                        await chkArmorEquipped.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objArmorMod.Equipped;
+                            x.Enabled = true;
+                        });
+                        await chkIncludedInArmor.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objArmorMod.IncludedInArmor;
+                        });
+                    }
+                    else
+                    {
+                        switch (objSelectedNodeTag)
+                        {
+                            case Gear objSelectedGear:
+                            {
+                                await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
+                                await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
 
                                 // Buttons
-                                cmdDeleteArmor.Enabled = false;
+                                await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = !objSelectedGear.IncludedInParent);
 
+                                // gpbArmorCommon
+                                await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await flpArmorValue.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objSelectedGear.DisplayTotalAvail);
+                                CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
+                                                                    out objArmorMod);
+                                if (objArmorMod != null)
+                                    await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objSelectedGear.CalculatedCapacity);
+                                else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
+                                    await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']');
+                                else
+                                    await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objSelectedGear.CalculatedArmorCapacity);
+                                int intMaxRatingValue = objSelectedGear.MaxRatingValue;
+                                if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
+                                {
+                                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                    await lblArmorRating.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Visible = true;
+                                        x.Text = objSelectedGear.Rating.ToString(GlobalSettings.CultureInfo);
+                                    });
+                                }
+                                else
+                                {
+                                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                    await lblArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                                }
+
+                                await lblArmorCost.DoThreadSafeAsync(x => x.Text
+                                                                         = objSelectedGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                             GlobalSettings.CultureInfo) + '¥');
+                                await chkArmorEquipped.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Checked = objSelectedGear.Equipped;
+                                    x.Enabled = true;
+                                });
+                                await chkIncludedInArmor.DoThreadSafeAsync(x =>
+                                {
+                                    x.Visible = true;
+                                    x.Checked = objSelectedGear.IncludedInParent;
+                                });
+                                break;
+                            }
+                            case Location objLocation:
+                            {
+                                await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
+                                await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true);
+
+                                // Buttons
+                                await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = true);
+
+                                // gpbArmorLocation
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdArmorEquipped))
                                 {
                                     foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
                                                  objLoopArmor =>
-                                                     objLoopArmor.Equipped && objLoopArmor.Location == null))
+                                                     objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                                     {
-                                        sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
-                                                        .Append('(').Append(objLoopArmor.DisplayArmorValue)
-                                                        .AppendLine(')');
+                                        sbdArmorEquipped
+                                            .Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
+                                            .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                                     }
 
                                     if (sbdArmorEquipped.Length > 0)
                                     {
                                         --sbdArmorEquipped.Length;
-                                        lblArmorEquipped.Text = sbdArmorEquipped.ToString();
+                                        await lblArmorEquipped.DoThreadSafeAsync(x => x.Text = sbdArmorEquipped.ToString());
                                     }
                                     else
-                                        lblArmorEquipped.Text = await LanguageManager.GetStringAsync("String_None");
+                                        await lblArmorEquipped.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
                                 }
+
+                                break;
                             }
-                            else
+                            default:
                             {
-                                gpbArmorCommon.Visible = false;
-                                gpbArmorMatrix.Visible = false;
-                                gpbArmorLocation.Visible = false;
+                                if (objSelectedNodeTag.ToString() == "Node_SelectedArmor")
+                                {
+                                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true);
 
-                                // Buttons
-                                cmdDeleteArmor.Enabled = false;
+                                    // Buttons
+                                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
+
+                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdArmorEquipped))
+                                    {
+                                        foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
+                                                     objLoopArmor =>
+                                                         objLoopArmor.Equipped && objLoopArmor.Location == null))
+                                        {
+                                            sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
+                                                            .Append('(').Append(objLoopArmor.DisplayArmorValue)
+                                                            .AppendLine(')');
+                                        }
+
+                                        if (sbdArmorEquipped.Length > 0)
+                                        {
+                                            --sbdArmorEquipped.Length;
+                                            await lblArmorEquipped.DoThreadSafeAsync(x => x.Text = sbdArmorEquipped.ToString());
+                                        }
+                                        else
+                                            await lblArmorEquipped.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
+                                    }
+                                }
+                                else
+                                {
+                                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+
+                                    // Buttons
+                                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
+                                }
+
+                                break;
                             }
-
-                            break;
                         }
                     }
                 }
-            }
 
-            if (treArmor.SelectedNode.Tag is IHasMatrixAttributes objHasMatrixAttributes)
-            {
-                int intDeviceRating = objHasMatrixAttributes.GetTotalMatrixAttribute("Device Rating");
-                lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                await objHasMatrixAttributes.RefreshMatrixAttributeComboBoxesAsync(cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall);
-                if (CharacterObject.IsAI)
+                if (objSelectedNodeTag is IHasMatrixAttributes objHasMatrixAttributes)
                 {
-                    chkArmorHomeNode.Visible = true;
-                    chkArmorHomeNode.Checked = objHasMatrixAttributes.IsHomeNode(CharacterObject);
-                    chkArmorHomeNode.Enabled = chkArmorActiveCommlink.Enabled &&
-                                               objHasMatrixAttributes.GetTotalMatrixAttribute("Program Limit") >=
-                                              (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                }
-                else
-                    chkArmorHomeNode.Visible = false;
-                chkArmorActiveCommlink.Checked = objHasMatrixAttributes.IsActiveCommlink(CharacterObject);
-                chkArmorActiveCommlink.Visible = objHasMatrixAttributes.IsCommlink;
-                if (CharacterObject.Overclocker && objHasMatrixAttributes is Gear objGear && objGear.Category == "Cyberdecks")
-                {
-                    using (new FetchSafelyFromPool<List<ListItem>>(
-                               Utils.ListItemListPool, out List<ListItem> lstOverclocker))
+                    int intDeviceRating = objHasMatrixAttributes.GetTotalMatrixAttribute("Device Rating");
+                    await lblArmorDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                    await objHasMatrixAttributes.RefreshMatrixAttributeComboBoxesAsync(
+                        cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall);
+                    if (CharacterObject.IsAI)
                     {
-                        lstOverclocker.Add(new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                        lstOverclocker.Add(new ListItem("Attack", await LanguageManager.GetStringAsync("String_Attack")));
-                        lstOverclocker.Add(new ListItem("Sleaze", await LanguageManager.GetStringAsync("String_Sleaze")));
-                        lstOverclocker.Add(new ListItem("Data Processing",
-                                                        await LanguageManager.GetStringAsync("String_DataProcessing")));
-                        lstOverclocker.Add(new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
-                        
-                        await cboArmorOverclocker.PopulateWithListItemsAsync(lstOverclocker);
-                        cboArmorOverclocker.SelectedValue = objHasMatrixAttributes.Overclocked;
-                        if (cboArmorOverclocker.SelectedIndex == -1)
-                            cboArmorOverclocker.SelectedIndex = 0;
+                        await chkArmorHomeNode.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objHasMatrixAttributes.IsHomeNode(CharacterObject);
+                            x.Enabled = objHasMatrixAttributes.IsCommlink &&
+                                        objHasMatrixAttributes.GetTotalMatrixAttribute("Program Limit") >=
+                                        (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        });
+                    }
+                    else
+                        await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+
+                    await chkArmorActiveCommlink.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = objHasMatrixAttributes.IsActiveCommlink(
+                            CharacterObject);
+                        x.Visible = objHasMatrixAttributes.IsCommlink;
+                    });
+                    if (CharacterObject.Overclocker && objHasMatrixAttributes is Gear objGear
+                                                    && objGear.Category == "Cyberdecks")
+                    {
+                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                   Utils.ListItemListPool, out List<ListItem> lstOverclocker))
+                        {
+                            lstOverclocker.Add(
+                                new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
+                            lstOverclocker.Add(
+                                new ListItem("Attack", await LanguageManager.GetStringAsync("String_Attack")));
+                            lstOverclocker.Add(
+                                new ListItem("Sleaze", await LanguageManager.GetStringAsync("String_Sleaze")));
+                            lstOverclocker.Add(new ListItem("Data Processing",
+                                                            await LanguageManager.GetStringAsync(
+                                                                "String_DataProcessing")));
+                            lstOverclocker.Add(
+                                new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
+
+                            await cboArmorOverclocker.PopulateWithListItemsAsync(lstOverclocker);
+                            await cboArmorOverclocker.DoThreadSafeAsync(x =>
+                            {
+                                x.SelectedValue = objHasMatrixAttributes.Overclocked;
+                                if (x.SelectedIndex == -1)
+                                    x.SelectedIndex = 0;
+                            });
+                        }
+
+                        await cboArmorOverclocker.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblArmorOverclockerLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    }
+                    else
+                    {
+                        await cboArmorOverclocker.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
                     }
 
-                    cboArmorOverclocker.Visible = true;
-                    lblArmorOverclockerLabel.Visible = true;
+                    await tabArmorCM.DoThreadSafeAsync(x => x.Visible = true);
+                    await ProcessEquipmentConditionMonitorBoxDisplays(panArmorMatrixCM, objHasMatrixAttributes.MatrixCM,
+                                                                      objHasMatrixAttributes.MatrixCMFilled);
+                    await lblArmorDeviceRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorDeviceRating.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorAttackLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorSleazeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorDataProcessingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorFirewallLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboArmorAttack.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboArmorSleaze.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboArmorDataProcessing.DoThreadSafeAsync(x => x.Visible = true);
+                    await cboArmorFirewall.DoThreadSafeAsync(x => x.Visible = true);
+                    await chkArmorWireless.DoThreadSafeAsync(x => x.Visible = objSelectedNodeTag is IHasWirelessBonus);
+                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true);
                 }
                 else
                 {
-                    cboArmorOverclocker.Visible = false;
-                    lblArmorOverclockerLabel.Visible = false;
+                    await tabArmorCM.DoThreadSafeAsync(x => x.Visible = false);
+                    if (objSelectedNodeTag is IHasWirelessBonus)
+                    {
+                        await cboArmorOverclocker.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorDeviceRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorDeviceRating.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorAttackLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorSleazeLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorDataProcessingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblArmorFirewallLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await cboArmorAttack.DoThreadSafeAsync(x => x.Visible = false);
+                        await cboArmorSleaze.DoThreadSafeAsync(x => x.Visible = false);
+                        await cboArmorDataProcessing.DoThreadSafeAsync(x => x.Visible = false);
+                        await cboArmorFirewall.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkArmorWireless.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                    }
+                    else
+                        await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
-                tabArmorCM.Visible = true;
-                await ProcessEquipmentConditionMonitorBoxDisplays(panArmorMatrixCM, objHasMatrixAttributes.MatrixCM, objHasMatrixAttributes.MatrixCMFilled);
-                lblArmorDeviceRatingLabel.Visible = true;
-                lblArmorDeviceRating.Visible = true;
-                lblArmorAttackLabel.Visible = true;
-                lblArmorSleazeLabel.Visible = true;
-                lblArmorDataProcessingLabel.Visible = true;
-                lblArmorFirewallLabel.Visible = true;
-                cboArmorAttack.Visible = true;
-                cboArmorSleaze.Visible = true;
-                cboArmorDataProcessing.Visible = true;
-                cboArmorFirewall.Visible = true;
-                chkArmorWireless.Visible = treArmor.SelectedNode.Tag is IHasWirelessBonus;
-                gpbArmorMatrix.Visible = true;
             }
-            else
+            finally
             {
-                tabArmorCM.Visible = false;
-                if (treArmor.SelectedNode.Tag is IHasWirelessBonus)
-                {
-                    cboArmorOverclocker.Visible = false;
-                    lblArmorOverclockerLabel.Visible = false;
-                    chkArmorHomeNode.Visible = false;
-                    lblArmorDeviceRatingLabel.Visible = false;
-                    lblArmorDeviceRating.Visible = false;
-                    lblArmorAttackLabel.Visible = false;
-                    lblArmorSleazeLabel.Visible = false;
-                    lblArmorDataProcessingLabel.Visible = false;
-                    lblArmorFirewallLabel.Visible = false;
-                    cboArmorAttack.Visible = false;
-                    cboArmorSleaze.Visible = false;
-                    cboArmorDataProcessing.Visible = false;
-                    cboArmorFirewall.Visible = false;
-                    chkArmorWireless.Visible = true;
-                    gpbArmorMatrix.Visible = true;
-                }
-                else
-                    gpbArmorMatrix.Visible = false;
+                await flpArmor.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-
-            IsRefreshing = false;
-            flpArmor.ResumeLayout();
         }
 
         /// <summary>
@@ -15077,18 +15300,19 @@ namespace Chummer
             await flpGear.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0))
+                object objSelectedNodeTag = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0))
                 {
                     await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
                     await tabGearCM.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteGear.DoThreadSafeAsync(async x => x.Enabled = await treGear.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
 
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasWirelessBonus objHasWirelessBonus)
+                if (objSelectedNodeTag is IHasWirelessBonus objHasWirelessBonus)
                 {
                     await chkGearWireless.DoThreadSafeAsync(x =>
                     {
@@ -15099,7 +15323,7 @@ namespace Chummer
                 else
                     await chkGearWireless.DoThreadSafeAsync(x => x.Visible = false);
 
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblGearSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -15111,7 +15335,7 @@ namespace Chummer
                     await lblGearSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblGearRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
                                                                    GlobalSettings.CultureInfo,
@@ -15121,7 +15345,7 @@ namespace Chummer
                                                                        objHasRating.RatingLabel)));
                 }
 
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear)
+                if (objSelectedNodeTag is Gear objGear)
                 {
                     await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = true);
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = true);
@@ -15211,11 +15435,11 @@ namespace Chummer
                                                                         cboGearDataProcessing, cboGearFirewall);
                     if (CharacterObject.IsAI)
                     {
-                        await chkGearHomeNode.DoThreadSafeAsync(async x =>
+                        await chkGearHomeNode.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Checked = objGear.IsHomeNode(CharacterObject);
-                            x.Enabled = await chkGearActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                            x.Enabled = objGear.IsCommlink &&
                                         objGear.GetTotalMatrixAttribute("Program Limit") >=
                                         (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
                         });
@@ -15275,7 +15499,7 @@ namespace Chummer
                     await tabGearCM.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteGear.DoThreadSafeAsync(async x => x.Enabled = await treGear.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
             }
             finally
@@ -16160,11 +16384,12 @@ namespace Chummer
             await flpLifestyleDetails.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0)
-                                                       || !(await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Lifestyle objLifestyle))
+                object objSelectedNodeTag = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0)
+                                               || !(objSelectedNodeTag is Lifestyle objLifestyle))
                 {
                     await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdDeleteLifestyle.DoThreadSafeAsync(async x => x.Enabled = await treLifestyles.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
 
@@ -16308,9 +16533,8 @@ namespace Chummer
             IsRefreshing = true;
             flpVehicles.SuspendLayout();
 
-            string strSelectedId = treVehicles.SelectedNode?.Tag.ToString();
-
-            if (treVehicles.SelectedNode == null || treVehicles.SelectedNode.Level <= 0 || strSelectedId == "String_WeaponMounts")
+            object objSelectedNodeTag = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+            if (objSelectedNodeTag == null || treVehicles.SelectedNode.Level <= 0 || objSelectedNodeTag.ToString() == "String_WeaponMounts")
             {
                 panVehicleCM.Visible = false;
                 gpbVehiclesCommon.Visible = false;
@@ -16319,7 +16543,7 @@ namespace Chummer
                 gpbVehiclesMatrix.Visible = false;
 
                 // Buttons
-                cmdDeleteVehicle.Enabled = treVehicles.SelectedNode?.Tag is ICanRemove;
+                cmdDeleteVehicle.Enabled = objSelectedNodeTag is ICanRemove;
 
                 IsRefreshing = false;
                 flpVehicles.ResumeLayout();
@@ -16328,13 +16552,13 @@ namespace Chummer
 
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
 
-            if (treVehicles.SelectedNode?.Tag is IHasRating objHasRating)
+            if (objSelectedNodeTag is IHasRating objHasRating)
             {
                 lblVehicleRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
                     await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
             }
 
-            if (treVehicles.SelectedNode?.Tag is IHasSource objSelected)
+            if (objSelectedNodeTag is IHasSource objSelected)
             {
                 lblVehicleSourceLabel.Visible = true;
                 lblVehicleSource.Visible = true;
@@ -16346,7 +16570,7 @@ namespace Chummer
                 lblVehicleSource.Visible = false;
             }
 
-            switch (treVehicles.SelectedNode?.Tag)
+            switch (objSelectedNodeTag)
             {
                 // Locate the selected Vehicle.
                 case Vehicle objVehicle:
@@ -17066,20 +17290,20 @@ namespace Chummer
                     break;
             }
 
-            panVehicleCM.Visible = treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor ||
-                                   treVehicles.SelectedNode?.Tag is IHasMatrixAttributes;
+            panVehicleCM.Visible = objSelectedNodeTag is IHasPhysicalConditionMonitor ||
+                                   objSelectedNodeTag is IHasMatrixAttributes;
 
             gpbVehiclesMatrix.Visible = treVehicles.SelectedNode.Tag is IHasMatrixAttributes ||
                                         treVehicles.SelectedNode.Tag is IHasWirelessBonus;
 
             if (panVehicleCM.Visible)
             {
-                if (treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor objCM)
+                if (objSelectedNodeTag is IHasPhysicalConditionMonitor objCM)
                 {
                     await ProcessEquipmentConditionMonitorBoxDisplays(panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
                 }
 
-                if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objMatrixCM)
+                if (objSelectedNodeTag is IHasMatrixAttributes objMatrixCM)
                 {
                     await ProcessEquipmentConditionMonitorBoxDisplays(panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }
@@ -17461,8 +17685,8 @@ namespace Chummer
             await gpbMagicianSpell.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0)
-                    && await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Spell objSpell)
+                object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is Spell objSpell && await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0))
                 {
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = true);
                     await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSpell.Grade == 0);
@@ -17494,9 +17718,7 @@ namespace Chummer
                 else
                 {
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdDeleteSpell.DoThreadSafeAsync(async x => x.Enabled
-                                                              = await treSpells.DoThreadSafeFuncAsync(
-                                                                  y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
             }
             finally
@@ -17658,7 +17880,8 @@ namespace Chummer
             try
             {
                 // Locate the Program that is selected in the tree.
-                if (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ComplexForm objComplexForm)
+                object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is ComplexForm objComplexForm)
                 {
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true);
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0);
@@ -17677,7 +17900,7 @@ namespace Chummer
                 else
                 {
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdDeleteComplexForm.DoThreadSafeAsync(async x => x.Enabled = await treComplexForms.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
             }
             finally
