@@ -277,19 +277,21 @@ namespace Chummer.Tests
                                 frmCharacterForm.ShowInTaskbar = false;
                                 frmCharacterForm.WindowState = FormWindowState.Minimized;
                                 frmCharacterForm.Show();
-                                Utils.SafeSleep(true);
+                                Utils.DoEventsSafe(true);
                                 while (frmCharacterForm.IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                 {
                                     Utils.SafeSleep(true);
                                 }
+                                /*
                                 frmCharacterForm.Close();
                                 Utils.SafeSleep(true);
                                 while (frmCharacterForm.IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                 {
                                     Utils.SafeSleep(true);
                                 }
+                                */
                             }
-                            Utils.SafeSleep(true);
+                            Utils.DoEventsSafe(true);
                         }
                         catch (Exception e)
                         {

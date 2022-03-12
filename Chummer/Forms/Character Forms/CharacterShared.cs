@@ -52,7 +52,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnIsDirty;
         private int _intRefreshingCount;
-        private bool _blnLoading = true;
+        private int _intLoadingCount = 1;
         private CharacterSheetViewer _frmPrintView;
         private readonly FileSystemWatcher _objCharacterFileWatcher;
 
@@ -6845,20 +6845,18 @@ namespace Chummer
 
         public bool IsLoading
         {
-            get => _blnLoading;
-            set => _blnLoading = value;
-            /*
+            get => _intLoadingCount > 0;
+            set
             {
-                if (_blnLoading != value)
+                if (value)
+                    Interlocked.Increment(ref _intLoadingCount);
+                else
                 {
-                    _blnLoading = value;
-                    if (value)
-                        SuspendLayout();
-                    else if (!IsRefreshing)
-                        ResumeLayout();
+                    int intCurrentLoadingCount = Interlocked.Decrement(ref _intLoadingCount);
+                    if (intCurrentLoadingCount < 0)
+                        Interlocked.CompareExchange(ref _intLoadingCount, 0, intCurrentLoadingCount);
                 }
             }
-            */
         }
 
         public void MakeDirtyWithCharacterUpdate(object sender, NotifyCollectionChangedEventArgs e)
@@ -6931,17 +6929,22 @@ namespace Chummer
                     _objUpdateCharacterInfoCancellationTokenSource.Dispose();
                 }
                 _objUpdateCharacterInfoCancellationTokenSource = new CancellationTokenSource();
-                _tskUpdateCharacterInfo = Task.Run(DoUpdateCharacterInfo, _objUpdateCharacterInfoCancellationTokenSource.Token);
+                _tskUpdateCharacterInfo
+                    = Task.Run(() => DoUpdateCharacterInfo(_objUpdateCharacterInfoCancellationTokenSource.Token),
+                               _objUpdateCharacterInfoCancellationTokenSource.Token);
             }
         }
 
         protected Task UpdateCharacterInfoTask => _tskUpdateCharacterInfo;
-        
+
+        protected CancellationTokenSource UpdateCharacterInfoCancellationTokenSource =>
+            _objUpdateCharacterInfoCancellationTokenSource;
+
         private Task _tskUpdateCharacterInfo = Task.CompletedTask;
 
         private CancellationTokenSource _objUpdateCharacterInfoCancellationTokenSource;
 
-        protected virtual Task DoUpdateCharacterInfo()
+        protected virtual Task DoUpdateCharacterInfo(CancellationToken token = default)
         {
             return Task.CompletedTask;
         }

@@ -870,7 +870,7 @@ namespace Chummer
                 strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
                              + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
             }
-            if (blnAddMarkerIfOpen && Program.MainForm?.OpenCharacterForms.Any(x => x.CharacterObject.FileName == FilePath) == true)
+            if (blnAddMarkerIfOpen && Program.MainForm?.OpenCharacterForms.Any(x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
                 strReturn = '*' + strSpace + strReturn;
             return strReturn;
         }
