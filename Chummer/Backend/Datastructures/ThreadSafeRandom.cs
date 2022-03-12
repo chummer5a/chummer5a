@@ -26,7 +26,7 @@ namespace Chummer
     /// <summary>
     /// Pairs Random with a lock object and overrides all of Random's methods with versions that engage the lock while the internal Random object is in use.
     /// </summary>
-    public class ThreadSafeRandom : Random
+    public class ThreadSafeRandom : Random, IDisposable
     {
         private readonly Random _objRandom;
         private readonly SemaphoreSlim _objLock = Utils.SemaphorePool.Get();
@@ -201,6 +201,12 @@ namespace Chummer
         protected override double Sample()
         {
             return NextDouble();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            Utils.SemaphorePool.Return(_objLock);
         }
     }
 }
