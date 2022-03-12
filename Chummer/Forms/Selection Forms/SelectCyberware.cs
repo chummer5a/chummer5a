@@ -764,13 +764,18 @@ namespace Chummer
                     else
                     {
                         strCost = await strCost.CheapReplaceAsync("Parent Cost", () => CyberwareParent?.Cost ?? "0")
-                            .CheapReplaceAsync("Parent Gear Cost",
-                                () => CyberwareParent?.GearChildren.Sum(x => x.TotalCost)
-                                    .ToString(GlobalSettings.InvariantCultureInfo) ?? "0")
-                            .CheapReplaceAsync("MinRating",
-                                () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo))
-                            .CheapReplaceAsync("Rating",
-                                () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                                               .CheapReplaceAsync("Parent Gear Cost",
+                                                                  async () => CyberwareParent != null
+                                                                      ? (await CyberwareParent.GearChildren
+                                                                          .SumParallelAsync(x => x.TotalCost))
+                                                                      .ToString(GlobalSettings.InvariantCultureInfo)
+                                                                      : "0")
+                                               .CheapReplaceAsync("MinRating",
+                                                                  () => nudRating.Minimum.ToString(
+                                                                      GlobalSettings.InvariantCultureInfo))
+                                               .CheapReplaceAsync("Rating",
+                                                                  () => nudRating.Value.ToString(
+                                                                      GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                         if (blnIsSuccess)

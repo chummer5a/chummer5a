@@ -10364,7 +10364,6 @@ namespace Chummer
         /// </summary>
         private async ValueTask<decimal> CalculateNuyen()
         {
-            object objDeductionsLock = new object();
             decimal decDeductions = 0;
             decimal decStolenDeductions = 0;
             decimal decStolenNuyenAllowance
@@ -10373,182 +10372,47 @@ namespace Chummer
             //If the character has the Stolen Gear quality or something similar, we need to handle the nuyen a little differently.
             if (decStolenNuyenAllowance != 0)
             {
-                object objStolenDeductionsLock = new object();
-                await Task.Run(() => Parallel.Invoke(
-                                   () =>
-                                   {
-                                       // Cyberware/Bioware cost.
-                                       decimal decTempStolen = 0;
-                                       decimal decTemp = 0;
-                                       foreach (Cyberware objCyberware in CharacterObject.Cyberware)
-                                       {
-                                           if (objCyberware.Stolen)
-                                               decTempStolen += objCyberware.StolenTotalCost;
-                                           else
-                                               decTemp += objCyberware.TotalCost;
-                                       }
-
-                                       lock (objStolenDeductionsLock)
-                                           decStolenDeductions += decTempStolen;
-                                       lock (objDeductionsLock)
-                                           // ReSharper disable once AccessToModifiedClosure
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Armor cost.
-                                       decimal decTempStolen = 0;
-                                       decimal decTemp = 0;
-                                       foreach (Armor objArmor in CharacterObject.Armor)
-                                       {
-                                           if (objArmor.Stolen)
-                                               decTempStolen += objArmor.StolenTotalCost;
-                                           else
-                                               decTemp += objArmor.TotalCost;
-                                       }
-
-                                       lock (objStolenDeductionsLock)
-                                           decStolenDeductions += decTempStolen;
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Weapon cost.
-                                       decimal decTempStolen = 0;
-                                       decimal decTemp = 0;
-                                       foreach (Weapon objWeapon in CharacterObject.Weapons)
-                                       {
-                                           if (objWeapon.Stolen)
-                                               decTempStolen += objWeapon.StolenTotalCost;
-                                           else
-                                               decTemp += objWeapon.TotalCost;
-                                       }
-
-                                       lock (objStolenDeductionsLock)
-                                           decStolenDeductions += decTempStolen;
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Gear cost.
-                                       decimal decTempStolen = 0;
-                                       decimal decTemp = 0;
-                                       foreach (Gear objGear in CharacterObject.Gear)
-                                       {
-                                           if (objGear.Stolen)
-                                               decTempStolen += objGear.StolenTotalCost;
-                                           else
-                                               decTemp += objGear.TotalCost;
-                                       }
-
-                                       lock (objStolenDeductionsLock)
-                                           decStolenDeductions += decTempStolen;
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Vehicle cost.
-                                       decimal decTempStolen = 0;
-                                       decimal decTemp = 0;
-                                       foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                                       {
-                                           if (objVehicle.Stolen)
-                                               decTempStolen += objVehicle.StolenTotalCost;
-                                           else
-                                               decTemp += objVehicle.TotalCost;
-                                       }
-
-                                       lock (objStolenDeductionsLock)
-                                           decStolenDeductions += decTempStolen;
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Drug cost.
-                                       decimal decTempStolen = 0;
-                                       decimal decTemp = 0;
-                                       foreach (Drug objDrug in CharacterObject.Drugs)
-                                       {
-                                           if (objDrug.Stolen)
-                                               decTempStolen += objDrug.StolenTotalCost;
-                                           else
-                                               decTemp += objDrug.TotalCost;
-                                       }
-
-                                       lock (objStolenDeductionsLock)
-                                           decStolenDeductions += decTempStolen;
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Lifestyle cost.
-                                       decimal decTemp = CharacterObject.Lifestyles.Sum(x => x.TotalCost);
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   }));
+                Task<decimal>[] atskCosts = {
+                    CharacterObject.Cyberware.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
+                    CharacterObject.Armor.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
+                    CharacterObject.Weapons.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
+                    CharacterObject.Gear.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
+                    CharacterObject.Vehicles.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
+                    CharacterObject.Drugs.SumParallelAsync(x => !x.Stolen, x => x.TotalCost),
+                    CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost)
+                };
+                Task<decimal>[] atskStolenTasksCosts = {
+                    CharacterObject.Cyberware.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
+                    CharacterObject.Armor.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
+                    CharacterObject.Weapons.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
+                    CharacterObject.Gear.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
+                    CharacterObject.Vehicles.SumParallelAsync(x => x.Stolen, x => x.TotalCost),
+                    CharacterObject.Drugs.SumParallelAsync(x => x.Stolen, x => x.TotalCost)
+                };
+                await Task.WhenAll(Task.WhenAll(atskCosts), Task.WhenAll(atskStolenTasksCosts));
+                foreach (Task<decimal> tskLoop in atskCosts)
+                    decDeductions += await tskLoop;
+                foreach (Task<decimal> tskLoop in atskStolenTasksCosts)
+                    decStolenDeductions += await tskLoop;
             }
             else
             {
-                await Task.Run(() => Parallel.Invoke(
-                                   () =>
-                                   {
-                                       // Cyberware/Bioware cost.
-                                       decimal decTemp = CharacterObject.Cyberware.Sum(x => x.TotalCost);
-                                       lock (objDeductionsLock)
-                                           // ReSharper disable once AccessToModifiedClosure
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Armor cost.
-                                       decimal decTemp = CharacterObject.Armor.Sum(x => x.TotalCost);
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Weapon cost.
-                                       decimal decTemp = CharacterObject.Weapons.Sum(x => x.TotalCost);
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Gear cost.
-                                       decimal decTemp = CharacterObject.Gear.Sum(x => x.TotalCost);
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Vehicle cost.
-                                       decimal decTemp = CharacterObject.Vehicles.Sum(x => x.TotalCost);
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Drug cost.
-                                       decimal decTemp = CharacterObject.Drugs.Sum(x => x.TotalCost);
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   },
-                                   () =>
-                                   {
-                                       // Lifestyle cost.
-                                       decimal decTemp = CharacterObject.Lifestyles.Sum(x => x.TotalCost);
-                                       lock (objDeductionsLock)
-                                           decDeductions += decTemp;
-                                   }));
+                Task<decimal>[] atskCosts = {
+                    CharacterObject.Cyberware.SumParallelAsync(x => x.TotalCost),
+                    CharacterObject.Armor.SumParallelAsync(x => x.TotalCost),
+                    CharacterObject.Weapons.SumParallelAsync(x => x.TotalCost),
+                    CharacterObject.Gear.SumParallelAsync(x => x.TotalCost),
+                    CharacterObject.Vehicles.SumParallelAsync(x => x.TotalCost),
+                    CharacterObject.Drugs.SumParallelAsync(x => x.TotalCost),
+                    CharacterObject.Lifestyles.SumParallelAsync(x => x.TotalCost)
+                };
+                await Task.WhenAll(atskCosts);
+                foreach (Task<decimal> tskLoop in atskCosts)
+                    decDeductions += await tskLoop;
             }
 
             // Initiation Grade cost.
-            decDeductions += 10000 * CharacterObject.InitiationGrades.Count(x => x.Schooling);
+            decDeductions += 10000 * await CharacterObject.InitiationGrades.CountAsync(x => x.Schooling);
 
             CharacterObject.StolenNuyen = decStolenNuyenAllowance - decStolenDeductions;
             return CharacterObject.Nuyen = CharacterObject.TotalStartingNuyen - decDeductions;
