@@ -1849,11 +1849,11 @@ namespace Chummer
                     }
                 case nameof(Character.BlackMarketDiscount):
                 {
-                    await Task.WhenAll(RefreshSelectedCyberware(UpdateCharacterInfoCancellationTokenSource.Token),
-                                       RefreshSelectedArmor(UpdateCharacterInfoCancellationTokenSource.Token),
-                                       RefreshSelectedGear(UpdateCharacterInfoCancellationTokenSource.Token),
-                                       RefreshSelectedVehicle(UpdateCharacterInfoCancellationTokenSource.Token),
-                                       RefreshSelectedWeapon(UpdateCharacterInfoCancellationTokenSource.Token));
+                    await Task.WhenAll(RefreshSelectedCyberware(UpdateCharacterInfoCancellationTokenSource?.Token ?? default),
+                                       RefreshSelectedArmor(UpdateCharacterInfoCancellationTokenSource?.Token ?? default),
+                                       RefreshSelectedGear(UpdateCharacterInfoCancellationTokenSource?.Token ?? default),
+                                       RefreshSelectedVehicle(UpdateCharacterInfoCancellationTokenSource?.Token ?? default),
+                                       RefreshSelectedWeapon(UpdateCharacterInfoCancellationTokenSource?.Token ?? default));
                     break;
                 }
                 case nameof(Character.Settings):
