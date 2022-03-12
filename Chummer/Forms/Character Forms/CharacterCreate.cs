@@ -3251,7 +3251,8 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                if (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                object objSelectedNodeTag = await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -3263,7 +3264,7 @@ namespace Chummer
                     await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                switch (treMartialArts.SelectedNode?.Tag)
+                switch (objSelectedNodeTag)
                 {
                     case MartialArt objMartialArt:
                         await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = !objMartialArt.IsQuality);
@@ -10562,17 +10563,18 @@ namespace Chummer
             await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0))
+                object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0))
                 {
                     await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = treCyberware.SelectedNode?.Tag is ICanRemove);
+                    await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
 
-                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblCyberwareRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
                                                                         GlobalSettings.CultureInfo,
@@ -10583,7 +10585,7 @@ namespace Chummer
                 }
 
                 string strESSFormat = CharacterObjectSettings.EssenceFormat;
-                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -10595,10 +10597,11 @@ namespace Chummer
                     await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot
-                    && ImprovementManager
-                       .GetCachedImprovementListForValueOf(CharacterObject, Improvement.ImprovementType.Nuyen, "Stolen")
-                       .Count > 0)
+                if (objSelectedNodeTag is IHasStolenProperty loot && ImprovementManager
+                                                                     .GetCachedImprovementListForValueOf(
+                                                                         CharacterObject,
+                                                                         Improvement.ImprovementType.Nuyen, "Stolen")
+                                                                     .Count > 0)
                 {
                     await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = true);
                     await chkCyberwareStolen.DoThreadSafeAsync(x => x.Checked = loot.Stolen);
@@ -10608,7 +10611,7 @@ namespace Chummer
                     await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                switch (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                switch (objSelectedNodeTag)
                 {
                     // Locate the selected piece of Cyberware.
                     case Cyberware objCyberware:
@@ -10914,19 +10917,20 @@ namespace Chummer
             await flpWeapons.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level <= 0))
+                object objSelectedNodeTag = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode.Level <= 0))
                 {
                     await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = treWeapons.SelectedNode?.Tag is ICanRemove);
+                    await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -10938,7 +10942,7 @@ namespace Chummer
                     await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblWeaponRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
                                                                      GlobalSettings.CultureInfo,
@@ -10948,7 +10952,7 @@ namespace Chummer
                                                                          objHasRating.RatingLabel)));
                 }
 
-                if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot
+                if (objSelectedNodeTag is IHasStolenProperty loot
                     && ImprovementManager
                        .GetCachedImprovementListForValueOf(
                            CharacterObject,
@@ -10963,7 +10967,7 @@ namespace Chummer
                     await chkWeaponStolen.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                switch (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                switch (objSelectedNodeTag)
                 {
                     case Weapon objWeapon:
                     {
@@ -11577,18 +11581,19 @@ namespace Chummer
             await flpArmor.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode) == null)
+                object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null)
                 {
                     await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = treArmor.SelectedNode?.Tag is ICanRemove);
+                    await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
                     return;
                 }
 
-                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblArmorSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -11600,12 +11605,11 @@ namespace Chummer
                     await lblArmorSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot
-                    && ImprovementManager
-                       .GetCachedImprovementListForValueOf(
-                           CharacterObject,
-                           Improvement.ImprovementType.Nuyen,
-                           "Stolen").Count > 0)
+                if (objSelectedNodeTag is IHasStolenProperty loot && ImprovementManager
+                                                                     .GetCachedImprovementListForValueOf(
+                                                                         CharacterObject,
+                                                                         Improvement.ImprovementType.Nuyen, "Stolen")
+                                                                     .Count > 0)
                 {
                     await chkArmorStolen.DoThreadSafeAsync(x =>
                     {
@@ -11618,7 +11622,7 @@ namespace Chummer
                     await chkArmorStolen.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblArmorRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
                                                                     GlobalSettings.CultureInfo,
@@ -11628,7 +11632,7 @@ namespace Chummer
                                                                         objHasRating.RatingLabel)));
                 }
 
-                if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Armor objArmor)
+                if (objSelectedNodeTag is Armor objArmor)
                 {
                     await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
                     await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true);
@@ -11715,7 +11719,7 @@ namespace Chummer
                 else
                 {
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                    if (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ArmorMod objArmorMod)
+                    if (objSelectedNodeTag is ArmorMod objArmorMod)
                     {
                         await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
@@ -11816,7 +11820,7 @@ namespace Chummer
                     }
                     else
                     {
-                        switch (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                        switch (objSelectedNodeTag)
                         {
                             case Gear objSelectedGear:
                             {
@@ -11972,7 +11976,7 @@ namespace Chummer
                             }
                             default:
                             {
-                                if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+                                if (objSelectedNodeTag.ToString() == "Node_SelectedArmor")
                                 {
                                     await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
                                     await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
@@ -12034,21 +12038,22 @@ namespace Chummer
             await flpGear.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0))
+                object objSelectedNodeTag = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0))
                 {
                     await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteGear.DoThreadSafeAsync(async x => x.Enabled = await treGear.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
 
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty loot && ImprovementManager
-                                             .GetCachedImprovementListForValueOf(
-                                                 CharacterObject,
-                                                 Improvement.ImprovementType.Nuyen,
-                                                 "Stolen").Count > 0)
+                if (objSelectedNodeTag is IHasStolenProperty loot && ImprovementManager
+                                                                     .GetCachedImprovementListForValueOf(
+                                                                         CharacterObject,
+                                                                         Improvement.ImprovementType.Nuyen, "Stolen")
+                                                                     .Count > 0)
                 {
                     await chkGearStolen.DoThreadSafeAsync(x =>
                     {
@@ -12061,7 +12066,7 @@ namespace Chummer
                     await chkGearStolen.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblGearSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -12073,7 +12078,7 @@ namespace Chummer
                     await lblGearSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblGearRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
                                                                    GlobalSettings.CultureInfo,
@@ -12083,7 +12088,7 @@ namespace Chummer
                                                                        objHasRating.RatingLabel)));
                 }
 
-                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear)
+                if (objSelectedNodeTag is Gear objGear)
                 {
                     await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = true);
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = true);
@@ -12251,7 +12256,7 @@ namespace Chummer
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteGear.DoThreadSafeAsync(async x => x.Enabled = await treGear.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
             }
             finally
@@ -13034,11 +13039,12 @@ namespace Chummer
             await flpLifestyleDetails.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (treLifestyles.SelectedNode == null || treLifestyles.SelectedNode.Level <= 0
-                                                       || !(treLifestyles.SelectedNode?.Tag is Lifestyle objLifestyle))
+                object objSelectedNodeTag = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode.Level) <= 0
+                                               || !(objSelectedNodeTag is Lifestyle objLifestyle))
                 {
                     await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdDeleteLifestyle.DoThreadSafeAsync(async x => x.Enabled = await treLifestyles.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
 
@@ -13192,10 +13198,8 @@ namespace Chummer
             await flpVehicles.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                string strSelectedId = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString());
-
-                if (string.IsNullOrEmpty(strSelectedId) || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level) <= 0
-                                                        || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Location)
+                object objSelectedNodeTag = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag == null || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level) <= 0 || objSelectedNodeTag is Location)
                 {
                     await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
@@ -13203,16 +13207,16 @@ namespace Chummer
                     await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
 
                     // Buttons
-                    await cmdDeleteVehicle.DoThreadSafeAsync(async x => x.Enabled = await treVehicles.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
 
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasStolenProperty selectedLoot && ImprovementManager
-                                                 .GetCachedImprovementListForValueOf(
-                                                     CharacterObject,
-                                                     Improvement.ImprovementType.Nuyen,
-                                                     "Stolen").Count > 0)
+                if (objSelectedNodeTag is IHasStolenProperty selectedLoot && ImprovementManager
+                                                                             .GetCachedImprovementListForValueOf(
+                                                                                 CharacterObject,
+                                                                                 Improvement.ImprovementType.Nuyen,
+                                                                                 "Stolen").Count > 0)
                 {
                     await chkVehicleStolen.DoThreadSafeAsync(x =>
                     {
@@ -13225,7 +13229,7 @@ namespace Chummer
                     await chkVehicleStolen.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = true);
@@ -13237,7 +13241,7 @@ namespace Chummer
                     await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
 
-                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblVehicleRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
                                                                       GlobalSettings.CultureInfo,
@@ -13247,7 +13251,7 @@ namespace Chummer
                                                                           objHasRating.RatingLabel)));
                 }
 
-                switch (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
+                switch (objSelectedNodeTag)
                 {
                     // Locate the selected Vehicle.
                     case Vehicle objVehicle:
@@ -14312,7 +14316,8 @@ namespace Chummer
             await flpDrugs.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0) && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Drug objDrug)
+                object objSelectedNodeTag = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is Drug objDrug && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0))
                 {
                     await flpDrugs.DoThreadSafeAsync(x => x.Visible = true);
                     await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true);
@@ -14347,7 +14352,7 @@ namespace Chummer
                 else
                 {
                     await flpDrugs.DoThreadSafeAsync(x => x.Visible = false);
-                    await btnDeleteCustomDrug.DoThreadSafeAsync(async x => x.Enabled = await treArmor.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
             }
             finally
@@ -14369,7 +14374,8 @@ namespace Chummer
             await gpbMagicianSpell.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0) && await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Spell objSpell)
+                object objSelectedNodeTag = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is Spell objSpell && await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0))
                 {
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = true);
                     await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSpell.Grade == 0);
@@ -14398,7 +14404,7 @@ namespace Chummer
                 else
                 {
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdDeleteSpell.DoThreadSafeAsync(async x => x.Enabled = await treSpells.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
             }
             finally
@@ -14420,7 +14426,8 @@ namespace Chummer
             await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                if (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0) && await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is ComplexForm objComplexForm)
+                object objSelectedNodeTag = await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is ComplexForm objComplexForm && await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0))
                 {
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true);
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0);
@@ -14439,7 +14446,7 @@ namespace Chummer
                 else
                 {
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = false);
-                    await cmdDeleteComplexForm.DoThreadSafeAsync(async x => x.Enabled = await treComplexForms.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
             }
             finally
