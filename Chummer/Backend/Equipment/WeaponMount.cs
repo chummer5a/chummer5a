@@ -393,7 +393,7 @@ namespace Chummer.Backend.Equipment
                 {
                     foreach (XmlNode xmlWeaponNode in xmlWeaponList)
                     {
-                        if (WeaponCapacity >= Weapons.Count)
+                        if (Weapons.Count >= WeaponCapacity)
                         {
                             // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
                             Weapon objWeapon = new Weapon(_objCharacter);
