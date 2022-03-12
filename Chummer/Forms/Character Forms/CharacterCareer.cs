@@ -3755,24 +3755,28 @@ namespace Chummer
             await RefreshSelectedMartialArt();
         }
 
-        private async Task RefreshSelectedMartialArt()
+        private async Task RefreshSelectedMartialArt(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             try
             {
+                token.ThrowIfCancellationRequested();
                 object objSelectedNodeTag = await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
+                    token.ThrowIfCancellationRequested();
                     await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = true);
                     await objSelected.SetSourceDetailAsync(lblMartialArtSource);
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
                     await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 switch (objSelectedNodeTag)
                 {
                     case MartialArt objMartialArt:
@@ -3789,6 +3793,7 @@ namespace Chummer
                         await lblMartialArtSource.SetToolTipAsync(string.Empty);
                         break;
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -5760,8 +5765,9 @@ namespace Chummer
             return true;
         }
 
-        private async ValueTask UpdateQualityLevelValue(Quality objSelectedQuality = null)
+        private async ValueTask UpdateQualityLevelValue(Quality objSelectedQuality = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objSelectedQuality == null
                 || objSelectedQuality.OriginSource == QualitySource.Improvement
                 || objSelectedQuality.OriginSource == QualitySource.Metatype
@@ -5774,10 +5780,12 @@ namespace Chummer
                 });
                 return;
             }
+            token.ThrowIfCancellationRequested();
             XPathNavigator objQualityNode = await objSelectedQuality.GetNodeXPathAsync();
             string strLimitString = objQualityNode != null
                 ? (await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("limit"))?.Value ?? string.Empty
                 : string.Empty;
+            token.ThrowIfCancellationRequested();
             if (!string.IsNullOrWhiteSpace(strLimitString) && await objQualityNode.SelectSingleNodeAndCacheExpressionAsync("nolevels") == null && int.TryParse(strLimitString, out int intMaxRating))
             {
                 await nudQualityLevel.DoThreadSafeAsync(x =>
@@ -10454,32 +10462,45 @@ namespace Chummer
             await RefreshSelectedQuality();
         }
 
-        private async Task RefreshSelectedQuality()
+        private async Task RefreshSelectedQuality(CancellationToken token = default)
         {
-            // Locate the selected Quality.
-            Quality objQuality = await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Quality);
-
-            await UpdateQualityLevelValue(objQuality);
-            if (objQuality == null)
+            token.ThrowIfCancellationRequested();
+            await tlpCommonLeftSide.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = false);
-                await lblQualitySource.DoThreadSafeAsync(x => x.Visible = false);
-                await lblQualityBP.DoThreadSafeAsync(x => x.Visible = false);
+                // Locate the selected Quality.
+                Quality objQuality = await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag as Quality);
+                token.ThrowIfCancellationRequested();
+                await UpdateQualityLevelValue(objQuality, token);
+                if (objQuality == null)
+                {
+                    token.ThrowIfCancellationRequested();
+                    await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblQualitySource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblQualityBP.DoThreadSafeAsync(x => x.Visible = false);
+                }
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true);
+                    await objQuality.SetSourceDetailAsync(lblQualitySource);
+                    token.ThrowIfCancellationRequested();
+                    await lblQualityBP.DoThreadSafeAsync(async x => x.Text
+                                                             = (objQuality.BP * objQuality.Levels
+                                                                              * CharacterObjectSettings.KarmaQuality)
+                                                               .ToString(GlobalSettings.CultureInfo) +
+                                                               await LanguageManager.GetStringAsync("String_Space")
+                                                               + await LanguageManager.GetStringAsync("String_Karma"));
+                }
+                token.ThrowIfCancellationRequested();
             }
-            else
+            finally
             {
-                await lblQualitySourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true);
-                await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true);
-                await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true);
-                await objQuality.SetSourceDetailAsync(lblQualitySource);
-                await lblQualityBP.DoThreadSafeAsync(async x => x.Text
-                                                        = (objQuality.BP * objQuality.Levels
-                                                                         * CharacterObjectSettings.KarmaQuality)
-                                                          .ToString(GlobalSettings.CultureInfo) +
-                                                          await LanguageManager.GetStringAsync("String_Space")
-                                                          + await LanguageManager.GetStringAsync("String_Karma"));
+                await tlpCommonLeftSide.DoThreadSafeAsync(x => x.ResumeLayout());
             }
         }
 
@@ -12405,15 +12426,18 @@ namespace Chummer
             await RefreshSelectedMetamagic();
         }
 
-        private async Task RefreshSelectedMetamagic()
+        private async Task RefreshSelectedMetamagic(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             try
             {
+                token.ThrowIfCancellationRequested();
                 switch (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag))
                 {
                     case Metamagic objMetamagic:
                         {
+                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync(
@@ -12428,6 +12452,7 @@ namespace Chummer
                         }
                     case Art objArt:
                         {
+                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync(
@@ -12441,6 +12466,7 @@ namespace Chummer
                         }
                     case Spell objSpell:
                         {
+                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync(
@@ -12452,6 +12478,7 @@ namespace Chummer
                         }
                     case ComplexForm objComplexForm:
                         {
+                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync("Button_RemoveEcho");
@@ -12462,6 +12489,7 @@ namespace Chummer
                         }
                     case Enhancement objEnhancement:
                         {
+                            token.ThrowIfCancellationRequested();
                             await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                             {
                                 x.Text = await LanguageManager.GetStringAsync(
@@ -12474,6 +12502,7 @@ namespace Chummer
                             break;
                         }
                     default:
+                        token.ThrowIfCancellationRequested();
                         await cmdDeleteMetamagic.DoThreadSafeAsync(async x =>
                         {
                             x.Text = await LanguageManager.GetStringAsync(
@@ -12486,6 +12515,7 @@ namespace Chummer
                         await lblMetamagicSource.SetToolTipAsync(string.Empty);
                         break;
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -12644,14 +12674,17 @@ namespace Chummer
             await RefreshSelectedCritterPower();
         }
 
-        private async Task RefreshSelectedCritterPower()
+        private async Task RefreshSelectedCritterPower(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Look for the selected Critter Power.
                 if (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is CritterPower objPower)
                 {
+                    token.ThrowIfCancellationRequested();
                     await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = objPower.Grade == 0);
                     await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName);
                     await lblCritterPowerCategory.DoThreadSafeAsync(
@@ -12666,7 +12699,7 @@ namespace Chummer
                         async x => x.Text = await objPower.DisplayDurationAsync(GlobalSettings.Language));
                     await chkCritterPowerCount.DoThreadSafeAsync(x => x.Checked = objPower.CountTowardsLimit);
                     await objPower.SetSourceDetailAsync(lblCritterPowerSource);
-
+                    token.ThrowIfCancellationRequested();
                     if (objPower.PowerPoints > 0)
                     {
                         await lblCritterPowerPointCost.DoThreadSafeAsync(x =>
@@ -12685,6 +12718,7 @@ namespace Chummer
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = false);
                     await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = string.Empty);
                     await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = string.Empty);
@@ -12698,6 +12732,7 @@ namespace Chummer
                     await lblCritterPowerPointCost.DoThreadSafeAsync(x => x.Visible = false);
                     await lblCritterPowerPointCostLabel.DoThreadSafeAsync(x => x.Visible = false);
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -12877,15 +12912,17 @@ namespace Chummer
             await RefreshSelectedImprovement();
         }
 
-        private async Task RefreshSelectedImprovement()
+        private async Task RefreshSelectedImprovement(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             try
             {
-                if (treImprovements.SelectedNode?.Tag is Improvement objImprovement)
+                token.ThrowIfCancellationRequested();
+                if (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Improvement objImprovement)
                 {
                     // Get the human-readable name of the Improvement from the Improvements file.
-
+                    token.ThrowIfCancellationRequested();
                     XmlNode objNode = (await CharacterObject.LoadDataAsync("improvements.xml"))
                                                      .SelectSingleNode(
                                                          "/chummer/improvements/improvement[id = "
@@ -12894,7 +12931,7 @@ namespace Chummer
                     {
                         await lblImprovementType.DoThreadSafeAsync(x => x.Text = objNode["translate"]?.InnerText ?? objNode["name"]?.InnerText);
                     }
-
+                    token.ThrowIfCancellationRequested();
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
                     // Build a string that contains the value(s) of the Improvement.
                     string strValue = string.Empty;
@@ -12910,11 +12947,11 @@ namespace Chummer
                     if (objImprovement.Augmented != 0)
                         strValue += await LanguageManager.GetStringAsync("Label_CreateImprovementAugmented") + strSpace
                             + objImprovement.Augmented.ToString(GlobalSettings.CultureInfo) + ',' + strSpace;
-
+                    token.ThrowIfCancellationRequested();
                     // Remove the trailing comma.
                     if (!string.IsNullOrEmpty(strValue))
                         strValue = strValue.Substring(0, strValue.Length - 1 - strSpace.Length);
-
+                    token.ThrowIfCancellationRequested();
                     await cmdImprovementsEnableAll.DoThreadSafeAsync(x => x.Visible = false);
                     await cmdImprovementsDisableAll.DoThreadSafeAsync(x => x.Visible = false);
                     await lblImprovementValue.DoThreadSafeAsync(x => x.Text = strValue);
@@ -12924,8 +12961,9 @@ namespace Chummer
                         x.Visible = true;
                     });
                 }
-                else if (treImprovements.SelectedNode?.Level == 0)
+                else if (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level) == 0)
                 {
+                    token.ThrowIfCancellationRequested();
                     await cmdImprovementsEnableAll.DoThreadSafeAsync(x => x.Visible = true);
                     await cmdImprovementsDisableAll.DoThreadSafeAsync(x => x.Visible = true);
                     await lblImprovementType.DoThreadSafeAsync(x => x.Text = string.Empty);
@@ -12938,6 +12976,7 @@ namespace Chummer
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     await cmdImprovementsEnableAll.DoThreadSafeAsync(x => x.Visible = false);
                     await cmdImprovementsDisableAll.DoThreadSafeAsync(x => x.Visible = false);
                     await lblImprovementType.DoThreadSafeAsync(x => x.Text = string.Empty);
@@ -12948,6 +12987,7 @@ namespace Chummer
                         x.Visible = false;
                     });
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -13717,15 +13757,18 @@ namespace Chummer
         /// <summary>
         /// Refresh the currently-selected Drug.
         /// </summary>
-        private async Task RefreshSelectedDrug()
+        private async Task RefreshSelectedDrug(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await flpDrugs.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
+                token.ThrowIfCancellationRequested();
                 object objSelectedNodeTag = await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag is Drug objDrug && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0))
                 {
+                    token.ThrowIfCancellationRequested();
                     await flpDrugs.DoThreadSafeAsync(x => x.Visible = true);
                     await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true);
                     await lblDrugName.DoThreadSafeAsync(x => x.Text = objDrug.Name);
@@ -13735,6 +13778,7 @@ namespace Chummer
                                                             = objDrug.Cost.ToString(
                                                                   CharacterObject.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                                               + '¥');
+                    token.ThrowIfCancellationRequested();
                     await lblDrugQty.DoThreadSafeAsync(x => x.Text = objDrug.Quantity.ToString(GlobalSettings.CultureInfo));
                     await btnIncreaseDrugQty.DoThreadSafeAsync(x => x.Enabled = objDrug.Cost <= CharacterObject.Nuyen);
                     await btnDecreaseDrugQty.DoThreadSafeAsync(x => x.Enabled = objDrug.Quantity != 0);
@@ -13749,15 +13793,17 @@ namespace Chummer
                         {
                             sbdComponents.AppendLine(objComponent.CurrentDisplayName);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblDrugComponents.DoThreadSafeAsync(x => x.Text = sbdComponents.ToString());
                     }
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     await flpDrugs.DoThreadSafeAsync(x => x.Visible = false);
                     await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -13837,6 +13883,7 @@ namespace Chummer
 
             try
             {
+                token.ThrowIfCancellationRequested();
                 using (CursorWait.New(this, true))
                 {
                     // TODO: DataBind these wherever possible
@@ -13865,18 +13912,19 @@ namespace Chummer
                         await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false);
                     }
-
-                    await Task.WhenAll(RefreshSelectedQuality(), RefreshSelectedCyberware(), RefreshSelectedArmor(),
-                                       RefreshSelectedGear(), RefreshSelectedDrug(), RefreshSelectedLifestyle(),
-                                       RefreshSelectedVehicle(), RefreshSelectedWeapon(), RefreshSelectedSpell(),
-                                       RefreshSelectedComplexForm(), RefreshSelectedCritterPower(),
-                                       RefreshSelectedAIProgram(), RefreshSelectedMetamagic(),
-                                       RefreshSelectedMartialArt(), UpdateInitiationCost(),
-                                       RefreshSelectedImprovement());
-
+                    token.ThrowIfCancellationRequested();
+                    await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token), RefreshSelectedArmor(token),
+                                       RefreshSelectedGear(token), RefreshSelectedDrug(token), RefreshSelectedLifestyle(token),
+                                       RefreshSelectedVehicle(token), RefreshSelectedWeapon(token), RefreshSelectedSpell(token),
+                                       RefreshSelectedComplexForm(token), RefreshSelectedCritterPower(token),
+                                       RefreshSelectedAIProgram(token), RefreshSelectedMetamagic(token),
+                                       RefreshSelectedMartialArt(token), UpdateInitiationCost(token),
+                                       RefreshSelectedImprovement(token));
+                    token.ThrowIfCancellationRequested();
                     if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
                     {
                         await AutoSaveCharacter();
+                        token.ThrowIfCancellationRequested();
                     }
                 }
             }
@@ -13890,24 +13938,26 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed piece of Cyberware.
         /// </summary>
-        private async Task RefreshSelectedCyberware()
+        private async Task RefreshSelectedCyberware(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await flpCyberware.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
+                token.ThrowIfCancellationRequested();
                 object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0))
                 {
                     await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false);
                     await tabCyberwareCM.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasWirelessBonus objHasWirelessBonus)
                 {
                     await chkCyberwareWireless.DoThreadSafeAsync(x =>
@@ -13918,7 +13968,7 @@ namespace Chummer
                 }
                 else
                     await chkCyberwareWireless.DoThreadSafeAsync(x => x.Visible = false);
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -13930,7 +13980,7 @@ namespace Chummer
                     await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
                     await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblCyberwareRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
@@ -13940,7 +13990,7 @@ namespace Chummer
                                                                        await LanguageManager.GetStringAsync(
                                                                            objHasRating.RatingLabel)));
                 }
-
+                token.ThrowIfCancellationRequested();
                 string strESSFormat = CharacterObjectSettings.EssenceFormat;
                 switch (objSelectedNodeTag)
                 {
@@ -13951,11 +14001,11 @@ namespace Chummer
                             x => x.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware);
                         await tabCyberwareCM.DoThreadSafeAsync(
                             x => x.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteCyberware.DoThreadSafeAsync(
                             x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID));
-
+                        token.ThrowIfCancellationRequested();
                         // gpbCyberwareCommon
                         await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayNameShort);
                         await lblCyberwareCategory.DoThreadSafeFunc(
@@ -13979,7 +14029,7 @@ namespace Chummer
                         else
                             await lblCyberwareEssence.DoThreadSafeAsync(
                                 x => x.Text = 0.0m.ToString(strESSFormat, GlobalSettings.CultureInfo));
-
+                        token.ThrowIfCancellationRequested();
                         await lblCyberwareAvail.DoThreadSafeAsync(x => x.Text = objCyberware.DisplayTotalAvail);
                         await cmdCyberwareChangeMount.DoThreadSafeAsync(
                             x => x.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount));
@@ -14009,7 +14059,7 @@ namespace Chummer
                             await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         // gpbCyberwareMatrix
                         if (await gpbCyberwareMatrix.DoThreadSafeFuncAsync(x => x.Visible))
                         {
@@ -14019,7 +14069,7 @@ namespace Chummer
                             await objCyberware.RefreshMatrixAttributeComboBoxesAsync(
                                 cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing,
                                 cboCyberwareFirewall);
-
+                            token.ThrowIfCancellationRequested();
                             await chkCyberwareActiveCommlink.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = objCyberware.IsCommlink;
@@ -14040,7 +14090,7 @@ namespace Chummer
                             }
                             else
                                 await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false);
-
+                            token.ThrowIfCancellationRequested();
                             await lblCyberwareOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await cboCyberwareOverclocker.DoThreadSafeAsync(x => x.Visible = false);
                         }
@@ -14052,10 +14102,10 @@ namespace Chummer
                         await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = true);
                         await tabCyberwareCM.DoThreadSafeAsync(x => x.Visible = true);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbCyberwareCommon
                         await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
                         await lblCyberwareCategory.DoThreadSafeAsync(
@@ -14065,7 +14115,7 @@ namespace Chummer
                         await lblCyberwareEssenceLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = false);
                         await lblCyberwareAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
-
+                        token.ThrowIfCancellationRequested();
                         await lblCyberwareRating.DoThreadSafeAsync(
                             x => x.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo));
                         await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity);
@@ -14076,14 +14126,14 @@ namespace Chummer
                         await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false);
                         await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbCyberwareMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                         await lblCyberDeviceRating.DoThreadSafeAsync(
                             x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
                         await objGear.RefreshMatrixAttributeComboBoxesAsync(
                             cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);
-
+                        token.ThrowIfCancellationRequested();
                         await chkCyberwareActiveCommlink.DoThreadSafeAsync(x =>
                         {
                             x.Visible = objGear.IsCommlink;
@@ -14104,7 +14154,7 @@ namespace Chummer
                         }
                         else
                             await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
                         {
                             using (new FetchSafelyFromPool<List<ListItem>>(
@@ -14130,7 +14180,7 @@ namespace Chummer
                                         x.SelectedIndex = 0;
                                 });
                             }
-
+                            token.ThrowIfCancellationRequested();
                             await cboCyberwareOverclocker.DoThreadSafeAsync(x => x.Visible = true);
                             await lblCyberwareOverclockerLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
@@ -14143,9 +14193,10 @@ namespace Chummer
                         break;
                     }
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (await tabCyberwareCM.DoThreadSafeFuncAsync(x => x.Visible))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objSelectedNodeTag is IHasMatrixAttributes objMatrixCM)
                     {
                         await ProcessEquipmentConditionMonitorBoxDisplays(panCyberwareMatrixCM, objMatrixCM.MatrixCM,
@@ -14155,7 +14206,9 @@ namespace Chummer
                     {
                         await tabCyberwareCM.DoThreadSafeAsync(x => x.Visible = false);
                     }
+                    token.ThrowIfCancellationRequested();
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -14167,24 +14220,26 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Weapon.
         /// </summary>
-        private async Task RefreshSelectedWeapon()
+        private async Task RefreshSelectedWeapon(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await flpWeapons.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
+                token.ThrowIfCancellationRequested();
                 object objSelectedNodeTag = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode.Level) <= 0)
                 {
                     await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
-
+                token.ThrowIfCancellationRequested();
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 if (objSelectedNodeTag is IHasWirelessBonus objHasWirelessBonus)
                 {
@@ -14196,7 +14251,7 @@ namespace Chummer
                 }
                 else
                     await chkWeaponWireless.DoThreadSafeAsync(x => x.Visible = false);
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -14208,7 +14263,7 @@ namespace Chummer
                     await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
                     await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblWeaponRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
@@ -14218,7 +14273,7 @@ namespace Chummer
                                                                      await LanguageManager.GetStringAsync(
                                                                          objHasRating.RatingLabel)));
                 }
-
+                token.ThrowIfCancellationRequested();
                 switch (objSelectedNodeTag)
                 {
                     case Weapon objWeapon:
@@ -14226,7 +14281,7 @@ namespace Chummer
                         await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objWeapon.IncludedInWeapon &&
                                                                     !objWeapon.Cyberware &&
@@ -14234,7 +14289,7 @@ namespace Chummer
                                                                     !objWeapon.Category.StartsWith(
                                                                         "Quality", StringComparison.Ordinal) &&
                                                                     string.IsNullOrEmpty(objWeapon.ParentID));
-
+                        token.ThrowIfCancellationRequested();
                         // gpbWeaponsCommon
                         await lblWeaponName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
                         await lblWeaponCategory.DoThreadSafeAsync(async x => x.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language));
@@ -14271,7 +14326,7 @@ namespace Chummer
                         }
                         else
                             await lblWeaponSlots.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
-
+                        token.ThrowIfCancellationRequested();
                         await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true);
                         await lblWeaponConceal.DoThreadSafeAsync(x =>
                         {
@@ -14292,7 +14347,7 @@ namespace Chummer
                             x.Enabled = false;
                             x.Checked = objWeapon.IncludedInWeapon;
                         });
-
+                        token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
                         await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_Weapon"));
                         await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -14383,19 +14438,19 @@ namespace Chummer
                                 await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
                                 await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                             }
-
+                            token.ThrowIfCancellationRequested();
                             await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
                             await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         // Enable the fire button if the Weapon is Ranged.
                         if (objWeapon.RangeType == "Ranged" || objWeapon.RangeType == "Melee" && objWeapon.Ammo != "0")
                         {
                             await tlpWeaponsCareer.DoThreadSafeAsync(x => x.Visible = true);
                             await lblWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo));
                             await cmdFireWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.AmmoRemaining != 0);
-
+                            token.ThrowIfCancellationRequested();
                             await cmsAmmoExpense.DoThreadSafeAsync(async () =>
                             {
                                 cmsAmmoSingleShot.Enabled = objWeapon.AllowSingleShot;
@@ -14475,13 +14530,14 @@ namespace Chummer
                                     cmsAmmoSuppressiveFire.Text
                                         = await LanguageManager.GetStringAsync("String_SuppressiveFireNA");
                             });
-
+                            token.ThrowIfCancellationRequested();
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstAmmo))
                             {
                                 int intCurrentSlot = objWeapon.ActiveAmmoSlot;
                                 for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objWeapon.ActiveAmmoSlot = i;
                                     string strAmmoName;
                                     if (objWeapon.RequireAmmo)
@@ -14524,11 +14580,11 @@ namespace Chummer
                                         strAmmoName = await LanguageManager.GetStringAsync(objWeapon.AmmoRemaining > 0
                                             ? "String_MountInternal"
                                             : "String_Empty");
-
+                                    token.ThrowIfCancellationRequested();
                                     lstAmmo.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
                                                              strAmmoName));
                                 }
-
+                                token.ThrowIfCancellationRequested();
                                 objWeapon.ActiveAmmoSlot = intCurrentSlot;
                                 await cboWeaponAmmo.PopulateWithListItemsAsync(lstAmmo);
                                 await cboWeaponAmmo.DoThreadSafeAsync(x =>
@@ -14545,14 +14601,14 @@ namespace Chummer
                         {
                             await tlpWeaponsCareer.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         // gpbWeaponsMatrix
                         int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
                         await lblWeaponDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
                         await objWeapon.RefreshMatrixAttributeComboBoxesAsync(
                             cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing,
                             cboWeaponGearFirewall);
-
+                        token.ThrowIfCancellationRequested();
                         await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
                         {
                             x.Visible = objWeapon.IsCommlink;
@@ -14571,7 +14627,7 @@ namespace Chummer
                         }
                         else
                             await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         await cboWeaponOverclocker.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
                         break;
@@ -14581,12 +14637,12 @@ namespace Chummer
                         await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objSelectedAccessory.IncludedInWeapon
                                                                     && string.IsNullOrEmpty(
                                                                         objSelectedAccessory.ParentID));
-
+                        token.ThrowIfCancellationRequested();
                         // gpbWeaponsCommon
                         await lblWeaponName.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.CurrentDisplayNameShort);
                         await lblWeaponCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
@@ -14604,7 +14660,7 @@ namespace Chummer
                             await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.DisplayTotalAvail);
@@ -14653,10 +14709,10 @@ namespace Chummer
                                 if (boolHaveAddedItem)
                                     --sbdSlotsText.Length;
                             }
-
+                            token.ThrowIfCancellationRequested();
                             await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString());
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = objSelectedAccessory.TotalConcealability != 0);
                         await lblWeaponConceal.DoThreadSafeAsync(x =>
                         {
@@ -14680,7 +14736,7 @@ namespace Chummer
                             x.Enabled = CharacterObjectSettings.AllowEditPartOfBaseWeapon;
                             x.Checked = objSelectedAccessory.IncludedInWeapon;
                         });
-
+                        token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
                         await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
                         if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
@@ -14701,7 +14757,7 @@ namespace Chummer
                                          .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (string.IsNullOrEmpty(objSelectedAccessory.AP))
                         {
                             await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -14718,7 +14774,7 @@ namespace Chummer
                                          .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (objSelectedAccessory.Accuracy == 0)
                         {
                             await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -14734,7 +14790,7 @@ namespace Chummer
                                     "+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (objSelectedAccessory.DicePool == 0)
                         {
                             await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -14751,7 +14807,7 @@ namespace Chummer
                             });
                             await dpcWeaponDicePool.SetLabelToolTipAsync(string.Empty);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false);
                         if (string.IsNullOrEmpty(objSelectedAccessory.RC))
@@ -14770,7 +14826,7 @@ namespace Chummer
                                          .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (objSelectedAccessory.TotalAmmoBonus != 0
                             || (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                 && objSelectedAccessory.ModifyAmmoCapacity != "0"))
@@ -14795,10 +14851,10 @@ namespace Chummer
                             await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false);
                         await tlpWeaponsCareer.DoThreadSafeAsync(x => x.Visible = false);
                         break;
@@ -14808,10 +14864,10 @@ namespace Chummer
                         await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbWeaponsCommon
                         await lblWeaponName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
                         await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
@@ -14830,7 +14886,7 @@ namespace Chummer
                             await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = true);
                         await lblWeaponCapacity.DoThreadSafeAsync(x =>
                         {
@@ -14853,14 +14909,14 @@ namespace Chummer
                             x.Checked = objGear.Equipped;
                         });
                         await chkIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbWeaponsMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                         await lblWeaponDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
                         await objGear.RefreshMatrixAttributeComboBoxesAsync(
                             cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing,
                             cboWeaponGearFirewall);
-
+                        token.ThrowIfCancellationRequested();
                         await chkWeaponActiveCommlink.DoThreadSafeAsync(x =>
                         {
                             x.Visible = objGear.IsCommlink;
@@ -14879,7 +14935,7 @@ namespace Chummer
                         }
                         else
                             await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
                         {
                             using (new FetchSafelyFromPool<List<ListItem>>(
@@ -14896,7 +14952,7 @@ namespace Chummer
                                                                     "String_DataProcessing")));
                                 lstOverclocker.Add(
                                     new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
-
+                                token.ThrowIfCancellationRequested();
                                 await cboWeaponOverclocker.PopulateWithListItemsAsync(lstOverclocker);
                                 await cboWeaponOverclocker.DoThreadSafeAsync(x =>
                                 {
@@ -14905,7 +14961,7 @@ namespace Chummer
                                         x.SelectedIndex = 0;
                                 });
                             }
-
+                            token.ThrowIfCancellationRequested();
                             await cboWeaponOverclocker.DoThreadSafeAsync(x => x.Visible = true);
                             await lblWeaponOverclockerLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
@@ -14921,12 +14977,12 @@ namespace Chummer
                         await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = false);
                         break;
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasMatrixAttributes objMatrixCM)
                 {
                     await tabWeaponCM.DoThreadSafeAsync(x => x.Visible = true);
@@ -14935,9 +14991,10 @@ namespace Chummer
                 }
                 else
                     await tabWeaponCM.DoThreadSafeAsync(x => x.Visible = false);
-
+                token.ThrowIfCancellationRequested();
                 await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = objSelectedNodeTag is IHasMatrixAttributes ||
                                                                           objSelectedNodeTag is IHasWirelessBonus);
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -14949,24 +15006,26 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Armor.
         /// </summary>
-        private async Task RefreshSelectedArmor()
+        private async Task RefreshSelectedArmor(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await flpArmor.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
+                token.ThrowIfCancellationRequested();
                 object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null)
                 {
                     await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
                     return;
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasWirelessBonus objHasWirelessBonus)
                 {
                     await chkArmorWireless.DoThreadSafeAsync(x =>
@@ -14977,7 +15036,7 @@ namespace Chummer
                 }
                 else
                     await chkArmorWireless.DoThreadSafeAsync(x => x.Visible = false);
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -14989,7 +15048,7 @@ namespace Chummer
                     await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
                     await lblArmorSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblArmorRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(GlobalSettings.CultureInfo,
@@ -14997,15 +15056,15 @@ namespace Chummer
                                                          await LanguageManager.GetStringAsync(
                                                              objHasRating.RatingLabel)));
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is Armor objArmor)
                 {
                     await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
                     await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = true);
-
+                    token.ThrowIfCancellationRequested();
                     // gpbArmorCommon
                     await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await flpArmorValue.DoThreadSafeAsync(x => x.Visible = true);
@@ -15040,15 +15099,16 @@ namespace Chummer
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
                     if (objSelectedNodeTag is ArmorMod objArmorMod)
                     {
                         await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = !objArmorMod.IncludedInArmor);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbArmorCommon
                         if (objArmorMod.Armor != 0)
                         {
@@ -15061,7 +15121,7 @@ namespace Chummer
                             await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await flpArmorValue.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await cmdArmorIncrease.DoThreadSafeAsync(x => x.Visible = false);
                         await cmdArmorDecrease.DoThreadSafeAsync(x => x.Visible = false);
                         await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmorMod.DisplayTotalAvail);
@@ -15092,7 +15152,7 @@ namespace Chummer
                             await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblArmorRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                                  = objArmorMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
                                                                      GlobalSettings.CultureInfo) + '¥');
@@ -15116,10 +15176,10 @@ namespace Chummer
                             {
                                 await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
                                 await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
-
+                                token.ThrowIfCancellationRequested();
                                 // Buttons
                                 await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = !objSelectedGear.IncludedInParent);
-
+                                token.ThrowIfCancellationRequested();
                                 // gpbArmorCommon
                                 await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false);
                                 await flpArmorValue.DoThreadSafeAsync(x => x.Visible = false);
@@ -15147,7 +15207,7 @@ namespace Chummer
                                     await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                                     await lblArmorRating.DoThreadSafeAsync(x => x.Visible = false);
                                 }
-
+                                token.ThrowIfCancellationRequested();
                                 await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                                          = objSelectedGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
                                                                              GlobalSettings.CultureInfo) + '¥');
@@ -15168,10 +15228,10 @@ namespace Chummer
                             {
                                 await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
                                 await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true);
-
+                                token.ThrowIfCancellationRequested();
                                 // Buttons
                                 await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = true);
-
+                                token.ThrowIfCancellationRequested();
                                 // gpbArmorLocation
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdArmorEquipped))
@@ -15184,7 +15244,7 @@ namespace Chummer
                                             .Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
                                             .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                                     }
-
+                                    token.ThrowIfCancellationRequested();
                                     if (sbdArmorEquipped.Length > 0)
                                     {
                                         --sbdArmorEquipped.Length;
@@ -15203,10 +15263,10 @@ namespace Chummer
                                     await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
                                     await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
                                     await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true);
-
+                                    token.ThrowIfCancellationRequested();
                                     // Buttons
                                     await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
-
+                                    token.ThrowIfCancellationRequested();
                                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdArmorEquipped))
                                     {
@@ -15218,7 +15278,7 @@ namespace Chummer
                                                             .Append('(').Append(objLoopArmor.DisplayArmorValue)
                                                             .AppendLine(')');
                                         }
-
+                                        token.ThrowIfCancellationRequested();
                                         if (sbdArmorEquipped.Length > 0)
                                         {
                                             --sbdArmorEquipped.Length;
@@ -15233,7 +15293,7 @@ namespace Chummer
                                     await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
                                     await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
                                     await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
-
+                                    token.ThrowIfCancellationRequested();
                                     // Buttons
                                     await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
                                 }
@@ -15243,7 +15303,7 @@ namespace Chummer
                         }
                     }
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasMatrixAttributes objHasMatrixAttributes)
                 {
                     int intDeviceRating = objHasMatrixAttributes.GetTotalMatrixAttribute("Device Rating");
@@ -15263,13 +15323,14 @@ namespace Chummer
                     }
                     else
                         await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     await chkArmorActiveCommlink.DoThreadSafeAsync(x =>
                     {
                         x.Checked = objHasMatrixAttributes.IsActiveCommlink(
                             CharacterObject);
                         x.Visible = objHasMatrixAttributes.IsCommlink;
                     });
+                    token.ThrowIfCancellationRequested();
                     if (CharacterObject.Overclocker && objHasMatrixAttributes is Gear objGear
                                                     && objGear.Category == "Cyberdecks")
                     {
@@ -15287,7 +15348,7 @@ namespace Chummer
                                                                 "String_DataProcessing")));
                             lstOverclocker.Add(
                                 new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
-
+                            token.ThrowIfCancellationRequested();
                             await cboArmorOverclocker.PopulateWithListItemsAsync(lstOverclocker);
                             await cboArmorOverclocker.DoThreadSafeAsync(x =>
                             {
@@ -15296,7 +15357,7 @@ namespace Chummer
                                     x.SelectedIndex = 0;
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await cboArmorOverclocker.DoThreadSafeAsync(x => x.Visible = true);
                         await lblArmorOverclockerLabel.DoThreadSafeAsync(x => x.Visible = true);
                     }
@@ -15305,10 +15366,11 @@ namespace Chummer
                         await cboArmorOverclocker.DoThreadSafeAsync(x => x.Visible = false);
                         await lblArmorOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
                     }
-
+                    token.ThrowIfCancellationRequested();
                     await tabArmorCM.DoThreadSafeAsync(x => x.Visible = true);
                     await ProcessEquipmentConditionMonitorBoxDisplays(panArmorMatrixCM, objHasMatrixAttributes.MatrixCM,
                                                                       objHasMatrixAttributes.MatrixCMFilled);
+                    token.ThrowIfCancellationRequested();
                     await lblArmorDeviceRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblArmorDeviceRating.DoThreadSafeAsync(x => x.Visible = true);
                     await lblArmorAttackLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -15324,6 +15386,7 @@ namespace Chummer
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     await tabArmorCM.DoThreadSafeAsync(x => x.Visible = false);
                     if (objSelectedNodeTag is IHasWirelessBonus)
                     {
@@ -15346,6 +15409,7 @@ namespace Chummer
                     else
                         await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -15357,24 +15421,26 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently displayed Gear.
         /// </summary>
-        private async Task RefreshSelectedGear()
+        private async Task RefreshSelectedGear(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await flpGear.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
+                token.ThrowIfCancellationRequested();
                 object objSelectedNodeTag = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0))
                 {
                     await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
                     await tabGearCM.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasWirelessBonus objHasWirelessBonus)
                 {
                     await chkGearWireless.DoThreadSafeAsync(x =>
@@ -15385,7 +15451,7 @@ namespace Chummer
                 }
                 else
                     await chkGearWireless.DoThreadSafeAsync(x => x.Visible = false);
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -15397,7 +15463,7 @@ namespace Chummer
                     await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
                     await lblGearSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblGearRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
@@ -15407,16 +15473,16 @@ namespace Chummer
                                                                    await LanguageManager.GetStringAsync(
                                                                        objHasRating.RatingLabel)));
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is Gear objGear)
                 {
                     await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = true);
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = true);
                     await tabGearCM.DoThreadSafeAsync(x => x.Visible = true);
-
+                    token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
-
+                    token.ThrowIfCancellationRequested();
                     // gpbGearCommon
                     await lblGearName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
                     await lblGearCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
@@ -15435,7 +15501,7 @@ namespace Chummer
                         await lblGearRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblGearRating.DoThreadSafeAsync(x => x.Visible = false);
                     }
-
+                    token.ThrowIfCancellationRequested();
                     await lblGearQty.DoThreadSafeAsync(x => x.Text = objGear.Quantity.ToString(GlobalSettings.CultureInfo));
                     await cmdGearIncreaseQty.DoThreadSafeAsync(x =>
                     {
@@ -15473,7 +15539,7 @@ namespace Chummer
                     {
                         await lblGearCost.DoThreadSafeAsync(x => x.Text = objGear.Cost + '¥');
                     }
-
+                    token.ThrowIfCancellationRequested();
                     await lblGearCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity);
                     await chkGearEquipped.DoThreadSafeAsync(x =>
                     {
@@ -15490,7 +15556,7 @@ namespace Chummer
                     {
                         await chkGearEquipped.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_Equipped"));
                     }
-
+                    token.ThrowIfCancellationRequested();
                     // gpbGearMatrix
                     int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                     await lblGearDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
@@ -15509,7 +15575,7 @@ namespace Chummer
                     }
                     else
                         await chkGearHomeNode.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     await chkGearActiveCommlink.DoThreadSafeAsync(x =>
                     {
                         x.Checked = objGear.IsActiveCommlink(CharacterObject);
@@ -15549,9 +15615,9 @@ namespace Chummer
                         await cboGearOverclocker.DoThreadSafeAsync(x => x.Visible = false);
                         await lblGearOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
                     }
-
+                    token.ThrowIfCancellationRequested();
                     await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
-
+                    token.ThrowIfCancellationRequested();
                     await ProcessEquipmentConditionMonitorBoxDisplays(panGearMatrixCM, objGear.MatrixCM,
                                                                       objGear.MatrixCMFilled);
                 }
@@ -15560,10 +15626,11 @@ namespace Chummer
                     await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
                     await tabGearCM.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -16441,12 +16508,14 @@ namespace Chummer
         /// <summary>
         /// Refresh the currently-selected Lifestyle.
         /// </summary>
-        private async Task RefreshSelectedLifestyle()
+        private async Task RefreshSelectedLifestyle(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await flpLifestyleDetails.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
+                token.ThrowIfCancellationRequested();
                 object objSelectedNodeTag = await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treLifestyles.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0)
                                                || !(objSelectedNodeTag is Lifestyle objLifestyle))
@@ -16455,16 +16524,16 @@ namespace Chummer
                     await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
-
+                token.ThrowIfCancellationRequested();
                 await flpLifestyleDetails.DoThreadSafeAsync(x => x.Visible = true);
                 await cmdDeleteLifestyle.DoThreadSafeAsync(x => x.Enabled = true);
-
+                token.ThrowIfCancellationRequested();
                 await lblLifestyleCost.DoThreadSafeAsync(x => x.Text
                                                              = objLifestyle.TotalMonthlyCost.ToString(CharacterObjectSettings.NuyenFormat,
                                                                  GlobalSettings.CultureInfo) + '¥');
                 await lblLifestyleMonths.DoThreadSafeAsync(x => x.Text = objLifestyle.Increments.ToString(GlobalSettings.CultureInfo));
                 await objLifestyle.SetSourceDetailAsync(lblLifestyleSource);
-
+                token.ThrowIfCancellationRequested();
                 string strIncrementString;
                 // Change the Cost/Month label.
                 switch (objLifestyle.IncrementType)
@@ -16487,7 +16556,7 @@ namespace Chummer
                         strIncrementString = await LanguageManager.GetStringAsync("String_Months");
                         break;
                 }
-
+                token.ThrowIfCancellationRequested();
                 await lblLifestyleMonthsLabel.DoThreadSafeAsync(async x => x.Text = strIncrementString + string.Format(
                                                                     GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_LifestylePermanent"),
                                                                     objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalSettings.CultureInfo)));
@@ -16499,7 +16568,7 @@ namespace Chummer
                                                                          await LanguageManager.GetStringAsync(
                                                                              "Tab_DecreaseLifestyleMonths"),
                                                                          strIncrementString));
-
+                token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -16520,10 +16589,10 @@ namespace Chummer
                                             objImprovement.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo))
                                         .Append("%]");
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblLifestyleQualities.DoThreadSafeAsync(x => x.Text = sbdQualities.ToString());
                     }
-
+                    token.ThrowIfCancellationRequested();
                     await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = objLifestyle.CurrentDisplayName);
                     await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = true);
                     await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = true);
@@ -16534,7 +16603,7 @@ namespace Chummer
                     await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = false);
                     await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 //Controls Visibility and content of the City, District and Borough Labels
                 if (!string.IsNullOrEmpty(objLifestyle.City))
                 {
@@ -16550,7 +16619,7 @@ namespace Chummer
                     await lblLifestyleCity.DoThreadSafeAsync(x => x.Visible = false);
                     await lblLifestyleCityLabel.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(objLifestyle.District))
                 {
                     await lblLifestyleDistrict.DoThreadSafeAsync(x =>
@@ -16565,7 +16634,7 @@ namespace Chummer
                     await lblLifestyleDistrict.DoThreadSafeAsync(x => x.Visible = false);
                     await lblLifestyleDistrictLabel.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (!string.IsNullOrEmpty(objLifestyle.Borough))
                 {
                     await lblLifestyleBorough.DoThreadSafeAsync(x =>
@@ -16591,12 +16660,14 @@ namespace Chummer
         /// <summary>
         /// Refresh the currently-selected Vehicle.
         /// </summary>
-        private async Task RefreshSelectedVehicle()
+        private async Task RefreshSelectedVehicle(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await flpVehicles.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
+                token.ThrowIfCancellationRequested();
                 object objSelectedNodeTag = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode.Level <= 0)
                                                || objSelectedNodeTag.ToString() == "String_WeaponMounts")
@@ -16606,14 +16677,13 @@ namespace Chummer
                     await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
                     await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
-
+                    token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                     return;
                 }
-
+                token.ThrowIfCancellationRequested();
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
-
                 if (objSelectedNodeTag is IHasRating objHasRating)
                 {
                     await lblVehicleRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
@@ -16623,7 +16693,7 @@ namespace Chummer
                                                                       await LanguageManager.GetStringAsync(
                                                                           objHasRating.RatingLabel)));
                 }
-
+                token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
                     await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -16635,7 +16705,7 @@ namespace Chummer
                     await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
                     await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = false);
                 }
-
+                token.ThrowIfCancellationRequested();
                 switch (objSelectedNodeTag)
                 {
                     // Locate the selected Vehicle.
@@ -16645,10 +16715,10 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objVehicle.ParentID));
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objVehicle.CurrentDisplayName);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayCategory(GlobalSettings.Language));
@@ -16678,7 +16748,7 @@ namespace Chummer
                         await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
                         await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesVehicle
                         await lblVehicleHandling.DoThreadSafeAsync(x => x.Text = objVehicle.TotalHandling);
                         await lblVehicleAccel.DoThreadSafeAsync(x => x.Text = objVehicle.TotalAccel);
@@ -16772,7 +16842,7 @@ namespace Chummer
                             await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesMatrix
                         int intDeviceRating = objVehicle.GetTotalMatrixAttribute("Device Rating");
                         await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
@@ -16797,8 +16867,8 @@ namespace Chummer
                         }
                         else
                             await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
-
-                        await UpdateSensor(objVehicle);
+                        token.ThrowIfCancellationRequested();
+                        await UpdateSensor(objVehicle, token);
                         break;
                     }
                     case WeaponMount objWeaponMount:
@@ -16806,10 +16876,10 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeaponMount.IncludedInVehicle);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language));
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeaponMount.CurrentDisplayName);
@@ -16846,10 +16916,10 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objMod.IncludedInVehicle);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objMod.CurrentDisplayName);
                         await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_VehicleModification"));
@@ -16863,7 +16933,7 @@ namespace Chummer
                             {
                                 objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalSettings.CultureInfo);
                             }
-
+                            token.ThrowIfCancellationRequested();
                             if (Convert.ToInt32(objMod.MaxRating, GlobalSettings.InvariantCultureInfo) > 0)
                             {
                                 await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
@@ -16890,7 +16960,7 @@ namespace Chummer
                                 x.Visible = true;
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
                         await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
@@ -16921,7 +16991,7 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeapon.Cyberware
                                                                      && objWeapon.Category != "Gear"
@@ -16929,7 +16999,7 @@ namespace Chummer
                                                                      && string.IsNullOrEmpty(objWeapon.ParentID)
                                                                      && !objWeapon.Category.StartsWith(
                                                                          "Quality", StringComparison.Ordinal));
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
                         await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language));
@@ -16958,6 +17028,7 @@ namespace Chummer
                                             .Append(await LanguageManager.GetStringAsync("String_Mount" + strMount))
                                             .Append('/');
                                     --sbdSlotsText.Length;
+                                    token.ThrowIfCancellationRequested();
                                     await lblWeaponSlots.DoThreadSafeAsync(x => x.Text = sbdSlotsText.ToString());
                                 }
                             }
@@ -16966,7 +17037,7 @@ namespace Chummer
                         }
                         else
                             await lblWeaponSlots.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
-
+                        token.ThrowIfCancellationRequested();
                         await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = !objWeapon.IncludedInWeapon);
                         await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
@@ -16982,7 +17053,7 @@ namespace Chummer
                             x.Visible = true;
                             x.Checked = objWeapon.IncludedInWeapon;
                         });
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesWeapon
                         await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
                         await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
@@ -17058,10 +17129,10 @@ namespace Chummer
                                 await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
                                 await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                             }
-
+                            token.ThrowIfCancellationRequested();
                             await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
-
+                            token.ThrowIfCancellationRequested();
                             await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = false);
                         }
 
@@ -17071,8 +17142,9 @@ namespace Chummer
                             await lblVehicleWeaponAmmoRemaining.DoThreadSafeAsync(x => x.Text
                                 = objWeapon.AmmoRemaining.ToString(GlobalSettings.CultureInfo));
                             await cmdFireVehicleWeapon.DoThreadSafeAsync(x => x.Enabled = objWeapon.AmmoRemaining != 0);
-
+                            token.ThrowIfCancellationRequested();
                             await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode);
+                            token.ThrowIfCancellationRequested();
                             await cmdVehicleAmmoExpense.DoThreadSafeAsync(async () =>
                             {
                                 cmsVehicleAmmoSingleShot.Enabled =
@@ -17139,7 +17211,7 @@ namespace Chummer
                                                                                  ? "String_Bullet"
                                                                                  : "String_Bullets"));
                             });
-
+                            token.ThrowIfCancellationRequested();
                             using (new FetchSafelyFromPool<List<ListItem>>(
                                        Utils.ListItemListPool, out List<ListItem> lstAmmo))
                             {
@@ -17147,6 +17219,7 @@ namespace Chummer
 
                                 for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objWeapon.ActiveAmmoSlot = i;
                                     Gear objVehicleGear
                                         = objWeapon.ParentVehicle.GearChildren.DeepFindById(objWeapon.AmmoLoaded);
@@ -17184,11 +17257,11 @@ namespace Chummer
                                             strAmmoName += strSpace + '[' + sbdPlugins + ']';
                                         }
                                     }
-
+                                    token.ThrowIfCancellationRequested();
                                     lstAmmo.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
                                                              strAmmoName));
                                 }
-
+                                token.ThrowIfCancellationRequested();
                                 objWeapon.ActiveAmmoSlot = intCurrentSlot;
                                 await cboVehicleWeaponAmmo.PopulateWithListItemsAsync(lstAmmo);
                                 await cboVehicleWeaponAmmo.DoThreadSafeAsync(x =>
@@ -17205,7 +17278,7 @@ namespace Chummer
                         {
                             await tlpVehiclesWeaponCareer.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesMatrix
                         int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
                         await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
@@ -17237,10 +17310,10 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objAccessory.IncludedInWeapon);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objAccessory.CurrentDisplayNameShort);
                         await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_VehicleWeaponAccessory"));
@@ -17258,7 +17331,7 @@ namespace Chummer
                             await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
                         await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
@@ -17288,7 +17361,7 @@ namespace Chummer
                                         sbdMount.Append(strSpace).Append('+').Append(strSpace);
                                         boolHaveAddedItem = true;
                                     }
-
+                                    token.ThrowIfCancellationRequested();
                                     sbdMount.Append(await LanguageManager.GetStringAsync(
                                                         "String_Mount" + strCurrentExtraMount))
                                             .Append('/');
@@ -17298,7 +17371,7 @@ namespace Chummer
                                 if (boolHaveAddedItem)
                                     --sbdMount.Length;
                             }
-
+                            token.ThrowIfCancellationRequested();
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
@@ -17306,7 +17379,7 @@ namespace Chummer
                                 x.Text = sbdMount.ToString();
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await cmdVehicleMoveToInventory.DoThreadSafeAsync(x => x.Visible = false);
                         await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
@@ -17320,7 +17393,7 @@ namespace Chummer
                             x.Visible = true;
                             x.Checked = objAccessory.IncludedInWeapon;
                         });
-
+                        token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
                         await gpbWeaponsWeapon.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("String_WeaponAccessory"));
                         if (string.IsNullOrEmpty(objAccessory.Damage))
@@ -17341,7 +17414,7 @@ namespace Chummer
                                          .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (string.IsNullOrEmpty(objAccessory.AP))
                         {
                             await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -17358,7 +17431,7 @@ namespace Chummer
                                          .ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (objAccessory.Accuracy == 0)
                         {
                             await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -17374,7 +17447,7 @@ namespace Chummer
                                     = objAccessory.Accuracy.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
                             });
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (objAccessory.DicePool == 0)
                         {
                             await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false);
@@ -17391,7 +17464,7 @@ namespace Chummer
                             });
                             await dpcVehicleWeaponDicePool.SetLabelToolTipAsync(string.Empty);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         if (objAccessory.TotalAmmoBonus != 0
                             || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                 && objAccessory.ModifyAmmoCapacity != "0"))
@@ -17416,10 +17489,10 @@ namespace Chummer
                             await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
                             await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = false);
                         await tlpVehiclesWeaponCareer.DoThreadSafeAsync(x => x.Visible = false);
                         break;
@@ -17430,10 +17503,10 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID));
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayNameShort);
                         await lblVehicleCategory.DoThreadSafeAsync(async x => x.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language));
@@ -17451,7 +17524,7 @@ namespace Chummer
                             });
                             await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
                         }
-
+                        token.ThrowIfCancellationRequested();
                         await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
                         await lblVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
                         await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false);
@@ -17466,13 +17539,13 @@ namespace Chummer
                                                                                        objCyberware.PlugsIntoModularMount));
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
                         await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesMatrix
                         int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
                         await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
                         await objCyberware.RefreshMatrixAttributeComboBoxesAsync(
                             cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
-
+                        token.ThrowIfCancellationRequested();
                         await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
                         {
                             x.Visible = objCyberware.IsCommlink;
@@ -17500,10 +17573,10 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
@@ -17539,13 +17612,13 @@ namespace Chummer
                         await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
                         await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // gpbVehiclesMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                         await lblVehicleDevice.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
                         await objGear.RefreshMatrixAttributeComboBoxesAsync(
                             cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall);
-
+                        token.ThrowIfCancellationRequested();
                         await chkVehicleActiveCommlink.DoThreadSafeAsync(x =>
                         {
                             x.Visible = objGear.IsCommlink;
@@ -17572,32 +17645,35 @@ namespace Chummer
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
                         await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
-
+                        token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = false);
                         break;
                 }
-
+                token.ThrowIfCancellationRequested();
                 await panVehicleCM.DoThreadSafeAsync(x => x.Visible = objSelectedNodeTag is IHasPhysicalConditionMonitor ||
                                                                       objSelectedNodeTag is IHasMatrixAttributes);
-
+                token.ThrowIfCancellationRequested();
                 await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = objSelectedNodeTag is IHasMatrixAttributes ||
                                                                            objSelectedNodeTag is IHasWirelessBonus);
-
+                token.ThrowIfCancellationRequested();
                 if (await panVehicleCM.DoThreadSafeFuncAsync(x => x.Visible))
                 {
                     if (objSelectedNodeTag is IHasPhysicalConditionMonitor objCM)
                     {
+                        token.ThrowIfCancellationRequested();
                         await ProcessEquipmentConditionMonitorBoxDisplays(
                             panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
                     }
 
                     if (objSelectedNodeTag is IHasMatrixAttributes objMatrixCM)
                     {
+                        token.ThrowIfCancellationRequested();
                         await ProcessEquipmentConditionMonitorBoxDisplays(
                             panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                     }
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -17873,12 +17949,12 @@ namespace Chummer
         /// <summary>
         /// Update the karma cost tooltip for Initiation/Submersion.
         /// </summary>
-        private async Task UpdateInitiationCost()
+        private async Task UpdateInitiationCost(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             decimal decMultiplier = 1.0m;
             int intAmount;
             string strInitTip;
-
             if (CharacterObject.MAGEnabled)
             {
                 if (chkInitiationGroup.Checked)
@@ -17888,7 +17964,7 @@ namespace Chummer
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= CharacterObjectSettings.KarmaMAGInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.InitiateGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
+                token.ThrowIfCancellationRequested();
                 strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveInitiateGrade")
                     , (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo)
                     , intAmount.ToString(GlobalSettings.CultureInfo));
@@ -17902,13 +17978,14 @@ namespace Chummer
                 if (chkInitiationSchooling.Checked)
                     decMultiplier -= CharacterObjectSettings.KarmaRESInitiationSchoolingPercent;
                 intAmount = ((CharacterObjectSettings.KarmaInitiationFlat + (CharacterObject.SubmersionGrade + 1) * CharacterObjectSettings.KarmaInitiation) * decMultiplier).StandardRound();
-
+                token.ThrowIfCancellationRequested();
                 strInitTip = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Tip_ImproveSubmersionGrade")
                     , (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo)
                     , intAmount.ToString(GlobalSettings.CultureInfo));
             }
-
+            token.ThrowIfCancellationRequested();
             await cmdAddMetamagic.SetToolTipAsync(strInitTip);
+            token.ThrowIfCancellationRequested();
         }
 
         /// <summary>
@@ -17972,47 +18049,49 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently selected Spell
         /// </summary>
-        private async Task RefreshSelectedSpell()
+        private async Task RefreshSelectedSpell(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await gpbMagicianSpell.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                token.ThrowIfCancellationRequested();
+                object objSelectedNodeTag = await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag is Spell objSpell && await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0))
                 {
+                    token.ThrowIfCancellationRequested();
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = true);
                     await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSpell.Grade == 0);
-
-                    await lblSpellDescriptors.DoThreadSafeFunc(
-                        async x => x.Text = await objSpell.DisplayDescriptorsAsync(GlobalSettings.Language));
-                    if (string.IsNullOrEmpty(lblSpellDescriptors.Text))
-                        await lblSpellDescriptors.DoThreadSafeFunc(
-                            async x => x.Text = await LanguageManager.GetStringAsync("String_None"));
-                    await lblSpellCategory.DoThreadSafeFunc(
-                        async x => x.Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language));
-                    await lblSpellType.DoThreadSafeFunc(
-                        async x => x.Text = await objSpell.DisplayTypeAsync(GlobalSettings.Language));
-                    await lblSpellRange.DoThreadSafeFunc(
-                        async x => x.Text = await objSpell.DisplayRangeAsync(GlobalSettings.Language));
-                    await lblSpellDamage.DoThreadSafeFunc(
-                        async x => x.Text = await objSpell.DisplayDamageAsync(GlobalSettings.Language));
-                    await lblSpellDuration.DoThreadSafeFunc(
-                        async x => x.Text = await objSpell.DisplayDurationAsync(GlobalSettings.Language));
-                    await lblSpellDV.DoThreadSafeFunc(
-                        async x => x.Text = await objSpell.DisplayDvAsync(GlobalSettings.Language));
+                    token.ThrowIfCancellationRequested();
+                    await lblSpellDescriptors.DoThreadSafeAsync(async x =>
+                    {
+                        x.Text = await objSpell.DisplayDescriptorsAsync(
+                            GlobalSettings.Language);
+                        if (string.IsNullOrEmpty(lblSpellDescriptors.Text))
+                            x.Text = await LanguageManager.GetStringAsync("String_None");
+                    });
+                    await lblSpellCategory.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language));
+                    await lblSpellType.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayTypeAsync(GlobalSettings.Language));
+                    await lblSpellRange.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayRangeAsync(GlobalSettings.Language));
+                    await lblSpellDamage.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayDamageAsync(GlobalSettings.Language));
+                    await lblSpellDuration.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayDurationAsync(GlobalSettings.Language));
+                    await lblSpellDV.DoThreadSafeAsync(async x => x.Text = await objSpell.DisplayDvAsync(GlobalSettings.Language));
                     await lblSpellDV.SetToolTipAsync(objSpell.DvTooltip);
+                    token.ThrowIfCancellationRequested();
                     await objSpell.SetSourceDetailAsync(lblSpellSource);
-
+                    token.ThrowIfCancellationRequested();
                     // Determine the size of the Spellcasting Dice Pool.
-                    dpcSpellDicePool.DicePool = objSpell.DicePool;
+                    await dpcSpellDicePool.DoThreadSafeAsync(x => x.DicePool = objSpell.DicePool);
                     await dpcSpellDicePool.SetLabelToolTipAsync(objSpell.DicePoolTooltip);
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     await gpbMagicianSpell.DoThreadSafeAsync(x => x.Visible = false);
                     await cmdDeleteSpell.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -18024,16 +18103,20 @@ namespace Chummer
         /// <summary>
         /// Recheck all mods to see if Sensor has changed.
         /// </summary>
-        /// <param name="objVehicle">Vehicle to modify.</param>
-        private async ValueTask UpdateSensor(Vehicle objVehicle)
+        private async ValueTask UpdateSensor(Vehicle objVehicle, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             foreach (Gear objGear in objVehicle.GearChildren)
             {
-                if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
+                if (objGear.Category != "Sensors" || objGear.Name != "Sensor Array" || !objGear.IncludedInParent)
+                    continue;
+                token.ThrowIfCancellationRequested();
+                // Update the name of the item in the TreeView.
+                TreeNode objNode = treVehicles.FindNode(objGear.InternalId);
+                if (objNode != null)
                 {
-                    // Update the name of the item in the TreeView.
-                    TreeNode objNode = treVehicles.FindNode(objGear.InternalId);
                     await treVehicles.DoThreadSafeAsync(() => objNode.Text = objGear.CurrentDisplayName);
+                    token.ThrowIfCancellationRequested();
                 }
             }
         }
@@ -18166,35 +18249,39 @@ namespace Chummer
         /// <summary>
         /// Refresh the information for the currently selected Complex Form.
         /// </summary>
-        private async Task RefreshSelectedComplexForm()
+        private async Task RefreshSelectedComplexForm(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.SuspendLayout());
             try
             {
-                // Locate the Program that is selected in the tree.
-                object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
-                if (objSelectedNodeTag is ComplexForm objComplexForm)
+                token.ThrowIfCancellationRequested();
+                object objSelectedNodeTag = await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                if (objSelectedNodeTag is ComplexForm objComplexForm && await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level > 0))
                 {
+                    token.ThrowIfCancellationRequested();
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = true);
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objComplexForm.Grade == 0);
-
-                    await lblDuration.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language));
+                    token.ThrowIfCancellationRequested();
                     await lblTarget.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayTargetAsync(GlobalSettings.Language));
+                    await lblDuration.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayDurationAsync(GlobalSettings.Language));
                     await lblFV.DoThreadSafeAsync(async x => x.Text = await objComplexForm.DisplayFvAsync(GlobalSettings.Language));
                     await lblFV.SetToolTipAsync(objComplexForm.FvTooltip);
-
+                    token.ThrowIfCancellationRequested();
+                    await objComplexForm.SetSourceDetailAsync(lblSpellSource);
+                    token.ThrowIfCancellationRequested();
                     // Determine the size of the Threading Dice Pool.
-                    dpcComplexFormDicePool.DicePool = objComplexForm.DicePool;
+                    await dpcComplexFormDicePool.DoThreadSafeAsync(x => x.DicePool = objComplexForm.DicePool);
                     await dpcComplexFormDicePool.SetLabelToolTipAsync(objComplexForm.DicePoolTooltip);
-
-                    await objComplexForm.SetSourceDetailAsync(lblComplexFormSource);
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.Visible = false);
                     await cmdDeleteComplexForm.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
@@ -18911,24 +18998,29 @@ namespace Chummer
             await RefreshSelectedAIProgram();
         }
 
-        private async Task RefreshSelectedAIProgram()
+        private async Task RefreshSelectedAIProgram(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             IsRefreshing = true;
             try
             {
+                token.ThrowIfCancellationRequested();
                 // Locate the Program that is selected in the tree.
                 if (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is AIProgram objProgram)
                 {
+                    token.ThrowIfCancellationRequested();
                     await lblAIProgramsRequires.DoThreadSafeAsync(
                         async x => x.Text = await objProgram.DisplayRequiresProgramAsync(GlobalSettings.Language));
                     await objProgram.SetSourceDetailAsync(lblAIProgramsSource);
                 }
                 else
                 {
+                    token.ThrowIfCancellationRequested();
                     await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = string.Empty);
                     await lblAIProgramsSource.DoThreadSafeAsync(x => x.Text = string.Empty);
                     await lblAIProgramsSource.SetToolTipAsync(string.Empty);
                 }
+                token.ThrowIfCancellationRequested();
             }
             finally
             {
