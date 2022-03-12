@@ -14087,7 +14087,7 @@ namespace Chummer
                         objMatrixCM)
                     {
                         await ProcessEquipmentConditionMonitorBoxDisplays(panCyberwareMatrixCM, objMatrixCM.MatrixCM,
-                                                                    objMatrixCM.MatrixCMFilled);
+                                                                          objMatrixCM.MatrixCMFilled);
                     }
                     else
                     {
@@ -15074,166 +15074,215 @@ namespace Chummer
         private async Task RefreshSelectedGear()
         {
             IsRefreshing = true;
-            flpGear.SuspendLayout();
-
-            if (treGear.SelectedNode == null || treGear.SelectedNode.Level == 0)
+            await flpGear.DoThreadSafeAsync(x => x.SuspendLayout());
+            try
             {
-                gpbGearCommon.Visible = false;
-                gpbGearMatrix.Visible = false;
-                tabGearCM.Visible = false;
-
-                // Buttons
-                cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
-
-                IsRefreshing = false;
-                flpGear.ResumeLayout();
-                return;
-            }
-
-            if (treGear.SelectedNode?.Tag is IHasWirelessBonus objHasWirelessBonus)
-            {
-                chkGearWireless.Visible = true;
-                chkGearWireless.Checked = objHasWirelessBonus.WirelessOn;
-            }
-            else
-                chkArmorWireless.Visible = false;
-
-            if (treGear.SelectedNode?.Tag is IHasSource objSelected)
-            {
-                lblGearSourceLabel.Visible = true;
-                lblGearSource.Visible = true;
-                await objSelected.SetSourceDetailAsync(lblGearSource);
-            }
-            else
-            {
-                lblGearSourceLabel.Visible = false;
-                lblGearSource.Visible = false;
-            }
-
-            if (treGear.SelectedNode?.Tag is IHasRating objHasRating)
-            {
-                lblGearRatingLabel.Text = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat"),
-                    await LanguageManager.GetStringAsync(objHasRating.RatingLabel));
-            }
-
-            if (treGear.SelectedNode?.Tag is Gear objGear)
-            {
-                gpbGearCommon.Visible = true;
-                gpbGearMatrix.Visible = true;
-                tabGearCM.Visible = true;
-
-                // Buttons
-                cmdDeleteGear.Enabled = !objGear.IncludedInParent;
-
-                // gpbGearCommon
-                lblGearName.Text = objGear.CurrentDisplayNameShort;
-                lblGearCategory.Text = objGear.DisplayCategory(GlobalSettings.Language);
-                int intGearMaxRatingValue = objGear.MaxRatingValue;
-                if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode == null || x.SelectedNode.Level == 0))
                 {
-                    lblGearRatingLabel.Visible = true;
-                    lblGearRating.Visible = true;
-                    lblGearRating.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
-                }
-                else
-                {
-                    lblGearRatingLabel.Visible = false;
-                    lblGearRating.Visible = false;
-                }
-                lblGearQty.Text = objGear.Quantity.ToString(GlobalSettings.CultureInfo);
-                cmdGearIncreaseQty.Visible = true;
-                cmdGearIncreaseQty.Enabled = !objGear.IncludedInParent;
-                cmdGearReduceQty.Visible = true;
-                cmdGearReduceQty.Enabled = !objGear.IncludedInParent;
-                cmdGearReduceQty.Visible = true;
-                cmdGearSplitQty.Enabled = !objGear.IncludedInParent;
-                cmdGearReduceQty.Visible = true;
-                cmdGearMergeQty.Enabled = !objGear.IncludedInParent;
-                cmdGearMoveToVehicle.Visible = true;
-                cmdGearMoveToVehicle.Enabled = !objGear.IncludedInParent && CharacterObject.Vehicles.Count > 0;
-                lblGearAvail.Text = objGear.DisplayTotalAvail;
-                try
-                {
-                    lblGearCost.Text = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                }
-                catch (FormatException)
-                {
-                    lblGearCost.Text = objGear.Cost + '¥';
-                }
-                lblGearCapacity.Text = objGear.DisplayCapacity;
-                chkGearEquipped.Visible = true;
-                chkGearEquipped.Checked = objGear.Equipped;
-                // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
-                if (objGear.IsProgram && objGear.Parent is IHasMatrixAttributes objCommlink && objCommlink.IsCommlink)
-                {
-                    chkGearEquipped.Text = await LanguageManager.GetStringAsync("Checkbox_SoftwareRunning");
-                }
-                else
-                {
-                    chkGearEquipped.Text = await LanguageManager.GetStringAsync("Checkbox_Equipped");
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await tabGearCM.DoThreadSafeAsync(x => x.Visible = false);
+
+                    // Buttons
+                    await cmdDeleteGear.DoThreadSafeAsync(async x => x.Enabled = await treGear.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
+                    return;
                 }
 
-                // gpbGearMatrix
-                int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
-                lblGearDeviceRating.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo);
-                await objGear.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
-                if (CharacterObject.IsAI)
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasWirelessBonus objHasWirelessBonus)
                 {
-                    chkGearHomeNode.Visible = true;
-                    chkGearHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
-                    chkGearHomeNode.Enabled = chkGearActiveCommlink.Enabled &&
-                                              objGear.GetTotalMatrixAttribute("Program Limit") >=
-                                              (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
-                }
-                else
-                    chkGearHomeNode.Visible = false;
-                chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-                chkGearActiveCommlink.Visible = objGear.IsCommlink;
-                if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
-                {
-                    using (new FetchSafelyFromPool<List<ListItem>>(
-                               Utils.ListItemListPool, out List<ListItem> lstOverclocker))
+                    await chkGearWireless.DoThreadSafeAsync(x =>
                     {
-                        lstOverclocker.Add(new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
-                        lstOverclocker.Add(new ListItem("Attack", await LanguageManager.GetStringAsync("String_Attack")));
-                        lstOverclocker.Add(new ListItem("Sleaze", await LanguageManager.GetStringAsync("String_Sleaze")));
-                        lstOverclocker.Add(new ListItem("Data Processing", await LanguageManager.GetStringAsync("String_DataProcessing")));
-                        lstOverclocker.Add(new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
-                        
-                        await cboGearOverclocker.PopulateWithListItemsAsync(lstOverclocker);
-                        cboGearOverclocker.SelectedValue = objGear.Overclocked;
-                        if (cboGearOverclocker.SelectedIndex == -1)
-                            cboGearOverclocker.SelectedIndex = 0;
+                        x.Visible = true;
+                        x.Checked = objHasWirelessBonus.WirelessOn;
+                    });
+                }
+                else
+                    await chkGearWireless.DoThreadSafeAsync(x => x.Visible = false);
+
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasSource objSelected)
+                {
+                    await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblGearSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await objSelected.SetSourceDetailAsync(lblGearSource);
+                }
+                else
+                {
+                    await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblGearSource.DoThreadSafeAsync(x => x.Visible = false);
+                }
+
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is IHasRating objHasRating)
+                {
+                    await lblGearRatingLabel.DoThreadSafeAsync(async x => x.Text = string.Format(
+                                                                   GlobalSettings.CultureInfo,
+                                                                   await LanguageManager.GetStringAsync(
+                                                                       "Label_RatingFormat"),
+                                                                   await LanguageManager.GetStringAsync(
+                                                                       objHasRating.RatingLabel)));
+                }
+
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag) is Gear objGear)
+                {
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = true);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                    await tabGearCM.DoThreadSafeAsync(x => x.Visible = true);
+
+                    // Buttons
+                    await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
+
+                    // gpbGearCommon
+                    await lblGearName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
+                    await lblGearCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
+                    int intGearMaxRatingValue = objGear.MaxRatingValue;
+                    if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
+                    {
+                        await lblGearRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblGearRating.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = true;
+                            x.Text = objGear.Rating.ToString(GlobalSettings.CultureInfo);
+                        });
+                    }
+                    else
+                    {
+                        await lblGearRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblGearRating.DoThreadSafeAsync(x => x.Visible = false);
                     }
 
-                    cboGearOverclocker.Visible = true;
-                    lblGearOverclockerLabel.Visible = true;
+                    await lblGearQty.DoThreadSafeAsync(x => x.Text = objGear.Quantity.ToString(GlobalSettings.CultureInfo));
+                    await cmdGearIncreaseQty.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Enabled = !objGear.IncludedInParent;
+                    });
+                    await cmdGearReduceQty.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Enabled = !objGear.IncludedInParent;
+                    });
+                    await cmdGearSplitQty.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Enabled = !objGear.IncludedInParent;
+                    });
+                    await cmdGearMergeQty.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Enabled = !objGear.IncludedInParent;
+                    });
+                    await cmdGearMoveToVehicle.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Enabled = !objGear.IncludedInParent && CharacterObject.Vehicles.Count > 0;
+                    });
+                    await lblGearAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
+                    try
+                    {
+                        await lblGearCost.DoThreadSafeAsync(x => x.Text
+                                                                = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
+                                                                    GlobalSettings.CultureInfo) + '¥');
+                    }
+                    catch (FormatException)
+                    {
+                        await lblGearCost.DoThreadSafeAsync(x => x.Text = objGear.Cost + '¥');
+                    }
+
+                    await lblGearCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity);
+                    await chkGearEquipped.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = true;
+                        x.Checked = objGear.Equipped;
+                    });
+                    // If this is a Program, determine if its parent Gear (if any) is a Commlink. If so, show the Equipped checkbox.
+                    if (objGear.IsProgram && objGear.Parent is IHasMatrixAttributes objCommlink
+                                          && objCommlink.IsCommlink)
+                    {
+                        await chkGearEquipped.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_SoftwareRunning"));
+                    }
+                    else
+                    {
+                        await chkGearEquipped.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_Equipped"));
+                    }
+
+                    // gpbGearMatrix
+                    int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                    await lblGearDeviceRating.DoThreadSafeAsync(x => x.Text = intDeviceRating.ToString(GlobalSettings.CultureInfo));
+                    await objGear.RefreshMatrixAttributeComboBoxesAsync(cboGearAttack, cboGearSleaze,
+                                                                        cboGearDataProcessing, cboGearFirewall);
+                    if (CharacterObject.IsAI)
+                    {
+                        await chkGearHomeNode.DoThreadSafeAsync(async x =>
+                        {
+                            x.Visible = true;
+                            x.Checked = objGear.IsHomeNode(CharacterObject);
+                            x.Enabled = await chkGearActiveCommlink.DoThreadSafeFuncAsync(y => y.Enabled) &&
+                                        objGear.GetTotalMatrixAttribute("Program Limit") >=
+                                        (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        });
+                    }
+                    else
+                        await chkGearHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+
+                    await chkGearActiveCommlink.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        x.Visible = objGear.IsCommlink;
+                    });
+                    if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
+                    {
+                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                   Utils.ListItemListPool, out List<ListItem> lstOverclocker))
+                        {
+                            lstOverclocker.Add(
+                                new ListItem("None", await LanguageManager.GetStringAsync("String_None")));
+                            lstOverclocker.Add(
+                                new ListItem("Attack", await LanguageManager.GetStringAsync("String_Attack")));
+                            lstOverclocker.Add(
+                                new ListItem("Sleaze", await LanguageManager.GetStringAsync("String_Sleaze")));
+                            lstOverclocker.Add(new ListItem("Data Processing",
+                                                            await LanguageManager.GetStringAsync(
+                                                                "String_DataProcessing")));
+                            lstOverclocker.Add(
+                                new ListItem("Firewall", await LanguageManager.GetStringAsync("String_Firewall")));
+
+                            await cboGearOverclocker.PopulateWithListItemsAsync(lstOverclocker);
+                            await cboGearOverclocker.DoThreadSafeAsync(x =>
+                            {
+                                x.SelectedValue = objGear.Overclocked;
+                                if (x.SelectedIndex == -1)
+                                    x.SelectedIndex = 0;
+                            });
+                        }
+
+                        await cboGearOverclocker.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblGearOverclockerLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    }
+                    else
+                    {
+                        await cboGearOverclocker.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblGearOverclockerLabel.DoThreadSafeAsync(x => x.Visible = false);
+                    }
+
+                    await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
+
+                    await ProcessEquipmentConditionMonitorBoxDisplays(panGearMatrixCM, objGear.MatrixCM,
+                                                                      objGear.MatrixCMFilled);
                 }
                 else
                 {
-                    cboGearOverclocker.Visible = false;
-                    lblGearOverclockerLabel.Visible = false;
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await tabGearCM.DoThreadSafeAsync(x => x.Visible = false);
+
+                    // Buttons
+                    await cmdDeleteGear.DoThreadSafeAsync(async x => x.Enabled = await treGear.DoThreadSafeFuncAsync(y => y.SelectedNode?.Tag) is ICanRemove);
                 }
-
-                treGear.SelectedNode.Text = objGear.CurrentDisplayName;
-
-                await ProcessEquipmentConditionMonitorBoxDisplays(panGearMatrixCM, objGear.MatrixCM, objGear.MatrixCMFilled);
             }
-            else
+            finally
             {
-                gpbGearCommon.Visible = false;
-                gpbGearMatrix.Visible = false;
-                tabGearCM.Visible = false;
-
-                // Buttons
-                cmdDeleteGear.Enabled = treGear.SelectedNode?.Tag is ICanRemove;
+                await flpGear.DoThreadSafeAsync(x => x.ResumeLayout());
+                IsRefreshing = false;
             }
-
-            gpbGearMatrix.Visible = treGear.SelectedNode.Tag is IHasMatrixAttributes ||
-                                    treGear.SelectedNode.Tag is IHasWirelessBonus;
-
-            IsRefreshing = false;
-            flpGear.ResumeLayout();
         }
 
         protected override string FormMode => LanguageManager.GetString("Title_CareerMode");
