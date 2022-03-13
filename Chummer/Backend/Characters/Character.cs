@@ -2596,16 +2596,18 @@ namespace Chummer
         /// <summary>
         /// Save the Character to an XML file. Returns true if successful.
         /// </summary>
-        public Task<bool> SaveAsync(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true)
+        public Task<bool> SaveAsync(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, CancellationToken token = default)
         {
-            return SaveCoreAsync(false, strFileName, addToMRU, callOnSaveCallBack);
+            return SaveCoreAsync(false, strFileName, addToMRU, callOnSaveCallBack, token);
         }
 
         /// <summary>
         /// Save the Character to an XML file. Returns true if successful.
         /// </summary>
-        private async Task<bool> SaveCoreAsync(bool blnSync, string strFileName, bool addToMRU, bool callOnSaveCallBack)
+        private async Task<bool> SaveCoreAsync(bool blnSync, string strFileName, bool addToMRU, bool callOnSaveCallBack, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+
             if (string.IsNullOrWhiteSpace(strFileName))
             {
                 strFileName = FileName;
@@ -2616,14 +2618,14 @@ namespace Chummer
             }
 
             // ReSharper disable once MethodHasAsyncOverload
-            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject))
+            using (blnSync ? EnterReadLock.Enter(LockObject) : await EnterReadLock.EnterAsync(LockObject, token))
             {
                 bool blnErrorFree = true;
 
                 if (blnSync)
                     DoSave();
                 else
-                    await Task.Run(DoSaveAsync);
+                    await Task.Run(() => DoSaveAsync(token), token);
 
                 void DoSave()
                 {
@@ -3371,7 +3373,7 @@ namespace Chummer
                     }
                 }
 
-                async Task DoSaveAsync()
+                async Task DoSaveAsync(CancellationToken innerToken = default)
                 {
                     using (MemoryStream objStream = new MemoryStream())
                     {
@@ -4133,7 +4135,7 @@ namespace Chummer
                 }
                 else
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
@@ -4183,7 +4185,7 @@ namespace Chummer
                             {
                                 Func<Character, bool> funcLoopToRun = DoOnSaveCompleted[i];
                                 if (funcLoopToRun != null)
-                                    lstDoOnSaveCompletedAsync.Add(Task.Run(() => funcLoopToRun.Invoke(this)));
+                                    lstDoOnSaveCompletedAsync.Add(Task.Run(() => funcLoopToRun.Invoke(this), token));
                             }
 
                             await Task.WhenAll(lstDoOnSaveCompletedAsync);
@@ -4204,7 +4206,7 @@ namespace Chummer
                             {
                                 Func<Character, Task<bool>> funcLoopToRun = DoOnSaveCompletedAsync[i];
                                 if (funcLoopToRun != null)
-                                    lstDoOnSaveCompletedAsync.Add(funcLoopToRun.Invoke(this));
+                                    lstDoOnSaveCompletedAsync.Add(Task.Run(() => funcLoopToRun.Invoke(this), token));
                             }
 
                             await Task.WhenAll(lstDoOnSaveCompletedAsync);

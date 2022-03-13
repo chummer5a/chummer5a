@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -316,8 +317,9 @@ namespace Chummer
         /// <summary>
         /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
         /// </summary>
-        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
+        public static async Task RefreshMatrixAttributeComboBoxesAsync(this IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objThis == null)
                 return;
             if (cboAttack == null)
@@ -342,22 +344,22 @@ namespace Chummer
             {
                 x.SuspendLayout();
                 x.BeginUpdate();
-            });
+            }, token);
             await cboSleaze.DoThreadSafeAsync(x =>
             {
                 x.SuspendLayout();
                 x.BeginUpdate();
-            });
+            }, token);
             await cboDataProcessing.DoThreadSafeAsync(x =>
             {
                 x.SuspendLayout();
                 x.BeginUpdate();
-            });
+            }, token);
             await cboFirewall.DoThreadSafeAsync(x =>
             {
                 x.SuspendLayout();
                 x.BeginUpdate();
-            });
+            }, token);
 
             try
             {
@@ -375,7 +377,7 @@ namespace Chummer
                     x.SelectedIndex = 0;
                     x.Visible = true;
                     x.Enabled = objThis.CanSwapAttributes;
-                });
+                }, token);
 
                 await cboSleaze.DoThreadSafeAsync(x =>
                 {
@@ -391,7 +393,7 @@ namespace Chummer
                     x.SelectedIndex = 1;
                     x.Visible = true;
                     x.Enabled = objThis.CanSwapAttributes;
-                });
+                }, token);
 
                 await cboDataProcessing.DoThreadSafeAsync(x =>
                 {
@@ -407,7 +409,7 @@ namespace Chummer
                     x.SelectedIndex = 2;
                     x.Visible = true;
                     x.Enabled = objThis.CanSwapAttributes;
-                });
+                }, token);
 
                 await cboFirewall.DoThreadSafeAsync(x =>
                 {
@@ -423,7 +425,7 @@ namespace Chummer
                     x.SelectedIndex = 3;
                     x.Visible = true;
                     x.Enabled = objThis.CanSwapAttributes;
-                });
+                }, token);
             }
             finally
             {
@@ -431,22 +433,22 @@ namespace Chummer
                 {
                     x.EndUpdate();
                     x.ResumeLayout();
-                });
+                }, token);
                 await cboSleaze.DoThreadSafeAsync(x =>
                 {
                     x.EndUpdate();
                     x.ResumeLayout();
-                });
+                }, token);
                 await cboDataProcessing.DoThreadSafeAsync(x =>
                 {
                     x.EndUpdate();
                     x.ResumeLayout();
-                });
+                }, token);
                 await cboFirewall.DoThreadSafeAsync(x =>
                 {
                     x.EndUpdate();
                     x.ResumeLayout();
-                });
+                }, token);
             }
         }
 
@@ -529,8 +531,9 @@ namespace Chummer
             return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));
         }
 
-        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttribute, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
+        public static async Task<bool> ProcessMatrixAttributeComboBoxChangeAsync(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttribute, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objThis == null)
                 return false;
             if (objCharacter == null)
@@ -572,28 +575,28 @@ namespace Chummer
             else
                 return false;
 
-            int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex);
+            int intCurrentIndex = await cboChangedAttribute.DoThreadSafeFuncAsync(x => x.SelectedIndex, token);
             bool blnRefreshCharacter = false;
             // Find the combo with the same value as this one and change it to the missing value.
-            if (cboChangedAttribute != cboAttack && await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex) == intCurrentIndex)
+            if (cboChangedAttribute != cboAttack && await cboAttack.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Attack);
                 objThis.Attack = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboSleaze && await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex) == intCurrentIndex)
+            else if (cboChangedAttribute != cboSleaze && await cboSleaze.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Sleaze);
                 objThis.Sleaze = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboDataProcessing && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex) == intCurrentIndex)
+            else if (cboChangedAttribute != cboDataProcessing && await cboDataProcessing.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.DataProcessing);
                 objThis.DataProcessing = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttribute != cboFirewall && await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex) == intCurrentIndex)
+            else if (cboChangedAttribute != cboFirewall && await cboFirewall.DoThreadSafeFuncAsync(x => x.SelectedIndex, token) == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Firewall);
                 objThis.Firewall = strTemp;
@@ -602,7 +605,7 @@ namespace Chummer
 
             if (blnRefreshCharacter)
             {
-                await objThis.RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall);
+                await objThis.RefreshMatrixAttributeComboBoxesAsync(cboAttack, cboSleaze, cboDataProcessing, cboFirewall, token);
             }
 
             return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));

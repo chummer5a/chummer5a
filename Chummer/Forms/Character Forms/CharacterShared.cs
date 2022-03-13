@@ -249,8 +249,9 @@ namespace Chummer
         /// <summary>
         /// Automatically Save the character to a backup folder.
         /// </summary>
-        protected async Task AutoSaveCharacter()
+        protected async Task AutoSaveCharacter(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this, true))
             {
                 try
@@ -284,7 +285,7 @@ namespace Chummer
                     }
 
                     string strFilePath = Path.Combine(strAutosavePath, strShowFileName);
-                    if (!await CharacterObject.SaveAsync(strFilePath, false, false))
+                    if (!await CharacterObject.SaveAsync(strFilePath, false, false, token))
                     {
                         Log.Info("Autosave failed for character " + CharacterObject.CharacterName + " ("
                                  + CharacterObject.FileName + ')');
