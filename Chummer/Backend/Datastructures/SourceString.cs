@@ -27,10 +27,10 @@ namespace Chummer
 {
     public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
-        public static readonly SourceString Blank = GetSourceString(string.Empty, 0, GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo);
-
         private static readonly LockingDictionary<string, Tuple<string, string>> s_DicCachedStrings = new LockingDictionary<string, Tuple<string, string>>();
         private readonly int _intHashCode;
+
+        public static readonly SourceString Blank = GetSourceString(string.Empty, 0, GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo);
 
         public static SourceString GetSourceString(string strSourceString, string strLanguage = "",
                                                    CultureInfo objCultureInfo = null, Character objCharacter = null)
