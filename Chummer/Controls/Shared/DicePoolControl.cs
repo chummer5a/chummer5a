@@ -45,14 +45,14 @@ namespace Chummer.UI.Shared.Components
             await cmdRoll.SetToolTipTextAsync(await LanguageManager.GetStringAsync("Tip_DiceRoller"));
         }
 
-        private void cmdRoll_Click(object sender, EventArgs e)
+        private async void cmdRoll_Click(object sender, EventArgs e)
         {
             if (Program.MainForm == null)
                 return;
             Character objCharacter = null;
             if (ParentForm is CharacterShared frmParent)
                 objCharacter = frmParent.CharacterObject;
-            Program.MainForm.OpenDiceRollerWithPool(objCharacter, DicePool);
+            await Program.MainForm.OpenDiceRollerWithPool(objCharacter, DicePool);
         }
 
         public void SetLabelToolTip(string caption)

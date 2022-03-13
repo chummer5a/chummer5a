@@ -609,20 +609,16 @@ namespace Chummer
                                                             await LanguageManager.GetStringAsync(
                                                                 "String_Update_Available"),
                                                             Utils.CachedGitVersion);
-                        await this.DoThreadSafeAsync(async () =>
+                        await this.DoThreadSafeAsync(() => Text = strNewText);
+                        if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                         {
-                            if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
+                            _frmUpdate = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater());
+                            await _frmUpdate.DoThreadSafeAsync(x =>
                             {
-                                _frmUpdate = new ChummerUpdater();
-                                await _frmUpdate.DoThreadSafeAsync(x =>
-                                {
-                                    x.FormClosed += ResetChummerUpdater;
-                                    x.SilentMode = true;
-                                });
-                            }
-
-                            Text = strNewText;
-                        });
+                                x.FormClosed += ResetChummerUpdater;
+                                x.SilentMode = true;
+                            });
+                        }
                     }
                     if (token.IsCancellationRequested)
                         return;
@@ -1632,26 +1628,29 @@ namespace Chummer
             }
         }
 
-        public void OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0)
+        public async ValueTask OpenDiceRollerWithPool(Character objCharacter = null, int intDice = 0)
         {
             if (GlobalSettings.SingleDiceRoller)
             {
                 if (_frmRoller == null)
                 {
-                    _frmRoller = new DiceRoller(this, objCharacter?.Qualities, intDice);
-                    _frmRoller.Show();
+                    _frmRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice));
+                    await _frmRoller.DoThreadSafeAsync(x => x.Show());
                 }
                 else
                 {
-                    _frmRoller.Dice = intDice;
-                    _frmRoller.ProcessGremlins(objCharacter?.Qualities);
-                    _frmRoller.Activate();
+                    await _frmRoller.DoThreadSafeAsync(x =>
+                    {
+                        x.Dice = intDice;
+                        x.ProcessGremlins(objCharacter?.Qualities);
+                        x.Activate();
+                    });
                 }
             }
             else
             {
-                DiceRoller frmRoller = new DiceRoller(this, objCharacter?.Qualities, intDice);
-                frmRoller.Show();
+                DiceRoller frmRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice));
+                await frmRoller.DoThreadSafeAsync(x => x.Show());
             }
         }
 

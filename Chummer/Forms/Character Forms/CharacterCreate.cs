@@ -10492,30 +10492,29 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     await CalculateNuyen(token);
                     token.ThrowIfCancellationRequested();
-
                     if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
                         CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
                     {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
-                        });
+                        }, token);
                     }
                     else if (CharacterObject.IsFreeSprite)
                     {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblCritterPowerPoints.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = CharacterObject.CalculateFreeSpritePowerPoints();
-                        });
+                        }, token);
                     }
                     else
                     {
-                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCritterPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblCritterPowerPoints.DoThreadSafeAsync(x => x.Visible = false, token);
                     }
                     token.ThrowIfCancellationRequested();
                     await Task.WhenAll(RefreshSelectedQuality(token), RefreshSelectedCyberware(token),
@@ -10624,8 +10623,8 @@ namespace Chummer
                 object objSelectedNodeTag = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0))
                 {
-                    await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
 
                     // Buttons
                     await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
@@ -10640,20 +10639,20 @@ namespace Chummer
                             "Label_RatingFormat"),
                         await LanguageManager.GetStringAsync(
                             objHasRating.RatingLabel));
-                    await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
+                    await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                 }
                 token.ThrowIfCancellationRequested();
                 string strESSFormat = CharacterObjectSettings.EssenceFormat;
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
-                    await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = true, token);
                     await objSelected.SetSourceDetailAsync(lblCyberwareSource);
                 }
                 else
                 {
-                    await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblCyberwareSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblCyberwareSource.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasStolenProperty loot && (await ImprovementManager
@@ -10662,12 +10661,12 @@ namespace Chummer
                             Improvement.ImprovementType.Nuyen, "Stolen"))
                                                                      .Count > 0)
                 {
-                    await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = true);
+                    await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = true, token);
                     await chkCyberwareStolen.DoThreadSafeAsync(x => x.Checked = loot.Stolen);
                 }
                 else
                 {
-                    await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = false);
+                    await chkCyberwareStolen.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 switch (objSelectedNodeTag)
@@ -10675,7 +10674,7 @@ namespace Chummer
                     // Locate the selected piece of Cyberware.
                     case Cyberware objCyberware:
                     {
-                        await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true, token);
                         await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = objCyberware.SourceType == Improvement.ImprovementSource.Cyberware);
 
                         // Buttons
@@ -10684,7 +10683,7 @@ namespace Chummer
                         // gpbCyberwareCommon
                         await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayName);
                         string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language);
-                        await lblCyberwareCategory.DoThreadSafeAsync(x => x.Text = strText);
+                        await lblCyberwareCategory.DoThreadSafeAsync(x => x.Text = strText, token);
                         // Cyberware Grade is not available for Genetech items.
                         // Cyberware Grade is only available on root-level items (sub-components cannot have a different Grade than the piece they belong to).
                         await cboCyberwareGrade.DoThreadSafeAsync(x => x.Enabled = objCyberware.Parent == null
@@ -10697,7 +10696,7 @@ namespace Chummer
                             objCyberware.SourceType == Improvement.ImprovementSource.Bioware,
                             blnIgnoreSecondHand,
                             await cboCyberwareGrade.DoThreadSafeFuncAsync(x => x.Enabled) ? string.Empty : objCyberware.Grade.Name);
-                        await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await cboCyberwareGrade.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -10705,8 +10704,8 @@ namespace Chummer
                             if (x.SelectedIndex == -1 && x.Items.Count > 0)
                                 x.SelectedIndex = 0;
                         });
-                        await lblCyberwareEssenceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                        await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblCyberwareEssenceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (objCyberware.Parent == null || objCyberware.AddToParentESS)
                         {
                             decimal decCalculatedEss = objCyberware.CalculatedESS;
@@ -10729,7 +10728,7 @@ namespace Chummer
                                 x.Value = 0;
                                 x.Visible = false;
                             });
-                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
@@ -10742,7 +10741,7 @@ namespace Chummer
                                 x.Enabled = x.Maximum != x.Minimum
                                             && string.IsNullOrEmpty(objCyberware.ParentID);
                             });
-                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         }
                         token.ThrowIfCancellationRequested();
                         await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objCyberware.DisplayCapacity);
@@ -10753,13 +10752,13 @@ namespace Chummer
                         if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal)
                             || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                         {
-                            await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblCyberlimbAGI.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = objCyberware.GetAttributeTotalValue("AGI").ToString(GlobalSettings.CultureInfo);
                             });
-                            await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblCyberlimbSTR.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -10769,10 +10768,10 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
@@ -10840,7 +10839,7 @@ namespace Chummer
                                 });
                             }
                             else
-                                await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                                await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
                         await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objCyberware.CurrentDisplayName);
@@ -10848,8 +10847,8 @@ namespace Chummer
                     }
                     case Gear objGear:
                     {
-                        await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbCyberwareCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbCyberwareMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteCyberware.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
@@ -10857,12 +10856,12 @@ namespace Chummer
                         // gpbCyberwareCommon
                         await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
                         await lblCyberwareCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
-                        await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await cboCyberwareGrade.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblCyberwareEssenceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await cboCyberwareGrade.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblCyberwareEssenceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblCyberwareAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
-                        await cmdCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token);
                         int intGearMaxRatingValue = objGear.MaxRatingValue;
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                         {
@@ -10881,7 +10880,7 @@ namespace Chummer
                                             && string.IsNullOrEmpty(objGear.ParentID);
                                 x.Visible = true;
                             });
-                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         }
                         else
                         {
@@ -10891,17 +10890,17 @@ namespace Chummer
                                 x.Maximum = 0;
                                 x.Visible = false;
                             });
-                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblCyberwareRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
                         await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity);
                         await lblCyberwareCost.DoThreadSafeAsync(x => x.Text =
                                                                      objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
                                                                      + '¥');
-                        await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblCyberlimbAGI.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblCyberlimbSTRLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblCyberlimbSTR.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
                         {
@@ -10929,7 +10928,7 @@ namespace Chummer
                             });
                         }
                         token.ThrowIfCancellationRequested();
-                        await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkPrototypeTranshuman.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         // gpbCyberwareMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
@@ -10957,7 +10956,7 @@ namespace Chummer
                             });
                         }
                         else
-                            await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                            await chkCyberwareHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         await treCyberware.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
                         break;
@@ -10985,9 +10984,9 @@ namespace Chummer
                 object objSelectedNodeTag = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode.Level <= 0))
                 {
-                    await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
@@ -10997,14 +10996,14 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space");
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
-                    await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = true, token);
                     await objSelected.SetSourceDetailAsync(lblWeaponSource);
                 }
                 else
                 {
-                    await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblWeaponSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblWeaponSource.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
@@ -11015,7 +11014,7 @@ namespace Chummer
                             "Label_RatingFormat"),
                         await LanguageManager.GetStringAsync(
                             objHasRating.RatingLabel));
-                    await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
+                    await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasStolenProperty loot
@@ -11025,21 +11024,21 @@ namespace Chummer
                             Improvement.ImprovementType.Nuyen,
                             "Stolen")).Count > 0)
                 {
-                    await chkWeaponStolen.DoThreadSafeAsync(x => x.Visible = true);
+                    await chkWeaponStolen.DoThreadSafeAsync(x => x.Visible = true, token);
                     await chkWeaponStolen.DoThreadSafeAsync(x => x.Checked = loot.Stolen);
                 }
                 else
                 {
-                    await chkWeaponStolen.DoThreadSafeAsync(x => x.Visible = false);
+                    await chkWeaponStolen.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 switch (objSelectedNodeTag)
                 {
                     case Weapon objWeapon:
                     {
-                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objWeapon.IncludedInWeapon &&
@@ -11052,17 +11051,17 @@ namespace Chummer
                         // gpbWeaponsCommon
                         await lblWeaponName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
                         string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
-                        await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText);
-                        await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token);
+                        await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail);
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text
                                                                   = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
                                                                       GlobalSettings.CultureInfo) + '¥');
-                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
-                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                         {
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -11091,7 +11090,7 @@ namespace Chummer
                         }
 
                         token.ThrowIfCancellationRequested();
-                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblWeaponConceal.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -11142,26 +11141,26 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
                         strText = await LanguageManager.GetStringAsync("String_Weapon");
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText);
-                        await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText, token);
+                        await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblWeaponDamage.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = objWeapon.DisplayDamage;
                         });
-                        await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblWeaponAP.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = objWeapon.DisplayTotalAP;
                         });
-                        await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblWeaponAccuracy.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = objWeapon.DisplayAccuracy;
                         });
-                        await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblWeaponDicePool.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -11170,29 +11169,29 @@ namespace Chummer
                         await lblWeaponDicePool.SetToolTipAsync(objWeapon.DicePoolTooltip);
                         if (objWeapon.RangeType == "Ranged")
                         {
-                            await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponRC.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = objWeapon.DisplayTotalRC;
                             });
                             await lblWeaponRC.SetToolTipAsync(objWeapon.RCToolTip);
-                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponAmmo.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = objWeapon.DisplayAmmo;
                             });
-                            await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponMode.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = objWeapon.DisplayMode;
                             });
 
-                            await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = true);
+                            await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponRangeMain.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange);
                             await lblWeaponRangeAlternate.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange);
                             Dictionary<string, string> dictionaryRanges
@@ -11212,17 +11211,17 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponReach.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
                             });
-                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponRC.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponRC.DoThreadSafeAsync(x => x.Visible = false, token);
                             if (objWeapon.Ammo != "0")
                             {
-                                await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
@@ -11231,14 +11230,14 @@ namespace Chummer
                             }
                             else
                             {
-                                await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false, token);
                             }
                             token.ThrowIfCancellationRequested();
-                            await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false, token);
                             token.ThrowIfCancellationRequested();
-                            await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false);
+                            await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsMatrix
@@ -11269,15 +11268,15 @@ namespace Chummer
                             });
                         }
                         else
-                            await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         break;
                     }
                     case WeaponAccessory objSelectedAccessory:
                     {
-                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objSelectedAccessory.IncludedInWeapon &&
@@ -11286,10 +11285,10 @@ namespace Chummer
                         // gpbWeaponsCommon
                         await lblWeaponName.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.CurrentDisplayName);
                         string strText = await LanguageManager.GetStringAsync("String_WeaponAccessory");
-                        await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText);
+                        await lblWeaponCategory.DoThreadSafeAsync(x => x.Text = strText, token);
                         if (objSelectedAccessory.MaxRating > 0)
                         {
-                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponRating.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -11298,18 +11297,18 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
-                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objSelectedAccessory.DisplayTotalAvail);
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text
                                                                   = objSelectedAccessory.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
                                                                       GlobalSettings.CultureInfo) + '¥');
-                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
-                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = true, token);
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdSlotsText))
                         {
@@ -11405,11 +11404,11 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // gpbWeaponsWeapon
                         strText = await LanguageManager.GetStringAsync("String_WeaponAccessory");
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Text = strText, token);
                         if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
                         {
-                            await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponDamage.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponDamage.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
@@ -11427,12 +11426,12 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (string.IsNullOrEmpty(objSelectedAccessory.AP))
                         {
-                            await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponAP.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponAP.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
-                            await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponAP.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -11444,12 +11443,12 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (objSelectedAccessory.Accuracy == 0)
                         {
-                            await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
-                            await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponAccuracy.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -11460,12 +11459,12 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (objSelectedAccessory.DicePool == 0)
                         {
-                            await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
-                            await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponDicePool.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -11474,16 +11473,16 @@ namespace Chummer
                             });
                         }
                         token.ThrowIfCancellationRequested();
-                        await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token);
                         if (string.IsNullOrEmpty(objSelectedAccessory.RC))
                         {
-                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponRC.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponRC.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
-                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponRC.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -11497,8 +11496,8 @@ namespace Chummer
                             || (!string.IsNullOrEmpty(objSelectedAccessory.ModifyAmmoCapacity)
                                 && objSelectedAccessory.ModifyAmmoCapacity != "0"))
                         {
-                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
-                            await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true, token);
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdAmmoBonus))
                             {
@@ -11514,21 +11513,21 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
-                        await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponMode.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
-                        await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false);
+                        await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = false, token);
                         break;
                     }
                     case Gear objGear:
                     {
-                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
@@ -11539,7 +11538,7 @@ namespace Chummer
                         int intGearMaxRatingValue = objGear.MaxRatingValue;
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                         {
-                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblWeaponRating.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -11548,11 +11547,11 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblWeaponRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblWeaponRating.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
-                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblWeaponCapacityLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblWeaponCapacity.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -11562,10 +11561,10 @@ namespace Chummer
                         await lblWeaponCost.DoThreadSafeAsync(x => x.Text
                                                                   = objGear.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
                                                                       GlobalSettings.CultureInfo) + '¥');
-                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblWeaponConceal.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponSlots.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblWeaponConceal.DoThreadSafeAsync(x => x.Visible = false, token);
                         string strText = await LanguageManager.GetStringAsync(
                             "Checkbox_Equipped");
                         await chkWeaponEquipped.DoThreadSafeAsync(x =>
@@ -11574,7 +11573,7 @@ namespace Chummer
                             x.Enabled = !objGear.IncludedInParent;
                             x.Checked = objGear.Equipped;
                         });
-                        await chkIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
                         {
@@ -11630,14 +11629,14 @@ namespace Chummer
                             });
                         }
                         else
-                            await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                            await chkWeaponHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         break;
                     }
                     default:
-                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbWeaponsCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbWeaponsWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbWeaponsMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteWeapon.DoThreadSafeAsync(x => x.Enabled = false);
@@ -11665,9 +11664,9 @@ namespace Chummer
                 object objSelectedNodeTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null)
                 {
-                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
@@ -11676,14 +11675,14 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
-                    await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblArmorSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblArmorSource.DoThreadSafeAsync(x => x.Visible = true, token);
                     await objSelected.SetSourceDetailAsync(lblArmorSource);
                 }
                 else
                 {
-                    await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblArmorSource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblArmorSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblArmorSource.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasStolenProperty loot && (await ImprovementManager
@@ -11699,7 +11698,7 @@ namespace Chummer
                 }
                 else
                 {
-                    await chkArmorStolen.DoThreadSafeAsync(x => x.Visible = false);
+                    await chkArmorStolen.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
@@ -11710,20 +11709,20 @@ namespace Chummer
                             "Label_RatingFormat"),
                         await LanguageManager.GetStringAsync(
                             objHasRating.RatingLabel));
-                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
+                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is Armor objArmor)
                 {
-                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
-                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true);
-                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = true);
                     token.ThrowIfCancellationRequested();
                     // gpbArmorCommon
-                    await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                     await lblArmorValue.DoThreadSafeAsync(x =>
                     {
                         x.Visible = true;
@@ -11731,8 +11730,8 @@ namespace Chummer
                     });
                     await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmor.DisplayTotalAvail);
                     await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objArmor.DisplayCapacity);
-                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false, token);
                     await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                              = objArmor.TotalCost.ToString(
                                                                    CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
@@ -11743,7 +11742,7 @@ namespace Chummer
                         x.Checked = objArmor.Equipped;
                         x.Enabled = true;
                     });
-                    await chkIncludedInArmor.DoThreadSafeAsync(x => x.Visible = false);
+                    await chkIncludedInArmor.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
                     if (CharacterObject.BlackMarketDiscount)
                     {
@@ -11796,16 +11795,16 @@ namespace Chummer
                         });
                     }
                     else
-                        await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 else
                 {
                     string strSpace = await LanguageManager.GetStringAsync("String_Space");
                     if (objSelectedNodeTag is ArmorMod objArmorMod)
                     {
-                        await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = !objArmorMod.IncludedInArmor);
@@ -11813,7 +11812,7 @@ namespace Chummer
                         // gpbArmorCommon
                         if (objArmorMod.Armor != 0)
                         {
-                            await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblArmorValue.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -11822,8 +11821,8 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblArmorValue.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblArmorValue.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
                         await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmorMod.DisplayTotalAvail);
@@ -11842,12 +11841,12 @@ namespace Chummer
                                                                       strSpace
                                                                       + await LanguageManager.GetStringAsync(
                                                                           "String_Remaining") + ')';
-                            await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strText);
+                            await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = strText, token);
                         }
 
                         if (objArmorMod.MaximumRating > 1)
                         {
-                            await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await nudArmorRating.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -11858,8 +11857,8 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
                         await lblArmorCost.DoThreadSafeAsync(x => x.Text
@@ -11910,16 +11909,16 @@ namespace Chummer
                         {
                             case Gear objSelectedGear:
                             {
-                                await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true);
-                                await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true);
-                                await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+                                await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                                await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
+                                await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false, token);
                                 token.ThrowIfCancellationRequested();
                                 // Buttons
                                 await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = !objSelectedGear.IncludedInParent);
                                 token.ThrowIfCancellationRequested();
                                 // gpbArmorCommon
-                                await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblArmorValue.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblArmorValueLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblArmorValue.DoThreadSafeAsync(x => x.Visible = false, token);
                                 await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objSelectedGear.DisplayTotalAvail);
                                 CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
                                                                     out objArmorMod);
@@ -11932,7 +11931,7 @@ namespace Chummer
                                 int intMaxRatingValue = objSelectedGear.MaxRatingValue;
                                 if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
                                 {
-                                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                     await nudArmorRating.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
@@ -11946,8 +11945,8 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                    await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false);
+                                    await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                    await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false, token);
                                 }
 
                                 await lblArmorCost.DoThreadSafeAsync(x => x.Text
@@ -12024,15 +12023,15 @@ namespace Chummer
                                     });
                                 }
                                 else
-                                    await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                                    await chkArmorHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                                 token.ThrowIfCancellationRequested();
                                 break;
                             }
                             case Location objLocation:
                             {
-                                await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
-                                await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
-                                await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true);
+                                await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true, token);
                                 token.ThrowIfCancellationRequested();
                                 // Buttons
                                 await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = true);
@@ -12068,9 +12067,9 @@ namespace Chummer
                             {
                                 if (objSelectedNodeTag.ToString() == "Node_SelectedArmor")
                                 {
-                                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
-                                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
-                                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true);
+                                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
+                                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = true, token);
                                     token.ThrowIfCancellationRequested();
                                     // Buttons
                                     await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
@@ -12101,9 +12100,9 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false);
-                                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false);
-                                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false);
+                                    await gpbArmorCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                                    await gpbArmorMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
+                                    await gpbArmorLocation.DoThreadSafeAsync(x => x.Visible = false, token);
                                     token.ThrowIfCancellationRequested();
                                     // Buttons
                                     await cmdDeleteArmor.DoThreadSafeAsync(x => x.Enabled = false);
@@ -12136,8 +12135,8 @@ namespace Chummer
                 object objSelectedNodeTag = await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode.Level == 0))
                 {
-                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
@@ -12158,19 +12157,19 @@ namespace Chummer
                 }
                 else
                 {
-                    await chkGearStolen.DoThreadSafeAsync(x => x.Visible = false);
+                    await chkGearStolen.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
-                    await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblGearSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblGearSource.DoThreadSafeAsync(x => x.Visible = true, token);
                     await objSelected.SetSourceDetailAsync(lblGearSource);
                 }
                 else
                 {
-                    await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblGearSource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblGearSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblGearSource.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
@@ -12181,13 +12180,13 @@ namespace Chummer
                             "Label_RatingFormat"),
                         await LanguageManager.GetStringAsync(
                             objHasRating.RatingLabel));
-                    await lblGearRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
+                    await lblGearRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is Gear objGear)
                 {
-                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = true);
-                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
 
                     // Buttons
                     await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
@@ -12289,12 +12288,12 @@ namespace Chummer
                                           && objCommlink.IsCommlink)
                     {
                         string strText = await LanguageManager.GetStringAsync("Checkbox_SoftwareRunning");
-                        await chkGearEquipped.DoThreadSafeAsync(x => x.Text = strText);
+                        await chkGearEquipped.DoThreadSafeAsync(x => x.Text = strText, token);
                     }
                     else
                     {
                         string strText = await LanguageManager.GetStringAsync("Checkbox_Equipped");
-                        await chkGearEquipped.DoThreadSafeAsync(x => x.Text = strText);
+                        await chkGearEquipped.DoThreadSafeAsync(x => x.Text = strText, token);
                     }
                     token.ThrowIfCancellationRequested();
                     if (CharacterObject.BlackMarketDiscount)
@@ -12345,14 +12344,14 @@ namespace Chummer
                         });
                     }
                     else
-                        await chkGearHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkGearHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
                     await treGear.DoThreadSafeAsync(x => x.SelectedNode.Text = objGear.CurrentDisplayName);
                 }
                 else
                 {
-                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbGearCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbGearMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
@@ -13225,8 +13224,8 @@ namespace Chummer
                 {
                     string strError = await LanguageManager.GetStringAsync("String_Error");
                     await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = strError, token);
-                    await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblLifestyleQualities.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 //Controls Visibility and content of the City, District and Borough Labels
                 if (!string.IsNullOrEmpty(objLifestyle.City))
@@ -13293,10 +13292,10 @@ namespace Chummer
                 object objSelectedNodeTag = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
                 if (objSelectedNodeTag == null || await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level) <= 0 || objSelectedNodeTag is Location)
                 {
-                    await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                    await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                    await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                     token.ThrowIfCancellationRequested();
                     // Buttons
                     await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
@@ -13318,19 +13317,19 @@ namespace Chummer
                 }
                 else
                 {
-                    await chkVehicleStolen.DoThreadSafeAsync(x => x.Visible = false);
+                    await chkVehicleStolen.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
-                    await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = true);
+                    await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = true, token);
                     await objSelected.SetSourceDetailAsync(lblVehicleSource);
                 }
                 else
                 {
-                    await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblVehicleSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblVehicleSource.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
                 token.ThrowIfCancellationRequested();
                 if (objSelectedNodeTag is IHasRating objHasRating)
@@ -13341,7 +13340,7 @@ namespace Chummer
                             "Label_RatingFormat"),
                         await LanguageManager.GetStringAsync(
                             objHasRating.RatingLabel));
-                    await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
+                    await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                 }
                 token.ThrowIfCancellationRequested();
                 switch (objSelectedNodeTag)
@@ -13349,10 +13348,10 @@ namespace Chummer
                     // Locate the selected Vehicle.
                     case Vehicle objVehicle:
                     {
-                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objVehicle.ParentID));
@@ -13360,10 +13359,10 @@ namespace Chummer
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objVehicle.CurrentDisplayNameShort);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayCategory(GlobalSettings.Language));
-                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayTotalAvail);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objVehicle.TotalCost.ToString(
@@ -13389,9 +13388,9 @@ namespace Chummer
                                 x.Text = strText;
                             }, token);
                         }
-                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
-                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
-                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
                         if (CharacterObject.BlackMarketDiscount)
                         {
                             bool blnEnabled = CharacterObject
@@ -13429,19 +13428,19 @@ namespace Chummer
                         {
                             if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
                             {
-                                await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehiclePowertrain.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleCosmetic.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleElectromagnetic.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleBodymod.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleWeaponsmod.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleProtection.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehiclePowertrain.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleCosmetic.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleElectromagnetic.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleBodymod.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleWeaponsmod.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleProtection.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleDroneModSlots.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
@@ -13452,62 +13451,62 @@ namespace Chummer
                             }
                             else
                             {
-                                await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehiclePowertrain.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
                                     x.Text = objVehicle.PowertrainModSlotsUsed();
                                 });
-                                await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleCosmetic.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
                                     x.Text = objVehicle.CosmeticModSlotsUsed();
                                 });
-                                await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleElectromagnetic.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
                                     x.Text = objVehicle.ElectromagneticModSlotsUsed();
                                 });
-                                await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleBodymod.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
                                     x.Text = objVehicle.BodyModSlotsUsed();
                                 });
-                                await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleWeaponsmod.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
                                     x.Text = objVehicle.WeaponModSlotsUsed();
                                 });
-                                await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleProtection.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
                                     x.Text = objVehicle.ProtectionModSlotsUsed();
                                 });
-                                await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false, token);
                             }
                         }
                         else
                         {
-                            await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehiclePowertrain.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleCosmetic.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleElectromagnetic.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleBodymod.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleWeaponsmod.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleProtection.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehiclePowertrainLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehiclePowertrain.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleCosmeticLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleCosmetic.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleElectromagneticLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleElectromagnetic.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleBodymodLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleBodymod.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponsmodLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponsmod.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleProtectionLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleProtection.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleDroneModSlots.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesMatrix
@@ -13531,17 +13530,17 @@ namespace Chummer
                             });
                         }
                         else
-                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         await UpdateSensor(objVehicle, token);
                         break;
                     }
                     // Locate the selected VehicleMod.
                     case WeaponMount objWeaponMount:
-                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeaponMount.IncludedInVehicle);
@@ -13549,15 +13548,15 @@ namespace Chummer
                         // gpbVehiclesCommon
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayCategory(GlobalSettings.Language));
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeaponMount.CurrentDisplayName);
-                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayTotalAvail);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objWeaponMount.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
                                                                        GlobalSettings.CultureInfo));
-                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleSlots.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -13598,10 +13597,10 @@ namespace Chummer
 
                     case VehicleMod objMod:
                     {
-                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objMod.IncludedInVehicle);
@@ -13609,9 +13608,9 @@ namespace Chummer
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objMod.CurrentDisplayName);
                         string strText = await LanguageManager.GetStringAsync("String_VehicleModification");
-                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token);
                         strText = await LanguageManager.GetStringAsync(objMod.RatingLabel);
-                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                         if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                         {
                             if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
@@ -13626,7 +13625,7 @@ namespace Chummer
                             if (int.TryParse(objMod.MaxRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                              out int intMaxRating) && intMaxRating > 0)
                             {
-                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
@@ -13642,7 +13641,7 @@ namespace Chummer
                             }
                             else
                             {
-                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
                                 {
                                     x.Minimum = 0;
@@ -13655,7 +13654,7 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await nudVehicleRating.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -13667,26 +13666,26 @@ namespace Chummer
                             });
                         }
                         token.ThrowIfCancellationRequested();
-                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objMod.DisplayTotalAvail);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objMod.TotalCost.ToString(CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo)
                                                                      + '¥');
-                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleSlots.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Text = objMod.CalculatedSlots.ToString(GlobalSettings.CultureInfo);
                         });
-                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
                             x.Checked = objMod.Equipped;
                             x.Enabled = !objMod.IncludedInVehicle;
                         });
-                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
                         {
@@ -13718,10 +13717,10 @@ namespace Chummer
                     }
                     case Weapon objWeapon:
                     {
-                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objWeapon.Cyberware
@@ -13734,17 +13733,17 @@ namespace Chummer
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName);
                         string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language);
-                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText);
-                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objWeapon.TotalCost.ToString(CharacterObjectSettings.NuyenFormat,
                                                                        GlobalSettings.CultureInfo) + '¥');
-                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
-                        await lblVehicleSlots.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await lblVehicleSlots.DoThreadSafeAsync(x => x.Visible = true, token);
                         if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                         {
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -13773,7 +13772,7 @@ namespace Chummer
                         }
 
                         token.ThrowIfCancellationRequested();
-                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -13815,25 +13814,25 @@ namespace Chummer
                         }
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesWeapon
-                        await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleWeaponDamage.DoThreadSafeAsync(x =>
                         {
                             x.Text = objWeapon.DisplayDamage;
                             x.Visible = true;
                         });
-                        await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
                         {
                             x.Text = objWeapon.DisplayTotalAP;
                             x.Visible = true;
                         });
-                        await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
                         {
                             x.Text = objWeapon.DisplayAccuracy;
                             x.Visible = true;
                         });
-                        await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
                         {
                             x.Text = objWeapon.DicePool.ToString(GlobalSettings
@@ -13843,20 +13842,20 @@ namespace Chummer
                         await lblVehicleWeaponDicePool.SetToolTipAsync(objWeapon.DicePoolTooltip);
                         if (objWeapon.RangeType == "Ranged")
                         {
-                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = objWeapon.DisplayAmmo;
                             });
-                            await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponMode.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
                                 x.Text = objWeapon.DisplayMode;
                             });
                             await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.SelectedValue = objWeapon.FireMode);
-                            await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = true);
+                            await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponRangeMain.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange);
                             await lblVehicleWeaponRangeAlternate.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange);
                             Dictionary<string, string> dictionaryRanges
@@ -13878,7 +13877,7 @@ namespace Chummer
                         {
                             if (objWeapon.Ammo != "0")
                             {
-                                await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
+                                await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                                 await lblVehicleWeaponAmmo.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
@@ -13892,14 +13891,14 @@ namespace Chummer
                             }
                             else
                             {
-                                await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
-                                await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
-                                await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.Visible = false);
+                                await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false, token);
+                                await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.Visible = false, token);
                             }
                             token.ThrowIfCancellationRequested();
-                            await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
-                            await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesMatrix
@@ -13923,15 +13922,15 @@ namespace Chummer
                             });
                         }
                         else
-                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         break;
                     }
                     case WeaponAccessory objAccessory:
                     {
-                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objAccessory.IncludedInWeapon);
@@ -13939,10 +13938,10 @@ namespace Chummer
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objAccessory.CurrentDisplayName);
                         string strText = await LanguageManager.GetStringAsync("String_VehicleWeaponAccessory");
-                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token);
                         if (objAccessory.MaxRating > 0)
                         {
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await nudVehicleRating.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -13955,12 +13954,12 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await nudVehicleRating.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         token.ThrowIfCancellationRequested();
-                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objAccessory.DisplayTotalAvail);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objAccessory.TotalCost.ToString(
@@ -13998,7 +13997,7 @@ namespace Chummer
                                     --sbdMount.Length;
                             }
                             token.ThrowIfCancellationRequested();
-                            await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleSlots.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -14006,7 +14005,7 @@ namespace Chummer
                             });
                         }
                         token.ThrowIfCancellationRequested();
-                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token);
                         await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x =>
                         {
                             x.Visible = true;
@@ -14046,13 +14045,13 @@ namespace Chummer
                         }
                         token.ThrowIfCancellationRequested();
                         // gpbVehiclesWeapon
-                        await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false);
-                        await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await lblVehicleWeaponMode.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await cboVehicleWeaponFiringMode.DoThreadSafeAsync(x => x.Visible = false, token);
                         if (string.IsNullOrEmpty(objAccessory.Damage))
                         {
-                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponDamage.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
@@ -14070,12 +14069,12 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (string.IsNullOrEmpty(objAccessory.AP))
                         {
-                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleWeaponAP.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponAP.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
-                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponAP.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -14087,12 +14086,12 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (objAccessory.Accuracy == 0)
                         {
-                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
-                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponAccuracy.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -14103,12 +14102,12 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         if (objAccessory.DicePool == 0)
                         {
-                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponDicePool.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
-                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await lblVehicleWeaponDicePool.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -14122,8 +14121,8 @@ namespace Chummer
                             || (!string.IsNullOrEmpty(objAccessory.ModifyAmmoCapacity)
                                 && objAccessory.ModifyAmmoCapacity != "0"))
                         {
-                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true);
-                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = true, token);
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdAmmoBonus))
                             {
@@ -14139,17 +14138,17 @@ namespace Chummer
                         }
                         else
                         {
-                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false);
-                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                            await lblVehicleWeaponAmmo.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         break;
                     }
                     case Cyberware objCyberware:
                     {
-                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = string.IsNullOrEmpty(objCyberware.ParentID));
@@ -14157,9 +14156,9 @@ namespace Chummer
                         // gpbVehiclesCommon
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayName);
                         string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language);
-                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText);
+                        await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token);
                         strText = await LanguageManager.GetStringAsync(objCyberware.RatingLabel);
-                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                         if (objCyberware.MaxRating == 0)
                         {
                             await nudVehicleRating.DoThreadSafeAsync(x =>
@@ -14169,7 +14168,7 @@ namespace Chummer
                                 x.Value = 0;
                                 x.Visible = false;
                             });
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false);
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token);
                         }
                         else
                         {
@@ -14182,11 +14181,11 @@ namespace Chummer
                                             && string.IsNullOrEmpty(objCyberware.ParentID);
                                 x.Visible = true;
                             });
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         }
                         token.ThrowIfCancellationRequested();
-                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false);
-                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await nudVehicleGearQty.DoThreadSafeAsync(x => x.Visible = false, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objCyberware.DisplayTotalAvail);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objCyberware.TotalCost.ToString(
@@ -14194,8 +14193,8 @@ namespace Chummer
                                                                        GlobalSettings.CultureInfo) + '¥');
                         await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible
                                                                                    = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount));
-                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
-                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount && string.IsNullOrEmpty(objCyberware.ParentID))
                         {
@@ -14246,15 +14245,15 @@ namespace Chummer
                             });
                         }
                         else
-                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         break;
                     }
                     case Gear objGear:
                     {
-                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true);
-                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true);
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = true, token);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = true, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent);
@@ -14263,11 +14262,11 @@ namespace Chummer
                         await lblVehicleName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort);
                         await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language));
                         string strText = await LanguageManager.GetStringAsync(objGear.RatingLabel);
-                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText);
+                        await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token);
                         int intGearMaxRatingValue = objGear.MaxRatingValue;
                         if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                         {
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true);
+                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                             await nudVehicleRating.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
@@ -14331,13 +14330,13 @@ namespace Chummer
                             x.Increment = objGear.CostFor;
                             x.Visible = true;
                         });
-                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleGearQtyLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail);
                         await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                    = objGear.TotalCost.ToString(
                                                                        CharacterObjectSettings.NuyenFormat,
                                                                        GlobalSettings.CultureInfo) + '¥');
-                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true);
+                        await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token);
                         strText = objGear.CalculatedCapacity + strSpace + '('
                                   + objGear.CapacityRemaining.ToString(
                                       "#,0.##", GlobalSettings.CultureInfo) +
@@ -14348,9 +14347,9 @@ namespace Chummer
                             x.Visible = true;
                             x.Text = strText;
                         });
-                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false);
-                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false);
-                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false);
+                        await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await chkVehicleWeaponAccessoryInstalled.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         if (CharacterObject.BlackMarketDiscount)
                         {
@@ -14401,14 +14400,14 @@ namespace Chummer
                             });
                         }
                         else
-                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false);
+                            await chkVehicleHomeNode.DoThreadSafeAsync(x => x.Visible = false, token);
                         break;
                     }
                     default:
-                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false);
-                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false);
+                        await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesWeapon.DoThreadSafeAsync(x => x.Visible = false, token);
+                        await gpbVehiclesMatrix.DoThreadSafeAsync(x => x.Visible = false, token);
                         token.ThrowIfCancellationRequested();
                         // Buttons
                         await cmdDeleteVehicle.DoThreadSafeAsync(x => x.Enabled = false);
@@ -14438,7 +14437,7 @@ namespace Chummer
                 if (objSelectedNodeTag is Drug objDrug && await treCustomDrugs.DoThreadSafeFuncAsync(x => x.SelectedNode?.Level != 0))
                 {
                     token.ThrowIfCancellationRequested();
-                    await flpDrugs.DoThreadSafeAsync(x => x.Visible = true);
+                    await flpDrugs.DoThreadSafeAsync(x => x.Visible = true, token);
                     await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true);
                     await lblDrugName.DoThreadSafeAsync(x => x.Text = objDrug.Name);
                     await lblDrugAvail.DoThreadSafeAsync(x => x.Text = objDrug.DisplayTotalAvail);
@@ -14458,7 +14457,7 @@ namespace Chummer
                     await lblDrugAddictionRating.DoThreadSafeAsync(x => x.Text = objDrug.AddictionRating.ToString(GlobalSettings.CultureInfo));
                     await lblDrugAddictionThreshold.DoThreadSafeAsync(x => x.Text = objDrug.AddictionThreshold.ToString(GlobalSettings.CultureInfo));
                     string strText = await objDrug.GetEffectDescriptionAsync();
-                    await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText);
+                    await lblDrugEffect.DoThreadSafeAsync(x => x.Text = strText, token);
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdComponents))
                     {
@@ -14473,7 +14472,7 @@ namespace Chummer
                 else
                 {
                     token.ThrowIfCancellationRequested();
-                    await flpDrugs.DoThreadSafeAsync(x => x.Visible = false);
+                    await flpDrugs.DoThreadSafeAsync(x => x.Visible = false, token);
                     await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = objSelectedNodeTag is ICanRemove);
                 }
                 token.ThrowIfCancellationRequested();

@@ -7102,21 +7102,22 @@ namespace Chummer
             set => _frmPrintView = value;
         }
 
-        public async ValueTask DoPrint()
+        public async ValueTask DoPrint(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 // If a reference to the Viewer window does not yet exist for this character, open a new Viewer window and set the reference to it.
                 // If a Viewer window already exists for this character, use it instead.
                 if (_frmPrintView == null)
                 {
-                    _frmPrintView = new CharacterSheetViewer();
-                    await _frmPrintView.SetCharacters(CharacterObject);
-                    _frmPrintView.Show();
+                    await this.DoThreadSafeAsync(() => _frmPrintView = new CharacterSheetViewer(), token);
+                    await _frmPrintView.SetCharacters(token, CharacterObject);
+                    await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token);
                 }
                 else
                 {
-                    _frmPrintView.Activate();
+                    await _frmPrintView.DoThreadSafeAsync(x => x.Activate(), token);
                 }
             }
         }

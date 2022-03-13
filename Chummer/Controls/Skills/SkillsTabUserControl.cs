@@ -158,7 +158,7 @@ namespace Chummer.UI.Skills
                     if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
                     {
                         _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups,
-                                                                             group => new SkillGroupControl(@group))
+                                                                             group => new SkillGroupControl(group))
                         {
                             Dock = DockStyle.Fill
                         };
