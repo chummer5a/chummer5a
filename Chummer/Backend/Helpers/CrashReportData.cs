@@ -35,7 +35,7 @@ namespace Chummer
         // ReSharper disable once UnusedParameter.Local
         private static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
         {
-            if (Debugger.IsAttached)
+            if (Debugger.IsAttached || Utils.IsUnitTest || Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
             CrashReportData report = new CrashReportData(Guid.NewGuid()).AddDefaultData().AddData("exception.txt", e.ExceptionObject.ToString());

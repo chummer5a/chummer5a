@@ -250,7 +250,8 @@ namespace Chummer
                         }
                     }
 
-                    AppDomain.CurrentDomain.UnhandledException += HandleCrash;
+                    if (!Utils.IsUnitTest)
+                        AppDomain.CurrentDomain.UnhandledException += HandleCrash;
 
                     sw.TaskEnd("Startup");
 

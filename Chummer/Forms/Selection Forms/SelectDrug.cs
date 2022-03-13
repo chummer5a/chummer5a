@@ -725,10 +725,10 @@ namespace Chummer
                 foreach (XPathNavigator xmlDrug in _xmlBaseDrugDataNode.Select(_strNodeXPath + strFilter))
                 {
                     bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
-                    if (objCurrentGrade != null && blnIsForceGrade && ImprovementManager
-                                                                      .GetCachedImprovementListForValueOf(
-                                                                          _objCharacter,
-                                                                          Improvement.ImprovementType.DisableDrugGrade)
+                    if (objCurrentGrade != null && blnIsForceGrade && (await ImprovementManager
+                            .GetCachedImprovementListForValueOfAsync(
+                                _objCharacter,
+                                Improvement.ImprovementType.DisableDrugGrade))
                                                                       .Any(x => objCurrentGrade.Name.Contains(
                                                                                x.ImprovedName)))
                         continue;

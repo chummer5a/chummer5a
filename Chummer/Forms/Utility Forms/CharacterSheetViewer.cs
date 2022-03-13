@@ -673,7 +673,7 @@ namespace Chummer
 
         private async void webViewer_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            await this.DoThreadSafeAsync(() => UseWaitCursor = false);
+            await this.DoThreadSafeAsync(x => x.UseWaitCursor = false);
             if (_tskOutputGenerator?.IsCompleted == true && _tskRefresher?.IsCompleted == true)
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
@@ -739,7 +739,7 @@ namespace Chummer
             }
             catch
             {
-                // Error of some kind occured, proceed to use wkhtmltopdf instead
+                // Error of some kind occurred, proceed to use wkhtmltopdf instead
                 return false;
             }
             finally

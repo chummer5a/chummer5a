@@ -14036,7 +14036,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // gpbCyberwareCommon
                         await lblCyberwareName.DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayNameShort);
-                        await lblCyberwareCategory.DoThreadSafeFunc(
+                        await lblCyberwareCategory.DoThreadSafeAsync(
                             async x => x.Text = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language));
                         await lblCyberwareGradeLabel.DoThreadSafeAsync(x => x.Visible = true);
                         await lblCyberwareGrade.DoThreadSafeAsync(x => x.Visible = true);

@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
@@ -254,7 +255,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
             }
@@ -317,7 +318,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
             }
@@ -419,7 +420,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
             }
@@ -521,7 +522,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
             }
@@ -570,7 +571,7 @@ namespace Chummer
                     //we really don't need to care about that.
                     Log.Trace(e);
                 }
-                catch (System.Threading.ThreadAbortException)
+                catch (ThreadAbortException)
                 {
                     //no need to do anything here - actually we can't anyway...
                 }
@@ -620,7 +621,7 @@ namespace Chummer
                     //we really don't need to care about that.
                     Log.Trace(e);
                 }
-                catch (System.Threading.ThreadAbortException)
+                catch (ThreadAbortException)
                 {
                     //no need to do anything here - actually we can't anyway...
                 }
@@ -671,7 +672,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
             }
@@ -721,7 +722,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
             }
@@ -843,7 +844,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
             }
@@ -913,7 +914,7 @@ namespace Chummer
                 //we really don't need to care about that.
                 Log.Trace(e);
             }
-            catch (System.Threading.ThreadAbortException)
+            catch (ThreadAbortException)
             {
                 //no need to do anything here - actually we can't anyway...
             }

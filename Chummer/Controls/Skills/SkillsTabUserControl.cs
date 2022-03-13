@@ -761,7 +761,7 @@ namespace Chummer.UI.Skills
 
                 Form frmToUse = ParentForm ?? Program.MainForm;
 
-                DialogResult eResult = await frmToUse.DoThreadSafeFunc(async x =>
+                DialogResult eResult = await frmToUse.DoThreadSafeFuncAsync(async x =>
                 {
                     using (SelectItem form = new SelectItem
                            {
