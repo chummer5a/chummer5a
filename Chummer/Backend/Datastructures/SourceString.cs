@@ -19,6 +19,7 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -179,13 +180,14 @@ namespace Chummer
         /// Set the Text and ToolTips for the selected control.
         /// </summary>
         /// <param name="source"></param>
-        public Task SetControlAsync(Control source)
+        /// <param name="token"></param>
+        public Task SetControlAsync(Control source, CancellationToken token = default)
         {
             if (source == null)
                 return Task.CompletedTask;
             string strText = ToString();
-            return Task.WhenAll(source.DoThreadSafeAsync(x => x.Text = strText),
-                                source.SetToolTipAsync(LanguageBookTooltip));
+            return Task.WhenAll(source.DoThreadSafeAsync(x => x.Text = strText, token),
+                                source.SetToolTipAsync(LanguageBookTooltip, token));
         }
 
         public bool Equals(SourceString other)

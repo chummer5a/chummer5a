@@ -3782,39 +3782,34 @@ namespace Chummer
             IsRefreshing = true;
             try
             {
-                token.ThrowIfCancellationRequested();
-                object objSelectedNodeTag = await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag);
+                object objSelectedNodeTag = await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token);
                 if (objSelectedNodeTag is IHasSource objSelected)
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = true);
-                    await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = true);
-                    await objSelected.SetSourceDetailAsync(lblMartialArtSource);
+                    await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = true, token);
+                    await objSelected.SetSourceDetailAsync(lblMartialArtSource, token);
                 }
                 else
                 {
-                    token.ThrowIfCancellationRequested();
-                    await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = false);
-                    await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = false);
+                    await lblMartialArtSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token);
+                    await lblMartialArtSource.DoThreadSafeAsync(x => x.Visible = false, token);
                 }
-                token.ThrowIfCancellationRequested();
                 switch (objSelectedNodeTag)
                 {
                     case MartialArt objMartialArt:
-                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = !objMartialArt.IsQuality);
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = !objMartialArt.IsQuality, token);
                         break;
 
                     case ICanRemove _:
-                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = true);
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = true, token);
                         break;
 
                     default:
-                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = false);
-                        await lblMartialArtSource.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblMartialArtSource.SetToolTipAsync(string.Empty);
+                        await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = false, token);
+                        await lblMartialArtSource.DoThreadSafeAsync(x => x.Text = string.Empty, token);
+                        await lblMartialArtSource.SetToolTipAsync(string.Empty, token);
                         break;
                 }
-                token.ThrowIfCancellationRequested();
             }
             finally
             {

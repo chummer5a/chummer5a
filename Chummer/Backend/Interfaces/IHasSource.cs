@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -28,6 +29,6 @@ namespace Chummer
 
         void SetSourceDetail(Control sourceControl);
 
-        Task SetSourceDetailAsync(Control sourceControl);
+        Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default);
     }
 }
