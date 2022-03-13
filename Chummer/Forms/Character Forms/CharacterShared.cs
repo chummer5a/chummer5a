@@ -7134,7 +7134,7 @@ namespace Chummer
                 _objCharacter.PropertyChanged -= RecacheSettingsOnSettingsChange;
                 _frmPrintView?.Dispose();
                 _objCharacterFileWatcher?.Dispose();
-                if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                if (_objUpdateCharacterInfoCancellationTokenSource?.IsCancellationRequested == false)
                 {
                     _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
                     _objUpdateCharacterInfoCancellationTokenSource.Dispose();
