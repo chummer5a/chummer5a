@@ -1069,7 +1069,14 @@ namespace Chummer
 
                             IsCharacterUpdateRequested = true;
                             // Directly awaiting here so that we can properly unset the dirty flag after the update
-                            await UpdateCharacterInfoTask;
+                            try
+                            {
+                                await UpdateCharacterInfoTask;
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                return;
+                            }
 
                             // Clear the Dirty flag which gets set when creating a new Character.
                             if (!CharacterObject.LoadAsDirty)
@@ -1411,7 +1418,13 @@ namespace Chummer
                         objSustainedSpellControl.UnsustainObject -= DeleteSustainedObject;
                     }
 
-                    await UpdateCharacterInfoTask;
+                    try
+                    {
+                        await UpdateCharacterInfoTask;
+                    }
+                    catch (TaskCanceledException)
+                    {
+                    }
 
                     // Trash the global variables and dispose of the Form.
                     if (Program.OpenCharacters.All(
@@ -3213,7 +3226,14 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Immediately await character update because it re-applies essence loss improvements
-                        await UpdateCharacterInfoTask;
+                        try
+                        {
+                            await UpdateCharacterInfoTask;
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            return;
+                        }
 
                         if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                         {
@@ -13850,7 +13870,14 @@ namespace Chummer
 
                     IsCharacterUpdateRequested = true;
                     // Immediately await character update because we know it's necessary
-                    await UpdateCharacterInfoTask;
+                    try
+                    {
+                        await UpdateCharacterInfoTask;
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
+                    }
 
                     IsDirty = false;
 

@@ -1031,10 +1031,18 @@ namespace Chummer
 
                             IsCharacterUpdateRequested = true;
                             // Directly awaiting here so that we can properly unset the dirty flag after the update
-                            await UpdateCharacterInfoTask;
+                            try
+                            {
+                                await UpdateCharacterInfoTask;
+                            }
+                            catch (TaskCanceledException)
+                            {
+                                return;
+                            }
 
                             // Clear the Dirty flag which gets set when creating a new Character.
-                            IsDirty = false;
+                            if (!CharacterObject.LoadAsDirty)
+                                IsDirty = false;
                             await DoRefreshPasteStatus();
                             await ProcessMugshot();
 
@@ -1057,8 +1065,6 @@ namespace Chummer
                             await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
                             await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync();
                         }
-
-                        IsDirty = CharacterObject.LoadAsDirty;
 
                         op_load_frm_create.SetSuccess(true);
                     }
@@ -1208,7 +1214,14 @@ namespace Chummer
                         objSpiritControl.DeleteSpirit -= DeleteSpirit;
                     }
 
-                    await UpdateCharacterInfoTask;
+                    try
+                    {
+                        await UpdateCharacterInfoTask;
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
+                    }
 
                     // Trash the global variables and dispose of the Form.
                     if (!_blnIsReopenQueued
@@ -2963,7 +2976,14 @@ namespace Chummer
 
                         IsCharacterUpdateRequested = true;
                         // Immediately await character update because it re-applies essence loss improvements
-                        await UpdateCharacterInfoTask;
+                        try
+                        {
+                            await UpdateCharacterInfoTask;
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            return;
+                        }
 
                         if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
                         {
@@ -10481,7 +10501,14 @@ namespace Chummer
 
                     // Immediately call character update because we know it's necessary
                     IsCharacterUpdateRequested = true;
-                    await UpdateCharacterInfoTask;
+                    try
+                    {
+                        await UpdateCharacterInfoTask;
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
+                    }
 
                     IsDirty = false;
 

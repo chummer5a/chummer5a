@@ -282,14 +282,8 @@ namespace Chummer.Tests
                                 {
                                     Utils.SafeSleep(true);
                                 }
-                                /*
                                 frmCharacterForm.Close();
-                                Utils.SafeSleep(true);
-                                while (frmCharacterForm.IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
-                                {
-                                    Utils.SafeSleep(true);
-                                }
-                                */
+                                Utils.DoEventsSafe(true);
                             }
                             Utils.DoEventsSafe(true);
                         }
