@@ -105,7 +105,9 @@ namespace Chummer.Tests
             {
                 frmTestForm = new ChummerMainForm(true)
                 {
+#if DEBUG
                     WindowState = FormWindowState.Minimized,
+#endif
                     ShowInTaskbar =
                         false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
                 };
@@ -253,7 +255,9 @@ namespace Chummer.Tests
             {
                 frmTestForm = new ChummerMainForm(true)
                 {
+#if DEBUG
                     WindowState = FormWindowState.Minimized,
+#endif
                     ShowInTaskbar =
                         false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
                 };
@@ -275,7 +279,9 @@ namespace Chummer.Tests
                             {
                                 frmCharacterForm.MdiParent = frmTestForm;
                                 frmCharacterForm.ShowInTaskbar = false;
+#if DEBUG
                                 frmCharacterForm.WindowState = FormWindowState.Minimized;
+#endif
                                 frmCharacterForm.Show();
                                 Utils.DoEventsSafe(true);
                                 while (frmCharacterForm.IsLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
