@@ -56,15 +56,15 @@ namespace Chummer.UI.Powers
         private readonly List<Tuple<string, Predicate<Power>>> _dropDownList;
         private bool _blnSearchMode;
 
-        private void PowersTabUserControl_Load(object sender, EventArgs e)
+        private async void PowersTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter != null)
                 return;
             using (CursorWait.New(this))
-                RealLoad();
+                await RealLoad();
         }
 
-        public void RealLoad()
+        public async ValueTask RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
@@ -79,7 +79,6 @@ namespace Chummer.UI.Powers
                 return;
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
-            Stopwatch parts = Stopwatch.StartNew();
             //Keep everything visible until ready to display everything. This
             //seems to prevent redrawing everything each time anything is added
             //Not benched, but should be faster
@@ -87,40 +86,49 @@ namespace Chummer.UI.Powers
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            SuspendLayout();
+            await this.DoThreadSafeAsync(() =>
+            {
+                SuspendLayout();
+                try
+                {
+                    Stopwatch parts = Stopwatch.StartNew();
 
-            lblPowerPoints.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
+                    lblPowerPoints.DoOneWayDataBinding("Text", _objCharacter,
+                                                       nameof(Character.DisplayPowerPointsRemaining));
 
-            parts.TaskEnd("MakePowerDisplay()");
+                    parts.TaskEnd("MakePowerDisplay()");
 
-            cboDisplayFilter.BeginUpdate();
-            cboDisplayFilter.DataSource = null;
-            cboDisplayFilter.ValueMember = "Item2";
-            cboDisplayFilter.DisplayMember = "Item1";
-            cboDisplayFilter.DataSource = _dropDownList;
-            cboDisplayFilter.SelectedIndex = 1;
-            cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
-            cboDisplayFilter.EndUpdate();
+                    cboDisplayFilter.BeginUpdate();
+                    cboDisplayFilter.DataSource = null;
+                    cboDisplayFilter.ValueMember = "Item2";
+                    cboDisplayFilter.DisplayMember = "Item1";
+                    cboDisplayFilter.DataSource = _dropDownList;
+                    cboDisplayFilter.SelectedIndex = 1;
+                    cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+                    cboDisplayFilter.EndUpdate();
 
-            parts.TaskEnd("_ddl databind");
+                    parts.TaskEnd("_ddl databind");
 
-            //Visible = true;
-            //this.ResumeLayout(false);
-            //this.PerformLayout();
-            parts.TaskEnd("visible");
+                    //Visible = true;
+                    //this.ResumeLayout(false);
+                    //this.PerformLayout();
+                    parts.TaskEnd("visible");
 
-            _table.Items = _objCharacter.Powers;
+                    _table.Items = _objCharacter.Powers;
 
-            parts.TaskEnd("resize");
-            //this.Update();
-            ResumeLayout(true);
-            //this.PerformLayout();
-
-            _objCharacter.Powers.ListChanged += OnPowersListChanged;
-            _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                    parts.TaskEnd("resize");
+                }
+                finally
+                {
+                    ResumeLayout(true);
+                }
+            });
 
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+
+            _objCharacter.Powers.ListChanged += OnPowersListChanged;
+            _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
         }
 
         private void UnbindPowersTabUserControl()

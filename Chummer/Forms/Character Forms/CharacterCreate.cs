@@ -500,7 +500,7 @@ namespace Chummer
                                             string strName
                                                 = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                 ?.Value;
-                                            if (!string.IsNullOrEmpty(strName))
+                                            if (!string.IsNullOrEmpty(strName) && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                                 lstDrainAttributes.Add(new ListItem(strName,
                                                                            (await xmlDrain
                                                                                .SelectSingleNodeAndCacheExpressionAsync(
@@ -579,9 +579,9 @@ namespace Chummer
                                         cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                                                                       nameof(Tradition.SpiritCombat));
                                         lblSpiritCombat.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritCombat.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritCombat.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
 
                                         await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit);
@@ -589,27 +589,27 @@ namespace Chummer
                                             "SelectedValue", CharacterObject.MagicTradition,
                                             nameof(Tradition.SpiritDetection));
                                         lblSpiritDetection.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritDetection.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritDetection.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
 
                                         await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit);
                                         cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                                                                       nameof(Tradition.SpiritHealth));
                                         lblSpiritHealth.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritHealth.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritHealth.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
 
                                         await cboSpiritIllusion.PopulateWithListItemsAsync(lstSpirit);
                                         cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                                                                         nameof(Tradition.SpiritIllusion));
                                         lblSpiritIllusion.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritIllusion.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritIllusion.Enabled = CharacterObject.MagicTradition.IsCustomTradition;
 
                                         await cboSpiritManipulation.PopulateWithListItemsAsync(lstSpirit);
@@ -617,9 +617,9 @@ namespace Chummer
                                             "SelectedValue", CharacterObject.MagicTradition,
                                             nameof(Tradition.SpiritManipulation));
                                         lblSpiritManipulation.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritManipulation.Visible
-                                            = CharacterObject.MagicTradition.Type != TraditionType.None;
+                                            = CharacterObject.MagicTradition.Type == TraditionType.MAG;
                                         cboSpiritManipulation.Enabled
                                             = CharacterObject.MagicTradition.IsCustomTradition;
                                     }
@@ -698,13 +698,13 @@ namespace Chummer
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_tabSkillsUc.RealLoad()",
                                                                               op_load_frm_create_longloads))
                                 {
-                                    tabSkillsUc.RealLoad();
+                                    await tabSkillsUc.RealLoad();
                                 }
 
                                 using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_tabPowerUc.RealLoad()",
                                                                               op_load_frm_create_longloads))
                                 {
-                                    tabPowerUc.RealLoad();
+                                    await tabPowerUc.RealLoad();
                                 }
 
                                 using (_ = await Timekeeper.StartSyncronAsync(
@@ -2026,7 +2026,7 @@ namespace Chummer
                                             string strName
                                                 = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                 ?.Value;
-                                            if (!string.IsNullOrEmpty(strName))
+                                            if (!string.IsNullOrEmpty(strName) && lstDrainAttributes.All(x => x.Value.ToString() != strName))
                                                 lstDrainAttributes.Add(new ListItem(strName,
                                                                            (await xmlDrain
                                                                                .SelectSingleNodeAndCacheExpressionAsync(
@@ -8888,13 +8888,18 @@ namespace Chummer
 
         private void cboTradition_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (IsLoading || IsRefreshing || CharacterObject.MagicTradition.Type == TraditionType.RES)
+            if (IsLoading || IsRefreshing || IsDisposed)
                 return;
+
             string strSelectedId = cboTradition.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
 
-            XmlNode xmlTradition = CharacterObject.LoadData("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + ']');
+            XmlNode xmlTradition = CharacterObject.MagicTradition.Type == TraditionType.MAG
+                ? CharacterObject.LoadData("traditions.xml")
+                                 .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath()
+                                                   + ']')
+                : null;
 
             if (xmlTradition == null)
             {
@@ -8914,7 +8919,8 @@ namespace Chummer
                 cboSpiritIllusion.Visible = false;
                 cboSpiritManipulation.Visible = false;
 
-                CharacterObject.MagicTradition.ResetTradition();
+                if (CharacterObject.MagicTradition.Type != TraditionType.RES)
+                    CharacterObject.MagicTradition.ResetTradition();
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -8952,40 +8958,37 @@ namespace Chummer
                     cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID.ToString();
                 }
             }
+            else if (CharacterObject.MagicTradition.Create(xmlTradition))
+            {
+                lblTraditionName.Visible = false;
+                txtTraditionName.Visible = false;
+                lblSpiritCombat.Visible = true;
+                lblSpiritDetection.Visible = true;
+                lblSpiritHealth.Visible = true;
+                lblSpiritIllusion.Visible = true;
+                lblSpiritManipulation.Visible = true;
+                cboSpiritCombat.Enabled = false;
+                cboSpiritDetection.Enabled = false;
+                cboSpiritHealth.Enabled = false;
+                cboSpiritIllusion.Enabled = false;
+                cboSpiritManipulation.Enabled = false;
+                cboSpiritCombat.Visible = true;
+                cboSpiritDetection.Visible = true;
+                cboSpiritHealth.Visible = true;
+                cboSpiritIllusion.Visible = true;
+                cboSpiritManipulation.Visible = true;
+
+                lblTraditionSource.Visible = true;
+                lblTraditionSourceLabel.Visible = true;
+                CharacterObject.MagicTradition.SetSourceDetail(lblTraditionSource);
+
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
             else
             {
-                if (CharacterObject.MagicTradition.Create(xmlTradition))
-                {
-                    lblTraditionName.Visible = false;
-                    txtTraditionName.Visible = false;
-                    lblSpiritCombat.Visible = true;
-                    lblSpiritDetection.Visible = true;
-                    lblSpiritHealth.Visible = true;
-                    lblSpiritIllusion.Visible = true;
-                    lblSpiritManipulation.Visible = true;
-                    cboSpiritCombat.Enabled = false;
-                    cboSpiritDetection.Enabled = false;
-                    cboSpiritHealth.Enabled = false;
-                    cboSpiritIllusion.Enabled = false;
-                    cboSpiritManipulation.Enabled = false;
-                    cboSpiritCombat.Visible = true;
-                    cboSpiritDetection.Visible = true;
-                    cboSpiritHealth.Visible = true;
-                    cboSpiritIllusion.Visible = true;
-                    cboSpiritManipulation.Visible = true;
-
-                    lblTraditionSource.Visible = true;
-                    lblTraditionSourceLabel.Visible = true;
-                    CharacterObject.MagicTradition.SetSourceDetail(lblTraditionSource);
-
-                    IsCharacterUpdateRequested = true;
-                    IsDirty = true;
-                }
-                else
-                {
-                    CharacterObject.MagicTradition.ResetTradition();
-                    cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
-                }
+                CharacterObject.MagicTradition.ResetTradition();
+                cboTradition.SelectedValue = CharacterObject.MagicTradition.SourceID;
             }
 
             cboDrain.Visible = (!CharacterObject.AdeptEnabled || CharacterObject.MagicianEnabled) &&

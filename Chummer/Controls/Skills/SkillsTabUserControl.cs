@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
@@ -76,15 +77,15 @@ namespace Chummer.UI.Skills
         private List<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
         private readonly List<Tuple<string, IComparer<KnowledgeSkill>>> _lstSortKnowledgeList;
 
-        private void SkillsTabUserControl_Load(object sender, EventArgs e)
+        private async void SkillsTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter != null)
                 return;
             using (CursorWait.New(this))
-                RealLoad();
+                await RealLoad();
         }
 
-        public void RealLoad()
+        public async ValueTask RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
@@ -102,7 +103,6 @@ namespace Chummer.UI.Skills
             _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter(_objCharacter);
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
-            Stopwatch parts = Stopwatch.StartNew();
             //Keep everything visible until ready to display everything. This
             //seems to prevent redrawing everything each time anything is added
             //Not benched, but should be faster
@@ -110,148 +110,172 @@ namespace Chummer.UI.Skills
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            SuspendLayout();
 
-            Stopwatch swDisplays = Stopwatch.StartNew();
-
-            _lstActiveSkills = new BindingListDisplay<Skill>(_objCharacter.SkillsSection.Skills, MakeActiveSkill)
+            await this.DoThreadSafeAsync(async () =>
             {
-                Dock = DockStyle.Fill
-            };
-            Control MakeActiveSkill(Skill arg)
-            {
-                SkillControl objSkillControl = new SkillControl(arg);
-                objSkillControl.CustomAttributeChanged += Control_CustomAttributeChanged;
-                return objSkillControl;
-            }
-            RefreshSkillLabels();
-
-            swDisplays.TaskEnd("_lstActiveSkills");
-
-            tlpActiveSkills.Controls.Add(_lstActiveSkills, 0, 2);
-            tlpActiveSkills.SetColumnSpan(_lstActiveSkills, 5);
-
-            swDisplays.TaskEnd("_lstActiveSkills add");
-
-            _lstKnowledgeSkills = new BindingListDisplay<KnowledgeSkill>(_objCharacter.SkillsSection.KnowledgeSkills,
-                knoSkill => new KnowledgeSkillControl(knoSkill))
-            {
-                Dock = DockStyle.Fill
-            };
-            RefreshKnowledgeSkillLabels();
-
-            swDisplays.TaskEnd("_lstKnowledgeSkills");
-
-            tlpBottomPanel.Controls.Add(_lstKnowledgeSkills, 0, 2);
-            tlpBottomPanel.SetColumnSpan(_lstKnowledgeSkills, 4);
-
-            swDisplays.TaskEnd("_lstKnowledgeSkills add");
-
-            if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
-            {
-                _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups,
-                    group => new SkillGroupControl(group))
+                Stopwatch swDisplays = Stopwatch.StartNew();
+                Stopwatch parts = Stopwatch.StartNew();
+                SuspendLayout();
+                try
                 {
-                    Dock = DockStyle.Fill
-                };
-                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)), true);
-                _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
-                RefreshSkillGroupLabels();
+                    _lstActiveSkills
+                        = new BindingListDisplay<Skill>(_objCharacter.SkillsSection.Skills, MakeActiveSkill)
+                        {
+                            Dock = DockStyle.Fill
+                        };
 
-                swDisplays.TaskEnd("_lstSkillGroups");
+                    Control MakeActiveSkill(Skill arg)
+                    {
+                        SkillControl objSkillControl = new SkillControl(arg);
+                        objSkillControl.CustomAttributeChanged += Control_CustomAttributeChanged;
+                        return objSkillControl;
+                    }
 
-                tlpSkillGroups.Controls.Add(_lstSkillGroups, 0, 1);
-                tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 3);
+                    RefreshSkillLabels();
 
-                swDisplays.TaskEnd("_lstSkillGroups add");
-            }
-            else
-            {
-                tlpSkillGroups.Visible = false;
-                tlpActiveSkills.Margin = new Padding(0);
-                tlpTopPanel.ColumnStyles[0] = new ColumnStyle(SizeType.AutoSize);
-                tlpTopPanel.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 100F);
-            }
+                    swDisplays.TaskEnd("_lstActiveSkills");
 
-            parts.TaskEnd("MakeSkillDisplay()");
+                    tlpActiveSkills.Controls.Add(_lstActiveSkills, 0, 2);
+                    tlpActiveSkills.SetColumnSpan(_lstActiveSkills, 5);
 
-            cboDisplayFilter.BeginUpdate();
-            cboDisplayFilter.DataSource = null;
-            cboDisplayFilter.ValueMember = "Item2";
-            cboDisplayFilter.DisplayMember = "Item1";
-            cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
-            cboDisplayFilter.SelectedIndex = 1;
-            cboDisplayFilter.MaxDropDownItems = _lstDropDownActiveSkills.Count;
-            cboDisplayFilter.EndUpdate();
+                    swDisplays.TaskEnd("_lstActiveSkills add");
 
-            cboDisplayFilterKnowledge.BeginUpdate();
-            cboDisplayFilterKnowledge.DataSource = null;
-            cboDisplayFilterKnowledge.ValueMember = "Item2";
-            cboDisplayFilterKnowledge.DisplayMember = "Item1";
-            cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
-            cboDisplayFilterKnowledge.SelectedIndex = 1;
-            cboDisplayFilterKnowledge.MaxDropDownItems = _lstDropDownKnowledgeSkills.Count;
-            cboDisplayFilterKnowledge.EndUpdate();
-            parts.TaskEnd("_ddl databind");
+                    _lstKnowledgeSkills = new BindingListDisplay<KnowledgeSkill>(
+                        _objCharacter.SkillsSection.KnowledgeSkills,
+                        knoSkill => new KnowledgeSkillControl(knoSkill))
+                    {
+                        Dock = DockStyle.Fill
+                    };
+                    RefreshKnowledgeSkillLabels();
 
-            cboSort.BeginUpdate();
-            cboSort.DataSource = null;
-            cboSort.ValueMember = "Item2";
-            cboSort.DisplayMember = "Item1";
-            cboSort.DataSource = _sortList;
-            cboSort.SelectedIndex = 0;
-            cboSort.MaxDropDownItems = _sortList.Count;
-            cboSort.EndUpdate();
+                    swDisplays.TaskEnd("_lstKnowledgeSkills");
 
-            cboSortKnowledge.BeginUpdate();
-            cboSortKnowledge.DataSource = null;
-            cboSortKnowledge.ValueMember = "Item2";
-            cboSortKnowledge.DisplayMember = "Item1";
-            cboSortKnowledge.DataSource = _lstSortKnowledgeList;
-            cboSortKnowledge.SelectedIndex = 0;
-            cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
-            cboSortKnowledge.EndUpdate();
+                    tlpBottomPanel.Controls.Add(_lstKnowledgeSkills, 0, 2);
+                    tlpBottomPanel.SetColumnSpan(_lstKnowledgeSkills, 4);
 
-            parts.TaskEnd("_sort databind");
+                    swDisplays.TaskEnd("_lstKnowledgeSkills add");
 
-            if (_lstSkillGroups != null)
-                _lstSkillGroups.ChildPropertyChanged += ChildPropertyChanged;
-            _lstActiveSkills.ChildPropertyChanged += ChildPropertyChanged;
-            _lstKnowledgeSkills.ChildPropertyChanged += ChildPropertyChanged;
+                    if (_objCharacter.SkillsSection.SkillGroups.Count > 0)
+                    {
+                        _lstSkillGroups = new BindingListDisplay<SkillGroup>(_objCharacter.SkillsSection.SkillGroups,
+                                                                             group => new SkillGroupControl(@group))
+                        {
+                            Dock = DockStyle.Fill
+                        };
+                        _lstSkillGroups.Filter(
+                            x => x.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
+                            true);
+                        _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
+                        RefreshSkillGroupLabels();
 
-            if (!_objCharacter.Created)
-            {
-                lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                        swDisplays.TaskEnd("_lstSkillGroups");
 
-                lblKnoSp.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
-                lblKnoBwk.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
-                UpdateKnoSkillRemaining();
-            }
-            else
-            {
-                lblGroupsSp.Visible = false;
-                lblGroupKarma.Visible = false;
-                lblActiveSp.Visible = false;
-                lblActiveKarma.Visible = false;
-                lblBuyWithKarma.Visible = false;
-                lblKnoSp.Visible = false;
-                lblKnoKarma.Visible = false;
-                lblKnoBwk.Visible = false;
-                lblKnowledgeSkillPoints.Visible = false;
-                lblKnowledgeSkillPointsTitle.Visible = false;
-            }
+                        tlpSkillGroups.Controls.Add(_lstSkillGroups, 0, 1);
+                        tlpSkillGroups.SetColumnSpan(_lstSkillGroups, 3);
 
-            btnExotic.Visible = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + ']') != null;
+                        swDisplays.TaskEnd("_lstSkillGroups add");
+                    }
+                    else
+                    {
+                        tlpSkillGroups.Visible = false;
+                        tlpActiveSkills.Margin = new Padding(0);
+                        tlpTopPanel.ColumnStyles[0] = new ColumnStyle(SizeType.AutoSize);
+                        tlpTopPanel.ColumnStyles[1] = new ColumnStyle(SizeType.Percent, 100F);
+                    }
+
+                    parts.TaskEnd("MakeSkillDisplay()");
+
+                    cboDisplayFilter.BeginUpdate();
+                    cboDisplayFilter.DataSource = null;
+                    cboDisplayFilter.ValueMember = "Item2";
+                    cboDisplayFilter.DisplayMember = "Item1";
+                    cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
+                    cboDisplayFilter.SelectedIndex = 1;
+                    cboDisplayFilter.MaxDropDownItems = _lstDropDownActiveSkills.Count;
+                    cboDisplayFilter.EndUpdate();
+
+                    cboDisplayFilterKnowledge.BeginUpdate();
+                    cboDisplayFilterKnowledge.DataSource = null;
+                    cboDisplayFilterKnowledge.ValueMember = "Item2";
+                    cboDisplayFilterKnowledge.DisplayMember = "Item1";
+                    cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
+                    cboDisplayFilterKnowledge.SelectedIndex = 1;
+                    cboDisplayFilterKnowledge.MaxDropDownItems = _lstDropDownKnowledgeSkills.Count;
+                    cboDisplayFilterKnowledge.EndUpdate();
+                    parts.TaskEnd("_ddl databind");
+
+                    cboSort.BeginUpdate();
+                    cboSort.DataSource = null;
+                    cboSort.ValueMember = "Item2";
+                    cboSort.DisplayMember = "Item1";
+                    cboSort.DataSource = _sortList;
+                    cboSort.SelectedIndex = 0;
+                    cboSort.MaxDropDownItems = _sortList.Count;
+                    cboSort.EndUpdate();
+
+                    cboSortKnowledge.BeginUpdate();
+                    cboSortKnowledge.DataSource = null;
+                    cboSortKnowledge.ValueMember = "Item2";
+                    cboSortKnowledge.DisplayMember = "Item1";
+                    cboSortKnowledge.DataSource = _lstSortKnowledgeList;
+                    cboSortKnowledge.SelectedIndex = 0;
+                    cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
+                    cboSortKnowledge.EndUpdate();
+
+                    parts.TaskEnd("_sort databind");
+
+                    if (_lstSkillGroups != null)
+                        _lstSkillGroups.ChildPropertyChanged += ChildPropertyChanged;
+                    _lstActiveSkills.ChildPropertyChanged += ChildPropertyChanged;
+                    _lstKnowledgeSkills.ChildPropertyChanged += ChildPropertyChanged;
+
+                    if (!_objCharacter.Created)
+                    {
+                        lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter,
+                                                        nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                        lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter,
+                                                        nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                        lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter,
+                                                            nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+
+                        lblKnoSp.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection,
+                                                     nameof(SkillsSection.HasKnowledgePoints));
+                        lblKnoBwk.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection,
+                                                      nameof(SkillsSection.HasKnowledgePoints));
+                        UpdateKnoSkillRemaining();
+                    }
+                    else
+                    {
+                        lblGroupsSp.Visible = false;
+                        lblGroupKarma.Visible = false;
+                        lblActiveSp.Visible = false;
+                        lblActiveKarma.Visible = false;
+                        lblBuyWithKarma.Visible = false;
+                        lblKnoSp.Visible = false;
+                        lblKnoKarma.Visible = false;
+                        lblKnoBwk.Visible = false;
+                        lblKnowledgeSkillPoints.Visible = false;
+                        lblKnowledgeSkillPointsTitle.Visible = false;
+                    }
+
+                    btnExotic.Visible = (await _objCharacter.LoadDataXPathAsync("skills.xml"))
+                                                     .SelectSingleNode(
+                                                         "/chummer/skills/skill[exotic = "
+                                                         + bool.TrueString.CleanXPath()
+                                                         + ']') != null;
+                }
+                finally
+                {
+                    ResumeLayout(true);
+                }
+            });
+            sw.Stop();
+            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
             _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
             _objCharacter.SkillsSection.PropertyChanged += SkillsSectionOnPropertyChanged;
-            ResumeLayout(true);
-            sw.Stop();
-            Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
         }
 
         private void ChildPropertyChanged(object sender, PropertyChangedEventArgs e)

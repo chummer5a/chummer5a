@@ -265,9 +265,12 @@ namespace Chummer
 
         private void DoDataBindings()
         {
-            cboMetatype.SelectedValue = _objContact.Metatype;
-            if (cboMetatype.SelectedIndex < 0)
-                cboMetatype.Text = _objContact.DisplayMetatype;
+            cboMetatype.DoThreadSafe(x =>
+            {
+                x.SelectedValue = _objContact.Metatype;
+                if (x.SelectedIndex < 0)
+                    x.Text = _objContact.DisplayMetatype;
+            });
             txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 

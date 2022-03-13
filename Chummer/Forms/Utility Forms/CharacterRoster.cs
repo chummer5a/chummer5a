@@ -325,37 +325,46 @@ namespace Chummer
         {
             if (this.IsNullOrDisposed())
                 return;
-            switch (e.Action)
+            try
             {
-                case NotifyCollectionChangedAction.Add:
-                    await RefreshNodeTexts();
-                    break;
-
-                case NotifyCollectionChangedAction.Move:
-                case NotifyCollectionChangedAction.Replace:
-                case NotifyCollectionChangedAction.Remove:
+                switch (e.Action)
                 {
-                    bool blnRefreshMru = false;
-                    // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
-                    foreach (CharacterShared objForm in e.OldItems)
-                    {
-                        if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
-                            continue;
-                        if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(objForm.CharacterObject.FileName))
-                            continue;
-                        blnRefreshMru = true;
-                        break;
-                    }
-                    if (blnRefreshMru)
-                        await RefreshMruLists("mru");
-                    else
+                    case NotifyCollectionChangedAction.Add:
                         await RefreshNodeTexts();
-                }
-                    break;
+                        break;
 
-                case NotifyCollectionChangedAction.Reset:
-                    await RefreshMruLists(string.Empty);
-                    break;
+                    case NotifyCollectionChangedAction.Move:
+                    case NotifyCollectionChangedAction.Replace:
+                    case NotifyCollectionChangedAction.Remove:
+                    {
+                        bool blnRefreshMru = false;
+                        // Because the Recent Characters list can have characters listed that aren't in either MRU, refresh it if we are moving or removing any such character
+                        foreach (CharacterShared objForm in e.OldItems)
+                        {
+                            if (await GlobalSettings.FavoriteCharacters.ContainsAsync(objForm.CharacterObject.FileName))
+                                continue;
+                            if (await GlobalSettings.MostRecentlyUsedCharacters.ContainsAsync(
+                                    objForm.CharacterObject.FileName))
+                                continue;
+                            blnRefreshMru = true;
+                            break;
+                        }
+
+                        if (blnRefreshMru)
+                            await RefreshMruLists("mru");
+                        else
+                            await RefreshNodeTexts();
+                    }
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                        await RefreshMruLists(string.Empty);
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow this
             }
         }
 

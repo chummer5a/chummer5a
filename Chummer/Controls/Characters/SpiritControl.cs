@@ -70,27 +70,25 @@ namespace Chummer
             chkFettered.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
-                lblForce.Text = await LanguageManager.GetStringAsync("Label_Spirit_Force");
-                chkBound.Text = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound");
-                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit");
-
+                await lblForce.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Label_Spirit_Force"));
+                await chkBound.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound"));
+                await cmdLink.SetToolTipTextAsync(await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit"));
                 string strTooltip = await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                cmdNotes.ToolTipText = strTooltip.WordWrap();
+                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap());
             }
             else
             {
-                lblForce.Text = await LanguageManager.GetStringAsync("Label_Sprite_Rating");
-                lblServices.Text = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed");
-                chkBound.Text = await LanguageManager.GetStringAsync("Label_Sprite_Registered");
-                chkFettered.Text = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet");
-                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit");
-
+                await lblForce.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Label_Sprite_Rating"));
+                await lblServices.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed"));
+                await chkBound.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Label_Sprite_Registered"));
+                await chkFettered.DoThreadSafeAsync(async x => x.Text = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet"));
+                await cmdLink.SetToolTipTextAsync(await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit"));
                 string strTooltip = await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes");
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                cmdNotes.ToolTipText = strTooltip.WordWrap();
+                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap());
             }
 
             _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
