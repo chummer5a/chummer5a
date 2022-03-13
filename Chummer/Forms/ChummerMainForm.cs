@@ -849,7 +849,7 @@ namespace Chummer
                 // If this is a new child form and does not have a tab page, create one.
                 if (!(objMdiChild.Tag is TabPage))
                 {
-                    TabPage tp = await this.DoThreadSafeFuncAsync(() => new TabPage
+                    TabPage objTabPage = await this.DoThreadSafeFuncAsync(() => new TabPage
                     {
                         // Add a tab page.
                         Tag = objMdiChild,
@@ -858,7 +858,7 @@ namespace Chummer
 
                     if (objMdiChild is CharacterShared frmCharacterShared)
                     {
-                        await tp.DoThreadSafeAsync(x => x.Text = frmCharacterShared.CharacterObject.CharacterName);
+                        await objTabPage.DoThreadSafeAsync(x => x.Text = frmCharacterShared.CharacterObject.CharacterName);
                         if (GlobalSettings.AllowEasterEggs && _mascotChummy != null)
                         {
                             _mascotChummy.CharacterObject = frmCharacterShared.CharacterObject;
@@ -868,14 +868,14 @@ namespace Chummer
                     {
                         string strTagText = await LanguageManager.GetStringAsync(objMdiChild.Tag?.ToString(), GlobalSettings.Language, false);
                         if (!string.IsNullOrEmpty(strTagText))
-                            await tp.DoThreadSafeAsync(x => x.Text = strTagText);
+                            await objTabPage.DoThreadSafeAsync(x => x.Text = strTagText);
                     }
 
-                    await tabForms.DoThreadSafeAsync(x => x.SelectedTab = tp);
+                    await tabForms.DoThreadSafeAsync(x => x.SelectedTab = objTabPage);
 
                     await objMdiChild.DoThreadSafeAsync(x =>
                     {
-                        x.Tag = tp;
+                        x.Tag = objTabPage;
                         x.FormClosed += ActiveMdiChild_FormClosed;
                     });
                 }

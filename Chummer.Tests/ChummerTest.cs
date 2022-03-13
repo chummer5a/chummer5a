@@ -307,7 +307,18 @@ namespace Chummer.Tests
             }
             finally
             {
-                frmTestForm?.Dispose();
+                try
+                {
+                    frmTestForm?.Dispose();
+                }
+                catch (Exception e)
+                {
+                    string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
+                        + e.Message;
+                    Debug.WriteLine(strErrorMessage);
+                    Console.WriteLine(strErrorMessage);
+                    Utils.BreakIfDebug();
+                }
             }
             Program.MainForm = frmOldMainForm;
         }
