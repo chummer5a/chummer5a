@@ -501,10 +501,12 @@ namespace Chummer
                                                 = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                 ?.Value;
                                             if (!string.IsNullOrEmpty(strName) && lstDrainAttributes.All(x => x.Value.ToString() != strName))
-                                                lstDrainAttributes.Add(new ListItem(strName,
-                                                                           (await xmlDrain
-                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                   "translate"))?.Value ?? strName));
+                                            {
+                                                string strTranslatedName = (await xmlDrain
+                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                        "translate"))?.Value ?? strName;
+                                                lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
+                                            }
                                         }
                                     }
 
@@ -2020,10 +2022,12 @@ namespace Chummer
                                                 = (await xmlDrain.SelectSingleNodeAndCacheExpressionAsync("name"))
                                                 ?.Value;
                                             if (!string.IsNullOrEmpty(strName) && lstDrainAttributes.All(x => x.Value.ToString() != strName))
-                                                lstDrainAttributes.Add(new ListItem(strName,
-                                                                           (await xmlDrain
-                                                                               .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                   "translate"))?.Value ?? strName));
+                                            {
+                                                string strTranslatedName = (await xmlDrain
+                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                        "translate"))?.Value ?? strName;
+                                                lstDrainAttributes.Add(new ListItem(strName, strTranslatedName));
+                                            }
                                         }
                                     }
 
