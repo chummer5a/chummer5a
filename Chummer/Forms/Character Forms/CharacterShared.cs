@@ -6911,8 +6911,11 @@ namespace Chummer
                 {
                     if (_objUpdateCharacterInfoCancellationTokenSource != null)
                     {
-                        _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
-                        _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                        if (_objUpdateCharacterInfoCancellationTokenSource.IsCancellationRequested == false)
+                        {
+                            _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
+                            _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                        }
                         _objUpdateCharacterInfoCancellationTokenSource = null;
                     }
 
@@ -6923,15 +6926,16 @@ namespace Chummer
                     return;
                 if (_tskUpdateCharacterInfo?.IsCompleted == false)
                     return;
-                if (_objUpdateCharacterInfoCancellationTokenSource != null)
+                if (_objUpdateCharacterInfoCancellationTokenSource?.IsCancellationRequested == false)
                 {
                     _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
                     _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                    _objUpdateCharacterInfoCancellationTokenSource = null;
                 }
                 _objUpdateCharacterInfoCancellationTokenSource = new CancellationTokenSource();
+                CancellationToken objToken = _objUpdateCharacterInfoCancellationTokenSource.Token;
                 _tskUpdateCharacterInfo
-                    = Task.Run(() => DoUpdateCharacterInfo(_objUpdateCharacterInfoCancellationTokenSource.Token),
-                               _objUpdateCharacterInfoCancellationTokenSource.Token);
+                    = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
             }
         }
 
@@ -7138,6 +7142,7 @@ namespace Chummer
                 {
                     _objUpdateCharacterInfoCancellationTokenSource.Cancel(false);
                     _objUpdateCharacterInfoCancellationTokenSource.Dispose();
+                    _objUpdateCharacterInfoCancellationTokenSource = null;
                 }
             }
             base.Dispose(disposing);

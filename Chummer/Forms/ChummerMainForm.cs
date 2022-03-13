@@ -435,7 +435,7 @@ namespace Chummer
         [CLSCompliant(false)]
         public PageViewTelemetry MyStartupPvt { get; set; }
 
-        private async void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        private void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
             switch (notifyCollectionChangedEventArgs.Action)
             {
@@ -450,18 +450,13 @@ namespace Chummer
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
                         {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
-                            await objCharacter.DisposeAsync();
                         }
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
-                        {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
-                            if (!notifyCollectionChangedEventArgs.NewItems.Contains(objCharacter))
-                                await objCharacter.DisposeAsync();
-                        }
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
                             objCharacter.PropertyChanged += UpdateCharacterTabTitle;
                         break;
@@ -1373,6 +1368,9 @@ namespace Chummer
                 }
                 finally
                 {
+                    if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                        && await OpenCharacterForms.AllAsync(x => x.CharacterObject != objCharacter))
+                        Program.OpenCharacters.Remove(objCharacter);
                     await objCharacter.DisposeAsync();
                 }
             }
@@ -1432,6 +1430,9 @@ namespace Chummer
                 }
                 finally
                 {
+                    if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                        && await OpenCharacterForms.AllAsync(x => x.CharacterObject != objCharacter))
+                        Program.OpenCharacters.Remove(objCharacter);
                     await objCharacter.DisposeAsync();
                 }
             }

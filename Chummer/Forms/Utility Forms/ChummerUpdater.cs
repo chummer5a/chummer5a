@@ -97,7 +97,7 @@ namespace Chummer
             if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
                 _tskConnectionLoader.IsFaulted)))
             {
-                _tskChangelogDownloader = Task.Run(DownloadChangelog);
+                _tskChangelogDownloader = Task.Run(() => DownloadChangelog());
                 await _tskChangelogDownloader;
             }
             if (_blnIsConnected && SilentMode && !_blnSilentModeUpdateWasDenied)
@@ -120,60 +120,74 @@ namespace Chummer
                 return;
             }
             _blnFormClosing = true;
-            _objConnectionLoaderCancellationTokenSource?.Cancel(false);
+            if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested == false)
+            {
+                _objConnectionLoaderCancellationTokenSource.Cancel(false);
+                _objConnectionLoaderCancellationTokenSource.Dispose();
+                _objConnectionLoaderCancellationTokenSource = null;
+            }
             _clientDownloader.CancelAsync();
             _clientChangelogDownloader.CancelAsync();
         }
 
-        private async Task DownloadChangelog()
+        private async Task DownloadChangelog(CancellationToken token = default)
         {
-            if (_objConnectionLoaderCancellationTokenSource != null)
+            token.ThrowIfCancellationRequested();
+            if (_objConnectionLoaderCancellationTokenSource?.IsCancellationRequested == false)
             {
                 _objConnectionLoaderCancellationTokenSource.Cancel(false);
                 _objConnectionLoaderCancellationTokenSource.Dispose();
+                _objConnectionLoaderCancellationTokenSource = null;
             }
+            token.ThrowIfCancellationRequested();
             _objConnectionLoaderCancellationTokenSource = new CancellationTokenSource();
             try
             {
                 if (_tskConnectionLoader?.IsCompleted == false)
                     await _tskConnectionLoader;
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 // Swallow this
             }
+            CancellationToken objToken = _objConnectionLoaderCancellationTokenSource.Token;
             _tskConnectionLoader = Task.Run(async () =>
             {
-                await LoadConnection();
-                if (!_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
-                    await PopulateChangelog();
-            }, _objConnectionLoaderCancellationTokenSource.Token);
+                await LoadConnection(objToken);
+                await PopulateChangelog(objToken);
+            }, objToken);
         }
 
-        private async ValueTask PopulateChangelog()
+        private async ValueTask PopulateChangelog(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!_blnFormClosing)
             {
                 if (!_clientDownloader.IsBusy)
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = true);
+                token.ThrowIfCancellationRequested();
                 if (File.Exists(_strTempLatestVersionChangelogPath))
                 {
                     string strUpdateLog = File.ReadAllText(_strTempLatestVersionChangelogPath).CleanForHtml();
+                    token.ThrowIfCancellationRequested();
                     await webNotes.DoThreadSafeAsync(x => x.DocumentText
                                                          = "<font size=\"-1\" face=\"Courier New,Serif\">"
                                                            + strUpdateLog + "</font>");
                 }
-                await DoVersionTextUpdate();
+                token.ThrowIfCancellationRequested();
+                await DoVersionTextUpdate(token);
             }
         }
 
-        private async ValueTask LoadConnection()
+        private async ValueTask LoadConnection(CancellationToken token = default)
         {
             while (_clientChangelogDownloader.IsBusy)
+            {
+                token.ThrowIfCancellationRequested();
                 await Utils.SafeSleepAsync();
+            }
             _blnIsConnected = false;
-            if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
             bool blnChummerVersionGotten = true;
             string strError = (await LanguageManager.GetStringAsync("String_Error")).Trim();
             _strExceptionString = string.Empty;
@@ -207,8 +221,7 @@ namespace Chummer
                 {
                     response = await request.GetResponseAsync() as HttpWebResponse;
 
-                    if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
 
                     // Get the stream containing content returned by the server.
                     using (Stream dataStream = response?.GetResponseStream())
@@ -217,23 +230,20 @@ namespace Chummer
                             blnChummerVersionGotten = false;
                         if (blnChummerVersionGotten)
                         {
-                            if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
-                                return;
+                            token.ThrowIfCancellationRequested();
 
                             // Open the stream using a StreamReader for easy access.
                             string responseFromServer;
                             using (StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true))
                                 responseFromServer = await reader.ReadToEndAsync();
 
-                            if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
-                                return;
+                            token.ThrowIfCancellationRequested();
 
                             bool blnFoundTag = false;
                             bool blnFoundArchive = false;
                             foreach (string line in responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
-                                    return;
+                                token.ThrowIfCancellationRequested();
 
                                 if (!blnFoundTag && line.Contains("tag_name"))
                                 {
@@ -302,8 +312,7 @@ namespace Chummer
                 if (!await Utils.SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode))
                     return;
                 await _clientChangelogDownloader.DownloadFileTaskAsync(uriConnectionAddress, _strTempLatestVersionChangelogPath + ".tmp");
-                if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
-                    return;
+                token.ThrowIfCancellationRequested();
                 File.Move(_strTempLatestVersionChangelogPath + ".tmp", _strTempLatestVersionChangelogPath);
             }
             catch (WebException ex)
@@ -356,7 +365,7 @@ namespace Chummer
                 if (value && (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
                         _tskConnectionLoader.IsFaulted))) && _tskChangelogDownloader?.IsCompleted != false)
                 {
-                    _tskChangelogDownloader = Task.Run(DownloadChangelog);
+                    _tskChangelogDownloader = Task.Run(() => DownloadChangelog());
                 }
             }
         }
@@ -379,12 +388,15 @@ namespace Chummer
         /// </summary>
         public string CurrentVersion { get; }
 
-        public async ValueTask DoVersionTextUpdate()
+        public async ValueTask DoVersionTextUpdate(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strLatestVersion = LatestVersion.TrimStartOnce("Nightly-v");
             await lblUpdaterStatus.DoThreadSafeAsync(x => x.Left = x.Left + x.Width + 6);
+            token.ThrowIfCancellationRequested();
             if (!_blnIsConnected || strLatestVersion == (await LanguageManager.GetStringAsync("String_Error")).Trim())
             {
+                token.ThrowIfCancellationRequested();
                 await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(async x => x.Text
                                                                          = string.IsNullOrEmpty(_strExceptionString)
                                                                              ? await LanguageManager.GetStringAsync(
@@ -406,7 +418,7 @@ namespace Chummer
             int intResult = 0;
             if (VersionExtensions.TryParse(strLatestVersion, out Version objLatestVersion))
                 intResult = objLatestVersion?.CompareTo(Utils.CurrentChummerVersion) ?? 0;
-
+            token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space");
             string strStatusText;
             if (intResult > 0)
@@ -426,6 +438,7 @@ namespace Chummer
                                                                              : "String_Stable"), strLatestVersion);
                 if (intResult < 0)
                 {
+                    token.ThrowIfCancellationRequested();
                     await cmdRestart.DoThreadSafeAsync(async x =>
                     {
                         x.Text = await LanguageManager.GetStringAsync("Button_Up_To_Date");
@@ -435,12 +448,13 @@ namespace Chummer
             }
             if (_blnPreferNightly)
                 strStatusText += strSpace + await LanguageManager.GetStringAsync("String_Nightly_Changelog_Warning");
-
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lblUpdaterStatus.DoThreadSafeAsync(x => x.Text = strStatusText),
                                cmdUpdate.DoThreadSafeFunc(
                                    async x => x.Text
                                        = await LanguageManager.GetStringAsync(
                                            intResult > 0 ? "Button_Download" : "Button_Redownload")));
+            token.ThrowIfCancellationRequested();
         }
 
         private async void cmdUpdate_Click(object sender, EventArgs e)
@@ -455,7 +469,7 @@ namespace Chummer
                                                          _tskConnectionLoader.IsFaulted)))
             {
                 cmdUpdate.Enabled = false;
-                _tskChangelogDownloader = Task.Run(DownloadChangelog);
+                _tskChangelogDownloader = Task.Run(() => DownloadChangelog());
                 await _tskChangelogDownloader;
             }
         }
@@ -472,8 +486,9 @@ namespace Chummer
             await DoCleanReinstall();
         }
 
-        private async ValueTask<bool> CreateBackupZip()
+        private async ValueTask<bool> CreateBackupZip(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             //Create a backup file in the temp directory.
             string strBackupZipPath = Path.Combine(Utils.GetTempPath(), "chummer" + CurrentVersion + ".zip");
             Log.Info("Creating archive from application path: " + _strAppPath);
@@ -481,23 +496,27 @@ namespace Chummer
             {
                 if (!File.Exists(strBackupZipPath))
                 {
-                    ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
+                    using (token.Register(() => Utils.SafeDeleteDirectory(strBackupZipPath)))
+                        ZipFile.CreateFromDirectory(_strAppPath, strBackupZipPath, CompressionLevel.Fastest, true);
                 }
             }
             catch (UnauthorizedAccessException)
             {
+                token.ThrowIfCancellationRequested();
                 if (!SilentMode)
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning"));
                 return false;
             }
             catch (IOException)
             {
+                token.ThrowIfCancellationRequested();
                 if (!SilentMode)
                     Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             catch (NotSupportedException)
             {
+                token.ThrowIfCancellationRequested();
                 if (!SilentMode)
                     Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed"), Path.GetFileName(strBackupZipPath)));
                 return false;
@@ -767,18 +786,22 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DownloadUpdates()
+        private async ValueTask DownloadUpdates(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
             {
                 Log.Debug("DownloadUpdates");
+                token.ThrowIfCancellationRequested();
                 await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false),
                                    cmdRestart.DoThreadSafeAsync(x => x.Enabled = false),
                                    cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false),
                                    Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode));
+                token.ThrowIfCancellationRequested();
                 try
                 {
-                    await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempLatestVersionZipPath);
+                    using (token.Register(() => _clientDownloader.CancelAsync()))
+                        await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempLatestVersionZipPath);
                 }
                 catch (WebException ex)
                 {
@@ -788,12 +811,14 @@ namespace Chummer
                         intNewLineLocation = strException.IndexOf('\n');
                     if (intNewLineLocation != -1)
                         strException = strException.Substring(0, intNewLineLocation);
+                    token.ThrowIfCancellationRequested();
                     // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
                     if (!SilentMode)
                         Program.ShowMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException"),
+                                          await LanguageManager.GetStringAsync(
+                                              "Warning_Update_CouldNotConnectException"),
                                           strException), Application.ProductName, MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = true);

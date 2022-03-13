@@ -321,7 +321,7 @@ namespace Codaxy.WkHtmlToPdf
                                                 buffer, 0, buffer.Length, objCancellationTokenSource.Token);
                                             await stream.WriteLineAsync();
                                         }
-                                        catch (TaskCanceledException)
+                                        catch (OperationCanceledException)
                                         {
                                             // Swallow this
                                         }

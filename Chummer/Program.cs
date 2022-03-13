@@ -20,6 +20,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -421,6 +422,9 @@ namespace Chummer
                     // Restore Chummer's language to en-US if we failed to load the default one.
                     if (blnRestoreDefaultLanguage)
                         GlobalSettings.Language = GlobalSettings.DefaultLanguage;
+
+                    OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
+
                     MainForm = new ChummerMainForm();
                     try
                     {
@@ -531,6 +535,8 @@ namespace Chummer
                         MainForm.MyStartupPvt = pvt;
                         Application.Run(MainForm);
                     }
+
+                    OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
 
                     PluginLoader?.Dispose();
                     Log.Info(ExceptionHeatMap.GenerateInfo());
@@ -826,6 +832,30 @@ namespace Chummer
         /// List of all currently loaded characters (either in an open form or linked to a character in an open form via contact, spirit, or pet)
         /// </summary>
         public static ThreadSafeObservableCollection<Character> OpenCharacters { get; } = new ThreadSafeObservableCollection<Character>();
+
+        private static void OpenCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Remove:
+                {
+                    foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                    {
+                        objCharacter.Dispose();
+                    }
+                    break;
+                }
+                case NotifyCollectionChangedAction.Replace:
+                {
+                    foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
+                    {
+                        if (!notifyCollectionChangedEventArgs.NewItems.Contains(objCharacter))
+                            objCharacter.Dispose();
+                    }
+                    break;
+                }
+            }
+        }
 
         /// <summary>
         /// Load a Character from a file and return it (thread-safe).

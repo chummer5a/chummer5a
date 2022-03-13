@@ -19,7 +19,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -50,8 +49,12 @@ namespace Chummer
 
         private async void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objPrinterCancellationTokenSource?.Cancel(false);
-
+            if (_objPrinterCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objPrinterCancellationTokenSource.Cancel(false);
+                _objPrinterCancellationTokenSource.Dispose();
+                _objPrinterCancellationTokenSource = null;
+            }
             await CleanUpOldCharacters();
         }
 
@@ -92,9 +95,16 @@ namespace Chummer
             await StartPrint();
         }
 
-        private async ValueTask CancelPrint()
+        private async ValueTask CancelPrint(CancellationToken token = default)
         {
-            _objPrinterCancellationTokenSource?.Cancel(false);
+            token.ThrowIfCancellationRequested();
+            if (_objPrinterCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objPrinterCancellationTokenSource.Cancel(false);
+                _objPrinterCancellationTokenSource.Dispose();
+                _objPrinterCancellationTokenSource = null;
+            }
+            token.ThrowIfCancellationRequested();
             try
             {
                 if (_tskPrinter?.IsCompleted == false)
@@ -104,33 +114,36 @@ namespace Chummer
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = true),
                                        prgProgress.DoThreadSafeAsync(x => x.Value = 0));
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 // Swallow this
             }
         }
 
-        private async ValueTask StartPrint()
+        private async ValueTask StartPrint(CancellationToken token = default)
         {
-            await CancelPrint();
-            _objPrinterCancellationTokenSource?.Dispose();
+            await CancelPrint(token);
+            token.ThrowIfCancellationRequested();
             _objPrinterCancellationTokenSource = new CancellationTokenSource();
-            _tskPrinter = Task.Run(DoPrint, _objPrinterCancellationTokenSource.Token);
+            CancellationToken objToken = _objPrinterCancellationTokenSource.Token;
+            _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
         }
 
-        private async Task DoPrint()
+        private async Task DoPrint(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this, true))
             {
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     await Task.WhenAll(cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
                                        prgProgress.DoThreadSafeAsync(objBar =>
                                        {
                                            objBar.Value = 0;
                                            objBar.Maximum = treCharacters.Nodes.Count;
                                        }));
-
+                    token.ThrowIfCancellationRequested();
                     // Parallelized load because this is one major bottleneck.
                     Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
                     Task<Character>[] tskLoadingTasks = new Task<Character>[treCharacters.Nodes.Count];
@@ -138,25 +151,17 @@ namespace Chummer
                     {
                         string strLoopFile = treCharacters.Nodes[i].Tag.ToString();
                         tskLoadingTasks[i]
-                            = Task.Run(() => InnerLoad(strLoopFile), _objPrinterCancellationTokenSource.Token);
+                            = Task.Run(() => InnerLoad(strLoopFile, token), token);
                     }
 
-                    async Task<Character> InnerLoad(string strLoopFile)
+                    async Task<Character> InnerLoad(string strLoopFile, CancellationToken innerToken = default)
                     {
-                        if (_objPrinterCancellationTokenSource.IsCancellationRequested)
-                        {
-                            _objPrinterCancellationTokenSource?.Cancel(false);
-                            return null;
-                        }
+                        innerToken.ThrowIfCancellationRequested();
 
                         Character objReturn
                             = await Program.LoadCharacterAsync(strLoopFile, string.Empty, false, false, false);
                         bool blnLoadSuccessful = objReturn != null;
-                        if (_objPrinterCancellationTokenSource.IsCancellationRequested)
-                        {
-                            _objPrinterCancellationTokenSource?.Cancel(false);
-                            return null;
-                        }
+                        innerToken.ThrowIfCancellationRequested();
 
                         if (blnLoadSuccessful)
                             await prgProgress.DoThreadSafeAsync(() => ++prgProgress.Value);
@@ -164,23 +169,12 @@ namespace Chummer
                     }
 
                     await Task.WhenAll(tskLoadingTasks);
-                    if (_objPrinterCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    try
-                    {
-                        for (int i = 0; i < lstCharacters.Length; ++i)
-                            lstCharacters[i] = await tskLoadingTasks[i];
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        return; // We cancelled the task, so just exit
-                    }
-
-                    if (_objPrinterCancellationTokenSource.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
+                    for (int i = 0; i < lstCharacters.Length; ++i)
+                        lstCharacters[i] = await tskLoadingTasks[i];
+                    token.ThrowIfCancellationRequested();
                     await CleanUpOldCharacters();
-                    if (_objPrinterCancellationTokenSource.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
                     _aobjCharacters = lstCharacters;
 
                     if (_frmPrintView == null)
@@ -222,8 +216,8 @@ namespace Chummer
                 foreach (Character objCharacter in _aobjCharacters)
                 {
                     if (!await Program.OpenCharacters.ContainsAsync(objCharacter) ||
-                        Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == objCharacter) ||
-                        Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objCharacter)))
+                        await Program.MainForm.OpenCharacterForms.AnyAsync(x => x.CharacterObject == objCharacter) ||
+                        await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;
                     Program.OpenCharacters.Remove(objCharacter);

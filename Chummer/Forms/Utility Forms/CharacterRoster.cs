@@ -126,13 +126,13 @@ namespace Chummer
                 _tskMostRecentlyUsedsRefresh
                     = LoadMruCharacters(true, _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
                 _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
-                _tskWatchFolderRefresh = LoadWatchFolderCharacters();
+                _tskWatchFolderRefresh = LoadWatchFolderCharacters(_objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
                 try
                 {
                     await Task.WhenAll(_tskMostRecentlyUsedsRefresh, _tskWatchFolderRefresh,
                                        Task.WhenAll(Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     //swallow this
                 }
@@ -152,8 +152,18 @@ namespace Chummer
                 if (_blnIsClosing)
                     return;
                 _blnIsClosing = true; // Needed to prevent crashes on disposal
-                _objMostRecentlyUsedsRefreshCancellationTokenSource?.Cancel(false);
-                _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
+                if (_objMostRecentlyUsedsRefreshCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
+                    _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
+                    _objMostRecentlyUsedsRefreshCancellationTokenSource = null;
+                }
+                if (_objWatchFolderRefreshCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
+                    _objWatchFolderRefreshCancellationTokenSource.Dispose();
+                    _objWatchFolderRefreshCancellationTokenSource = null;
+                }
 
                 SetMyEventHandlers(true);
 
@@ -182,15 +192,33 @@ namespace Chummer
                                                                               .ConfigureAwait(false))
                                               ;
                 await _dicSavedCharacterCaches.DisposeAsync();
+
+                try
+                {
+                    await _tskMostRecentlyUsedsRefresh;
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+                try
+                {
+                    await _tskWatchFolderRefresh;
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
         }
 
         private async void RefreshWatchList(object sender, EventArgs e)
         {
-            if (_objWatchFolderRefreshCancellationTokenSource != null)
+            if (_objWatchFolderRefreshCancellationTokenSource?.IsCancellationRequested == false)
             {
                 _objWatchFolderRefreshCancellationTokenSource.Cancel(false);
                 _objWatchFolderRefreshCancellationTokenSource.Dispose();
+                _objWatchFolderRefreshCancellationTokenSource = null;
             }
             _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
             try
@@ -198,7 +226,7 @@ namespace Chummer
                 if (_tskWatchFolderRefresh?.IsCompleted == false)
                     await _tskWatchFolderRefresh;
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 //swallow this
             }
@@ -207,24 +235,29 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            _tskWatchFolderRefresh = LoadWatchFolderCharacters();
             try
             {
-                await _tskWatchFolderRefresh;
+                _tskWatchFolderRefresh = LoadWatchFolderCharacters(_objWatchFolderRefreshCancellationTokenSource.Token);
+                try
+                {
+                    await _tskWatchFolderRefresh;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
-            catch (ObjectDisposedException)
+            finally
             {
-                //swallow this
+                ResumeLayout();
             }
-            catch (TaskCanceledException)
-            {
-                //swallow this
-            }
-            ResumeLayout();
-            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                return;
-            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
-            await PurgeUnusedCharacterCaches();
+            
+            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache, _objWatchFolderRefreshCancellationTokenSource.Token));
+            await PurgeUnusedCharacterCaches(_objWatchFolderRefreshCancellationTokenSource.Token);
         }
 
         private async void RefreshMruLists(object sender, TextEventArgs e)
@@ -232,20 +265,23 @@ namespace Chummer
             await RefreshMruLists(e?.Text);
         }
 
-        public async ValueTask RefreshMruLists(string strMruType)
+        public async ValueTask RefreshMruLists(string strMruType, CancellationToken token = default)
         {
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource != null)
+            token.ThrowIfCancellationRequested();
+            if (_objMostRecentlyUsedsRefreshCancellationTokenSource?.IsCancellationRequested == false)
             {
                 _objMostRecentlyUsedsRefreshCancellationTokenSource.Cancel(false);
                 _objMostRecentlyUsedsRefreshCancellationTokenSource.Dispose();
+                _objMostRecentlyUsedsRefreshCancellationTokenSource = null;
             }
+            token.ThrowIfCancellationRequested();
             _objMostRecentlyUsedsRefreshCancellationTokenSource = new CancellationTokenSource();
             try
             {
                 if (_tskMostRecentlyUsedsRefresh?.IsCompleted == false)
                     await _tskMostRecentlyUsedsRefresh;
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 //swallow this
             }
@@ -253,25 +289,33 @@ namespace Chummer
             if (this.IsNullOrDisposed())
                 return;
 
+            CancellationToken innerToken = _objMostRecentlyUsedsRefreshCancellationTokenSource.Token;
             SuspendLayout();
-            _tskMostRecentlyUsedsRefresh = LoadMruCharacters(strMruType != "mru", _objMostRecentlyUsedsRefreshCancellationTokenSource.Token);
             try
             {
-                await _tskMostRecentlyUsedsRefresh;
+                _tskMostRecentlyUsedsRefresh
+                    = LoadMruCharacters(strMruType != "mru", innerToken);
+                try
+                {
+                    await _tskMostRecentlyUsedsRefresh;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
-            catch (ObjectDisposedException)
+            finally
             {
-                //swallow this
+                ResumeLayout();
             }
-            catch (TaskCanceledException)
-            {
-                //swallow this
-            }
-            ResumeLayout();
-            if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
-                return;
-            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
-            await PurgeUnusedCharacterCaches();
+            innerToken.ThrowIfCancellationRequested();
+            token.ThrowIfCancellationRequested();
+            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache, token));
+            await PurgeUnusedCharacterCaches(token);
         }
 
         private async void OpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -339,10 +383,9 @@ namespace Chummer
             }
         }
 
-        private async Task LoadMruCharacters(bool blnRefreshFavorites, CancellationToken objCancellationToken)
+        private async Task LoadMruCharacters(bool blnRefreshFavorites, CancellationToken token = default)
         {
-            if (objCancellationToken.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
 
             if (treCharacterList.IsNullOrDisposed())
                 return;
@@ -357,8 +400,7 @@ namespace Chummer
                 blnAddFavoriteNode = true;
             }
 
-            if (objCancellationToken.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
 
             bool blnAddRecentNode = false;
             List<string> lstRecents = (await GlobalSettings.MostRecentlyUsedCharacters.ToArrayAsync()).ToList();
@@ -382,8 +424,7 @@ namespace Chummer
                 blnAddRecentNode = true;
             }
 
-            if (objCancellationToken.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
 
             int intFavoritesCount = lstFavorites.Count;
             int intRecentsCount = lstRecents.Count;
@@ -393,29 +434,28 @@ namespace Chummer
 
             if (intFavoritesCount > 0 || intRecentsCount > 0)
             {
-                if (objCancellationToken.IsCancellationRequested)
-                    return;
+                token.ThrowIfCancellationRequested();
                 Task<TreeNode>[] atskCachingTasks = new Task<TreeNode>[intFavoritesCount + intRecentsCount];
 
                 for (int i = 0; i < intFavoritesCount; ++i)
                 {
                     int iLocal = i;
                     atskCachingTasks[i]
-                        = Task.Run(() => CacheCharacter(lstFavorites[iLocal]), objCancellationToken);
+                        = Task.Run(() => CacheCharacter(lstFavorites[iLocal], token), token);
                 }
 
                 for (int i = 0; i < intRecentsCount; ++i)
                 {
                     int iLocal = i;
                     atskCachingTasks[intFavoritesCount + i]
-                        = Task.Run(() => CacheCharacter(lstRecents[iLocal]), objCancellationToken);
+                        = Task.Run(() => CacheCharacter(lstRecents[iLocal], token), token);
                 }
 
                 try
                 {
                     await Task.WhenAll(atskCachingTasks);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     //swallow this
                 }
@@ -431,8 +471,7 @@ namespace Chummer
                     {
                         foreach (TreeNode objNode in lstFavoritesNodes)
                         {
-                            if (objCancellationToken.IsCancellationRequested)
-                                return;
+                            token.ThrowIfCancellationRequested();
                             if (objNode == null)
                                 continue;
                             if (objFavoriteNode.TreeView != null)
@@ -459,8 +498,7 @@ namespace Chummer
                     {
                         foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            if (objCancellationToken.IsCancellationRequested)
-                                return;
+                            token.ThrowIfCancellationRequested();
                             if (objNode == null)
                                 continue;
                             if (objRecentNode.TreeView != null)
@@ -477,8 +515,7 @@ namespace Chummer
                 }
             }
 
-            if (objCancellationToken.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
 
             if (treCharacterList.IsNullOrDisposed())
                 return;
@@ -534,10 +571,9 @@ namespace Chummer
             });
         }
 
-        private async Task LoadWatchFolderCharacters()
+        private async Task LoadWatchFolderCharacters(CancellationToken token = default)
         {
-            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
 
             if (treCharacterList.IsNullOrDisposed())
                 return;
@@ -550,8 +586,7 @@ namespace Chummer
                 dicWatch = new Dictionary<string, string>(astrFiles.Length);
                 foreach (string strFile in astrFiles)
                 {
-                    if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
 
                     FileInfo objInfo = new FileInfo(strFile);
                     if (objInfo.Directory == null || objInfo.Directory.FullName == GlobalSettings.CharacterRosterPath)
@@ -576,10 +611,9 @@ namespace Chummer
             else
                 objWatchNode?.Remove();
 
-            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
 
-            if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count == 0 || _objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
+            if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count == 0)
                 return;
 
             Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>(dicWatch.Count);
@@ -587,24 +621,20 @@ namespace Chummer
             foreach (string strKey in dicWatch.Keys)
                 lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey),
                                              _objMostRecentlyUsedsRefreshCancellationTokenSource.Token));
-            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
             await Task.WhenAll(lstCachingTasks);
-            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
             foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
             {
                 TreeNode objNode = await tskCachingTask;
                 if (objNode.Tag is CharacterCache objCache)
                     dicWatchNodes.Add(objNode, dicWatch[objCache.FilePath]);
-                if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                    return;
+                token.ThrowIfCancellationRequested();
             }
 
             foreach (string s in dicWatchNodes.Values.Distinct().OrderBy(x => x))
             {
-                if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                    return;
+                token.ThrowIfCancellationRequested();
                 if (s == "Watch")
                     continue;
                 if (objWatchNode.TreeView != null)
@@ -620,8 +650,7 @@ namespace Chummer
 
             foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes.OrderBy(x => x.Key.Text))
             {
-                if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                    return;
+                token.ThrowIfCancellationRequested();
                 if (kvtNode.Value == "Watch")
                 {
                     if (objWatchNode.TreeView != null)
@@ -637,8 +666,7 @@ namespace Chummer
                 {
                     foreach (TreeNode objNode in objWatchNode.Nodes)
                     {
-                        if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                            return;
+                        token.ThrowIfCancellationRequested();
                         if (objNode.Tag.ToString() != kvtNode.Value)
                             continue;
                         if (objWatchNode.TreeView != null)
@@ -653,8 +681,7 @@ namespace Chummer
                 }
             }
 
-            if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
-                return;
+            token.ThrowIfCancellationRequested();
 
             if (treCharacterList.IsNullOrDisposed())
                 return;
@@ -782,13 +809,16 @@ namespace Chummer
         /// <summary>
         /// Remove all character caches from the cached dictionary that are not present in any of the form's lists (and are therefore unnecessary).
         /// </summary>
-        private async ValueTask PurgeUnusedCharacterCaches()
+        private async ValueTask PurgeUnusedCharacterCaches(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             foreach (KeyValuePair<string, CharacterCache> kvpCache in await _dicSavedCharacterCaches.ToArrayAsync())
             {
+                token.ThrowIfCancellationRequested();
                 CharacterCache objCache = kvpCache.Value;
                 if (treCharacterList.FindNodeByTag(objCache) != null)
                     continue;
+                token.ThrowIfCancellationRequested();
                 await _dicSavedCharacterCaches.RemoveAsync(objCache.FilePath);
                 if (!objCache.IsDisposed)
                     await objCache.DisposeAsync();
@@ -799,9 +829,9 @@ namespace Chummer
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// The cache is then saved in a dictionary to prevent us from storing duplicate image data in memory (which can get expensive!)
         /// </summary>
-        /// <param name="strFile"></param>
-        private async Task<TreeNode> CacheCharacter(string strFile)
+        private async Task<TreeNode> CacheCharacter(string strFile, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             CharacterCache objCache = null;
             if (!_dicSavedCharacterCaches.IsDisposed)
             {
@@ -809,6 +839,7 @@ namespace Chummer
                 {
                     while (true)
                     {
+                        token.ThrowIfCancellationRequested();
                         bool blnSuccess;
                         (blnSuccess, objCache) = await _dicSavedCharacterCaches.TryGetValueAsync(strFile);
                         if (blnSuccess)
@@ -830,11 +861,11 @@ namespace Chummer
             }
             else
                 objCache = await CharacterCache.CreateFromFileAsync(strFile);
-
+            token.ThrowIfCancellationRequested();
             if (objCache == null)
                 return new TreeNode
                     {Text = await LanguageManager.GetStringAsync("String_Error"), ForeColor = ColorManager.ErrorColor};
-
+            token.ThrowIfCancellationRequested();
             TreeNode objNode = new TreeNode
             {
                 Text = objCache.CalculatedName(),
@@ -858,9 +889,9 @@ namespace Chummer
         /// <summary>
         /// Update the labels and images based on the selected treenode.
         /// </summary>
-        /// <param name="objCache"></param>
-        public async Task UpdateCharacter(CharacterCache objCache)
+        public async Task UpdateCharacter(CharacterCache objCache, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (await this.DoThreadSafeFuncAsync(x => x.IsNullOrDisposed())) // Safety check for external calls
                 return;
             using (CursorWait.New(this))
@@ -868,6 +899,7 @@ namespace Chummer
                 await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout());
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     if (objCache != null)
                     {
                         string strUnknown = await LanguageManager.GetStringAsync("String_Unknown");
@@ -876,6 +908,7 @@ namespace Chummer
                         await txtCharacterNotes.DoThreadSafeAsync(async x => x.Text = await objCache.CharacterNotes.RtfToPlainTextAsync());
                         await txtGameNotes.DoThreadSafeAsync(async x => x.Text = await objCache.GameNotes.RtfToPlainTextAsync());
                         await txtCharacterConcept.DoThreadSafeAsync(async x => x.Text = await objCache.Concept.RtfToPlainTextAsync());
+                        token.ThrowIfCancellationRequested();
                         await lblCareerKarma.DoThreadSafeAsync(async x =>
                         {
                             x.Text = objCache.Karma;
@@ -913,6 +946,7 @@ namespace Chummer
                             if (string.IsNullOrEmpty(x.Text))
                                 x.Text = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound");
                         });
+                        token.ThrowIfCancellationRequested();
                         await lblSettings.DoThreadSafeAsync(x =>
                         {
                             x.Text = objCache.SettingsFile;
@@ -922,8 +956,9 @@ namespace Chummer
                         await lblFilePath.SetToolTipAsync(
                             await objCache.FilePath.CheapReplaceAsync(Utils.GetStartupPath,
                                                                       () => '<' + Application.ProductName + '>'));
+                        token.ThrowIfCancellationRequested();
                         await picMugshot.DoThreadSafeAsync(x => x.Image = objCache.Mugshot);
-
+                        token.ThrowIfCancellationRequested();
                         // Populate character information fields.
                         if (objCache.Metatype != null)
                         {
@@ -937,7 +972,7 @@ namespace Chummer
                                 objMetatypeNode = objMetatypeDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + ']');
                             }
-
+                            token.ThrowIfCancellationRequested();
                             string strMetatype = objMetatypeNode != null
                                 ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate"))?.Value
                                   ?? objCache.Metatype
@@ -961,7 +996,7 @@ namespace Chummer
                         else
                             await lblMetatype.DoThreadSafeFunc(
                                 async x => x.Text = await LanguageManager.GetStringAsync("String_MetatypeLoadError"));
-
+                        token.ThrowIfCancellationRequested();
                         await tabCharacterText.DoThreadSafeAsync(x => x.Visible = true);
                         if (!string.IsNullOrEmpty(objCache.ErrorText))
                         {
@@ -977,6 +1012,7 @@ namespace Chummer
                     }
                     else
                     {
+                        token.ThrowIfCancellationRequested();
                         await tabCharacterText.DoThreadSafeAsync(x => x.Visible = false);
                         await txtCharacterBio.DoThreadSafeAsync(x => x.Clear());
                         await txtCharacterBackground.DoThreadSafeAsync(x => x.Clear());
@@ -994,7 +1030,7 @@ namespace Chummer
                         await lblSettings.DoThreadSafeAsync(x => x.Text = string.Empty);
                         await picMugshot.DoThreadSafeAsync(x => x.Image = null);
                     }
-
+                    token.ThrowIfCancellationRequested();
                     await lblCareerKarmaLabel.DoThreadSafeAsync(
                         x => x.Visible = !string.IsNullOrEmpty(lblCareerKarma.Text));
                     await lblMetatypeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetatype.Text));
@@ -1007,6 +1043,7 @@ namespace Chummer
                     await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblEssence.Text));
                     await lblFilePathLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblFilePath.Text));
                     await lblSettingsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSettings.Text));
+                    token.ThrowIfCancellationRequested();
                     await ProcessMugshotSizeMode();
                 }
                 finally
@@ -1239,16 +1276,19 @@ namespace Chummer
             {
                 using (CursorWait.New(this))
                 {
-                    Character objOpenCharacter
+                    Character objCharacter
                         = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
                           ?? await Program.LoadCharacterAsync(objCache.FilePath);
                     try
                     {
-                        await Program.OpenCharacterForPrinting(objOpenCharacter);
+                        await Program.OpenCharacterForPrinting(objCharacter);
                     }
                     finally
                     {
-                        await objOpenCharacter.DisposeAsync();
+                        if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                            && await Program.MainForm.OpenCharacterForms.AllAsync(x => x.CharacterObject != objCharacter))
+                            Program.OpenCharacters.Remove(objCharacter);
+                        await objCharacter.DisposeAsync();
                     }
                 }
             }
@@ -1265,16 +1305,19 @@ namespace Chummer
             {
                 using (CursorWait.New(this))
                 {
-                    Character objOpenCharacter
+                    Character objCharacter
                         = Program.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FileName)
                           ?? await Program.LoadCharacterAsync(objCache.FilePath);
                     try
                     {
-                        await Program.OpenCharacterForExport(objOpenCharacter);
+                        await Program.OpenCharacterForExport(objCharacter);
                     }
                     finally
                     {
-                        await objOpenCharacter.DisposeAsync();
+                        if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter))
+                            && await Program.MainForm.OpenCharacterForms.AllAsync(x => x.CharacterObject != objCharacter))
+                            Program.OpenCharacters.Remove(objCharacter);
+                        await objCharacter.DisposeAsync();
                     }
                 }
             }

@@ -131,8 +131,9 @@ namespace Chummer
             await DoXsltUpdate();
         }
 
-        private async ValueTask DoLanguageUpdate()
+        private async ValueTask DoLanguageUpdate(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!_blnLoading)
             {
                 _strExportLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.Language;
@@ -146,6 +147,7 @@ namespace Chummer
                 }
 
                 _objCharacterXml = null;
+                token.ThrowIfCancellationRequested();
                 await Task.WhenAll(
                     imgSheetLanguageFlag.DoThreadSafeAsync(x =>
                                                                x.Image
@@ -155,12 +157,14 @@ namespace Chummer
                                                                            _strExportLanguage.Substring(3, 2))
                                                                        : FlagImageGetter.GetFlagFromCountryCode(
                                                                            _strExportLanguage.Substring(3, 2))),
-                    DoXsltUpdate().AsTask());
+                    DoXsltUpdate(token));
+                token.ThrowIfCancellationRequested();
             }
         }
 
-        private async ValueTask DoXsltUpdate()
+        private async Task DoXsltUpdate(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!_blnLoading)
             {
                 if (_objCharacterXml != null)
@@ -170,62 +174,65 @@ namespace Chummer
                     {
                         using (CursorWait.New(this))
                         {
+                            token.ThrowIfCancellationRequested();
                             await txtText.DoThreadSafeAsync(
                                 async x => x.Text = await LanguageManager.GetStringAsync("String_Generating_Data"));
                             (bool blnSuccess, Tuple<string, string> strBoxText)
                                 = await _dicCache.TryGetValueAsync(
                                     new Tuple<string, string>(_strExportLanguage, _strXslt));
+                            token.ThrowIfCancellationRequested();
                             if (blnSuccess)
                             {
                                 await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2);
                             }
                             else
                             {
-                                if (_objXmlGeneratorCancellationTokenSource != null)
+                                if (_objXmlGeneratorCancellationTokenSource?.IsCancellationRequested == false)
                                 {
                                     _objXmlGeneratorCancellationTokenSource.Cancel(false);
                                     _objXmlGeneratorCancellationTokenSource.Dispose();
                                 }
-
+                                token.ThrowIfCancellationRequested();
                                 _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
                                 try
                                 {
                                     if (_tskXmlGenerator?.IsCompleted == false)
                                         await _tskXmlGenerator;
                                 }
-                                catch (TaskCanceledException)
+                                catch (OperationCanceledException)
                                 {
                                     // Swallow this
                                 }
 
                                 _tskXmlGenerator = _strXslt == "JSON"
-                                    ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
-                                    : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);
+                                    ? Task.Run(() => GenerateJson(_objCharacterXmlGeneratorCancellationTokenSource.Token), _objXmlGeneratorCancellationTokenSource.Token)
+                                    : Task.Run(() => GenerateXml(_objCharacterXmlGeneratorCancellationTokenSource.Token), _objXmlGeneratorCancellationTokenSource.Token);
                             }
                         }
                     }
                 }
                 else
                 {
-                    if (_objCharacterXmlGeneratorCancellationTokenSource != null)
+                    token.ThrowIfCancellationRequested();
+                    if (_objCharacterXmlGeneratorCancellationTokenSource?.IsCancellationRequested == false)
                     {
                         _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false);
                         _objCharacterXmlGeneratorCancellationTokenSource.Dispose();
                     }
-
+                    token.ThrowIfCancellationRequested();
                     _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
                     try
                     {
                         if (_tskCharacterXmlGenerator?.IsCompleted == false)
                             await _tskCharacterXmlGenerator;
                     }
-                    catch (TaskCanceledException)
+                    catch (OperationCanceledException)
                     {
                         // Swallow this
                     }
 
                     _tskCharacterXmlGenerator
-                        = Task.Run(GenerateCharacterXml, _objCharacterXmlGeneratorCancellationTokenSource.Token);
+                        = Task.Run(() => GenerateCharacterXml(_objCharacterXmlGeneratorCancellationTokenSource.Token), _objCharacterXmlGeneratorCancellationTokenSource.Token);
                 }
             }
         }
@@ -249,21 +256,22 @@ namespace Chummer
 
         #region Methods
 
-        private async Task GenerateCharacterXml()
+        private async Task GenerateCharacterXml(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 await Task.WhenAll(cmdOK.DoThreadSafeAsync(x => x.Enabled = false),
                                    txtText.DoThreadSafeAsync(
                                        async x => x.Text
                                            = await LanguageManager.GetStringAsync("String_Generating_Data")));
+                token.ThrowIfCancellationRequested();
                 _objCharacterXml = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                          _objCharacterXmlGeneratorCancellationTokenSource
                                                                              .Token);
-                if (_objCharacterXmlGeneratorCancellationTokenSource.IsCancellationRequested)
-                    return;
+                token.ThrowIfCancellationRequested();
                 if (_objCharacterXml != null)
-                    await DoXsltUpdate();
+                    await DoXsltUpdate(token);
             }
         }
 
@@ -313,13 +321,15 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        private async Task GenerateXml()
+        private async Task GenerateXml(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
 
                     XslCompiledTransform objXslTransform;
@@ -331,6 +341,7 @@ namespace Chummer
                     }
                     catch (ArgumentException)
                     {
+                        token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
@@ -339,6 +350,7 @@ namespace Chummer
                     }
                     catch (PathTooLongException)
                     {
+                        token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
@@ -347,6 +359,7 @@ namespace Chummer
                     }
                     catch (UnauthorizedAccessException)
                     {
+                        token.ThrowIfCancellationRequested();
                         string strReturn = "Last write time could not be fetched when attempting to load " + _strXslt +
                                            Environment.NewLine;
                         Log.Debug(strReturn);
@@ -355,6 +368,7 @@ namespace Chummer
                     }
                     catch (XsltException ex)
                     {
+                        token.ThrowIfCancellationRequested();
                         string strReturn = "Error attempting to load " + _strXslt + Environment.NewLine;
                         Log.Debug(strReturn);
                         Log.Error("ERROR Message = " + ex.Message);
@@ -363,8 +377,7 @@ namespace Chummer
                         return;
                     }
 
-                    if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
 
                     XmlWriterSettings objSettings = objXslTransform.OutputSettings.Clone();
                     objSettings.CheckCharacters = false;
@@ -375,15 +388,14 @@ namespace Chummer
                     {
                         using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
                             objXslTransform.Transform(_objCharacterXml, null, objWriter);
-                        if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
-                            return;
+                        token.ThrowIfCancellationRequested();
                         objStream.Position = 0;
 
                         // Read in the resulting code and pass it to the browser.
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                             strText = await objReader.ReadToEndAsync();
                     }
-
+                    token.ThrowIfCancellationRequested();
                     SetTextToWorkerResult(strText);
                 }
                 finally
@@ -393,16 +405,17 @@ namespace Chummer
             }
         }
 
-        private async Task GenerateJson()
+        private async Task GenerateJson(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false);
                 try
                 {
+                    token.ThrowIfCancellationRequested();
                     string strText = JsonConvert.SerializeXmlNode(_objCharacterXml, Formatting.Indented);
-                    if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
-                        return;
+                    token.ThrowIfCancellationRequested();
                     SetTextToWorkerResult(strText);
                 }
                 finally

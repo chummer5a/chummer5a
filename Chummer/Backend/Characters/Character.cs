@@ -8750,13 +8750,14 @@ namespace Chummer
             if (LockObject.IsDisposed)
                 return;
 
+            if (Program.OpenCharacters.Contains(this)
+                || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
+                return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
+
             using (EnterReadLock.Enter(LockObject))
             {
                 if (IsDisposed)
                     return;
-                if (Program.OpenCharacters.Contains(this)
-                    || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
-                    return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
                 using (LockObject.EnterWriteLock()) // Wait for all pending locks to get freed before disposing
                 {
                     IsDisposed = true;
@@ -8849,13 +8850,14 @@ namespace Chummer
             if (LockObject.IsDisposed)
                 return;
 
+            if (await Program.OpenCharacters.ContainsAsync(this)
+                || await Program.OpenCharacters.AnyAsync(async x => await x.LinkedCharacters.ContainsAsync(this)))
+                return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
+
             using (await EnterReadLock.EnterAsync(LockObject))
             {
                 if (IsDisposed)
                     return;
-                if (await Program.OpenCharacters.ContainsAsync(this)
-                    || Program.OpenCharacters.Any(x => x.LinkedCharacters.Contains(this)))
-                    return; // Do not actually dispose any characters who are still in the open characters list or required by a character who is
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {

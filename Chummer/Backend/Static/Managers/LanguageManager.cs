@@ -1182,10 +1182,10 @@ namespace Chummer
                             {
                                 try
                                 {
-                                    strTemp = await Task.Run(() => FindString(strPreferFile),
-                                                             objCancellationTokenSource.Token);
+                                    strTemp = await Task.Run(() => FindString(strPreferFile, objCancellationToken),
+                                                             objCancellationToken);
                                 }
-                                catch (TaskCanceledException)
+                                catch (OperationCanceledException)
                                 {
                                     //swallow this
                                 }
@@ -1195,7 +1195,7 @@ namespace Chummer
                                 strReturn = strTemp;
                         }
 
-                        if (objCancellationTokenSource.IsCancellationRequested)
+                        if (objCancellationToken.IsCancellationRequested)
                             break;
 
                         if (blnSync)
@@ -1206,15 +1206,15 @@ namespace Chummer
                         {
                             try
                             {
-                                strTemp = await Task.Run(() => FindString(), objCancellationTokenSource.Token);
+                                strTemp = await Task.Run(() => FindString(innerToken: objCancellationToken), objCancellationToken);
                             }
-                            catch (TaskCanceledException)
+                            catch (OperationCanceledException)
                             {
                                 //swallow this
                             }
                         }
 
-                        string FindString(string strPreferredFileName = "")
+                        string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
                         {
                             string strInnerReturn = string.Empty;
                             foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
@@ -1230,7 +1230,7 @@ namespace Chummer
                                 {
                                     if (objState.ShouldExitCurrentIteration)
                                         return string.Empty;
-                                    if (objCancellationToken.IsCancellationRequested)
+                                    if (innerToken.IsCancellationRequested)
                                     {
                                         objState.Stop();
                                         return string.Empty;
@@ -1242,7 +1242,7 @@ namespace Chummer
                                         strIntoLanguage);
                                     if (objState.ShouldExitCurrentIteration)
                                         return string.Empty;
-                                    if (objCancellationToken.IsCancellationRequested)
+                                    if (innerToken.IsCancellationRequested)
                                     {
                                         objState.Stop();
                                         return string.Empty;
@@ -1253,7 +1253,7 @@ namespace Chummer
                                     {
                                         if (objState.ShouldExitCurrentIteration)
                                             return string.Empty;
-                                        if (objCancellationToken.IsCancellationRequested)
+                                        if (innerToken.IsCancellationRequested)
                                         {
                                             objState.Stop();
                                             return string.Empty;
@@ -1270,7 +1270,7 @@ namespace Chummer
                                     return string.Empty;
                                 }, strFound =>
                                 {
-                                    if (objCancellationToken.IsCancellationRequested)
+                                    if (innerToken.IsCancellationRequested)
                                         return;
                                     if (string.IsNullOrEmpty(strFound))
                                         return;
@@ -1432,9 +1432,9 @@ namespace Chummer
                 {
                     try
                     {
-                        strTemp = await Task.Run(() => FindString(strPreferFile), objCancellationTokenSource.Token);
+                        strTemp = await Task.Run(() => FindString(strPreferFile, objCancellationToken), objCancellationToken);
                     }
-                    catch (TaskCanceledException)
+                    catch (OperationCanceledException)
                     {
                         //swallow this
                     }
@@ -1444,7 +1444,7 @@ namespace Chummer
                     strReturn = strTemp;
             }
 
-            if (objCancellationTokenSource.IsCancellationRequested)
+            if (objCancellationToken.IsCancellationRequested)
                 return strReturn;
 
             if (blnSync)
@@ -1455,15 +1455,15 @@ namespace Chummer
             {
                 try
                 {
-                    strTemp = await Task.Run(() => FindString(), objCancellationTokenSource.Token);
+                    strTemp = await Task.Run(() => FindString(innerToken: objCancellationToken), objCancellationToken);
                 }
-                catch (TaskCanceledException)
+                catch (OperationCanceledException)
                 {
                     //swallow this
                 }
             }
 
-            string FindString(string strPreferredFileName = "")
+            string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
             {
                 string strInnerReturn = string.Empty;
                 foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
@@ -1480,7 +1480,7 @@ namespace Chummer
                     {
                         if (objState.ShouldExitCurrentIteration)
                             return string.Empty;
-                        if (objCancellationToken.IsCancellationRequested)
+                        if (innerToken.IsCancellationRequested)
                         {
                             objState.Stop();
                             return string.Empty;
@@ -1491,7 +1491,7 @@ namespace Chummer
                                                                           strFromLanguage);
                         if (objState.ShouldExitCurrentIteration)
                             return string.Empty;
-                        if (objCancellationToken.IsCancellationRequested)
+                        if (innerToken.IsCancellationRequested)
                         {
                             objState.Stop();
                             return string.Empty;
@@ -1501,7 +1501,7 @@ namespace Chummer
                         {
                             if (objState.ShouldExitCurrentIteration)
                                 return string.Empty;
-                            if (objCancellationToken.IsCancellationRequested)
+                            if (innerToken.IsCancellationRequested)
                             {
                                 objState.Stop();
                                 return string.Empty;
@@ -1516,7 +1516,7 @@ namespace Chummer
                         return string.Empty;
                     }, strFound =>
                     {
-                        if (objCancellationToken.IsCancellationRequested)
+                        if (innerToken.IsCancellationRequested)
                             return;
                         if (string.IsNullOrEmpty(strFound))
                             return;

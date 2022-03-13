@@ -202,8 +202,18 @@ namespace Chummer
 
         private async void CharacterSheetViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objRefresherCancellationTokenSource?.Cancel(false);
-            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
+            if (_objRefresherCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objRefresherCancellationTokenSource.Cancel(false);
+                _objRefresherCancellationTokenSource.Dispose();
+                _objRefresherCancellationTokenSource = null;
+            }
+            if (_objOutputGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objOutputGeneratorCancellationTokenSource.Cancel(false);
+                _objOutputGeneratorCancellationTokenSource.Dispose();
+                _objOutputGeneratorCancellationTokenSource = null;
+            }
 
             // Remove the mugshots directory when the form closes.
             await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"));
@@ -441,47 +451,72 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the characters (and therefore content) of the Viewer window.
         /// </summary>
-        public async ValueTask RefreshCharacters()
+        public async ValueTask RefreshCharacters(CancellationToken token = default)
         {
-            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
-            _objRefresherCancellationTokenSource?.Cancel(false);
+            token.ThrowIfCancellationRequested();
+            if (_objOutputGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objOutputGeneratorCancellationTokenSource.Cancel(false);
+                _objOutputGeneratorCancellationTokenSource.Dispose();
+                _objOutputGeneratorCancellationTokenSource = null;
+            }
+            token.ThrowIfCancellationRequested();
+            if (_objRefresherCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objRefresherCancellationTokenSource.Cancel(false);
+                _objRefresherCancellationTokenSource.Dispose();
+                _objRefresherCancellationTokenSource = null;
+            }
+            token.ThrowIfCancellationRequested();
             _objRefresherCancellationTokenSource = new CancellationTokenSource();
             try
             {
                 if (_tskRefresher?.IsCompleted == false)
                     await _tskRefresher;
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 // Swallow this
             }
-            _tskRefresher = Task.Run(RefreshCharacterXml, _objRefresherCancellationTokenSource.Token);
+
+            _tskRefresher = Task.Run(() => RefreshCharacterXml(_objRefresherCancellationTokenSource.Token),
+                                     _objRefresherCancellationTokenSource.Token);
         }
 
         /// <summary>
         /// Asynchronously update the sheet of the Viewer window.
         /// </summary>
-        private async ValueTask RefreshSheet()
+        private async ValueTask RefreshSheet(CancellationToken token = default)
         {
-            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
+            token.ThrowIfCancellationRequested();
+            if (_objOutputGeneratorCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                _objOutputGeneratorCancellationTokenSource.Cancel(false);
+                _objOutputGeneratorCancellationTokenSource.Dispose();
+                _objOutputGeneratorCancellationTokenSource = null;
+            }
+            token.ThrowIfCancellationRequested();
             _objOutputGeneratorCancellationTokenSource = new CancellationTokenSource();
             try
             {
                 if (_tskOutputGenerator?.IsCompleted == false)
                     await _tskOutputGenerator;
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 // Swallow this
             }
-            _tskOutputGenerator = Task.Run(AsyncGenerateOutput, _objOutputGeneratorCancellationTokenSource.Token);
+
+            _tskOutputGenerator = Task.Run(() => AsyncGenerateOutput(_objOutputGeneratorCancellationTokenSource.Token),
+                                           _objOutputGeneratorCancellationTokenSource.Token);
         }
 
         /// <summary>
         /// Update the internal XML of the Viewer window.
         /// </summary>
-        private async Task RefreshCharacterXml()
+        private async Task RefreshCharacterXml(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this, true))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
@@ -491,24 +526,27 @@ namespace Chummer
                                    }),
                                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
                                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
+                token.ThrowIfCancellationRequested();
                 Character[] aobjCharacters = await _lstCharacters.ToArrayAsync();
+                token.ThrowIfCancellationRequested();
                 _objCharacterXml = aobjCharacters.Length > 0
                     ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
                                                                         _objRefresherCancellationTokenSource.Token,
                                                                         aobjCharacters)
                     : null;
+                token.ThrowIfCancellationRequested();
                 await this.DoThreadSafeAsync(() => tsSaveAsXml.Enabled = _objCharacterXml != null);
-                if (_objRefresherCancellationTokenSource.IsCancellationRequested)
-                    return;
-                await RefreshSheet();
+                token.ThrowIfCancellationRequested();
+                await RefreshSheet(token);
             }
         }
 
         /// <summary>
         /// Run the generated XML file through the XSL transformation engine to create the file output.
         /// </summary>
-        private async Task AsyncGenerateOutput()
+        private async Task AsyncGenerateOutput(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (CursorWait.New(this))
             {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
@@ -518,7 +556,9 @@ namespace Chummer
                                    }),
                                    cmdPrint.DoThreadSafeAsync(x => x.Enabled = false),
                                    cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false));
+                token.ThrowIfCancellationRequested();
                 await SetDocumentText(await LanguageManager.GetStringAsync("String_Generating_Sheet"));
+                token.ThrowIfCancellationRequested();
                 string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
                 if (!File.Exists(strXslPath))
                 {
@@ -528,7 +568,7 @@ namespace Chummer
                     Program.ShowMessageBox(this, strReturn);
                     return;
                 }
-
+                token.ThrowIfCancellationRequested();
                 XslCompiledTransform objXslTransform;
                 try
                 {
@@ -536,6 +576,7 @@ namespace Chummer
                 }
                 catch (ArgumentException)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -545,6 +586,7 @@ namespace Chummer
                 }
                 catch (PathTooLongException)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -554,6 +596,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
@@ -563,6 +606,7 @@ namespace Chummer
                 }
                 catch (XsltException ex)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
                     Log.Debug(strReturn);
                     Log.Error("ERROR Message = " + ex.Message);
@@ -571,17 +615,17 @@ namespace Chummer
                     return;
                 }
 
-                if (_objOutputGeneratorCancellationTokenSource.IsCancellationRequested)
-                    return;
+                token.ThrowIfCancellationRequested();
 
                 using (MemoryStream objStream = new MemoryStream())
                 {
                     using (XmlWriter objWriter = Utils.GetXslTransformXmlWriter(objStream))
                     {
-                        await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter));
-                        if (_objOutputGeneratorCancellationTokenSource.IsCancellationRequested)
-                            return;
+                        token.ThrowIfCancellationRequested();
+                        await Task.Run(() => objXslTransform.Transform(_objCharacterXml, objWriter), token);
                     }
+
+                    token.ThrowIfCancellationRequested();
 
                     objStream.Position = 0;
 
@@ -604,18 +648,23 @@ namespace Chummer
                             File.WriteAllText(_strTempSheetFilePath, strOutput);
                         }
 
-                        await this.DoThreadSafeAsync(() => UseWaitCursor = true);
+                        token.ThrowIfCancellationRequested();
+                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true);
                         await webViewer.DoThreadSafeAsync(
                             x => x.Url = new Uri("file:///" + _strTempSheetFilePath));
+                        token.ThrowIfCancellationRequested();
                     }
                     else
                     {
+                        token.ThrowIfCancellationRequested();
                         // Populate the browser using DocumentText (DocumentStream would cause issues due to stream disposal).
                         using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                         {
                             string strOutput = await objReader.ReadToEndAsync();
+                            token.ThrowIfCancellationRequested();
                             await this.DoThreadSafeAsync(() => UseWaitCursor = true);
                             await webViewer.DoThreadSafeAsync(x => x.DocumentText = strOutput);
+                            token.ThrowIfCancellationRequested();
                         }
                     }
                 }
