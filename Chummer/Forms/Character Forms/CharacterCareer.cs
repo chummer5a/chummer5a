@@ -3806,8 +3806,7 @@ namespace Chummer
 
                     default:
                         await cmdDeleteMartialArt.DoThreadSafeAsync(x => x.Enabled = false, token);
-                        await lblMartialArtSource.DoThreadSafeAsync(x => x.Text = string.Empty, token);
-                        await lblMartialArtSource.SetToolTipAsync(string.Empty, token);
+                        await SourceString.Blank.SetControlAsync(lblMartialArtSource, token);
                         break;
                 }
             }
@@ -12529,8 +12528,7 @@ namespace Chummer
                                     : "Button_RemoveSubmersionGrade");
                             x.Enabled = true;
                         });
-                        await lblMetamagicSource.DoThreadSafeAsync(x => x.Text = string.Empty);
-                        await lblMetamagicSource.SetToolTipAsync(string.Empty);
+                        await SourceString.Blank.SetControlAsync(lblMetamagicSource, token);
                         break;
                 }
                 token.ThrowIfCancellationRequested();
@@ -19042,8 +19040,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     await lblAIProgramsRequires.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblAIProgramsSource.DoThreadSafeAsync(x => x.Text = string.Empty);
-                    await lblAIProgramsSource.SetToolTipAsync(string.Empty);
+                    await SourceString.Blank.SetControlAsync(lblAIProgramsSource, token);
                 }
                 token.ThrowIfCancellationRequested();
             }

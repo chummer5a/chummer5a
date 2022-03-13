@@ -27,6 +27,8 @@ namespace Chummer
 {
     public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
+        public static readonly SourceString Blank = GetSourceString(string.Empty, 0, GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo);
+
         private static readonly LockingDictionary<string, Tuple<string, string>> s_DicCachedStrings = new LockingDictionary<string, Tuple<string, string>>();
         private readonly int _intHashCode;
 
@@ -116,7 +118,9 @@ namespace Chummer
 
         public override string ToString()
         {
-            return Code + s_DicCachedStrings[Language].Item1 + Page.ToString(CultureInfo);
+            return string.IsNullOrEmpty(Code)
+                ? string.Empty
+                : Code + s_DicCachedStrings[Language].Item1 + Page.ToString(CultureInfo);
         }
 
         /// <summary>
